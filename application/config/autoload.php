@@ -30,7 +30,7 @@
 |  Auto-load Libraries
 | -------------------------------------------------------------------
 | These are the classes located in the system/libraries folder
-| or in your system/application/libraries folder.
+| or in your application/libraries folder.
 |
 | Prototype:
 |
@@ -78,17 +78,5 @@ $autoload['plugin'] = array();
 */
 
 $autoload['config'] = array();
-
-
-/*
-| -------------------------------------------------------------------
-|  Auto-load Core Libraries
-| -------------------------------------------------------------------
-|
-| DEPRECATED:  Use $autoload['libraries'] above instead.
-|
-*/
-// $autoload['core'] = array();
-
 
 ?>
