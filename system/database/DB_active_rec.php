@@ -1,14 +1,14 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * CodeIgniter
+ * BlueFlame
  *
  * An open source application development framework for PHP 4.3.2 or newer
  *
- * @package		CodeIgniter
+ * @package		BlueFlame
  * @author		Rick Ellis
  * @copyright	Copyright (c) 2006, EllisLab, Inc.
  * @license		http://www.codeignitor.com/user_guide/license.html
- * @link		http://www.codeigniter.com
+ * @link		http://blueflame.ciforge.com
  * @since		Version 1.0
  * @filesource
  */
@@ -20,11 +20,10 @@
  *
  * This is the platform-independent base Active Record implementation class.
  *
- * @package		CodeIgniter
+ * @package		BlueFlame
  * @subpackage	Drivers
  * @category	Database
  * @author		Rick Ellis
- * @link		http://www.codeigniter.com/user_guide/database/
  */
 class CI_DB_active_record extends CI_DB_driver {
 

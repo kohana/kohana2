@@ -1,14 +1,14 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * CodeIgniter
+ * BlueFlame
  *
  * An open source application development framework for PHP 4.3.2 or newer
  *
- * @package		CodeIgniter
+ * @package		BlueFlame
  * @author		Rick Ellis, Paul Burdick
  * @copyright	Copyright (c) 2006, EllisLab, Inc.
  * @license		http://www.codeignitor.com/user_guide/license.html
- * @link		http://www.codeigniter.com
+ * @link		http://blueflame.ciforge.com
  * @since		Version 1.0
  * @filesource
  */
@@ -28,11 +28,11 @@ if ( ! class_exists('CI_Xmlrpc'))
 /**
  * XML-RPC server class
  *
- * @package		CodeIgniter
+ * @package		BlueFlame
  * @subpackage	Libraries
  * @category	XML-RPC
  * @author		Paul Burdick
- * @link		http://www.codeigniter.com/user_guide/libraries/xmlrpc.html
+ * @link		http://blueflame.ciforge.com/user_guide/libraries/xmlrpc.html
  */
 class CI_Xmlrpcs extends CI_Xmlrpc
 {

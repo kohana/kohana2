@@ -1,14 +1,14 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * CodeIgniter
+ * BlueFlame
  *
  * An open source application development framework for PHP 4.3.2 or newer
  *
- * @package		CodeIgniter
+ * @package		BlueFlame
  * @author		Rick Ellis
  * @copyright	Copyright (c) 2006, EllisLab, Inc.
  * @license		http://www.codeignitor.com/user_guide/license.html
- * @link		http://www.codeigniter.com
+ * @link		http://blueflame.ciforge.com
  * @since		Version 1.0
  * @filesource
  */
@@ -16,11 +16,11 @@
 // ------------------------------------------------------------------------
 
 /**
- * CodeIgniter Email Class
+ * BlueFlame Email Class
  *
  * Permits email to be sent using Mail, Sendmail, or SMTP.
  *
- * @package		CodeIgniter
+ * @package		BlueFlame
  * @subpackage	Libraries
  * @category	Libraries
  * @author		Rick Ellis
@@ -28,7 +28,7 @@
  */
 class CI_Email {
 
-	var	$useragent		= "CodeIgniter";
+	var	$useragent		= "BlueFlame";
 	var	$mailpath		= "/usr/sbin/sendmail";	// Sendmail path
 	var	$protocol		= "mail";	// mail/sendmail/smtp
 	var	$smtp_host		= "";		// SMTP Server.  Example: mail.earthlink.net

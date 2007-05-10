@@ -1,14 +1,14 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * CodeIgniter
+ * BlueFlame
  *
  * An open source application development framework for PHP 4.3.2 or newer
  *
- * @package		CodeIgniter
+ * @package		BlueFlame
  * @author		Rick Ellis, Paul Burdick
  * @copyright	Copyright (c) 2006, EllisLab, Inc.
  * @license		http://www.codeignitor.com/user_guide/license.html
- * @link		http://www.codeigniter.com
+ * @link		http://blueflame.ciforge.com
  * @since		Version 1.0
  * @filesource
  */
@@ -24,11 +24,11 @@ if ( ! function_exists('xml_parser_create'))
 /**
  * XML-RPC request handler class
  *
- * @package		CodeIgniter
+ * @package		BlueFlame
  * @subpackage	Libraries
  * @category	XML-RPC
  * @author		Paul Burdick
- * @link		http://www.codeigniter.com/user_guide/libraries/xmlrpc.html
+ * @link		http://blueflame.ciforge.com/user_guide/libraries/xmlrpc.html
  */
 class CI_Xmlrpc {
 
@@ -49,7 +49,7 @@ class CI_Xmlrpc {
 	var $xmlrpcstr		= array();  // Response strings
 	
 	var $xmlrpc_defencoding = 'UTF-8';
-	var $xmlrpcName			= 'XML-RPC for CodeIgniter';
+	var $xmlrpcName			= 'XML-RPC for BlueFlame';
 	var $xmlrpcVersion		= '1.1';
 	var $xmlrpcerruser		= 800; // Start of user errors
 	var $xmlrpcerrxml		= 100; // Start of XML Parse errors
@@ -339,7 +339,7 @@ class CI_Xmlrpc {
  *
  * @category	XML-RPC
  * @author		Paul Burdick
- * @link		http://www.codeigniter.com/user_guide/libraries/xmlrpc.html
+ * @link		http://blueflame.ciforge.com/user_guide/libraries/xmlrpc.html
  */
 class XML_RPC_Client extends CI_Xmlrpc
 {
@@ -417,7 +417,7 @@ class XML_RPC_Client extends CI_Xmlrpc
  *
  * @category	XML-RPC
  * @author		Paul Burdick
- * @link		http://www.codeigniter.com/user_guide/libraries/xmlrpc.html
+ * @link		http://blueflame.ciforge.com/user_guide/libraries/xmlrpc.html
  */
 class XML_RPC_Response
 {
@@ -597,7 +597,7 @@ class XML_RPC_Response
  *
  * @category	XML-RPC
  * @author		Paul Burdick
- * @link		http://www.codeigniter.com/user_guide/libraries/xmlrpc.html
+ * @link		http://blueflame.ciforge.com/user_guide/libraries/xmlrpc.html
  */
 class XML_RPC_Message extends CI_Xmlrpc
 {
@@ -1194,7 +1194,7 @@ class XML_RPC_Message extends CI_Xmlrpc
  *
  * @category	XML-RPC
  * @author		Paul Burdick
- * @link		http://www.codeigniter.com/user_guide/libraries/xmlrpc.html
+ * @link		http://blueflame.ciforge.com/user_guide/libraries/xmlrpc.html
  */
 class XML_RPC_Values extends CI_Xmlrpc
 {
