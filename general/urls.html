@@ -95,14 +95,17 @@ contain functions that make it easy to work with your URI data.  In addition, yo
 <code>www.your-site.com/<var>index.php</var>/news/article/my_article</code>
 
 <p>You can easily remove this file by using a .htaccess file with some simple rules. Here is an example
- of such a file, using the "negative" method in which everything is redirected except the specified items:</p>
+ of such a file:</p>
 
-<code>RewriteEngine on<br />
-RewriteCond $1 !^(index\.php|images|robots\.txt)<br />
-RewriteRule ^(.*)$ /index.php/$1 [L]</code>
+<code>RewriteEngine On<br />
+<br />
+RewriteBase /<br />
 
-<p>In the above example, any HTTP request other than those for index.php, images, and robots.txt is treated as
-a request for your index.php file.</p>
+RewriteCond %{REQUEST_FILENAME} !-f<br />
+RewriteCond %{REQUEST_FILENAME} !-d<br />
+RewriteRule ^(.*)$ index.php?/$1 [L] </code>
+
+<p>The above example determines if the request points to an invalid file or directory and rewrites it to the CI front controller with the full original request path appended.  If a request is made to an existing dir/file, Apache serves it.  If not, Apache sends it to BlueFlame with the full request appended.  If the request can be translated to a controller/method by the BlueFlame, it is loaded.  If not, the BlueFlame 404 is displayed.</p>
 
 
 <h2>Adding a URL Suffix</h2>
