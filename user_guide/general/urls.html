@@ -105,7 +105,7 @@ RewriteCond %{REQUEST_FILENAME} !-f<br />
 RewriteCond %{REQUEST_FILENAME} !-d<br />
 RewriteRule ^(.*)$ index.php?/$1 [L] </code>
 
-<p>The above example determines if the request points to an invalid file or directory and rewrites it to the CI front controller with the full original request path appended.  If a request is made to an existing dir/file, Apache serves it.  If not, Apache sends it to BlueFlame with the full request appended.  If the request can be translated to a controller/method by the BlueFlame, it is loaded.  If not, the BlueFlame 404 is displayed.</p>
+<p>The above example determines if the request points to an invalid file or directory and rewrites it to the CI front controller.  If a request is made to an existing dir/file, Apache serves it.  If not, Apache sends it to BlueFlame with the full request appended.  If the request can be translated to a controller/method by the BlueFlame, it is loaded.  If not, the BlueFlame 404 is displayed.</p>
 
 
 <h2>Adding a URL Suffix</h2>
