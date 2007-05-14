@@ -7,7 +7,7 @@
  * @package		BlueFlame
  * @author		Rick Ellis
  * @copyright	Copyright (c) 2006, EllisLab, Inc.
- * @license		http://www.codeignitor.com/user_guide/license.html
+ * @license		http://www.codeigniter.com/user_guide/license.html
  * @link		http://blueflame.ciforge.net
  * @since		Version 1.0
  * @filesource
