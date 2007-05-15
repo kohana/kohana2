@@ -217,12 +217,16 @@ class CI_DB_active_record extends CI_DB_driver {
 			{
 				if ( ! $this->_has_operator($k))
 				{
-					$k .= ' =';
+					$k = '`' . $k . '` =';
 				}
 			
 				$v = ' '.$this->escape($v);
 			}
-						
+			else
+			{
+				$k = '`' . $k . '` IS NULL';
+			}
+					
 			$this->ar_where[] = $prefix.$k.$v;
 		}
 		return $this;
