@@ -204,31 +204,31 @@ class CI_DB_active_record extends CI_DB_driver {
 	 */
 	function _where($key, $value = NULL, $type = 'AND ')
 	{
-		if ( ! is_array($key))
-		{
+		if ( ! is_array($key) and $value != NULL)
 			$key = array($key => $value);
-		}
  	 	
-		foreach ($key as $k => $v)
+		if (is_array($key))
 		{
-			$prefix = (count($this->ar_where) == 0) ? '' : $type;
-			
-			if ( ! is_null($v))
+			foreach ($key as $k => $v)
 			{
-				if ( ! $this->_has_operator($k))
+				$prefix = (count($this->ar_where) == 0) ? '' : $type;
+				
+				if ( ! is_null($v))
 				{
-					$k = '`' . $k . '` =';
+					if ( ! $this->_has_operator($k))
+					{
+						$k .= ' =';
+					}
+				
+					$v = ' '.$this->escape($v);
 				}
-			
-				$v = ' '.$this->escape($v);
+							
+				$this->ar_where[] = $prefix.$k.$v;
 			}
-			else
-			{
-				$k = '`' . $k . '` IS NULL';
-			}
-					
-			$this->ar_where[] = $prefix.$k.$v;
 		}
+		else
+			$this->ar_where[] = $key;
+			
 		return $this;
 	}
 	
