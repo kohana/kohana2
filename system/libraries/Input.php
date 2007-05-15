@@ -46,7 +46,8 @@ class CI_Input {
 	
 		$CFG =& load_class('Config');
 		$this->use_xss_clean	= ($CFG->item('global_xss_filtering') === TRUE) ? TRUE : FALSE;
-		$this->allow_get_array	= ($CFG->item('enable_query_strings') === TRUE) ? TRUE : FALSE;		
+		$this->allow_get_array	= ($CFG->item('enable_query_strings') === TRUE
+								OR $CFG->item('enable_get_requests')  === TRUE) ? TRUE : FALSE;
 		$this->_sanitize_globals();
 	}
 	
@@ -106,18 +107,18 @@ class CI_Input {
 		if (is_array($_POST) AND count($_POST) > 0)
 		{
 			foreach($_POST as $key => $val)
-			{				
+			{
 				$_POST[$this->_clean_input_keys($key)] = $this->_clean_input_data($val);
-			}			
+			}
 		}
 	
 		// Clean $_COOKIE Data
 		if (is_array($_COOKIE) AND count($_COOKIE) > 0)
 		{
 			foreach($_COOKIE as $key => $val)
-			{			
+			{
 				$_COOKIE[$this->_clean_input_keys($key)] = $this->_clean_input_data($val);
-			}	
+			}
 		}
 		
 		log_message('debug', "Global POST and COOKIE data sanitized");
@@ -187,6 +188,51 @@ class CI_Input {
 	// --------------------------------------------------------------------
 	
 	/**
+	 * Fetch an item from a global array
+	 *
+	 * @access	private
+	 * @param	string
+	 * @param	string
+	 * @param	bool
+	 * @return	string
+	 */
+	function _get_global($global, $index = FALSE, $xss_clean = FALSE)
+	{
+		$global = '_'.strtoupper($global);
+		if ( ! isset($$global))
+			return FALSE;
+		
+		if ($index === FALSE)
+		{
+			return $$global;
+		}
+		
+		if ( ! isset($$global[$index]))
+		{
+			return FALSE;
+		}
+
+		if ($xss_clean === TRUE)
+		{
+			if (is_array($$global[$index]))
+			{
+				foreach($$global[$index] as $key => $val)
+				{
+					$$global[$index][$key] = $this->xss_clean($val);
+				}
+			}
+			else
+			{
+				return $this->xss_clean($$global[$index]);
+			}
+		}
+
+		return $$global[$index];
+	}
+	
+	// --------------------------------------------------------------------
+	
+	/**
 	 * Fetch an item from the GET array
 	 *
 	 * @access	public
@@ -194,29 +240,9 @@ class CI_Input {
 	 * @param	bool
 	 * @return	string
 	 */
-	function get($index = '', $xss_clean = FALSE)
-	{		
-		if ( ! isset($_GET[$index]))
-		{
-			return FALSE;
-		}
-
-		if ($xss_clean === TRUE)
-		{
-			if (is_array($_GET[$index]))
-			{
-				foreach($_GET[$index] as $key => $val)
-				{					
-					$_GET[$index][$key] = $this->xss_clean($val);
-				}
-			}
-			else
-			{
-				return $this->xss_clean($_GET[$index]);
-			}
-		}
-
-		return $_GET[$index];
+	function get($index = FALSE, $xss_clean = FALSE)
+	{
+		return $this->_get_global('get', $index, $xss_clean);
 	}
 	
 	// --------------------------------------------------------------------
@@ -229,29 +255,9 @@ class CI_Input {
 	 * @param	bool
 	 * @return	string
 	 */
-	function post($index = '', $xss_clean = FALSE)
-	{		
-		if ( ! isset($_POST[$index]))
-		{
-			return FALSE;
-		}
-
-		if ($xss_clean === TRUE)
-		{
-			if (is_array($_POST[$index]))
-			{
-				foreach($_POST[$index] as $key => $val)
-				{					
-					$_POST[$index][$key] = $this->xss_clean($val);
-				}
-			}
-			else
-			{
-				return $this->xss_clean($_POST[$index]);
-			}
-		}
-
-		return $_POST[$index];
+	function post($index = FALSE, $xss_clean = FALSE)
+	{
+		return $this->_get_global('post', $index, $xss_clean);
 	}
 	
 	// --------------------------------------------------------------------
@@ -264,34 +270,9 @@ class CI_Input {
 	 * @param	bool
 	 * @return	string
 	 */
-	function cookie($index = '', $xss_clean = FALSE)
+	function cookie($index = FALSE, $xss_clean = FALSE)
 	{
-		if ( ! isset($_COOKIE[$index]))
-		{
-			return FALSE;
-		}
-
-		if ($xss_clean === TRUE)
-		{
-			if (is_array($_COOKIE[$index]))
-			{
-				$cookie = array();
-				foreach($_COOKIE[$index] as $key => $val)
-				{
-					$cookie[$key] = $this->xss_clean($val);
-				}
-		
-				return $cookie;
-			}
-			else
-			{
-				return $this->xss_clean($_COOKIE[$index]);
-			}
-		}
-		else
-		{
-			return $_COOKIE[$index];
-		}
+		return $this->_get_global('cookie', $index, $xss_clean);
 	}
 
 	// --------------------------------------------------------------------
@@ -304,19 +285,9 @@ class CI_Input {
 	 * @param	bool
 	 * @return	string
 	 */
-	function server($index = '', $xss_clean = FALSE)
-	{		
-		if ( ! isset($_SERVER[$index]))
-		{
-			return FALSE;
-		}
-
-		if ($xss_clean === TRUE)
-		{
-			return $this->xss_clean($_SERVER[$index]);
-		}
-		
-		return $_SERVER[$index];
+	function server($index = FALSE, $xss_clean = FALSE)
+	{
+		return $this->_get_global('server', $index, $xss_clean);
 	}
 	
 	// --------------------------------------------------------------------
