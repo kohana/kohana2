@@ -10,7 +10,7 @@
 
 $mimes = array(	'hqx'	=>	'application/mac-binhex40',
 				'cpt'	=>	'application/mac-compactpro',
-				'csv'	=>	array('text/x-comma-separated-values', 'application/vnd.ms-excel'),
+				'csv'	=>	array('text/x-comma-separated-values', 'application/vnd.ms-excel', 'application/octet-stream', 'text/comma-separated-values'),
 				'bin'	=>	'application/macbinary',
 				'dms'	=>	'application/octet-stream',
 				'lha'	=>	'application/octet-stream',
