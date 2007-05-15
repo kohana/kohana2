@@ -37,29 +37,26 @@
  * @param	integer
  * @param	string	the end character. Usually an ellipsis
  * @return	string
+ * @link	http://codeigniter.com/forums/viewreply/253257/
  */	
-function word_limiter($str, $n = 100, $end_char = '&#8230;')
-{
-	if (strlen($str) < $n)
-	{
-		return $str;
-	}
-	
-	$words = explode(' ', preg_replace("/\s+/", ' ', preg_replace("/(\r\n|\r|\n)/", " ", $str)));
-	
-	if (count($words) <= $n)
-	{
-		return $str;
-	}
-			
-	$str = '';
-	for ($i = 0; $i < $n; $i++)
-	{
-		$str .= $words[$i].' ';
-	}
-
-	return trim($str).$end_char;
-}
+function word_limiter($str, $limit = 100, $end_char = '&#8230;') {
+    
+    // Don't bother about empty strings.
+    // Get rid of them here because the regex below would match them too.
+    if (trim($str) == '')
+        return $str;
+    
+    // Added the initial \s* in order to make the regex work in case $str starts with whitespace.
+    // Without it a string like " test" would be counted for two words instead of one.
+    preg_match('/\s*(?:\S+\s*){1,'. (int) $limit .'}/', $str, $matches);
+    
+    // Only add end character if the string got chopped off.
+    if (strlen($matches[0]) == strlen($str))
+        $end_char = '';
+    
+    // Chop off trailing whitespace and add the end character.
+    return rtrim($matches[0]) . $end_char;
+} 
 	
 // ------------------------------------------------------------------------
 
