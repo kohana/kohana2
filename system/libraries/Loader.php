@@ -67,7 +67,7 @@ class CI_Loader {
 	var $_ci_scripts		= array();
 	var $_ci_varmap			= array('unit_test' => 'unit', 'user_agent' => 'agent');
 	
-
+	
 	/**
 	 * Constructor
 	 *
@@ -76,11 +76,11 @@ class CI_Loader {
 	 * @access	public
 	 */
 	function CI_Loader()
-	{	
-		$this->_ci_is_php5 = (floor(phpversion()) >= 5) ? TRUE : FALSE;
+	{
+		$this->_ci_is_php5   = (floor(phpversion()) >= 5) ? TRUE : FALSE;
 		$this->_ci_view_path = APPPATH.'views/';
 		$this->_ci_ob_level  = ob_get_level();
-				
+		
 		log_message('debug', "Loader Class Initialized");
 	}
 	
@@ -100,10 +100,8 @@ class CI_Loader {
 	function library($library = '', $params = NULL)
 	{
 		if ($library == '')
-		{
 			return FALSE;
-		}
-
+		
 		if (is_array($library))
 		{
 			foreach ($library as $class)
