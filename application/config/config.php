@@ -127,8 +127,8 @@ $config['permitted_uri_chars'] = 'a-z 0-9~%.:_-';
 |
 | Options are: TRUE or FALSE (default)
 |
-| NOTE: You do not have to change the permitted_uri_chars option, as GET
-| requests are not parsed as part of the URI.
+| NOTE: When enabling GET, you should set your the uri_protocol option
+| to PATH_INFO, ORIG_PATH_INFO, or REQUEST_URI.
 |
 */
 $config['enable_get_requests'] = FALSE;

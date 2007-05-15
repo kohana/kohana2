@@ -198,36 +198,36 @@ class CI_Input {
 	 */
 	function _get_global($global, $index = FALSE, $xss_clean = FALSE)
 	{
-		$global = '_'.strtoupper($global);
+		$global = '_'.strtoupper(trim($global, '_'));
+		
+		global $$global; // For some reason, we have to do this :(
 		if ( ! isset($$global))
 			return FALSE;
 		
-		if ($index === FALSE)
-		{
-			return $$global;
-		}
+		$array = $$global; // Another PHP oddity, we can't use $$global
 		
-		if ( ! isset($$global[$index]))
-		{
+		if ($index === FALSE)
+			return $array;
+		
+		if ( ! isset($array[$index]))
 			return FALSE;
-		}
-
+		
 		if ($xss_clean === TRUE)
 		{
-			if (is_array($$global[$index]))
+			if (is_array($array[$index]))
 			{
-				foreach($$global[$index] as $key => $val)
+				foreach($array[$index] as $key => $val)
 				{
-					$$global[$index][$key] = $this->xss_clean($val);
+					$array[$index][$key] = $this->xss_clean($val);
 				}
 			}
 			else
 			{
-				return $this->xss_clean($$global[$index]);
+				return $this->xss_clean($array[$index]);
 			}
 		}
 
-		return $$global[$index];
+		return $array[$index];
 	}
 	
 	// --------------------------------------------------------------------

@@ -43,7 +43,7 @@ if (floor(phpversion()) >= 5)
 			return;
 
 		$CI =& get_instance();
-		$fp = $CI->load->_ci_find_class($class));
+		$fp = $CI->load->_ci_find_class($class);
 		
 		if ($fp !== FALSE AND $fp !== TRUE)
 		{
