@@ -232,14 +232,16 @@ $config['sess_match_useragent']	= TRUE;
 | Cookie Related Variables
 |--------------------------------------------------------------------------
 |
-| 'cookie_prefix' = Set a prefix if you need to avoid collisions
-| 'cookie_domain' = Set to .your-domain.com for site-wide cookies
-| 'cookie_path'   =  Typically will be a forward slash
+| 'cookie_prefix'   = Set a prefix if you need to avoid collisions
+| 'cookie_domain'   = Set to .your-domain.com for site-wide cookies
+| 'cookie_path'     = Typically will be a forward slash
+| 'cookie_lifetime' = Set to the default lifetime (seconds) of a cookie. 0 means until browser closes
 |
 */
-$config['cookie_prefix']	= "";
-$config['cookie_domain']	= "";
-$config['cookie_path']		= "/";
+$config['cookie_prefix']	  = "";
+$config['cookie_domain']	  = "";
+$config['cookie_path']		  = "/";
+$config['cookie_lifetime']  = 0;
 
 /*
 |--------------------------------------------------------------------------
