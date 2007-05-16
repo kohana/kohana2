@@ -26,32 +26,6 @@
  * @category	Loader
  * @link		http://blueflame.ciforge.com/user_guide/libraries/loader.html
  */
-
-if (floor(phpversion()) >= 5)
-{
-	/**
-	 * Autoloader
-	 * 
-	 * Implements auto-loading of libraries in PHP >= 5, using CI_Loader
-	 * 
-	 * @access	public
-	 * @param	string	class name
-	 */
-	function __autoload($class)
-	{
-		if (! function_exists('get_instance'))
-			return;
-
-		$CI =& get_instance();
-		$fp = $CI->load->_ci_find_class($class);
-		
-		if ($fp !== FALSE AND $fp !== TRUE)
-		{
-			require_once($fp);
-		}
-	}
-}
-
 class CI_Loader {
 
 	// All these are set automatically. Don't mess with them.
@@ -67,7 +41,7 @@ class CI_Loader {
 	var $_ci_scripts		= array();
 	var $_ci_varmap			= array('unit_test' => 'unit', 'user_agent' => 'agent');
 	
-	
+
 	/**
 	 * Constructor
 	 *
@@ -76,11 +50,11 @@ class CI_Loader {
 	 * @access	public
 	 */
 	function CI_Loader()
-	{
-		$this->_ci_is_php5   = (floor(phpversion()) >= 5) ? TRUE : FALSE;
+	{	
+		$this->_ci_is_php5 = (floor(phpversion()) >= 5) ? TRUE : FALSE;
 		$this->_ci_view_path = APPPATH.'views/';
 		$this->_ci_ob_level  = ob_get_level();
-		
+				
 		log_message('debug', "Loader Class Initialized");
 	}
 	
@@ -98,10 +72,12 @@ class CI_Loader {
 	 * @return	void
 	 */	
 	function library($library = '', $params = NULL)
-	{
+	{		
 		if ($library == '')
+		{
 			return FALSE;
-		
+		}
+
 		if (is_array($library))
 		{
 			foreach ($library as $class)
@@ -142,7 +118,7 @@ class CI_Loader {
 		else
 		{
 			$x = explode('/', $model);
-			$model = end($x);
+			$model = end($x);			
 			unset($x[count($x)-1]);
 			$path = implode('/', $x).'/';
 		}
@@ -169,7 +145,7 @@ class CI_Loader {
 		{
 			show_error('Unable to locate the model you have specified: '.$model);
 		}
-		
+				
 		if ($db_conn !== FALSE AND ! class_exists('CI_DB'))
 		{
 			if ($db_conn === TRUE)
@@ -186,11 +162,11 @@ class CI_Loader {
 		require_once(APPPATH.'models/'.$path.$model.EXT);
 
 		$model = ucfirst($model);
-		
+				
 		$CI->$name = new $model();
 		$CI->$name->_assign_libraries();
 		
-		$this->_ci_models[] = $name;
+		$this->_ci_models[] = $name;	
 	}
 		
 	// --------------------------------------------------------------------
@@ -686,7 +662,7 @@ class CI_Loader {
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Load class
 	 *
@@ -700,95 +676,60 @@ class CI_Loader {
 	function _ci_load_class($class, $params = NULL)
 	{	
 		// Get the class name
-		$class = str_replace(EXT, '', strtolower($class));
-		
+		$class = str_replace(EXT, '', $class);
+
 		// We'll test for both lowercase and capitalized versions of the file name
-		foreach (array($class, ucfirst($class)) as $class)
+		foreach (array(ucfirst($class), strtolower($class)) as $class)
 		{
-			$fp = $this->_ci_find_class($class);
-			$ex = $this->_ci_find_class(config_item('subclass_prefix').$class);
-			
-			// Extension found, but no class found
-			if ($ex == TRUE AND $fp == FALSE)
+			// Is this a class extension request?
+			if (file_exists(APPPATH.'libraries/'.config_item('subclass_prefix').$class.EXT))
 			{
-				log_message('error', "Unable to load the requested class: ".$class);
-				show_error("Unable to load the requested class: ".$class);
+				if ( ! file_exists(BASEPATH.'libraries/'.ucfirst($class).EXT))
+				{
+					log_message('error', "Unable to load the requested class: ".$class);
+					show_error("Unable to load the requested class: ".$class);
+				}
+	
+				include(BASEPATH.'libraries/'.ucfirst($class).EXT);
+				include(APPPATH.'libraries/'.config_item('subclass_prefix').$class.EXT);
+	
+				return $this->_ci_init_class($class, config_item('subclass_prefix'), $params);			
 			}
-			
-			// Class is already loaded, log a message and stop
-			if ($fp === TRUE)
+		
+			// Lets search for the requested library file and load it.
+			$is_duplicate = FALSE;		
+			for ($i = 1; $i < 3; $i++)
 			{
-				log_message('debug', $class." class already loaded. Second attempt ignored.");
-				return;
-			}
-			
-			// No class found
-			if ($fp == FALSE)
-			{
-				continue;
-			}
-			else
-			{
+				$path = ($i % 2) ? APPPATH : BASEPATH;	
+				$fp = $path.'libraries/'.$class.EXT;
+				
+				// Does the file exist?  No?  Bummer...
+				if ( ! file_exists($fp))
+				{
+					continue;
+				}
+				
+				// Safety:  Was the class already loaded by a previous call?
+				if (in_array($fp, $this->_ci_classes))
+				{
+					$is_duplicate = TRUE;
+					log_message('debug', $class." class already loaded. Second attempt ignored.");
+					return;
+				}
+				
 				include($fp);
-			}
-			
-			// For safety checks
-			$this->_ci_classes[] = $fp;
-			
-			// Include extension, if one was found
-			if ($ex == TRUE)
-			{
-				include($ex);
-				return $this->_ci_init_class($class, config_item('subclass_prefix'), $params);
-			}
-			else
-			{
+				$this->_ci_classes[] = $fp;
 				return $this->_ci_init_class($class, '', $params);
 			}
-		}// END FOREACH
+		} // END FOREACH
 		
-		// If we got this far we were unable to find the requested class
-		log_message('error', "Unable to load the requested class: ".$class);
-		show_error("Unable to load the requested class: ".$class);
-	}
-	
-	// --------------------------------------------------------------------
-	
-	/**
-	 * Find class
-	 *
-	 * This function finds the requested class.
-	 *
-	 * @access	private
-	 * @param 	string	the item that is being loaded
-	 * @param	array	paths to search in
-	 * @return 	void
-	 */
-	function _ci_find_class($class, $paths = false) 
-	{
-		// Default to using the standard paths
-		if ( ! is_array($paths))
+		// If we got this far we were unable to find the requested class.
+		// We do not issue errors if the load call failed due to a duplicate request
+		if ($is_duplicate == FALSE)
 		{
-			$paths = array(APPPATH, BASEPATH);
+			log_message('error', "Unable to load the requested class: ".$class);
+			show_error("Unable to load the requested class: ".$class);
 		}
-		
-		foreach ($paths as $path)
-		{
-			$fp = $path.'libraries/'.$class.EXT;
-			// Safety:  Was the class already loaded by a previous call?
-			if (in_array($fp, $this->_ci_classes))
-			{
-				return TRUE;
-			}
-			// Does the file exist?
-			if (file_exists($fp))
-			{
-				return $fp;
-			}
-		}
-		
-		// No class was found
-		return FALSE;
 	}
 	
 	// --------------------------------------------------------------------

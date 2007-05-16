@@ -118,24 +118,6 @@ $config['permitted_uri_chars'] = 'a-z 0-9~%.:_-';
 
 /*
 |--------------------------------------------------------------------------
-| ENABLE GET
-|--------------------------------------------------------------------------
-|
-| This option will enable $this->input->get('key') and $_GET['key'], but
-| will allow you to continue using segment based URLs, unlike the
-| 'enable_query_strings' option, which will disable segment based URLs.
-|
-| Options are: TRUE or FALSE (default)
-|
-| NOTE: When enabling GET, you should set your the uri_protocol option
-| to PATH_INFO, ORIG_PATH_INFO, or REQUEST_URI.
-|
-*/
-$config['enable_get_requests'] = FALSE;
-
-
-/*
-|--------------------------------------------------------------------------
 | Enable Query Strings
 |--------------------------------------------------------------------------
 |
