@@ -403,14 +403,23 @@ class CI_Router {
 	 */	
 	function _filter_uri($str)
 	{
+		$str = rawurldecode($str);
+		
+		if ($this->config->item('enable_get_requests')) 
+		{
+			$end = strpos($str, '?');
+			$str = ($end !== FALSE) ? substr($str, 0, $end) : $str;
+		}
+		
 		if ($this->config->item('permitted_uri_chars') != '')
 		{
 			if ( ! preg_match("|^[".preg_quote($this->config->item('permitted_uri_chars'))."]+$|i", $str))
 			{
 				exit('The URI you submitted has disallowed characters.');
 			}
-		}	
-			return $str;
+		}
+		
+		return $str;
 	}
 	
 	// --------------------------------------------------------------------
@@ -442,26 +451,26 @@ class CI_Router {
 		// Is there a literal match?  If so we're done
 		if (isset($this->routes[$uri]))
 		{
-			$this->_compile_segments(explode('/', $this->routes[$uri]));		
+			$this->_compile_segments(explode('/', $this->routes[$uri]));
 			return;
 		}
 				
 		// Loop through the route array looking for wild-cards
 		foreach (array_slice($this->routes, 1) as $key => $val)
-		{						
+		{
 			// Convert wild-cards to RegEx
 			$key = str_replace(':any', '.+', str_replace(':num', '[0-9]+', $key));
 			
 			// Does the RegEx match?
 			if (preg_match('#^'.$key.'$#', $uri))
-			{			
+			{
 				// Do we have a back-reference?
 				if (strpos($val, '$') !== FALSE AND strpos($key, '(') !== FALSE)
 				{
 					$val = preg_replace('#^'.$key.'$#', $val, $uri);
 				}
 			
-				$this->_compile_segments(explode('/', $val));		
+				$this->_compile_segments(explode('/', $val));
 				return;
 			}
 		}
