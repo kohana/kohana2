@@ -22,23 +22,24 @@
  * @author		Rick Ellis
  * @link		http://www.codeigniter.com/user_guide/database/
  */
-function &DB($params = '', $active_record = FALSE)
+function &DB($params = '')
 {
+	$Core =& get_instance();
 	// Load the DB config file if a DSN string wasn't passed
 	if (is_string($params) AND strpos($params, '://') === FALSE)
 	{
 		include(APPPATH.'config/database'.EXT);
-		
+
 		$group = ($params == '') ? $active_group : $params;
-		
+
 		if ( ! isset($db[$group]))
 		{
 			show_error('You have specified an invalid database connection group: '.$group);
 		}
-		
+
 		$params = $db[$group];
 	}
-	
+
 	// No DB specified yet?  Beat them senseless...
 	if ( ! isset($params['dbdriver']) OR $params['dbdriver'] == '')
 	{
@@ -49,18 +50,13 @@ function &DB($params = '', $active_record = FALSE)
 	// we need to dynamically create a class that extends proper parent class
 	// based on whether we're using the active record class or not.
 	// Kudos to Paul for discovering this clever use of eval()
-	
-	if ($active_record == TRUE)
-	{
-		$params['active_r'] = TRUE;
-	}
-	
+
 	require_once(BASEPATH.'database/DB_driver'.EXT);
 
-	if ( ! isset($params['active_r']) OR $params['active_r'] == TRUE)
+	if ($Core->config->item('active_record')===TRUE)
 	{
 		require_once(BASEPATH.'database/DB_active_rec'.EXT);
-		
+
 		if ( ! class_exists('CI_DB'))
 		{
 			eval('class CI_DB extends CI_DB_active_record { }');
@@ -73,14 +69,14 @@ function &DB($params = '', $active_record = FALSE)
 			eval('class CI_DB extends CI_DB_driver { }');
 		}
 	}
-			
+
 	require_once(BASEPATH.'database/drivers/'.$params['dbdriver'].'/'.$params['dbdriver'].'_driver'.EXT);
 
 	// Instantiate the DB adapter
 	$driver = 'CI_DB_'.$params['dbdriver'].'_driver';
-	$DB =& new $driver($params);	
+	$DB =& new $driver($params);
 	return $DB;
-}	
+}
 
 
 ?>

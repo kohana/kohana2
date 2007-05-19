@@ -58,6 +58,18 @@ $config['url_suffix'] = "";
 
 /*
 |--------------------------------------------------------------------------
+| Active Record
+|--------------------------------------------------------------------------
+|
+| This option turns on or off the active record capability in the database
+| interaction
+|
+| http://codeigniter.com/user_guide/database/active_record.html
+*/
+$config['active_record'] = FALSE;
+
+/*
+|--------------------------------------------------------------------------
 | Default Language
 |--------------------------------------------------------------------------
 |
@@ -165,7 +177,7 @@ $config['function_trigger'] = 'm';
 | Error Logging Threshold
 |--------------------------------------------------------------------------
 |
-| If you have enabled error logging, you can set an error threshold to 
+| If you have enabled error logging, you can set an error threshold to
 | determine what gets logged. Threshold options are:
 | You can enable error logging by setting a threshold over zero. The
 | threshold determines what gets logged. Threshold options are:

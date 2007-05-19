@@ -22,7 +22,6 @@
 |				 to the table name when using the  Active Record class
 |	['pconnect'] TRUE/FALSE - Whether to use a persistent connection
 |	['db_debug'] TRUE/FALSE - Whether database errors should be displayed.
-|	['active_r'] TRUE/FALSE - Whether to load the active record class
 |	['cache_on'] TRUE/FALSE - Enables/disables query caching
 |	['cachedir'] The path to the folder where cache files should be stored
 |
@@ -39,7 +38,6 @@ $db['default']['password'] = "";
 $db['default']['database'] = "test";
 $db['default']['dbdriver'] = "mysql";
 $db['default']['dbprefix'] = "";
-$db['default']['active_r'] = TRUE;
 $db['default']['pconnect'] = TRUE;
 $db['default']['db_debug'] = TRUE;
 $db['default']['cache_on'] = FALSE;
