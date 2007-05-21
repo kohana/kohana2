@@ -143,34 +143,28 @@ class CI_URI {
 		}
 		
 		if ( ! is_numeric($n))
-		{
 			return $default;
-		}
 	
 		if (isset($this->keyval[$n]))
-		{
 			return $this->keyval[$n];
-		}
 	
 		if ($this->$total_segments() < $n)
 		{
 			if (count($default) == 0)
-			{
 				return array();
-			}
 			
 			$retval = array();
 			foreach ($default as $val)
 			{
 				$retval[$val] = FALSE;
-			}		
+			}
 			return $retval;
 		}
-
+		
 		$segments = array_slice($this->$segment_array(), ($n - 1));
-
+		
 		$i = 0;
-		$lastval = '';
+		$lastval = "";
 		$retval  = array();
 		foreach ($segments as $seg)
 		{
@@ -211,7 +205,7 @@ class CI_URI {
 	 * @param	array	an associative array of key/values
 	 * @return	array
 	 */	function assoc_to_uri($array)
-	{	
+	{
 		$temp = array();
 		foreach ((array)$array as $key => $val)
 		{
@@ -219,7 +213,7 @@ class CI_URI {
 			$temp[] = $val;
 		}
 		
-		return implode('/', $temp);
+		return implode("/", $temp);
 	}
 
 	// --------------------------------------------------------------------
@@ -267,18 +261,18 @@ class CI_URI {
 	{	
 		if ($where == 'trailing')
 		{
-			$trailing	= '/';
-			$leading	= '';
+			$trailing	= "/";
+			$leading	= "";
 		}
 		elseif ($where == 'leading')
 		{
-			$leading	= '/';
-			$trailing	= '';
+			$leading	= "/";
+			$trailing	= "";
 		}
 		else
 		{
-			$leading	= '/';
-			$trailing	= '/';
+			$leading	= "/";
+			$trailing	= "/";
 		}
 		return $leading.$this->$which($n).$trailing;
 	}
@@ -359,7 +353,7 @@ class CI_URI {
 	 */
 	function ruri_string()
 	{
-		return '/'.implode('/', $this->rsegment_array()).'/';
+		return "/".implode("/", $this->rsegment_array())."/";
 	}
 
 }

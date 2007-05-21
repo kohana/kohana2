@@ -46,8 +46,8 @@ class CI_Config {
 	{
 		$this->config =& get_config();
 		log_message('debug', "Config Class Initialized");
-	}  	
-  	
+	}
+	
 	// --------------------------------------------------------------------
 
 	/**
@@ -74,15 +74,15 @@ class CI_Config {
 			}
 			show_error('The configuration file '.$file.EXT.' does not exist.');
 		}
-	
+		
 		include(APPPATH.'config/'.$file.EXT);
-
+		
 		if ( ! isset($config) OR ! is_array($config))
 		{
 			if ($fail_gracefully === TRUE)
 			{
 				return FALSE;
-			}		
+			}
 			show_error('Your '.$file.EXT.' file does not appear to contain a valid configuration array.');
 		}
 		
@@ -122,7 +122,7 @@ class CI_Config {
 	 * @return	string
 	 */		
 	function item($item, $index = '')
-	{			
+	{
 		if ($index == '')
 		{	
 			if ( ! isset($this->config[$item]))
@@ -166,20 +166,13 @@ class CI_Config {
 	function slash_item($item)
 	{
 		if ( ! isset($this->config[$item]))
-		{
 			return FALSE;
-		}
 		
 		$pref = $this->config[$item];
 		
 		if ($pref != '')
-		{			
-			if (ereg("/$", $pref) === FALSE)
-			{
-				$pref .= '/';
-			}
-		}
-
+			$pref = rtrim($pref, "/")."/";
+		
 		return $pref;
 	}
   	
@@ -191,23 +184,18 @@ class CI_Config {
 	 * @access	public
 	 * @param	string	the URI string
 	 * @return	string
-	 */		
+	 */
 	function site_url($uri = '')
 	{
 		if (is_array($uri))
-		{
-			$uri = implode('/', $uri);
-		}
+			$uri = implode("/", $uri);
 		
-		if ($uri == '')
-		{
-			return $this->slash_item('base_url').$this->item('index_page');
-		}
-		else
-		{
-			$suffix = ($this->item('url_suffix') == FALSE) ? '' : $this->item('url_suffix');		
-			return $this->slash_item('base_url').$this->slash_item('index_page').preg_replace("|^/*(.+?)/*$|", "\\1", $uri).$suffix;
-		}
+		$url = $this->slash_item('base_url').$this->item('index_page');
+		// Append uri to the site_url
+		if ($uri != '')
+			$url .= rtrim($uri, "/")."/".$this->item('url_suffix');
+		
+		return $url;
 	}
 	
 	// --------------------------------------------------------------------
@@ -217,11 +205,11 @@ class CI_Config {
 	 *
 	 * @access	public
 	 * @return	string
-	 */		
+	 */
 	function system_url()
 	{
-		$x = explode("/", preg_replace("|/*(.+?)/*$|", "\\1", BASEPATH));
-		return $this->slash_item('base_url').end($x).'/';
+		$uri = explode("/", rtrim(BASEPATH, "/"));
+		return $this->slash_item('base_url').end($uri)."/";
 	}
   	
 	// --------------------------------------------------------------------
@@ -233,7 +221,7 @@ class CI_Config {
 	 * @param	string	the config item key
 	 * @param	string	the config item value
 	 * @return	void
-	 */		
+	 */
 	function set_item($item, $value)
 	{
 		$this->config[$item] = $value;

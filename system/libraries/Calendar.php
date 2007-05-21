@@ -148,7 +148,7 @@ class CI_Calendar {
 		// Generate the template data array
 		$this->parse_template();
 	
-		// Begin building the calendar output						
+		// Begin building the calendar output
 		$out = $this->temp['table_open'];
 		$out .= "\n";	
 
@@ -159,8 +159,8 @@ class CI_Calendar {
 		// "previous" month link
 		if ($this->show_next_prev == TRUE)
 		{
-			// Add a trailing slash to the  URL if needed
-			$this->next_prev_url = preg_replace("/(.+?)\/*$/", "\\1/",  $this->next_prev_url);
+			// Add a trailing slash to the  URL
+			$this->next_prev_url = rtrim($this->next_prev_url, '/').'/';
 		
 			$adjusted_date = $this->adjust_date($month - 1, $year);
 			$out .= str_replace('{previous_url}', $this->next_prev_url.$adjusted_date['year'].'/'.$adjusted_date['month'], $this->temp['heading_previous_cell']);

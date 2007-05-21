@@ -621,7 +621,7 @@ class CI_Upload {
 			return FALSE;
 		}
 
-		$this->upload_path = preg_replace("/(.+?)\/*$/", "\\1/",  $this->upload_path);
+		$this->upload_path = rtrim($this->upload_path, '/').'/';
 		return TRUE;
 	}
 	

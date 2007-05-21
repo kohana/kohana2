@@ -65,7 +65,7 @@ class CI_Router {
 	 * @return	void
 	 */
 	function _set_route_mapping()
-	{		
+	{
 		// Are query strings enabled in the config file?
 		// If so, we're done since segment based URIs are not used with query strings.
 		if ($this->config->item('enable_query_strings') === TRUE AND isset($_GET[$this->config->item('controller_trigger')]))
@@ -87,7 +87,7 @@ class CI_Router {
 
 		// Set the default controller so we can display it in the event
 		// the URI doesn't correlated to a valid controller.
-		$this->default_controller = ( ! isset($this->routes['default_controller']) OR $this->routes['default_controller'] == '') ? FALSE : strtolower($this->routes['default_controller']);	
+		$this->default_controller = ( ! isset($this->routes['default_controller']) OR $this->routes['default_controller'] == '') ? FALSE : strtolower($this->routes['default_controller']);
 		
 		// Fetch the complete URI string
 		$this->uri_string = $this->_get_uri_string();
@@ -122,13 +122,15 @@ class CI_Router {
 		
 		// Explode the URI Segments. The individual segments will
 		// be stored in the $this->segments array.	
-		foreach(explode("/", preg_replace("|/*(.+?)/*$|", "\\1", $this->uri_string)) as $val)
+		foreach(explode("/", trim(rtrim($this->uri_string, "/"), "/") as $val)
 		{
 			// Filter segments for security
 			$val = trim($this->_filter_uri($val));
 			
 			if ($val != '')
+			{
 				$this->segments[] = $val;
+			}
 		}
 		
 		// Parse any custom routing that may exist
@@ -153,14 +155,12 @@ class CI_Router {
 	 * @return	void
 	 */
 	function _compile_segments($segments = array())
-	{	
+	{
 		$segments = $this->_validate_segments($segments);
 		
 		if (count($segments) == 0)
-		{
 			return;
-		}
-						
+		
 		$this->set_class($segments[0]);
 		
 		if (isset($segments[1]))
@@ -204,7 +204,7 @@ class CI_Router {
 
 		// Is the controller in a sub-folder?
 		if (is_dir(APPPATH.'controllers/'.$segments[0]))
-		{		
+		{
 			// Set the directory and remove it from the segment array
 			$this->set_directory($segments[0]);
 			$segments = array_slice($segments, 1);
@@ -230,7 +230,7 @@ class CI_Router {
 				}
 			
 			}
-				
+			
 			return $segments;
 		}
 	
@@ -254,7 +254,7 @@ class CI_Router {
 	{
 		// Is the routed segment array different then the main segment array?
 		$diff = (count(array_diff($this->rsegments, $this->segments)) == 0) ? FALSE : TRUE;
-	
+		
 		$i = 1;
 		foreach ($this->segments as $val)
 		{
@@ -289,51 +289,49 @@ class CI_Router {
 	{
 		if (strtoupper($this->config->item('uri_protocol')) == 'AUTO')
 		{
-			// If the URL has a question mark then it's simplest to just
-			// build the URI string from the zero index of the $_GET array.
-			// This avoids having to deal with $_SERVER variables, which
-			// can be unreliable in some environments
-			if (is_array($_GET) AND count($_GET) == 1)
+			if ($this->config->item('enable_get_requests') == FALSE)
 			{
-				// Note: Due to a bug in current() that affects some versions
-				// of PHP we can not pass function call directly into it
-				$keys = array_keys($_GET);
-				return current($keys);
+				// If the URL has a question mark then it's simplest to just
+				// build the URI string from the zero index of the $_GET array.
+				// This avoids having to deal with $_SERVER variables, which
+				// can be unreliable in some environments
+				if (is_array($_GET) AND count($_GET) == 1)
+				{
+					// Note: Due to a bug in current() that affects some versions
+					// of PHP we can not pass function call directly into it
+					$keys = array_keys($_GET);
+					return current($keys);
+				}
 			}
-		
+			
 			// Is there a PATH_INFO variable?
-			// Note: some servers seem to have trouble with getenv() so we'll test it two ways		
-			$path = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : @getenv('PATH_INFO');	
+			// Note: some servers seem to have trouble with getenv() so we'll test it two ways
+			$path = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : @getenv('PATH_INFO');
 			if ($path != '' AND $path != "/".SELF)
-			{
 				return $path;
-			}
-					
-			// No PATH_INFO?... What about QUERY_STRING?
-			$path =  (isset($_SERVER['QUERY_STRING'])) ? $_SERVER['QUERY_STRING'] : @getenv('QUERY_STRING');	
-			if ($path != '')
+			
+			if ($this->config->item('enable_get_requests') == FALSE) 
 			{
-				return $path;
+				// No PATH_INFO?... What about QUERY_STRING?
+				$path =  (isset($_SERVER['QUERY_STRING'])) ? $_SERVER['QUERY_STRING'] : @getenv('QUERY_STRING');
+				if ($path != '')
+					return $path;
 			}
 			
 			// No QUERY_STRING?... Maybe the ORIG_PATH_INFO variable exists?
 			$path = (isset($_SERVER['ORIG_PATH_INFO'])) ? $_SERVER['ORIG_PATH_INFO'] : @getenv('ORIG_PATH_INFO');	
 			if ($path != '' AND $path != "/".SELF)
-			{
 				return $path;
-			}
-
-			// We've exhausted all our options...
-			return '';
+			
+			// We've exhausted all our options, try REQUEST_URI
+			return $this->_parse_request_uri();
 		}
 		else
 		{
 			$uri = strtoupper($this->config->item('uri_protocol'));
 			
 			if ($uri == 'REQUEST_URI')
-			{
 				return $this->_parse_request_uri();
-			}
 			
 			return (isset($_SERVER[$uri])) ? $_SERVER[$uri] : @getenv($uri);
 		}
@@ -354,32 +352,26 @@ class CI_Router {
 	function _parse_request_uri()
 	{
 		if ( ! isset($_SERVER['REQUEST_URI']) OR $_SERVER['REQUEST_URI'] == '')
-		{
 			return '';
-		}
 		
-		$request_uri = preg_replace("|/(.*)|", "\\1", str_replace("\\", "/", $_SERVER['REQUEST_URI']));
-
+		$request_uri = trim(str_replace("\\", "/", $_SERVER['REQUEST_URI']), '/');
+		
 		if ($request_uri == '' OR $request_uri == SELF)
-		{
 			return '';
-		}
 		
-		$fc_path = FCPATH;		
+		$fc_path = FCPATH;
 		if (strpos($request_uri, '?') !== FALSE)
 		{
 			$fc_path .= '?';
 		}
 		
 		$parsed_uri = explode("/", $request_uri);
-				
+		
 		$i = 0;
 		foreach(explode("/", $fc_path) as $segment)
 		{
 			if (isset($parsed_uri[$i]) AND $segment == $parsed_uri[$i])
-			{
 				$i++;
-			}
 		}
 		
 		$parsed_uri = implode("/", array_slice($parsed_uri, $i));
@@ -443,7 +435,7 @@ class CI_Router {
 			$this->_compile_segments($this->segments);
 			return;
 		}
-
+		
 		// Turn the segment array into a URI string
 		$uri = implode('/', $this->segments);
 		$num = count($this->segments);
@@ -454,7 +446,7 @@ class CI_Router {
 			$this->_compile_segments(explode('/', $this->routes[$uri]));
 			return;
 		}
-				
+		
 		// Loop through the route array looking for wild-cards
 		foreach (array_slice($this->routes, 1) as $key => $val)
 		{

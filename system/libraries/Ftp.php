@@ -374,15 +374,15 @@ class CI_FTP {
 			return FALSE;
 		}
 
-		// Add a trailing slash to the file path if needed
-		$filepath = preg_replace("/(.+?)\/*$/", "\\1/",  $filepath);
+		// Add a trailing slash to the file path
+		$filepath = rtrim($filepath, '/').'/';
 		
 		$list = $this->list_files($filepath);
 		
 		if ($list !== FALSE AND count($list) > 0)
 		{
 			foreach ($list as $item)
-			{			
+			{
 				// If we can't delete the item it's probaly a folder so
 				// we'll recursively call delete_dir()
 				if ( ! @ftp_delete($this->conn_id, $filepath.$item))
