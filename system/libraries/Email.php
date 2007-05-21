@@ -364,32 +364,15 @@ class CI_Email {
 	 * @param	string
 	 * @return	array
 	 */	
-	function _str_to_array($email)
+	function _str_to_array($email) 
 	{
-		if ( ! is_array($email))
-		{	
-			if (ereg(',$', $email))
-				$email = substr($email, 0, -1);
-			
-			if (ereg('^,', $email))
-				$email = substr($email, 1);	
-					
-			if (ereg(',', $email))
-			{					
-				$x = explode(',', $email);
-				$email = array();
-				
-				for ($i = 0; $i < count($x); $i ++)
-					$email[] = trim($x[$i]);
-			}
-			else
-			{				
-				$email = trim($email);
-				settype($email, "array");
-			}
-		}
-		return $email;
-	}
+		if (is_array($email))
+			return $email;
+    
+		$email = trim($email, " \r\n\t,");
+    
+		return preg_split('/[\s,]+/', $email);
+	} 
   	
 	// --------------------------------------------------------------------
 
