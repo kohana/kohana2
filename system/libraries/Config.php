@@ -49,29 +49,26 @@ class CI_Config {
 	}
 	
 	// --------------------------------------------------------------------
-
+	
 	/**
 	 * Load Config File
 	 *
 	 * @access	public
 	 * @param	string	the config file name
 	 * @return	boolean	if the file was loaded correctly
-	 */	
+	 */
 	function load($file = '', $use_sections = FALSE, $fail_gracefully = FALSE)
 	{
 		$file = ($file == '') ? 'config' : str_replace(EXT, '', $file);
-	
+		
 		if (in_array($file, $this->is_loaded, TRUE))
-		{
 			return TRUE;
-		}
-
+		
 		if ( ! file_exists(APPPATH.'config/'.$file.EXT))
 		{
 			if ($fail_gracefully === TRUE)
-			{
 				return FALSE;
-			}
+			
 			show_error('The configuration file '.$file.EXT.' does not exist.');
 		}
 		
@@ -80,9 +77,8 @@ class CI_Config {
 		if ( ! isset($config) OR ! is_array($config))
 		{
 			if ($fail_gracefully === TRUE)
-			{
 				return FALSE;
-			}
+			
 			show_error('Your '.$file.EXT.' file does not appear to contain a valid configuration array.');
 		}
 		
@@ -101,16 +97,16 @@ class CI_Config {
 		{
 			$this->config = array_merge($this->config, $config);
 		}
-
+		
 		$this->is_loaded[] = $file;
 		unset($config);
-
+		
 		log_message('debug', 'Config file loaded: config/'.$file.EXT);
 		return TRUE;
 	}
-  	
+	
 	// --------------------------------------------------------------------
-
+	
 	/**
 	 * Fetch a config file item
 	 *
@@ -124,34 +120,28 @@ class CI_Config {
 	function item($item, $index = '')
 	{
 		if ($index == '')
-		{	
+		{
 			if ( ! isset($this->config[$item]))
-			{
 				return FALSE;
-			}
 		
 			$pref = $this->config[$item];
 		}
 		else
 		{
 			if ( ! isset($this->config[$index]))
-			{
 				return FALSE;
-			}
 		
 			if ( ! isset($this->config[$index][$item]))
-			{
 				return FALSE;
-			}
 		
 			$pref = $this->config[$index][$item];
 		}
 
 		return $pref;
 	}
-  	
-  	// --------------------------------------------------------------------
-
+	
+	// --------------------------------------------------------------------
+	
 	/**
 	 * Fetch a config file item - adds slash after item
 	 *
@@ -171,13 +161,15 @@ class CI_Config {
 		$pref = $this->config[$item];
 		
 		if ($pref != '')
+		{
 			$pref = rtrim($pref, "/")."/";
+		}
 		
 		return $pref;
 	}
-  	
+	
 	// --------------------------------------------------------------------
-
+	
 	/**
 	 * Site URL
 	 *
@@ -188,18 +180,22 @@ class CI_Config {
 	function site_url($uri = '')
 	{
 		if (is_array($uri))
+		{
 			$uri = implode("/", $uri);
+		}
 		
 		$url = $this->slash_item('base_url').$this->item('index_page');
 		// Append uri to the site_url
 		if ($uri != '')
+		{
 			$url .= rtrim($uri, "/")."/".$this->item('url_suffix');
+		}
 		
 		return $url;
 	}
 	
 	// --------------------------------------------------------------------
-
+	
 	/**
 	 * System URL
 	 *
@@ -211,9 +207,9 @@ class CI_Config {
 		$uri = explode("/", rtrim(BASEPATH, "/"));
 		return $this->slash_item('base_url').end($uri)."/";
 	}
-  	
+	
 	// --------------------------------------------------------------------
-
+	
 	/**
 	 * Set a config file item
 	 *
