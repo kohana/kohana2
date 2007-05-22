@@ -36,26 +36,30 @@
  * @access	public
  * @param	string
  * @return	str
- */		
+ */
 function singular($str)
 {
-	$str = strtolower(trim($str));
+	$str = trim(rtrim($str));
 	$end = substr($str, -3);
-	
+
 	if ($end == 'ies')
 	{
 		$str = substr($str, 0, strlen($str)-3).'y';
 	}
+	elseif ($end == 'ses' || $end == 'zes' || $end == 'xes')
+	{
+		$str = substr($str, 0, strlen($str)-2);
+	}
 	else
 	{
 		$end = substr($str, -1);
-		
+
 		if ($end == 's')
 		{
 			$str = substr($str, 0, strlen($str)-1);
 		}
 	}
-	
+
 	return $str;
 }
 
@@ -69,22 +73,31 @@ function singular($str)
  * @access	public
  * @param	string
  * @return	str
- */		
+ */
 function plural($str)
 {
-	$str = strtolower(trim($str));
+	$str = trim(rtrim($str));
 	$end = substr($str, -1);
+	$low = (strcmp($end, strtolower($end)) === 0) ? TRUE : FALSE;
 
-	if ($end == 'y')
+	if (preg_match('/[sxz]$/i', $str) OR preg_match('/[^aeioudgkprt]h$/i', $str))
 	{
-		$str = substr($str, 0, strlen($str)-1).'ies';
+		$end = 'es';
+		$str .= ($low == FALSE) ? strtoupper($end) : $end;
 	}
-	elseif ($end != 's')
+	elseif (preg_match('/[^aeiou]y$/i', $str))
 	{
-		$str .= 's';
+		$end = 'ies';
+		$end = ($low == FALSE) ? strtoupper($end) : $end;
+		$str = substr_replace($str, $end, -1)
+	}
+	else
+	{
+		$end = 's';
+		$str .= ($low == FALSE) ? strtoupper($end) : $end;
 	}
 
-	return $str;	
+	return $str;
 }
 
 // --------------------------------------------------------------------
@@ -97,9 +110,9 @@ function plural($str)
  * @access	public
  * @param	string
  * @return	str
- */		
+ */
 function camelize($str)
-{		
+{
 	$str = 'x'.strtolower(trim($str));
 	$str = ucwords(preg_replace('/[\s_]+/', ' ', $str));
 	return substr(str_replace(' ', '', $str), 1);
@@ -115,7 +128,7 @@ function camelize($str)
  * @access	public
  * @param	string
  * @return	str
- */		
+ */
 function underscore($str)
 {
 	return preg_replace('/[\s]+/', '_', strtolower(trim($str)));
@@ -131,10 +144,10 @@ function underscore($str)
  * @access	public
  * @param	string
  * @return	str
- */		
+ */
 function humanize($str)
 {
 	return ucwords(preg_replace('/[_]+/', ' ', strtolower(trim($str))));
 }
-	
+
 ?>
