@@ -40,7 +40,7 @@ class CI_Router {
 	var $uri_protocol 	= 'auto';
 	var $default_controller;
 	var $scaffolding_request = FALSE; // Must be set to FALSE
-	
+
 	/**
 	 * Constructor
 	 *
@@ -52,9 +52,9 @@ class CI_Router {
 		$this->_set_route_mapping();
 		log_message('debug', "Router Class Initialized");
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Set the route mapping
 	 *
@@ -76,10 +76,10 @@ class CI_Router {
 			{
 				$this->set_method($_GET[$this->config->item('function_trigger')]);
 			}
-			
+
 			return;
 		}
-		
+
 		// Load the routes.php file.
 		@include(APPPATH.'config/routes'.EXT);
 		$this->routes = ( ! isset($route) OR ! is_array($route)) ? array() : $route;
@@ -88,16 +88,16 @@ class CI_Router {
 		// Set the default controller so we can display it in the event
 		// the URI doesn't correlated to a valid controller.
 		$this->default_controller = ( ! isset($this->routes['default_controller']) OR $this->routes['default_controller'] == '') ? FALSE : strtolower($this->routes['default_controller']);
-		
+
 		// Fetch the complete URI string
 		$this->uri_string = $this->_get_uri_string();
-		
+
 		// If the URI contains only a slash we'll kill it
 		if ($this->uri_string == '/')
 		{
 			$this->uri_string = '';
 		}
-	
+
 		// Is there a URI string? If not, the default controller specified in the "routes" file will be shown.
 		if ($this->uri_string == '')
 		{
@@ -105,7 +105,7 @@ class CI_Router {
 			{
 				show_error("Unable to determine what should be displayed. A default route has not been specified in the routing file.");
 			}
-		
+
 			$this->set_class($this->default_controller);
 			$this->set_method('index');
 
@@ -113,35 +113,35 @@ class CI_Router {
 			return;
 		}
 		unset($this->routes['default_controller']);
-		
+
 		// Do we need to remove the suffix specified in the config file?
 		if  ($this->config->item('url_suffix') != "")
 		{
 			$this->uri_string = preg_replace("|".preg_quote($this->config->item('url_suffix'))."$|", "", $this->uri_string);
 		}
-		
+
 		// Explode the URI Segments. The individual segments will
-		// be stored in the $this->segments array.	
-		foreach(explode("/", trim(rtrim($this->uri_string, "/")), "/") as $val)
+		// be stored in the $this->segments array.
+		foreach(explode("/", trim(rtrim($this->uri_string, "/"), "/")) as $val)
 		{
 			// Filter segments for security
-			$val = trim($this->_filter_uri($val));
-			
+			$val = $this->_filter_uri($val);
+
 			if ($val != '')
 			{
 				$this->segments[] = $val;
 			}
 		}
-		
+
 		// Parse any custom routing that may exist
-		$this->_parse_routes();		
-		
+		$this->_parse_routes();
+
 		// Re-index the segment array so that it starts with 1 rather than 0
 		$this->_reindex_segments();
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Compile Segments
 	 *
@@ -157,12 +157,12 @@ class CI_Router {
 	function _compile_segments($segments = array())
 	{
 		$segments = $this->_validate_segments($segments);
-		
+
 		if (count($segments) == 0)
 			return;
-		
+
 		$this->set_class($segments[0]);
-		
+
 		if (isset($segments[1]))
 		{
 			// A scaffolding request. No funny business with the URL
@@ -177,15 +177,15 @@ class CI_Router {
 				$this->set_method($segments[1]);
 			}
 		}
-		
+
 		// Update our "routed" segment array to contain the segments.
 		// Note: If there is no custom routing, this array will be
 		// identical to $this->segments
 		$this->rsegments = $segments;
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Validates the supplied segments.  Attempts to determine the path to
 	 * the controller.
@@ -193,7 +193,7 @@ class CI_Router {
 	 * @access	private
 	 * @param	array
 	 * @return	array
-	 */	
+	 */
 	function _validate_segments($segments)
 	{
 		// Does the requested controller exist in the root folder?
@@ -208,37 +208,37 @@ class CI_Router {
 			// Set the directory and remove it from the segment array
 			$this->set_directory($segments[0]);
 			$segments = array_slice($segments, 1);
-			
+
 			if (count($segments) > 0)
 			{
 				// Does the requested controller exist in the sub-folder?
 				if ( ! file_exists(APPPATH.'controllers/'.$this->fetch_directory().$segments[0].EXT))
 				{
-					show_404();	
+					show_404();
 				}
 			}
 			else
 			{
 				$this->set_class($this->default_controller);
 				$this->set_method('index');
-			
+
 				// Does the default controller exist in the sub-folder?
 				if ( ! file_exists(APPPATH.'controllers/'.$this->fetch_directory().$this->default_controller.EXT))
 				{
 					$this->directory = '';
 					return array();
 				}
-			
+
 			}
-			
+
 			return $segments;
 		}
-	
+
 		// Can't find the requested controller...
-		show_404();	
+		show_404();
 	}
 
-	// --------------------------------------------------------------------	
+	// --------------------------------------------------------------------
 	/**
 	 * Re-index Segments
 	 *
@@ -249,19 +249,19 @@ class CI_Router {
 	 *
 	 * @access	private
 	 * @return	void
-	 */	
+	 */
 	function _reindex_segments()
 	{
 		// Is the routed segment array different then the main segment array?
 		$diff = (count(array_diff($this->rsegments, $this->segments)) == 0) ? FALSE : TRUE;
-		
+
 		$i = 1;
 		foreach ($this->segments as $val)
 		{
 			$this->segments[$i++] = $val;
 		}
 		unset($this->segments[0]);
-		
+
 		if ($diff == FALSE)
 		{
 			$this->rsegments = $this->segments;
@@ -276,15 +276,15 @@ class CI_Router {
 			unset($this->rsegments[0]);
 		}
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Get the URI String
 	 *
 	 * @access	private
 	 * @return	string
-	 */	
+	 */
 	function _get_uri_string()
 	{
 		if (strtoupper($this->config->item('uri_protocol')) == 'AUTO')
@@ -303,42 +303,47 @@ class CI_Router {
 					return current($keys);
 				}
 			}
-			
+
+			// Try QUERY_STRING
+			if ($this->config->item('enable_get_requests') == FALSE)
+			{
+				// No PATH_INFO?... What about QUERY_STRING?
+				$path = (isset($_SERVER['QUERY_STRING'])) ? $_SERVER['QUERY_STRING'] : @getenv('QUERY_STRING');
+				if ($path != '')
+					return $path;
+			}
+
 			// Is there a PATH_INFO variable?
 			// Note: some servers seem to have trouble with getenv() so we'll test it two ways
 			$path = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : @getenv('PATH_INFO');
 			if ($path != '' AND $path != "/".SELF)
 				return $path;
-			
-			if ($this->config->item('enable_get_requests') == FALSE) 
-			{
-				// No PATH_INFO?... What about QUERY_STRING?
-				$path =  (isset($_SERVER['QUERY_STRING'])) ? $_SERVER['QUERY_STRING'] : @getenv('QUERY_STRING');
-				if ($path != '')
-					return $path;
-			}
-			
-			// No QUERY_STRING?... Maybe the ORIG_PATH_INFO variable exists?
-			$path = (isset($_SERVER['ORIG_PATH_INFO'])) ? $_SERVER['ORIG_PATH_INFO'] : @getenv('ORIG_PATH_INFO');	
+
+			// No PATH_INFO?... Maybe the ORIG_PATH_INFO variable exists?
+			$path = (isset($_SERVER['ORIG_PATH_INFO'])) ? $_SERVER['ORIG_PATH_INFO'] : @getenv('ORIG_PATH_INFO');
 			if ($path != '' AND $path != "/".SELF)
 				return $path;
 			
-			// We've exhausted all our options, try REQUEST_URI
-			return $this->_parse_request_uri();
+			// Nothing yet? Let's try REQUEST_URI
+			if (isset($_SERVER['REQUEST_URI']))
+				return $this->_parse_request_uri();
+
+			// We've exhausted all our options
+			return '';
 		}
 		else
 		{
 			$uri = strtoupper($this->config->item('uri_protocol'));
-			
+
 			if ($uri == 'REQUEST_URI')
 				return $this->_parse_request_uri();
-			
+
 			return (isset($_SERVER[$uri])) ? $_SERVER[$uri] : @getenv($uri);
 		}
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Parse the REQUEST_URI
 	 *
@@ -348,34 +353,34 @@ class CI_Router {
 	 *
 	 * @access	private
 	 * @return	string
-	 */	
+	 */
 	function _parse_request_uri()
 	{
 		if ( ! isset($_SERVER['REQUEST_URI']) OR $_SERVER['REQUEST_URI'] == '')
 			return '';
-		
+
 		$request_uri = trim(str_replace("\\", "/", $_SERVER['REQUEST_URI']), '/');
-		
+
 		if ($request_uri == '' OR $request_uri == SELF)
 			return '';
-		
+
 		$fc_path = FCPATH;
 		if (strpos($request_uri, '?') !== FALSE)
 		{
 			$fc_path .= '?';
 		}
-		
+
 		$parsed_uri = explode("/", $request_uri);
-		
+
 		$i = 0;
 		foreach(explode("/", $fc_path) as $segment)
 		{
 			if (isset($parsed_uri[$i]) AND $segment == $parsed_uri[$i])
 				$i++;
 		}
-		
+
 		$parsed_uri = implode("/", array_slice($parsed_uri, $i));
-		
+
 		if ($parsed_uri != '')
 		{
 			$parsed_uri = '/'.$parsed_uri;
@@ -385,24 +390,24 @@ class CI_Router {
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Filter segments for malicious characters
 	 *
 	 * @access	private
 	 * @param	string
 	 * @return	string
-	 */	
+	 */
 	function _filter_uri($str)
 	{
 		$str = rawurldecode($str);
-		
-		if ($this->config->item('enable_get_requests')) 
+
+		if ($this->config->item('enable_get_requests'))
 		{
 			$end = strpos($str, '?');
 			$str = ($end !== FALSE) ? substr($str, 0, $end) : $str;
 		}
-		
+
 		if ($this->config->item('permitted_uri_chars') != '')
 		{
 			if ( ! preg_match("|^[".preg_quote($this->config->item('permitted_uri_chars'))."]+$|i", $str))
@@ -410,12 +415,12 @@ class CI_Router {
 				exit('The URI you submitted has disallowed characters.');
 			}
 		}
-		
-		return $str;
+
+		return trim($str);
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 *  Parse Routes
 	 *
@@ -435,7 +440,7 @@ class CI_Router {
 			$this->_compile_segments($this->segments);
 			return;
 		}
-		
+
 		// Turn the segment array into a URI string
 		$uri = implode('/', $this->segments);
 		$num = count($this->segments);
@@ -446,13 +451,13 @@ class CI_Router {
 			$this->_compile_segments(explode('/', $this->routes[$uri]));
 			return;
 		}
-		
+
 		// Loop through the route array looking for wild-cards
 		foreach (array_slice($this->routes, 1) as $key => $val)
 		{
 			// Convert wild-cards to RegEx
 			$key = str_replace(':any', '.+', str_replace(':num', '[0-9]+', $key));
-			
+
 			// Does the RegEx match?
 			if (preg_match('#^'.$key.'$#', $uri))
 			{
@@ -461,66 +466,66 @@ class CI_Router {
 				{
 					$val = preg_replace('#^'.$key.'$#', $val, $uri);
 				}
-			
+
 				$this->_compile_segments(explode('/', $val));
 				return;
 			}
 		}
-		
+
 		// If we got this far it means we didn't encounter a
 		// matching route so we'll set the site default route
 		$this->_compile_segments($this->segments);
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Set the class name
 	 *
 	 * @access	public
 	 * @param	string
 	 * @return	void
-	 */	
+	 */
 	function set_class($class)
 	{
 		$this->class = $class;
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Fetch the current class
 	 *
 	 * @access	public
 	 * @return	string
-	 */	
+	 */
 	function fetch_class()
 	{
 		return $this->class;
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 *  Set the method name
 	 *
 	 * @access	public
 	 * @param	string
 	 * @return	void
-	 */	
+	 */
 	function set_method($method)
 	{
 		$this->method = $method;
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 *  Fetch the current method
 	 *
 	 * @access	public
 	 * @return	string
-	 */	
+	 */
 	function fetch_method()
 	{
 		if ($this->method == $this->fetch_class())
@@ -532,27 +537,27 @@ class CI_Router {
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 *  Set the directory name
 	 *
 	 * @access	public
 	 * @param	string
 	 * @return	void
-	 */	
+	 */
 	function set_directory($dir)
 	{
 		$this->directory = $dir.'/';
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 *  Fetch the sub-directory (if any) that contains the requested controller class
 	 *
 	 * @access	public
 	 * @return	string
-	 */	
+	 */
 	function fetch_directory()
 	{
 		return $this->directory;
