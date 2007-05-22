@@ -1,16 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html><head><title>CodeIgniter User Guide</title>
+<html>
+<head>
 
+<title>BlueFlame User Guide</title>
 
+<style type='text/css' media='all'>@import url('../userguide.css');</style>
+<link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
 
-
-
-<style type="text/css" media="all">@import url('http://codeigniter.com/user_guide/userguide.css');</style>
-<link rel="stylesheet" type="text/css" media="all" href="cookie_helper_files/userguide.css">
-
-<script type="text/javascript" src="cookie_helper_files/nav.js"></script>
-<script type="text/javascript" src="cookie_helper_files/prototype.js"></script>
-<script type="text/javascript" src="cookie_helper_files/moo.js"></script>
+<script type="text/javascript" src="../nav/nav.js"></script>
+<script type="text/javascript" src="../nav/prototype.lite.js"></script>
+<script type="text/javascript" src="../nav/moo.fx.js"></script>
 <script type="text/javascript">
 window.onload = function() {
 	myHeight = new fx.Height('nav', {duration: 400});
@@ -18,41 +17,44 @@ window.onload = function() {
 }
 </script>
 
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta http-equiv="expires" content="-1">
-<meta http-equiv="pragma" content="no-cache">
-<meta name="robots" content="all">
-<meta name="author" content="Rick Ellis">
-<meta name="description" content="CodeIgniter User Guide"></head><body>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv='expires' content='-1' />
+<meta http-equiv= 'pragma' content='no-cache' />
+<meta name='robots' content='all' />
+<meta name='author' content='Rick Ellis' />
+<meta name='description' content='BlueFlame User Guide' />
+
+</head>
+<body>
 
 <!-- START NAVIGATION -->
-<div style="overflow: hidden; height: 0px;" id="nav"><div id="nav_inner"><script type="text/javascript">create_menu('http://codeigniter.com/user_guide/');</script><table cellspaceing="0" style="width: 98%;" border="0" cellpadding="0"><tbody><tr><td class="td" valign="top"><ul><li><a href="http://codeigniter.com/user_guide/index.html">User Guide Home</a></li><li><a href="http://codeigniter.com/user_guide/toc.html">Table of Contents Page</a></li></ul><h3>Basic Info</h3><ul><li><a href="http://codeigniter.com/user_guide/general/requirements.html">Server Requirements</a></li><li><a href="http://codeigniter.com/user_guide/license.html">License Agreement</a></li><li><a href="http://codeigniter.com/user_guide/changelog.html">Change Log</a></li><li><a href="http://codeigniter.com/user_guide/general/credits.html">Credits</a></li></ul><h3>Installation</h3><ul><li><a href="http://codeigniter.com/user_guide/installation/downloads.html">Downloading CodeIgniter</a></li><li><a href="http://codeigniter.com/user_guide/installation/index.html">Installation Instructions</a></li><li><a href="http://codeigniter.com/user_guide/installation/upgrading.html">Upgrading from a Previous Version</a></li><li><a href="http://codeigniter.com/user_guide/installation/troubleshooting.html">Troubleshooting</a></li></ul><h3>Introduction</h3><ul><li><a href="http://codeigniter.com/user_guide/overview/at_a_glance.html">CodeIgniter at a Glance</a></li><li><a href="http://codeigniter.com/user_guide/overview/features.html">Supported Features</a></li><li><a href="http://codeigniter.com/user_guide/overview/appflow.html">Application Flow Chart</a></li><li><a href="http://codeigniter.com/user_guide/overview/mvc.html">Model-View-Controller</a></li><li><a href="http://codeigniter.com/user_guide/overview/goals.html">Architectural Goals</a></li></ul></td><td class="td_sep" valign="top"><h3>General Topics</h3><ul><li><a href="http://codeigniter.com/user_guide/general/index.html">Getting Started</a></li><li><a href="http://codeigniter.com/user_guide/general/urls.html">CodeIgniter URLs</a></li><li><a href="http://codeigniter.com/user_guide/general/controllers.html">Controllers</a></li><li><a href="http://codeigniter.com/user_guide/general/views.html">Views</a></li><li><a href="http://codeigniter.com/user_guide/general/models.html">Models</a></li><li><a href="http://codeigniter.com/user_guide/general/helpers.html">Helpers</a></li><li><a href="http://codeigniter.com/user_guide/general/plugins.html">Plugins</a></li><li><a href="http://codeigniter.com/user_guide/general/libraries.html">Using CodeIgniter Libraries</a></li><li><a href="http://codeigniter.com/user_guide/general/creating_libraries.html">Creating Your Own Libraries</a></li><li><a href="http://codeigniter.com/user_guide/general/core_classes.html">Creating Core Classes</a></li><li><a href="http://codeigniter.com/user_guide/general/hooks.html">Hooks - Extending the Core</a></li><li><a href="http://codeigniter.com/user_guide/general/autoloader.html">Auto-loading Resources</a></li><li><a href="http://codeigniter.com/user_guide/general/scaffolding.html">Scaffolding</a></li><li><a href="http://codeigniter.com/user_guide/general/routing.html">URI Routing</a></li><li><a href="http://codeigniter.com/user_guide/general/errors.html">Error Handling</a></li><li><a href="http://codeigniter.com/user_guide/general/caching.html">Caching</a></li><li><a href="http://codeigniter.com/user_guide/general/profiling.html">Profiling Your Application</a></li><li><a href="http://codeigniter.com/user_guide/general/managing_apps.html">Managing Applications</a></li><li><a href="http://codeigniter.com/user_guide/general/alternative_php.html">Alternative PHP Syntax</a></li><li><a href="http://codeigniter.com/user_guide/general/security.html">Security</a></li></ul></td><td class="td_sep" valign="top"><h3>Class Reference</h3><ul><li><a href="http://codeigniter.com/user_guide/libraries/benchmark.html">Benchmarking Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/calendar.html">Calendaring Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/config.html">Config Class</a></li><li><a href="http://codeigniter.com/user_guide/database/index.html">Database Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/email.html">Email Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/encryption.html">Encryption Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/file_uploading.html">File Uploading Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/ftp.html">FTP Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/table.html">HTML Table Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/image_lib.html">Image Manipulation Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/input.html">Input and Security Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/loader.html">Loader Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/language.html">Language Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/output.html">Output Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/pagination.html">Pagination Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/sessions.html">Session Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/trackback.html">Trackback Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/parser.html">Template Parser Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/unit_testing.html">Unit Testing Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/uri.html">URI Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/user_agent.html">User Agent Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/validation.html">Validation Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/xmlrpc.html">XML-RPC Class</a></li><li><a href="http://codeigniter.com/user_guide/libraries/zip.html">Zip Encoding Class</a></li></ul></td><td class="td_sep" valign="top"><h3>Helper Reference</h3><ul><li><a href="http://codeigniter.com/user_guide/helpers/array_helper.html">Array Helper</a></li><li><a href="http://codeigniter.com/user_guide/helpers/cookie_helper.html">Cookie Helper</a></li><li><a href="http://codeigniter.com/user_guide/helpers/date_helper.html">Date Helper</a></li><li><a href="http://codeigniter.com/user_guide/helpers/directory_helper.html">Directory Helper</a></li><li><a href="http://codeigniter.com/user_guide/helpers/download_helper.html">Download Helper</a></li><li><a href="http://codeigniter.com/user_guide/helpers/file_helper.html">File Helper</a></li><li><a href="http://codeigniter.com/user_guide/helpers/form_helper.html">Form Helper</a></li><li><a href="http://codeigniter.com/user_guide/helpers/html_helper.html">HTML Helper</a></li><li><a href="http://codeigniter.com/user_guide/helpers/inflector_helper.html">Inflector Helper</a></li><li><a href="http://codeigniter.com/user_guide/helpers/security_helper.html">Security Helper</a></li><li><a href="http://codeigniter.com/user_guide/helpers/smiley_helper.html">Smiley Helper</a></li><li><a href="http://codeigniter.com/user_guide/helpers/string_helper.html">String Helper</a></li><li><a href="http://codeigniter.com/user_guide/helpers/text_helper.html">Text Helper</a></li><li><a href="http://codeigniter.com/user_guide/helpers/typography_helper.html">Typography Helper</a></li><li><a href="http://codeigniter.com/user_guide/helpers/url_helper.html">URL Helper</a></li><li><a href="http://codeigniter.com/user_guide/helpers/xml_helper.html">XML Helper</a></li></ul><h3>Additional Resources</h3><ul><li><a href="http://codeigniter.com/user_guide/general/quick_reference.html">Quick Reference Chart</a></li><li><a href="http://www.codeigniter.com/forums/">Community Forums</a></li><li><a href="http://www.codeigniter.com/wiki/">Community Wiki</a></li></ul></td></tr></tbody></table></div></div>
-<div id="nav2"><a name="top"></a><a href="javascript:void(0);" onclick="myHeight.toggle();"><img src="cookie_helper_files/nav_toggle.jpg" title="Toggle Table of Contents" alt="Toggle Table of Contents" border="0" height="44" width="153"></a></div>
+<div id="nav"><div id="nav_inner"><script type="text/javascript">create_menu('../');</script></div></div>
+<div id="nav2"><a name="top"></a><a href="javascript:void(0);" onclick="myHeight.toggle();"><img src="../images/nav_toggle.jpg" width="153" height="44" border="0" title="Toggle Table of Contents" alt="Toggle Table of Contents" /></a></div>
 <div id="masthead">
-<table style="width: 100%;" border="0" cellpadding="0" cellspacing="0">
-<tbody><tr>
-<td><h1>CodeIgniter User Guide Version 1.5.3</h1></td>
-<td id="breadcrumb_right"><a href="http://codeigniter.com/user_guide/toc.html%22">Table of Contents Page</a></td>
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td><h1>BlueFlame User Guide Version 1.0</h1></td>
+<td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
 </tr>
-</tbody></table>
+</table>
 </div>
 <!-- END NAVIGATION -->
 
 
 <!-- START BREADCRUMB -->
-<table style="width: 100%;" border="0" cellpadding="0" cellspacing="0">
-<tbody><tr>
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
 <td id="breadcrumb">
-<a href="http://www.codeigniter.com/">CodeIgniter Home</a> &nbsp;›&nbsp;
-<a href="http://codeigniter.com/user_guide/index.html%22">User Guide Home</a> &nbsp;›&nbsp;
+<a href="http://blueflame.ciforge.com/">BlueFlame Home</a> &nbsp;&#8250;&nbsp;
+<a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
 Cookie Helper
 </td>
-<td id="searchbox"><form method="get" action="http://www.google.com/search"><input name="as_sitesearch" id="as_sitesearch" value="www.codeigniter.com/user_guide/" type="hidden">Search User Guide&nbsp; <input class="input" style="width: 200px;" name="q" id="q" size="31" maxlength="255" value="" type="text">&nbsp;<input class="submit" name="sa" value="Go" type="submit"></form></td>
+<td id="searchbox"><!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.BlueFlame.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>--></td>
 </tr>
-</tbody></table>
+</table>
 <!-- END BREADCRUMB -->
 
-<br clear="all">
+<br clear="all" />
 
 
 <!-- START CONTENT -->
@@ -67,37 +69,28 @@ Cookie Helper
 <h2>Loading this Helper</h2>
 
 <p>This helper is loaded using the following code:</p>
-<code>$this-&gt;load-&gt;helper('cookie');</code>
+<code>$this->load->helper('cookie');</code>
 
 <p>The following functions are available:</p>
 
 <h2>set_cookie()</h2>
 
-<p>Sets a cookie containing the values you specify. There are two ways
-to pass information this function so that a cookie can be set:
-Array Method, and Discrete Parameters:</p>
+<p>Sets a cookie containing the values you specify.  There are two ways to pass information this function so that a cookie can be set:
+Array Method, and Discreet Parameters:</p>
 
 <h4>Array Method</h4>
 
 <p>Using this method, an associative array is passed to the first parameter:</p>
 
-<code>$cookie = array(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'name'&nbsp;&nbsp;&nbsp;=&gt;
-'CookieName',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'value'&nbsp;&nbsp;=&gt;
-'The Value',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'expire'
-=&gt; '86500',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'domain'
-=&gt; '.some-domain.com',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'path'&nbsp;&nbsp;&nbsp;=&gt;
-'/',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'prefix'
-=&gt; 'myprefix_',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'secure'
-=&gt; false,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
-<br>
+<code>$cookie = array(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'name'&nbsp;&nbsp;&nbsp;=> 'The Cookie Name',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'value'&nbsp;&nbsp;=> 'The Value',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'expire' => '86500',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'domain' => '.some-domain.com',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'path'&nbsp;&nbsp;&nbsp;=> '/',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'prefix' => 'myprefix_',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br />
+<br />
 set_cookie($cookie);
 </code>
 
@@ -105,39 +98,19 @@ set_cookie($cookie);
 
 <p>Only the name and value are required.</p>
 
-<p><strong>Expiration:</strong></p>
 <p>The expiration is set in <strong>seconds</strong>, which will be added to the current time.  Do not include the time, but rather only the
 number of seconds from <em>now</em> that you wish the cookie to be valid.  If the expiration is set to
 zero the cookie will only last as long as the browser is open.</p>
-<p>Passing non numeric value for expire param will cause the default
-value, as configured in $config['cookie_lifetime'], to be used.</p>
-<p>To delete a cookie set it with the expiration set to a negative number (<dfn>delete_cookie()</dfn> is preferred).</p>
-
-<p><strong>Domain:</strong></p>
-<p>For site-wide cookies regardless of how your site is requested, add your site <strong>FQDN</strong> starting with a period, like this:  .your-domain.com</p>
-<p>If you do not pass the domain param, or pass it as null, the default
-option as configured in $config['cookie_domain'] will be used. Passing
-an empty string will cause no domain to be set.</p>
-
-<p><strong>Path:</strong></p>
-<p>If you do not pass the path param, or pass it as null, the default
-option as configured in $config['cookie_path'] will be used. Passing an
-empty string will cause no path to be set.</p>
-
-<p><strong>Prefix:</strong></p>
+<p>To delete a cookie set it with the expiration blank.</p>
+<p>For site-wide cookies regardless of how your site is requested, add your URL to the <strong>domain</strong> starting with a period, like this:  .your-domain.com</p>
+<p>The path is usually not needed since the function sets a root path.</p>
 <p>The prefix is only needed if you need to avoid name collisions with other identically named cookies for your server.</p>
-<p>If you do not pass the prefix param, or pass it as null, the default
-option as configured in $config['cookie_prefix'] will be used. Passing
-an empty string will cause no prefix to be used.</p>
 
-<p><strong>Secure:</strong></p>
-<p>If this cookie can ONLY be sent over HTTPS (SSL), set this value to true.</p>
-
-<h4>Discrete Parameters</h4>
+<h4>Discreet Parameters</h4>
 
 <p>If you prefer, you can set the cookie by passing data using individual parameters:</p>
 
-<code>set_cookie($name, $value, $expire, $domain, $path, $prefix, $secure);</code>
+<code>set_cookie($name, $value, $expire, $domain, $path, $prefix);</code>
 
 <h2>get_cookie()</h2>
 
@@ -147,19 +120,9 @@ an empty string will cause no prefix to be used.</p>
 
 <p>The function returns FALSE (boolean) if the item you are attempting to retrieve does not exist.</p>
 
-<p>The second optional parameter is the prefix to use in front of the
-name. If you do not pass this param, or pass it as null, the default
-site cookie parameter as configured in $config['cookie_prefix'] will be
-used. Pass this as empty string to use no prefix.</p>
+<p>The second optional parameter lets you run the data through the XSS filter.  It's enabled by setting the second parameter to boolean TRUE;</p>
 
-<code>get_cookie('some_cookie','myprefix_');</code>
-
-<p>The third optional parameter lets you run the data through the XSS
-filter. It's enabled by setting the third parameter to boolean TRUE;</p>
-
-<code>get_cookie('some_cookie','myprefix_', TRUE);</code>
--OR-
-<code>get_cookie('some_cookie',null, TRUE);</code>
+<code>get_cookie('some_cookie', TRUE);</code>
 
 
 
@@ -169,15 +132,10 @@ filter. It's enabled by setting the third parameter to boolean TRUE;</p>
 
 <code>delete_cookie("name");</code>
 
-<p>This function is fairly identical to <dfn>set_cookie()</dfn>, except that it does not have the value and expiration parameters.  You can submit an array
-of values in the first parameter or you can set discrete parameters.  The other difference is that the final parameter, <dfn>$remove_live</dfn>,
-flags the function to
-delete the value from the $_COOKIE array along with sending the
-expiration trigger to the browser. If you would like to keep this value
-in the array, pass discrete
-parameters and explicitly set this flag to FALSE.</p>
+<p>This function is otherwise identical to <dfn>set_cookie()</dfn>, except that it does not have the value and expiration parameters.  You can submit an array
+of values in the first parameter or you can set discreet parameters.</p>
 
-<code>delete_cookie($name, $domain = null, $path = null, $prefix = null, $remove_live = TRUE)</code>
+<code>delete_cookie($name, $domain, $path, $prefix)</code>
 
 
 </div>
@@ -186,13 +144,14 @@ parameters and explicitly set this flag to FALSE.</p>
 
 <div id="footer">
 <p>
-Previous Topic:&nbsp;&nbsp;<a href="http://www.jaaulde.com/test_bed/CodeIgniter/modCookieHelper/array_helper.html">Array Helper</a>
-&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="#top">Top of Page</a>&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="http://codeigniter.com/user_guide/index.html%22">User Guide Home</a>&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;
-Next Topic:&nbsp;&nbsp;<a href="http://www.jaaulde.com/test_bed/CodeIgniter/modCookieHelper/date_helper.html">Date Helper</a>
-</p><p>
-</p><p><a href="http://www.codeigniter.com/">CodeIgniter</a> &nbsp;·&nbsp; Copyright © 2007 &nbsp;·&nbsp; <a href="http://ellislab.com/">Ellislab, Inc.</a></p>
+Previous Topic:&nbsp;&nbsp;<a href="array_helper.html">Array Helper</a>
+&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="#top">Top of Page</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+Next Topic:&nbsp;&nbsp;<a href="date_helper.html">Date Helper</a>
+<p>
+<p><a href="http://blueflame.ciforge.com">BlueFlame</a> &nbsp;&middot;&nbsp; Copyright &#169; 2007 &nbsp;&middot;&nbsp; <a href="http://ellislab.com/">Ellislab, Inc.</a></p>
 </div>
 
-</body></html>
+</body>
+</html>
