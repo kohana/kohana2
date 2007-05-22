@@ -122,7 +122,7 @@ class CI_Router {
 		
 		// Explode the URI Segments. The individual segments will
 		// be stored in the $this->segments array.	
-		foreach(explode("/", trim(rtrim($this->uri_string, "/"), "/") as $val)
+		foreach(explode("/", trim(rtrim($this->uri_string, "/")), "/") as $val)
 		{
 			// Filter segments for security
 			$val = trim($this->_filter_uri($val));
