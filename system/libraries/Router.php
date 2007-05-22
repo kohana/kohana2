@@ -289,6 +289,8 @@ class CI_Router {
 	{
 		if (strtoupper($this->config->item('uri_protocol')) == 'AUTO')
 		{
+			// The following two protocols are incompatible with "enable_get_requests"
+			// Note: some servers seem to have trouble with getenv() so we'll test it two ways
 			if ($this->config->item('enable_get_requests') == FALSE)
 			{
 				// If the URL has a question mark then it's simplest to just
@@ -302,19 +304,14 @@ class CI_Router {
 					$keys = array_keys($_GET);
 					return current($keys);
 				}
-			}
 
-			// Try QUERY_STRING
-			if ($this->config->item('enable_get_requests') == FALSE)
-			{
-				// No PATH_INFO?... What about QUERY_STRING?
+				// No $_GET? What about QUERY_STRING?
 				$path = (isset($_SERVER['QUERY_STRING'])) ? $_SERVER['QUERY_STRING'] : @getenv('QUERY_STRING');
 				if ($path != '')
 					return $path;
 			}
 
 			// Is there a PATH_INFO variable?
-			// Note: some servers seem to have trouble with getenv() so we'll test it two ways
 			$path = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : @getenv('PATH_INFO');
 			if ($path != '' AND $path != "/".SELF)
 				return $path;
