@@ -89,7 +89,7 @@ function plural($str)
 	{
 		$end = 'ies';
 		$end = ($low == FALSE) ? strtoupper($end) : $end;
-		$str = substr_replace($str, $end, -1)
+		$str = substr_replace($str, $end, -1);
 	}
 	else
 	{
