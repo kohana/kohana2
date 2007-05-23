@@ -188,7 +188,7 @@ class CI_Config {
 		// Append uri to the site_url
 		if ($uri != '')
 		{
-			$url .= rtrim($uri, "/")."/".$this->item('url_suffix');
+			$url .= rtrim($uri, "/").$this->item('url_suffix');
 		}
 		
 		return $url;
