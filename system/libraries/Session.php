@@ -42,7 +42,7 @@ class CI_Session {
 	 *
 	 * The constructor runs the session routines automatically
 	 * whenever the class is instantiated.
-	 */		
+	 */
 	function CI_Session()
 	{
 		$this->CI =& get_instance();
@@ -50,15 +50,15 @@ class CI_Session {
 		log_message('debug', "Session Class Initialized");
 		$this->sess_run();
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Run the session routines
 	 *
 	 * @access	public
 	 * @return	void
-	 */		
+	 */
 	function sess_run()
 	{
 		/*
@@ -76,7 +76,7 @@ class CI_Session {
 		{
 			$now = time();
 			$this->now = mktime(gmdate("H", $now), gmdate("i", $now), gmdate("s", $now), gmdate("m", $now), gmdate("d", $now), gmdate("Y", $now));
-	
+
 			if (strlen($this->now) < 10)
 			{
 				$this->now = time();
@@ -87,7 +87,7 @@ class CI_Session {
 		{
 			$this->now = time();
 		}
-		
+
 		/*
 		 *  Set the session length
 		 *
@@ -97,7 +97,7 @@ class CI_Session {
 		 *
 		 */
 		$expiration = $this->CI->config->item('sess_expiration');
-		
+
 		if (is_numeric($expiration))
 		{
 			if ($expiration > 0)
@@ -109,14 +109,14 @@ class CI_Session {
 				$this->sess_length = (60*60*24*365*2);
 			}
 		}
-		
+
 		// Do we need encryption?
 		$this->encryption = $this->CI->config->item('sess_encrypt_cookie');
-	
-		if ($this->encryption == TRUE)	
+
+		if ($this->encryption == TRUE)
 		{
 			$this->CI->load->library('encrypt');
-		}		
+		}
 
 		// Are we using a database?
 		if ($this->CI->config->item('sess_use_database') === TRUE AND $this->CI->config->item('sess_table_name') != '')
@@ -125,13 +125,13 @@ class CI_Session {
 			$this->session_table = $this->CI->config->item('sess_table_name');
 			$this->CI->load->database();
 		}
-		
+
 		// Set the cookie name
 		if ($this->CI->config->item('sess_cookie_name') != FALSE)
 		{
 			$this->sess_cookie = $this->CI->config->item('cookie_prefix').$this->CI->config->item('sess_cookie_name');
 		}
-	
+
 		/*
 		 *  Fetch the current session
 		 *
@@ -144,23 +144,23 @@ class CI_Session {
 			$this->sess_create();
 		}
 		else
-		{	
+		{
 			// We only update the session every five minutes
 			if (($this->userdata['last_activity'] + 300) < $this->now)
 			{
 				$this->sess_update();
 			}
 		}
-		
+
 		// Delete expired sessions if necessary
 		if ($this->use_database === TRUE)
-		{		
+		{
 			$this->sess_gc();
-		}	
+		}
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Fetch the current session data if it exists
 	 *
@@ -168,16 +168,16 @@ class CI_Session {
 	 * @return	void
 	 */
 	function sess_read()
-	{	
+	{
 		// Fetch the cookie
 		$session = $this->CI->input->cookie($this->sess_cookie);
-		
+
 		if ($session === FALSE)
 		{
 			log_message('debug', 'A session cookie was not found.');
 			return FALSE;
 		}
-		
+
 		// Decrypt and unserialize the data
 		if ($this->encryption == TRUE)
 		{
@@ -185,13 +185,13 @@ class CI_Session {
 		}
 
 		$session = @unserialize($this->strip_slashes($session));
-		
+
 		if ( ! is_array($session) OR ! isset($session['last_activity']))
 		{
 			log_message('error', 'The session cookie data did not contain a valid array. This could be a possible hacking attempt.');
 			return FALSE;
 		}
-		
+
 		// Is the session current?
 		if (($session['last_activity'] + $this->sess_length) < $this->now)
 		{
@@ -205,19 +205,19 @@ class CI_Session {
 			$this->sess_destroy();
 			return FALSE;
 		}
-		
+
 		// Does the User Agent Match?
 		if ($this->CI->config->item('sess_match_useragent') == TRUE AND $session['user_agent'] != substr($this->CI->input->user_agent(), 0, 50))
 		{
 			$this->sess_destroy();
 			return FALSE;
 		}
-		
+
 		// Is there a corresponding session in the DB?
 		if ($this->use_database === TRUE)
 		{
 			$this->CI->db->where('session_id', $session['session_id']);
-					
+
 			if ($this->CI->config->item('sess_match_ip') == TRUE)
 			{
 				$this->CI->db->where('ip_address', $session['ip_address']);
@@ -227,7 +227,7 @@ class CI_Session {
 			{
 				$this->CI->db->where('user_agent', $session['user_agent']);
 			}
-			
+
 			$query = $this->CI->db->get($this->session_table);
 
 			if ($query->num_rows() == 0)
@@ -247,16 +247,16 @@ class CI_Session {
 				}
 			}
 		}
-	
+
 		// Session is valid!
 		$this->userdata = $session;
 		unset($session);
-		
+
 		return TRUE;
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Write the session cookie
 	 *
@@ -264,9 +264,9 @@ class CI_Session {
 	 * @return	void
 	 */
 	function sess_write()
-	{								
+	{
 		$cookie_data = serialize($this->userdata);
-		
+
 		if ($this->encryption == TRUE)
 		{
 			$cookie_data = $this->CI->encrypt->encode($cookie_data);
@@ -281,9 +281,9 @@ class CI_Session {
 					0
 				);
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Create a new session
 	 *
@@ -291,34 +291,34 @@ class CI_Session {
 	 * @return	void
 	 */
 	function sess_create()
-	{	
+	{
 		$sessid = '';
 		while (strlen($sessid) < 32)
 		{
 			$sessid .= mt_rand(0, mt_getrandmax());
 		}
-	
+
 		$this->userdata = array(
 							'session_id' 	=> md5(uniqid($sessid, TRUE)),
 							'ip_address' 	=> $this->CI->input->ip_address(),
 							'user_agent' 	=> substr($this->CI->input->user_agent(), 0, 50),
 							'last_activity'	=> $this->now
 							);
-		
-		
+
+
 		// Save the session in the DB if needed
 		if ($this->use_database === TRUE)
 		{
 			$this->CI->db->query($this->CI->db->insert_string($this->session_table, $this->userdata));
 		}
-			
+
 		// Write the cookie
-		$this->userdata['last_visit'] = 0;		
+		$this->userdata['last_visit'] = 0;
 		$this->sess_write();
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Update an existing session
 	 *
@@ -326,26 +326,26 @@ class CI_Session {
 	 * @return	void
 	 */
 	function sess_update()
-	{	
+	{
 		if (($this->userdata['last_activity'] + $this->sess_length) < $this->now)
 		{
 			$this->userdata['last_visit'] = $this->userdata['last_activity'];
 		}
-	
+
 		$this->userdata['last_activity'] = $this->now;
-		
+
 		// Update the session in the DB if needed
 		if ($this->use_database === TRUE)
-		{		
+		{
 			$this->CI->db->query($this->CI->db->update_string($this->session_table, array('last_activity' => $this->now), array('session_id' => $this->userdata['session_id'])));
 		}
-		
+
 		// Write the cookie
 		$this->sess_write();
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Destroy the current session
 	 *
@@ -363,9 +363,9 @@ class CI_Session {
 					0
 				);
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Garbage collection
 	 *
@@ -381,30 +381,63 @@ class CI_Session {
 		if ((rand() % 100) < $this->gc_probability)
 		{
 			$expire = $this->now - $this->sess_length;
-			
-			$this->CI->db->where("last_activity < {$expire}");
+
+			$this->CI->db->where('last_activity <', $expire);
 			$this->CI->db->delete($this->session_table);
 
 			log_message('debug', 'Session garbage collection performed.');
 		}
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
+	/**
+	 * Fetch or set a flash variable
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	mixed
+	 * @return	string
+	 */
+	function flash($key, $value = false)
+	{
+		$data =& $this->userdata['__flash'];
+
+		if ($value === FALSE)
+		{
+			if (isset($data[$key]))
+			{
+				$value = $data[$key];
+				unset($data[$key]);
+				$this->sess_write();
+			}
+		}
+		else
+		{
+			$data[$key] = $value;
+			$this->sess_write();
+			$value = TRUE;
+		}
+
+		return $value;
+	}
+
+	// --------------------------------------------------------------------
+
 	/**
 	 * Fetch a specific item form  the session array
 	 *
 	 * @access	public
 	 * @param	string
 	 * @return	string
-	 */		
+	 */
 	function userdata($item)
 	{
 		return ( ! isset($this->userdata[$item])) ? FALSE : $this->userdata[$item];
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Add or change data in the "userdata" array
 	 *
@@ -412,14 +445,14 @@ class CI_Session {
 	 * @param	mixed
 	 * @param	string
 	 * @return	void
-	 */		
+	 */
 	function set_userdata($newdata = array(), $newval = '')
 	{
 		if (is_string($newdata))
 		{
 			$newdata = array($newdata => $newval);
 		}
-	
+
 		if (count($newdata) > 0)
 		{
 			foreach ($newdata as $key => $val)
@@ -427,25 +460,25 @@ class CI_Session {
 				$this->userdata[$key] = $val;
 			}
 		}
-	
+
 		$this->sess_write();
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Delete a session variable from the "userdata" array
 	 *
 	 * @access	array
 	 * @return	void
-	 */		
+	 */
 	function unset_userdata($newdata = array())
 	{
 		if (is_string($newdata))
 		{
 			$newdata = array($newdata => '');
 		}
-	
+
 		if (count($newdata) > 0)
 		{
 			foreach ($newdata as $key => $val)
@@ -453,12 +486,12 @@ class CI_Session {
 				unset($this->userdata[$key]);
 			}
 		}
-	
+
 		$this->sess_write();
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Strip slashes
 	 *
@@ -469,7 +502,7 @@ class CI_Session {
 	 function strip_slashes($vals)
 	 {
 	 	if (is_array($vals))
-	 	{	
+	 	{
 	 		foreach ($vals as $key=>$val)
 	 		{
 	 			$vals[$key] = $this->strip_slashes($val);
@@ -479,7 +512,7 @@ class CI_Session {
 	 	{
 	 		$vals = stripslashes($vals);
 	 	}
-	 	
+
 	 	return $vals;
 	}
 
