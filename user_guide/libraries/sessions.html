@@ -173,6 +173,23 @@ having to run a database query when you need it.</p>
 <p class="important"><strong>Note:</strong> Cookies can only hold 4KB of data, so be careful not to exceed the capacity.  The
 encryption process in particular produces a longer data string than the original so keep careful track of how much data you are storing.</p>
 
+<h2>Session Flash Data</h2>
+
+<p>BlueFlame also supports so-called &quot;flash data&quot;. In BlueFlame, flash data is held until it is accessed. This means that you can access flash data exactly once before it is erased. Flash data is primarily used for displaying error messages, or passing data from one location to another while redirecting.</p>
+
+<p class="important"><strong>Note:</strong> Unlike some implementations of flash data, BlueFlame does not erase the data after a page reload. The data is stored in the session until it is accessed, or the session expires.</p>
+
+<p>Creating a flash variable is very similar to setting userdata:</p>
+
+<code>$this->session->flash(<samp>$key</samp>, <samp>$value</samp>);</code>
+
+<p>Unlike session data, there is no method to unset a flash variable. Instead, the flash variable is unset the first time you access it. To retrieve a flash variable:</p>
+
+<code><samp>$value</samp> = $this->session->flash(<samp>$key</samp>);<br/>
+// $key has been removed from the flash array and assigned to $value</code>
+
+<p class="important"><strong>Note:</strong> Flash data uses the session variable called &quot;__flash&quot;. Be careful that you don't overwrite this variable.</p>
+
 <h2>Saving Session Data to a Database</h2>
 
 <p>While the session data array stored in the user's cookie contains a Session ID,
