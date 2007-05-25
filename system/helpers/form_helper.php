@@ -350,22 +350,16 @@ function form_prep($str = '')
 		return '';
 	}
 
-	$temp = '__TEMP_AMPERSANDS__';
-	
-	// Replace entities to temporary markers so that 
-	// htmlspecialchars won't mess them up
-	$str = preg_replace("/&#(\d+);/", "$temp\\1;", $str);
-	$str = preg_replace("/&(\w+);/",  "$temp\\1;", $str);
-
-	$str = htmlspecialchars($str);
-
-	// In case htmlspecialchars misses these.
-	$str = str_replace(array("'", '"'), array("&#39;", "&quot;"), $str);	
-	
-	// Decode the temp markers back to entities
-	$str = preg_replace("/$temp(\d+);/","&#\\1;",$str);
-	$str = preg_replace("/$temp(\w+);/","&\\1;",$str);	
-	
+	//Convert ampersands to entities only if they're not part of an existing entity
+	$str = preg_replace('/&(?!(#\d+|[a-z]+);)/i', '&amp;', $str);
+	   
+	// Convert: < > ' " -
+	$str = str_replace(
+		array('<', '>', '\'', '"', '-'),
+		array('&lt;', '&gt;', '&#39;', '&quot;', '&#45;'),
+		$str
+	);
+	   
 	return $str;	
 }
 	
