@@ -62,7 +62,7 @@ $config['url_suffix'] = "";
 |--------------------------------------------------------------------------
 |
 | This option disables active record capability in the database when set to TRUE
-| If you have no need for active record interaction, you can save som CPU cycles
+| If you have no need for active record interaction, you can save some CPU cycles
 | by disabling it.
 |
 | http://codeigniter.com/user_guide/database/active_record.html
