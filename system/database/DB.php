@@ -53,7 +53,7 @@ function &DB($params = '')
 
 	require_once(BASEPATH.'database/DB_driver'.EXT);
 
-	if ($Core->config->item('active_record')===TRUE)
+	if ($Core->config->item('disable_ar')==FALSE)
 	{
 		require_once(BASEPATH.'database/DB_active_rec'.EXT);
 

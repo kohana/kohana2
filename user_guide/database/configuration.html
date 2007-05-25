@@ -65,9 +65,9 @@ Configuration
 <h1>Active Record</h1>
 <p>In the main configuration file of BlueFlame, located at <kbd>application/config/config.php</kbd>, you will find a configuration directive for turning <a href="active_record.html">Active Record</a> on or off in your BlueFlame application:</p>
 <code>
-$config['active_record'] = FALSE;
+$config['disable_ar'] = FALSE;
 </code>
-<p>This is a global configuration.  Setting this to 'TRUE' will make Active Record available for all configured databases while setting it to 'FALSE' will remove this capability for all configured databases..</p>
+<p>Setting this to 'TRUE' will disable Active Record interaction for all configured databases.  If you do not want to use Active Record in your database interaction, disabling Active Record by setting this to TRUE can save you some CPU cycles and memory.  This is, however, a global setting.  So if you are using multiple databases and want Active Record available for only one of them, you must leave this enabled.</p>
 
 <h1>Database Configuration</h1>
 
