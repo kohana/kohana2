@@ -488,7 +488,7 @@ class CI_DB_driver {
 	 */	
 	function trans_status()
 	{
-		return $this->_trans_failure;
+		return ($this->_trans_failure) ? FALSE : TRUE;
 	}
 
 	// --------------------------------------------------------------------
