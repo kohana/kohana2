@@ -695,6 +695,38 @@ class CI_DB_active_record extends CI_DB_driver {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Count Records
+	 *
+	 * Count table records by using active record conditions
+	 * please use count_all() if you don't need active record conditions
+	 * performance of count_records() is 25% slower than count_all()
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	string
+	 */
+	function count_records($table = '')
+	{
+		if ($table == '')
+		{
+			return '0';
+		}
+		else
+		{
+			$this->from($table);
+		}
+	
+		$sql = $this->_compile_select(TRUE);
+
+		$query  = $this->query($sql);
+		$result = $query->result();
+		$this->_reset_select();
+		return $result[0]->numrows;
+	}
+	
+	// --------------------------------------------------------------------
+
+	/**
 	 * Use Table - DEPRECATED
 	 *
 	 * @deprecated	use $this->db->from instead
@@ -746,13 +778,23 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * Should not be called directly.  The get() function calls it.
 	 *
 	 * @access	private
+	 * @param	boolean $count TRUE for counting records (to be used by count_records())
 	 * @return	string
 	 */
-	function _compile_select()
+	function _compile_select($count = FALSE)
 	{
 		$sql = ( ! $this->ar_distinct) ? 'SELECT ' : 'SELECT DISTINCT ';
-	
-		$sql .= (count($this->ar_select) == 0) ? '*' : implode(', ', $this->ar_select);
+		
+		if ($count == FALSE)
+		{
+			$select = '*';
+		}
+		else
+		{
+			$select = 'COUNT(*) AS numrows';
+		}
+		
+		$sql .= (count($this->ar_select) == 0) ? $select : implode(', ', $this->ar_select);
 
 		if (count($this->ar_from) > 0)
 		{
