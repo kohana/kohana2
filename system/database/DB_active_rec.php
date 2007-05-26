@@ -700,10 +700,10 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * Count table records by using active record conditions
 	 *
 	 * @access	public
-	 * @param	string
+	 * @param	string	name of table
 	 * @return	string
 	 */
-	function count($table = FALSE)
+	function count_records($table = FALSE)
 	{
 		if (count($this->ar_from) < 1)
 		{
