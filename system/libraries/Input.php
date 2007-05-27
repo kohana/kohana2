@@ -568,8 +568,7 @@ class CI_Input {
 		 * but it's unlikely to be a problem.
 		 *
 		 */		
-		$event_handlers = array('onblur','onchange','onclick','onfocus','onload','onmouseover','onmouseup','onmousedown','onselect','onsubmit','onunload','onkeypress','onkeydown','onkeyup','onresize', 'xmlns');
-		$str = preg_replace("#<([^>]+)(".implode('|', $event_handlers).")([^>]*)>#iU", "&lt;\\1\\2\\3&gt;", $str);
+		$str = preg_replace('#(<[^>]+?)(?:xmlns|on(?:blur|change|click|focus|load|mouse(?:over|up|down)|select|submit|unload|key(?:press|down|up)|resize))[^>]*>#i', '\\1>', $str); 
 	
 		/*
 		 * Sanitize naughty HTML elements
