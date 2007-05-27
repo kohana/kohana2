@@ -532,7 +532,7 @@ class CI_Validation {
 	 */	
 	function alpha_dash($str)
 	{
-		return (bool) preg_match('/^[-a-z0-9_]+$/i', $str); 
+		return (bool) preg_match('/^[-a-z0-9_]+$/iD', $str); 
 	}
 	
 	// --------------------------------------------------------------------
