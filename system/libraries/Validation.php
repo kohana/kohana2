@@ -473,10 +473,17 @@ class CI_Validation {
 	 * @access	public
 	 * @param	string
 	 * @return	bool
+	 *
+	 * The BlueFlame regex for validating e-mail doesn't meet RFC2821 and RFC2822. If it did, many would find it to
+	 * be 'unexpected behavior' since almost no email addresses actually allow so many special characters. The
+	 * 'true' regex for RFC2821/RFC2822 is:
+	 * 	^[-!#$%&'*+/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+/0-9=?A-Z^_a-z{|}~])*@[a-zA-Z](-?[a-zA-Z0-9])*(\.[a-zA-Z](-?[a-zA-Z0-9])*)+$
+	 *
+	 * See http://en.wikipedia.org/wiki/E-mail_address
 	 */	
 	function valid_email($str)
 	{
-		return ( ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $str)) ? FALSE : TRUE;
+		return ( ! preg_match('/^[+a-z0-9_-]+(\.[+a-z0-9_-]+)*@([a-z0-9-]+\.)+[a-z]{2,6}$/i', $str)) ? FALSE : TRUE;
 	}
 
 	// --------------------------------------------------------------------
