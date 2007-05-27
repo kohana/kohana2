@@ -504,7 +504,7 @@ class CI_Validation {
 	 */		
 	function alpha($str)
 	{
-		return ( ! preg_match("/^([-a-z])+$/i", $str)) ? FALSE : TRUE;
+		return ctype_alpha($str);
 	}
 	
 	// --------------------------------------------------------------------
@@ -518,7 +518,7 @@ class CI_Validation {
 	 */	
 	function alpha_numeric($str)
 	{
-		return ( ! preg_match("/^([-a-z0-9])+$/i", $str)) ? FALSE : TRUE;
+		return ctype_alnum($str);
 	}
 	
 	// --------------------------------------------------------------------
@@ -532,7 +532,21 @@ class CI_Validation {
 	 */	
 	function alpha_dash($str)
 	{
-		return ( ! preg_match("/^([-a-z0-9_-])+$/i", $str)) ? FALSE : TRUE;
+		return (bool) preg_match('/^[-a-z0-9_]+$/i', $str); 
+	}
+	
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Digits Only [0-9, no dots or dashes]
+	 *
+	 * @access	public
+	 * @param	int
+	 * @return	bool
+	 */
+	function digit($str)
+	{
+		return ctype_digit($str);
 	}
 	
 	// --------------------------------------------------------------------
@@ -544,11 +558,15 @@ class CI_Validation {
 	 * @param	int
 	 * @return	bool
 	 */	
-	function numeric($str)
-	{
-		return ( ! ereg("^[0-9\.]+$", $str)) ? FALSE : TRUE;
-	}
-
+	function numeric($str) {	
+		if (!is_numeric($str))
+		    return FALSE;
+	    
+		if (!preg_match('/^[-0-9.]+$/', $str))
+		    return FALSE;
+	    
+		return TRUE;
+	} 
 	// --------------------------------------------------------------------
 	
 	/**
