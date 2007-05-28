@@ -493,7 +493,7 @@ class CI_Validation {
 	 *
 	 * @access	public
 	 * @param	string
-	 * @return	string
+	 * @return	bool
 	 */
 	function valid_ip($ip)
 	{
