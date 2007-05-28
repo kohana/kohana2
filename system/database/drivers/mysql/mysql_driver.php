@@ -222,11 +222,6 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	function escape_str($str)
 	{
-		if (get_magic_quotes_gpc())
-		{
-			$str = stripslashes($str);
-		}
-
 		return (function_exists('mysql_real_escape_string') ? mysql_real_escape_string($str, $this->conn_id) : mysql_escape_string($str));
 	}
 

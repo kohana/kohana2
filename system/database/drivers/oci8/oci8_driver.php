@@ -342,11 +342,7 @@ class CI_DB_oci8_driver extends CI_DB {
 	 */
 	function escape_str($str)
 	{
-		if (get_magic_quotes_gpc())
-		{
-			$str = stripslashes($str);
-		}
-
+		// @note: OCI8 does it's own escaping
 		return $str;
 	}
 

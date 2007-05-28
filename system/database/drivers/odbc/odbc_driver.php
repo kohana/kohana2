@@ -204,11 +204,7 @@ class CI_DB_odbc_driver extends CI_DB {
 	 */
 	function escape_str($str)
 	{
-		if (get_magic_quotes_gpc())
-		{
-			$str = stripslashes($str);
-		}
-		
+		// @note: ODBC does it's own escaping
 		return $str;
 	}
 
