@@ -304,10 +304,9 @@ class CI_Email {
 	 */	
 	function subject($subject)
 	{
-		$subject = preg_replace("/(\r\n)|(\r)|(\n)/", "", $subject);
-		$subject = preg_replace("/(\t)/", " ", $subject);
+		$subject = str_replace(array("\r", "\n", "\t"), array('', '', ' '), trim($subject));
 		
-		$this->_set_header('Subject', trim($subject));		
+		$this->_set_header('Subject', $subject);
 	}
   	
 	// --------------------------------------------------------------------
