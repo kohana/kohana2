@@ -483,7 +483,7 @@ class CI_Validation {
 	 */	
 	function valid_email($str)
 	{
-		return ( ! preg_match('/^[+a-z0-9_-]+(\.[+a-z0-9_-]+)*@([a-z0-9-]+\.)+[a-z]{2,6}$/i', $str)) ? FALSE : TRUE;
+		return (bool) preg_match('/^[+a-z0-9_-]+(\.[+a-z0-9_-]+)*@([a-z0-9-]+\.)+[a-z]{2,6}$/iD', $str);
 	}
 
 	// --------------------------------------------------------------------
@@ -497,7 +497,7 @@ class CI_Validation {
 	 */
 	function valid_ip($ip)
 	{
-		return ( ! preg_match( "/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/", $ip)) ? FALSE : TRUE;
+		return (bool) preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/D', $ip);
 	}
 
 	// --------------------------------------------------------------------
