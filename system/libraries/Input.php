@@ -148,7 +148,7 @@ class CI_Input {
 			return $new_array;
 		}
 
-		if (get_magic_quotes_gpc() == TRUE)
+		if (get_magic_quotes_gpc())
 		{
 			$str = stripslashes($str);
 		}
