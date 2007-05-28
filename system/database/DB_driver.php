@@ -267,6 +267,8 @@ class CI_DB_driver {
 		if ($this->db_debug)
 		{
 			$this->queries[] = $sql;
+		} else {
+			$this->queries = array($sql);
 		}
 
 		// Start the Query Timer
