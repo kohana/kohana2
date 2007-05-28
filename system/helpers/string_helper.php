@@ -67,7 +67,7 @@ function trim_slashes($str)
  */	
 function reduce_double_slashes($str)
 {
-	return preg_replace("#([^:])//+#", "\\1/", $str);
+	return preg_replace('#(?<!:)//+#', '/', $str);
 }
 	
 // ------------------------------------------------------------------------
