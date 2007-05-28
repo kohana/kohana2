@@ -597,7 +597,7 @@ class CI_DB_driver {
 	 *
 	 * @access	public
 	 * @param	string
-	 * @return	integer		
+	 * @return	string		
 	 */	
 	function escape($str)
 	{	
@@ -611,7 +611,7 @@ class CI_DB_driver {
 				break;
 		}		
 
-		return $str;
+		return (string) $str;
 	}
 
 	// --------------------------------------------------------------------
