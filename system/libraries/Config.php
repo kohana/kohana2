@@ -162,7 +162,7 @@ class CI_Config {
 		
 		if ($pref != '')
 		{
-			$pref = rtrim($pref, "/")."/";
+			$pref = trim($pref, "/")."/";
 		}
 		
 		return $pref;
@@ -188,7 +188,7 @@ class CI_Config {
 		// Append uri to the site_url
 		if ($uri != '')
 		{
-			$url .= rtrim($uri, "/").$this->item('url_suffix');
+			$url .= trim($uri, "/").$this->item('url_suffix');
 		}
 		
 		return $url;
@@ -204,7 +204,7 @@ class CI_Config {
 	 */
 	function system_url()
 	{
-		$uri = explode("/", rtrim(BASEPATH, "/"));
+		$uri = explode("/", trim(BASEPATH, "/"));
 		return $this->slash_item('base_url').end($uri)."/";
 	}
 	
