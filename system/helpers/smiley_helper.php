@@ -72,7 +72,7 @@ function get_clickable_smileys($image_url = '', $smileys = NULL)
 	}
 
 	// Add a trailing slash to the file path if needed
-	$image_url = preg_replace("/(.+?)\/*$/", "\\1/",  $image_url);
+	$image_url = rtrim($image_url, '/') .'/';
 	
 	$used = array();
 	foreach ($smileys as $key => $val)
