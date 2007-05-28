@@ -261,20 +261,17 @@ class CI_DB_mysql_driver extends CI_DB {
 	 *
 	 * @access	public
 	 * @param	string
-	 * @return	string
+	 * @return	integer
 	 */
 	function count_all($table = '')
 	{
 		if ($table == '')
-			return '0';
+			return 0;
 
-		$query = $this->query("SELECT COUNT(*) AS numrows FROM `".$this->dbprefix.$table."`");
-
-		if ($query->num_rows() == 0)
-			return '0';
+		$query = $this->query('SELECT COUNT(*) AS numrows FROM `'. $this->dbprefix.$table .'`');
 
 		$row = $query->row();
-		return $row->numrows;
+		return (int) $row->numrows;
 	}
 
 	// --------------------------------------------------------------------
