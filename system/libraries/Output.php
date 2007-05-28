@@ -216,13 +216,11 @@ class CI_Output {
 		{
 			$CI->load->library('profiler');				
 										
-			// If the output data contains closing </body> and </html> tags
-			// we will remove them and add them back after we insert the profile data
-			if (preg_match("|</body>.*?</html>|is", $output))
+			// If the output data contains html,
+			// we will insert the profile data right before </body>.
+			if (strpos($output, '</body>') !== FALSE)
 			{
-				$output  = preg_replace("|</body>.*?</html>|is", '', $output);
-				$output .= $CI->profiler->run();
-				$output .= '</body></html>';
+				$output = str_replace('</body>', $CI->profiler->run() .'</body>', $output);
 			}
 			else
 			{
