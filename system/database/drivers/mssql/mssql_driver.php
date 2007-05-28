@@ -35,12 +35,12 @@ class CI_DB_mssql_driver extends CI_DB {
 	 *
 	 * @access	private called by the base class
 	 * @return	resource
-	 */	
+	 */
 	function db_connect()
 	{
 		return @mssql_connect($this->hostname, $this->username, $this->password);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -48,12 +48,12 @@ class CI_DB_mssql_driver extends CI_DB {
 	 *
 	 * @access	private called by the base class
 	 * @return	resource
-	 */	
+	 */
 	function db_pconnect()
 	{
 		return @mssql_pconnect($this->hostname, $this->username, $this->password);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -61,14 +61,14 @@ class CI_DB_mssql_driver extends CI_DB {
 	 *
 	 * @access	private called by the base class
 	 * @return	resource
-	 */	
+	 */
 	function db_select()
 	{
 		return @mssql_select_db($this->database, $this->conn_id);
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Version number query string
 	 *
@@ -79,7 +79,7 @@ class CI_DB_mssql_driver extends CI_DB {
 	{
 		return "SELECT version() AS ver";
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -88,13 +88,13 @@ class CI_DB_mssql_driver extends CI_DB {
 	 * @access	private called by the base class
 	 * @param	string	an SQL query
 	 * @return	resource
-	 */	
+	 */
 	function _execute($sql)
 	{
 		$sql = $this->_prep_query($sql);
 		return @mssql_query($sql, $this->conn_id);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -105,7 +105,7 @@ class CI_DB_mssql_driver extends CI_DB {
 	 * @access	private called by execute()
 	 * @param	string	an SQL query
 	 * @return	string
-	 */	
+	 */
 	function _prep_query($sql)
 	{
 		return $sql;
@@ -117,15 +117,15 @@ class CI_DB_mssql_driver extends CI_DB {
 	 * Begin Transaction
 	 *
 	 * @access	public
-	 * @return	bool		
-	 */	
+	 * @return	bool
+	 */
 	function trans_begin($test_mode = FALSE)
 	{
 		if ( ! $this->trans_enabled)
 		{
 			return TRUE;
 		}
-		
+
 		// When transactions are nested we only begin/commit/rollback the outermost ones
 		if ($this->_trans_depth > 0)
 		{
@@ -147,8 +147,8 @@ class CI_DB_mssql_driver extends CI_DB {
 	 * Commit Transaction
 	 *
 	 * @access	public
-	 * @return	bool		
-	 */	
+	 * @return	bool
+	 */
 	function trans_commit()
 	{
 		if ( ! $this->trans_enabled)
@@ -172,8 +172,8 @@ class CI_DB_mssql_driver extends CI_DB {
 	 * Rollback Transaction
 	 *
 	 * @access	public
-	 * @return	bool		
-	 */	
+	 * @return	bool
+	 */
 	function trans_rollback()
 	{
 		if ( ! $this->trans_enabled)
@@ -190,7 +190,7 @@ class CI_DB_mssql_driver extends CI_DB {
 		$this->simple_query('ROLLBACK TRAN');
 		return TRUE;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -200,12 +200,12 @@ class CI_DB_mssql_driver extends CI_DB {
 	 * @param	string
 	 * @return	string
 	 */
-	function escape_str($str)	
-	{	
+	function escape_str($str)
+	{
 		// Escape single quotes
 		return str_replace("'", "''", $str);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -218,7 +218,7 @@ class CI_DB_mssql_driver extends CI_DB {
 	{
 		return @mssql_rows_affected($this->conn_id);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -249,9 +249,9 @@ class CI_DB_mssql_driver extends CI_DB {
 	{
 		if ($table == '')
 			return '0';
-	
+
 		$query = $this->query("SELECT COUNT(*) AS numrows FROM ".$this->dbprefix.$table);
-		
+
 		if ($query->num_rows() == 0)
 			return '0';
 
@@ -271,7 +271,7 @@ class CI_DB_mssql_driver extends CI_DB {
 	 */
 	function _list_tables()
 	{
-		return "SELECT name FROM sysobjects WHERE type = 'U' ORDER BY name";		
+		return "SELECT name FROM sysobjects WHERE type = 'U' ORDER BY name";
 	}
 
 	// --------------------------------------------------------------------
@@ -287,7 +287,7 @@ class CI_DB_mssql_driver extends CI_DB {
 	 */
 	function _list_columns($table = '')
 	{
-		return "SELECT * FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = '".$this->_escape_table($table)."'";	
+		return "SELECT * FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = '".$this->_escape_table($table)."'";
 	}
 
 	// --------------------------------------------------------------------
@@ -303,7 +303,7 @@ class CI_DB_mssql_driver extends CI_DB {
 	 */
 	function _field_data($table)
 	{
-		return "SELECT TOP 1 * FROM ".$this->_escape_table($table);	
+		return "SELECT TOP 1 * FROM ".$this->_escape_table($table);
 	}
 
 	// --------------------------------------------------------------------
@@ -319,7 +319,7 @@ class CI_DB_mssql_driver extends CI_DB {
 		// Are errros even supported in MS SQL?
 		return '';
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -333,7 +333,7 @@ class CI_DB_mssql_driver extends CI_DB {
 		// Are error numbers supported?
 		return '';
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -349,17 +349,17 @@ class CI_DB_mssql_driver extends CI_DB {
 	function _escape_table($table)
 	{
 		// I don't believe this is necessary with MS SQL.  Not sure, though. - Rick
-	
+
 		/*
 		if (stristr($table, '.'))
 		{
 			$table = preg_replace("/\./", "`.`", $table);
 		}
 		*/
-		
+
 		return $table;
-	}	
-	
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -374,10 +374,10 @@ class CI_DB_mssql_driver extends CI_DB {
 	 * @return	string
 	 */
 	function _insert($table, $keys, $values)
-	{	
+	{
 		return "INSERT INTO ".$this->_escape_table($table)." (".implode(', ', $keys).") VALUES (".implode(', ', $values).")";
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -397,10 +397,10 @@ class CI_DB_mssql_driver extends CI_DB {
 		{
 			$valstr[] = $key." = ".$val;
 		}
-	
+
 		return "UPDATE ".$this->_escape_table($table)." SET ".implode(', ', $valstr)." WHERE ".implode(" ", $where);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -412,7 +412,7 @@ class CI_DB_mssql_driver extends CI_DB {
 	 * @param	string	the table name
 	 * @param	array	the where clause
 	 * @return	string
-	 */	
+	 */
 	function _delete($table, $where)
 	{
 		return "DELETE FROM ".$this->_escape_table($table)." WHERE ".implode(" ", $where);
@@ -434,8 +434,8 @@ class CI_DB_mssql_driver extends CI_DB {
 	function _limit($sql, $limit, $offset)
 	{
 		$i = $limit + $offset;
-	
-		return preg_replace('/(^\SELECT (DISTINCT)?)/i','\\1 TOP '.$i.' ', $sql);		
+
+		return preg_replace('/(^\SELECT (DISTINCT)?)/i','\\1 TOP '.$i.' ', $sql);
 	}
 
 	// --------------------------------------------------------------------
@@ -450,7 +450,7 @@ class CI_DB_mssql_driver extends CI_DB {
 	function _close($conn_id)
 	{
 		@mssql_close($conn_id);
-	}	
+	}
 
 }
 

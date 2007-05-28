@@ -31,7 +31,7 @@ class CI_Input {
 	var $ip_address			= FALSE;
 	var $user_agent			= FALSE;
 	var $allow_get_array	= FALSE;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -39,20 +39,20 @@ class CI_Input {
 	 * and whether to allow the $_GET array
 	 *
 	 * @access	public
-	 */	
+	 */
 	function CI_Input()
-	{	
+	{
 		log_message('debug', "Input Class Initialized");
-	
+
 		$CFG =& load_class('Config');
-		$this->use_xss_clean	= ($CFG->item('global_xss_filtering') === TRUE) ? TRUE : FALSE;
-		$this->allow_get_array	= ($CFG->item('enable_query_strings') === TRUE
-								OR $CFG->item('enable_get_requests')  === TRUE) ? TRUE : FALSE;
+		$this->use_xss_clean    = ($CFG->item('global_xss_filtering') === TRUE) ? TRUE : FALSE;
+		$this->allow_get_array  = ($CFG->item('enable_query_strings') === TRUE
+		                        OR $CFG->item('enable_get_requests')  === TRUE) ? TRUE : FALSE;
 		$this->_sanitize_globals();
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Sanitize Globals
 	 *
@@ -83,7 +83,7 @@ class CI_Input {
 				{
 					global $$key;
 					$$key = NULL;
-				}	
+				}
 			}
 		}
 
@@ -102,7 +102,7 @@ class CI_Input {
 				}
 			}
 		}
-		
+
 		// Clean $_POST Data
 		if (is_array($_POST) AND count($_POST) > 0)
 		{
@@ -111,7 +111,7 @@ class CI_Input {
 				$_POST[$this->_clean_input_keys($key)] = $this->_clean_input_data($val);
 			}
 		}
-	
+
 		// Clean $_COOKIE Data
 		if (is_array($_COOKIE) AND count($_COOKIE) > 0)
 		{
@@ -120,12 +120,12 @@ class CI_Input {
 				$_COOKIE[$this->_clean_input_keys($key)] = $this->_clean_input_data($val);
 			}
 		}
-		
+
 		log_message('debug', "Global POST and COOKIE data sanitized");
-	}	
-	
+	}
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Clean Input Data
 	 *
@@ -135,7 +135,7 @@ class CI_Input {
 	 * @access	private
 	 * @param	string
 	 * @return	string
-	 */	
+	 */
 	function _clean_input_data($str)
 	{
 		if (is_array($str))
@@ -147,18 +147,23 @@ class CI_Input {
 			}
 			return $new_array;
 		}
-		
+
+		if (get_magic_quotes_gpc() == TRUE)
+		{
+			$str = stripslashes($str);
+		}
+
 		if ($this->use_xss_clean === TRUE)
 		{
 			$str = $this->xss_clean($str);
 		}
-		
+
 		// Standardize newlines
 		return preg_replace("/\015\012|\015|\012/", "\n", $str);
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Clean Keys
 	 *
@@ -171,22 +176,17 @@ class CI_Input {
 	 * @return	string
 	 */
 	function _clean_input_keys($str)
-	{	
-		 if ( ! preg_match("/^[a-z0-9:_\/-]+$/i", $str))
-		 {
-			exit('Disallowed Key Characters.');
-		 }
-	
-		if ( ! get_magic_quotes_gpc())
+	{
+		if ( ! preg_match("/^[a-z0-9:_\/-]+$/i", $str))
 		{
-		   return addslashes($str);
+			exit('Disallowed Key Characters.');
 		}
-		
+
 		return $str;
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Fetch an item from a global array
 	 *
@@ -199,19 +199,19 @@ class CI_Input {
 	function _get_global($global, $index = FALSE, $xss_clean = FALSE)
 	{
 		$global = '_'.strtoupper(trim($global, '_'));
-		
+
 		global $$global; // For some reason, we have to do this :(
 		if ( ! isset($$global))
 			return FALSE;
-		
-		$array = $$global; // Another PHP oddity, we can't use $$global
-		
+
+		$array = $$global;
+
 		if ($index === FALSE)
 			return $array;
-		
+
 		if ( ! isset($array[$index]))
 			return FALSE;
-		
+
 		if ($xss_clean === TRUE)
 		{
 			if (is_array($array[$index]))
@@ -229,9 +229,9 @@ class CI_Input {
 
 		return $array[$index];
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Fetch an item from the GET array
 	 *
@@ -242,11 +242,11 @@ class CI_Input {
 	 */
 	function get($index = FALSE, $xss_clean = FALSE)
 	{
-		return $this->_get_global('get', $index, $xss_clean);
+		return $this->_get_global('GET', $index, $xss_clean);
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Fetch an item from the POST array
 	 *
@@ -257,11 +257,11 @@ class CI_Input {
 	 */
 	function post($index = FALSE, $xss_clean = FALSE)
 	{
-		return $this->_get_global('post', $index, $xss_clean);
+		return $this->_get_global('POST', $index, $xss_clean);
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Fetch an item from the COOKIE array
 	 *
@@ -272,11 +272,11 @@ class CI_Input {
 	 */
 	function cookie($index = FALSE, $xss_clean = FALSE)
 	{
-		return $this->_get_global('cookie', $index, $xss_clean);
+		return $this->_get_global('COOKIE', $index, $xss_clean);
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Fetch an item from the SERVER array
 	 *
@@ -287,11 +287,11 @@ class CI_Input {
 	 */
 	function server($index = FALSE, $xss_clean = FALSE)
 	{
-		return $this->_get_global('server', $index, $xss_clean);
+		return $this->_get_global('SERVER', $index, $xss_clean);
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Fetch the IP Address
 	 *
@@ -304,7 +304,7 @@ class CI_Input {
 		{
 			return $this->ip_address;
 		}
-		
+
 		if ($this->server('REMOTE_ADDR') AND $this->server('HTTP_CLIENT_IP'))
 		{
 			 $this->ip_address = $_SERVER['HTTP_CLIENT_IP'];
@@ -321,29 +321,29 @@ class CI_Input {
 		{
 			 $this->ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
 		}
-		
+
 		if ($this->ip_address === FALSE)
 		{
 			$this->ip_address = '0.0.0.0';
 			return $this->ip_address;
 		}
-		
+
 		if (strstr($this->ip_address, ','))
 		{
 			$x = explode(',', $this->ip_address);
 			$this->ip_address = end($x);
 		}
-		
+
 		if ( ! $this->valid_ip($this->ip_address))
 		{
 			$this->ip_address = '0.0.0.0';
 		}
-				
+
 		return $this->ip_address;
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Validate IP Address
 	 *
@@ -357,9 +357,9 @@ class CI_Input {
 		{
 			return FALSE;
 		}
-		
+
 		$octets = explode('.', $ip);
-		
+
 		for ($i = 1; $i <= 4; $i++)
 		{
 			$octet = intval($octets[($i-1)]);
@@ -379,12 +379,12 @@ class CI_Input {
 					return FALSE;
 			}
 		}
-		
+
 		return TRUE;
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * User Agent
 	 *
@@ -397,14 +397,14 @@ class CI_Input {
 		{
 			return $this->user_agent;
 		}
-	
+
 		$this->user_agent = ( ! isset($_SERVER['HTTP_USER_AGENT'])) ? FALSE : $_SERVER['HTTP_USER_AGENT'];
-		
+
 		return $this->user_agent;
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * XSS Clean
 	 *
@@ -432,7 +432,7 @@ class CI_Input {
 	 * @return	string
 	 */
 	function xss_clean($str, $charset = 'ISO-8859-1')
-	{	
+	{
 		/*
 		 * Remove Null Characters
 		 *
@@ -451,7 +451,7 @@ class CI_Input {
 		 *
 		 */
 		$str = preg_replace('#(&\#*\w+)[\x00-\x20]+;#u',"\\1;",$str);
-		
+
 		/*
 		 * Validate UTF16 two byte encoding (x00)
 		 *
@@ -469,12 +469,12 @@ class CI_Input {
 		 *
 		 * Note: Normally urldecode() would be easier but it removes plus signs
 		 *
-		 */	
+		 */
 		$str = preg_replace("/(%20)+/", '9u3iovBnRThju941s89rKozm', $str);
 		$str = preg_replace("/%u0([a-z0-9]{3})/i", "&#x\\1;", $str);
-		$str = preg_replace("/%([a-z0-9]{2})/i", "&#x\\1;", $str); 
-		$str = str_replace('9u3iovBnRThju941s89rKozm', "%20", $str);	
-				
+		$str = preg_replace("/%([a-z0-9]{2})/i", "&#x\\1;", $str);
+		$str = str_replace('9u3iovBnRThju941s89rKozm', "%20", $str);
+
 		/*
 		 * Convert character entities to ASCII
 		 *
@@ -484,7 +484,7 @@ class CI_Input {
 		 *
 		 */
 		if (preg_match_all("/<(.+?)>/si", $str, $matches))
-		{		
+		{
 			for ($i = 0; $i < count($matches['0']); $i++)
 			{
 				$str = str_replace($matches['1'][$i],
@@ -492,10 +492,10 @@ class CI_Input {
 									$str);
 			}
 		}
-		
+
 		/*
 		 * Not Allowed Under Any Conditions
-		 */	
+		 */
 		$bad = array(
 						'document.cookie'	=> '[removed]',
 						'document.write'	=> '[removed]',
@@ -505,21 +505,21 @@ class CI_Input {
 						'<!--'				=> '&lt;!--',
 						'-->'				=> '--&gt;'
 					);
-	
+
 		foreach ($bad as $key => $val)
 		{
-			$str = preg_replace("#".$key."#i", $val, $str);   
+			$str = preg_replace("#".$key."#i", $val, $str);
 		}
-	
+
 		/*
 		 * Convert all tabs to spaces
 		 *
 		 * This prevents strings like this: ja	vascript
 		 * Note: we deal with spaces between characters later.
 		 *
-		 */		
+		 */
 		$str = preg_replace("#\t+#", " ", $str);
-	
+
 		/*
 		 * Makes PHP tags safe
 		 *
@@ -529,16 +529,16 @@ class CI_Input {
 		 *
 		 * But it doesn't seem to pose a problem.
 		 *
-		 */		
+		 */
 		$str = str_replace(array('<?php', '<?PHP', '<?', '?>'),  array('&lt;?php', '&lt;?PHP', '&lt;?', '?&gt;'), $str);
-	
+
 		/*
 		 * Compact any exploded words
 		 *
 		 * This corrects words like:  j a v a s c r i p t
 		 * These words are compacted back to their correct state.
 		 *
-		 */		
+		 */
 		$words = array('javascript', 'vbscript', 'script', 'applet', 'alert', 'document', 'write', 'cookie', 'window');
 		foreach ($words as $word)
 		{
@@ -547,15 +547,15 @@ class CI_Input {
 			{
 				$temp .= substr($word, $i, 1)."\s*";
 			}
-			
+
 			// We only want to do this when it is followed by a non-word character
 			// That way valid stuff like "dealer to" does not become "dealerto"
 			$str = preg_replace('#('.substr($temp, 0, -3).')(\W)#ise', "preg_replace('/\s+/s', '', '\\1').'\\2'", $str);
 		}
-	
+
 		/*
 		 * Remove disallowed Javascript in links or img tags
-		 */		
+		 */
 		$str = preg_replace_callback("#<a.*?</a>#si", array($this, '_js_link_removal'), $str);
 		$str = preg_replace_callback("#<img.*?>#si", array($this, '_js_img_removal'), $str);
 	 	$str = preg_replace("#<(script|xss).*?\>#si", "", $str);
@@ -567,9 +567,9 @@ class CI_Input {
 		 * the event handler and anything up to the closing >,
 		 * but it's unlikely to be a problem.
 		 *
-		 */		
-		$str = preg_replace('#(<[^>]+?)(?:xmlns|on(?:blur|change|click|focus|load|mouse(?:over|up|down)|select|submit|unload|key(?:press|down|up)|resize))[^>]*>#i', '\\1>', $str); 
-	
+		 */
+		$str = preg_replace('#(<[^>]+?)(?:xmlns|on(?:blur|change|click|focus|load|mouse(?:over|up|down)|select|submit|unload|key(?:press|down|up)|resize))[^>]*>#i', '\\1>', $str);
+
 		/*
 		 * Sanitize naughty HTML elements
 		 *
@@ -579,9 +579,9 @@ class CI_Input {
 		 * So this: <blink>
 		 * Becomes: &lt;blink&gt;
 		 *
-		 */		
+		 */
 		$str = preg_replace('#<(/*\s*)(alert|applet|basefont|base|behavior|bgsound|blink|body|embed|expression|form|frameset|frame|head|html|ilayer|iframe|input|layer|link|meta|object|plaintext|style|script|textarea|title|xml|xss)([^>]*)>#is', "&lt;\\1\\2\\3&gt;", $str);
-		
+
 		/*
 		 * Sanitize naughty scripting elements
 		 *
@@ -596,14 +596,14 @@ class CI_Input {
 		 *
 		 */
 		$str = preg_replace('#(alert|cmd|passthru|eval|exec|system|fopen|fsockopen|file|file_get_contents|readfile|unlink)(\s*)\((.*?)\)#si', "\\1\\2&#40;\\3&#41;", $str);
-						
+
 		/*
 		 * Final clean up
 		 *
 		 * This adds a bit of extra precaution in case
 		 * something got through the above filters
 		 *
-		 */	
+		 */
 		$bad = array(
 						'document.cookie'	=> '[removed]',
 						'document.write'	=> '[removed]',
@@ -613,19 +613,19 @@ class CI_Input {
 						'<!--'				=> '&lt;!--',
 						'-->'				=> '--&gt;'
 					);
-	
+
 		foreach ($bad as $key => $val)
 		{
 			$str = preg_replace("#".$key."#i", $val, $str);
 		}
-		
-						
+
+
 		log_message('debug', "XSS Filtering completed");
 		return $str;
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * JS Link Removal
 	 *
@@ -642,7 +642,7 @@ class CI_Input {
 	{
 		return preg_replace("#<a.+?href=.*?(alert\(|alert&\#40;|javascript\:|window\.|document\.|\.cookie|<script|<xss).*?\>.*?</a>#si", "", $match[0]);
 	}
-	
+
 	/**
 	 * JS Image Removal
 	 *
@@ -661,7 +661,7 @@ class CI_Input {
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * HTML Entities Decode
 	 *
@@ -680,7 +680,7 @@ class CI_Input {
 	/* -------------------------------------------------
 	/*  Replacement for html_entity_decode()
 	/* -------------------------------------------------*/
-	
+
 	/*
 	NOTE: html_entity_decode() has a bug in some PHP versions when UTF-8 is the
 	character set, and the PHP developers said they were not back porting the
@@ -689,30 +689,30 @@ class CI_Input {
 	function _html_entity_decode($str, $charset='ISO-8859-1')
 	{
 		if (stristr($str, '&') === FALSE) return $str;
-	
+
 		// The reason we are not using html_entity_decode() by itself is because
 		// while it is not technically correct to leave out the semicolon
 		// at the end of an entity most browsers will still interpret the entity
 		// correctly.  html_entity_decode() does not convert entities without
 		// semicolons, so we are left with our own little solution here. Bummer.
-	
+
 		if (function_exists('html_entity_decode') && (strtolower($charset) != 'utf-8' OR version_compare(phpversion(), '5.0.0', '>=')))
 		{
 			$str = html_entity_decode($str, ENT_COMPAT, $charset);
 			$str = preg_replace('~&#x([0-9a-f]{2,5})~ei', 'chr(hexdec("\\1"))', $str);
 			return preg_replace('~&#([0-9]{2,4})~e', 'chr(\\1)', $str);
 		}
-		
+
 		// Numeric Entities
 		$str = preg_replace('~&#x([0-9a-f]{2,5});{0,1}~ei', 'chr(hexdec("\\1"))', $str);
 		$str = preg_replace('~&#([0-9]{2,4});{0,1}~e', 'chr(\\1)', $str);
-	
+
 		// Literal Entities - Slightly slow so we do another check
 		if (stristr($str, '&') === FALSE)
 		{
 			$str = strtr($str, array_flip(get_html_translation_table(HTML_ENTITIES)));
 		}
-		
+
 		return $str;
 	}
 

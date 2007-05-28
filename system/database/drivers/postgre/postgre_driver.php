@@ -204,6 +204,11 @@ class CI_DB_postgre_driver extends CI_DB {
 	 */
 	function escape_str($str)
 	{
+		if (get_magic_quotes_gpc())
+		{
+			$str = stripslashes($str);
+		}
+		
 		return pg_escape_string($str);
 	}
 

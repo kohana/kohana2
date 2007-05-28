@@ -78,9 +78,10 @@ Input and Security Class
 <p>The security filtering function is called automatically when a new <a href="../general/controllers.html">controller</a> is invoked.  It does the following:</p>
 
 <ul>
-<li>Destroys the global GET array.  Since BlueFlame does not utilize GET strings, there is no reason to allow it.</li>
 <li>Destroys all global variables in the event register_globals is turned on.</li>
-<li>Filters the POST/COOKIE array keys, permitting only alpha-numeric (and a few other) characters.</li>
+<li>Filters the POST/GET/COOKIE array keys, permitting only alpha-numeric (and a few other) characters.</li>
+<li>Filters or destroys the GET array, depending on configuration.</li>
+<li>Strips slashes from POST/GET if gpc_magic_quotes is enabled.</li>
 <li>Provides XSS (Cross-site Scripting Hacks) filtering.  This can be enabled globally, or upon request.</li>
 <li>Standardizes newline characters to \n</li>
 </ul>
@@ -95,9 +96,7 @@ run globally since it requires a bit of processing overhead, and since you may n
 <p>The XSS filter looks for commonly used techniques to trigger Javascript or other types of code that attempt to hijack cookies
 or do other malicious things.  If anything disallowed is encountered it is rendered safe by converting the data to character entities.</p>
 
-<p>
-Note: This function should only be used to deal with data upon submission. It's not something that should be used for general runtime processing since it requires a fair amount of processing overhead.</p>
-
+<p class="important"><strong>Note:</strong> This function should only be used to deal with data upon submission. It's not something that should be used for general runtime processing since it requires a fair amount of processing overhead.</p>
 
 <p>To filter data through the XSS filter use this function:</p>
 
@@ -114,15 +113,12 @@ Note: This function should only be used to deal with data upon submission. It's 
 
 <p>Note: If you use the form validation class, it gives you the option of XSS filtering as well.</p>
 
+<h2>Using POST, GET, COOKIE, or SERVER Data</h2>
 
-
-
-<h2>Using POST, COOKIE, or SERVER Data</h2>
-
-<p>BlueFlame comes with three helper functions that let you fetch POST, COOKIE or SERVER items.  The main advantage of using the provided
-functions rather then fetching an item directly ($_POST['something']) is that the functions will check to see if the item is set and
-return false (boolean) if not.  This lets you conveniently use data without having to test whether an item exists first.
-In other words, normally you might do something like this:
+<p>BlueFlame comes with three helper functions that let you fetch POST, GET, COOKIE or SERVER items.  The main advantage of using
+the provided functions rather then fetching an item directly ($_POST['something']) is that the functions will check to see if the
+item is set and return false (boolean) if not.  This lets you conveniently use data without having to test whether an item exists
+first. In other words, normally you might do something like this:
 
 <code>
 if ( ! isset($_POST['something']))<br />
@@ -142,9 +138,14 @@ else<br />
 
 <ul>
 <li>$this->input->post()</li>
+<li>$this->input->get()</li>
 <li>$this->input->cookie()</li>
 <li>$this->input->server()</li>
 </ul>
+
+<p class="important"><strong>Note:</strong> To enable usage of the <tt>get()</tt> function, you will need to turn on the
+&quot;enable_get_requests&quot; option in <kbd>application/config/config.php</kbd>. By default, BlueFlame destroys the GET
+array completely, so <tt>get()</tt> will always return nothing.</p>
 
 <h2>$this->input->post()</h2>
 
@@ -157,6 +158,12 @@ else<br />
 <p>The second optional parameter lets you run the data through the XSS filter.  It's enabled by setting the second parameter to boolean TRUE;</p>
 
 <code>$this->input->post('some_data', TRUE);</code>
+
+<h2>$this->input->get()</h2>
+
+<p>This function is identical to the post function, only it fetches get data:</p>
+
+<code>$this->input->get('some_data');</code>
 
 <h2>$this->input->cookie()</h2>
 

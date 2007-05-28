@@ -198,7 +198,7 @@ class CI_DB_oci8_driver extends CI_DB {
 			}
 			return FALSE;
 		}
-		
+
 		// build the query string
 		$sql = "begin $package.$procedure(";
 
@@ -206,20 +206,20 @@ class CI_DB_oci8_driver extends CI_DB {
 		foreach($params as $param)
 		{
 			$sql .= $param['name'] . ",";
-			
+
 			if (array_key_exists('type', $param) && ($param['type'] == OCI_B_CURSOR))
 			{
 				$have_cursor = TRUE;
 			}
 		}
 		$sql = trim($sql, ",") . "); end;";
-				
+
 		$this->stmt_id = FALSE;
 		$this->_set_stmt_id($sql);
 		$this->_bind_params($params);
 		$this->query($sql, FALSE, $have_cursor);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -234,7 +234,7 @@ class CI_DB_oci8_driver extends CI_DB {
 		{
 			return;
 		}
-		
+
 		foreach ($params as $param)
 		{
  			foreach (array('name', 'value', 'type', 'length') as $val)
@@ -255,26 +255,26 @@ class CI_DB_oci8_driver extends CI_DB {
 	 * Begin Transaction
 	 *
 	 * @access	public
-	 * @return	bool		
-	 */	
+	 * @return	bool
+	 */
 	function trans_begin($test_mode = FALSE)
 	{
 		if ( ! $this->trans_enabled)
 		{
 			return TRUE;
 		}
-		
+
 		// When transactions are nested we only begin/commit/rollback the outermost ones
 		if ($this->_trans_depth > 0)
 		{
 			return TRUE;
 		}
-		
+
 		// Reset the transaction failure flag.
 		// If the $test_mode flag is set to TRUE transactions will be rolled back
 		// even if the queries produce a successful result.
 		$this->_trans_failure = ($test_mode === TRUE) ? TRUE : FALSE;
-		
+
 		$this->_commit = OCI_DEFAULT;
 		return TRUE;
 	}
@@ -285,8 +285,8 @@ class CI_DB_oci8_driver extends CI_DB {
 	 * Commit Transaction
 	 *
 	 * @access	public
-	 * @return	bool		
-	 */	
+	 * @return	bool
+	 */
 	function trans_commit()
 	{
 		if ( ! $this->trans_enabled)
@@ -311,8 +311,8 @@ class CI_DB_oci8_driver extends CI_DB {
 	 * Rollback Transaction
 	 *
 	 * @access	public
-	 * @return	bool		
-	 */	
+	 * @return	bool
+	 */
 	function trans_rollback()
 	{
 		if ( ! $this->trans_enabled)
@@ -342,6 +342,11 @@ class CI_DB_oci8_driver extends CI_DB {
 	 */
 	function escape_str($str)
 	{
+		if (get_magic_quotes_gpc())
+		{
+			$str = stripslashes($str);
+		}
+
 		return $str;
 	}
 
@@ -582,7 +587,7 @@ class CI_DB_oci8_driver extends CI_DB {
 		$this->limit_used = TRUE;
 
 		return $newsql;
-	}	
+	}
 
 	// --------------------------------------------------------------------
 

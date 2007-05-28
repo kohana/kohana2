@@ -27,20 +27,19 @@
  */
 class CI_DB_active_record extends CI_DB_driver {
 
-	var $ar_select		= array();
-	var $ar_distinct	= FALSE;
-	var $ar_from		= array();
-	var $ar_join		= array();
-	var $ar_where		= array();
-	var $ar_like		= array();
-	var $ar_groupby		= array();
-	var $ar_having		= array();
-	var $ar_limit		= FALSE;
-	var $ar_offset		= FALSE;
-	var $ar_order		= FALSE;
-	var $ar_orderby		= array();
-	var $ar_set			= array();
-
+	var $ar_select   = array();
+	var $ar_distinct = FALSE;
+	var $ar_from     = array();
+	var $ar_join     = array();
+	var $ar_where    = array();
+	var $ar_like     = array();
+	var $ar_groupby  = array();
+	var $ar_having   = array();
+	var $ar_limit    = FALSE;
+	var $ar_offset   = FALSE;
+	var $ar_order    = FALSE;
+	var $ar_orderby  = array();
+	var $ar_set      = array();
 
 	/**
 	 * Select
@@ -132,11 +131,6 @@ class CI_DB_active_record extends CI_DB_driver {
 			{
 				$type .= ' ';
 			}
-		}
-
-		if ($this->dbprefix)
-		{
-			$cond = preg_replace('|([\w\.]+)([\W\s]+)(.+)|', $this->dbprefix . "$1$2" . $this->dbprefix . "$3", $cond);
 		}
 
 		// If a DB prefix is used we might need to add it to the column names
@@ -308,9 +302,9 @@ class CI_DB_active_record extends CI_DB_driver {
 	 */
 	function groupby($by)
 	{
-		if (is_string($by))
+		if ( ! is_array($by))
 		{
-			$by = explode(',', $by);
+			$by = explode(',', (string) $by);
 		}
 
 		foreach ($by as $val)
@@ -337,7 +331,7 @@ class CI_DB_active_record extends CI_DB_driver {
 	 */
 	function having($key, $value = '')
 	{
-		return $this->_having($key, $value, 'AND ');
+		return $this->_having($key, $value, 'AND');
 	}
 
 	// --------------------------------------------------------------------
@@ -354,7 +348,7 @@ class CI_DB_active_record extends CI_DB_driver {
 	 */
 	function orhaving($key, $value = '')
 	{
-		return $this->_having($key, $value, 'OR ');
+		return $this->_having($key, $value, 'OR');
 	}
 
 	// --------------------------------------------------------------------
@@ -369,8 +363,10 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * @param	string
 	 * @return	object
 	 */
-	function _having($key, $value = '', $type = 'AND ')
+	function _having($key, $value = '', $type = 'AND')
 	{
+		$type = trim($type).' ';
+
 		if ( ! is_array($key))
 		{
 			$key = array($key => $value);
@@ -378,7 +374,7 @@ class CI_DB_active_record extends CI_DB_driver {
 
 		foreach ($key as $k => $v)
 		{
-			$prefix = (count($this->ar_having) == 0) ? '' : $type;
+			$prefix = (count($this->ar_having) < 1) ? '' : $type;
 
 			if ($v != '')
 			{
@@ -402,9 +398,11 @@ class CI_DB_active_record extends CI_DB_driver {
 	 */
 	function orderby($orderby, $direction = '')
 	{
-		if (trim($direction) != '')
+		$direction = strtoupper(trim($direction));
+
+		if ($direction != '')
 		{
-			$direction = (in_array(strtoupper(trim($direction)), array('ASC', 'DESC', 'RAND()'), TRUE)) ? ' '.$direction : ' ASC';
+			$direction = (in_array($direction, array('ASC', 'DESC', 'RAND()'))) ? " $direction" : " ASC";
 		}
 
 		$this->ar_orderby[] = $orderby.$direction;
@@ -426,7 +424,9 @@ class CI_DB_active_record extends CI_DB_driver {
 		$this->ar_limit = $value;
 
 		if ($offset != '')
+		{
 			$this->ar_offset = $offset;
+		}
 
 		return $this;
 	}
@@ -561,24 +561,16 @@ class CI_DB_active_record extends CI_DB_driver {
 			$this->set($set);
 		}
 
-		if (count($this->ar_set) == 0)
+		if ($this->ar_set == FALSE)
 		{
-			if ($this->db_debug)
-			{
-				return $this->display_error('db_must_use_set');
-			}
-			return FALSE;
+			return ($this->db_debug ? $this->display_error('db_must_use_set') : FALSE);
 		}
 
 		if ($table == '')
 		{
 			if ( ! isset($this->ar_from[0]))
 			{
-				if ($this->db_debug)
-				{
-					return $this->display_error('db_must_set_table');
-				}
-				return FALSE;
+				return ($this->db_debug ? $this->display_error('db_must_set_table') : FALSE);
 			}
 
 			$table = $this->ar_from[0];
@@ -610,24 +602,16 @@ class CI_DB_active_record extends CI_DB_driver {
 			$this->set($set);
 		}
 
-		if (count($this->ar_set) == 0)
+		if ($this->ar_set == FALSE)
 		{
-			if ($this->db_debug)
-			{
-				return $this->display_error('db_must_use_set');
-			}
-			return FALSE;
+			return ($this->db_debug ? $this->display_error('db_must_use_set') : FALSE);
 		}
 
 		if ($table == '')
 		{
 			if ( ! isset($this->ar_from[0]))
 			{
-				if ($this->db_debug)
-				{
-					return $this->display_error('db_must_set_table');
-				}
-				return FALSE;
+				return ($this->db_debug ? $this->display_error('db_must_set_table') : FALSE);
 			}
 
 			$table = $this->ar_from[0];
@@ -662,11 +646,7 @@ class CI_DB_active_record extends CI_DB_driver {
 		{
 			if ( ! isset($this->ar_from[0]))
 			{
-				if ($this->db_debug)
-				{
-					return $this->display_error('db_must_set_table');
-				}
-				return FALSE;
+				return ($this->db_debug ? $this->display_error('db_must_set_table') : FALSE);
 			}
 
 			$table = $this->ar_from[0];
@@ -677,13 +657,9 @@ class CI_DB_active_record extends CI_DB_driver {
 			$this->where($where);
 		}
 
-		if (count($this->ar_where) == 0)
+		if (count($this->ar_where) < 1)
 		{
-			if ($this->db_debug)
-			{
-				return $this->display_error('db_del_must_use_where');
-			}
-			return FALSE;
+			return (($this->db_debug) ? $this->display_error('db_del_must_use_where') : FALSE);
 		}
 
 		$sql = $this->_delete($this->dbprefix.$table, $this->ar_where);
@@ -736,7 +712,6 @@ class CI_DB_active_record extends CI_DB_driver {
 	function use_table($table)
 	{
 		return $this->from($table);
-		return $this;
 	}
 
 	// --------------------------------------------------------------------
@@ -763,12 +738,8 @@ class CI_DB_active_record extends CI_DB_driver {
 	function _has_operator($str)
 	{
 		$str = trim($str);
-		if ( ! preg_match("/(\s|<|>|!|=|is null|is not null)/i", $str))
-		{
-			return FALSE;
-		}
 
-		return TRUE;
+		return (bool) preg_match("/(\s|<|>|!|=|is null|is not null)/i", $str);
 	}
 
 	// --------------------------------------------------------------------
@@ -888,18 +859,18 @@ class CI_DB_active_record extends CI_DB_driver {
 	 */
 	function _reset_select()
 	{
-		$this->ar_select	= array();
-		$this->ar_distinct	= FALSE;
-		$this->ar_from		= array();
-		$this->ar_join		= array();
-		$this->ar_where		= array();
-		$this->ar_like		= array();
-		$this->ar_groupby	= array();
-		$this->ar_having	= array();
-		$this->ar_limit		= FALSE;
-		$this->ar_offset	= FALSE;
-		$this->ar_order		= FALSE;
-		$this->ar_orderby	= array();
+		$this->ar_select   = array();
+		$this->ar_distinct = FALSE;
+		$this->ar_from     = array();
+		$this->ar_join     = array();
+		$this->ar_where    = array();
+		$this->ar_like     = array();
+		$this->ar_groupby  = array();
+		$this->ar_having   = array();
+		$this->ar_limit    = FALSE;
+		$this->ar_offset   = FALSE;
+		$this->ar_order    = FALSE;
+		$this->ar_orderby  = array();
 	}
 
 	// --------------------------------------------------------------------
@@ -914,9 +885,9 @@ class CI_DB_active_record extends CI_DB_driver {
 	 */
 	function _reset_write()
 	{
-		$this->ar_set		= array();
-		$this->ar_from		= array();
-		$this->ar_where		= array();
+		$this->ar_set   = array();
+		$this->ar_from  = array();
+		$this->ar_where = array();
 	}
 
 }
