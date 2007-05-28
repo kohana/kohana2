@@ -264,7 +264,10 @@ class CI_DB_driver {
 		}
 
 		// Save the  query for debugging
-		$this->queries[] = $sql;
+		if ($this->db_debug)
+		{
+			$this->queries[] = $sql;
+		}
 
 		// Start the Query Timer
 		$time_start = list($sm, $ss) = explode(' ', microtime());
