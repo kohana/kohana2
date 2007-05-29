@@ -34,24 +34,25 @@ class CI_DB_driver {
 	var $password;
 	var $hostname;
 	var $database;
-	var $dbdriver		= 'mysql';
-	var $dbprefix		= '';
-	var $port			= '';
-	var $pconnect		= FALSE;
-	var $conn_id		= FALSE;
-	var $result_id		= FALSE;
-	var $db_debug		= FALSE;
-	var $benchmark		= 0;
-	var $query_count	= 0;
-	var $bind_marker	= '?';
-	var $queries		= array();
-	var $data_cache		= array();
-	var $trans_enabled	= TRUE;
-	var $_trans_depth	= 0;
-	var $_trans_failure	= FALSE; // Used with transactions to determine if a rollback should occur
-	var $cache_on		= FALSE;
-	var $cachedir		= '';
-	var $cache_autodel	= FALSE;
+	var $dbdriver       = 'mysql';
+	var $dbprefix       = '';
+	var $port           = '';
+	var $pconnect       = FALSE;
+	var $conn_id        = FALSE;
+	var $result_id      = FALSE;
+	var $db_debug       = FALSE;
+	var $benchmark      = 0;
+	var $query_count    = 0;
+	var $bind_marker    = '?';
+	var $queries        = array();
+	var $query_times    = array();
+	var $data_cache     = array();
+	var $trans_enabled  = TRUE;
+	var $_trans_depth   = 0;
+	var $_trans_failure = FALSE; // Used with transactions to determine if a rollback should occur
+	var $cache_on       = FALSE;
+	var $cachedir       = '';
+	var $cache_autodel  = FALSE;
 	var $CACHE; // The cache class object
 
 
@@ -61,7 +62,7 @@ class CI_DB_driver {
 	var $limit_used;
 
 
-	
+
 	/**
 	 * Constructor.  Accepts one parameter containing the database
 	 * connection settings.
@@ -72,13 +73,13 @@ class CI_DB_driver {
 	 * $dsn = 'driver://username:password@hostname/database';
 	 *
 	 * @param mixed. Can be an array or a DSN string
-	 */	
+	 */
 	function CI_DB_driver($params)
 	{
 		$this->initialize($params);
 		log_message('debug', 'Database Driver Class Initialized');
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -87,7 +88,7 @@ class CI_DB_driver {
 	 * @access	private Called by the constructor
 	 * @param	mixed
 	 * @return	void
-	 */	
+	 */
 	function initialize($params = '')
 	{
 		if (is_array($params))
@@ -106,7 +107,7 @@ class CI_DB_driver {
 								'cachedir'	=> '',
 								'cache_on'	=> FALSE
 							);
-		
+
 			foreach ($defaults as $key => $val)
 			{
 				$this->$key = ( ! isset($params[$key])) ? $val : $params[$key];
@@ -117,27 +118,27 @@ class CI_DB_driver {
 			if (FALSE === ($dsn = @parse_url($params)))
 			{
 				log_message('error', 'Invalid DB Connection String');
-			
+
 				if ($this->db_debug)
 				{
 					return $this->display_error('db_invalid_connection_str');
 				}
-				return FALSE;			
+				return FALSE;
 			}
-			
+
 			$this->hostname = ( ! isset($dsn['host'])) ? '' : rawurldecode($dsn['host']);
 			$this->username = ( ! isset($dsn['user'])) ? '' : rawurldecode($dsn['user']);
 			$this->password = ( ! isset($dsn['pass'])) ? '' : rawurldecode($dsn['pass']);
 			$this->database = ( ! isset($dsn['path'])) ? '' : rawurldecode(substr($dsn['path'], 1));
 		}
-		
+
 		// If an existing DB connection resource is supplied
 		// there is no need to connect and select the database
 		if (is_resource($this->conn_id))
 		{
 			return TRUE;
 		}
-		
+
 		// Connect to the database
 		$this->conn_id = ($this->pconnect == FALSE) ? $this->db_connect() : $this->db_pconnect();
 
@@ -145,7 +146,7 @@ class CI_DB_driver {
 		if ( ! $this->conn_id)
 		{
 			log_message('error', 'Unable to connect to the database');
-			
+
 			if ($this->db_debug)
 			{
 				$this->display_error('db_unable_to_connect');
@@ -159,7 +160,7 @@ class CI_DB_driver {
 			if ( ! $this->db_select())
 			{
 				log_message('error', 'Unable to select database: '.$this->database);
-			
+
 				if ($this->db_debug)
 				{
 					$this->display_error('db_unable_to_select', $this->database);
@@ -170,15 +171,15 @@ class CI_DB_driver {
 
 		return TRUE;
 	}
-		
+
 	// --------------------------------------------------------------------
 
 	/**
 	 * The name of the platform in use (mysql, mssql, etc...)
 	 *
 	 * @access	public
-	 * @return	string		
-	 */	
+	 * @return	string
+	 */
 	function platform()
 	{
 		return $this->dbdriver;
@@ -191,8 +192,8 @@ class CI_DB_driver {
 	 * version of the database being used
 	 *
 	 * @access	public
-	 * @return	string	
-	 */	
+	 * @return	string
+	 */
 	function version()
 	{
 		if (FALSE === ($sql = $this->_version()))
@@ -201,19 +202,19 @@ class CI_DB_driver {
 			{
 				return $this->display_error('db_unsupported_function');
 			}
-			return FALSE;		
+			return FALSE;
 		}
-		
+
 		if ($this->dbdriver == 'oci8')
 		{
 			return $sql;
 		}
-	
+
 		$query = $this->query($sql);
 		$row = $query->row();
 		return $row->ver;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -228,8 +229,8 @@ class CI_DB_driver {
 	 * @access	public
 	 * @param	string	An SQL query string
 	 * @param	array	An array of binding data
-	 * @return	mixed		
-	 */	
+	 * @return	mixed
+	 */
 	function query($sql, $binds = FALSE, $return_object = TRUE)
 	{
 		if ($sql == '')
@@ -239,9 +240,9 @@ class CI_DB_driver {
 				log_message('error', 'Invalid query: '.$sql);
 				return $this->display_error('db_invalid_query');
 			}
-			return FALSE;		
+			return FALSE;
 		}
-		
+
 		// Is query caching enabled?  If the query is a "read type"
 		// we will load the caching class and return the previously
 		// cached query if it exists
@@ -256,7 +257,7 @@ class CI_DB_driver {
 				}
 			}
 		}
-		
+
 		// Compile binds if needed
 		if ($binds !== FALSE)
 		{
@@ -273,13 +274,13 @@ class CI_DB_driver {
 
 		// Start the Query Timer
 		$time_start = list($sm, $ss) = explode(' ', microtime());
-	
+
 		// Run the Query
 		if (FALSE === ($this->result_id = $this->simple_query($sql)))
 		{
 			// This will trigger a rollback if transactions are being used
 			$this->_trans_failure = TRUE;
-			
+
 			if ($this->db_debug)
 			{
 				log_message('error', 'Query error: '.$this->_error_message());
@@ -291,24 +292,24 @@ class CI_DB_driver {
 											)
 										);
 			}
-		
+
 		  return FALSE;
 		}
-		
+
 		// Stop and aggregate the query time results
 		$time_end = list($em, $es) = explode(' ', microtime());
 		$this->benchmark += ($em + $es) - ($sm + $ss);
-		
+
 		// Save individual query times for profiler
 		$CI =& get_instance();
 		if ($CI->output->enable_profiler)
 		{
-			$this->query_times[] = $this->benchmark; 
+			$this->query_times[] = $this->benchmark;
 		}
 
 		// Increment the query counter
 		$this->query_count++;
-		
+
 		// Was the query a "write" type?
 		// If so we'll simply return true
 		if ($this->is_write_type($sql) === TRUE)
@@ -319,10 +320,10 @@ class CI_DB_driver {
 			{
 				$this->CACHE->delete();
 			}
-		
+
 			return TRUE;
 		}
-		
+
 		// Return TRUE if we don't need to create a result object
 		// Currently only the Oracle driver uses this when stored
 		// procedures are used
@@ -330,21 +331,21 @@ class CI_DB_driver {
 		{
 			return TRUE;
 		}
-	
-		// Load and instantiate the result driver	
-		
+
+		// Load and instantiate the result driver
+
 		$driver 		= $this->load_rdriver();
 		$RES 			= new $driver();
 		$RES->conn_id	= $this->conn_id;
 		$RES->result_id	= $this->result_id;
-		
+
 		if ($this->dbdriver == 'oci8')
 		{
 			$RES->stmt_id		= $this->stmt_id;
 			$RES->curs_id		= NULL;
 			$RES->limit_used	= $this->limit_used;
 		}
-		
+
 		// Is query caching enabled?  If so, we'll serialize the
 		// result object and save it to a cache file.
 		if ($this->cache_on == TRUE AND $this->_cache_init())
@@ -359,14 +360,14 @@ class CI_DB_driver {
 			$CR->num_rows 		= $RES->num_rows();
 			$CR->result_object	= $RES->result_object();
 			$CR->result_array	= $RES->result_array();
-			
+
 			// Reset these since cached objects can not utilize resource IDs.
 			$CR->conn_id		= NULL;
 			$CR->result_id		= NULL;
 
 			$this->CACHE->write($sql, $CR);
 		}
-		
+
 		return $RES;
 	}
 
@@ -376,8 +377,8 @@ class CI_DB_driver {
 	 * Load the result drivers
 	 *
 	 * @access	public
-	 * @return	string 	the name of the result class		
-	 */		
+	 * @return	string 	the name of the result class
+	 */
 	function load_rdriver()
 	{
 		$driver = 'CI_DB_'.$this->dbdriver.'_result';
@@ -387,10 +388,10 @@ class CI_DB_driver {
 			include_once(BASEPATH.'database/DB_result'.EXT);
 			include_once(BASEPATH.'database/drivers/'.$this->dbdriver.'/'.$this->dbdriver.'_result'.EXT);
 		}
-		
+
 		return $driver;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -401,8 +402,8 @@ class CI_DB_driver {
 	 *
 	 * @access	public
 	 * @param	string	the sql query
-	 * @return	mixed		
-	 */	
+	 * @return	mixed
+	 */
 	function simple_query($sql)
 	{
 		if ( ! $this->conn_id)
@@ -412,7 +413,7 @@ class CI_DB_driver {
 
 		return $this->_execute($sql);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -420,8 +421,8 @@ class CI_DB_driver {
 	 * This permits transactions to be disabled at run-time.
 	 *
 	 * @access	public
-	 * @return	void		
-	 */	
+	 * @return	void
+	 */
 	function trans_off()
 	{
 		$this->trans_enabled = FALSE;
@@ -433,10 +434,10 @@ class CI_DB_driver {
 	 * Start Transaction
 	 *
 	 * @access	public
-	 * @return	void		
-	 */	
+	 * @return	void
+	 */
 	function trans_start($test_mode = FALSE)
-	{	
+	{
 		if ( ! $this->trans_enabled)
 		{
 			return FALSE;
@@ -448,7 +449,7 @@ class CI_DB_driver {
 			$this->_trans_depth += 1;
 			return;
 		}
-		
+
 		$this->trans_begin($test_mode);
 	}
 
@@ -458,36 +459,36 @@ class CI_DB_driver {
 	 * Complete Transaction
 	 *
 	 * @access	public
-	 * @return	bool		
-	 */	
+	 * @return	bool
+	 */
 	function trans_complete()
 	{
 		if ( ! $this->trans_enabled)
 		{
 			return FALSE;
 		}
-	
+
 		// When transactions are nested we only begin/commit/rollback the outermost ones
 		if ($this->_trans_depth > 1)
 		{
 			$this->_trans_depth -= 1;
 			return TRUE;
 		}
-	
+
 		// The query() function will set this flag to TRUE in the event that a query failed
 		if ($this->_trans_failure === TRUE)
 		{
 			$this->trans_rollback();
-			
+
 			if ($this->db_debug)
 			{
 				return $this->display_error('db_transaction_failure');
 			}
-			return FALSE;			
+			return FALSE;
 		}
-		
+
 		$this->trans_commit();
-		return TRUE;	
+		return TRUE;
 	}
 
 	// --------------------------------------------------------------------
@@ -496,8 +497,8 @@ class CI_DB_driver {
 	 * Lets you retrieve the transaction flag to determine if it has failed
 	 *
 	 * @access	public
-	 * @return	bool		
-	 */	
+	 * @return	bool
+	 */
 	function trans_status()
 	{
 		return ($this->_trans_failure) ? FALSE : TRUE;
@@ -511,33 +512,33 @@ class CI_DB_driver {
 	 * @access	public
 	 * @param	string	the sql statement
 	 * @param	array	an array of bind data
-	 * @return	string		
-	 */	
+	 * @return	string
+	 */
 	function compile_binds($sql, $binds)
-	{	
+	{
 		if (FALSE === strpos($sql, $this->bind_marker))
 		{
 			return $sql;
 		}
-		
+
 		if ( ! is_array($binds))
 		{
 			$binds = array($binds);
 		}
-		
+
 		foreach ($binds as $val)
 		{
 			$val = $this->escape($val);
-					
+
 			// Just in case the replacement string contains the bind
 			// character we'll temporarily replace it with a marker
 			$val = str_replace($this->bind_marker, '{%bind_marker%}', $val);
 			$sql = preg_replace("#".preg_quote($this->bind_marker, '#')."#", str_replace('$', '\$', $val), $sql, 1);
 		}
 
-		return str_replace('{%bind_marker%}', $this->bind_marker, $sql);		
+		return str_replace('{%bind_marker%}', $this->bind_marker, $sql);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -545,8 +546,8 @@ class CI_DB_driver {
 	 *
 	 * @access	public
 	 * @param	string	An SQL query string
-	 * @return	boolean		
-	 */	
+	 * @return	boolean
+	 */
 	function is_write_type($sql)
 	{
 		if ( ! preg_match('/^\s*"?(INSERT|UPDATE|DELETE|REPLACE|CREATE|DROP|LOAD DATA|COPY|ALTER|GRANT|REVOKE|LOCK|UNLOCK)\s+/i', $sql))
@@ -555,7 +556,7 @@ class CI_DB_driver {
 		}
 		return TRUE;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -563,39 +564,39 @@ class CI_DB_driver {
 	 *
 	 * @access	public
 	 * @param	integer	The number of decimal places
-	 * @return	integer		
-	 */	
+	 * @return	integer
+	 */
 	function elapsed_time($decimals = 6)
 	{
 		return number_format($this->benchmark, $decimals);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
 	 * Returns the total number of queries
 	 *
 	 * @access	public
-	 * @return	integer		
-	 */	
+	 * @return	integer
+	 */
 	function total_queries()
 	{
 		return $this->query_count;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
 	 * Returns the last query that was executed
 	 *
 	 * @access	public
-	 * @return	void		
-	 */	
+	 * @return	void
+	 */
 	function last_query()
 	{
 		return end($this->queries);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -606,10 +607,10 @@ class CI_DB_driver {
 	 *
 	 * @access	public
 	 * @param	string
-	 * @return	string		
-	 */	
+	 * @return	string
+	 */
 	function escape($str)
-	{	
+	{
 		switch (gettype($str))
 		{
 			case 'string'	:	$str = "'".$this->escape_str($str)."'";
@@ -618,7 +619,7 @@ class CI_DB_driver {
 				break;
 			default			:	$str = ($str === NULL) ? 'NULL' : $str;
 				break;
-		}		
+		}
 
 		return (string) $str;
 	}
@@ -633,12 +634,12 @@ class CI_DB_driver {
 	 *
 	 * @access	public
 	 * @param	string	the table name
-	 * @return	string		
-	 */	
+	 * @return	string
+	 */
 	function primary($table = '')
-	{	
+	{
 		$fields = $this->list_fields($table);
-		
+
 		if ( ! is_array($fields))
 		{
 			return FALSE;
@@ -653,8 +654,8 @@ class CI_DB_driver {
 	 * Returns an array of table names
 	 *
 	 * @access	public
-	 * @return	array		
-	 */	
+	 * @return	array
+	 */
 	function list_tables()
 	{
 		// Is there a cached result?
@@ -662,19 +663,19 @@ class CI_DB_driver {
 		{
 			return $this->data_cache['table_names'];
 		}
-	
+
 		if (FALSE === ($sql = $this->_list_tables()))
 		{
 			if ($this->db_debug)
 			{
 				return $this->display_error('db_unsupported_function');
 			}
-			return FALSE;		
+			return FALSE;
 		}
 
 		$retval = array();
 		$query = $this->query($sql);
-		
+
 		if ($query->num_rows() > 0)
 		{
 			foreach($query->result_array() as $row)
@@ -693,7 +694,7 @@ class CI_DB_driver {
 		$this->data_cache['table_names'] = $retval;
 		return $this->data_cache['table_names'];
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -705,7 +706,7 @@ class CI_DB_driver {
 	{
 		return ( ! in_array($this->dbprefix.$table_name, $this->list_tables())) ? FALSE : TRUE;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -713,7 +714,7 @@ class CI_DB_driver {
 	 *
 	 * @access	public
 	 * @param	string	the table name
-	 * @return	array		
+	 * @return	array
 	 */
 	function list_fields($table = '')
 	{
@@ -722,27 +723,27 @@ class CI_DB_driver {
 		{
 			return $this->data_cache['field_names'][$table];
 		}
-	
+
 		if ($table == '')
 		{
 			if ($this->db_debug)
 			{
 				return $this->display_error('db_field_param_missing');
 			}
-			return FALSE;			
+			return FALSE;
 		}
-		
+
 		if (FALSE === ($sql = $this->_list_columns($this->dbprefix.$table)))
 		{
 			if ($this->db_debug)
 			{
 				return $this->display_error('db_unsupported_function');
 			}
-			return FALSE;		
+			return FALSE;
 		}
-		
+
 		$query = $this->query($sql);
-		
+
 		$retval = array();
 		foreach($query->result_array() as $row)
 		{
@@ -753,9 +754,9 @@ class CI_DB_driver {
 			else
 			{
 				$retval[] = current($row);
-			}		
+			}
 		}
-		
+
 		$this->data_cache['field_names'][$table] = $retval;
 		return $this->data_cache['field_names'][$table];
 	}
@@ -770,10 +771,10 @@ class CI_DB_driver {
 	 * @return	boolean
 	 */
 	function field_exists($field_name, $table_name)
-	{	
+	{
 		return ( ! in_array($field_name, $this->list_fields($table_name))) ? FALSE : TRUE;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -783,7 +784,7 @@ class CI_DB_driver {
 	{
 		return $this->list_fields($table);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -791,8 +792,8 @@ class CI_DB_driver {
 	 *
 	 * @access	public
 	 * @param	string	the table name
-	 * @return	object		
-	 */	
+	 * @return	object
+	 */
 	function field_data($table = '')
 	{
 		if ($table == '')
@@ -801,28 +802,28 @@ class CI_DB_driver {
 			{
 				return $this->display_error('db_field_param_missing');
 			}
-			return FALSE;			
+			return FALSE;
 		}
-		
+
 		$query = $this->query($this->_field_data($this->dbprefix.$table));
 		return $query->field_data();
-	}	
+	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Generate an insert string
 	 *
 	 * @access	public
 	 * @param	string	the table upon which the query will be performed
 	 * @param	array	an associative array data of key/values
-	 * @return	string		
-	 */	
+	 * @return	string
+	 */
 	function insert_string($table, $data)
 	{
-		$fields = array();	
+		$fields = array();
 		$values = array();
-		
+
 		foreach($data as $key => $val)
 		{
 			$fields[] = $key;
@@ -831,7 +832,7 @@ class CI_DB_driver {
 
 		return $this->_insert($this->dbprefix.$table, $fields, $values);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -841,13 +842,13 @@ class CI_DB_driver {
 	 * @param	string	the table upon which the query will be performed
 	 * @param	array	an associative array data of key/values
 	 * @param	mixed	the "where" statement
-	 * @return	string		
-	 */	
+	 * @return	string
+	 */
 	function update_string($table, $data, $where)
 	{
 		if ($where == '')
 			return false;
-					
+
 		$fields = array();
 		foreach($data as $key => $val)
 		{
@@ -864,23 +865,23 @@ class CI_DB_driver {
 			foreach ($where as $key => $val)
 			{
 				$prefix = (count($dest) == 0) ? '' : ' AND ';
-	
+
 				if ($val != '')
 				{
 					if ( ! $this->_has_operator($key))
 					{
 						$key .= ' =';
 					}
-				
+
 					$val = ' '.$this->escape($val);
 				}
-							
+
 				$dest[] = $prefix.$key.$val;
 			}
-		}		
+		}
 
 		return $this->_update($this->dbprefix.$table, $fields, $dest);
-	}	
+	}
 
 	// --------------------------------------------------------------------
 
@@ -890,24 +891,24 @@ class CI_DB_driver {
 	 * @access	public
 	 * @param	string	the function name
 	 * @param	mixed	any parameters needed by the function
-	 * @return	mixed		
-	 */	
+	 * @return	mixed
+	 */
 	function call_function($function)
 	{
 		$driver = ($this->dbdriver == 'postgre') ? 'pg_' : $this->dbdriver.'_';
-	
+
 		if (FALSE === strpos($driver, $function))
 		{
 			$function = $driver.$function;
 		}
-		
+
 		if ( ! function_exists($function))
 		{
 			if ($this->db_debug)
 			{
 				return $this->display_error('db_unsupported_function');
 			}
-			return FALSE;			
+			return FALSE;
 		}
 		else
 		{
@@ -925,7 +926,7 @@ class CI_DB_driver {
 	 * @access	public
 	 * @param	string	the path to the cache directory
 	 * @return	void
-	 */		
+	 */
 	function cache_set_path($path = '')
 	{
 		$this->cachedir = $path;
@@ -938,7 +939,7 @@ class CI_DB_driver {
 	 *
 	 * @access	public
 	 * @return	void
-	 */		
+	 */
 	function cache_on()
 	{
 		$this->cache_on = TRUE;
@@ -952,13 +953,13 @@ class CI_DB_driver {
 	 *
 	 * @access	public
 	 * @return	void
-	 */	
+	 */
 	function cache_off()
 	{
 		$this->cache_on = FALSE;
 		return FALSE;
 	}
-	
+
 
 	// --------------------------------------------------------------------
 
@@ -967,7 +968,7 @@ class CI_DB_driver {
 	 *
 	 * @access	public
 	 * @return	void
-	 */		
+	 */
 	function cache_delete($segment_one = '', $segment_two = '')
 	{
 		if ( ! $this->_cache_init())
@@ -984,7 +985,7 @@ class CI_DB_driver {
 	 *
 	 * @access	public
 	 * @return	void
-	 */		
+	 */
 	function cache_delete_all()
 	{
 		if ( ! $this->_cache_init())
@@ -1002,19 +1003,19 @@ class CI_DB_driver {
 	 *
 	 * @access	private
 	 * @return	void
-	 */	
+	 */
 	function _cache_init()
 	{
 		if (is_object($this->CACHE) AND class_exists('CI_DB_Cache'))
 		{
 			return TRUE;
 		}
-	
+
 		if ( ! @include(BASEPATH.'database/DB_cache'.EXT))
 		{
 			return $this->cache_off();
 		}
-		
+
 		$this->CACHE = new CI_DB_Cache;
 		return TRUE;
 	}
@@ -1026,8 +1027,8 @@ class CI_DB_driver {
 	 * Close DB Connection
 	 *
 	 * @access	public
-	 * @return	void		
-	 */	
+	 * @return	void
+	 */
 	function close()
 	{
 		if (is_resource($this->conn_id))
@@ -1036,7 +1037,7 @@ class CI_DB_driver {
 		}
 		$this->conn_id = FALSE;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -1046,15 +1047,15 @@ class CI_DB_driver {
 	 * @param	string	the error message
 	 * @param	string	any "swap" values
 	 * @param	boolean	whether to localize the message
-	 * @return	string	sends the application/error_db.php template		
-	 */	
+	 * @return	string	sends the application/error_db.php template
+	 */
 	function display_error($error = '', $swap = '', $native = FALSE)
 	{
 		$LANG = new CI_Language();
 		$LANG->load('db');
 
 		$heading = 'MySQL Error';
-		
+
 		if ($native == TRUE)
 		{
 			$message = $error;
@@ -1068,12 +1069,12 @@ class CI_DB_driver {
 		{
 			include(BASEPATH.'libraries/Exceptions'.EXT);
 		}
-		
+
 		$error = new CI_Exceptions();
 		echo $error->show_error('An Error Was Encountered', $message, 'error_db');
 		exit;
 	}
-	
+
 }
 
 ?>
