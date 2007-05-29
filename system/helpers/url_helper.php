@@ -435,39 +435,38 @@ function url_title($str, $separator = 'dash')
  *
  * @access	public
  * @param	string	the URL
- * @param	string	the method: location or redirect
- * @param	string	the HTTP response status code
+ * @param	string	the method: refresh or location-status-code
  * @return	string
  */
-function redirect($uri = '', $method = 'location', $code='302')
+function redirect($uri = '', $method = '302')
 {
-	$response_codes = array(
-		'300' => 'Multiple Choices',
-		'301' => 'Moved Permanently',
-		'302' => 'Found',
-		'303' => 'See Other',
-		'304' => 'Not Modified',
-		'305' => 'Use Proxy',
-		'307' => 'Temporary Redirect'
-	);
-	$response_code = isset($response_codes[$code])
-		? $code.' '.$response_codes[$code]
-		: '302 '.$response_codes['302'];
+	$method = (string) $method;
 
 	if (strpos($uri, '://') === FALSE)
 	{
 		$uri = site_url($uri);
 	}
 
-	switch($method)
+	if ($method == 'refresh')
 	{
-		case 'refresh':
-			header('Refresh: 0; url='. $uri);
-			break;
-		default:
-			header('HTTP/1.1 '.$response_code);
-			header('Location: '. $uri);
-			break;
+		header('Refresh: 0; url='. $uri);
+	}
+	else
+	{
+		$codes = array(
+			'300' => 'Multiple Choices',
+			'301' => 'Moved Permanently',
+			'302' => 'Found',
+			'303' => 'See Other',
+			'304' => 'Not Modified',
+			'305' => 'Use Proxy',
+			'307' => 'Temporary Redirect'
+		);
+
+		$method = (isset($codes[$method])) ? $method : '302';
+
+		header('HTTP/1.1 '.$method.' '.$codes[$method]);
+		header('Location: '.$uri);
 	}
 	exit('You should have been redirected to <a href="'.$uri.'">'.$uri.'</a>.');
 }
