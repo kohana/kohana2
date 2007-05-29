@@ -276,7 +276,7 @@ class CI_DB_driver {
 		$time_start = list($sm, $ss) = explode(' ', microtime());
 
 		// Run the Query
-		if (FALSE === ($this->result_id = $this->simple_query($sql)))
+		if (($this->result_id = $this->simple_query($sql)) === FALSE)
 		{
 			// This will trigger a rollback if transactions are being used
 			$this->_trans_failure = TRUE;
@@ -301,8 +301,7 @@ class CI_DB_driver {
 		$this->benchmark += ($em + $es) - ($sm + $ss);
 
 		// Save individual query times for profiler
-		$CI =& get_instance();
-		if ($CI->output->enable_profiler)
+		if ($this->db_debug)
 		{
 			$this->query_times[] = $this->benchmark;
 		}
