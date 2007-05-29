@@ -105,7 +105,7 @@ class CI_Profiler {
 		$output  = "\n\n";
 		$output .= '<fieldset style="border:1px solid #0000FF;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">';
 		$output .= "\n";
-		$output .= '<legend style="color:#0000FF;">&nbsp;&nbsp;'.$this->CI->lang->line('profiler_queries').'&nbsp;&nbsp;</legend>';
+		$output .= '<legend style="color:#0000FF;">&nbsp;&nbsp;'.$this->CI->lang->line('profiler_queries').' ('. count($this->CI->db->queries) .')&nbsp;&nbsp;</legend>';
 		$output .= "\n";		
 		
 		if ( ! class_exists('CI_DB_driver'))
@@ -120,12 +120,17 @@ class CI_Profiler {
 			}
 			else
 			{
-				foreach ($this->CI->db->queries as $val)
+				$output .= "\n\n<table cellpadding='4' cellspacing='1' border='0' width='100%'>\n";
+				
+				for ($i = 0; $i < count($this->CI->db->queries); $i++)
 				{
-					$output .= '<div style="padding:3px;margin:12px 0 12px 0;background-color:#ddd;color:#000">';
-					$output .= $val;
-					$output .= "</div>\n";
-				}	
+					$output .= '<tr>';
+					$output .= "<td width='85%' style='color:#000;background-color:#ddd;'>". htmlspecialchars($this->CI->db->queries[$i]) ."</td>";
+					$output .= "<td width='15%' style='color:#0000FF;font-weight:normal;background-color:#ddd;'>". number_format($this->CI->db->query_times[$i], 4) ."</td>";
+					$output .= "</tr>\n";
+				}
+				
+				$output .= "</table>\n";
 			}
 		}
 		

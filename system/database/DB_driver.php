@@ -298,6 +298,13 @@ class CI_DB_driver {
 		// Stop and aggregate the query time results
 		$time_end = list($em, $es) = explode(' ', microtime());
 		$this->benchmark += ($em + $es) - ($sm + $ss);
+		
+		// Save individual query times for profiler
+		$CI =& get_instance();
+		if ($CI->output->enable_profiler)
+		{
+			$this->query_times[] = $this->benchmark; 
+		}
 
 		// Increment the query counter
 		$this->query_count++;
