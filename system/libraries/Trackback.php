@@ -406,7 +406,7 @@ class CI_Trackback {
 	function convert_xml($str)
 	{
 		//Convert ampersands to entities only if they're not part of an existing entity
-		$str = preg_replace('/&(?!(#\d+|[a-z]+);)/i', '&amp;', $str);
+		$str = preg_replace('/&(?!(?:#\d+|[a-z]+);)/i', '&amp;', $str);
 		   
 		// Convert: < > ' " -
 		$str = str_replace(
