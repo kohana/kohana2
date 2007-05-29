@@ -33,13 +33,13 @@
 class CI_Profiler {
 
 	var $CI;
- 	
+
  	function CI_Profiler()
  	{
  		$this->CI =& get_instance();
  		$this->CI->load->language('profiler');
  	}
- 	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -61,7 +61,7 @@ class CI_Profiler {
  			// We match the "end" marker so that the list ends
  			// up in the order that it was defined
  			if (preg_match("/(.+?)_end/i", $key, $match))
- 			{ 			
+ 			{
  				if (isset($this->CI->benchmark->marker[$match[1].'_end']) AND isset($this->CI->benchmark->marker[$match[1].'_start']))
  				{
  					$profile[$match[1]] = $this->CI->benchmark->elapsed_time($match[1].'_start', $key);
@@ -72,26 +72,26 @@ class CI_Profiler {
 		// Build a table containing the profile data.
 		// Note: At some point we should turn this into a template that can
 		// be modified.  We also might want to make this data available to be logged
-	
+
 		$output  = "\n\n";
 		$output .= '<fieldset style="border:1px solid #990000;padding:6px 10px 10px 10px;margin:0 0 20px 0;background-color:#eee">';
 		$output .= "\n";
 		$output .= '<legend style="color:#990000;">&nbsp;&nbsp;'.$this->CI->lang->line('profiler_benchmarks').'&nbsp;&nbsp;</legend>';
-		$output .= "\n";			
+		$output .= "\n";
 		$output .= "\n\n<table cellpadding='4' cellspacing='1' border='0' width='100%'>\n";
-		
+
 		foreach ($profile as $key => $val)
 		{
 			$key = ucwords(str_replace(array('_', '-'), ' ', $key));
 			$output .= "<tr><td width='50%' style='color:#000;font-weight:bold;background-color:#ddd;'>".$key."&nbsp;&nbsp;</td><td width='50%' style='color:#990000;font-weight:normal;background-color:#ddd;'>".$val."</td></tr>\n";
 		}
-		
+
 		$output .= "</table>\n";
 		$output .= "</fieldset>";
- 		
+
  		return $output;
  	}
- 	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -99,15 +99,15 @@ class CI_Profiler {
 	 *
 	 * @access	private
 	 * @return	string
-	 */	
+	 */
 	function _compile_queries()
 	{
 		$output  = "\n\n";
 		$output .= '<fieldset style="border:1px solid #0000FF;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">';
 		$output .= "\n";
 		$output .= '<legend style="color:#0000FF;">&nbsp;&nbsp;'.$this->CI->lang->line('profiler_queries').' ('. count($this->CI->db->queries) .')&nbsp;&nbsp;</legend>';
-		$output .= "\n";		
-		
+		$output .= "\n";
+
 		if ( ! class_exists('CI_DB_driver'))
 		{
 			$output .= "<div style='color:#0000FF;font-weight:normal;padding:4px 0 0 0;'>".$this->CI->lang->line('profiler_no_db')."</div>";
@@ -121,7 +121,7 @@ class CI_Profiler {
 			else
 			{
 				$output .= "\n\n<table cellpadding='4' cellspacing='1' border='0' width='100%'>\n";
-				
+
 				for ($i = 0; $i < count($this->CI->db->queries); $i++)
 				{
 					$output .= '<tr>';
@@ -129,16 +129,16 @@ class CI_Profiler {
 					$output .= "<td width='15%' style='color:#0000FF;font-weight:normal;background-color:#ddd;'>". number_format($this->CI->db->query_times[$i], 4) ."</td>";
 					$output .= "</tr>\n";
 				}
-				
+
 				$output .= "</table>\n";
 			}
 		}
-		
-		$output .= "</fieldset>";		
-		
+
+		$output .= "</fieldset>";
+
 		return $output;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -146,15 +146,15 @@ class CI_Profiler {
 	 *
 	 * @access	private
 	 * @return	string
-	 */	
+	 */
 	function _compile_post()
-	{	
+	{
 		$output  = "\n\n";
 		$output .= '<fieldset style="border:1px solid #009900;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">';
 		$output .= "\n";
 		$output .= '<legend style="color:#009900;">&nbsp;&nbsp;'.$this->CI->lang->line('profiler_post_data').'&nbsp;&nbsp;</legend>';
 		$output .= "\n";
-				
+
 		if (count($_POST) == 0)
 		{
 			$output .= "<div style='color:#009900;font-weight:normal;padding:4px 0 4px 0'>".$this->CI->lang->line('profiler_no_post')."</div>";
@@ -162,7 +162,7 @@ class CI_Profiler {
 		else
 		{
 			$output .= "\n\n<table cellpadding='4' cellspacing='1' border='0' width='100%'>\n";
-		
+
 			foreach ($_POST as $key => $val)
 			{
 				$output .= "<tr><td width='50%' style='color:#000;background-color:#ddd;'>".$key."</td><td width='50%' style='color:#009900;font-weight:normal;background-color:#ddd;'>";
@@ -176,33 +176,33 @@ class CI_Profiler {
 				}
 				$output .= "</td></tr>\n";
 			}
-			
+
 			$output .= "</table>\n";
 		}
 		$output .= "</fieldset>";
 
-		return $output;	
+		return $output;
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Run the Profiler
 	 *
 	 * @access	private
 	 * @return	string
-	 */	
+	 */
 	function run($output = '')
-	{		
+	{
 		$output = '<br clear="all" />';
 		$output .= "<div style='background-color:#fff;padding:10px;'>";
-	
+
 		$output .= $this->_compile_benchmarks();
 		$output .= $this->_compile_post();
 		$output .= $this->_compile_queries();
-		
+
 		$output .= '</div>';
-		
+
 		return $output;
 	}
 
