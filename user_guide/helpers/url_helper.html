@@ -232,17 +232,25 @@ $url = prep_url($url);</code>
 
 <h2>redirect()</h2>
 
-<p>Does a "header redirect" to the local URI specified. Just like other functions in this helper, this one is designed
-to redirect to a local URL within your site.  You will <strong>not</strong> specify the full site URL, but rather simply the URI segments
-to the controller you want to direct to. The function will build the URL based on your config file values.</p>
+<p>Performs a "header redirect" to the specified location.  If no parameters are passed to this function call, a Location redirect to your configured base URL is performed with status code 302.</p>
+
+<p>The first parameter to this function is the relative local URI or absolute URI to which you wish to redirect the user.  If you pass a string in this parameter that does not contain the text sequence, <kbd>://</kbd>, the parameter will be passed to <dfn>site_url()</dfn> to be used in generating an absolute URI which points to a local resource.  Otherwise, the URI which was passed in the parameter is used:</p>
+<code>
+redirect('login/form/');&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Redirects to something like http://www.your-site.com/index.php/login/form/<br />
+<br />
+redirect('http://www.google.com/');&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Redirects to http://www.google.com/
+</code>
 
 <p>The second parameter allows you to choose between the "location"
-method or the "refresh" method.  Location is faster, but on Windows servers it can sometimes be a problem.  Example:</p>
+method or the "refresh" method.  Location is faster and generally more appropriate, but on Windows servers it can sometimes be a problem.  Example:</p>
+<code>
+redirect('login/form/', 'refresh');&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Causes an HTTP Refresh to something like http://www.your-site.com/index.php/login/form/
+</code>
 
-<code>if ($logged_in == FALSE)<br />
-{<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;redirect('/login/form/', 'refresh');<br />
-}</code>
+<p>The third and final parameter is the HTTP status code to send with the redirection header.  Redirects use status codes in the 300 series and you can read about each of these codes at the <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html" title="HTTP/1.1: Status Code Definitions">W3.org site</a>.  This method defaults to the '302 Found' status, but you can choose any of the 3xx codes by passing the appropriate code number.  This is only sent with Location redirections.  Refresh redirections will send a HTTP 200 response.</p>
+<code>
+redirect('login/form/', 'location', '301');&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Causes a Location redirect with the HTTP status header set to: 'HTTP/1.1 301 Moved Permanently'
+</code>
 
 <p class="important"><strong>Note:</strong> In order for this function to work it must be used before anything is outputted
 to the browser since it utilizes server headers.</p>
