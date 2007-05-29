@@ -298,20 +298,11 @@ class CI_Trackback {
 	 */	
 	function extract_urls($urls)
 	{		
-		// Remove the pesky white space and replace with a comma.
-		$urls = preg_replace("/\s*(\S+)\s*/", "\\1,", $urls);
+		// Remove all leading and trailing whitespace and commas
+		$urls = trim($urls, " \r\n\t,");
 		
-		// If they use commas get rid of the doubles.
-		$urls = str_replace(",,", ",", $urls);
-		
-		// Remove any comma that might be at the end
-		if (substr($urls, -1) == ",")
-		{
-			$urls = substr($urls, 0, -1);
-		}
-				
-		// Break into an array via commas
-		$urls = preg_split('/[,]/', $urls);
+		// Break into an array via inner whitespace and commas
+		$urls = preg_split('/[\s,]+/', $urls);
 		
 		// Removes duplicates
 		$urls = array_unique($urls);
