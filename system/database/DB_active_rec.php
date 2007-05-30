@@ -196,7 +196,7 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * @param	string
 	 * @return	object
 	 */
-	function _where($key, $value = NULL, $type = 'AND ')
+	function _where($key, $value = FALSE, $type = 'AND ')
 	{
 		if ( ! is_array($key))
 		{
@@ -207,7 +207,7 @@ class CI_DB_active_record extends CI_DB_driver {
 		{
 			$prefix = (count($this->ar_where) == 0) ? '' : $type;
 
-			if ( ! is_null($v))
+			if ($v != FALSE)
 			{
 				if ( ! $this->_has_operator($k))
 				{
