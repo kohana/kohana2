@@ -41,12 +41,12 @@
  * @access	public
  * @param	string
  * @return	string
- */	
+ */
 function trim_slashes($str)
 {
     return trim($str, '/');
-} 
-	
+}
+
 // ------------------------------------------------------------------------
 
 /**
@@ -64,12 +64,12 @@ function trim_slashes($str)
  * @access	public
  * @param	string
  * @return	string
- */	
+ */
 function reduce_double_slashes($str)
 {
 	return preg_replace('#(?<!:)//+#', '/', $str);
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -81,35 +81,40 @@ function reduce_double_slashes($str)
  * @param	string 	type of random string.  Options: alunum, numeric, nozero, unique
  * @param	integer	number of characters
  * @return	string
- */	
-function random_string($type = 'alnum', $len = 8)
-{					
-	switch($type)
+ */
+function random_string($type = FALSE, $len = 8)
+{
+	if ($type == FALSE) $type = 'alnum';
+	
+	if ($type == 'unique')
 	{
-		case 'alnum'	:
-		case 'numeric'	:
-		case 'nozero'	:
-		
-				switch ($type)
-				{
-					case 'alnum'	:	$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-						break;
-					case 'numeric'	:	$pool = '0123456789';
-						break;
-					case 'nozero'	:	$pool = '123456789';
-						break;
-				}
-
-				$str = '';
-				for ($i=0; $i < $len; $i++)
-				{
-					$str .= substr($pool, mt_rand(0, strlen($pool) -1), 1);
-				}
-				return $str;
-		  break;
-		case 'unique' : return md5(uniqid(mt_rand()));
-		  break;
+		$str = md5(uniqid(mt_rand()));
 	}
+	else
+	{
+		$pool = '';
+		switch ($type)
+		{
+			case 'alnum':
+				$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				break;
+			case 'numeric':
+				$pool = '0123456789';
+				break;
+			case 'nozero':
+				$pool = '123456789';
+				break;
+		}
+		
+		$str = '';
+		$max = strlen($pool)-1;
+		for ($i=0; $i < $len; $i++)
+		{
+			$str .= substr($pool, rand(0, $max), 1);
+		}
+	}
+	
+	return $str;
 }
 // ------------------------------------------------------------------------
 
@@ -121,10 +126,10 @@ function random_string($type = 'alnum', $len = 8)
  * @access	public
  * @param	string (as many parameters as needed)
  * @return	string
- */		
+ */
 function alternator()
 {
-	static $i;	
+	static $i;
 
 	if (func_num_args() == 0)
 	{
@@ -144,11 +149,10 @@ function alternator()
  * @param	string
  * @param	integer	number of repeats
  * @return	string
- */	
+ */
 function repeater($data, $num = 1)
 {
 	return (($num > 0) ? str_repeat($data, $num) : '');
-} 
-
+}
 
 ?>
