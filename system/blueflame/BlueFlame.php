@@ -6,7 +6,7 @@
  *
  * @package		BlueFlame
  * @author		Rick Ellis
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright		Copyright (c) 2006, EllisLab, Inc.
  * @license		http://www.codeigniter.com/user_guide/license.html
  * @link		http://blueflame.ciforge.com
  * @since		Version 1.0
@@ -21,14 +21,14 @@
  * Loads the base classes and executes the request.
  *
  * @package		BlueFlame
- * @subpackage	blueflame
- * @category	Front-controller
+ * @subpackage		blueflame
+ * @category		Front-controller
  * @author		Rick Ellis
  * @link		http://blueflame.ciforge.com
  */
 
-// CI Version
-define('CI_VERSION',	'1.5.3');
+// BF Version
+define('BF_VERSION',	'1.0');
 
 /*
  * ------------------------------------------------------
@@ -130,7 +130,7 @@ else
 load_class('Controller', FALSE);
 
 // Load the local application controller
-// Note: The Router class automatically validates the controller path.  If this include fails it 
+// Note: The Router class automatically validates the controller path.  If this include fails it
 // means that the default controller in the Routes.php file is not resolving to something valid.
 if ( ! include(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().EXT))
 {
@@ -198,7 +198,7 @@ else
 	 * ------------------------------------------------------
 	 */
 	$EXT->_call_hook('post_controller_constructor');
-	
+
 	// Is there a "remap" function?
 	if (method_exists($CI, '_remap'))
 	{
@@ -212,8 +212,8 @@ else
 		}
 
 		// Call the requested method.
-		// Any URI segments present (besides the class/function) will be passed to the method for convenience		
-		call_user_func_array(array(&$CI, $method), array_slice($RTR->rsegments, (($RTR->fetch_directory() == '') ? 2 : 3)));		
+		// Any URI segments present (besides the class/function) will be passed to the method for convenience
+		call_user_func_array(array(&$CI, $method), array_slice($RTR->rsegments, (($RTR->fetch_directory() == '') ? 2 : 3)));
 	}
 }
 
