@@ -169,13 +169,13 @@ folder:</p>
 <textarea class="textarea" style="width:100%" cols="50" rows="21"><?php
 
 class Form extends Controller {
-	
+
 	function index()
 	{
 		$this->load->helper(array('form', 'url'));
-		
+
 		$this->load->library('validation');
-				
+
 		if ($this->validation->run() == FALSE)
 		{
 			$this->load->view('myform');
@@ -246,20 +246,20 @@ $this->validation->set_rules($rules);</code>
 <textarea class="textarea" style="width:100%" cols="50" rows="28"><?php
 
 class Form extends Controller {
-	
+
 	function index()
 	{
 		$this->load->helper(array('form', 'url'));
-		
+
 		$this->load->library('validation');
-			
+
 		$rules['username']	= "required";
 		$rules['password']	= "required";
 		$rules['passconf']	= "required";
 		$rules['email']		= "required";
-		
+
 		$this->validation->set_rules($rules);
-			
+
 		if ($this->validation->run() == FALSE)
 		{
 			$this->load->view('myform');
@@ -346,20 +346,20 @@ create a callback function that does that.  Let's create a simple example.</p>
 <textarea class="textarea" style="width:100%" cols="50" rows="44"><?php
 
 class Form extends Controller {
-	
+
 	function index()
 	{
 		$this->load->helper(array('form', 'url'));
-		
+
 		$this->load->library('validation');
-			
+
 		$rules['username']	= "callback_username_check";
 		$rules['password']	= "required";
 		$rules['passconf']	= "required";
 		$rules['email']		= "required";
-		
+
 		$this->validation->set_rules($rules);
-			
+
 		if ($this->validation->run() == FALSE)
 		{
 			$this->load->view('myform');
@@ -369,7 +369,7 @@ class Form extends Controller {
 			$this->load->view('formsuccess');
 		}
 	}
-	
+
 	function username_check($str)
 	{
 		if ($str == 'test')
@@ -382,7 +382,7 @@ class Form extends Controller {
 			return TRUE;
 		}
 	}
-	
+
 }
 ?></textarea>
 
@@ -420,23 +420,23 @@ error message.</p>
 <textarea class="textarea" style="width:100%" cols="50" rows="30">function index()
 {
 	$this->load->helper(array('form', 'url'));
-	
+
 	$this->load->library('validation');
-		
+
 	$rules['username']	= "required";
 	$rules['password']	= "required";
 	$rules['passconf']	= "required";
 	$rules['email']		= "required";
-	
+
 	$this->validation->set_rules($rules);
-	
+
 	$fields['username']	= 'Username';
 	$fields['password']	= 'Password';
 	$fields['passconf']	= 'Password Confirmation';
 	$fields['email']	= 'Email Address';
 
 	$this->validation->set_fields($fields);
-		
+
 	if ($this->validation->run() == FALSE)
 	{
 		$this->load->view('myform');
@@ -594,7 +594,13 @@ For example, your "username" error will be available at:<br /><dfn>$this->valida
 <td class="td">No</td>
 <td class="td">Returns FALSE if the form element does not contain a valid email address.</td>
 <td class="td">&nbsp;</td>
-</tr>
+</tr><tr>
+
+<td class="td"><strong>valid_email_rfc</strong></td>
+<td class="td">No</td>
+<td class="td">Returns FALSE if the form element does not contain a valid email address in accordance with RFC822.</td>
+<td class="td">&nbsp;</td>
+</tr><tr>
 
 <td class="td"><strong>valid_ip</strong></td>
 <td class="td">No</td>

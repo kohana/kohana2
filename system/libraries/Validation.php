@@ -6,7 +6,7 @@
  *
  * @package		BlueFlame
  * @author		Rick Ellis
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright		Copyright (c) 2006, EllisLab, Inc.
  * @license		http://www.codeigniter.com/user_guide/license.html
  * @link		http://blueflame.ciforge.com
  * @since		Version 1.0
@@ -19,8 +19,8 @@
  * Validation Class
  *
  * @package		BlueFlame
- * @subpackage	Libraries
- * @category	Validation
+ * @subpackage		Libraries
+ * @category		Validation
  * @author		Rick Ellis
  * @link		http://blueflame.ciforge.com/user_guide/libraries/validation.html
  */
@@ -473,17 +473,40 @@ class CI_Validation {
 	 * @access	public
 	 * @param	string
 	 * @return	bool
-	 *
-	 * The BlueFlame regex for validating e-mail doesn't meet RFC2821 and RFC2822. If it did, many would find it to
-	 * be 'unexpected behavior' since almost no email addresses actually allow so many special characters. The
-	 * 'true' regex for RFC2821/RFC2822 is:
-	 * 	^[-!#$%&'*+/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+/0-9=?A-Z^_a-z{|}~])*@[a-zA-Z](-?[a-zA-Z0-9])*(\.[a-zA-Z](-?[a-zA-Z0-9])*)+$
-	 *
-	 * See http://en.wikipedia.org/wiki/E-mail_address
 	 */
 	function valid_email($str)
 	{
 		return (bool) preg_match('/^[+a-z0-9_-]+(\.[+a-z0-9_-]+)*@([a-z0-9-]+\.)+[a-z]{2,6}$/iD', $str);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Valid Email RFC
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	bool
+	 * @author	Cal Henderson
+	 * @link	http://www.iamcal.com/publish/articles/php/parsing_email/
+	 * @link	http://www.w3.org/Protocols/rfc822/
+	 */
+	function valid_email_rfc($str)
+	{
+		$qtext = '[^\\x0d\\x22\\x5c\\x80-\\xff]';
+		$dtext = '[^\\x0d\\x5b-\\x5d\\x80-\\xff]';
+		$atom = '[^\\x00-\\x20\\x22\\x28\\x29\\x2c\\x2e\\x3a-\\x3c'.
+			'\\x3e\\x40\\x5b-\\x5d\\x7f-\\xff]+';
+		$quoted_pair = '\\x5c[\\x00-\\x7f]';
+		$domain_literal = "\\x5b($dtext|$quoted_pair)*\\x5d";
+		$quoted_string = "\\x22($qtext|$quoted_pair)*\\x22";
+		$domain_ref = $atom;
+		$sub_domain = "($domain_ref|$domain_literal)";
+		$word = "($atom|$quoted_string)";
+		$domain = "$sub_domain(\\x2e$sub_domain)*";
+		$local_part = "$word(\\x2e$word)*";
+		$addr_spec = "$local_part\\x40$domain";
+		return preg_match("!^$addr_spec$!", $str) ? 1 : 0;
 	}
 
 	// --------------------------------------------------------------------
