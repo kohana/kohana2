@@ -196,7 +196,7 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * @param	string
 	 * @return	object
 	 */
-	function _where($key, $value = FALSE, $type = 'AND ')
+	function _where($key, $value = NULL, $type = 'AND ')
 	{
 		if ( ! is_array($key))
 		{
@@ -207,16 +207,7 @@ class CI_DB_active_record extends CI_DB_driver {
 		{
 			$prefix = (count($this->ar_where) == 0) ? '' : $type;
 
-			if ($v != FALSE)
-			{
-				if ( ! $this->_has_operator($k))
-				{
-					$k .= ' =';
-				}
-
-				$v = ' '.$this->escape($v);
-			}
-			else
+			if ($v === NULL)
 			{
 				if ( ! $this->_has_operator($k))
 				{
@@ -225,13 +216,29 @@ class CI_DB_active_record extends CI_DB_driver {
 
 				$v = ' NULL';
 			}
+			elseif ($v === FALSE OR $v === TRUE)
+			{
+				if ( ! $this->_has_operator($k))
+				{
+					$k .= ' =';
+				}
+
+				$v = ($v == TRUE) ? ' 1' : ' 0';
+			}
+			else
+			{
+				if ( ! $this->_has_operator($k))
+				{
+					$k .= ' =';
+				}
+
+				$v = ' '.$this->escape($v);
+			}
 
 			$this->ar_where[] = $prefix.$k.$v;
 		}
 		return $this;
 	}
-
-
 
 	// --------------------------------------------------------------------
 
@@ -748,7 +755,7 @@ class CI_DB_active_record extends CI_DB_driver {
 	{
 		$str = trim($str);
 
-		return (bool) preg_match('/(\s|<|>|!|=|is null|is not null)/i', $str);
+		return (bool) preg_match('/(\s|<|>|!|=|is |is not)/i', $str);
 	}
 
 	// --------------------------------------------------------------------
