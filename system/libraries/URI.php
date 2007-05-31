@@ -131,28 +131,19 @@ class CI_URI {
 	 */
 	function _uri_to_assoc($n = 3, $default = array(), $which = 'segment')
 	{
-		if ($which == 'segment')
-		{
-			$total_segments = 'total_segments';
-			$segment_array = 'segment_array';
-		}
-		else
-		{
-			$total_segments = 'total_rsegments';
-			$segment_array = 'rsegment_array';
-		}
+		$n = (int) abs($n);
 		
-		if ( ! is_numeric($n))
+		if ($n == 0)
 			return $default;
-	
+		
 		if (isset($this->keyval[$n]))
 			return $this->keyval[$n];
-	
+		
+		$total_segments	= ($which == 'segment') ? 'total_segments' : 'total_rsegments';
+		$segment_array	= ($which == 'segment') ? 'segment_array' : 'rsegment_array';
+		
 		if ($this->$total_segments() < $n)
 		{
-			if (count($default) == 0)
-				return array();
-			
 			$retval = array();
 			foreach ($default as $val)
 			{
