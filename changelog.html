@@ -78,7 +78,7 @@ Change Log
     <li>Added better .htaccess example for removing index.php in the URI</li>
     <li>Numerous regex optimizations and improvements</li>
     <li>Improvements to many <a href="./libraries/validation.html">Validation</a> rules</li>
-    <li>Added more functionality to <var>redirect()</var in the <a href="./helpers/url_helper.html">URL Helper</a></li>
+    <li>Added more functionality to <var>redirect()</var> in the <a href="./helpers/url_helper.html">URL Helper</a></li>
 </ul>
 <br />
 <i>Bugfixes:</i>
@@ -92,12 +92,13 @@ Change Log
     <li>Resolved a logic issue in <a href="./database/transactions.html">database transactions'</a> <var>trans_status()</var></li>
     <li>Fixed an issue where <a href="./database/active_record.html">Active Record</a> wasn't escaping numeric fields</li>
     <li>Fixed a bug in the Postgres driver that caused a fatal error</li>
-    <li>Fixed a bug in the email class that prevented Yahoo! Mail from recieving HTML emails</li>
+    <li>Fixed a bug in the email class that prevented Yahoo! Mail from receiving HTML emails</li>
     <li>Fixed/Improved <var>xss_clean()</var> to work properly with latest PHP version</li>
     <li>Fixed bug in resizing images in the <a href="./libraries/image_lib.html">Image Manipulation</a> library</li>
     <li><a href="./database/active_record.html">Active Record</a> now handles <kbd>NULL</kbd> correctly</li>
     <li>Fixed bug in the <a href="./helpers/security_helper.html">Security Helper</a> where <var>strip_image_tags()</var> wasn't properly stripping <var>img</var> tags</li>
     <li>Fixed newline characters in emails</li>
+    <li>Fixed bugs in the <kbr>magic_quotes_gpc</kbr> handling process. <var>Stripslashes()</var> is no longer applied if <kbr>magic_quotes_gpc</kbr> is off. <var>Stripslashes()</var> centralized.</li>
     <li>Fixed a few typos in the User Guide</li>
 </ul>
 
