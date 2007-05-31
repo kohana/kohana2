@@ -115,14 +115,14 @@ class CI_Router {
 		unset($this->routes['default_controller']);
 
 		// Do we need to remove the suffix specified in the config file?
-		if  ($this->config->item('url_suffix') != "")
+		if  ($this->config->item('url_suffix') != '')
 		{
-			$this->uri_string = preg_replace("|".preg_quote($this->config->item('url_suffix'))."$|", "", $this->uri_string);
+			$this->uri_string = preg_replace('|'.preg_quote($this->config->item('url_suffix')).'$|', '', $this->uri_string);
 		}
 
 		// Explode the URI Segments. The individual segments will
 		// be stored in the $this->segments array.
-		foreach(explode("/", trim(rtrim($this->uri_string, "/"), "/")) as $val)
+		foreach(explode('/', trim($this->uri_string, '/')) as $val)
 		{
 			// Filter segments for security
 			$val = $this->_filter_uri($val);
