@@ -222,7 +222,7 @@ class CI_DB_active_record extends CI_DB_driver {
 				{
 					$k .= ' IS';
 				}
-				
+
 				$v = ' NULL';
 			}
 
@@ -748,7 +748,7 @@ class CI_DB_active_record extends CI_DB_driver {
 	{
 		$str = trim($str);
 
-		return (bool) preg_match("/(\s|<|>|!|=|is null|is not null)/i", $str);
+		return (bool) preg_match('/(\s|<|>|!|=|is null|is not null)/i', $str);
 	}
 
 	// --------------------------------------------------------------------
