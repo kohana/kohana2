@@ -102,24 +102,19 @@ class Core_ORM {
 			$s = 0;
 			while ($str = substr($this->$field, $s, 50))
 			{
-				if ($s >= 50)
-				{
-					print "\n&raquo;".str_repeat(' ', 29);
-				}
-				print trim($str);
-
+				print (($s >= 50) ? "\n&raquo;".str_repeat(' ', 29) : '').trim($str);
 				$s += 50;
 			}
 
 			print "\n";
 		}
 		print "\n\n";
-
+		// Recursive debugging for all child objects
 		if (count($children = $this->_children()) > 0)
 		{
 			foreach($children as $child)
 			{
-				print '<b>CHILD &quot;'.$child.'&quot;</b>'."\n\n";
+				print '<b>CHILD &quot;'.singular($this->table).'-&gt;'.$child.'&quot;</b>'."\n\n";
 				$this->$child->debug(TRUE);
 			}
 		}
@@ -622,58 +617,35 @@ class Core_ORM {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Sync Database
+	 * Load Cache
 	 *
-	 * Regenerate the current model's database table based on the definition
+	 * Load or regenerate the cache of fields and relationships from database
 	 *
-	 * @access	public
-	 * @return 	bool
+	 * @access private
+	 * @param  bool    force rebuilding of database
+	 * @return void
 	 */
-	public function sync_database()
-	{
-		if ($this->db->table_exists($this->_table()))
-		{
-			return $this->_error(__FUNCTION__, 'Table "'.$this->_table().'" already exists.');
-		}
-		else
-		{
-			$esc = ($this->db->dbdriver == 'postgre') ? '"' : '`';
-			$table = $this->_generate_table($esc);
-			// Create the actual query that's used
-			$query = 'CREATE TABLE '.$esc.$this->_table().$esc.' ('."\n"
-			       . "\t".implode(",\n\t", $table['columns'])."\n"
-			       . ') COMMENT="'.$table['comment'].'";';
-			// Return result from simple query
-			return $this->db->simple_query($query);
-		}
-	}
-
 	private function _load_cache($rebuild = FALSE)
 	{
 		static $cache;
-
-		if ($cache == NULL)
+		// Set up the cache on the first call
+		if ($cache == NULL AND $rebuild == FALSE)
 		{
-			$debug = $this->db->db_debug;
-			$this->db->db_debug = FALSE;
-
-			if ($query = $this->db->get('orm_tables') AND $query->num_rows() > 0)
+			$rebuild = TRUE;
+			if ($this->db->simple_query('SELECT COUNT(*) FROM orm_tables'))
 			{
-				foreach($query->result_array() as $row)
+				$query = $this->db->get('orm_tables');
+				if ($query->num_rows() > 0)
 				{
-					$cache[$row['table_name']] = unserialize($row['table_data']);
+					$rebuild = FALSE;
+					foreach($query->result_array() as $row)
+					{
+						$cache[$row['table_name']] = unserialize($row['table_data']);
+					}
 				}
 			}
-			else
-			{
-				$rebuild = TRUE;
-			}
-
-			$this->db->query_count--;
-			$this->db->db_debug = $debug;
 		}
-
-
+		// Reconstruct the database cache and save it
 		if ($rebuild == TRUE)
 		{
 			$table_exists = FALSE;
@@ -690,11 +662,13 @@ class Core_ORM {
 
 			if ( ! $table_exists)
 			{
+				// Prototype for our cache table
 				$query = 'CREATE TABLE orm_tables ('."\n"
 				       . '    table_name varchar(64) NOT NULL,'."\n"
 				       . '    table_data text NOT NULL,'."\n"
 				       . '    PRIMARY KEY (table_name)'."\n"
 				       . ')';
+				// Cache table creation failed, show the user an error with the prototype
 				if ( ! $this->db->simple_query($query))
 				{
 					show_error ('Could not create the ORM cache table. Please create it using the following prototype: <br/>'."\n<pre>$query</pre>");
@@ -769,23 +743,24 @@ class Core_ORM {
 					}
 					unset($f, $r);
 				}
-
+				// Add table data to cache
 				$cache[$table] = $data;
 			}
 
 			foreach($cache as $table => $data)
 			{
 				$has_one = (isset($data['relationships']['has_one'])) ? $data['relationships']['has_one'] : FALSE;
-
+				// No foreign keys in this table
 				if ( ! is_array($has_one))
 					continue;
-
+				// Handle mapping tables
 				if ((count($has_one) == 2) == count($data['fields']))
 				{
 					$maps = array_map('plural', $has_one);
 					$mapping = implode('_', $maps);
 					if (isset($cache[$mapping]))
 					{
+						// Change to mapping relationship
 						$cache[$maps[0]]['relationships']['has_many'][] = $maps[1];
 						$cache[$maps[1]]['relationships']['belongs_to_many'][] = $maps[0];
 						$cache[$mapping]['relationships']['mapping'] = $has_one;
@@ -793,27 +768,29 @@ class Core_ORM {
 						continue;
 					}
 				}
-
+				// Are there relationships through other tables?
 				foreach($has_one as $key => $child)
 				{
+					// Table doesn't exist
 					if ( ! isset($cache[plural($child)]))
 						continue;
-
+					// Table has many children
 					$cache[plural($child)]['relationships']['has_many'][] = $table;
 					$through = $has_one;
 					unset($through[array_search($child, $through)]);
-
+					// Find relationships that are only available through external tables
 					foreach($through as $t)
 					{
+						// Table is this table, or foreign key doesn't exist
 						if (plural($t) == $table OR isset($cache[plural($child)]['fields'][$t.'_id']))
 							continue;
-
+						// Table has external relationships
 						$cache[plural($child)]['relationships']['has_many'][] = plural($t);
 						$cache[plural($child)]['relationships']['through'][plural($t)] = $table;
 					}
 				}
 			}
-
+			// Insert cache into database
 			foreach($cache as $table => $data)
 			{
 				$this->db->set('table_name', $table);
@@ -821,133 +798,14 @@ class Core_ORM {
 				$this->db->insert('orm_tables');
 			}
 		}
-
+		// Requested loading of a table that is not cached
 		if ( ! isset($cache[$this->table]))
 		{
-			show_error('The table you selected &quot;'.$this->table.'&quot; does not exist in the database.');
+			show_error('The <tt>'.$this->table.'</tt> table does not exist in the database, or has not been cached. If you are sure the table exists, please empty the <tt>orm_tables</tt> table and refresh the page.');
 		}
 
 		$this->fields = $cache[$this->table]['fields'];
 		$this->relationships = $cache[$this->table]['relationships'];
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Generate Table
-	 *
-	 * Create an ORM table definition based on model fields
-	 *
-	 * @access	public
-	 * @param	string	escape string
-	 * @param	bool	only return columns that have changed
-	 * @return 	array
-	 */
-	private function _generate_table($esc, $diff = FALSE)
-	{
-		$table = array(
-			'primary_key' => '',
-			'index'       => array(),
-			'unique'      => array(),
-			'columns'     => array(),
-			'comment'     => 'ORM Generated Table');
-		// Loop through fields and construct columns
-		foreach ($this->fields as $name => $def)
-		{
-			$col = $esc.$name.$esc;
-			$def = explode('|', $def);
-			// Extract the type of column, and it's size arguments
-			list($type, $args) = str_to_array(array_shift($def));
-			// Optional fields are allowed to be NULL
-			$null = (in_array('optional', $def));
-			switch($type)
-			{
-				case 'primary':
-					$table['primary_key'] = $esc.$name.$esc;
-					$col .= ($this->db->dbdriver == 'postgre') ? ' serial' : ' integer unsigned auto_increment';
-					$null = FALSE;
-					break;
-				case 'parent':
-				case 'foreign':
-				case 'timestamp':
-					$col .= ' integer unsigned';
-					break;
-				case 'string':
-					$length = ($args[0] > 0) ? $args[0] : '127';
-					$col .= ' varchar('.$length.')';
-					break;
-				case 'numeric':
-					$length = ($args[0] > 0) ? (int) $args[0] : 127;
-					if ($length > 10)
-					{
-						$col .= ' bigint';
-					}
-					elseif ($length > 4)
-					{
-						$col .= ' integer';
-					}
-					else
-					{
-						$col .= ' smallint';
-					}
-					break;
-				case 'boolean':
-					$col .= ' boolean';
-					$null = FALSE;
-					break;
-				case 'telephone':
-					$length = array_sum($args) + count($args) - 1;
-					$col .= ' varchar('.$length.')';
-					break;
-				case 'text':
-					$col .= ' text';
-					break;
-				case 'bigtext':
-					$col .= ' mediumtext';
-					break;
-				case 'decimal':
-					$args   = array_slice($args, 0, 2);
-					$length = implode(',', $args);
-					$col .= ' decimal('.$length.')';
-					break;
-			}
-			// Add NOT NULL
-			if ($null == FALSE)
-			{
-				$col .= ' NOT NULL';
-			}
-
-			while($rule = array_shift($def))
-			{
-				switch($rule)
-				{
-					case 'unique':
-						$table['unique'][] = $esc.$name.$esc;
-						break;
-					case 'index':
-						$table['index'][] = $esc.$name.$esc;
-						break;
-				}
-			}
-
-			$table['columns'][] = $col;
-		}
-		// Add PRIMARY KEY
-		if ($table['primary_key'] != '')
-		{
-			$table['columns'][] = 'PRIMARY KEY ('.$table['primary_key'].')';
-		}
-		// Add other KEYs
-		if (count($table['index']) > 0)
-		{
-			$table['columns'][] = 'KEY '.$esc.$this->prefix.'idx'.$esc.' ('.implode(',', $table['index']).')';
-		}
-		if (count($table['unique']) > 0)
-		{
-			$table['columns'][] = 'UNIQUE KEY '.$esc.$this->prefix.'idx'.$esc.' ('.implode(',', $table['unique']).')';
-		}
-
-		return $table;
 	}
 
 	// --------------------------------------------------------------------
