@@ -75,7 +75,7 @@ file and set its name using the <samp>$application_folder</samp> variable:</p>
 
 <h2>Relocating your Application Folder</h2>
 
-<p>It is possible to move your <dfn>application</dfn> folder to a different location on your server than your <kbd>system</kbd> folder. 
+<p>It is possible to move your <dfn>application</dfn> folder to a different location on your server than your <kbd>system</kbd> folder.
 To do so open your main <kbd>index.php</kbd> and set a <em>full server path</em> in the <samp>$application_folder</samp> variable.</p>
 
 
@@ -84,7 +84,7 @@ To do so open your main <kbd>index.php</kbd> and set a <em>full server path</em>
 
 <h2>Running Multiple Applications with one BlueFlame Installation</h2>
 
-<p>If you would like to share a common BlueFlame installation to manage several different applications simply 
+<p>If you would like to share a common BlueFlame installation to manage several different applications simply
 put all of the directories located inside your <kbd>application</kbd> folder into their
 own sub-folder.</p>
 
@@ -92,19 +92,19 @@ own sub-folder.</p>
 application folder like this:
 
 <code>system/application/<var>foo</var>/<br />
-system/application/<var>foo</var>/config/<br />
-system/application/<var>foo</var>/controllers/<br />
-system/application/<var>foo</var>/errors/<br />
-system/application/<var>foo</var>/libraries/<br />
-system/application/<var>foo</var>/models/<br />
-system/application/<var>foo</var>/views/<br />
-system/application/<samp>bar</samp>/<br />
-system/application/<samp>bar</samp>/config/<br />
-system/application/<samp>bar</samp>/controllers/<br />
-system/application/<samp>bar</samp>/errors/<br />
-system/application/<samp>bar</samp>/libraries/<br />
-system/application/<samp>bar</samp>/models/<br />
-system/application/<samp>bar</samp>/views/</code>
+application/<var>foo</var>/config/<br />
+application/<var>foo</var>/controllers/<br />
+application/<var>foo</var>/errors/<br />
+application/<var>foo</var>/libraries/<br />
+application/<var>foo</var>/models/<br />
+application/<var>foo</var>/views/<br />
+application/<samp>bar</samp>/<br />
+application/<samp>bar</samp>/config/<br />
+application/<samp>bar</samp>/controllers/<br />
+application/<samp>bar</samp>/errors/<br />
+application/<samp>bar</samp>/libraries/<br />
+application/<samp>bar</samp>/models/<br />
+application/<samp>bar</samp>/views/</code>
 
 
 <p>To select a particular application for use requires that you open your main <kbd>index.php</kbd> file and set the <dfn>$application_folder</dfn>
@@ -112,7 +112,7 @@ variable.  For example, to select the "foo" application for use you would do thi
 
 <code>$application_folder = "application/foo";</code>
 
-<p class="important"><strong>Note:</strong>&nbsp; Each of your applications will need its own <dfn>index.php</dfn> file which 
+<p class="important"><strong>Note:</strong>&nbsp; Each of your applications will need its own <dfn>index.php</dfn> file which
 calls the desired application.  The index.php file can be named anything you want.</p>
 
 
