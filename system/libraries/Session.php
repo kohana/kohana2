@@ -28,14 +28,14 @@ class CI_Session {
 
 	var $CI;
 	var $now;
-	var $encryption		= TRUE;
-	var $use_database	= FALSE;
-	var $session_table	= FALSE;
-	var $sess_length	= 7200;
-	var $sess_cookie	= 'ci_session';
-	var $userdata		= array();
-	var $gc_probability	= 5;
-
+	var $encryption     = TRUE;
+	var $use_database   = FALSE;
+	var $session_table  = FALSE;
+	var $sess_length    = 7200;
+	var $sess_cookie    = 'ci_session';
+	var $userdata       = array();
+	var $gc_probability = 5;
+	var $protected_keys = array('session_id', 'ip_address', 'user_agent', 'last_activity');
 
 	/**
 	 * Session Constructor
@@ -50,6 +50,7 @@ class CI_Session {
 		log_message('debug', "Session Class Initialized");
 		$this->sess_run();
 	}
+	
 
 	// --------------------------------------------------------------------
 
@@ -392,31 +393,24 @@ class CI_Session {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Fetch or set a flash variable
+	 * Fetch a variable and remove it
 	 *
 	 * @access	public
 	 * @param	string
-	 * @param	mixed
 	 * @return	string
 	 */
-	function flash($key, $value = false)
+	function get_once($key)
 	{
-		$data =& $this->userdata['__flash'];
+		$value = FALSE;
 
-		if ($value === FALSE)
+		if ($key != FALSE AND isset($this->userdata[$key]))
 		{
-			if (isset($data[$key]))
+			$value = $this->userdata[$key];
+			if ( ! in_array($key, $this->protected_keys))
 			{
-				$value = $data[$key];
-				unset($data[$key]);
-				$this->sess_write();
+				unset($this->userdata[$key]);
 			}
-		}
-		else
-		{
-			$data[$key] = $value;
 			$this->sess_write();
-			$value = TRUE;
 		}
 
 		return $value;
