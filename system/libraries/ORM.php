@@ -65,6 +65,13 @@ class Core_ORM {
 		{
 			$this->$field = FALSE;
 		}
+		if (count($children = $this->_children()) > 0)
+		{
+			foreach($children as $child)
+			{
+				$this->$child = $CI->load->orm($child);
+			}
+		}
 		// Loading complete
 		log_message('debug', 'ORM Model Initialized for '.ucfirst($this->table)).' table.';
 	}
@@ -382,6 +389,7 @@ class Core_ORM {
 		$data = $this->_data();
 		$this->_cache($data);
 		$this->model_loaded = TRUE;
+
 		if ($parent != FALSE)
 		{
 			$this->model_parent = $parent;
@@ -1118,16 +1126,16 @@ class Core_ORM {
 		// Find fields for selection
 		foreach ($this->_fields() as $key)
 		{
-			$select[] = "$this->table.$key";
+			$select[] = sprintf('%s.%s', $this->table, $key);
 		}
 		// Add children for joining
 		if (count($children = $this->_children()) > 0)
 		{
 			$CI =& get_instance();
+			$esc = (strpos($this->db->dbdriver, 'mysql') !== FALSE) ? '`' : '"';
 			foreach($children as $child)
 			{
 				$key = $child.'_id';
-				$this->$child = $CI->load->orm($child);
 				$table = $this->$child->_table();
 
 				$this->db->join($table, sprintf('%s.%s = %s.%s', $this->table, $key, $table, $key), 'left');
@@ -1135,7 +1143,7 @@ class Core_ORM {
 				{
 					// @note: We use "->" as the separator between $child and
 					// $field to allow a wide range of field names
-					$select[] = sprintf('%s.%s AS `%s->%s`', $table, $field, $child, $field);
+					$select[] = sprintf('%s.%s AS '.$esc.'%s->%s'.$esc, $table, $field, $child, $field);
 				}
 			}
 		}
@@ -1213,5 +1221,5 @@ class Core_ORM {
 
 }
 
-// END ORM_Model Class
+// END Core_ORM Class
 ?>
