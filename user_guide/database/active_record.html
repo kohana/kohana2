@@ -50,7 +50,7 @@ window.onload = function() {
 <a href="index.html">Database Library</a> &nbsp;&#8250;&nbsp;
 Active Record
 </td>
-<td id="searchbox"><!--<!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.BlueFlame.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>-->--></td>
+<td id="searchbox"><!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.BlueFlame.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>--></td>
 </tr>
 </table>
 <!-- END BREADCRUMB -->
@@ -199,38 +199,38 @@ $this->db->join('comments', 'comments.id = blogs.id', <strong>'left'</strong>);<
 	<code>$this->db->where('name', $name);
 	<br /><br />// Produces: WHERE name = 'Joe'
 	</code>
-	
+
 	<p>Notice that the equal sign is added for you.</p>
-	
+
 	<p>If you use multiple function calls they will be chained together with <var>AND</var> between them:</p>
-	
+
 	<code>$this->db->where('name', $name);<br />
 	$this->db->where('title', $title);<br />
 	$this->db->where('status', $status);
 	<br /><br />// WHERE = 'Joe' AND title = 'boss' AND status = 'active'
 	</code>
-	
+
 
 	</li>
-	
+
 	<li><strong>Custom key/value method:</strong>
-	
+
 	<p>You can include an operator in the first parameter in order to control the comparison:</p>
-	
+
 	<code>$this->db->where('name !=', $name);<br />
 	$this->db->where('id <', $id);
 	<br /><br />// Produces: WHERE name != 'Joe' AND id < 45
 	</code>
 
 
-	
+
 	</li>
 	<li><strong>Associative array method:</strong>
 
 
 	<code>
 	$array = array('name' => $name, 'title' => $title, 'status' => $status);<br /><br />
-	
+
 	$this->db->where($array);
 	<br /><br />// Produces: WHERE name = 'Joe' AND title = 'boss' AND status = 'active'
 	</code>
@@ -239,12 +239,12 @@ $this->db->join('comments', 'comments.id = blogs.id', <strong>'left'</strong>);<
 
 	<code>
 	$array = array('name !=' => $name, 'id <' => $id, 'date >' => $date);<br /><br />
-	
+
 	$this->db->where($array);</code>
 
 	</li>
 		<li><strong>Custom string:</strong>
-		
+
 		<p>You can write your own clauses manually:</p>
 
 		<code>
@@ -263,9 +263,9 @@ $this->db->where('name !=', $name);<br />
 $this->db->orwhere('id >', $id);
 <br /><br />// Produces: WHERE name != 'Joe' OR id > 50
 </code>
-	
-	
-	
+
+
+
 
 <h2>$this->db->like();</h2>
 <p>This function enables you to generate <strong>LIKE</strong> clauses, useful for doing searches.</p>
@@ -279,29 +279,29 @@ $this->db->orwhere('id >', $id);
 	<code>$this->db->like('title', $match);
 	<br /><br />// Produces: WHERE title LIKE '%match%'
 	</code>
-		
+
 	<p>If you use multiple function calls they will be chained together with <var>AND</var> between them:</p>
-	
+
 	<code>$this->db->like('title', $match);<br />
 	$this->db->like('body', $match);
 	<br /><br />// WHERE title LIKE '%match%' AND  body LIKE '%match%'
 	</code>
-	
+
 	</li>
-	
+
 	<li><strong>Associative array method:</strong>
 
 	<code>
 	$array = array('title' => $match, 'page1' => $match, 'page2' => $match);<br /><br />
-	
+
 	$this->db->like($array);
 	<br /><br />// WHERE title LIKE '%match%' AND  page1 LIKE '%match%' AND  page2 LIKE '%match%'
 	</code>
 
 	</li>
 </ol>
-	
-	
+
+
 <h2>$this->db->orlike();</h2>
 <p>This function is identical to the one above, except that multiple instances are joined by OR:</p>
 
@@ -313,30 +313,30 @@ $this->db->orlike('body', $match);
 
 
 
-	
+
 <h2>$this->db->groupby();</h2>
 
 <p>Permits you to write the GROUP BY portion of your query:</p>
-	
+
 <code>$this->db->groupby("title");
 <br /><br />// Produces: GROUP BY title
 </code>
 
 <p>You can also pass an array of multiple values as well:</p>
-	
+
 <code>$this->db->groupby(array("title", "date");
 <br /><br />// Produces: GROUP BY title, date
 </code>
-	
-		
+
+
 <h2>$this->db->having();</h2>
 
 <p>Permits you to write the HAVING portion of your query:</p>
-	
+
 <code>$this->db->having('user_id = 45');
 <br /><br />// Produces: HAVING 'user_id = 45'
 </code>
-	
+
 <p>You can also pass an array of multiple values as well:</p>
 
 
@@ -344,22 +344,22 @@ $this->db->orlike('body', $match);
 <br /><br />// Produces: HAVING title = 'My Title', 'id < 45'
 </code>
 
-	
-	
+
+
 <h2>$this->db->orderby();</h2>
 <p>Lets you set an ORDER BY clause. The first parameter contains the name of the column you would like to order by.
 The second parameter lets you set the direction of the result.  Options are <kbd>asc</kbd> or <kbd>desc</kbd> or <kbd>RAND()</kbd></p>
-	
+
 <code>$this->db->orderby("title", "desc");
 <br /><br />// Produces: ORDER BY title DESC
 </code>
 
 <p>You can also pass your own string in the first parameter:</p>
-	
+
 <code>$this->db->orderby('title desc, name asc');
 <br /><br />// Produces: ORDER BY title DESC, name ASC
 </code>
-	
+
 
 
 <h2>$this->db->limit();</h2>
@@ -404,7 +404,7 @@ $this->db->count_records('<var>my_table</var>');
 
 <a name="insert">&nbsp;</a>
 <h1>Inserting Data</h1>
-	
+
 <h2>$this->db->insert();</h2>
 <p>Generates an insert string based on the data you supply, and runs the query. You can either pass an
 <strong>array</strong> or an <strong>object</strong> to the function.  Here is an example using an array:</p>
@@ -442,9 +442,9 @@ $this->db->insert('mytable', $object);
 <p>The first parameter will contain the table name, the second is an associative array of values.</p>
 
 <p class="important"><strong>Note:</strong> All values are escaped automatically producing safer queries.</p>
-	
-	
-	
+
+
+
 
 <h2>$this->db->set();</h2>
 <p>This function enables you to set values for <dfn>inserts</dfn> or <dfn>updates</dfn>.</p>
@@ -493,10 +493,10 @@ $this->db->insert('mytable');
 </code>
 
 
-	
+
 <a name="update">&nbsp;</a>
 <h1>Updating Data</h1>
-	
+
 <h2>$this->db->update();</h2>
 <p>Generates an update string and runs the query based on the data you supply.  You can pass an
 <strong>array</strong> or an <strong>object</strong> to the function. Here is an example using
@@ -542,7 +542,7 @@ $this->db->update('mytable', $object);
 
 
 <p class="important"><strong>Note:</strong> All values are escaped automatically producing safer queries.</p>
-	
+
 <p>You'll notice the use of the <dfn>$this->db->where()</dfn> function, enabling you to set the WHERE clause.
 You can optionally pass this information directly into the update function as a string:</p>
 
@@ -551,15 +551,15 @@ You can optionally pass this information directly into the update function as a 
 <p>Or as an array:</p>
 
 <code>$this->db->update('mytable', $data, array('id' => $id));</code>
-	
+
 <p>You may also use the <dfn>$this->db->set()</dfn> function described above when performing updates.</p>
 
-	
+
 <a name="delete">&nbsp;</a>
 <h1>Deleting Data</h1>
 
 
-	
+
 <h2>$this->db->delete();</h2>
 <p>Generates a delete SQL string and runs the query.</p>
 
