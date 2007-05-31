@@ -25,7 +25,7 @@
  * @link		http://www.codeigniter.com/user_guide/database/
  */
 class CI_DB_mysqli_result extends CI_DB_result {
-
+	
 	/**
 	 * Number of rows in the result set
 	 *
@@ -36,7 +36,7 @@ class CI_DB_mysqli_result extends CI_DB_result {
 	{
 		return @mysqli_num_rows($this->result_id);
 	}
-
+	
 	// --------------------------------------------------------------------
 
 	/**
@@ -67,7 +67,7 @@ class CI_DB_mysqli_result extends CI_DB_result {
 		{
 			$field_names[] = $field->name;
 		}
-
+		
 		return $field_names;
 	}
 
@@ -89,30 +89,29 @@ class CI_DB_mysqli_result extends CI_DB_result {
 	 */
 	function field_data()
 	{
-		$result = array();
+		$retval = array();
 		while ($field = mysqli_fetch_field($this->result_id))
-		{
-			$F = new stdClass();
-			$F->name        = $field->name;
-			$F->type        = $this->_field_type($field->type);
-			$F->default     = $field->def;
-			$F->max_length  = $field->max_length;
-			$F->primary_key = (bool) ($field->flags & MYSQLI_PRI_KEY_FLAG);
-			$F->unsigned    = (bool) ($field->flags & MYSQLI_UNSIGNED_FLAG);
+		{	
+			$F 				= new stdClass();
+			$F->name 		= $field->name;
+			$F->type 		= $field->type;
+			$F->default		= $field->def;
+			$F->max_length	= $field->max_length;
+			$F->primary_key = ($field->flags & MYSQLI_PRI_KEY_FLAG) ? 1 : 0;
 			
-			$result[] = $F;
+			$retval[] = $F;
 		}
-
-		return $result;
+		
+		return $retval;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
 	 * Free the result
 	 *
 	 * @return	null
-	 */
+	 */		
 	function free_result()
 	{
 		if (is_resource($this->result_id))
@@ -153,7 +152,7 @@ class CI_DB_mysqli_result extends CI_DB_result {
 	{
 		return mysqli_fetch_assoc($this->result_id);
 	}
-
+	
 	// --------------------------------------------------------------------
 
 	/**
@@ -169,47 +168,6 @@ class CI_DB_mysqli_result extends CI_DB_result {
 		return mysqli_fetch_object($this->result_id);
 	}
 	
-	// --------------------------------------------------------------------
-
-	/**
-	 * Fetch field type
-	 *
-	 * @access	private
-	 * @return	null
-	 */
-	function _field_type($type)
-	{
-		$types = array(
-			MYSQLI_TYPE_NULL        =>  NULL,
-			MYSQLI_TYPE_DECIMAL     => 'decimal',
-			MYSQLI_TYPE_NEWDECIMAL  => 'decimal',
-			MYSQLI_TYPE_BIT         => 'bit',
-			MYSQLI_TYPE_TINY        => 'tinyint',
-			MYSQLI_TYPE_SHORT       => 'int',
-			MYSQLI_TYPE_LONG        => 'int',
-			MYSQLI_TYPE_FLOAT       => 'float',
-			MYSQLI_TYPE_DOUBLE      => 'double',
-			MYSQLI_TYPE_TIMESTAMP   => 'timestamp',
-			MYSQLI_TYPE_LONGLONG    => 'bigint',
-			MYSQLI_TYPE_INT24       => 'mediumint',
-			MYSQLI_TYPE_DATE        => 'date',
-			MYSQLI_TYPE_TIME        => 'time',
-			MYSQLI_TYPE_DATETIME    => 'datetime',
-			MYSQLI_TYPE_YEAR        => 'year',
-			MYSQLI_TYPE_NEWDATE     => 'date',
-			MYSQLI_TYPE_ENUM        => 'enum',
-			MYSQLI_TYPE_SET         => 'set',
-			MYSQLI_TYPE_TINY_BLOB   => 'tinyblob',
-			MYSQLI_TYPE_MEDIUM_BLOB => 'mediumblob',
-			MYSQLI_TYPE_LONG_BLOB   => 'longblob',
-			MYSQLI_TYPE_BLOB        => 'blob',
-			MYSQLI_TYPE_VAR_STRING  => 'varchar',
-			MYSQLI_TYPE_STRING      => 'char',
-			MYSQLI_TYPE_GEOMETRY    => 'geometry');
-		
-		return (isset($types[$type]) ? $types[$type] : FALSE);
-	}
-
 }
 
 ?>
