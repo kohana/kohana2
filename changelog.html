@@ -62,21 +62,42 @@ Change Log
 
 <h1>Change Log</h1>
 <h2>Version 1.0</h2>
-<p>Release Date: -- </p>
+<p>Release Date: May 31, 2007</p>
+<i>Features:</i>
 <ul>
     <li>Added GET support to URIs</li>
-    <li>Numerous optimizations for better performance</li>
+    <li>Added missing functionality to the cookie helper</li>
+    <li>Added <var>$this->db->count_records()</var></li>
+    <li>Added <var>$this->session->flash()</var> to the <a href="./libraries/sessions.html">Session</a> class</li>
+    <li>New <a href="./libraries/validation.html">Validation</a> rules <kbd>digit</kbd> and <kbd>valid_email_rfc</kbd></li>
+    <li>Added individual query times in the
+</ul>
+<br />
+<i>Improvements:</i>
+<ul>
+    <li>Added better .htaccess example for removing index.php in the URI</li>
+    <li>Numerous regex optimizations and improvements</li>
+    <li>Improvements to many <a href="./libraries/validation.html">Validation</a> rules</li>
+    <li>Added more functionality to <var>redirect()</var in the <a href="./helpers/url_helper.html">URL Helper</a></li>
+</ul>
+<br />
+<i>Bugfixes:</i>
+<ul>
+    <li>Fixed a fatal error in the PostgreSQL driver for <var>insert_id()</var></li>
     <li>Changed how <a href="./database/active_record.html">Active Record</a> is enabled/disabled in configuration</li>
     <li>Fixed a bug in the loader in regards to the database</li>
-    <li>Added missing functionality to the cookie helper</li>
-    <li>Added better .htaccess example for removing index.php in the URI</li>
     <li>Fixed bugs in the <a href="./helpers/inflector_helper.html">Inflector Helper</a> dealing with plural and singular words that end with "s"</li>
     <li>Fixed a bug where the loader class tries to redeclare extended libraries</li>
     <li>Fixed a bug in the email class having to deal with newline characters</li>
-    <li>Resolved a logic issue in <a href="./database/transactions.html">database transactions'</a> trans_status()</li>
+    <li>Resolved a logic issue in <a href="./database/transactions.html">database transactions'</a> <var>trans_status()</var></li>
     <li>Fixed an issue where <a href="./database/active_record.html">Active Record</a> wasn't escaping numeric fields</li>
     <li>Fixed a bug in the Postgres driver that caused a fatal error</li>
     <li>Fixed a bug in the email class that prevented Yahoo! Mail from recieving HTML emails</li>
+    <li>Fixed/Improved <var>xss_clean()</var> to work properly with latest PHP version</li>
+    <li>Fixed bug in resizing images in the <a href="./libraries/image_lib.html">Image Manipulation</a> library</li>
+    <li><a href="./database/active_record.html">Active Record</a> now handles <kbd>NULL</kbd> correctly</li>
+    <li>Fixed bug in the <a href="./helpers/security_helper.html">Security Helper</a> where <var>strip_image_tags()</var> wasn't properly stripping <var>img</var> tags</li>
+    <li>Fixed newline characters in emails</li>
     <li>Fixed a few typos in the User Guide</li>
 </ul>
 
