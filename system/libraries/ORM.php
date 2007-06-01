@@ -40,7 +40,6 @@ class Core_ORM {
 	// Must always be FALSE here
 	private $model_loaded = FALSE;
 	private $model_parent = FALSE;
-	private $model_cache  = array();
 	private $model_errors = array();
 
 	/**
@@ -52,10 +51,9 @@ class Core_ORM {
 	{
 		// Need access to some CI things
 		$CI =& get_instance();
-		$CI->load->helper('inflector');
-
 		$this->db =& $CI->db;
 		// Set table prefix
+		$this->relationships = $CI->config->item($table, 'relationships');
 		$this->prefix = $table.'_';
 		$this->table  = plural($table);
 		// Load model cache from database
@@ -262,7 +260,7 @@ class Core_ORM {
 	 * @param	mixed	variable value
 	 * @return 	bool
 	 */
-	public function __set($key, $value)
+ 	public function __set($key, $value)
 	{
 		$key = (string) $key;
 
@@ -656,7 +654,6 @@ class Core_ORM {
 					$table_exists = TRUE;
 					continue;
 				}
-
 				$cache[$table] = $this->db->table_data($table);
 			}
 
@@ -805,7 +802,7 @@ class Core_ORM {
 		}
 
 		$this->fields = $cache[$this->table]['fields'];
-		$this->relationships = $cache[$this->table]['relationships'];
+		// $this->relationships = $cache[$this->table]['relationships'];
 	}
 
 	// --------------------------------------------------------------------

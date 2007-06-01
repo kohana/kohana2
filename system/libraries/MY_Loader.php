@@ -22,11 +22,11 @@ class MY_Loader extends CI_Loader {
 		if ($table == FALSE)
 			return FALSE;
 
+		$this->helper('inflector');
+		$this->config('relationships', TRUE);
 		if ( ! class_exists('CI_DB'))
 		{
-			$CI =& get_instance();
-			$CI->load->database();
-			unset($CI);
+			$this->database();
 		}
 
 		require_once($this->_ci_find_class('ORM'));
