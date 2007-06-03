@@ -131,7 +131,7 @@ function camelize($str)
  */
 function underscore($str)
 {
-	return preg_replace('/[\s]+/', '_', strtolower(trim($str)));
+	return preg_replace('/\s+/', '_', strtolower(trim($str)));
 }
 
 // --------------------------------------------------------------------
@@ -147,7 +147,7 @@ function underscore($str)
  */
 function humanize($str)
 {
-	return ucwords(preg_replace('/[_]+/', ' ', strtolower(trim($str))));
+	return ucwords(preg_replace('/_+/', ' ', strtolower(trim($str))));
 }
 
 ?>
