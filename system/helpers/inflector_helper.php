@@ -39,7 +39,7 @@
  */
 function singular($str)
 {
-	$str = trim(rtrim($str));
+	$str = trim($str);
 	$end = substr($str, -3);
 
 	if ($end == 'ies')
@@ -76,7 +76,7 @@ function singular($str)
  */
 function plural($str)
 {
-	$str = trim(rtrim($str));
+	$str = trim($str);
 	$end = substr($str, -1);
 	$low = (strcmp($end, strtolower($end)) === 0) ? TRUE : FALSE;
 
