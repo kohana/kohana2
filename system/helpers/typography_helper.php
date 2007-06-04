@@ -530,7 +530,7 @@ class Auto_typography {
 		}
 			
 		$str = str_replace("\n\n", "</p>\n\n<p>", $str);
-		$str = preg_replace("/([^\n])(\n)([^\n])/", "\\1<br />\\2\\3", $str);
+		$str = preg_replace('/(?<!\n)(?=\n[^\n])/', '<br />', $str);
 		
 		return '<p>'.$str.'</p>';
 	}	
