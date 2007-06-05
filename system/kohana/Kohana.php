@@ -35,7 +35,7 @@ define('BF_VERSION', '1.0');
  *  Load the global functions
  * ------------------------------------------------------
  */
-require(BASEPATH.'blueflame/Common'.EXT);
+require(BASEPATH.'kohana/Common'.EXT);
 
 /*
  * ------------------------------------------------------
@@ -119,11 +119,11 @@ $LANG	=& load_class('Language');
 if (floor(phpversion()) < 5)
 {
 	load_class('Loader', FALSE);
-	require(BASEPATH.'blueflame/Base4'.EXT);
+	require(BASEPATH.'kohana/Base4'.EXT);
 }
 else
 {
-	require(BASEPATH.'blueflame/Base5'.EXT);
+	require(BASEPATH.'kohana/Base5'.EXT);
 }
 
 // Load the base controller class
