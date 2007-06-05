@@ -32,7 +32,7 @@
 |---------------------------------------------------------------
 |
 | If you want this front controller to use a different "application"
-| folder then the default one you can set its name here. The folder 
+| folder then the default one you can set its name here. The folder
 | can also be renamed or relocated anywhere on your server.
 | For more info please see the user guide:
 | http://www.codeigniter.com/user_guide/general/managing_apps.html
@@ -102,7 +102,7 @@ else
 |---------------------------------------------------------------
 |
 | Some older versions of PHP don't support the E_STRICT constant
-| so we need to explicitly define it otherwise the Exception class 
+| so we need to explicitly define it otherwise the Exception class
 | will generate errors.
 |
 */
@@ -119,5 +119,5 @@ if ( ! defined('E_STRICT'))
 | And away we go...
 |
 */
-require_once BASEPATH.'blueflame/BlueFlame'.EXT;
+require_once BASEPATH.'kohana/Kohana'.EXT;
 ?>
