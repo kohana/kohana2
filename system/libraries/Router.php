@@ -29,15 +29,15 @@
 class CI_Router {
 
 	var $config;
-	var $uri_string		= '';
-	var $segments		= array();
-	var $rsegments		= array();
-	var $routes 		= array();
-	var $error_routes	= array();
-	var $class			= '';
-	var $method			= 'index';
-	var $directory		= '';
-	var $uri_protocol 	= 'auto';
+	var $uri_string   = '';
+	var $segments     = array();
+	var $rsegments    = array();
+	var $routes       = array();
+	var $error_routes = array();
+	var $class        = '';
+	var $method       = 'index';
+	var $directory    = '';
+	var $uri_protocol = 'auto';
 	var $default_controller;
 	var $scaffolding_request = FALSE; // Must be set to FALSE
 
@@ -320,10 +320,6 @@ class CI_Router {
 			$path = (isset($_SERVER['ORIG_PATH_INFO'])) ? $_SERVER['ORIG_PATH_INFO'] : @getenv('ORIG_PATH_INFO');
 			if ($path != '' AND $path != "/".SELF)
 				return $path;
-			
-			// Nothing yet? Let's try REQUEST_URI
-			if (isset($_SERVER['REQUEST_URI']))
-				return $this->_parse_request_uri();
 
 			// We've exhausted all our options
 			return '';
