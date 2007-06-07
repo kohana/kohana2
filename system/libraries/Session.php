@@ -299,13 +299,13 @@ class CI_Session {
 			$sessid .= mt_rand(0, mt_getrandmax());
 		}
 
-		$this->userdata = array(
-							'session_id' 	=> md5(uniqid($sessid, TRUE)),
-							'ip_address' 	=> $this->CI->input->ip_address(),
-							'user_agent' 	=> substr($this->CI->input->user_agent(), 0, 50),
-							'last_activity'	=> $this->now
-							);
-
+		$this->userdata = array
+		(
+			'session_id'    => md5(uniqid($sessid, TRUE)),
+			'ip_address'    => $this->CI->input->ip_address(),
+			'user_agent'    => substr($this->CI->input->user_agent(), 0, 50),
+			'last_activity' => $this->now
+		);
 
 		// Save the session in the DB if needed
 		if ($this->use_database === TRUE)
