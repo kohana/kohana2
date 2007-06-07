@@ -36,26 +36,7 @@
  */	
 function nl2br_except_pre($str)
 {
-	$ex = explode("pre>",$str);
-	$ct = count($ex);
-	
-	$newstr = "";
-	for ($i = 0; $i < $ct; $i++)
-	{
-		if (($i % 2) == 0)
-		{
-			$newstr .= nl2br($ex[$i]);
-		}
-		else
-		{
-			$newstr .= $ex[$i];
-		}
-		
-		if ($ct - 1 != $i)
-			$newstr .= "pre>";
-	}
-	
-	return $newstr;
+	return preg_replace('#(?:(?<=^(?!<pre[\s>]))|(?<=</pre>)).+?(?=(?:<pre[\s>]|$))#isDe', 'nl2br(\'$0\')', $str);
 }
 	
 // ------------------------------------------------------------------------
@@ -89,13 +70,13 @@ function auto_typography($str)
 class Auto_typography {
 
 	// Block level elements that should not be wrapped inside <p> tags
-	var $block_elements = 'div|blockquote|pre|code|h\d|script|ol|un';
+	var $block_elements = 'div|blockquote|pre|code|h[1-6]|script|ol|un';
 	
 	// Elements that should not have <p> and <br /> tags within them.
 	var $skip_elements	= 'pre|ol|ul';
 	
 	// Tags we want the parser to completely ignore when splitting the string.
-	var $ignore_elements = 'a|b|i|em|strong|span|img|li';	
+	var $ignore_elements = 'a|b|i|u|em|strong|span|img|li';	
 
 
 	/**
@@ -112,7 +93,7 @@ class Auto_typography {
 		$str = ' '.$str.' ';
 		
 		// Standardize Newlines to make matching easier
-		$str = preg_replace("/(\r\n|\r)/", "\n", $str);
+		$str = preg_replace('/\r[\n]?/', "\n", $str);
 		
 		/*
 		 * Reduce line breaks
@@ -122,7 +103,7 @@ class Auto_typography {
 		 * of two since there's no benefit to more.
 		 *
 		 */
-		$str = preg_replace("/\n\n+/", "\n\n", $str);
+		$str = preg_replace('/\n{3,}/', "\n\n", $str);
 
 		/*
 		 * Convert quotes within tags to temporary marker
