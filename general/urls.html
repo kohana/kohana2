@@ -2,7 +2,7 @@
 <html>
 <head>
 
-<title>BlueFlame User Guide</title>
+<title>Kohana User Guide</title>
 
 <style type='text/css' media='all'>@import url('../userguide.css');</style>
 <link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
@@ -22,7 +22,7 @@ window.onload = function() {
 <meta http-equiv= 'pragma' content='no-cache' />
 <meta name='robots' content='all' />
 <meta name='author' content='Rick Ellis' />
-<meta name='description' content='BlueFlame User Guide' />
+<meta name='description' content='Kohana User Guide' />
 
 </head>
 <body>
@@ -33,7 +33,7 @@ window.onload = function() {
 <div id="masthead">
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
-<td><h1>BlueFlame User Guide Version 1.0</h1></td>
+<td><h1>Kohana User Guide Version 1.0</h1></td>
 <td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
 </tr>
 </table>
@@ -45,11 +45,11 @@ window.onload = function() {
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
 <td id="breadcrumb">
-<a href="http://blueflame.ciforge.com/">BlueFlame Home</a> &nbsp;&#8250;&nbsp;
+<a href="http://kohanaphp.com/">Kohana Home</a> &nbsp;&#8250;&nbsp;
 <a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
 URLS
 </td>
-<td id="searchbox"><!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.BlueFlame.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>--></td>
+<td id="searchbox"><!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.Kohana.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>--></td>
 </tr>
 </table>
 <!-- END BREADCRUMB -->
@@ -61,10 +61,10 @@ URLS
 <div id="content">
 
 
-<h1>BlueFlame URLs</h1>
+<h1>Kohana URLs</h1>
 
-<p>By default, URLs in BlueFlame are designed to be search-engine and human friendly.  Rather than using the standard "query string"
-approach to URLs that is synonymous with dynamic systems, BlueFlame uses a <strong>segment-based</strong> approach:</p>
+<p>By default, URLs in Kohana are designed to be search-engine and human friendly.  Rather than using the standard "query string"
+approach to URLs that is synonymous with dynamic systems, Kohana uses a <strong>segment-based</strong> approach:</p>
 
 <code>www.your-site.com/<var>news</var>/<dfn>article</dfn>/<samp>my_article</samp></code>
 
@@ -105,13 +105,13 @@ RewriteCond %{REQUEST_FILENAME} !-f<br />
 RewriteCond %{REQUEST_FILENAME} !-d<br />
 RewriteRule ^(.*)$ index.php/$1 [L] </code>
 
-<p>The above example determines if the request points to an invalid file or directory and rewrites it to the CI front controller.  If a request is made to an existing dir/file, Apache serves it.  If not, Apache sends it to BlueFlame with the full request appended.  If the request can be translated to a controller/method by the BlueFlame, it is loaded.  If not, the BlueFlame 404 is displayed.</p>
+<p>The above example determines if the request points to an invalid file or directory and rewrites it to the CI front controller.  If a request is made to an existing dir/file, Apache serves it.  If not, Apache sends it to Kohana with the full request appended.  If the request can be translated to a controller/method by the Kohana, it is loaded.  If not, the Kohana 404 is displayed.</p>
 
 
 <h2>Adding a URL Suffix</h2>
 
 <p>In your <dfn>config/config.php</dfn> file you can specify a suffix that will be added to all URLs generated
-by BlueFlame.  For example, if a URL is this:
+by Kohana.  For example, if a URL is this:
 
 <code>www.your-site.com/index.php/products/view/shoes</code>
 
@@ -126,7 +126,7 @@ by BlueFlame.  For example, if a URL is this:
 
 <code>index.php?c=products&m=view&id=345</code>
 
-<p>BlueFlame optionally supports this capability, which can be enabled in your <dfn>application/config.php</dfn> file. If you
+<p>Kohana optionally supports this capability, which can be enabled in your <dfn>application/config.php</dfn> file. If you
 open your config file you'll see these items:</p>
 
 <code>$config['enable_query_strings'] = FALSE;<br />
@@ -155,7 +155,7 @@ Previous Topic:&nbsp;&nbsp;<a href="index.html">Getting Started</a>
 <a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
 Next Topic:&nbsp;&nbsp;<a href="controllers.html">Controllers</a>
 <p>
-<p><a href="http://blueflame.ciforge.com">BlueFlame</a> &nbsp;&middot;&nbsp; Copyright &#169; 2007 &nbsp;&middot;&nbsp; <a href="http://ellislab.com/">Ellislab, Inc.</a></p>
+<p><a href="http://codeigniter.com">CodeIgniter</a> &nbsp;&middot;&nbsp; Copyright &#169; 2007 &nbsp;&middot;&nbsp; <a href="http://ellislab.com/">Ellislab, Inc.</a></p>
 </div>
 
 </body>

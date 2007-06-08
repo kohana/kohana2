@@ -2,7 +2,7 @@
 <html>
 <head>
 
-<title>BlueFlame User Guide</title>
+<title>Kohana User Guide</title>
 
 <style type='text/css' media='all'>@import url('../userguide.css');</style>
 <link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
@@ -22,7 +22,7 @@ window.onload = function() {
 <meta http-equiv= 'pragma' content='no-cache' />
 <meta name='robots' content='all' />
 <meta name='author' content='Rick Ellis' />
-<meta name='description' content='BlueFlame User Guide' />
+<meta name='description' content='Kohana User Guide' />
 
 </head>
 <body>
@@ -33,7 +33,7 @@ window.onload = function() {
 <div id="masthead">
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
-<td><h1>BlueFlame User Guide Version 1.0</h1></td>
+<td><h1>Kohana User Guide Version 1.0</h1></td>
 <td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
 </tr>
 </table>
@@ -45,11 +45,11 @@ window.onload = function() {
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
 <td id="breadcrumb">
-<a href="http://blueflame.ciforge.com/">BlueFlame Home</a> &nbsp;&#8250;&nbsp;
+<a href="http://kohanaphp.com/">Kohana Home</a> &nbsp;&#8250;&nbsp;
 <a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
 Creating Ancillary Classes
 </td>
-<td id="searchbox"><!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.BlueFlame.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>--></td>
+<td id="searchbox"><!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.Kohana.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>--></td>
 </tr>
 </table>
 <!-- END BREADCRUMB -->
@@ -63,15 +63,15 @@ Creating Ancillary Classes
 <h1>Creating Ancillary Classes</h1>
 
 <p>In some cases you may want to develop classes that exist apart from your controllers but have the ability to
-utilize all of BlueFlame's resources. This is easily possible as you'll see.</p>
+utilize all of Kohana's resources. This is easily possible as you'll see.</p>
 
 <h2>get_instance()</h2>
 
 
-<p><strong>Any class that you instantiate within your controller functions can access BlueFlame's native resources</strong> simply by using the <kbd>get_instance()</kbd> function.
-This function returns the main BlueFlame object.</p>
+<p><strong>Any class that you instantiate within your controller functions can access Kohana's native resources</strong> simply by using the <kbd>get_instance()</kbd> function.
+This function returns the main Kohana object.</p>
 
-<p>Normally, to call any of the available BlueFlame functions requires you to use the <kbd>$this</kbd> construct:</p>
+<p>Normally, to call any of the available Kohana functions requires you to use the <kbd>$this</kbd> construct:</p>
 
 <code>
 <strong>$this</strong>->load->helper('url');<br />
@@ -81,10 +81,10 @@ etc.
 </code>
 
 <p><kbd>$this</kbd>, however, only works within your controllers, your models, or your views.
-If you would like to use BlueFlame's classes from within your own custom classes you can do so as follows:</p>
+If you would like to use Kohana's classes from within your own custom classes you can do so as follows:</p>
 
 
-<p>First, assign the BlueFlame object to a variable:</p>
+<p>First, assign the Kohana object to a variable:</p>
 
 <code>$CI =& get_instance();</code>
 
@@ -102,7 +102,7 @@ etc.
 <br /><br />
 <var>$CI =& get_instance();</var>
 <br /><br />
-This is very important. Assigning by reference allows you to use the original BlueFlame object rather than creating a copy of it.</p>
+This is very important. Assigning by reference allows you to use the original Kohana object rather than creating a copy of it.</p>
 </div>
 <!-- END CONTENT -->
 
@@ -115,7 +115,7 @@ Previous Topic:&nbsp;&nbsp;<a href="creating_libraries.html">Creating Core Libra
 <a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
 Next Topic:&nbsp;&nbsp;<a href="autoloader.html">Auto-loading Resources</a>
 <p>
-<p><a href="http://blueflame.ciforge.com">BlueFlame</a> &nbsp;&middot;&nbsp; Copyright &#169; 2007 &nbsp;&middot;&nbsp; <a href="http://ellislab.com/">Ellislab, Inc.</a></p>
+<p><a href="http://codeigniter.com">CodeIgniter</a> &nbsp;&middot;&nbsp; Copyright &#169; 2007 &nbsp;&middot;&nbsp; <a href="http://ellislab.com/">Ellislab, Inc.</a></p>
 </div>
 
 </body>

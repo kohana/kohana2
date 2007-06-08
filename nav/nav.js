@@ -21,7 +21,7 @@ function create_menu(basepath)
 		
 		'<h3>Installation</h3>' +
 		'<ul>' +
-			'<li><a href="'+base+'installation/downloads.html">Downloading BlueFlame</a></li>' +
+			'<li><a href="'+base+'installation/downloads.html">Downloading Kohana</a></li>' +
 			'<li><a href="'+base+'installation/index.html">Installation Instructions</a></li>' +
 			'<li><a href="'+base+'installation/upgrading.html">Upgrading from a Previous Version</a></li>' +
 			'<li><a href="'+base+'installation/troubleshooting.html">Troubleshooting</a></li>' +
@@ -29,7 +29,7 @@ function create_menu(basepath)
 		
 		'<h3>Introduction</h3>' +
 		'<ul>' +
-			'<li><a href="'+base+'overview/at_a_glance.html">BlueFlame at a Glance</a></li>' +
+			'<li><a href="'+base+'overview/at_a_glance.html">Kohana at a Glance</a></li>' +
 			'<li><a href="'+base+'overview/features.html">Supported Features</a></li>' +
 			'<li><a href="'+base+'overview/appflow.html">Application Flow Chart</a></li>' +
 			'<li><a href="'+base+'overview/mvc.html">Model-View-Controller</a></li>' +
@@ -41,13 +41,13 @@ function create_menu(basepath)
 		'<h3>General Topics</h3>' +
 		'<ul>' +
 			'<li><a href="'+base+'general/index.html">Getting Started</a></li>' +
-			'<li><a href="'+base+'general/urls.html">BlueFlame URLs</a></li>' +
+			'<li><a href="'+base+'general/urls.html">Kohana URLs</a></li>' +
 			'<li><a href="'+base+'general/controllers.html">Controllers</a></li>' +
 			'<li><a href="'+base+'general/views.html">Views</a></li>' +
 			'<li><a href="'+base+'general/models.html">Models</a></li>' +
 			'<li><a href="'+base+'general/helpers.html">Helpers</a></li>' +
 			'<li><a href="'+base+'general/plugins.html">Plugins</a></li>' +
-			'<li><a href="'+base+'general/libraries.html">Using BlueFlame Libraries</a></li>' +
+			'<li><a href="'+base+'general/libraries.html">Using Kohana Libraries</a></li>' +
 			'<li><a href="'+base+'general/creating_libraries.html">Creating Your Own Libraries</a></li>' +
 			'<li><a href="'+base+'general/core_classes.html">Creating Core Classes</a></li>' +
 			'<li><a href="'+base+'general/hooks.html">Hooks - Extending the Core</a></li>' +
@@ -118,8 +118,8 @@ function create_menu(basepath)
 
 		'<h3>Additional Resources</h3>' +
 		'<ul>' +
-		'<li><a href="http://codeigniter.com/forums/">CodeIgniter Forums</a></li>' +
-		'<li><a href="http://codeigniter.com/wiki/">CodeIgniter Wiki</a></li>' +
+		'<li><a href="http://kohanaphp.com/forums/">CodeIgniter Forums</a></li>' +
+		'<li><a href="http://kohanaphp.com/wiki/">CodeIgniter Wiki</a></li>' +
 		'</ul>' +	
 		
 		'</td></tr></table>');

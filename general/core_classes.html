@@ -2,7 +2,7 @@
 <html>
 <head>
 
-<title>BlueFlame User Guide</title>
+<title>Kohana User Guide</title>
 
 <style type='text/css' media='all'>@import url('../userguide.css');</style>
 <link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
@@ -22,7 +22,7 @@ window.onload = function() {
 <meta http-equiv= 'pragma' content='no-cache' />
 <meta name='robots' content='all' />
 <meta name='author' content='Rick Ellis' />
-<meta name='description' content='BlueFlame User Guide' />
+<meta name='description' content='Kohana User Guide' />
 
 </head>
 <body>
@@ -33,7 +33,7 @@ window.onload = function() {
 <div id="masthead">
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
-<td><h1>BlueFlame User Guide Version 1.0</h1></td>
+<td><h1>Kohana User Guide Version 1.0</h1></td>
 <td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
 </tr>
 </table>
@@ -45,11 +45,11 @@ window.onload = function() {
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
 <td id="breadcrumb">
-<a href="http://blueflame.ciforge.com/">BlueFlame Home</a> &nbsp;&#8250;&nbsp;
+<a href="http://kohanaphp.com/">Kohana Home</a> &nbsp;&#8250;&nbsp;
 <a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
 Creating Core System Classes
 </td>
-<td id="searchbox"><!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.BlueFlame.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>--></td>
+<td id="searchbox"><!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.Kohana.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>--></td>
 </tr>
 </table>
 <!-- END BREADCRUMB -->
@@ -62,11 +62,11 @@ Creating Core System Classes
 
 <h1>Creating Core System Classes</h1>
 
-<p>Every time BlueFlame runs there are several base classes that are initialized automatically as part of the core framework.
+<p>Every time Kohana runs there are several base classes that are initialized automatically as part of the core framework.
 It is possible, however, to swap any of the core system classes with your own versions or even extend the core versions.</p>
 
 <p><strong>Most users will never have any need to do this,
-but the option to replace or extend them does exist for those who would like to significantly alter the BlueFlame core.</strong>
+but the option to replace or extend them does exist for those who would like to significantly alter the Kohana core.</strong>
 </p>
 
 <p class="important"><strong>Note:</strong>&nbsp; Messing with a core system class has a lot of implications, so make sure you
@@ -75,7 +75,7 @@ know what you are doing before attempting it.</p>
 
 <h2>System Class List</h2>
 
-<p>The following is a list of the core system files that are invoked every time BlueFlame runs:</p>
+<p>The following is a list of the core system files that are invoked every time Kohana runs:</p>
 
 <ul>
 <li>Benchmark</li>
@@ -141,7 +141,7 @@ class MY_Input extends CI_Input {<br />
 
 <p class="important"><strong>Tip:</strong>&nbsp; Any functions in your class that are named identically to the functions in the parent class will be used instead of the native ones
 (this is known as "method overloading").
-This allows you to substantially alter the BlueFlame core.</p>
+This allows you to substantially alter the Kohana core.</p>
 
 
 <h3>Setting Your Own Prefix</h3>
@@ -150,7 +150,7 @@ This allows you to substantially alter the BlueFlame core.</p>
 
 <code>$config['subclass_prefix'] = 'MY_';</code>
 
-<p>Please note that all native BlueFlame libraries are prefixed with <kbd>CI_</kbd> so DO NOT use that as your prefix.</p>
+<p>Please note that all native Kohana libraries are prefixed with <kbd>CI_</kbd> so DO NOT use that as your prefix.</p>
 
 
 
@@ -167,7 +167,7 @@ Previous Topic:&nbsp;&nbsp;<a href="creating_libraries.html">Creating Your Own L
 <a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
 Next Topic:&nbsp;&nbsp;<a href="hooks.html">Hooks - Extending the Core</a>
 <p>
-<p><a href="http://blueflame.ciforge.com">BlueFlame</a> &nbsp;&middot;&nbsp; Copyright &#169; 2007 &nbsp;&middot;&nbsp; <a href="http://ellislab.com/">Ellislab, Inc.</a></p>
+<p><a href="http://codeigniter.com">CodeIgniter</a> &nbsp;&middot;&nbsp; Copyright &#169; 2007 &nbsp;&middot;&nbsp; <a href="http://ellislab.com/">Ellislab, Inc.</a></p>
 </div>
 
 </body>

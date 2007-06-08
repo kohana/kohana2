@@ -2,7 +2,7 @@
 <html>
 <head>
 
-<title>BlueFlame User Guide</title>
+<title>Kohana User Guide</title>
 
 <style type='text/css' media='all'>@import url('../userguide.css');</style>
 <link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
@@ -22,7 +22,7 @@ window.onload = function() {
 <meta http-equiv= 'pragma' content='no-cache' />
 <meta name='robots' content='all' />
 <meta name='author' content='Rick Ellis' />
-<meta name='description' content='BlueFlame User Guide' />
+<meta name='description' content='Kohana User Guide' />
 
 </head>
 <body>
@@ -33,7 +33,7 @@ window.onload = function() {
 <div id="masthead">
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
-<td><h1>BlueFlame User Guide Version 1.0</h1></td>
+<td><h1>Kohana User Guide Version 1.0</h1></td>
 <td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
 </tr>
 </table>
@@ -45,11 +45,11 @@ window.onload = function() {
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
 <td id="breadcrumb">
-<a href="http://blueflame.ciforge.com/">BlueFlame Home</a> &nbsp;&#8250;&nbsp;
+<a href="http://kohanaphp.com/">Kohana Home</a> &nbsp;&#8250;&nbsp;
 <a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
 Input and Security Class
 </td>
-<td id="searchbox"><!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.BlueFlame.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>--></td>
+<td id="searchbox"><!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.Kohana.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>--></td>
 </tr>
 </table>
 <!-- END BREADCRUMB -->
@@ -89,7 +89,7 @@ Input and Security Class
 
 <h2>XSS Filtering</h2>
 
-<p>BlueFlame comes with a Cross Site Scripting Hack prevention filter which can either run automatically to filter
+<p>Kohana comes with a Cross Site Scripting Hack prevention filter which can either run automatically to filter
 all POST and COOKIE data that is encountered, or you can run it on a per item basis.  By default it does <strong>not</strong>
 run globally since it requires a bit of processing overhead, and since you may not need it in all cases.</p>
 
@@ -115,7 +115,7 @@ or do other malicious things.  If anything disallowed is encountered it is rende
 
 <h2>Using POST, GET, COOKIE, or SERVER Data</h2>
 
-<p>BlueFlame comes with three helper functions that let you fetch POST, GET, COOKIE or SERVER items.  The main advantage of using
+<p>Kohana comes with three helper functions that let you fetch POST, GET, COOKIE or SERVER items.  The main advantage of using
 the provided functions rather then fetching an item directly ($_POST['something']) is that the functions will check to see if the
 item is set and return false (boolean) if not.  This lets you conveniently use data without having to test whether an item exists
 first. In other words, normally you might do something like this:
@@ -130,7 +130,7 @@ else<br />
 &nbsp;&nbsp;&nbsp;&nbsp;$something = $_POST['something'];<br />
 }</code>
 
-<p>With BlueFlame's built in functions you can simply do this:</p>
+<p>With Kohana's built in functions you can simply do this:</p>
 
 <code>$something = $this->input->post('something');</code>
 
@@ -144,7 +144,7 @@ else<br />
 </ul>
 
 <p class="important"><strong>Note:</strong> To enable usage of the <tt>get()</tt> function, you will need to turn on the
-&quot;enable_get_requests&quot; option in <kbd>application/config/config.php</kbd>. By default, BlueFlame destroys the GET
+&quot;enable_get_requests&quot; option in <kbd>application/config/config.php</kbd>. By default, Kohana destroys the GET
 array completely, so <tt>get()</tt> will always return nothing.</p>
 
 <h2>$this->input->post()</h2>
@@ -219,7 +219,7 @@ Previous Topic:&nbsp;&nbsp;<a href="image_lib.html">Image Manipulation Class</a>
 <a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
 Next Topic:&nbsp;&nbsp;<a href="loader.html">Loader Class</a>
 <p>
-<p><a href="http://blueflame.ciforge.com">BlueFlame</a> &nbsp;&middot;&nbsp; Copyright &#169; 2007 &nbsp;&middot;&nbsp; <a href="http://ellislab.com/">Ellislab, Inc.</a></p>
+<p><a href="http://codeigniter.com">CodeIgniter</a> &nbsp;&middot;&nbsp; Copyright &#169; 2007 &nbsp;&middot;&nbsp; <a href="http://ellislab.com/">Ellislab, Inc.</a></p>
 </div>
 
 </body>
