@@ -2,7 +2,7 @@
 <html>
 <head>
 
-<title>BlueFlame User Guide</title>
+<title>Kohana User Guide</title>
 
 <style type='text/css' media='all'>@import url('../userguide.css');</style>
 <link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
@@ -22,7 +22,7 @@ window.onload = function() {
 <meta http-equiv= 'pragma' content='no-cache' />
 <meta name='robots' content='all' />
 <meta name='author' content='Rick Ellis' />
-<meta name='description' content='BlueFlame User Guide' />
+<meta name='description' content='Kohana User Guide' />
 
 </head>
 <body>
@@ -33,7 +33,7 @@ window.onload = function() {
 <div id="masthead">
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
-<td><h1>BlueFlame User Guide Version 1.0</h1></td>
+<td><h1>Kohana User Guide Version 1.0</h1></td>
 <td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
 </tr>
 </table>
@@ -45,12 +45,12 @@ window.onload = function() {
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
 <td id="breadcrumb">
-<a href="http://blueflame.ciforge.com/">BlueFlame Home</a> &nbsp;&#8250;&nbsp;
+<a href="http://kohanaphp.com/">Kohana Home</a> &nbsp;&#8250;&nbsp;
 <a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
 <a href="index.html">Database Library</a> &nbsp;&#8250;&nbsp;
 Configuration
 </td>
-<td id="searchbox"><!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.BlueFlame.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>--></td>
+<td id="searchbox"><!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.Kohana.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>--></td>
 </tr>
 </table>
 <!-- END BREADCRUMB -->
@@ -63,7 +63,7 @@ Configuration
 <div id="content">
 
 <h1>Active Record</h1>
-<p>In the main configuration file of BlueFlame, located at <kbd>application/config/config.php</kbd>, you will find a configuration directive for turning <a href="active_record.html">Active Record</a> on or off in your BlueFlame application:</p>
+<p>In the main configuration file of Kohana, located at <kbd>application/config/config.php</kbd>, you will find a configuration directive for turning <a href="active_record.html">Active Record</a> on or off in your Kohana application:</p>
 <code>
 $config['disable_ar'] = FALSE;
 </code>
@@ -71,7 +71,7 @@ $config['disable_ar'] = FALSE;
 
 <h1>Database Configuration</h1>
 
-<p>BlueFlame has a config file that lets you store your database connection values (username, password, database name, etc.).
+<p>Kohana has a config file that lets you store your database connection values (username, password, database name, etc.).
 The config file is located at:
 
 <p><kbd>application/config/database.php</kbd></p>
@@ -117,7 +117,7 @@ for the primary connection, but it too can be renamed to something more relevant
 <li><strong>password</strong> - The password used to connect to the database.</li>
 <li><strong>database</strong> - The name of the database you want to connect to.</li>
 <li><strong>dbdriver</strong> - The database type. ie: mysql, postgre, obdc, etc. Must be specified in lower case.</li>
-<li><strong>dbprefix</strong> - An optional table prefix which will added to the table name when running <a href="active_record.html">Active Record</a> queries.  This permits multiple BlueFlame installations to share one database.</li>
+<li><strong>dbprefix</strong> - An optional table prefix which will added to the table name when running <a href="active_record.html">Active Record</a> queries.  This permits multiple Kohana installations to share one database.</li>
 <li><strong>pconnect</strong> - TRUE/FALSE (boolean) - Whether to use a persistent connection.</li>
 <li><strong>db_debug</strong> - TRUE/FALSE (boolean) - Whether database errors should be displayed.</li>
 <li><strong>port</strong> - The database port number.  Currently only used with the Postgre driver.</li>
@@ -141,7 +141,7 @@ Previous Topic:&nbsp;&nbsp;<a href="examples.html">Quck Start: Usage Examples</a
 <a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
 Next Topic:&nbsp;&nbsp;<a href="connecting.html">Connecting to your Database</a>
 <p>
-<p><a href="http://blueflame.ciforge.com">BlueFlame</a> &nbsp;&middot;&nbsp; Copyright &#169; 2007 &nbsp;&middot;&nbsp; <a href="http://ellislab.com/">Ellislab, Inc.</a></p>
+<p><a href="http://codeigniter.com">CodeIgniter</a> &nbsp;&middot;&nbsp; Copyright &#169; 2007 &nbsp;&middot;&nbsp; <a href="http://ellislab.com/">Ellislab, Inc.</a></p>
 </div>
 
 </body>

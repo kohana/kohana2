@@ -2,7 +2,7 @@
 <html>
 <head>
 
-<title>BlueFlame User Guide</title>
+<title>Kohana User Guide</title>
 
 <style type='text/css' media='all'>@import url('../userguide.css');</style>
 <link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
@@ -22,7 +22,7 @@ window.onload = function() {
 <meta http-equiv= 'pragma' content='no-cache' />
 <meta name='robots' content='all' />
 <meta name='author' content='Rick Ellis' />
-<meta name='description' content='BlueFlame User Guide' />
+<meta name='description' content='Kohana User Guide' />
 
 </head>
 <body>
@@ -33,7 +33,7 @@ window.onload = function() {
 <div id="masthead">
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
-<td><h1>BlueFlame User Guide Version 1.0</h1></td>
+<td><h1>Kohana User Guide Version 1.0</h1></td>
 <td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
 </tr>
 </table>
@@ -45,11 +45,11 @@ window.onload = function() {
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
 <td id="breadcrumb">
-<a href="http://blueflame.ciforge.com/">BlueFlame Home</a> &nbsp;&#8250;&nbsp;
+<a href="http://kohanaphp.com/">Kohana Home</a> &nbsp;&#8250;&nbsp;
 <a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
 Controllers
 </td>
-<td id="searchbox"><!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.BlueFlame.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>--></td>
+<td id="searchbox"><!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.Kohana.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>--></td>
 </tr>
 </table>
 <!-- END BREADCRUMB -->
@@ -89,7 +89,7 @@ Controllers
 
 <code>www.your-site.com/index.php/<var>blog</var>/</code>
 
-<p>In the above example, BlueFlame would attempt to find a controller named <dfn>blog.php</dfn> and load it.</p>
+<p>In the above example, Kohana would attempt to find a controller named <dfn>blog.php</dfn> and load it.</p>
 
 <p><strong>When a controller's name matches the first segment of a URI, it will be loaded.</strong></p>
 
@@ -208,7 +208,7 @@ passed to your function will be the re-routed ones.</p>
 <a name="default"></a>
 <h2>Defining a Default Controller</h2>
 
-<p>BlueFlame can be told to load a default controller when a URI is not present,
+<p>Kohana can be told to load a default controller when a URI is not present,
 as will be the case when only your site root URL is requested.  To specify a default controller, open
 your <dfn>application/config/routes.php</dfn> file and set this variable:</p>
 
@@ -223,7 +223,7 @@ specifying any URI segments you'll see your Hello World message by default.</p>
 <h2>Remapping Function Calls</h2>
 
 <p>As noted above, the second segment of the URI typically determines which function in the controller gets called.
-BlueFlame permits you to override this behavior through the use of the <kbd>_remap()</kbd> function:</p>
+Kohana permits you to override this behavior through the use of the <kbd>_remap()</kbd> function:</p>
 
 <code>function _remap()<br />
 {<br />
@@ -255,9 +255,9 @@ allowing you to define your own function routing rules.</p>
 <a name="output"></a>
 <h2>Processing Output</h2>
 
-<p>BlueFlame has an output class that takes care of sending your final rendered data to the web browser automatically.  More information on this can be found in the
+<p>Kohana has an output class that takes care of sending your final rendered data to the web browser automatically.  More information on this can be found in the
 <a href="views.html">Views</a> and <a href="../libraries/output.html">Output class</a> pages.  In some cases, however, you might want to
-post-process the finalized data in some way and send it to the browser yourself.  BlueFlame permits you to
+post-process the finalized data in some way and send it to the browser yourself.  Kohana permits you to
 add a function named <dfn>_output()</dfn> to your controller that will receive the finalized output data.
 
 <p><strong>Important:</strong>&nbsp; If your controller contains a function named <kbd>_output()</kbd>, it will <strong>always</strong>
@@ -299,7 +299,7 @@ function _utility()<br />
 <a name="subfolders"></a>
 <h2>Organizing Your Controllers into Sub-folders</h2>
 
-<p>If you are building a large application you might find it convenient to organize your controllers into sub-folders.  BlueFlame permits you to do this.</p>
+<p>If you are building a large application you might find it convenient to organize your controllers into sub-folders.  Kohana permits you to do this.</p>
 
 <p>Simply create folders within your <dfn>application/controllers</dfn> directory and place your controller classes within them.</p>
 
@@ -317,7 +317,7 @@ called if the URL contains only the sub-folder.  Simply name your default contro
 <dfn>application/config/routes.php</dfn> file</p>
 
 
-<p>BlueFlame also permits you to remap your URIs using its <a href="routing.html">URI Routing</a> feature.
+<p>Kohana also permits you to remap your URIs using its <a href="routing.html">URI Routing</a> feature.
 
 
 
@@ -421,14 +421,14 @@ is a list of reserved names.  Do not name your controller functions any of these
 
 <div id="footer">
 <p>
-Previous Topic:&nbsp;&nbsp;<a href="urls.html">BlueFlame URLs</a>
+Previous Topic:&nbsp;&nbsp;<a href="urls.html">Kohana URLs</a>
 &nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
 <a href="#top">Top of Page</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
 <a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
 Next Topic:&nbsp;&nbsp;<a href="views.html">Views</a>
 <p>
 
-<p><a href="http://blueflame.ciforge.com">BlueFlame</a> &nbsp;&middot;&nbsp; Copyright &#169; 2007 &nbsp;&middot;&nbsp; <a href="http://ellislab.com/">Ellislab, Inc.</a></p>
+<p><a href="http://codeigniter.com">CodeIgniter</a> &nbsp;&middot;&nbsp; Copyright &#169; 2007 &nbsp;&middot;&nbsp; <a href="http://ellislab.com/">Ellislab, Inc.</a></p>
 </div>
 
 </body>

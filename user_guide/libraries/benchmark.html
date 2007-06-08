@@ -2,7 +2,7 @@
 <html>
 <head>
 
-<title>BlueFlame User Guide</title>
+<title>Kohana User Guide</title>
 
 <style type='text/css' media='all'>@import url('../userguide.css');</style>
 <link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
@@ -22,7 +22,7 @@ window.onload = function() {
 <meta http-equiv= 'pragma' content='no-cache' />
 <meta name='robots' content='all' />
 <meta name='author' content='Rick Ellis' />
-<meta name='description' content='BlueFlame User Guide' />
+<meta name='description' content='Kohana User Guide' />
 
 </head>
 <body>
@@ -33,7 +33,7 @@ window.onload = function() {
 <div id="masthead">
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
-<td><h1>BlueFlame User Guide Version 1.0</h1></td>
+<td><h1>Kohana User Guide Version 1.0</h1></td>
 <td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
 </tr>
 </table>
@@ -45,11 +45,11 @@ window.onload = function() {
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
 <td id="breadcrumb">
-<a href="http://blueflame.ciforge.com/">BlueFlame Home</a> &nbsp;&#8250;&nbsp;
+<a href="http://kohanaphp.com/">Kohana Home</a> &nbsp;&#8250;&nbsp;
 <a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
 Benchmarking Class
 </td>
-<td id="searchbox"><!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.BlueFlame.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>--></td>
+<td id="searchbox"><!--<form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="www.Kohana.com/user_guide/" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form>--></td>
 </tr>
 </table>
 <!-- END BREADCRUMB -->
@@ -63,7 +63,7 @@ Benchmarking Class
 
 <h1>Benchmarking Class</h1>
 
-<p>BlueFlame has a Benchmarking class that is always active, enabling the time difference between any
+<p>Kohana has a Benchmarking class that is always active, enabling the time difference between any
 two marked points to be calculated.</p>
 
 <p class="important"><strong>Note:</strong> This class is initialized automatically by the system so there is no need to do it manually.</p>
@@ -153,13 +153,13 @@ $this->benchmark->mark('another_mark<kbd>_end</kbd>');
 <a name="execution"></a>
 <h2>Displaying Total Execution Time</h2>
 
-<p>If you would like to display the total elapsed time from the moment BlueFlame starts to the moment the final output
+<p>If you would like to display the total elapsed time from the moment Kohana starts to the moment the final output
 is sent to the browser, simply place this in one of your view templates:</p>
 
 <code>&lt;?=$this->benchmark->elapsed_time();?&gt;</code>
 
 <p>You'll notice that it's the same function used in the examples above to calculate the time between two point, except you are
-<strong>not</strong> using any parameters.  When the parameters are absent, BlueFlame does not stop the benchmark until right before the final
+<strong>not</strong> using any parameters.  When the parameters are absent, Kohana does not stop the benchmark until right before the final
 output is sent to the browser.  It doesn't matter where you use the function call, the timer will continue to run until the very end.</p>
 
 <p>An alternate way to show your elapsed time in your view files is to use this pseudo-variable, if you prefer not to use the pure PHP:</p>
@@ -195,7 +195,7 @@ Previous Topic:&nbsp;&nbsp;<a href="../general/security.html"> Security</a>
 <a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
 Next Topic:&nbsp;&nbsp;<a href="calendar.html">Calendaring Class</a>
 <p>
-<p><a href="http://blueflame.ciforge.com">BlueFlame</a> &nbsp;&middot;&nbsp; Copyright &#169; 2007 &nbsp;&middot;&nbsp; <a href="http://ellislab.com/">Ellislab, Inc.</a></p>
+<p><a href="http://codeigniter.com">CodeIgniter</a> &nbsp;&middot;&nbsp; Copyright &#169; 2007 &nbsp;&middot;&nbsp; <a href="http://ellislab.com/">Ellislab, Inc.</a></p>
 </div>
 
 </body>
