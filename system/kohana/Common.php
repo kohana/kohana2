@@ -1,15 +1,22 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * BlueFlame
+ * Kohana
  *
  * An open source application development framework for PHP 4.3.2 or newer
  *
- * @package		BlueFlame
- * @author		Rick Ellis
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
- * @license		http://www.codeigniter.com/user_guide/license.html
- * @link		http://blueflame.ciforge.com
- * @since		Version 1.0
+ * NOTE: This file has been modified from the original CodeIgniter version for
+ * the Kohana framework by the Kohana Development Team.
+ *
+ * @package          Kohana
+ * @author           Kohana Development Team
+ * @copyright        Copyright (c) 2007, Kohana Framework Team
+ * @link             http://kohanaphp.com
+ * @license          http://kohanaphp.com/user_guide/license.html
+ * @since            Version 1.0
+ * @orig_package     CodeIgniter
+ * @orig_author      Rick Ellis
+ * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
+ * @orig_license     http://www.codeignitor.com/user_guide/license.html
  * @filesource
  */
 
@@ -20,11 +27,10 @@
  *
  * Loads the base classes and executes the request.
  *
- * @package		BlueFlame
- * @subpackage	blueflame
+ * @package		Kohana
+ * @subpackage	Core
  * @category	Common Functions
  * @author		Rick Ellis
- * @link		http://blueflame.ciforge.com
  */
 
 // ------------------------------------------------------------------------
@@ -211,7 +217,7 @@ function log_message($level = 'error', $message, $php_error = FALSE)
 * Exception Handler
 *
 * This is the custom exception handler that is declaired at the top
-* of BlueFlame.php.  The main reason we use this is permit
+* of Kohana.php.  The main reason we use this is permit
 * PHP errors to be logged in our own log files since we may
 * not have access to server logs. Since this function
 * effectively intercepts PHP errors, however, we also need

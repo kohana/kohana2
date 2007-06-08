@@ -1,15 +1,22 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * BlueFlame
+ * Kohana
  *
  * An open source application development framework for PHP 4.3.2 or newer
  *
- * @package		BlueFlame
- * @author		Rick Ellis
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
- * @license		http://www.codeigniter.com/user_guide/license.html
- * @link		http://blueflame.ciforge.com
- * @since		Version 1.0
+ * NOTE: This file has been modified from the original CodeIgniter version for
+ * the Kohana framework by the Kohana Development Team.
+ *
+ * @package          Kohana
+ * @author           Kohana Development Team
+ * @copyright        Copyright (c) 2007, Kohana Framework Team
+ * @link             http://kohanaphp.com
+ * @license          http://kohanaphp.com/user_guide/license.html
+ * @since            Version 1.0
+ * @orig_package     CodeIgniter
+ * @orig_author      Rick Ellis
+ * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
+ * @orig_license     http://www.codeignitor.com/user_guide/license.html
  * @filesource
  */
 
@@ -20,10 +27,10 @@
  *
  * This is the platform-independent base Active Record implementation class.
  *
- * @package		BlueFlame
- * @subpackage	Drivers
- * @category	Database
- * @author		Rick Ellis
+ * @package     Kohana
+ * @subpackage  Drivers
+ * @category    Database
+ * @author      Rick Ellis, Kohana Development Team
  */
 class CI_DB_active_record extends CI_DB_driver {
 
@@ -62,7 +69,9 @@ class CI_DB_active_record extends CI_DB_driver {
 			$val = trim($val);
 
 			if ($val != '')
+			{
 				$this->ar_select[] = $val;
+			}
 		}
 		return $this;
 	}
@@ -155,14 +164,15 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * Generates the WHERE portion of the query. Separates
 	 * multiple calls with AND
 	 *
-	 * @access	public
-	 * @param	mixed
-	 * @param	mixed
-	 * @return	object
+	 * @access public
+	 * @param  mixed
+	 * @param  mixed
+	 * @param  bool
+	 * @return object
 	 */
-	function where($key, $value = NULL)
+	function where($key, $value = NULL, $quote = TRUE)
 	{
-		return $this->_where($key, $value, 'AND ');
+		return $this->_where($key, $value, 'AND ', $quote);
 	}
 
 	// --------------------------------------------------------------------
@@ -173,14 +183,15 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * Generates the WHERE portion of the query. Separates
 	 * multiple calls with OR
 	 *
-	 * @access	public
-	 * @param	mixed
-	 * @param	mixed
-	 * @return	object
+	 * @access public
+	 * @param  mixed
+	 * @param  mixed
+	 * @param  bool
+	 * @return object
 	 */
-	function orwhere($key, $value = NULL)
+	function orwhere($key, $value = NULL, $quote = TRUE)
 	{
-		return $this->_where($key, $value, 'OR ');
+		return $this->_where($key, $value, 'OR ', $quote);
 	}
 
 	// --------------------------------------------------------------------
@@ -190,13 +201,14 @@ class CI_DB_active_record extends CI_DB_driver {
 	 *
 	 * Called by where() or orwhere()
 	 *
-	 * @access	private
-	 * @param	mixed
-	 * @param	mixed
-	 * @param	string
-	 * @return	object
+	 * @access private
+	 * @param  mixed
+	 * @param  mixed
+	 * @param  string
+	 * @param  bool
+	 * @return object
 	 */
-	function _where($key, $value = NULL, $type = 'AND ')
+	function _where($key, $value = NULL, $type = 'AND ', $quote = TRUE)
 	{
 		if ( ! is_array($key))
 		{
@@ -232,7 +244,7 @@ class CI_DB_active_record extends CI_DB_driver {
 					$k .= ' =';
 				}
 
-				$v = ' '.$this->escape($v);
+				$v = ' '.(($quote == TRUE) ? $this->escape($v) : $v);
 			}
 
 			$this->ar_where[] = $prefix.$k.$v;

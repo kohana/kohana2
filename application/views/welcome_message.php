@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Welcome to BlueFlame</title>
+<title>Welcome to Kohana</title>
 
 <style type="text/css">
 
@@ -43,9 +43,9 @@ code {
 </head>
 <body>
 
-<h1>Welcome to BlueFlame!</h1>
+<h1>Welcome to Kohana!</h1>
 
-<p>The page you are looking at is being generated dynamically by BlueFlame.</p>
+<p>The page you are looking at is being generated dynamically by Kohana.</p>
 
 <p>If you would like to edit this page you'll find it located at:</p>
 <code>application/views/welcome_message.php</code>
@@ -53,7 +53,7 @@ code {
 <p>The corresponding controller for this page is found at:</p>
 <code>application/controllers/welcome.php</code>
 
-<p>If you are exploring BlueFlame for the very first time, you should start by reading the <a href="user_guide/">User Guide</a>.</p>
+<p>If you are exploring Kohana for the very first time, you should start by reading the <a href="user_guide/">User Guide</a>.</p>
 
 
 <p><br />Page rendered in {elapsed_time} seconds</p>

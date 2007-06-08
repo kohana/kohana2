@@ -1,15 +1,22 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * BlueFlame
+ * Kohana
  *
  * An open source application development framework for PHP 4.3.2 or newer
  *
- * @package		BlueFlame
- * @author		Rick Ellis
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
- * @license		http://www.codeigniter.com/user_guide/license.html
- * @link		http://blueflame.ciforge.com
- * @since		Version 1.3.1
+ * NOTE: This file has been modified from the original CodeIgniter version for
+ * the Kohana framework by the Kohana Development Team.
+ *
+ * @package          Kohana
+ * @author           Kohana Development Team
+ * @copyright        Copyright (c) 2007, Kohana Framework Team
+ * @link             http://kohanaphp.com
+ * @license          http://kohanaphp.com/user_guide/license.html
+ * @since            Version 1.0.1
+ * @orig_package     CodeIgniter
+ * @orig_author      Rick Ellis
+ * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
+ * @orig_license     http://www.codeignitor.com/user_guide/license.html
  * @filesource
  */
 
@@ -20,11 +27,11 @@
  *
  * Simple testing class
  *
- * @package		BlueFlame
+ * @package		Kohana
  * @subpackage	Libraries
  * @category	UnitTesting
  * @author		Rick Ellis
- * @link		http://blueflame.ciforge.com/user_guide/libraries/uri.html
+ * @link		http://kohanaphp.com/user_guide/libraries/uri.html
  */
 class CI_Unit_test {
 
@@ -189,7 +196,7 @@ class CI_Unit_test {
 				{
 					foreach ($val as $k => $v)
 					{
-						if (FALSE !== ($line = $CI->lang->line(strtolower('ut_'.$v))))
+						if (($line = $CI->lang->line(strtolower('ut_'.$v))) !== FALSE)
 						{
 							$v = $line;
 						}				
@@ -198,7 +205,7 @@ class CI_Unit_test {
 				}
 				else
 				{
-					if (FALSE !== ($line = $CI->lang->line(strtolower('ut_'.$val))))
+					if (($line = $CI->lang->line(strtolower('ut_'.$val))) !== FALSE)
 					{
 						$val = $line;
 					}				

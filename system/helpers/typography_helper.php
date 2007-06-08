@@ -1,24 +1,31 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * BlueFlame
+ * Kohana
  *
  * An open source application development framework for PHP 4.3.2 or newer
  *
- * @package		BlueFlame
- * @author		Rick Ellis
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
- * @license		http://www.codeigniter.com/user_guide/license.html
- * @link		http://blueflame.ciforge.com
- * @since		Version 1.0
+ * NOTE: This file has been modified from the original CodeIgniter version for
+ * the Kohana framework by the Kohana Development Team.
+ *
+ * @package          Kohana
+ * @author           Kohana Development Team
+ * @copyright        Copyright (c) 2007, Kohana Framework Team
+ * @link             http://kohanaphp.com
+ * @license          http://kohanaphp.com/user_guide/license.html
+ * @since            Version 1.0
+ * @orig_package     CodeIgniter
+ * @orig_author      Rick Ellis
+ * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
+ * @orig_license     http://www.codeignitor.com/user_guide/license.html
  * @filesource
  */
 
 // ------------------------------------------------------------------------
 
 /**
- * BlueFlame Typography Helpers
+ * Kohana Typography Helpers
  *
- * @package		BlueFlame
+ * @package		Kohana
  * @subpackage	Helpers
  * @category	Helpers
  * @author		Rick Ellis
@@ -33,12 +40,12 @@
  * @access	public
  * @param	string
  * @return	string
- */	
+ */
 function nl2br_except_pre($str)
 {
 	return preg_replace('#(?:(?<=^(?!<pre[\s>]))|(?<=</pre>)).+?(?=(?:<pre[\s>]|$))#isDe', 'nl2br(\'$0\')', $str);
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -54,7 +61,7 @@ function auto_typography($str)
 	$TYPE = new Auto_typography();
 	return $TYPE->convert($str);
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -71,12 +78,12 @@ class Auto_typography {
 
 	// Block level elements that should not be wrapped inside <p> tags
 	var $block_elements = 'div|blockquote|pre|code|h[1-6]|script|ol|un';
-	
+
 	// Elements that should not have <p> and <br /> tags within them.
 	var $skip_elements	= 'pre|ol|ul';
-	
+
 	// Tags we want the parser to completely ignore when splitting the string.
-	var $ignore_elements = 'a|b|i|u|em|strong|span|img|li';	
+	var $ignore_elements = 'a|b|i|u|em|strong|span|img|li';
 
 
 	/**
@@ -89,12 +96,12 @@ class Auto_typography {
 		{
 			return '';
 		}
-		
+
 		$str = ' '.$str.' ';
-		
+
 		// Standardize Newlines to make matching easier
 		$str = preg_replace('/\r[\n]?/', "\n", $str);
-		
+
 		/*
 		 * Reduce line breaks
 		 *
@@ -112,7 +119,7 @@ class Auto_typography {
 		 * tags so we'll temporarily convert them to
 		 * {@DQ} and {@SQ}
 		 *
-		 */			
+		 */
 		if (preg_match_all("#\<.+?>#si", $str, $matches))
 		{
 			for ($i = 0; $i < count($matches['0']); $i++)
@@ -122,7 +129,7 @@ class Auto_typography {
 									$str);
 			}
 		}
-	
+
 
 		/*
 		 * Add closing/opening paragraph tags before/after "block" elements
@@ -135,7 +142,7 @@ class Auto_typography {
 		 */
 		$str = preg_replace("#(<.*?)(".$this->block_elements.")(.*?>)#", "</p>\\1\\2\\3", $str);
 		$str = preg_replace("#(</.*?)(".$this->block_elements.")(.*?>)#", "\\1\\2\\3<p>", $str);
-	
+
 		/*
 		 * Convert "ignore" tags to temporary marker
 		 *
@@ -145,9 +152,9 @@ class Auto_typography {
 		 * affected if they are split out so we'll convert
 		 * the opening < temporarily to: {@TAG}
 		 *
-		 */		
-		$str = preg_replace("#<(/*)(".$this->ignore_elements.")#i", "{@TAG}\\1\\2", $str);	
-		
+		 */
+		$str = preg_replace("#<(/*)(".$this->ignore_elements.")#i", "{@TAG}\\1\\2", $str);
+
 		/*
 		 * Split the string at every tag
 		 *
@@ -161,16 +168,16 @@ class Auto_typography {
 		 *		Etc...
 		 *	}
 		 *
-		 */			
+		 */
 		$chunks = preg_split('/(<(?:[^<>]+(?:"[^"]*"|\'[^\']*\')?)+>)/', $str, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
-		
+
 		/*
 		 * Build our finalized string
 		 *
 		 * We'll cycle through the array, skipping tags,
 		 * and processing the contained text
 		 *
-		 */			
+		 */
 		$str = '';
 		$process = TRUE;
 		foreach ($chunks as $chunk)
@@ -187,26 +194,26 @@ class Auto_typography {
 			{
 				if (preg_match("#".$this->skip_elements."#", $match['2']))
 				{
-					$process =  ($match['1'] == '/') ? TRUE : FALSE;		
+					$process =  ($match['1'] == '/') ? TRUE : FALSE;
 				}
-		
+
 				$str .= $chunk;
 				continue;
 			}
-		
+
 			if ($process == FALSE)
 			{
 				$str .= $chunk;
 				continue;
 			}
-			
+
 			//  Convert Newlines into <p> and <br /> tags
 			$str .= $this->format_newlines($chunk);
 		}
 
 		// FINAL CLEAN UP
 		// IMPORTANT:  DO NOT ALTER THE ORDER OF THE ITEMS BELOW!
-		
+
 		/*
 		 * Clean up paragraph tags before/after "block" elements
 		 *
@@ -221,7 +228,7 @@ class Auto_typography {
 
 		// Convert Quotes and other characters
 		$str = $this->format_characters($str);
-		
+
 		// Fix an artifact that happens during the paragraph replacement
 		$str = preg_replace('#(<p>\n*</p>)#', '', $str);
 
@@ -253,10 +260,10 @@ class Auto_typography {
 								),
 							$str
 						);
-		
+
 		return $str;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -268,13 +275,13 @@ class Auto_typography {
 	 * and a couple other things.
 	 */
 	function format_characters($str)
-	{	
+	{
 		$table = array(
 						' "'		=> " &#8220;",
 						'" '		=> "&#8221; ",
 						" '"		=> " &#8216;",
 						"' "		=> "&#8217; ",
-						
+
 						'>"'		=> ">&#8220;",
 						'"<'		=> "&#8221;<",
 						">'"		=> ">&#8216;",
@@ -286,7 +293,7 @@ class Auto_typography {
 						"\":"		=> "&#8221;:",
 						"\"!"		=> "&#8221;!",
 						"\"?"		=> "&#8221;?",
-						
+
 						".  "		=> ".&nbsp; ",
 						"?  "		=> "?&nbsp; ",
 						"!  "		=> "!&nbsp; ",
@@ -296,16 +303,16 @@ class Auto_typography {
 		// These deal with quotes within quotes, like:  "'hi here'"
 		$start = 0;
 		$space = array("\n", "\t", " ");
-		
+
 		while(TRUE)
 		{
 			$current = strpos(substr($str, $start), "\"'");
-			
+
 			if ($current === FALSE) break;
-			
+
 			$one_before = substr($str, $start+$current-1, 1);
 			$one_after = substr($str, $start+$current+2, 1);
-			
+
 			if ( ! in_array($one_after, $space, TRUE) && $one_after != "<")
 			{
 				$str = str_replace(	$one_before."\"'".$one_after,
@@ -318,21 +325,21 @@ class Auto_typography {
 									$one_before."&#8221;&#8217;".$one_after,
 									$str);
 			}
-			
+
 			$start = $start+$current+2;
 		}
-		
+
 		$start = 0;
-		
+
 		while(TRUE)
 		{
 			$current = strpos(substr($str, $start), "'\"");
-			
+
 			if ($current === FALSE) break;
-			
+
 			$one_before = substr($str, $start+$current-1, 1);
 			$one_after = substr($str, $start+$current+2, 1);
-			
+
 			if ( in_array($one_before, $space, TRUE) && ! in_array($one_after, $space, TRUE) && $one_after != "<")
 			{
 				$str = str_replace(	$one_before."'\"".$one_after,
@@ -345,10 +352,10 @@ class Auto_typography {
 									$one_before."&#8217;&#8221;".$one_after,
 									$str);
 			}
-			
+
 			$start = $start+$current+2;
 		}
-		
+
 		// Are there quotes within a word, as in:  ("something")
 		if (preg_match_all("/(.)\"(\S+?)\"(.)/", $str, $matches))
 		{
@@ -362,7 +369,7 @@ class Auto_typography {
 				}
 			}
 		}
-		
+
 		if (preg_match_all("/(.)\'(\S+?)\'(.)/", $str, $matches))
 		{
 			for ($i=0, $s=sizeof($matches['0']); $i < $s; ++$i)
@@ -375,26 +382,26 @@ class Auto_typography {
 				}
 			}
 		}
-		
+
 		// How about one apostrophe, as in Rick's
 		$start = 0;
-		
+
 		while(TRUE)
 		{
 			$current = strpos(substr($str, $start), "'");
-			
+
 			if ($current === FALSE) break;
-			
+
 			$one_before = substr($str, $start+$current-1, 1);
 			$one_after = substr($str, $start+$current+1, 1);
-			
+
 			if ( ! in_array($one_before, $space, TRUE) && ! in_array($one_after, $space, TRUE))
 			{
 				$str = str_replace(	$one_before."'".$one_after,
 									$one_before."&#8217;".$one_after,
 									$str);
 			}
-			
+
 			$start = $start+$current+2;
 		}
 
@@ -403,14 +410,14 @@ class Auto_typography {
 		while(TRUE)
 		{
 			$current = strpos(substr($str, $start), "--");
-			
+
 			if ($current === FALSE) break;
-			
+
 			$one_before = substr($str, $start+$current-1, 1);
 			$one_after = substr($str, $start+$current+2, 1);
 			$two_before = substr($str, $start+$current-2, 1);
 			$two_after = substr($str, $start+$current+3, 1);
-			
+
 			if (( ! in_array($one_before, $space, TRUE) && ! in_array($one_after, $space, TRUE))
 				OR
 				( ! in_array($two_before, $space, TRUE) && ! in_array($two_after, $space, TRUE) && $one_before == ' ' && $one_after == ' ')
@@ -420,30 +427,30 @@ class Auto_typography {
 									$two_before.trim($one_before)."&#8212;".trim($one_after).$two_after,
 									$str);
 			}
-			
+
 			$start = $start+$current+2;
 		}
-		
+
 		// Ellipsis
 		$str = preg_replace("#(\w)\.\.\.(\s|<br />|</p>)#", "\\1&#8230;\\2", $str);
 		$str = preg_replace("#(\s|<br />|</p>)\.\.\.(\w)#", "\\1&#8230;\\2", $str);
-		
-		// Run the translation array we defined above		
+
+		// Run the translation array we defined above
 		$str = str_replace(array_keys($table), array_values($table), $str);
-		
+
 		// If there are any stray double quotes we'll catch them here
-		
+
 		$start = 0;
-		
+
 		while(TRUE)
 		{
 			$current = strpos(substr($str, $start), '"');
-			
+
 			if ($current === FALSE) break;
-			
+
 			$one_before = substr($str, $start+$current-1, 1);
 			$one_after = substr($str, $start+$current+1, 1);
-			
+
 			if ( ! in_array($one_after, $space, TRUE))
 			{
 				$str = str_replace(	$one_before.'"'.$one_after,
@@ -456,21 +463,21 @@ class Auto_typography {
 									$one_before."&#8221;".$one_after,
 									$str);
 			}
-			
+
 			$start = $start+$current+2;
 		}
-		
+
 		$start = 0;
-		
+
 		while(TRUE)
 		{
 			$current = strpos(substr($str, $start), "'");
-			
+
 			if ($current === FALSE) break;
-			
+
 			$one_before = substr($str, $start+$current-1, 1);
 			$one_after = substr($str, $start+$current+1, 1);
-			
+
 			if ( ! in_array($one_after, $space, TRUE))
 			{
 				$str = str_replace(	$one_before."'".$one_after,
@@ -483,13 +490,13 @@ class Auto_typography {
 									$one_before."&#8217;".$one_after,
 									$str);
 			}
-			
+
 			$start = $start+$current+2;
 		}
-		
+
 		return $str;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -497,7 +504,7 @@ class Auto_typography {
 	 *
 	 * Converts newline characters into either <p> tags or <br />
 	 *
-	 */	
+	 */
 	function format_newlines($str)
 	{
 		if ($str == '')
@@ -509,12 +516,12 @@ class Auto_typography {
 		{
 			return '<p>'.$str.'</p>';
 		}
-			
+
 		$str = str_replace("\n\n", "</p>\n\n<p>", $str);
 		$str = preg_replace('/(?<!\n)(?=\n[^\n])/', '<br />', $str);
-		
+
 		return '<p>'.$str.'</p>';
-	}	
+	}
 }
 
 

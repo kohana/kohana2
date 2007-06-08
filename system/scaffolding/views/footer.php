@@ -2,7 +2,7 @@
 </div>
 
 <div id="footer">
-<p><a href="http://blueflame.ciforge.com/">BlueFlame</a> -  Version <?php echo BF_VERSION ?></p>
+<p><a href="http://kohanaphp.com/">Kohana</a> -  Version <?php echo KOHANA_VERSION ?></p>
 <p>Page rendered in {elapsed_time}</p>
 </div>
 

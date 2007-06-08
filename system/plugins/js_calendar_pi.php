@@ -1,15 +1,22 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * BlueFlame
+ * Kohana
  *
  * An open source application development framework for PHP 4.3.2 or newer
  *
- * @package		BlueFlame
- * @author		Rick Ellis
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
- * @license		http://www.codeigniter.com/user_guide/license.html
- * @link		http://blueflame.ciforge.com
- * @since		Version 1.0
+ * NOTE: This file has been modified from the original CodeIgniter version for
+ * the Kohana framework by the Kohana Development Team.
+ *
+ * @package          Kohana
+ * @author           Kohana Development Team
+ * @copyright        Copyright (c) 2007, Kohana Framework Team
+ * @link             http://kohanaphp.com
+ * @license          http://kohanaphp.com/user_guide/license.html
+ * @since            Version 1.0
+ * @orig_package     CodeIgniter
+ * @orig_author      Rick Ellis
+ * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
+ * @orig_license     http://www.codeignitor.com/user_guide/license.html
  * @filesource
  */
 
@@ -121,11 +128,10 @@ Lastly, you'll need some CSS for your calendar:
 	padding: 4px;
 }
 
-
 */
 
 function js_calendar_script($form_name = 'entryform')
-{		
+{
 
 ob_start();
 ?>
@@ -139,11 +145,11 @@ var last_click	= new Array();
 var current_month  = '';
 var current_year   = '';
 var last_date  = '';
-	
+
 function calendar(id, d, highlight, adjusted)
-{		
+{
 	if (adjusted == undefined)
-	{	
+	{
 		var d = new Date(d * 1000);
 	}
 
@@ -160,7 +166,7 @@ function calendar(id, d, highlight, adjusted)
 	this.minutes	= d.getMinutes();
 	this.seconds	= d.getSeconds();
 	this.date_str	= date_str;
-				
+
 	if (highlight == false)
 	{
 		this.selected_date = '';
@@ -169,22 +175,22 @@ function calendar(id, d, highlight, adjusted)
 	{
 		this.selected_date = this.year + '' + this.month + '' + this.date;
 	}
-			
+
 	//	Set the "selected date"
 	d.setDate(1);
 	this.firstDay = d.getDay();
-	
+
 	//then reset the date object to the correct date
 	d.setDate(this.date);
 }
-		
+
 //	Build the body of the calendar
 function build_calendar()
 {
 	var str = '';
-	
+
 	//	Calendar Heading
-	
+
 	str += '<div id="cal' + this.id + '">';
 	str += '<table class="calendar" cellspacing="0" cellpadding="0" border="0" >';
 	str += '<tr>';
@@ -192,28 +198,28 @@ function build_calendar()
 	str += '<td colspan="5" class="calheading">' + months[this.month] + ' ' + this.year + '<\/td>';
 	str += '<td class="calnavright" onClick="change_month(1, \'' + this.id + '\')">&gt;&gt;<\/td>';
 	str += '<\/tr>';
-	
+
 	//	Day Names
-	
+
 	str += '<tr>';
-	
+
 	for (i = 0; i < 7; i++)
 	{
 		str += '<td class="caldayheading">' + days[i] + '<\/td>';
 	}
-	
+
 	str += '<\/tr>';
-	
+
 	//	Day Cells
-		
+
 	str += '<tr>';
-	
+
 	selDate = (last_date != '') ? last_date : this.date;
-	
+
 	for (j = 0; j < 42; j++)
 	{
 		var displayNum = (j - this.firstDay + 1);
-		
+
 		if (j < this.firstDay) // leading empty cells
 		{
 			str += '<td class="calblanktop">&nbsp;<\/td>';
@@ -230,23 +236,23 @@ function build_calendar()
 		{
 			str += '<td id="" class="caldaycells" onClick="set_date(this,\'' + this.id + '\'); return false;"  onMouseOver="javascript:cell_highlight(this,\'' + displayNum + '\',\'' + this.id + '\');" onMouseOut="javascript:cell_reset(this,\'' + displayNum + '\',\'' + this.id + '\');" >' + displayNum + '<\/td>';
 		}
-		
+
 		if (j % 7 == 6)
 		{
 			str += '<\/tr><tr>';
 		}
 	}
 
-	str += '<\/tr>';	
+	str += '<\/tr>';
 	str += '<\/table>';
 	str += '<\/div>';
-	
+
 	return str;
 }
 
 //	Total number of days in a month
 function total_days()
-{	
+{
 	switch(this.month)
 	{
 		case 1: // Check for leap year
@@ -278,11 +284,11 @@ function cell_highlight(td, num, cal)
 	{
 		td.className = "caldaycellhover";
 	}
-}		
+}
 
 //	Reset Cell on MouseOut
 function cell_reset(td, num, cal)
-{	
+{
 	cal = eval(cal);
 
 	if (last_click[cal.id] == num)
@@ -293,49 +299,49 @@ function cell_reset(td, num, cal)
 	{
 		td.className = "caldaycells";
 	}
-}		
+}
 
 //	Clear Field
 function clear_field(id)
-{				
+{
 	eval("document." + form_name + "." + id + ".value = ''");
-	
+
 	document.getElementById(id + "selected").className = "caldaycells";
-	document.getElementById(id + "selected").id = "";	
-	
+	document.getElementById(id + "selected").id = "";
+
 	cal = eval(id);
-	cal.selected_date = '';		
-}		
+	cal.selected_date = '';
+}
 
 
 //	Set date to specified time
 function set_to_time(id, raw)
-{			
+{
 	if (document.getElementById(id + "selected"))
-	{			
+	{
 		document.getElementById(id + "selected").className = "caldaycells";
-		document.getElementById(id + "selected").id = "";	
+		document.getElementById(id + "selected").id = "";
 	}
-	
-	document.getElementById('cal' + id).innerHTML = '<div id="tempcal'+id+'">&nbsp;<'+'/div>';				
-		
+
+	document.getElementById('cal' + id).innerHTML = '<div id="tempcal'+id+'">&nbsp;<'+'/div>';
+
 	var nowDate = new Date();
 	nowDate.setTime = raw * 1000;
-	
+
 	current_month	= nowDate.getMonth();
 	current_year	= nowDate.getFullYear();
 	current_date	= nowDate.getDate();
-	
-	oldcal = eval(id);
-	oldcal.selected_date = current_year + '' + current_month + '' + current_date;				
 
-	cal = new calendar(id, nowDate, true, true);		
-	cal.selected_date = current_year + '' + current_month + '' + current_date;	
-	
+	oldcal = eval(id);
+	oldcal.selected_date = current_year + '' + current_month + '' + current_date;
+
+	cal = new calendar(id, nowDate, true, true);
+	cal.selected_date = current_year + '' + current_month + '' + current_date;
+
 	last_date = cal.date;
-	
-	document.getElementById('tempcal'+id).innerHTML = cal.write();	
-	
+
+	document.getElementById('tempcal'+id).innerHTML = cal.write();
+
 	insert_date(cal);
 }
 
@@ -345,16 +351,16 @@ var lastDates = new Array();
 function update_calendar(id, dateValue)
 {
 	if (lastDates[id] == dateValue) return;
-	
+
 	lastDates[id] = dateValue;
-	
+
 	var fieldString = dateValue.replace(/\s+/g, ' ');
-	
+
 	while (fieldString.substring(0,1) == ' ')
 	{
 		fieldString = fieldString.substring(1, fieldString.length);
 	}
-	
+
 	var dateString = fieldString.split(' ');
 	var dateParts = dateString[0].split('-')
 
@@ -362,13 +368,13 @@ function update_calendar(id, dateValue)
 	var newYear  = dateParts[0];
 	var newMonth = dateParts[1];
 	var newDay   = dateParts[2];
-	
+
 	if (isNaN(newDay)  || newDay < 1 || (newDay.length != 1 && newDay.length != 2)) return;
 	if (isNaN(newYear) || newYear < 1 || newYear.length != 4) return;
 	if (isNaN(newMonth) || newMonth < 1 || (newMonth.length != 1 && newMonth.length != 2)) return;
-	
+
 	if (newMonth > 12) newMonth = 12;
-	
+
 	if (newDay > 28)
 	{
 		switch(newMonth - 1)
@@ -394,36 +400,36 @@ function update_calendar(id, dateValue)
 				if (newDay > 31) newDay = 31;
 		}
 	}
-	
+
 	if (document.getElementById(id + "selected"))
-	{			
+	{
 		document.getElementById(id + "selected").className = "caldaycells";
-		document.getElementById(id + "selected").id = "";	
+		document.getElementById(id + "selected").id = "";
 	}
-	
-	document.getElementById('cal' + id).innerHTML = '<div id="tempcal'+id+'">&nbsp;<'+'/div>';				
-		
+
+	document.getElementById('cal' + id).innerHTML = '<div id="tempcal'+id+'">&nbsp;<'+'/div>';
+
 	var nowDate = new Date();
 	nowDate.setDate(newDay);
 	nowDate.setMonth(newMonth - 1);
 	nowDate.setYear(newYear);
 	nowDate.setHours(12);
-	
+
 	current_month	= nowDate.getMonth();
 	current_year	= nowDate.getFullYear();
 
-	cal = new calendar(id, nowDate, true, true);						
-	document.getElementById('tempcal'+id).innerHTML = cal.write();	
+	cal = new calendar(id, nowDate, true, true);
+	document.getElementById('tempcal'+id).innerHTML = cal.write();
 }
 
 //	Set the date
 function set_date(td, cal)
-{					
+{
 	cal = eval(cal);
-	
+
 	// If the user is clicking a cell that is already
 	// selected we'll de-select it and clear the form field
-	
+
 	if (last_click[cal.id] == td.firstChild.nodeValue)
 	{
 		td.className = "caldaycells";
@@ -432,27 +438,27 @@ function set_date(td, cal)
 		cal.selected_date =  '';
 		return;
 	}
-				
+
 	// Onward!
 	if (document.getElementById(cal.id + "selected"))
 	{
 		document.getElementById(cal.id + "selected").className = "caldaycells";
 		document.getElementById(cal.id + "selected").id = "";
 	}
-									
+
 	td.className = "caldayselected";
 	td.id = cal.id + "selected";
 
-	cal.selected_date = cal.date_obj.getFullYear() + '' + cal.date_obj.getMonth() + '' + cal.date;			
+	cal.selected_date = cal.date_obj.getFullYear() + '' + cal.date_obj.getMonth() + '' + cal.date;
 	cal.date_obj.setDate(td.firstChild.nodeValue);
 	cal = new calendar(cal.id, cal.date_obj, true, true);
-	cal.selected_date = cal.date_obj.getFullYear() + '' + cal.date_obj.getMonth() + '' + cal.date;			
-	
+	cal.selected_date = cal.date_obj.getFullYear() + '' + cal.date_obj.getMonth() + '' + cal.date;
+
 	last_date = cal.date;
 
 	//cal.date
 	last_click[cal.id] = cal.date;
-				
+
 	// Insert the date into the form
 	insert_date(cal);
 }
@@ -461,8 +467,8 @@ function set_date(td, cal)
 function insert_date(cal)
 {
 	cal = eval(cal);
-	fval = eval("document." + form_name + "." + cal.id);	
-	
+	fval = eval("document." + form_name + "." + cal.id);
+
 	if (fval.value == '')
 	{
 		fval.value = cal.date_str('y');
@@ -472,34 +478,34 @@ function insert_date(cal)
 		time = fval.value.substring(10);
 		new_date = cal.date_str('n') + time;
 		fval.value = new_date;
-	}	
+	}
 }
-		
+
 //	Remove the date from the form field
 function remove_date(cal)
 {
 	cal = eval(cal);
-	fval = eval("document." + form_name + "." + cal.id);	
+	fval = eval("document." + form_name + "." + cal.id);
 	fval.value = '';
 }
 
 //	Change to a new month
 function change_month(mo, cal)
-{		
+{
 	cal = eval(cal);
 
 	if (current_month != '')
 	{
 		cal.date_obj.setMonth(current_month);
 		cal.date_obj.setYear(current_year);
-	
+
 		current_month	= '';
 		current_year	= '';
 	}
-				
+
 	var newMonth = cal.date_obj.getMonth() + mo;
 	var newDate  = cal.date_obj.getDate();
-	
+
 	if (newMonth == 12)
 	{
 		cal.date_obj.setYear(cal.date_obj.getFullYear() + 1)
@@ -510,11 +516,11 @@ function change_month(mo, cal)
 		cal.date_obj.setYear(cal.date_obj.getFullYear() - 1)
 		newMonth = 11;
 	}
-	
+
 	if (newDate > 28)
 	{
 		var newYear = cal.date_obj.getFullYear();
-		
+
 		switch(newMonth)
 		{
 			case 1: // Check for leap year
@@ -538,14 +544,14 @@ function change_month(mo, cal)
 				if (newDate > 31) newDate = 31;
 		}
 	}
-	
+
 	cal.date_obj.setDate(newDate);
 	cal.date_obj.setMonth(newMonth);
 	new_mdy	= cal.date_obj.getFullYear() + '' + cal.date_obj.getMonth() + '' + cal.date;
-	
-	highlight = (cal.selected_date == new_mdy) ? true : false;			
-	cal = new calendar(cal.id, cal.date_obj, highlight, true); 			
-	document.getElementById('cal' + cal.id).innerHTML = cal.write();	
+
+	highlight = (cal.selected_date == new_mdy) ? true : false;
+	cal = new calendar(cal.id, cal.date_obj, highlight, true);
+	document.getElementById('cal' + cal.id).innerHTML = cal.write();
 }
 
 //	Finalize the date string
@@ -554,10 +560,10 @@ function date_str(time)
 	var month = this.month + 1;
 	if (month < 10)
 		month = '0' + month;
-		
+
 	var day		= (this.date  < 10) 	?  '0' + this.date		: this.date;
 	var minutes	= (this.minutes  < 10)	?  '0' + this.minutes	: this.minutes;
-		
+
 	if (format == 'us')
 	{
 		var hours	= (this.hours > 12) ? this.hours - 12 : this.hours;
@@ -568,10 +574,10 @@ function date_str(time)
 		var hours	= this.hours;
 		var ampm	= '';
 	}
-	
+
 	if (time == 'y')
 	{
-		return this.year + '-' + month + '-' + day + '  ' + hours + ':' + minutes + ' ' + ampm;		
+		return this.year + '-' + month + '-' + day + '  ' + hours + ':' + minutes + ' ' + ampm;
 	}
 	else
 	{
@@ -598,7 +604,7 @@ function js_calendar_write($field_id, $time = '', $highlight = TRUE)
 	'<script type="text/javascript">
 		var '.$field_id.' = new calendar("'.$field_id.'", '.$time.', '.(($highlight == TRUE) ? 'true' : 'false').');
 		document.write('.$field_id.'.write());
-	</script>';	
-}	
+	</script>';
+}
 
 ?>

@@ -5,7 +5,7 @@
 | PHP ERROR REPORTING LEVEL
 |---------------------------------------------------------------
 |
-| By default BlueFlame runs with error reporting set to ALL.  For security
+| By default Kohana runs with error reporting set to ALL.  For security
 | reasons you are encouraged to change this when your site goes live.
 | For more info visit:  http://www.php.net/error_reporting
 |
@@ -35,7 +35,7 @@
 | folder then the default one you can set its name here. The folder
 | can also be renamed or relocated anywhere on your server.
 | For more info please see the user guide:
-| http://www.codeigniter.com/user_guide/general/managing_apps.html
+| http://kohanaphp.com/user_guide/general/managing_apps.html
 |
 |
 | NO TRAILING SLASH!
@@ -43,13 +43,11 @@
 */
 	$application_folder = "application";
 
-
 /*
 |===============================================================
 | END OF USER CONFIGURABLE SETTINGS
 |===============================================================
 */
-
 
 /*
 |---------------------------------------------------------------

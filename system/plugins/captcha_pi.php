@@ -1,15 +1,22 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * BlueFlame
+ * Kohana
  *
  * An open source application development framework for PHP 4.3.2 or newer
  *
- * @package		BlueFlame
- * @author		Rick Ellis
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
- * @license		http://www.codeigniter.com/user_guide/license.html
- * @link		http://blueflame.ciforge.com
- * @since		Version 1.0
+ * NOTE: This file has been modified from the original CodeIgniter version for
+ * the Kohana framework by the Kohana Development Team.
+ *
+ * @package          Kohana
+ * @author           Kohana Development Team
+ * @copyright        Copyright (c) 2007, Kohana Framework Team
+ * @link             http://kohanaphp.com
+ * @license          http://kohanaphp.com/user_guide/license.html
+ * @since            Version 1.0
+ * @orig_package     CodeIgniter
+ * @orig_author      Rick Ellis
+ * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
+ * @orig_license     http://www.codeignitor.com/user_guide/license.html
  * @filesource
  */
 
@@ -23,7 +30,7 @@ Load the plugin using:
  	$this->load->plugin('captcha');
 
 Once loaded you can generate a captcha like this:
-	
+
 	$vals = array(
 					'word'		 => 'Random word',
 					'img_path'	 => './captcha/',
@@ -33,26 +40,26 @@ Once loaded you can generate a captcha like this:
 					'img_height' => 30,
 					'expiration' => 7200
 				);
-	
+
 	$cap = create_captcha($vals);
 	echo $cap['image'];
-	
+
 
 NOTES:
-	
+
 	The captcha function requires the GD image library.
-	
+
 	Only the img_path and img_url are required.
-	
+
 	If a "word" is not supplied, the function will generate a random
 	ASCII string.  You might put together your own word library that
 	you can draw randomly from.
-	
+
 	If you do not specify a path to a TRUE TYPE font, the native ugly GD
 	font will be used.
-	
+
 	The "captcha" folder must be writable (666, or 777)
-	
+
 	The "expiration" (in seconds) signifies how long an image will
 	remain in the captcha folder before it will be deleted.  The default
 	is two hours.
@@ -106,7 +113,7 @@ On the page where the captcha will be shown you'll have something like this:
 					'img_path'	 => './captcha/',
 					'img_url'	 => 'http://www.your-site.com/captcha/'
 				);
-	
+
 	$cap = create_captcha($vals);
 
 	$data = array(
@@ -118,7 +125,7 @@ On the page where the captcha will be shown you'll have something like this:
 
 	$query = $this->db->insert_string('captcha', $data);
 	$this->db->query($query);
-		
+
 	echo 'Submit the word you see below:';
 	echo $cap['image'];
 	echo '<input type="text" name="captcha" value="" />';
@@ -128,7 +135,7 @@ Then, on the page that accepts the submission you'll have something like this:
 
 	// First, delete old captchas
 	$expiration = time()-7200; // Two hour limit
-	$DB->query("DELETE FROM captcha WHERE captcha_time < ".$expiration);		
+	$DB->query("DELETE FROM captcha WHERE captcha_time < ".$expiration);
 
 	// Then see if a captcha exists:
 	$sql = "SELECT COUNT(*) AS count FROM captcha WHERE word = ? AND ip_address = ? AND date > ?";
@@ -143,18 +150,16 @@ Then, on the page that accepts the submission you'll have something like this:
 
 */
 
-
-	
-/**
+/*
 |==========================================================
 | Create Captcha
 |==========================================================
 |
 */
 function create_captcha($data = '', $img_path = '', $img_url = '', $font_path = '')
-{		
-	$defaults = array('word' => '', 'img_path' => '', 'img_url' => '', 'img_width' => '150', 'img_height' => '30', 'font_path' => '', 'expiration' => 7200);		
-	
+{
+	$defaults = array('word' => '', 'img_path' => '', 'img_url' => '', 'img_width' => '150', 'img_height' => '30', 'font_path' => '', 'expiration' => 7200);
+
 	foreach ($defaults as $key => $val)
 	{
 		if ( ! is_array($data))
@@ -165,11 +170,11 @@ function create_captcha($data = '', $img_path = '', $img_url = '', $font_path = 
 			}
 		}
 		else
-		{			
+		{
 			$$key = ( ! isset($data[$key])) ? $val : $data[$key];
 		}
 	}
-	
+
 	if ($img_path == '' OR $img_url == '')
 	{
 		return FALSE;
@@ -179,45 +184,45 @@ function create_captcha($data = '', $img_path = '', $img_url = '', $font_path = 
 	{
 		return FALSE;
 	}
-	
+
 	if ( ! is_writable($img_path))
 	{
 		return FALSE;
 	}
-			
+
 	if ( ! extension_loaded('gd'))
 	{
 		return FALSE;
-	}		
-	
+	}
+
 	// -----------------------------------
-	// Remove old images	
+	// Remove old images
 	// -----------------------------------
-			
+
 	list($usec, $sec) = explode(" ", microtime());
 	$now = ((float)$usec + (float)$sec);
-			
+
 	$current_dir = @opendir($img_path);
-	
+
 	while($filename = @readdir($current_dir))
 	{
 		if ($filename != "." and $filename != ".." and $filename != "index.html")
 		{
 			$name = str_replace(".jpg", "", $filename);
-		
+
 			if (($name + $expiration) < $now)
 			{
 				@unlink($img_path.$filename);
 			}
 		}
 	}
-	
+
 	@closedir($current_dir);
 
 	// -----------------------------------
 	// Do we have a "word" yet?
 	// -----------------------------------
-	
+
    if ($word == '')
    {
 		$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -227,29 +232,29 @@ function create_captcha($data = '', $img_path = '', $img_url = '', $font_path = 
 		{
 			$str .= substr($pool, mt_rand(0, strlen($pool) -1), 1);
 		}
-		
+
 		$word = $str;
    }
-	
+
 	// -----------------------------------
-	// Determine angle and position	
+	// Determine angle and position
 	// -----------------------------------
-	
+
 	$length	= strlen($word);
 	$angle	= ($length >= 6) ? rand(-($length-6), ($length-6)) : 0;
-	$x_axis	= rand(6, (360/$length)-16);			
+	$x_axis	= rand(6, (360/$length)-16);
 	$y_axis = ($angle >= 0 ) ? rand($img_height, $img_width) : rand(6, $img_height);
-	
+
 	// -----------------------------------
 	// Create image
 	// -----------------------------------
-			
+
 	$im = ImageCreate($img_width, $img_height);
-			
+
 	// -----------------------------------
 	//  Assign colors
 	// -----------------------------------
-	
+
 	$bg_color		= ImageColorAllocate($im, 255, 255, 255);
 	$border_color	= ImageColorAllocate($im, 153, 102, 102);
 	$text_color		= ImageColorAllocate($im, 204, 153, 153);
@@ -259,13 +264,13 @@ function create_captcha($data = '', $img_path = '', $img_url = '', $font_path = 
 	// -----------------------------------
 	//  Create the rectangle
 	// -----------------------------------
-	
+
 	ImageFilledRectangle($im, 0, 0, $img_width, $img_height, $bg_color);
-	
+
 	// -----------------------------------
 	//  Create the spiral pattern
 	// -----------------------------------
-	
+
 	$theta		= 1;
 	$thetac		= 7;
 	$radius		= 16;
@@ -289,9 +294,9 @@ function create_captcha($data = '', $img_path = '', $img_url = '', $font_path = 
 	// -----------------------------------
 	//  Write the text
 	// -----------------------------------
-	
+
 	$use_font = ($font_path != '' AND file_exists($font_path) AND function_exists('imagettftext')) ? TRUE : FALSE;
-		
+
 	if ($use_font == FALSE)
 	{
 		$font_size = 5;
@@ -314,32 +319,32 @@ function create_captcha($data = '', $img_path = '', $img_url = '', $font_path = 
 			$x += ($font_size*2);
 		}
 		else
-		{		
+		{
 			$y = rand($img_height/2, $img_height-3);
 			imagettftext($im, $font_size, $angle, $x, $y, $text_color, $font_path, substr($word, $i, 1));
 			$x += $font_size;
 		}
 	}
-	
+
 
 	// -----------------------------------
 	//  Create the border
 	// -----------------------------------
 
-	imagerectangle($im, 0, 0, $img_width-1, $img_height-1, $border_color);		
+	imagerectangle($im, 0, 0, $img_width-1, $img_height-1, $border_color);
 
 	// -----------------------------------
 	//  Generate the image
 	// -----------------------------------
-	
+
 	$img_name = $now.'.jpg';
 
 	ImageJPEG($im, $img_path.$img_name);
-	
+
 	$img = "<img src=\"$img_url$img_name\" width=\"$img_width\" height=\"$img_height\" style=\"border:0;\" alt=\" \" />";
-	
+
 	ImageDestroy($im);
-		
+
 	return array('word' => $word, 'time' => $now, 'image' => $img);
 }
 

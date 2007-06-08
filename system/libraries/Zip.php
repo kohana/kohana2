@@ -1,15 +1,22 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * BlueFlame
+ * Kohana
  *
  * An open source application development framework for PHP 4.3.2 or newer
  *
- * @package		BlueFlame
- * @author		Rick Ellis
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
- * @license		http://www.codeigniter.com/user_guide/license.html
- * @link		http://blueflame.ciforge.com
- * @since		Version 1.0
+ * NOTE: This file has been modified from the original CodeIgniter version for
+ * the Kohana framework by the Kohana Development Team.
+ *
+ * @package          Kohana
+ * @author           Kohana Development Team
+ * @copyright        Copyright (c) 2007, Kohana Framework Team
+ * @link             http://kohanaphp.com
+ * @license          http://kohanaphp.com/user_guide/license.html
+ * @since            Version 1.0
+ * @orig_package     CodeIgniter
+ * @orig_author      Rick Ellis
+ * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
+ * @orig_license     http://www.codeignitor.com/user_guide/license.html
  * @filesource
  */
 
@@ -24,15 +31,15 @@
  * The original library is a little rough around the edges so I
  * refactored it and added several additional methods -- Rick Ellis
  *
- * @package		BlueFlame
+ * @package		Kohana
  * @subpackage	Libraries
  * @category	Encryption
  * @author		Rick Ellis
- * @link		http://blueflame.ciforge.com/user_guide/libraries/zip.html
+ * @link		http://kohanaphp.com/user_guide/libraries/zip.html
  */
 class CI_Zip  {
 
-	var $zipfile	= '';	
+	var $zipfile	= '';
 	var $zipdata	= array();
 	var $directory	= array();
 	var $offset		= 0;
@@ -57,11 +64,7 @@ class CI_Zip  {
 	{
 		foreach ((array)$directory as $dir)
 		{
-			if ( ! preg_match("|.+/$|", $dir))
-			{
-				$dir .= '/';
-			}
-		
+			$dir = rtrim($dir, '/').'/';
 			$this->_add_dir($dir);
 		}
 	}
@@ -78,7 +81,7 @@ class CI_Zip  {
 	function _add_dir($dir)
 	{
 		$dir = str_replace("\\", "/", $dir);
-		
+
 		$this->zipdata[] = "\x50\x4b\x03\x04\x0a\x00\x00\x00\x00\x00\x00\x00\x00\x00"
 							.pack('V', 0)
 							.pack('V', 0)
@@ -89,9 +92,9 @@ class CI_Zip  {
 							.pack('V', 0)
 							.pack('V', 0)
 							.pack('V', 0);
-		
+
 		$newoffset = strlen(implode('', $this->zipdata));
-		
+
 		$record = "\x50\x4b\x01\x02\x00\x00\x0a\x00\x00\x00\x00\x00\x00\x00\x00\x00"
 					.pack('V',0)
 					.pack('V',0)
@@ -104,11 +107,11 @@ class CI_Zip  {
 					.pack('V', 16)
 					.pack('V', $this->offset)
 					.$dir;
-		
+
 		$this->offset = $newoffset;
 		$this->directory[] = $record;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -122,7 +125,7 @@ class CI_Zip  {
 	 * @param	mixed
 	 * @param	string
 	 * @return	void
-	 */	
+	 */
 	function add_data($filepath, $data = NULL)
 	{
 		if (is_array($filepath))
@@ -137,7 +140,7 @@ class CI_Zip  {
 			$this->_add_data($filepath, $data);
 		}
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -147,18 +150,18 @@ class CI_Zip  {
 	 * @param	string	the file name/path
 	 * @param	string	the data to be encoded
 	 * @return	void
-	 */	
+	 */
 	function _add_data($filepath, $data)
-	{	
+	{
 		$filepath = str_replace("\\", "/", $filepath);
-			
+
 		$oldlen	= strlen($data);
 		$crc32	= crc32($data);
-		
+
 		$gzdata = gzcompress($data);
 		$gzdata = substr($gzdata, 2, -4);
 		$newlen = strlen($gzdata);
-	
+
 		$this->zipdata[] = "\x50\x4b\x03\x04\x14\x00\x00\x00\x08\x00\x00\x00\x00\x00"
 							.pack('V', $crc32)
 							.pack('V', $newlen)
@@ -167,9 +170,9 @@ class CI_Zip  {
 							.pack('v', 0)
 							.$filepath
 							.$gzdata;
-			
+
 		$newoffset = strlen(implode("", $this->zipdata));
-		
+
 		$record = "\x50\x4b\x01\x02\x00\x00\x14\x00\x00\x00\x08\x00\x00\x00\x00\x00"
 					.pack('V', $crc32)
 					.pack('V', $newlen)
@@ -181,11 +184,11 @@ class CI_Zip  {
 					.pack('v', 0)
 					.pack('V', 32)
 					.pack('V', $this->offset);
-		
+
 		$this->offset = $newoffset;
 		$this->directory[] = $record.$filepath;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -193,23 +196,23 @@ class CI_Zip  {
 	 *
 	 * @access	public
 	 * @return	bool
-	 */	
+	 */
 	function read_file($path, $preserve_filepath = FALSE)
 	{
 		if ( ! file_exists($path))
 		{
 			return FALSE;
 		}
-	
-		if (FALSE !== ($data = file_get_contents($path)))
+
+		if (($data = file_get_contents($path)) !== FALSE)
 		{
-			$name = str_replace("\\", "/", $path);
-			
+			$name = str_replace('\\', '/', $path);
+
 			if ($preserve_filepath === FALSE)
 			{
-				$name = preg_replace("|.*/(.+)|", "\\1", $name);
+				$name = basename($name);
 			}
-			
+
 			$this->add_data($name, $data);
 			return TRUE;
 		}
@@ -217,7 +220,7 @@ class CI_Zip  {
 	}
 
 	// ------------------------------------------------------------------------
-	
+
 	/**
 	 * Read a directory and add it to the zip.
 	 *
@@ -228,21 +231,21 @@ class CI_Zip  {
 	 * @access	public
 	 * @param	string	path to source
 	 * @return	bool
-	 */	
+	 */
 	function read_dir($path)
-	{	
+	{
 		if ($fp = @opendir($path))
 		{
-			while (FALSE !== ($file = readdir($fp)))
+			while (($file = readdir($fp)) !== FALSE)
 			{
 				if (@is_dir($path.$file) && substr($file, 0, 1) != '.')
-				{					
+				{
 					$this->read_dir($path.$file."/");
 				}
 				elseif (substr($file, 0, 1) != ".")
 				{
-					if (FALSE !== ($data = file_get_contents($path.$file)))
-					{						
+					if (($data = file_get_contents($path.$file)) !== FALSE)
+					{
 						$this->add_data(str_replace("\\", "/", $path).$file, $data);
 					}
 				}
@@ -258,7 +261,7 @@ class CI_Zip  {
 	 *
 	 * @access	public
 	 * @return	binary string
-	 */	
+	 */
 	function get_zip()
 	{
 		// We cache the zip data so multiple calls
@@ -267,26 +270,26 @@ class CI_Zip  {
 		{
 			return $this->zipfile;
 		}
-	
+
 		// Is there any data to return?
 		if (count($this->zipdata) == 0)
 		{
 			return FALSE;
 		}
-	
+
 		$data	= implode('', $this->zipdata);
 		$dir	= implode('', $this->directory);
-				
+
 		$this->zipfile = $data.$dir."\x50\x4b\x05\x06\x00\x00\x00\x00"
 						.pack('v', sizeof($this->directory))
 						.pack('v', sizeof($this->directory))
 						.pack('V', strlen($dir))
 						.pack('V', strlen($data))
 						."\x00\x00";
-		
+
 		return $this->zipfile;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -298,20 +301,20 @@ class CI_Zip  {
 	 * @param	string	the file name
 	 * @param	string	the data to be encoded
 	 * @return	bool
-	 */	
+	 */
 	function archive($filepath)
 	{
 		if ( ! ($fp = @fopen($filepath, "wb")))
 		{
 			return FALSE;
 		}
-		
-		flock($fp, LOCK_EX);	
+
+		flock($fp, LOCK_EX);
 		fwrite($fp, $this->get_zip());
 		flock($fp, LOCK_UN);
 		fclose($fp);
 
-		return TRUE;	
+		return TRUE;
 	}
 
 	// --------------------------------------------------------------------
@@ -323,34 +326,34 @@ class CI_Zip  {
 	 * @param	string	the file name
 	 * @param	string	the data to be encoded
 	 * @return	bool
-	 */		
+	 */
 	function download($filename = 'backup.zip')
 	{
-		if ( ! preg_match("|.+?\.zip$|", $filename))
+		if ( ! preg_match('|.zip$|', $filename))
 		{
 			$filename .= '.zip';
 		}
-	
+
 		if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE"))
 		{
 			header('Content-Type: application/x-zip');
 			header('Content-Disposition: inline; filename="'.$filename.'"');
 			header('Expires: 0');
 			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-			header("Content-Transfer-Encoding: binary");
+			header('Content-Transfer-Encoding: binary');
 			header('Pragma: public');
-			header("Content-Length: ".strlen($this->get_zip()));
+			header('Content-Length: '.strlen($this->get_zip()));
 		}
 		else
 		{
 			header('Content-Type: application/x-zip');
 			header('Content-Disposition: attachment; filename="'.$filename.'"');
-			header("Content-Transfer-Encoding: binary");
+			header('Content-Transfer-Encoding: binary');
 			header('Expires: 0');
 			header('Pragma: no-cache');
-			header("Content-Length: ".strlen($this->get_zip()));
+			header('Content-Length: '.strlen($this->get_zip()));
 		}
-	
+
 		echo $this->get_zip();
 	}
 
@@ -364,7 +367,7 @@ class CI_Zip  {
 	 *
 	 * @access	public
 	 * @return	void
-	 */		
+	 */
 	function clear_data()
 	{
 		$this->zipfile		= '';
@@ -372,6 +375,6 @@ class CI_Zip  {
 		$this->directory	= array();
 		$this->offset		= array();
 	}
-	
+
 }
 ?>

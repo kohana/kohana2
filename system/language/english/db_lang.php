@@ -18,7 +18,4 @@ $lang['db_unsuported_compression'] = 'The file compression format you chose is n
 $lang['db_filepath_error'] = 'Unable to write data to the file path you have submitted.';
 $lang['db_invalid_cache_path'] = 'The cache path you submitted is not valid or writable.';
 
-
-
-
 ?>

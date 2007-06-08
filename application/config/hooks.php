@@ -3,7 +3,7 @@
 | -------------------------------------------------------------------------
 | Hooks
 | -------------------------------------------------------------------------
-| This file lets you define "hooks" to extend BlueFlame without hacking the core
+| This file lets you define "hooks" to extend Kohana without hacking the core
 | files.  Please see the user guide for info:
 |
 |	http://www.codeigniter.com/user_guide/general/hooks.html
