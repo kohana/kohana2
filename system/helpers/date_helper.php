@@ -92,7 +92,7 @@ function mdate($datestr = '', $time = '')
 	if ($time == '')
 		$time = now();
 		
-	$datestr = str_replace('%\\', '', preg_replace("/([a-z]+?){1}/i", "\\\\\\1", $datestr));
+	$datestr = str_replace('%\\', '', preg_replace('/(?=[a-z])/i', '\\', $datestr));
 	return date($datestr, $time);
 }
 	
