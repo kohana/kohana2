@@ -120,7 +120,7 @@ function write_file($path, $data, $mode = 'wb')
 function delete_files($path, $del_dir = FALSE, $level = 0)
 {	
 	// Trim the trailing slash
-	$path = preg_replace("|^(.+?)/*$|", "\\1", $path);
+	$path = rtrim($path, '/');
 			
 	if ( ! $current_dir = @opendir($path))
 		return;
