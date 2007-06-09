@@ -56,7 +56,7 @@ function word_limiter($str, $limit = 100, $end_char = '&#8230;')
     
     // Added the initial \s* in order to make the regex work in case $str starts with whitespace.
     // Without it a string like " test" would be counted for two words instead of one.
-    preg_match('/\s*(?:\S+\s*){1,'. (int) $limit .'}/', $str, $matches);
+    preg_match('/^\s*(?:\S+\s*){1,'. (int) $limit .'}/', $str, $matches);
     
     // Only add end character if the string got chopped off.
     if (strlen($matches[0]) == strlen($str))
@@ -82,29 +82,23 @@ function word_limiter($str, $limit = 100, $end_char = '&#8230;')
  * @param	string	the end character. Usually an ellipsis
  * @return	string
  */	
-function character_limiter($str, $n = 500, $end_char = '&#8230;')
+function character_limiter($str, $limit = 500, $end_char = '&#8230;')
 {
-	if (strlen($str) < $n)
+	$limit = (int) max(0, $limit);
+	
+	if (strlen($str) <= $limit)
 	{
 		return $str;
 	}
-		
-	$str = preg_replace("/\s+/", ' ', preg_replace("/(\r\n|\r|\n)/", " ", $str));
-
-	if (strlen($str) <= $n)
+	
+	preg_match('/^.{'. ($limit - 1) .'}(?:\s|.+?(?:\s|$))/sD', $str, $matches);
+	
+	if (strlen($matches[0]) == strlen($str))
 	{
-		return $str;
+        $end_char = '';
 	}
-									
-	$out = "";
-	foreach (explode(' ', trim($str)) as $val)
-	{
-		$out .= $val.' ';			
-		if (strlen($out) >= $n)
-		{
-			return trim($out).$end_char;
-		}		
-	}
+	
+	return rtrim($matches[0]) . $end_char;
 }
 	
 // ------------------------------------------------------------------------
