@@ -383,7 +383,7 @@ class CI_DB_postgre_driver extends CI_DB {
 	{
 		if (strstr($table, '.'))
 		{
-			$table = '"'. preg_replace('/\./', '"."', $table) .'"';
+			$table = '"'. str_replace('.', '"."', $table) .'"';
 		}
 
 		return $table;
