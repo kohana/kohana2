@@ -206,7 +206,7 @@ class CI_DB_mysqli_utility extends CI_DB_utility {
 			}
 			
 			// Trim off the end comma
-			$field_str = preg_replace( "/, $/" , "" , $field_str);
+			$field_str = rtrim($field_str, ' ,');
 			
 			
 			// Build the insert string
@@ -233,7 +233,7 @@ class CI_DB_mysqli_utility extends CI_DB_utility {
 					$i++;
 				}
 				
-				$val_str = preg_replace( "/, $/" , "" , $val_str);
+				$val_str = rtrim($val_str, ' ,');
 								
 				// Build the INSERT string
 				$output .= 'INSERT INTO '.$table.' ('.$field_str.') VALUES ('.$val_str.');'.$newline;
