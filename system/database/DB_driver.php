@@ -539,7 +539,7 @@ class CI_DB_driver {
 			// Just in case the replacement string contains the bind
 			// character we'll temporarily replace it with a marker
 			$val = str_replace($this->bind_marker, '{%bind_marker%}', $val);
-			$sql = preg_replace("#".preg_quote($this->bind_marker, '#')."#", str_replace('$', '\$', $val), $sql, 1);
+			$sql = preg_replace('#'.preg_quote($this->bind_marker, '#').'#', str_replace('$', '\$', $val), $sql, 1);
 		}
 
 		return str_replace('{%bind_marker%}', $this->bind_marker, $sql);

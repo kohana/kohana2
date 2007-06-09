@@ -378,12 +378,7 @@ class CI_DB_sqlite_driver extends CI_DB {
 	 */
 	function _escape_table($table)
 	{
-		if (stristr($table, '.'))
-		{
-			$table = preg_replace("/\./", "`.`", $table);
-		}
-
-		return $table;
+		return preg_replace('/\./', '`.`', $table);
 	}
 
 	// --------------------------------------------------------------------

@@ -128,7 +128,7 @@ class CI_DB_mysql_driver extends CI_DB {
 		{
 			if (preg_match('/^\s*DELETE\s+FROM\s+(\S+)\s*$/i', $sql))
 			{
-				$sql = preg_replace("/^\s*DELETE\s+FROM\s+(\S+)\s*$/", "DELETE FROM \\1 WHERE 1=1", $sql);
+				$sql .= ' WHERE 1 = 1';
 			}
 		}
 
@@ -368,12 +368,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	function _escape_table($table)
 	{
-		if (stristr($table, '.'))
-		{
-			$table = preg_replace("/\./", "`.`", $table);
-		}
-
-		return $table;
+		return preg_replace('/\./', '`.`', $table);
 	}
 
 	// --------------------------------------------------------------------

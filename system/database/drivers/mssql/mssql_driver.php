@@ -358,10 +358,7 @@ class CI_DB_mssql_driver extends CI_DB {
 		// I don't believe this is necessary with MS SQL.  Not sure, though. - Rick
 
 		/*
-		if (stristr($table, '.'))
-		{
-			$table = preg_replace("/\./", "`.`", $table);
-		}
+		return preg_replace('/\./', '`.`', $table);
 		*/
 
 		return $table;
