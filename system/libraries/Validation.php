@@ -34,21 +34,18 @@
 class CI_Validation {
 
 	var $CI;
-	var $error_string		= '';
-	var $_error_array		= array();
-	var $_rules				= array();
-	var $_fields			= array();
-	var $_error_messages	= array();
-	var $_current_field  	= '';
-	var $_safe_form_data 	= FALSE;
-	var $_error_prefix		= '<p>';
-	var $_error_suffix		= '</p>';
-
-
+	var $error_string    = '';
+	var $_error_array    = array();
+	var $_rules          = array();
+	var $_fields         = array();
+	var $_error_messages = array();
+	var $_current_field  = '';
+	var $_safe_form_data = FALSE;
+	var $_error_prefix   = '<p>';
+	var $_error_suffix   = '</p>';
 
 	/**
 	 * Constructor
-	 *
 	 */
 	function CI_Validation()
 	{
@@ -198,17 +195,17 @@ class CI_Validation {
 		// Cycle through the rules and test for errors
 		foreach ($this->_rules as $field => $rules)
 		{
-			//Explode out the rules!
-			$ex = explode('|', $rules);
-
-			// Is the field required?  If not, if the field is blank  we'll move on to the next test
-			if ( ! in_array('required', $ex, TRUE) AND strpos($rules, 'callback_') === FALSE)
+			// Is the field required, a callback, or a match? If not, we can continue
+			if ( ! preg_match('/required|callback|matches/', $rules, $ex))
 			{
 				if ( ! isset($_POST[$field]) OR $_POST[$field] == '')
 				{
 					continue;
 				}
 			}
+
+			//Explode out the rules!
+			$ex = explode('|', $rules);
 
 			/*
 			 * Are we dealing with an "isset" rule?
@@ -266,10 +263,10 @@ class CI_Validation {
 				// Strip the parameter (if exists) from the rule
 				// Rules can contain a parameter: max_length[5]
 				$param = FALSE;
-				if (preg_match("/(.*?)\[(.*?)\]/", $rule, $match))
+				if (preg_match('/(.+)\[(.+)\]/', $rule, $match))
 				{
-					$rule	= $match[1];
-					$param	= $match[2];
+					$rule  = $match[1];
+					$param = $match[2];
 				}
 
 				// Call the function that corresponds to the rule
@@ -287,7 +284,6 @@ class CI_Validation {
 					{
 						continue 2;
 					}
-
 				}
 				else
 				{
@@ -317,7 +313,7 @@ class CI_Validation {
 				{
 					if ( ! isset($this->_error_messages[$rule]))
 					{
-						if (FALSE === ($line = $this->CI->lang->line($rule)))
+						if (($line = $this->CI->lang->line($rule)) === FALSE)
 						{
 							$line = 'Unable to access an error message corresponding to your field name.';
 						}
@@ -341,7 +337,6 @@ class CI_Validation {
 					continue 2;
 				}
 			}
-
 		}
 
 		$total_errors = count($this->_error_array);
@@ -431,7 +426,7 @@ class CI_Validation {
 			return FALSE;
 		}
 
-		return (strlen($str) < $val) ? FALSE : TRUE;
+		return (bool) (strlen($str) > $val);
 	}
 
 	// --------------------------------------------------------------------
@@ -450,7 +445,7 @@ class CI_Validation {
 			return FALSE;
 		}
 
-		return (strlen($str) > $val) ? FALSE : TRUE;
+		return (bool) (strlen($str) < $val);
 	}
 
 	// --------------------------------------------------------------------
@@ -469,7 +464,7 @@ class CI_Validation {
 			return FALSE;
 		}
 
-		return (strlen($str) != $val) ? FALSE : TRUE;
+		return (bool) (strlen($str) == $val);
 	}
 
 	// --------------------------------------------------------------------
@@ -491,6 +486,8 @@ class CI_Validation {
 	/**
 	 * Valid Email RFC
 	 *
+	 * Originally by Cal Henderson, modified to fit Kohana syntax standards
+	 *
 	 * @access	public
 	 * @param	string
 	 * @return	bool
@@ -502,18 +499,18 @@ class CI_Validation {
 	{
 		$qtext = '[^\\x0d\\x22\\x5c\\x80-\\xff]';
 		$dtext = '[^\\x0d\\x5b-\\x5d\\x80-\\xff]';
-		$atom = '[^\\x00-\\x20\\x22\\x28\\x29\\x2c\\x2e\\x3a-\\x3c'.
-			'\\x3e\\x40\\x5b-\\x5d\\x7f-\\xff]+';
-		$quoted_pair = '\\x5c[\\x00-\\x7f]';
-		$domain_literal = "\\x5b($dtext|$quoted_pair)*\\x5d";
-		$quoted_string = "\\x22($qtext|$quoted_pair)*\\x22";
-		$domain_ref = $atom;
-		$sub_domain = "($domain_ref|$domain_literal)";
-		$word = "($atom|$quoted_string)";
-		$domain = "$sub_domain(\\x2e$sub_domain)*";
-		$local_part = "$word(\\x2e$word)*";
-		$addr_spec = "$local_part\\x40$domain";
-		return preg_match("!^$addr_spec$!", $str) ? 1 : 0;
+		$atom  = '[^\\x00-\\x20\\x22\\x28\\x29\\x2c\\x2e\\x3a-\\x3c\\x3e\\x40\\x5b-\\x5d\\x7f-\\xff]+';
+		$pair  = '\\x5c[\\x00-\\x7f]';
+
+		$domain_literal = "\\x5b($dtext|$pair)*\\x5d";
+		$quoted_string  = "\\x22($qtext|$pair)*\\x22";
+		$sub_domain     = "($atom|$domain_literal)";
+		$word           = "($atom|$quoted_string)";
+		$domain         = "$sub_domain(\\x2e$sub_domain)*";
+		$local_part     = "$word(\\x2e$word)*";
+		$addr_spec      = "$local_part\\x40$domain";
+
+		return (bool) preg_match('/^'.$addr_spec.'$/', $str);
 	}
 
 	// --------------------------------------------------------------------
@@ -527,7 +524,8 @@ class CI_Validation {
 	 */
 	function valid_ip($ip)
 	{
-		return (bool) preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/D', $ip);
+		$CI =& get_instance();
+		return $CI->input->valid_ip($ip);
 	}
 
 	// --------------------------------------------------------------------

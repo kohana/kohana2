@@ -354,20 +354,22 @@ class CI_Input {
 	/**
 	 * Validate IP Address
 	 *
+	 * Validates an IPv4 address based on RFC specifications
+	 *
 	 * @access	public
 	 * @param	string
 	 * @return	string
 	 */
 	function valid_ip($ip)
 	{
-		if ( ! preg_match( "/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/", $ip))
+		if ( ! preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/D', $ip))
 		{
 			return FALSE;
 		}
 
 		$octets = explode('.', $ip);
 
-		for ($i = 1; $i <= 4; $i++)
+		for ($i = 1; $i < 5; $i++)
 		{
 			$octet = intval($octets[($i-1)]);
 			if ($i === 1)
