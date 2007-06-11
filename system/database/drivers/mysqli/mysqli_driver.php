@@ -86,6 +86,26 @@ class CI_DB_mysqli_driver extends CI_DB {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Set database charset
+	 *
+	 * @access public
+	 * @return bool
+	 */
+	function set_charset()
+	{
+		if ($this->charset != '')
+		{
+			return @mysqli_set_charset($this->conn_id, $this->charset);
+		}
+		else
+		{
+			return TRUE;
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Version number query string
 	 *
 	 * @access	public
@@ -473,23 +493,7 @@ class CI_DB_mysqli_driver extends CI_DB {
 	{
 		@mysqli_close($conn_id);
 	}
-	
-	/**
-	 * Set Charset
-	 *
-	 * @access	public
-	 * @return	bool
-	 */
-	function _set_charset($charset)
-	{
-		$this->query("SET NAMES '" . $charset . "'");
-		
-		//$query = $this->query("show variables like 'char%'");
-		//echo "<pre>" . print_r($query->result(), true) . "</pre>"; die;
-		
-		return true;
-	}
 
 }
-	
+
 ?>

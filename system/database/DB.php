@@ -79,13 +79,7 @@ function &DB($params = '')
 	// Instantiate the DB adapter
 	$driver = 'CI_DB_'.$params['dbdriver'].'_driver';
 	$DB =& new $driver($params);
-	
-	// Set the charachter set if config option is set
-	if ($params['charset'] != FALSE)
-	{
-		$DB->_set_charset($params['charset']);
-	}
-	
+
 	return $DB;
 }
 

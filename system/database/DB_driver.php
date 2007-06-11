@@ -44,6 +44,7 @@ class CI_DB_driver {
 	var $dbdriver       = 'mysql';
 	var $dbprefix       = '';
 	var $port           = '';
+	var $charset        = '';
 	var $pconnect       = FALSE;
 	var $conn_id        = FALSE;
 	var $result_id      = FALSE;
@@ -62,13 +63,10 @@ class CI_DB_driver {
 	var $cache_autodel  = FALSE;
 	var $CACHE; // The cache class object
 
-
 	// These are use with Oracle
 	var $stmt_id;
 	var $curs_id;
 	var $limit_used;
-
-
 
 	/**
 	 * Constructor.  Accepts one parameter containing the database
@@ -90,9 +88,9 @@ class CI_DB_driver {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Initialize Database Settings
+	 * Initialize Database Settings, called by the constructor
 	 *
-	 * @access	private Called by the constructor
+	 * @access	private
 	 * @param	mixed
 	 * @return	void
 	 */
@@ -100,24 +98,26 @@ class CI_DB_driver {
 	{
 		if (is_array($params))
 		{
-			$defaults = array(
-								'hostname'	=> '',
-								'username'	=> '',
-								'password'	=> '',
-								'database'	=> '',
-								'conn_id'	=> FALSE,
-								'dbdriver'	=> 'mysql',
-								'dbprefix'	=> '',
-								'port'		=> '',
-								'pconnect'	=> FALSE,
-								'db_debug'	=> FALSE,
-								'cachedir'	=> '',
-								'cache_on'	=> FALSE
-							);
+			$params += array
+			(
+				'hostname' => '',
+				'username' => '',
+				'password' => '',
+				'database' => '',
+				'conn_id'  => FALSE,
+				'dbdriver' => 'mysql',
+				'dbprefix' => '',
+				'port'     => '',
+				'pconnect' => FALSE,
+				'db_debug' => FALSE,
+				'cachedir' => '',
+				'cache_on' => FALSE,
+				'charset'  => ''
+			);
 
-			foreach ($defaults as $key => $val)
+			foreach ($params as $key => $val)
 			{
-				$this->$key = ( ! isset($params[$key])) ? $val : $params[$key];
+				$this->$key = $val;
 			}
 		}
 		elseif (strpos($params, '://'))
@@ -175,6 +175,9 @@ class CI_DB_driver {
 				return FALSE;
 			}
 		}
+
+		// Set the character set
+		$this->set_charset();
 
 		return TRUE;
 	}
