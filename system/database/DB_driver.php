@@ -150,32 +150,6 @@ class CI_DB_driver {
 
 		return TRUE;
 	}
-	
-	function _parse_dsn($dsn)
-	{
-		if (($dsn = @parse_url($dsn)) == FALSE)
-			return $dsn;
-		
-		$keys = array
-		(
-			'scheme' => 'dbdriver',
-			'host'   => 'hostname',
-			'user'   => 'username',
-			'pass'   => 'password',
-			'path'   => 'database'
-		);
-		
-		foreach($keys as $val => $key)
-		{
-			if ( ! isset($dsn[$val]))
-				continue;
-			
-			$val = ($key == 'database') ? substr($dsn[$val], 1) : $dsn[$val];
-			$config[$key] = rawurldecode($val);
-		}
-		
-		return $config;
-	}
 
 	// --------------------------------------------------------------------
 
