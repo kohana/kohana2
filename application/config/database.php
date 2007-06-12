@@ -9,15 +9,30 @@
 | page of the User Guide.
 |
 | -------------------------------------------------------------------
-| EXPLANATION OF VARIABLES
+| AUTHENTICATION
 | -------------------------------------------------------------------
 |
+| There are two methods to provide database authentication/selection,
+| the array method, and the DSN (Data Source Name) method.
+|
+| Array Method:
+| -------------------------------------------------------------------
 | ['hostname'] The hostname of your database server.
 | ['username'] The username used to connect to the database
 | ['password'] The password used to connect to the database
 | ['database'] The name of the database you want to connect to
 | ['dbdriver'] The database type. ie: mysql.  Currently supported:
-|              mysql, mysqli, postgre, odbc, mssql
+|              mysql, mysqli, postgre, odbc, mssql, oci8
+|
+| DSN Method:
+| -------------------------------------------------------------------
+| ['database'] DSN formatted connection string
+|              example: dbdriver://username:password@hostname/database
+|              example: postgre://root:root@localhost/test
+|
+| -------------------------------------------------------------------
+| EXPLANATION OF VARIABLES
+| -------------------------------------------------------------------
 | ['dbprefix'] You can add an optional prefix, which will be added
 |              to the table name when using the  Active Record class
 | ['pconnect'] TRUE/FALSE - Whether to use a persistent connection
@@ -26,7 +41,7 @@
 | ['cachedir'] The path to the folder where cache files should be stored
 |
 | The $active_group variable lets you choose which connection group to
-| make active.  By default there is only one group (the 'default' group).
+| make active.  By default there is only one group (the 'default' group). 
 |
 */
 

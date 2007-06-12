@@ -96,47 +96,16 @@ class CI_DB_driver {
 	 */
 	function initialize($params = '')
 	{
-		if (is_array($params))
+		if ( ! is_array($params))
 		{
-			$params += array
-			(
-				'hostname' => '',
-				'username' => '',
-				'password' => '',
-				'database' => '',
-				'conn_id'  => FALSE,
-				'dbdriver' => 'mysql',
-				'dbprefix' => '',
-				'port'     => '',
-				'pconnect' => FALSE,
-				'db_debug' => FALSE,
-				'cachedir' => '',
-				'cache_on' => FALSE,
-				'charset'  => ''
-			);
+			log_message('error', 'Invalid DB Connection String');
 
-			foreach ($params as $key => $val)
-			{
-				$this->$key = $val;
-			}
+			return (($this->db_debug) ? $this->display_error('db_invalid_connection_str') : FALSE);
 		}
-		elseif (strpos($params, '://'))
+
+		foreach ($params as $key => $val)
 		{
-			if (FALSE === ($dsn = @parse_url($params)))
-			{
-				log_message('error', 'Invalid DB Connection String');
-
-				if ($this->db_debug)
-				{
-					return $this->display_error('db_invalid_connection_str');
-				}
-				return FALSE;
-			}
-
-			$this->hostname = ( ! isset($dsn['host'])) ? '' : rawurldecode($dsn['host']);
-			$this->username = ( ! isset($dsn['user'])) ? '' : rawurldecode($dsn['user']);
-			$this->password = ( ! isset($dsn['pass'])) ? '' : rawurldecode($dsn['pass']);
-			$this->database = ( ! isset($dsn['path'])) ? '' : rawurldecode(substr($dsn['path'], 1));
+			$this->$key = $val;
 		}
 
 		// If an existing DB connection resource is supplied
@@ -180,6 +149,32 @@ class CI_DB_driver {
 		$this->set_charset();
 
 		return TRUE;
+	}
+	
+	function _parse_dsn($dsn)
+	{
+		if (($dsn = @parse_url($dsn)) == FALSE)
+			return $dsn;
+		
+		$keys = array
+		(
+			'scheme' => 'dbdriver',
+			'host'   => 'hostname',
+			'user'   => 'username',
+			'pass'   => 'password',
+			'path'   => 'database'
+		);
+		
+		foreach($keys as $val => $key)
+		{
+			if ( ! isset($dsn[$val]))
+				continue;
+			
+			$val = ($key == 'database') ? substr($dsn[$val], 1) : $dsn[$val];
+			$config[$key] = rawurldecode($val);
+		}
+		
+		return $config;
 	}
 
 	// --------------------------------------------------------------------

@@ -24,28 +24,57 @@
  *
  * @category	Database
  * @author		Rick Ellis
- * @link		http://www.codeigniter.com/user_guide/database/
+ * @link		http://kohanaphp.com/user_guide/database/
  */
 function &DB($params = '')
 {
-	$Core =& get_instance();
 	// Load the DB config file if a DSN string wasn't passed
-	if (is_string($params) AND strpos($params, '://') === FALSE)
+	if (is_string($params))
 	{
-		include(APPPATH.'config/database'.EXT);
-
-		$group = ($params == '') ? $active_group : $params;
-
-		if ( ! isset($db[$group]))
+		if (strpos($params, '://'))
 		{
-			show_error('You have specified an invalid database connection group: '.$group);
+			$params = (array) _parse_db_dsn($params['database']);
+		}
+		else
+		{
+			include(APPPATH.'config/database'.EXT);
+
+			$group = ($params == '') ? $active_group : $params;
+
+			if ( ! isset($db[$group]))
+			{
+				show_error('You have specified an invalid database connection group: '.$group);
+			}
+
+			$params = $db[$group];
 		}
 
-		$params = $db[$group];
+		// Make sure defaults are defined
+		$params += array
+		(
+			'hostname' => '',
+			'username' => '',
+			'password' => '',
+			'database' => '',
+			'conn_id'  => FALSE,
+			'dbdriver' => 'mysql',
+			'dbprefix' => '',
+			'port'     => '',
+			'pconnect' => FALSE,
+			'db_debug' => FALSE,
+			'cachedir' => '',
+			'cache_on' => FALSE,
+			'charset'  => ''
+		);
+
+		if (strpos($params['database'], '://'))
+		{
+			$params = array_merge($params, (array) _parse_db_dsn($params['database']));
+		}
 	}
 
 	// No DB specified yet?  Beat them senseless...
-	if ( ! isset($params['dbdriver']) OR $params['dbdriver'] == '')
+	if ($params['dbdriver'] == '')
 	{
 		show_error('You have not selected a database type to connect to.');
 	}
@@ -57,7 +86,8 @@ function &DB($params = '')
 
 	require_once(BASEPATH.'database/DB_driver'.EXT);
 
-	if ($Core->config->item('disable_ar')==FALSE)
+	$CI =& get_instance();
+	if ($CI->config->item('disable_ar')==FALSE)
 	{
 		require_once(BASEPATH.'database/DB_active_rec'.EXT);
 
@@ -81,6 +111,41 @@ function &DB($params = '')
 	$DB =& new $driver($params);
 
 	return $DB;
+}
+
+// ------------------------------------------------------------------------
+
+/**
+ * Parse a Database DSN
+ *
+ * @category	Database
+ * @author		Rick Ellis
+ * @link		http://kohanaphp.com/user_guide/database/
+ */
+function _parse_db_dsn($dsn)
+{
+	if (($dsn = @parse_url($dsn)) == FALSE)
+		return FALSE;
+
+	$keys = array
+	(
+		'scheme' => 'dbdriver',
+		'host'   => 'hostname',
+		'user'   => 'username',
+		'pass'   => 'password',
+		'path'   => 'database'
+	);
+
+	foreach($keys as $val => $key)
+	{
+		if ( ! isset($dsn[$val]))
+			continue;
+
+		$val = ($key == 'database') ? substr($dsn[$val], 1) : $dsn[$val];
+		$config[$key] = rawurldecode($val);
+	}
+
+	return $config;
 }
 
 

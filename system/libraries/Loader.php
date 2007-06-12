@@ -203,44 +203,44 @@ class CI_Loader {
 	// --------------------------------------------------------------------
 
 	/**
-     * Database Loader
-     *
-     * @access    public
-     * @param    string    the DB credentials
-     * @param    bool    whether to return the DB object
-     * @return    object
-     */
-    function database($params = '', $return = FALSE)
-    {
-        //Do we need to load up the DB library?
-        if (!class_exists('CI_DB'))
-        {
-            require_once(BASEPATH.'database/DB'.EXT);
-        }
+	 * Database Loader
+	 *
+	 * @access	  public
+	 * @param	 string	   the DB credentials
+	 * @param	 bool	 whether to return the DB object
+	 * @return	  object
+	 */
+	function database($params = '', $return = FALSE)
+	{
+		//Do we need to load up the DB library?
+		if ( ! class_exists('CI_DB'))
+		{
+			require_once(BASEPATH.'database/DB'.EXT);
+		}
 
-        // Grab the super object
-        $CI =& get_instance();
+		// Grab the super object
+		$CI =& get_instance();
 
-        // If the CI db database interaction object is already set and we are not returning our database object on this call, we need to stop
-        if (isset($CI->db) AND $return == FALSE)
-        {
-            return FALSE;
-        }
+		// If the CI db database interaction object is already set and we are not returning our database object on this call, we need to stop
+		if (isset($CI->db) AND $return == FALSE)
+		{
+			return FALSE;
+		}
 
-        if ($return === TRUE)
-        {
-            return DB($params);
-        }
+		if ($return === TRUE)
+		{
+			return DB($params);
+		}
 
-        // Initialize the db variable.  Needed to prevent
-        // reference errors with some configurations
-        $CI->db = '';
+		// Initialize the db variable.	Needed to prevent
+		// reference errors with some configurations
+		$CI->db = '';
 
-        // Load the DB class
-        $CI->db =& DB($params);
+		// Load the DB class
+		$CI->db =& DB($params);
 
-        // Assign the DB object to any existing models
-        $this->_ci_assign_to_models();
+		// Assign the DB object to any existing models
+		$this->_ci_assign_to_models();
 	}
 
 	// --------------------------------------------------------------------
