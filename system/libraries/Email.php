@@ -37,23 +37,23 @@ class CI_Email {
 
 	var $useragent      = 'Kohana';
 	var $mailpath       = '/usr/sbin/sendmail'; // Sendmail path
-	var $protocol       = 'mail';   // mail/sendmail/smtp
-	var $smtp_host      = '';       // SMTP Server.  Example: mail.earthlink.net
-	var $smtp_user      = '';       // SMTP Username
-	var $smtp_pass      = '';       // SMTP Password
-	var $smtp_port      = '25';     // SMTP Port
-	var $smtp_timeout   = 5;        // SMTP Timeout in seconds
-	var $wordwrap       = TRUE;     // true/false  Turns word-wrap on/off
-	var $wrapchars      = '76';     // Number of characters to wrap at.
-	var $mailtype       = 'text';   // text/html  Defines email formatting
-	var $charset        = 'utf-8';  // Default char set: iso-8859-1 or us-ascii
-	var $multipart      = 'mixed';  // "mixed" (in the body) or "related" (separate)
-	var $alt_message    = '';       // Alternative message for HTML emails
-	var $validate       = FALSE;    // true/false.  Enables email validation
-	var $priority       = '3';      // Default priority (1 - 5)
-	var $newline        = "\r\n";   // Default newline. "\r\n" or "\n" (Use "\r\n" to comply with RFC 822)
-	var $bcc_batch_mode = FALSE;    // true/false  Turns on/off Bcc batch feature
-	var $bcc_batch_size = 200;      // If bcc_batch_mode = true, sets max number of Bccs in each batch
+	var $protocol       = 'mail';	// mail/sendmail/smtp
+	var $smtp_host      = '';		// SMTP Server.  Example: mail.earthlink.net
+	var $smtp_user      = '';		// SMTP Username
+	var $smtp_pass      = '';		// SMTP Password
+	var $smtp_port      = '25';		// SMTP Port
+	var $smtp_timeout   = 5;		// SMTP Timeout in seconds
+	var $wordwrap       = TRUE;		// TRUE/FALSE  Turns word-wrap on/off
+	var $wrapchars      = 76;		// Number of characters to wrap at.
+	var $mailtype       = 'text';	// text/html  Defines email formatting
+	var $charset        = 'utf-8';	// Default char set: iso-8859-1 or us-ascii
+	var $multipart      = 'mixed';	// 'mixed' (in the body) or 'related' (separate)
+	var $alt_message    = '';		// Alternative message for HTML emails
+	var $validate       = FALSE;	// TRUE/FALSE  Enables email validation
+	var $priority       = 3;		// Default priority (1-5)
+	var $newline        = "\r\n";	// Default newline. "\r\n" or "\n" (Use "\r\n" to comply with RFC 822)
+	var $bcc_batch_mode = FALSE;	// TRUE/FALSE  Turns on/off Bcc batch feature
+	var $bcc_batch_size = 200;		// If bcc_batch_mode = TRUE, sets max number of Bccs in each batch
 	var $_subject       = '';
 	var $_body          = '';
 	var $_finalbody     = '';
@@ -449,13 +449,12 @@ class CI_Email {
 	 */
 	function set_priority($n = 3)
 	{
-		if ( ! ctype_digit($n) OR $n < 1 OR $n > 5)
+		$this->priority = 3;
+		$n = (int) $n;
+		
+		if ($n < 1 OR $n > 5)
 		{
-			$this->priority = 3;
-		}
-		else
-		{
-			$this->priority = (int) $n;
+			$this->priority = $n;
 		}
 	}
 
