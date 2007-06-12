@@ -100,7 +100,7 @@ class Auto_typography {
 		$str = ' '.$str.' ';
 
 		// Standardize Newlines to make matching easier
-		$str = preg_replace('/\r[\n]?/', "\n", $str);
+		$str = str_replace(array("\r\n", "\r"), "\n", $str);
 
 		/*
 		 * Reduce line breaks

@@ -721,7 +721,7 @@ class CI_Email {
 		$str = preg_replace('|  +|', ' ', $str);
 
 		// Standardize newlines
-		$str = preg_replace('/\r[\n]?/', "\n", $str);
+		$str = str_replace(array("\r\n", "\r"), "\n", $str);
 
 		// If the current word is surrounded by {unwrap} tags we'll
 		// strip the entire chunk and replace it with a marker.

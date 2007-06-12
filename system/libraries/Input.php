@@ -166,7 +166,7 @@ class CI_Input {
 		}
 
 		// Standardize newlines
-		return preg_replace("/\015\012|\015|\012/", "\n", $str);
+		return str_replace(array("\r\n", "\r"), "\n", $str);
 	}
 
 	// --------------------------------------------------------------------
