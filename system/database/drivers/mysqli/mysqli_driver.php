@@ -310,6 +310,67 @@ class CI_DB_mysqli_driver extends CI_DB {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Table and field query
+	 *
+	 * Generates a platform-specific query so that the column data can be retrieved
+	 *
+	 * @access	public
+	 * @param	string	the table name
+	 * @return	object
+	 */
+	function table_data($table)
+	{
+		$result = FALSE;
+		$query  = $this->query('DESCRIBE '.$this->_escape_table($table));
+
+		if ($query->num_rows() > 0)
+		{
+			$result = array();
+			foreach($query->result_array() as $field)
+			{
+				$keys = array_map('strtolower', array_keys($field));
+				$vals = array_values($field);
+				$field = array_combine($keys, $vals);
+
+				if (($unsigned = stripos($field['type'], 'unsigned')) !== FALSE)
+				{
+					$field['type'] = trim(str_replace('unsigned', '', strtolower($field['type'])));
+				}
+
+				if (($start = strpos($field['type'], '(')) !== FALSE)
+				{
+					$field['size'] = trim(substr($field['type'], $start+1), ')');
+					$field['type'] = substr($field['type'], 0, $start);
+				}
+
+				$F = array();
+				$F['name']    = $field['field'];
+				$F['default'] = $field['default'];
+				$F['type']    = $field['type'];
+				$F['size']    = $field['size'];
+				$F['null']    = ($field['null'] == 'NO') ? FALSE : TRUE;
+				switch($field['key'])
+				{
+					case 'PRI':
+						$F['key'] = 'primary';
+						break;
+					case 'UNI':
+						$F['key'] = 'unique';
+						break;
+					default;
+						$F['key'] = '';
+				}
+
+				$result[] = $F;
+			}
+		}
+
+		return $result;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * List table query
 	 *
 	 * Generates a platform-specific query string so that the table names can be fetched
