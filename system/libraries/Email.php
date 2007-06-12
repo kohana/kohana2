@@ -282,9 +282,9 @@ class CI_Email {
 	 * @param	integer
 	 * @return	void
 	 */
-	function bcc($bcc, $limit = NULL)
+	function bcc($bcc, $limit = FALSE)
 	{
-		if (isset($limit))
+		if ($limit != FALSE)
 		{
 			$this->bcc_batch_mode = TRUE;
 			$this->bcc_batch_size = (int) $limit;
@@ -712,10 +712,10 @@ class CI_Email {
 	 * @param	integer
 	 * @return	string
 	 */
-	function word_wrap($str, $charlim = NULL)
+	function word_wrap($str, $charlim = FALSE)
 	{
 		// Set the character limit
-		$charlim = (isset($charlim)) ? (int) $charlim : $this->wrapchars;
+		$charlim = ($charlim != FALSE) ? (int) $charlim : $this->wrapchars;
 
 		// Reduce multiple spaces
 		$str = preg_replace('|  +|', ' ', $str);
