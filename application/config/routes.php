@@ -17,7 +17,7 @@
 |
 | Please see the user guide for complete details:
 |
-|	http://www.codeigniter.com/user_guide/general/routing.html
+|	http://kohanaphp.com/user_guide/general/routing.html
 |
 | -------------------------------------------------------------------------
 | RESERVED ROUTES
@@ -40,7 +40,7 @@
 |
 */
 
-$route['default_controller'] = "welcome";
-$route['scaffolding_trigger'] = "";
+$route['default_controller']  = 'welcome';
+$route['scaffolding_trigger'] = '';
 
 ?>

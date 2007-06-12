@@ -11,7 +11,7 @@
 |	http://www.your-site.com/
 |
 */
-$config['base_url']	= "http://127.0.0.1/Kohana/";
+$config['base_url']	= 'http://127.0.0.1/Kohana/';
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +23,7 @@ $config['base_url']	= "http://127.0.0.1/Kohana/";
 | variable so that it is blank.
 |
 */
-$config['index_page'] = "index.php";
+$config['index_page'] = 'index.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ $config['index_page'] = "index.php";
 | 'ORIG_PATH_INFO'	Uses the ORIG_PATH_INFO
 |
 */
-$config['uri_protocol']	= "AUTO";
+$config['uri_protocol']	= 'AUTO';
 
 /*
 |--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ $config['uri_protocol']	= "AUTO";
 | http://www.codeigniter.com/user_guide/general/urls.html
 */
 
-$config['url_suffix'] = "";
+$config['url_suffix'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -79,7 +79,7 @@ $config['disable_ar'] = FALSE;
 | than english.
 |
 */
-$config['language']	= "english";
+$config['language']	= 'english';
 
 
 /*
@@ -237,7 +237,7 @@ $config['cache_path'] = '';
 | enabled you MUST set an encryption key.  See the user guide for info.
 |
 */
-$config['encryption_key'] = "";
+$config['encryption_key'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -250,13 +250,13 @@ $config['encryption_key'] = "";
 |  by default sessions last 7200 seconds (two hours).  Set to zero for no expiration.
 |
 */
-$config['sess_cookie_name']		= 'bf_session';
-$config['sess_expiration']		= 7200;
-$config['sess_encrypt_cookie']	= FALSE;
-$config['sess_use_database']	= FALSE;
-$config['sess_table_name']		= 'bf_sessions';
-$config['sess_match_ip']		= FALSE;
-$config['sess_match_useragent']	= TRUE;
+$config['sess_cookie_name']     = 'kohana_session';
+$config['sess_expiration']      = 7200;
+$config['sess_encrypt_cookie']  = FALSE;
+$config['sess_use_database']    = FALSE;
+$config['sess_table_name']      = 'kohana_sessions';
+$config['sess_match_ip']        = FALSE;
+$config['sess_match_useragent'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -268,9 +268,9 @@ $config['sess_match_useragent']	= TRUE;
 | 'cookie_path'   =  Typically will be a forward slash
 |
 */
-$config['cookie_prefix']	= "";
-$config['cookie_domain']	= "";
-$config['cookie_path']		= "/";
+$config['cookie_prefix'] = '';
+$config['cookie_domain'] = '';
+$config['cookie_path']   = '/';
 
 /*
 |--------------------------------------------------------------------------
