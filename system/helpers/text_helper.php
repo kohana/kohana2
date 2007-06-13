@@ -84,7 +84,7 @@ function word_limiter($str, $limit = 100, $end_char = '&#8230;')
  */	
 function character_limiter($str, $limit = 500, $end_char = '&#8230;')
 {
-	$limit = (int) max(0, $limit);
+	$limit = (int) max(1, $limit);
 	
 	if (strlen($str) <= $limit)
 	{
