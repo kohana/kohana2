@@ -44,7 +44,7 @@
  * @param	integer
  * @param	string	the end character. Usually an ellipsis
  * @return	string
- */	
+ */
 function word_limiter($str, $limit = 100, $end_char = '&#8230;')
 {
 	// Don't bother about empty strings.
@@ -53,17 +53,17 @@ function word_limiter($str, $limit = 100, $end_char = '&#8230;')
 	{
 		return $str;
 	}
-	
+
 	// Added the initial \s* in order to make the regex work in case $str starts with whitespace.
 	// Without it a string like " test" would be counted for two words instead of one.
 	preg_match('/^\s*(?:\S+\s*){1,'. (int) $limit .'}/', $str, $matches);
-	
+
 	// Only add end character if the string got chopped off.
 	if (strlen($matches[0]) == strlen($str))
 	{
 		$end_char = '';
 	}
-	
+
 	// Chop off trailing whitespace and add the end character.
 	return rtrim($matches[0]) . $end_char;
 }
@@ -81,26 +81,26 @@ function word_limiter($str, $limit = 100, $end_char = '&#8230;')
  * @param	integer
  * @param	string	the end character. Usually an ellipsis
  * @return	string
- */	
+ */
 function character_limiter($str, $limit = 500, $end_char = '&#8230;')
 {
 	$limit = (int) max(1, $limit);
-	
+
 	if (strlen($str) <= $limit)
 	{
 		return $str;
 	}
-	
+
 	preg_match('/^.{'. ($limit - 1) .'}(?:\s|.+?(?:\s|$))/sD', $str, $matches);
-	
+
 	if (strlen($matches[0]) == strlen($str))
 	{
 		$end_char = '';
 	}
-	
+
 	return rtrim($matches[0]) . $end_char;
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -111,17 +111,17 @@ function character_limiter($str, $limit = 500, $end_char = '&#8230;')
  * @access	public
  * @param	string
  * @return	string
- */	
+ */
 function ascii_to_entities($str)
 {
 	$count = 1;
 	$out = '';
 	$temp = array();
-	
+
 	for ($i = 0, $s = strlen($str); $i < $s; $i++)
 	{
 		$ordinal = ord($str[$i]);
-	
+
 		if ($ordinal < 128)
 		{
 			$out .= $str[$i];
@@ -132,9 +132,9 @@ function ascii_to_entities($str)
 			{
 				$count = ($ordinal < 224) ? 2 : 3;
 			}
-		
+
 			$temp[] = $ordinal;
-		
+
 			if (count($temp) == $count)
 			{
 				$number = ($count == 3) ? (($temp[0] % 16) * 4096) + (($temp[1] % 64) * 64) + ($temp[2] % 64) : (($temp[0] % 32) * 64) + ($temp[1] % 64);
@@ -148,7 +148,7 @@ function ascii_to_entities($str)
 
 	return $out;
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -160,7 +160,7 @@ function ascii_to_entities($str)
  * @param	string
  * @param	bool
  * @return	string
- */	
+ */
 function entities_to_ascii($str, $all = TRUE)
 {
 	if (preg_match_all('/&#(\d+);/', $str, $matches))
@@ -174,7 +174,7 @@ function entities_to_ascii($str, $all = TRUE)
 			if ($digits < 128)
 			{
 				$out .= chr($digits);
-		
+
 			}
 			elseif ($digits < 2048)
 			{
@@ -188,7 +188,7 @@ function entities_to_ascii($str, $all = TRUE)
 				$out .= chr(128 + ($digits % 64));
 			}
 
-			$str = str_replace($matches[0][$i], $out, $str);				
+			$str = str_replace($matches[0][$i], $out, $str);
 		}
 	}
 
@@ -201,7 +201,7 @@ function entities_to_ascii($str, $all = TRUE)
 
 	return $str;
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -216,7 +216,7 @@ function entities_to_ascii($str, $all = TRUE)
  * @param	string	the array of censoered words
  * @param	string	the optional replacement value
  * @return	string
- */	
+ */
 function word_censor($str, $censored, $replacement = '')
 {
 	if ( ! is_array($censored))
@@ -228,16 +228,16 @@ function word_censor($str, $censored, $replacement = '')
 	{
 		$badword = str_replace('\*', '\w*?', preg_quote($badword));
 	}
-	
+
 	$censored = implode('|', $censored);
-	
+
 	$str = ($replacement != '')
 		? preg_replace('/\b('. $censored .')\b/i', $replacement, $str)
 		: preg_replace('/\b('. $censored .')\b/ie', 'str_repeat(\'#\', strlen(\'$1\'))', $str);
-	
+
 	return $str;
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -248,45 +248,45 @@ function word_censor($str, $censored, $replacement = '')
  * @access	public
  * @param	string	the text string
  * @return	string
- */	
+ */
 function highlight_code($str)
-{		
+{
 	// The highlight string function encodes and highlights
 	// brackets so we need them to start raw
 	$str = str_replace(array('&lt;', '&gt;'), array('<', '>'), $str);
-	
+
 	// Replace any existing PHP tags to temporary markers so they don't accidentally
 	// break the string out of PHP, and thus, thwart the highlighting.
 	$str = str_replace(array('&lt;?php', '?&gt;', '\\'), array('phptagopen', 'phptagclose', 'backslashtmp'), $str);
-		
+
 	// The highlight_string function requires that the text be surrounded
 	// by PHP tags.  Since we don't know if A) the submitted text has PHP tags,
 	// or B) whether the PHP tags enclose the entire string, we will add our
 	// own PHP tags around the string along with some markers to make replacement easier later
 	$str = '<?php //tempstart'."\n".$str.'//tempend ?>';
-	
+
 	// All the magic happens here, baby!
 	$str = highlight_string($str, TRUE);
 
 	// Prior to PHP 5, the highlight function used icky font tags
-	// so we'll replace them with span tags.	
+	// so we'll replace them with span tags.
 	if (abs(phpversion()) < 5)
 	{
 		$str = str_replace(array('<font ', '</font>'), array('<span ', '</span>'), $str);
 		$str = preg_replace('#color="(.*?)"#', 'style="color: $1"', $str);
 	}
-	
+
 	// Remove our artificially added PHP
 	$str = preg_replace('#<code>.+?//tempstart<br /></span>#is', "<code>\n", $str);
 	$str = preg_replace('#<code>.+?//tempstart<br />#is', "<code>\n", $str);
 	$str = preg_replace('#//tempend.+#is', "</span>\n</code>", $str);
-	
+
 	// Replace our markers back to PHP tags.
 	$str = str_replace(array('phptagopen', 'phptagclose', 'backslashtmp'), array('&lt;?php', '?&gt;', '\\'), $str);
-				
+
 	return $str;
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -300,17 +300,17 @@ function highlight_code($str)
  * @param	string	the openging tag to precede the phrase with
  * @param	string	the closing tag to end the phrase with
  * @return	string
- */	
+ */
 function highlight_phrase($str, $phrase, $tag_open = '<strong>', $tag_close = '</strong>')
 {
 	if ($str == '' OR $phrase == '')
 	{
 		return $str;
 	}
-	
+
 	return preg_replace('/('. preg_quote($phrase) .')/i', $tag_open .'$1'. $tag_close, $str);
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -324,18 +324,18 @@ function highlight_phrase($str, $phrase, $tag_open = '<strong>', $tag_close = '<
  * @param	string	the text string
  * @param	integer	the number of characters to wrap at
  * @return	string
- */	
+ */
 function word_wrap($str, $charlim = 76)
 {
 	// Se the character limit
 	$charlim = (int) $charlim;
-	
+
 	// Reduce multiple spaces
 	$str = preg_replace('|  +|', ' ', $str);
 
 	// Standardize newlines
 	$str = str_replace(array("\r\n", "\r"), "\n", $str);
-	
+
 	// If the current word is surrounded by {unwrap} tags we'll
 	// strip the entire chunk and replace it with a marker.
 	$unwrap = array();
@@ -347,26 +347,26 @@ function word_wrap($str, $charlim = 76)
 			$str = str_replace($matches[1][$i], '{{unwrapped'.$i.'}}', $str);
 		}
 	}
-	
-	// Use PHP's native function to do the initial wordwrap.  
-	// We set the cut flag to FALSE so that any individual words that are 
+
+	// Use PHP's native function to do the initial wordwrap.
+	// We set the cut flag to FALSE so that any individual words that are
 	// too long get left alone.  In the next step we'll deal with them.
 	$str = wordwrap($str, $charlim, "\n", FALSE);
-	
+
 	// Split the string into individual lines of text and cycle through them
 	$output = '';
-	foreach (explode("\n", $str) as $line) 
+	foreach (explode("\n", $str) as $line)
 	{
 		// Is the line within the allowed character count?
 		// If so we'll join it to the output and continue
 		if (strlen($line) <= $charlim)
 		{
-			$output .= $line."\n";			
+			$output .= $line."\n";
 			continue;
 		}
-			
+
 		$temp = '';
-		while((strlen($line)) > $charlim) 
+		while((strlen($line)) > $charlim)
 		{
 			// If the over-length word is a URL we won't wrap it
 			if (preg_match('#\[url.+?\]|://|www\.#', $line))
@@ -378,8 +378,8 @@ function word_wrap($str, $charlim = 76)
 			$temp .= substr($line, 0, $charlim - 1);
 			$line = substr($line, $charlim - 1);
 		}
-		
-		// If $temp contains data it means we had to split up an over-length 
+
+		// If $temp contains data it means we had to split up an over-length
 		// word into smaller chunks so we'll add it back to our current line
 		$output .= ($temp != '') ? $temp ."\n". $line : $line;
 		$output .= "\n";
@@ -387,7 +387,7 @@ function word_wrap($str, $charlim = 76)
 
 	// Put our markers back
 	if (count($unwrap) > 0)
-	{	
+	{
 		foreach ($unwrap as $key => $val)
 		{
 			$output = str_replace('{{unwrapped'. $key .'}}', $val, $output);
@@ -397,7 +397,7 @@ function word_wrap($str, $charlim = 76)
 	// Remove the unwrap tags
 	$output = str_replace(array('{unwrap}', '{/unwrap}'), '', $output);
 
-	return $output;	
+	return $output;
 }
 
 

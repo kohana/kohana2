@@ -248,7 +248,7 @@ class CI_Email {
 			break;
 		}
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -451,7 +451,7 @@ class CI_Email {
 	{
 		$this->priority = 3;
 		$n = (int) $n;
-		
+
 		if ($n < 1 OR $n > 5)
 		{
 			$this->priority = $n;
@@ -470,7 +470,7 @@ class CI_Email {
 	function set_newline($newline = "\n")
 	{
 		$this->newline = "\n";
-		
+
 		if ($newline == "\r\n" OR $newline == "\r")
 		{
 			$this->newline = $newline;
@@ -691,7 +691,7 @@ class CI_Email {
 		{
 			return $this->word_wrap($this->alt_message, '76');
 		}
-		
+
 		$body = (preg_match('#<body(?:.*?)>(.*)</body>#is', $this->_body, $match)) ? $match[1] : $this->_body;
 
 		$body = trim(strip_tags($body));
