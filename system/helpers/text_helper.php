@@ -224,20 +224,18 @@ function word_censor($str, $censored, $replacement = '')
 		return $str;
 	}
 
-	$str = ' '.$str.' ';
-	foreach ($censored as $badword)
+	foreach ($censored as &$badword)
 	{
-		if ($replacement != '')
-		{
-			$str = preg_replace("/\b(".str_replace('\*', '\w*?', preg_quote($badword)).")\b/i", $replacement, $str);
-		}
-		else
-		{
-			$str = preg_replace("/\b(".str_replace('\*', '\w*?', preg_quote($badword)).")\b/ie", "str_repeat('#', strlen('\\1'))", $str);
-		}
+		$badword = str_replace('\*', '\w*?', preg_quote($badword));
 	}
 	
-	return trim($str);
+	$censored = implode('|', $censored);
+	
+	$str = ($replacement != '')
+		? preg_replace('/\b('. $censored .')\b/i', $replacement, $str)
+		: preg_replace('/\b('. $censored .')\b/ie', 'str_repeat(\'#\', strlen(\'$1\'))', $str);
+	
+	return $str;
 }
 	
 // ------------------------------------------------------------------------
