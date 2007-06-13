@@ -768,15 +768,7 @@ class CI_Email {
 
 			// If $temp contains data it means we had to split up an over-length
 			// word into smaller chunks so we'll add it back to our current line
-			if ($temp != '')
-			{
-				$output .= $temp.$this->newline.$line;
-			}
-			else
-			{
-				$output .= $line;
-			}
-
+			$output .= ($temp != '') ? $temp.$this->newline.$line : $line;
 			$output .= $this->newline;
 		}
 
