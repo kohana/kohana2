@@ -172,6 +172,11 @@ class CI_DB_active_record extends CI_DB_driver {
 	 */
 	function where($key, $value = NULL, $quote = TRUE)
 	{
+		if (func_num_args() < 2)
+		{
+			$quote = -1;
+		}
+
 		return $this->_where($key, $value, 'AND ', $quote);
 	}
 
@@ -191,6 +196,11 @@ class CI_DB_active_record extends CI_DB_driver {
 	 */
 	function orwhere($key, $value = NULL, $quote = TRUE)
 	{
+		if (func_num_args() < 2)
+		{
+			$quote = -1;
+		}
+
 		return $this->_where($key, $value, 'OR ', $quote);
 	}
 
@@ -219,32 +229,39 @@ class CI_DB_active_record extends CI_DB_driver {
 		{
 			$prefix = (count($this->ar_where) == 0) ? '' : $type;
 
-			if ($v === NULL)
+			if ($quote === -1)
 			{
-				if ( ! $this->_has_operator($k))
-				{
-					$k .= ' IS';
-				}
-
-				$v = ' NULL';
-			}
-			elseif ($v === FALSE OR $v === TRUE)
-			{
-				if ( ! $this->_has_operator($k))
-				{
-					$k .= ' =';
-				}
-
-				$v = ($v == TRUE) ? ' 1' : ' 0';
+				$v = '';
 			}
 			else
 			{
-				if ( ! $this->_has_operator($k))
+				if ($v === NULL)
 				{
-					$k .= ' =';
-				}
+					if ( ! $this->_has_operator($k))
+					{
+						$k .= ' IS';
+					}
 
-				$v = ' '.(($quote == TRUE) ? $this->escape($v) : $v);
+					$v = ' NULL';
+				}
+				elseif ($v === FALSE OR $v === TRUE)
+				{
+					if ( ! $this->_has_operator($k))
+					{
+						$k .= ' =';
+					}
+
+					$v = ($v == TRUE) ? ' 1' : ' 0';
+				}
+				else
+				{
+					if ( ! $this->_has_operator($k))
+					{
+						$k .= ' =';
+					}
+
+					$v = ' '.(($quote == TRUE) ? $this->escape($v) : $v);
+				}
 			}
 
 			$this->ar_where[] = $prefix.$k.$v;
