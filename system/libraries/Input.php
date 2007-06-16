@@ -184,7 +184,7 @@ class CI_Input {
 	 */
 	function _clean_input_keys($str)
 	{
-		if ( ! preg_match("/^[a-z0-9:_\/-]+$/i", $str))
+		if ( ! preg_match('#^[a-z0-9:_/-]+$#i', $str))
 		{
 			exit('Disallowed Key Characters.');
 		}
@@ -467,7 +467,7 @@ class CI_Input {
 		 * Just as above, adds a semicolon if missing.
 		 *
 		 */
-		$str = preg_replace('#(&\#x*)([0-9A-F]+);*#iu',"\\1\\2;",$str);
+		$str = preg_replace('#(&\#x*)([0-9A-F]+);*#iu', '$1$2;', $str);
 
 		/*
 		 * URL Decode
@@ -479,10 +479,10 @@ class CI_Input {
 		 * Note: Normally urldecode() would be easier but it removes plus signs
 		 *
 		 */
-		$str = preg_replace("/(%20)+/", '9u3iovBnRThju941s89rKozm', $str);
-		$str = preg_replace("/%u0([a-z0-9]{3})/i", "&#x\\1;", $str);
-		$str = preg_replace("/%([a-z0-9]{2})/i", "&#x\\1;", $str);
-		$str = str_replace('9u3iovBnRThju941s89rKozm', "%20", $str);
+		$str = preg_replace('/(%20)+/', '9u3iovBnRThju941s89rKozm', $str);
+		$str = preg_replace('/%u0([a-z0-9]{3})/i', '&#x$1;', $str);
+		$str = preg_replace('/%([a-z0-9]{2})/i', '&#x$1;', $str);
+		$str = str_replace('9u3iovBnRThju941s89rKozm', '%20', $str);
 
 		/*
 		 * Convert character entities to ASCII
@@ -492,12 +492,12 @@ class CI_Input {
 		 * these are the ones that will pose security problems.
 		 *
 		 */
-		if (preg_match_all("/<(.+?)>/si", $str, $matches))
+		if (preg_match_all('/<(.+?)>/si', $str, $matches))
 		{
-			for ($i = 0; $i < count($matches['0']); $i++)
+			for ($i = 0; $i < count($matches[0]); $i++)
 			{
-				$str = str_replace($matches['1'][$i],
-									$this->_html_entity_decode($matches['1'][$i], $charset),
+				$str = str_replace($matches[1][$i],
+									$this->_html_entity_decode($matches[1][$i], $charset),
 									$str);
 			}
 		}
@@ -517,7 +517,7 @@ class CI_Input {
 
 		foreach ($bad as $key => $val)
 		{
-			$str = preg_replace("#".$key."#i", $val, $str);
+			$str = preg_replace('#'.$key.'#i', $val, $str);
 		}
 
 		/*
@@ -527,7 +527,7 @@ class CI_Input {
 		 * Note: we deal with spaces between characters later.
 		 *
 		 */
-		$str = preg_replace("#\t+#", " ", $str);
+		$str = preg_replace('#\t+#', ' ', $str);
 
 		/*
 		 * Makes PHP tags safe
@@ -565,9 +565,9 @@ class CI_Input {
 		/*
 		 * Remove disallowed Javascript in links or img tags
 		 */
-		$str = preg_replace_callback("#<a.*?</a>#si", array($this, '_js_link_removal'), $str);
-		$str = preg_replace_callback("#<img.*?>#si", array($this, '_js_img_removal'), $str);
-	 	$str = preg_replace("#<(script|xss).*?\>#si", "", $str);
+		$str = preg_replace_callback('#<a.*?</a>#si', array($this, '_js_link_removal'), $str);
+		$str = preg_replace_callback('#<img.*?>#si', array($this, '_js_img_removal'), $str);
+	 	$str = preg_replace('<(script|xss).*?>#si', '', $str);
 
 		/*
 		 * Remove JavaScript Event Handlers
@@ -577,7 +577,7 @@ class CI_Input {
 		 * but it's unlikely to be a problem.
 		 *
 		 */
-		$str = preg_replace('#(<[^>]+?)(?:xmlns|on(?:blur|change|click|focus|load|mouse(?:over|up|down)|select|submit|unload|key(?:press|down|up)|resize))[^>]*>#i', '\\1>', $str);
+		$str = preg_replace('#(<[^>]+?)(?:xmlns|on(?:blur|change|click|focus|load|mouse(?:over|up|down)|select|submit|unload|key(?:press|down|up)|resize))[^>]*>#i', '$1>', $str);
 
 		/*
 		 * Sanitize naughty HTML elements
@@ -589,7 +589,7 @@ class CI_Input {
 		 * Becomes: &lt;blink&gt;
 		 *
 		 */
-		$str = preg_replace('#<(/*\s*)(alert|applet|basefont|base|behavior|bgsound|blink|body|embed|expression|form|frameset|frame|head|html|ilayer|iframe|input|layer|link|meta|object|plaintext|style|script|textarea|title|xml|xss)([^>]*)>#is', "&lt;\\1\\2\\3&gt;", $str);
+		$str = preg_replace('#<(/*\s*)(alert|applet|basefont|base|behavior|bgsound|blink|body|embed|expression|form|frameset|frame|head|html|ilayer|iframe|input|layer|link|meta|object|plaintext|style|script|textarea|title|xml|xss)([^>]*)>#is', "&lt;$1$2$3&gt;", $str);
 
 		/*
 		 * Sanitize naughty scripting elements
@@ -625,11 +625,11 @@ class CI_Input {
 
 		foreach ($bad as $key => $val)
 		{
-			$str = preg_replace("#".$key."#i", $val, $str);
+			$str = preg_replace('#'.$key.'#i', $val, $str);
 		}
 
 
-		log_message('debug', "XSS Filtering completed");
+		log_message('debug', 'XSS Filtering completed');
 		return $str;
 	}
 
@@ -649,7 +649,7 @@ class CI_Input {
 	 */
 	function _js_link_removal($match)
 	{
-		return preg_replace("#<a.+?href=.*?(alert\(|alert&\#40;|javascript\:|window\.|document\.|\.cookie|<script|<xss).*?\>.*?</a>#si", "", $match[0]);
+		return preg_replace('#<a.+?href=.*?(alert\(|alert&\#40;|javascript\:|window\.|document\.|\.cookie|<script|<xss).*?>.*?</a>#si', '', $match[0]);
 	}
 
 	/**
@@ -666,7 +666,7 @@ class CI_Input {
 	 */
 	function _js_img_removal($match)
 	{
-		return preg_replace("#<img.+?src=.*?(alert\(|alert&\#40;|javascript\:|window\.|document\.|\.cookie|<script|<xss).*?\>#si", "", $match[0]);
+		return preg_replace('#<img.+?src=.*?(alert\(|alert&\#40;|javascript\:|window\.|document\.|\.cookie|<script|<xss).*?\>#si', '', $match[0]);
 	}
 
 	// --------------------------------------------------------------------

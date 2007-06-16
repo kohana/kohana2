@@ -67,7 +67,7 @@ class CI_Profiler {
  		{
  			// We match the "end" marker so that the list ends
  			// up in the order that it was defined
- 			if (preg_match("/(.+?)_end/i", $key, $match))
+ 			if (preg_match('/(.+?)_end$/iD', $key, $match))
  			{
  				if (isset($this->CI->benchmark->marker[$match[1].'_end']) AND isset($this->CI->benchmark->marker[$match[1].'_start']))
  				{

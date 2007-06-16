@@ -306,14 +306,14 @@ class CI_Unit_test {
  			return;
  		}
  		
-		if ( ! preg_match("/\{rows\}(.*?)\{\/rows\}/si", $this->_template, $match))
+		if ( ! preg_match('/\{rows\}(.*?)\{\/rows\}/si', $this->_template, $match))
 		{
  			$this->_default_template();
  			return;
 		}
 
-		$this->_template_rows = $match['1'];
-		$this->_template = str_replace($match['0'], '{rows}', $this->_template); 	
+		$this->_template_rows = $match[1];
+		$this->_template = str_replace($match[0], '{rows}', $this->_template); 	
  	}
  	
 }

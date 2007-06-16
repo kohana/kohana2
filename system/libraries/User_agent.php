@@ -164,7 +164,7 @@ class CI_User_agent {
 		{
 			foreach ($this->platforms as $key => $val)
 			{
-				if (preg_match("|".preg_quote($key)."|i", $this->agent))
+				if (preg_match('|'.preg_quote($key).'|i', $this->agent))
 				{
 					$this->platform = $val;
 					return TRUE;
@@ -188,7 +188,7 @@ class CI_User_agent {
 		{
 			foreach ($this->browsers as $key => $val)
 			{		
-				if (preg_match("|".preg_quote($key).".*?([0-9\.]+)|i", $this->agent, $match))
+				if (preg_match('|'.preg_quote($key).'.*?([0-9.]+)|i', $this->agent, $match))
 				{
 					$this->is_browser = TRUE;
 					$this->version = $match[1];
@@ -215,7 +215,7 @@ class CI_User_agent {
 		{		
 			foreach ($this->robots as $key => $val)
 			{
-				if (preg_match("|".preg_quote($key)."|i", $this->agent))
+				if (preg_match('|'.preg_quote($key).'|i', $this->agent))
 				{
 					$this->is_robot = TRUE;
 					$this->robot = $val;

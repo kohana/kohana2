@@ -178,8 +178,7 @@ class CI_Upload {
 		$this->file_temp = $_FILES[$field]['tmp_name'];		
 		$this->file_name = $_FILES[$field]['name'];
 		$this->file_size = $_FILES[$field]['size'];		
-		$this->file_type = preg_replace("/^(.+?);.*$/", "\\1", $_FILES[$field]['type']);
-		$this->file_type = strtolower($this->file_type);
+		$this->file_type = strtolower(preg_replace('/^(.+?);.*$/', '$1', $_FILES[$field]['type']));
 		$this->file_ext	 = $this->get_extension($_FILES[$field]['name']);
 		
 		// Convert the file size to kilobytes
@@ -216,7 +215,7 @@ class CI_Upload {
 		// Remove white spaces in the name
 		if ($this->remove_spaces == TRUE)
 		{
-			$this->file_name = preg_replace("/\s+/", "_", $this->file_name);
+			$this->file_name = preg_replace('/\s+/', '_', $this->file_name);
 		}
 
 		/*
@@ -380,7 +379,7 @@ class CI_Upload {
 	 */	
 	function set_max_filesize($n)
 	{
-		$this->max_size = ( ! eregi("^[[:digit:]]+$", $n)) ? 0 : $n;
+		$this->max_size = abs((int) $n);
 	}
 	
 	// --------------------------------------------------------------------
@@ -394,7 +393,7 @@ class CI_Upload {
 	 */	
 	function set_max_width($n)
 	{
-		$this->max_width = ( ! eregi("^[[:digit:]]+$", $n)) ? 0 : $n;
+		$this->max_width = abs((int) $n);
 	}
 	
 	// --------------------------------------------------------------------
@@ -408,7 +407,7 @@ class CI_Upload {
 	 */	
 	function set_max_height($n)
 	{
-		$this->max_height = ( ! eregi("^[[:digit:]]+$", $n)) ? 0 : $n;
+		$this->max_height = abs((int) $n);
 	}
 	
 	// --------------------------------------------------------------------

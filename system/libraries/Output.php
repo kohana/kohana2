@@ -344,13 +344,13 @@ class CI_Output {
 		fclose($fp);
 
 		// Strip out the embedded timestamp
-		if ( ! preg_match("/(\d+TS--->)/", $cache, $match))
+		if ( ! preg_match('/(\d+TS--->)/', $cache, $match))
 		{
 			return FALSE;
 		}
 
 		// Has the file expired? If so we'll delete it.
-		if (time() >= trim(str_replace('TS--->', '', $match['1'])))
+		if (time() >= trim(str_replace('TS--->', '', $match[1])))
 		{
 			@unlink($filepath);
 			log_message('debug', "Cache file has expired. File deleted");
@@ -358,7 +358,7 @@ class CI_Output {
 		}
 
 		// Display the cache
-		$this->_display(str_replace($match['0'], '', $cache));
+		$this->_display(str_replace($match[0], '', $cache));
 		log_message('debug', "Cache file is current. Sending it to browser.");
 		return TRUE;
 	}

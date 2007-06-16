@@ -274,13 +274,13 @@ class CI_Trackback {
 		}
 		@fclose($fp);
 		
-		if ( ! eregi("<error>0</error>", $this->response))
+		if ( ! preg_match('#<error>0</error>#i', $this->response))
 		{
 			$message = 'An unknown error was encountered';
 			
-			if (preg_match("/<message>(.*?)<\/message>/is", $this->response, $match))
+			if (preg_match('#<message>(.*?)</message>#is', $this->response, $match))
 			{
-				$message = trim($match['1']);
+				$message = trim($match[1]);
 			}
 			
 			$this->set_error($message);
@@ -351,7 +351,7 @@ class CI_Trackback {
 	 */	
 	function get_id($url)
 	{	
-		$tb_id = "";
+		$tb_id = '';
 		
 		if (strstr($url, '?'))
 		{
@@ -368,10 +368,7 @@ class CI_Trackback {
 		}
 		else
 		{
-			if (ereg("/$", $url))
-			{
-				$url = substr($url, 0, -1);
-			}
+			$url = rtrim($url, '/');
 				
 			$tb_array = explode('/', $url);
 			$tb_id	= $tb_array[count($tb_array)-1];
@@ -382,9 +379,9 @@ class CI_Trackback {
 			}
 		}	
 				
-		if ( ! preg_match ("/^([0-9]+)$/", $tb_id))
+		if ( ! ctype_digit($tb_id))
 		{
-			return false;
+			return FALSE;
 		}
 		else
 		{
@@ -431,27 +428,21 @@ class CI_Trackback {
 	 */
 	function limit_characters($str, $n = 500, $end_char = '&#8230;')
 	{
-		if (strlen($str) < $n)
+		$limit = (int) max(1, $limit);
+
+		if (strlen($str) <= $limit)
 		{
 			return $str;
 		}
-			
-		$str = preg_replace("/\s+/", ' ', preg_replace("/(\r\n|\r|\n)/", " ", $str));
-	
-		if (strlen($str) <= $n)
+
+		preg_match('/^.{'. ($limit - 1) .'}(?:\s|.+?(?:\s|$))/sD', $str, $matches);
+
+		if (strlen($matches[0]) == strlen($str))
 		{
-			return $str;
+			$end_char = '';
 		}
-										
-		$out = "";
-		foreach (explode(' ', trim($str)) as $val)
-		{
-			$out .= $val.' ';			
-			if (strlen($out) >= $n)
-			{
-				return trim($out).$end_char;
-			}		
-		}
+
+		return rtrim($matches[0]) . $end_char;
 	}
 	
 	// --------------------------------------------------------------------
@@ -468,9 +459,9 @@ class CI_Trackback {
 	 */
 	function convert_ascii($str)
 	{
-	   $count	= 1;
-	   $out	= '';
-	   $temp	= array();
+	   $count = 1;
+	   $out = '';
+	   $temp = array();
 		
 	   for ($i = 0, $s = strlen($str); $i < $s; $i++)
 	   {
@@ -491,7 +482,7 @@ class CI_Trackback {
 			
 			   if (count($temp) == $count)
 			   {
-				   $number = ($count == 3) ? (($temp['0'] % 16) * 4096) + (($temp['1'] % 64) * 64) + ($temp['2'] % 64) : (($temp['0'] % 32) * 64) + ($temp['1'] % 64);
+				   $number = ($count == 3) ? (($temp[0] % 16) * 4096) + (($temp[1] % 64) * 64) + ($temp[2] % 64) : (($temp[0] % 32) * 64) + ($temp[1] % 64);
 	
 				   $out .= '&#'.$number.';';
 				   $count = 1;

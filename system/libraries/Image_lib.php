@@ -356,7 +356,7 @@ class CI_Image_lib {
 	{
 		$protocol = 'image_process_'.$this->image_library;
 
-		if (eregi("gd2$", $protocol))
+		if (preg_match('/gd2$/iD', $protocol))
 		{
 			$protocol = 'image_process_gd';
 		}
@@ -379,7 +379,7 @@ class CI_Image_lib {
 	{
 		$protocol = 'image_process_'.$this->image_library;
 
-		if (eregi("gd2$", $protocol))
+		if (preg_match('/gd2$/iD', $protocol))
 		{
 			$protocol = 'image_process_gd';
 		}
@@ -1469,7 +1469,7 @@ class CI_Image_lib {
 		if (function_exists('gd_info'))
 		{
 			$gd_version = @gd_info();
-			$gd_version = preg_replace("/\D/", "", $gd_version['GD Version']);
+			$gd_version = preg_replace('/\D+/', '', $gd_version['GD Version']);
 
 			return $gd_version;
 		}
