@@ -394,8 +394,8 @@ function prep_url($str = '')
  * @param	string	the separator: dash, or underscore
  * @return	string
  */
-function url_title($str, $separator = 'dash') {
-	
+function url_title($str, $separator = 'dash')
+{
 	// Dashes or underscores?
 	$separator = ($separator == 'dash') ? '-' : '_';
 	
