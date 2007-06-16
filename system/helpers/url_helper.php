@@ -394,28 +394,21 @@ function prep_url($str = '')
  * @param	string	the separator: dash, or underscore
  * @return	string
  */
-function url_title($str, $separator = 'dash')
-{
-	$search  = ($separator == 'dash') ? '_' : '-';
-	$replace = ($separator == 'dash') ? '-' : '_';
-
-	$trans = array(
-		$search                 => $replace,
-		'\s+'                   => $replace,
-		'[^a-z0-9'.$replace.']' => '',
-		$replace.'+'            => $replace,
-		$replace.'$'            => '',
-		'^'.$replace            => ''
-	);
-
-	$str = strip_tags(strtolower($str));
-
-	foreach ($trans as $key => $val)
-	{
-		$str = preg_replace('#'.$key.'#', $val, $str);
-	}
-
-	return trim(stripslashes($str));
+function url_title($str, $separator = 'dash') {
+	
+	// Dashes or underscores?
+	$separator = ($separator == 'dash') ? '-' : '_';
+	
+	// Let's prepare our string.
+	$str = trim($str, " -_\t\n\r");
+	$str = strip_tags($str);
+	$str = strtolower($str);
+	
+	// Time for the hard work now, just two regexes.
+	$str = preg_replace('/[-_\s]+/', $separator, $str);
+	$str = preg_replace('/[^a-z0-9'. $separator .']/', '', $str);
+	
+	return $str;
 }
 
 // ------------------------------------------------------------------------
