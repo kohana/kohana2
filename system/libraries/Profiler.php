@@ -109,10 +109,12 @@ class CI_Profiler {
 	 */
 	function _compile_queries()
 	{
+		$query_count = ( ! isset($this->CI->db)) ? '0' : $this->CI->db->query_count;
+		
 		$output  = "\n\n";
 		$output .= '<fieldset style="border:1px solid #0000FF;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">';
 		$output .= "\n";
-		$output .= '<legend style="color:#0000FF;">&nbsp;&nbsp;'.$this->CI->lang->line('profiler_queries').' ('.$this->CI->db->query_count.')&nbsp;&nbsp;</legend>';
+		$output .= '<legend style="color:#0000FF;">&nbsp;&nbsp;'.$this->CI->lang->line('profiler_queries').' ('.$query_count.')&nbsp;&nbsp;</legend>';
 		$output .= "\n";
 
 		if ( ! class_exists('CI_DB_driver'))
