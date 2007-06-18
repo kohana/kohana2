@@ -56,21 +56,21 @@ function &load_class($class, $instantiate = TRUE)
 	{
 		return $objects[$class];
 	}
-			
+
 	// If the requested class does not exist in the application/libraries
-	// folder we'll load the native class from the system/libraries folder.	
+	// folder we'll load the native class from the system/libraries folder.
 	if (file_exists(APPPATH.'libraries/'.config_item('subclass_prefix').$class.EXT))
 	{
-		require(BASEPATH.'libraries/'.$class.EXT);	
+		require(BASEPATH.'libraries/'.$class.EXT);
 		require(APPPATH.'libraries/'.config_item('subclass_prefix').$class.EXT);
-		$is_subclass = TRUE;	
+		$is_subclass = TRUE;
 	}
 	else
 	{
 		if (file_exists(APPPATH.'libraries/'.$class.EXT))
 		{
-			require(APPPATH.'libraries/'.$class.EXT);	
-			$is_subclass = FALSE;	
+			require(APPPATH.'libraries/'.$class.EXT);
+			$is_subclass = FALSE;
 		}
 		else
 		{
@@ -84,7 +84,7 @@ function &load_class($class, $instantiate = TRUE)
 		$objects[$class] = TRUE;
 		return $objects[$class];
 	}
-		
+
 	if ($is_subclass == TRUE)
 	{
 		$name = config_item('subclass_prefix').$class;
@@ -93,7 +93,7 @@ function &load_class($class, $instantiate = TRUE)
 	}
 
 	$name = ($class != 'Controller') ? 'CI_'.$class : $class;
-	
+
 	$objects[$class] =& new $name();
 	return $objects[$class];
 }
@@ -107,16 +107,16 @@ function &load_class($class, $instantiate = TRUE)
 function &get_config()
 {
 	static $main_conf;
-		
+
 	if ( ! isset($main_conf))
 	{
 		if ( ! file_exists(APPPATH.'config/config'.EXT))
 		{
 			exit('The configuration file config'.EXT.' does not exist.');
 		}
-		
+
 		require(APPPATH.'config/config'.EXT);
-		
+
 		if ( ! isset($config) OR ! is_array($config))
 		{
 			exit('Your config file does not appear to be formatted correctly.');
@@ -140,7 +140,7 @@ function config_item($item)
 	if ( ! isset($config_item[$item]))
 	{
 		$config =& get_config();
-		
+
 		if ( ! isset($config[$item]))
 		{
 			return FALSE;
@@ -202,14 +202,14 @@ function show_404($page = '')
 function log_message($level = 'error', $message, $php_error = FALSE)
 {
 	static $LOG;
-	
+
 	$config =& get_config();
 	if ($config['log_threshold'] == 0)
 	{
 		return;
 	}
 
-	$LOG =& load_class('Log');	
+	$LOG =& load_class('Log');
 	$LOG->write_log($level, $message, $php_error);
 }
 
@@ -228,14 +228,14 @@ function log_message($level = 'error', $message, $php_error = FALSE)
 * @return	void
 */
 function _exception_handler($severity, $message, $filepath, $line)
-{	
+{
 	 // We don't bother with "strict" notices since they will fill up
 	 // the log file with information that isn't normally very
 	 // helpful.  For example, if you are running PHP 5 and you
 	 // use version 4 style class functions (without prefixes
 	 // like "public", "private", etc.) you'll get notices telling
 	 // you that these have been deprecated.
-	
+
 	if ($severity == E_STRICT)
 	{
 		return;
@@ -246,12 +246,12 @@ function _exception_handler($severity, $message, $filepath, $line)
 	// Should we display the error?
 	// We'll get the current error_reporting level and add its bits
 	// with the severity bits to find out.
-	
+
 	if (($severity & error_reporting()) == $severity)
 	{
 		$error->show_php_error($severity, $message, $filepath, $line);
 	}
-	
+
 	// Should we log the error?  No?  We're done...
 	$config =& get_config();
 	if ($config['log_threshold'] == 0)
