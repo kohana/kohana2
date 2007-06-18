@@ -27,11 +27,11 @@
  *
  * Parses URIs and determines routing
  *
- * @package		Kohana
- * @subpackage	Libraries
- * @author		Rick Ellis
- * @category	Libraries
- * @link		http://kohanaphp.com/user_guide/general/routing.html
+ * @package     Kohana
+ * @subpackage  Libraries
+ * @author      Rick Ellis
+ * @category    Libraries
+ * @link        http://kohanaphp.com/user_guide/general/routing.html
  */
 class CI_Router {
 
@@ -457,7 +457,7 @@ class CI_Router {
 		foreach (array_slice($this->routes, 1) as $key => $val)
 		{
 			// Convert wild-cards to RegEx
-			$key = str_replace(':any', '.+', str_replace(':num', '[0-9]+', $key));
+			$key = str_replace(array(':any', ':num'), array('.+', '[0-9]+'), $key);
 
 			// Does the RegEx match?
 			if (preg_match('#^'.$key.'$#', $uri))
