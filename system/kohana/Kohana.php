@@ -208,18 +208,30 @@ else
 	// Is there a "remap" function?
 	if (method_exists($CI, '_remap'))
 	{
-		$CI->_remap($method);
+		$CI->_remap($method, array_slice($RTR->rsegments, (($RTR->fetch_directory() == '') ? 1 : 2)));
 	}
 	else
 	{
+		// Any URI segments present (besides the class/function) will be passed to the method for convenience
+		$args = array_slice($RTR->rsegments, (($RTR->fetch_directory() == '') ? 2 : 3));
+		
 		if ( ! method_exists($CI, $method))
 		{
-			show_404();
+			// Attempt to call the "default" method instead of showing a 404
+			if (method_exists($CI, '_default'))
+			{
+				$CI->_default($method, $args);
+			}
+			else
+			{
+				show_404();
+			}
 		}
-
-		// Call the requested method.
-		// Any URI segments present (besides the class/function) will be passed to the method for convenience
-		call_user_func_array(array(&$CI, $method), array_slice($RTR->rsegments, (($RTR->fetch_directory() == '') ? 2 : 3)));
+		else
+		{
+			// Call the requested method
+			call_user_func_array(array(&$CI, $method), $args);
+		}
 	}
 }
 
