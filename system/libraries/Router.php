@@ -83,7 +83,6 @@ class CI_Router {
 			{
 				$this->set_method($_GET[$this->config->item('function_trigger')]);
 			}
-
 			return;
 		}
 
@@ -97,7 +96,7 @@ class CI_Router {
 		$this->default_controller = ( ! isset($this->routes['default_controller']) OR $this->routes['default_controller'] == '') ? FALSE : strtolower($this->routes['default_controller']);
 
 		// Fetch the complete URI string
-		$this->uri_string = $this->_get_uri_string();
+		$this->uri_string = '/'.trim($this->_get_uri_string(), '/');
 
 		// If the URI contains only a slash we'll kill it
 		if ($this->uri_string == '/')
@@ -260,27 +259,21 @@ class CI_Router {
 	function _reindex_segments()
 	{
 		// Is the routed segment array different then the main segment array?
-		$diff = (count(array_diff($this->rsegments, $this->segments)) == 0) ? FALSE : TRUE;
+		$reindex = ($this->rsegments == $this->segments) ? array('segments') : array('segments', 'rsegments');
 
-		$i = 1;
-		foreach ($this->segments as $val)
+		// Reindex segments by adding a NULL to key 0, reindexing with
+		// array_values, then removing key 0
+		foreach($reindex as $array)
 		{
-			$this->segments[$i++] = $val;
+			$segments =& $this->$array;
+			array_unshift($segments, NULL);
+			$segments = array_values($segments);
+			unset($segments[0]);
 		}
-		unset($this->segments[0]);
 
-		if ($diff == FALSE)
+		if (count($reindex) < 2)
 		{
 			$this->rsegments = $this->segments;
-		}
-		else
-		{
-			$i = 1;
-			foreach ($this->rsegments as $val)
-			{
-				$this->rsegments[$i++] = $val;
-			}
-			unset($this->rsegments[0]);
 		}
 	}
 
@@ -438,19 +431,16 @@ class CI_Router {
 		// There is a default scaffolding trigger, so we'll look just for 1
 		if (count($this->routes) == 1)
 		{
-			$this->_compile_segments($this->segments);
-			return;
+			return $this->_compile_segments($this->segments);
 		}
 
 		// Turn the segment array into a URI string
 		$uri = implode('/', $this->segments);
-		$num = count($this->segments);
 
 		// Is there a literal match?  If so we're done
 		if (isset($this->routes[$uri]))
 		{
-			$this->_compile_segments(explode('/', $this->routes[$uri]));
-			return;
+			return $this->_compile_segments(explode('/', $this->routes[$uri]));
 		}
 
 		// Loop through the route array looking for wild-cards
@@ -468,8 +458,7 @@ class CI_Router {
 					$val = preg_replace('#^'.$key.'$#', $val, $uri);
 				}
 
-				$this->_compile_segments(explode('/', $val));
-				return;
+				return $this->_compile_segments(explode('/', $val));
 			}
 		}
 

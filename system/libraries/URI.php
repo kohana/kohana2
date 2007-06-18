@@ -27,16 +27,16 @@
  *
  * Parses URIs and determines routing
  *
- * @package		Kohana
- * @subpackage	Libraries
- * @category	URI
- * @author		Rick Ellis
- * @link		http://kohanaphp.com/user_guide/libraries/uri.html
+ * @package    Kohana
+ * @subpackage Libraries
+ * @category   URI
+ * @author     Rick Ellis, Kohana Team
+ * @link       http://kohanaphp.com/user_guide/libraries/uri.html
  */
 class CI_URI {
 
 	var $router;
-	var	$keyval	= array();
+	var $keyval = array();
 
 	/**
 	 * Constructor
@@ -46,15 +46,15 @@ class CI_URI {
 	 * normally as other classes are.
 	 *
 	 * @access	public
-	 */		
+	 */
 	function CI_URI()
 	{
-		$this->router =& load_class('Router');	
+		$this->router =& load_class('Router');
 		log_message('debug', "URI Class Initialized");
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Fetch a URI Segment
 	 *
@@ -71,7 +71,7 @@ class CI_URI {
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Fetch a URI "routed" Segment
 	 *
@@ -90,7 +90,7 @@ class CI_URI {
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Generate a key value pair from the URI string
 	 *
@@ -126,7 +126,7 @@ class CI_URI {
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Generate a key value pair from the URI string or Re-routed URI string
 	 *
@@ -139,16 +139,16 @@ class CI_URI {
 	function _uri_to_assoc($n = 3, $default = array(), $which = 'segment')
 	{
 		$n = (int) abs($n);
-		
+
 		if ($n == 0)
 			return $default;
-		
+
 		if (isset($this->keyval[$n]))
 			return $this->keyval[$n];
-		
+
 		$total_segments	= ($which == 'segment') ? 'total_segments' : 'total_rsegments';
 		$segment_array	= ($which == 'segment') ? 'segment_array' : 'rsegment_array';
-		
+
 		if ($this->$total_segments() < $n)
 		{
 			$retval = array();
@@ -158,9 +158,9 @@ class CI_URI {
 			}
 			return $retval;
 		}
-		
+
 		$segments = array_slice($this->$segment_array(), ($n - 1));
-		
+
 		$i = 0;
 		$lastval = "";
 		$retval  = array();
@@ -175,7 +175,7 @@ class CI_URI {
 				$retval[$seg] = FALSE;
 				$lastval = $seg;
 			}
-		
+
 			$i++;
 		}
 
@@ -210,12 +210,12 @@ class CI_URI {
 			$temp[] = $key;
 			$temp[] = $val;
 		}
-		
+
 		return implode("/", $temp);
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Fetch a URI Segment and add a trailing slash
 	 *
@@ -230,7 +230,7 @@ class CI_URI {
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Fetch a URI Segment and add a trailing slash
 	 *
@@ -243,9 +243,9 @@ class CI_URI {
 	{
 		return $this->_slash_segment($n, $where, 'rsegment');
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Fetch a URI Segment and add a trailing slash - helper function
 	 *
@@ -256,10 +256,10 @@ class CI_URI {
 	 * @return	string
 	 */
 	function _slash_segment($n, $where = 'trailing', $which = 'segment')
-	{	
+	{
 		$leading	= '/';
 		$trailing	= '/';
-		
+
 		if ($where == 'trailing')
 		{
 			$leading	= '';
@@ -271,9 +271,9 @@ class CI_URI {
 
 		return $leading . $this->$which($n) . $trailing;
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Segment Array
 	 *
@@ -286,7 +286,7 @@ class CI_URI {
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Routed Segment Array
 	 *
@@ -297,9 +297,9 @@ class CI_URI {
 	{
 		return $this->router->rsegments;
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Total number of segments
 	 *
@@ -312,7 +312,7 @@ class CI_URI {
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Total number of routed segments
 	 *
@@ -323,9 +323,9 @@ class CI_URI {
 	{
 		return count($this->router->rsegments);
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Fetch the entire URI string
 	 *
@@ -337,9 +337,8 @@ class CI_URI {
 		return $this->router->uri_string;
 	}
 
-	
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Fetch the entire Re-routed URI string
 	 *
@@ -348,7 +347,7 @@ class CI_URI {
 	 */
 	function ruri_string()
 	{
-		return "/".implode("/", $this->rsegment_array())."/";
+		return '/'.implode('/', $this->rsegment_array());
 	}
 
 }
