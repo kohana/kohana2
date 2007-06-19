@@ -25,13 +25,13 @@
 /**
  * ODBC Result Class
  *
- * This class extends the parent result class: CI_DB_result
+ * This class extends the parent result class: Core_DB_result
  *
  * @category	Database
  * @author		Rick Ellis
  * @link		http://www.codeigniter.com/user_guide/database/
  */
-class CI_DB_odbc_result extends CI_DB_result {
+class Core_DB_odbc_result extends Core_DB_result {
 	
 	/**
 	 * Number of rows in the result set

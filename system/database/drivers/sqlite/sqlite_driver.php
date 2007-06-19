@@ -37,7 +37,7 @@
  * @author		Rick Ellis
  * @link		http://www.codeigniter.com/user_guide/database/
  */
-class CI_DB_sqlite_driver extends CI_DB {
+class Core_DB_sqlite_driver extends Core_DB {
 
 	/**
 	 * Non-persistent database connection

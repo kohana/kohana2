@@ -29,7 +29,7 @@
  * @author		Rick Ellis
  * @link		http://www.codeigniter.com/database/
  */
-class CI_DB_odbc_utility extends CI_DB_utility {
+class Core_DB_odbc_utility extends Core_DB_utility {
 
 
 	/**

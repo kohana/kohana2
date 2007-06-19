@@ -36,8 +36,8 @@
  */
 class Core_Controller extends Core_Base {
 
-	var $_ci_scaffolding	= FALSE;
-	var $_ci_scaff_table	= FALSE;
+	var $_scaffolding	= FALSE;
+	var $_scaff_table	= FALSE;
 
 	/**
 	 * Constructor
@@ -47,7 +47,7 @@ class Core_Controller extends Core_Base {
 	function Core_Controller()
 	{
 		parent::Core_Base();
-		$this->_ci_initialize();
+		$this->_initialize();
 		log_message('debug', "Controller Class Initialized");
 	}
 
@@ -62,10 +62,10 @@ class Core_Controller extends Core_Base {
 	 * @access	private
 	 * @return	void
 	 */
-	function _ci_initialize()
+	function _initialize()
 	{
 		// Assign all the class objects that were instantiated by the
-		// front controller to local class variables so that CI can be
+		// front controller to local class variables so that Core can be
 		// run as one big super object.
 		$classes = array(
 							'config'	=> 'Config',
@@ -86,11 +86,11 @@ class Core_Controller extends Core_Base {
 		if (floor(phpversion()) >= 5)
 		{
 			$this->load =& load_class('Loader');
-			$this->load->_ci_autoloader();
+			$this->load->_autoloader();
 		}
 		else
 		{
-			$this->_ci_autoloader();
+			$this->_autoloader();
 		}
 	}
 
@@ -102,9 +102,9 @@ class Core_Controller extends Core_Base {
 	 * @access	private
 	 * @return	void
 	 */
-	function _ci_scaffolding()
+	function _scaffolding()
 	{
-		if ($this->_ci_scaffolding === FALSE OR $this->_ci_scaff_table === FALSE)
+		if ($this->_scaffolding === FALSE OR $this->_scaff_table === FALSE)
 		{
 			show_404('Scaffolding unavailable');
 		}
@@ -112,7 +112,7 @@ class Core_Controller extends Core_Base {
 		$method = ( ! in_array($this->uri->segment(3), array('add', 'insert', 'edit', 'update', 'view', 'delete', 'do_delete'), TRUE)) ? 'view' : $this->uri->segment(3);
 
 		require_once(BASEPATH.'scaffolding/Scaffolding'.EXT);
-		$scaff = new Scaffolding($this->_ci_scaff_table);
+		$scaff = new Scaffolding($this->_scaff_table);
 		$scaff->$method();
 	}
 

@@ -226,5 +226,5 @@ class Core_Hooks {
 
 }
 
-// END CI_Hooks class
+// END Core_Hooks class
 ?>

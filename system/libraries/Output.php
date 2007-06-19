@@ -143,7 +143,7 @@ class Core_Output {
 	{
 		// Note:  We use globals because we can't use $CORE =& get_instance()
 		// since this function is sometimes called by the caching mechanism,
-		// which happens before the CI super object is available.
+		// which happens before the Core super object is available.
 		global $BM, $CFG;
 
 		// --------------------------------------------------------------------

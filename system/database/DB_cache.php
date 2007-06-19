@@ -36,12 +36,12 @@ class Core_DB_Cache {
 	/**
 	 * Constructor
 	 *
-	 * Grabs the CI super object instance so we can access it.
+	 * Grabs the Core super object instance so we can access it.
 	 *
 	 */	
 	function Core_DB_Cache()
 	{
-		// Assign the main CI object to $this->CORE
+		// Assign the main Core object to $this->CORE
 		// and load the file helper since we use it a lot
 		$this->CORE =& get_instance();
 		$this->CORE->load->helper('file');	

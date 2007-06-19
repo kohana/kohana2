@@ -35,7 +35,7 @@
  * @author		Rick Ellis
  * @link		http://www.codeigniter.com/user_guide/database/
  */
-class CI_DB_driver {
+class Core_DB_driver {
 
 	var $username;
 	var $password;
@@ -79,7 +79,7 @@ class CI_DB_driver {
 	 *
 	 * @param mixed. Can be an array or a DSN string
 	 */
-	function CI_DB_driver($params)
+	function Core_DB_driver($params)
 	{
 		$this->initialize($params);
 		log_message('debug', 'Database Driver Class Initialized');
@@ -332,7 +332,7 @@ class CI_DB_driver {
 			// resource ID won't be any good once we've cached the
 			// result object, so we'll have to compile the data
 			// and save it)
-			$CR = new CI_DB_result();
+			$CR = new Core_DB_result();
 			$CR->_num_rows     = $RES->num_rows();
 			$CR->result_object = $RES->result_object();
 			$CR->result_array  = $RES->result_array();
@@ -357,7 +357,7 @@ class CI_DB_driver {
 	 */
 	function load_rdriver()
 	{
-		$driver = 'CI_DB_'.$this->dbdriver.'_result';
+		$driver = 'Core_DB_'.$this->dbdriver.'_result';
 
 		if ( ! class_exists($driver))
 		{
@@ -982,7 +982,7 @@ class CI_DB_driver {
 	 */
 	function _cache_init()
 	{
-		if (is_object($this->CACHE) AND class_exists('CI_DB_Cache'))
+		if (is_object($this->CACHE) AND class_exists('Core_DB_Cache'))
 		{
 			return TRUE;
 		}
@@ -992,7 +992,7 @@ class CI_DB_driver {
 			return $this->cache_off();
 		}
 
-		$this->CACHE = new CI_DB_Cache;
+		$this->CACHE = new Core_DB_Cache;
 		return TRUE;
 	}
 
@@ -1027,7 +1027,7 @@ class CI_DB_driver {
 	 */
 	function display_error($error = '', $swap = '', $native = FALSE)
 	{
-		$LANG = new CI_Language();
+		$LANG = new Core_Language();
 		$LANG->load('db');
 
 		$heading = 'MySQL Error';
@@ -1041,12 +1041,12 @@ class CI_DB_driver {
 			$message = ( ! is_array($error)) ? array(str_replace('%s', $swap, $LANG->line($error))) : $error;
 		}
 
-		if ( ! class_exists('CI_Exceptions'))
+		if ( ! class_exists('Core_Exceptions'))
 		{
 			include(BASEPATH.'libraries/Exceptions'.EXT);
 		}
 
-		$error = new CI_Exceptions();
+		$error = new Core_Exceptions();
 		echo $error->show_error('An Error Was Encountered', $message, 'error_db');
 		exit;
 	}

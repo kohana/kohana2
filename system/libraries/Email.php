@@ -1655,5 +1655,5 @@ class Core_Email {
 	}
 
 }
-// END CI_Email class
+// END Core_Email class
 ?>

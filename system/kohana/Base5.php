@@ -26,7 +26,7 @@
  * Core_Base - For PHP 5
  *
  * This file contains some code used only when Kohana is being
- * run under PHP 5.  It allows us to manage the CI super object more
+ * run under PHP 5.  It allows us to manage the Core super object more
  * gracefully than what is possible with PHP 4.
  *
  * @package		Kohana

@@ -77,6 +77,8 @@ function &load_class($class, $instantiate = TRUE)
 			require(BASEPATH.'libraries/'.$class.EXT);
 			$is_subclass = FALSE;
 		}
+		
+		eval('class '.$class.' extends Core_'.$class.' {}');
 	}
 
 	if ($instantiate == FALSE)

@@ -91,23 +91,23 @@ function &DB($params = '')
 	{
 		require_once(BASEPATH.'database/DB_active_rec'.EXT);
 
-		if ( ! class_exists('CI_DB'))
+		if ( ! class_exists('Core_DB'))
 		{
-			eval('class CI_DB extends CI_DB_active_record { }');
+			eval('class Core_DB extends Core_DB_active_record { }');
 		}
 	}
 	else
 	{
-		if ( ! class_exists('CI_DB'))
+		if ( ! class_exists('Core_DB'))
 		{
-			eval('class CI_DB extends CI_DB_driver { }');
+			eval('class Core_DB extends Core_DB_driver { }');
 		}
 	}
 
 	require_once(BASEPATH.'database/drivers/'.$params['dbdriver'].'/'.$params['dbdriver'].'_driver'.EXT);
 
 	// Instantiate the DB adapter
-	$driver = 'CI_DB_'.$params['dbdriver'].'_driver';
+	$driver = 'Core_DB_'.$params['dbdriver'].'_driver';
 	$DB =& new $driver($params);
 
 	return $DB;

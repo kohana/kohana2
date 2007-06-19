@@ -25,13 +25,13 @@
 /**
  * oci8 Result Class
  *
- * This class extends the parent result class: CI_DB_result
+ * This class extends the parent result class: Core_DB_result
  *
  * @category	Database
  * @author	  Rick Ellis
  * @link		http://www.codeigniter.com/user_guide/database/
  */
-class CI_DB_oci8_result extends CI_DB_result {
+class Core_DB_oci8_result extends Core_DB_result {
 
 	var $stmt_id;
 	var $curs_id;

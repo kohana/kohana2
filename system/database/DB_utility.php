@@ -29,7 +29,7 @@
  * @author		Rick Ellis
  * @link		http://www.codeigniter.com/user_guide/database/
  */
-class CI_DB_utility {
+class Core_DB_utility {
 
 	var $db;
 	var $data_cache = array();
@@ -37,10 +37,10 @@ class CI_DB_utility {
 	/**
 	 * Constructor
 	 *
-	 * Grabs the CI super object instance so we can access it.
+	 * Grabs the Core super object instance so we can access it.
 	 *
 	 */	
-	function CI_DB_utility()
+	function Core_DB_utility()
 	{
 		// Assign the main database object to $this->db
 		$CORE =& get_instance();

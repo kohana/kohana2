@@ -48,7 +48,7 @@
  *
  */
 
-class CI_DB_oci8_driver extends CI_DB {
+class Core_DB_oci8_driver extends Core_DB {
 
 	// Set "auto commit" by default
 	var $_commit = OCI_COMMIT_ON_SUCCESS;

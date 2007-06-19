@@ -35,7 +35,7 @@
  * @author		Rick Ellis
  * @link		http://www.codeigniter.com/user_guide/database/
  */
-class CI_DB_mysql_driver extends CI_DB {
+class Core_DB_mysql_driver extends Core_DB {
 
 	/**
 	 * Whether to use the MySQL "delete hack" which allows the number

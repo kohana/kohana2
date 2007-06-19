@@ -268,7 +268,7 @@ $EXT->_call_hook('post_system');
  *  Close the DB connection if one exists
  * ------------------------------------------------------
  */
-if (class_exists('CI_DB') AND isset($CORE->db))
+if (class_exists('Core_DB') AND isset($CORE->db))
 {
 	$CORE->db->close();
 }

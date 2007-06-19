@@ -29,7 +29,7 @@
  * @author		Rick Ellis
  * @link		http://www.codeigniter.com/user_guide/database/
  */
-class CI_DB_mysqli_utility extends CI_DB_utility {
+class Core_DB_mysqli_utility extends Core_DB_utility {
 	
 	/**
 	 * Create database

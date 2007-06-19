@@ -27,12 +27,12 @@
  *
  * This file is used only when Kohana is being run under PHP 4.
  *
- * In order to allow CI to work under PHP 4 we had to make the Loader class
+ * In order to allow Core to work under PHP 4 we had to make the Loader class
  * the parent of the Controller Base class.  It's the only way we can
  * enable functions like $this->load->library('email') to instantiate
  * classes that can then be used within controllers as $this->email->send()
  *
- * PHP 4 also has trouble referencing the CI super object within application
+ * PHP 4 also has trouble referencing the Core super object within application
  * constructors since objects do not exist until the class is fully
  * instantiated.  Basically PHP 4 sucks...
  *
@@ -44,12 +44,12 @@
  * @category	front-controller
  * @author		Rick Ellis
  */
- class Core_Base extends CI_Loader {
+ class Core_Base extends Core_Loader {
 
 	function Core_Base()
 	{
 		// This allows syntax like $this->load->foo() to work
-		parent::CI_Loader();
+		parent::Core_Loader();
 		$this->load =& $this;
 		
 		// This allows resources used within controller constructors to work

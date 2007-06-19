@@ -384,7 +384,7 @@ class Core_Encrypt {
 			if ( ! function_exists('mhash'))
 			{	
 				require_once(BASEPATH.'libraries/Sha1'.EXT);
-				$SH = new CI_SHA;
+				$SH = new Core_SHA;
 				return $SH->generate($str);
 			}
 			else
@@ -400,5 +400,5 @@ class Core_Encrypt {
 	
 }
 
-// END CI_Encrypt class
+// END Core_Encrypt class
 ?>

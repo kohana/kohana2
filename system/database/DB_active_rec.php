@@ -32,7 +32,7 @@
  * @category    Database
  * @author      Rick Ellis, Kohana Development Team
  */
-class CI_DB_active_record extends CI_DB_driver {
+class Core_DB_active_record extends Core_DB_driver {
 
 	var $ar_select   = array();
 	var $ar_distinct = FALSE;

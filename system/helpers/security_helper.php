@@ -66,7 +66,7 @@ function dohash($str, $type = 'sha1')
 			if ( ! function_exists('mhash'))
 			{
 				require_once(BASEPATH.'libraries/Sha1'.EXT);
-				$SH = new CI_SHA;
+				$SH = new Core_SHA;
 				return $SH->generate($str);
 			}
 			else

@@ -321,7 +321,7 @@ $config['time_reference'] = 'local';
 | Rewrite PHP Short Tags
 |--------------------------------------------------------------------------
 |
-| If your PHP installation does not have short tag support enabled CI
+| If your PHP installation does not have short tag support enabled Core
 | can rewrite the tags on-the-fly, enabling you to utilize that syntax
 | in your view files.  Options are TRUE or FALSE (boolean)
 |

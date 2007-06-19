@@ -177,7 +177,7 @@ class Core_Loader {
 			show_error('Unable to locate the model you have specified: '.$model);
 		}
 
-		if ($db_conn !== FALSE AND ! class_exists('CI_DB'))
+		if ($db_conn !== FALSE AND ! class_exists('Core_DB'))
 		{
 			if ($db_conn === TRUE)
 				$db_conn = '';
@@ -213,7 +213,7 @@ class Core_Loader {
 	function database($params = '', $return = FALSE)
 	{
 		//Do we need to load up the DB library?
-		if ( ! class_exists('CI_DB'))
+		if ( ! class_exists('Core_DB'))
 		{
 			require_once(BASEPATH.'database/DB'.EXT);
 		}
@@ -221,7 +221,7 @@ class Core_Loader {
 		// Grab the super object
 		$CORE =& get_instance();
 
-		// If the CI db database interaction object is already set and we are not returning our database object on this call, we need to stop
+		// If the database interaction object is already set and we are not returning our database object on this call, we need to stop
 		if (isset($CORE->db) AND $return == FALSE)
 		{
 			return FALSE;
@@ -253,7 +253,7 @@ class Core_Loader {
 	 */
 	function dbutil()
 	{
-		if ( ! class_exists('CI_DB'))
+		if ( ! class_exists('Core_DB'))
 		{
 			$this->database();
 		}
@@ -262,7 +262,7 @@ class Core_Loader {
 
 		require_once(BASEPATH.'database/DB_utility'.EXT);
 		require_once(BASEPATH.'database/drivers/'.$CORE->db->dbdriver.'/'.$CORE->db->dbdriver.'_utility'.EXT);
-		$class = 'CI_DB_'.$CORE->db->dbdriver.'_utility';
+		$class = 'Core_DB_'.$CORE->db->dbdriver.'_utility';
 
 		$CORE->dbutil = new $class();
 		$CORE->load->_assign_to_models();
@@ -289,7 +289,7 @@ class Core_Loader {
 	 */
 	function view($view, $vars = array(), $return = FALSE)
 	{
-		return $this->_load(array('view' => $view, 'vars' => $this->_ci_object_to_array($vars), 'return' => $return));
+		return $this->_load(array('view' => $view, 'vars' => $this->_object_to_array($vars), 'return' => $return));
 	}
 
 	// --------------------------------------------------------------------
@@ -631,7 +631,7 @@ class Core_Loader {
 		 */
 		if (is_array($vars))
 		{
-			$this->_cached_vars = array_merge($this->_ci_cached_vars, $vars);
+			$this->_cached_vars = array_merge($this->_cached_vars, $vars);
 		}
 		extract($this->_cached_vars);
 
@@ -825,7 +825,7 @@ class Core_Loader {
 
 		if ($prefix == '')
 		{
-			$name = (class_exists('CI_'.$class)) ? 'CI_'.$class : $class;
+			$name = (class_exists('Core_'.$class)) ? 'Core_'.$class : $class;
 		}
 		else
 		{
@@ -834,7 +834,7 @@ class Core_Loader {
 
 		// Set the variable name we will assign the class to
 		$class = strtolower($class);
-		$classvar = ( ! isset($this->_varmap[$class])) ? $class : $this->_ci_varmap[$class];
+		$classvar = ( ! isset($this->_varmap[$class])) ? $class : $this->_varmap[$class];
 
 		// Instantiate the class
 		$CORE =& get_instance();
@@ -982,7 +982,7 @@ class Core_Loader {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Determines whether we should use the CI instance or $this
+	 * Determines whether we should use the Core instance or $this
 	 *
 	 * @access	private
 	 * @return	bool

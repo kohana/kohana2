@@ -114,5 +114,5 @@ class Core_Benchmark {
 
 }
 
-// END CI_Benchmark class
+// END Core_Benchmark class
 ?>

@@ -478,5 +478,5 @@ class Core_Calendar {
 
 }
 
-// END CI_Calendar class
+// END Core_Calendar class
 ?>

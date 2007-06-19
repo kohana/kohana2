@@ -35,7 +35,7 @@
  * @author		Rick Ellis
  * @link		http://www.codeigniter.com/user_guide/database/
  */
-class CI_DB_mssql_driver extends CI_DB {
+class Core_DB_mssql_driver extends Core_DB {
 
 	/**
 	 * Non-persistent database connection

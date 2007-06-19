@@ -240,5 +240,5 @@ class Core_Config {
 
 }
 
-// END CI_Config class
+// END Core_Config class
 ?>

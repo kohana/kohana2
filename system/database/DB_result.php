@@ -33,7 +33,7 @@
  * @author		Rick Ellis
  * @link		http://www.codeigniter.com/user_guide/database/
  */
-class CI_DB_result {
+class Core_DB_result {
 
 	var $conn_id        = NULL;
 	var $result_id      = NULL;
