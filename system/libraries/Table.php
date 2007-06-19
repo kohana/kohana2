@@ -45,7 +45,7 @@ class Core_Table {
 
 	function Core_Table()
 	{
-		log_message('debug', "Table Class Initialized");
+		log_message('debug', 'Table Class Initialized');
 	}
 
 	// --------------------------------------------------------------------

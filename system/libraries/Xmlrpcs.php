@@ -63,7 +63,7 @@ class Core_Xmlrpcs extends Core_Xmlrpc
 			$this->methods = $config['functions'];
 		}
 
-		log_message('debug', "XML-RPC Server Class Initialized");
+		log_message('debug', 'XML-RPC Server Class Initialized');
 	}
 
 	//-------------------------------------

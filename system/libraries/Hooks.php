@@ -46,7 +46,7 @@ class Core_Hooks {
 	function Core_Hooks()
 	{
 		$this->_initialize();
-		log_message('debug', "Hooks Class Initialized");
+		log_message('debug', 'Hooks Class Initialized');
 	}
 
 	// --------------------------------------------------------------------

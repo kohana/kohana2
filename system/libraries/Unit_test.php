@@ -43,7 +43,7 @@ class Core_Unit_test {
 
 	function Core_Unit_test()
 	{
-		log_message('debug', "Unit Testing Class Initialized");
+		log_message('debug', 'Unit Testing Class Initialized');
 	}
 
 	// --------------------------------------------------------------------

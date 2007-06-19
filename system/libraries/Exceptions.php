@@ -102,7 +102,7 @@ class Core_Exceptions {
 		$message = "The page you requested was not found.";
 
 		log_message('error', '404 Page Not Found --> '.$page);
-		echo $this->show_error($heading, $message, 'error_404');
+		print $this->show_error($heading, $message, 'error_404');
 		exit;
 	}
 
@@ -133,7 +133,7 @@ class Core_Exceptions {
 		include(APPPATH.'errors/'.$template.EXT);
 		$buffer = ob_get_contents();
 		ob_end_clean();
-		return $buffer;
+		print $buffer;
 	}
 
 	// --------------------------------------------------------------------
@@ -169,7 +169,7 @@ class Core_Exceptions {
 		include(APPPATH.'errors/error_php'.EXT);
 		$buffer = ob_get_contents();
 		ob_end_clean();
-		echo $buffer;
+		print $buffer;
 	}
 
 

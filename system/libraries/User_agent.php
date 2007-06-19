@@ -78,7 +78,7 @@ class Core_User_agent {
 			}
 		}
 
-		log_message('debug', "Table Class Initialized");
+		log_message('debug', 'Table Class Initialized');
 	}
 
 	// --------------------------------------------------------------------

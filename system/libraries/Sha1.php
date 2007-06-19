@@ -53,7 +53,7 @@ class Core_SHA {
 
 	function Core_SHA()
 	{
-		log_message('debug', "SHA1 Class Initialized");
+		log_message('debug', 'SHA1 Class Initialized');
 	}
 
 	/**

@@ -74,7 +74,6 @@ class Core_Loader {
 	var $_scripts     = array();
 	var $_varmap      = array('unit_test' => 'unit', 'user_agent' => 'agent');
 
-
 	/**
 	 * Constructor
 	 *
@@ -88,7 +87,7 @@ class Core_Loader {
 		$this->_view_path = APPPATH.'views/';
 		$this->_ob_level  = ob_get_level();
 
-		log_message('debug', "Loader Class Initialized");
+		log_message('debug', 'Loader Class Initialized');
 	}
 
 	// --------------------------------------------------------------------
@@ -185,11 +184,7 @@ class Core_Loader {
 			$CORE->load->database($db_conn, FALSE, TRUE);
 		}
 
-		if ( ! class_exists('Model'))
-		{
-			require_once(BASEPATH.'libraries/Model'.EXT);
-		}
-
+		load_class('Model', FALSE);
 		require_once(APPPATH.'models/'.$path.$model.EXT);
 
 		$model = ucfirst($model);
@@ -221,23 +216,19 @@ class Core_Loader {
 		// Grab the super object
 		$CORE =& get_instance();
 
-		// If the database interaction object is already set and we are not returning our database object on this call, we need to stop
-		if (isset($CORE->db) AND $return == FALSE)
+		// If the database interaction object is already set and we are not
+		// returning our database object on this call, we need to stop
+		if ($return === TRUE OR ($return == FALSE AND isset($CORE->db)))
 		{
-			return FALSE;
+			return ($return ? Core_DB($params) : FALSE);
 		}
 
-		if ($return === TRUE)
-		{
-			return DB($params);
-		}
-
-		// Initialize the db variable.	Needed to prevent
-		// reference errors with some configurations
+		// Initialize the db variable. Needed to prevent reference errors
+		// with some configurations
 		$CORE->db = '';
 
 		// Load the DB class
-		$CORE->db =& DB($params);
+		$CORE->db =& Core_DB($params);
 
 		// Assign the DB object to any existing models
 		$this->_assign_to_models();
@@ -354,12 +345,10 @@ class Core_Loader {
 
 		foreach ($helpers as $helper)
 		{
-			$helper = strtolower(str_replace(EXT, '', str_replace('_helper', '', $helper)).'_helper');
+			$helper = strtolower(str_replace(array(EXT, '_helper'), '', $helper).'_helper');
 
 			if (isset($this->_helpers[$helper]))
-			{
 				continue;
-			}
 
 			if (file_exists(APPPATH.'helpers/'.$helper.EXT))
 			{
@@ -378,7 +367,6 @@ class Core_Loader {
 			}
 
 			$this->_helpers[$helper] = TRUE;
-
 		}
 
 		log_message('debug', 'Helpers loaded: '.implode(', ', $helpers));
@@ -421,7 +409,7 @@ class Core_Loader {
 
 		foreach ($plugins as $plugin)
 		{
-			$plugin = strtolower(str_replace(EXT, '', str_replace('_plugin.', '', $plugin)).'_pi');
+			$plugin = strtolower(str_replace(array(EXT, '_plugin'), '').'_pi');
 
 			if (isset($this->_plugins[$plugin]))
 			{

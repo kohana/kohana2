@@ -57,7 +57,7 @@ class Core_Router {
 	{
 		$this->config =& load_class('Config');
 		$this->_set_route_mapping();
-		log_message('debug', "Router Class Initialized");
+		log_message('debug', 'Router Class Initialized');
 	}
 
 	// --------------------------------------------------------------------
@@ -115,7 +115,7 @@ class Core_Router {
 			$this->set_class($this->default_controller);
 			$this->set_method('index');
 
-			log_message('debug', "No URI present. Default controller set.");
+			log_message('debug', 'No URI present. Default controller set.');
 			return;
 		}
 		unset($this->routes['default_controller']);

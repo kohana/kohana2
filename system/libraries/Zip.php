@@ -46,7 +46,7 @@ class Core_Zip  {
 
 	function Core_Zip()
 	{
-		log_message('debug', "Zip Compression Class Initialized");
+		log_message('debug', 'Zip Compression Class Initialized');
 	}
 
 	// --------------------------------------------------------------------

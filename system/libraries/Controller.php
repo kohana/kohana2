@@ -48,7 +48,7 @@ class Core_Controller extends Core_Base {
 	{
 		parent::Core_Base();
 		$this->_initialize();
-		log_message('debug', "Controller Class Initialized");
+		log_message('debug', 'Controller Class Initialized');
 	}
 
 	// --------------------------------------------------------------------

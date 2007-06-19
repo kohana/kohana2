@@ -49,7 +49,7 @@ class Core_Trackback {
 	 */
 	function Core_Trackback()
 	{
-		log_message('debug', "Trackback Class Initialized");
+		log_message('debug', 'Trackback Class Initialized');
 	}
 
 	// --------------------------------------------------------------------

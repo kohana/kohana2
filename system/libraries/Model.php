@@ -49,7 +49,7 @@ class Core_Model {
 		// assign_libraries function below so we'll grab the name of the model parent
 		$this->_parent_name = ucfirst(get_class($this));
 		
-		log_message('debug', "Model Class Initialized");
+		log_message('debug', 'Model Class Initialized');
 	}
 
 	/**

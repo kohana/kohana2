@@ -46,7 +46,7 @@ class Core_DB_utility {
 		$CORE =& get_instance();
 		$this->db =& $CORE->db;
 		
-		log_message('debug', "Database Utility Class Initialized");
+		log_message('debug', 'Database Utility Class Initialized');
 	}
 
 	// --------------------------------------------------------------------

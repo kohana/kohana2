@@ -50,7 +50,7 @@ class Core_URI {
 	function Core_URI()
 	{
 		$this->router =& load_class('Router');
-		log_message('debug', "URI Class Initialized");
+		log_message('debug', 'URI Class Initialized');
 	}
 
 	// --------------------------------------------------------------------

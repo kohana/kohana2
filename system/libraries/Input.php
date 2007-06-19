@@ -50,7 +50,7 @@ class Core_Input {
 	 */
 	function Core_Input()
 	{
-		log_message('debug', "Input Class Initialized");
+		log_message('debug', 'Input Class Initialized');
 
 		$CFG =& load_class('Config');
 		$this->use_xss_clean    = ($CFG->item('global_xss_filtering') === TRUE) ? TRUE : FALSE;
@@ -129,7 +129,7 @@ class Core_Input {
 			}
 		}
 
-		log_message('debug', "Global POST and COOKIE data sanitized");
+		log_message('debug', 'Global POST and COOKIE data sanitized');
 	}
 
 	// --------------------------------------------------------------------

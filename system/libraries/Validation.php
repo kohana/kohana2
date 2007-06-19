@@ -50,7 +50,7 @@ class Core_Validation {
 	function Core_Validation()
 	{
 		$this->CORE =& get_instance();
-		log_message('debug', "Validation Class Initialized");
+		log_message('debug', 'Validation Class Initialized');
 	}
 
 	// --------------------------------------------------------------------

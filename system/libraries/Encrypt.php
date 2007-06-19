@@ -50,7 +50,7 @@ class Core_Encrypt {
 	function Core_Encrypt()
 	{
 		$this->_mcrypt_exists = ( ! function_exists('mcrypt_encrypt')) ? FALSE : TRUE;
-		log_message('debug', "Encrypt Class Initialized");
+		log_message('debug', 'Encrypt Class Initialized');
 	}
   	
 	// --------------------------------------------------------------------

@@ -43,7 +43,7 @@ class Core_Language {
 	 */
 	function Core_Language()
 	{
-		log_message('debug', "Language Class Initialized");
+		log_message('debug', 'Language Class Initialized');
 	}
 
 	// --------------------------------------------------------------------

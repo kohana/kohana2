@@ -67,17 +67,17 @@ function &load_class($class, $instantiate = TRUE)
 	}
 	else
 	{
+		$is_subclass = FALSE;
+
 		if (file_exists(APPPATH.'libraries/'.$class.EXT))
 		{
 			require(APPPATH.'libraries/'.$class.EXT);
-			$is_subclass = FALSE;
 		}
 		else
 		{
 			require(BASEPATH.'libraries/'.$class.EXT);
-			$is_subclass = FALSE;
 		}
-		
+
 		eval('class '.$class.' extends Core_'.$class.' {}');
 	}
 
@@ -89,8 +89,7 @@ function &load_class($class, $instantiate = TRUE)
 
 	if ($is_subclass == TRUE)
 	{
-		$name = config_item('subclass_prefix').$class;
-		$objects[$class] =& new $name();
+		$objects[$class] =& new $class();
 		return $objects[$class];
 	}
 
@@ -166,10 +165,10 @@ function config_item($item)
 * @access	public
 * @return	void
 */
-function show_error($message)
+function show_error($message, $header = 'An Error Was Encountered')
 {
 	$error =& load_class('Exceptions');
-	echo $error->show_error('An Error Was Encountered', $message);
+	$error->show_error($header, $message);
 	exit;
 }
 

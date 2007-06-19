@@ -68,7 +68,7 @@ class Core_Calendar {
 			$this->initialize($config);
 		}
 
-		log_message('debug', "Calendar Class Initialized");
+		log_message('debug', 'Calendar Class Initialized');
 	}
 
 	// --------------------------------------------------------------------

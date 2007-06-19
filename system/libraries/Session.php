@@ -54,7 +54,7 @@ class Core_Session {
 	{
 		$this->CORE =& get_instance();
 
-		log_message('debug', "Session Class Initialized");
+		log_message('debug', 'Session Class Initialized');
 		$this->sess_run();
 	}
 

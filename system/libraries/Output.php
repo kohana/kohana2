@@ -42,7 +42,7 @@ class Core_Output {
 
 	function Core_Output()
 	{
-		log_message('debug', "Output Class Initialized");
+		log_message('debug', 'Output Class Initialized');
 	}
 
 	// --------------------------------------------------------------------
@@ -206,7 +206,7 @@ class Core_Output {
 		if ( ! function_exists('get_instance'))
 		{
 			echo $output;
-			log_message('debug', "Final output sent to browser");
+			log_message('debug', 'Final output sent to browser');
 			log_message('debug', "Total execution time: ".$elapsed);
 			return TRUE;
 		}
@@ -247,7 +247,7 @@ class Core_Output {
 			echo $output;  // Send it to the browser!
 		}
 
-		log_message('debug', "Final output sent to browser");
+		log_message('debug', 'Final output sent to browser');
 		log_message('debug', "Total execution time: ".$elapsed);
 	}
 
@@ -352,13 +352,13 @@ class Core_Output {
 		if (time() >= trim(str_replace('TS--->', '', $match[1])))
 		{
 			@unlink($filepath);
-			log_message('debug', "Cache file has expired. File deleted");
+			log_message('debug', 'Cache file has expired. File deleted');
 			return FALSE;
 		}
 
 		// Display the cache
 		$this->_display(str_replace($match[0], '', $cache));
-		log_message('debug', "Cache file is current. Sending it to browser.");
+		log_message('debug', 'Cache file is current. Sending it to browser.');
 		return TRUE;
 	}
 
