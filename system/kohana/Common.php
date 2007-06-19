@@ -67,8 +67,6 @@ function &load_class($class, $instantiate = TRUE)
 	}
 	else
 	{
-		$is_subclass = FALSE;
-
 		if (file_exists(APPPATH.'libraries/'.$class.EXT))
 		{
 			require(APPPATH.'libraries/'.$class.EXT);
@@ -77,7 +75,9 @@ function &load_class($class, $instantiate = TRUE)
 		{
 			require(BASEPATH.'libraries/'.$class.EXT);
 		}
+		$is_subclass = FALSE;
 
+		// We do this to allow the transparent extension of classes
 		eval('class '.$class.' extends Core_'.$class.' {}');
 	}
 
