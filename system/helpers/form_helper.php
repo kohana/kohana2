@@ -44,18 +44,18 @@
  * @param	array	a key/value pair of attributes
  * @param	array	a key/value pair hidden data
  * @return	string
- */	
+ */
 function form_open($action = '', $attributes = array(), $hidden = array())
 {
 	$CI =& get_instance();
 
 	$form = '<form action="'.$CI->config->site_url($action).'"';
-	
+
 	if ( ! isset($attributes['method']))
 	{
 		$form .= ' method="post"';
 	}
-	
+
 	if (is_array($attributes) AND count($attributes) > 0)
 	{
 		foreach ($attributes as $key => $val)
@@ -63,17 +63,17 @@ function form_open($action = '', $attributes = array(), $hidden = array())
 			$form .= ' '.$key.'="'.$val.'"';
 		}
 	}
-	
+
 	$form .= '>';
 
 	if (is_array($hidden) AND count($hidden > 0))
 	{
 		$form .= form_hidden($hidden);
 	}
-	
+
 	return $form;
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -86,13 +86,13 @@ function form_open($action = '', $attributes = array(), $hidden = array())
  * @param	array	a key/value pair of attributes
  * @param	array	a key/value pair hidden data
  * @return	string
- */	
+ */
 function form_open_multipart($action, $attributes = array(), $hidden = array())
 {
 	$attributes['enctype'] = 'multipart/form-data';
 	return form_open($action, $attributes, $hidden);
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -105,7 +105,7 @@ function form_open_multipart($action, $attributes = array(), $hidden = array())
  * @param	mixed
  * @param	string
  * @return	string
- */	
+ */
 function form_hidden($name, $value = '')
 {
 	if ( ! is_array($name))
@@ -118,10 +118,10 @@ function form_hidden($name, $value = '')
 	{
 		$form .= '<input type="hidden" name="'.$name.'" value="'.form_prep($value).'" />';
 	}
-	
+
 	return $form;
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -132,14 +132,14 @@ function form_hidden($name, $value = '')
  * @param	string
  * @param	string
  * @return	string
- */	
+ */
 function form_input($data = '', $value = '', $extra = '')
 {
 	$defaults = array('type' => 'text', 'name' => (( ! is_array($data)) ? $data : ''), 'value' => $value, 'maxlength' => '500', 'size' => '50');
 
 	return "<input ".parse_form_attributes($data, $defaults).$extra." />\n";
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -152,7 +152,7 @@ function form_input($data = '', $value = '', $extra = '')
  * @param	string
  * @param	string
  * @return	string
- */	
+ */
 function form_password($data = '', $value = '', $extra = '')
 {
 	if ( ! is_array($data))
@@ -163,7 +163,7 @@ function form_password($data = '', $value = '', $extra = '')
 	$data['type'] = 'password';
 	return form_input($data, $value, $extra);
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -176,7 +176,7 @@ function form_password($data = '', $value = '', $extra = '')
  * @param	string
  * @param	string
  * @return	string
- */	
+ */
 function form_upload($data = '', $value = '', $extra = '')
 {
 	if ( ! is_array($data))
@@ -187,7 +187,7 @@ function form_upload($data = '', $value = '', $extra = '')
 	$data['type'] = 'file';
 	return form_input($data, $value, $extra);
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -198,54 +198,59 @@ function form_upload($data = '', $value = '', $extra = '')
  * @param	string
  * @param	string
  * @return	string
- */	
+ */
 function form_textarea($data = '', $value = '', $extra = '')
 {
 	$defaults = array('name' => (( ! is_array($data)) ? $data : ''), 'cols' => '90', 'rows' => '12');
-	
+
     if ( ! is_array($data) OR ! isset($data['value']))
 	{
 		$val = $value;
 	}
     else
 	{
-		$val = $data['value']; 
+		$val = $data['value'];
 		unset($data['value']); // textareas don't use the value attribute
 	}
-		
+
 	return "<textarea ".parse_form_attributes($data, $defaults).$extra.">".$val."</textarea>\n";
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
  * Drop-down Menu
  *
  * @access	public
- * @param	string
+ * @param	mixed
  * @param	array
  * @param	string
  * @param	string
  * @return	string
- */	
-function form_dropdown($name = '', $options = array(), $selected = '', $extra = '')
+ */
+function form_dropdown($data = '', $options = array(), $selected = '', $extra = '')
 {
+	if ( ! is_array($data))
+	{
+		$data = array('name' => $data);
+	}
+
 	if ($extra != '') $extra = ' '.$extra;
-		
-	$form = '<select name="'.$name.'"'.$extra.">\n";
-	
+
+	$form = '<select '.parse_form_attributes($data, array()).$extra.">\n";
+
 	foreach ($options as $key => $val)
 	{
 		$sel = ($selected != $key) ? '' : ' selected="selected"';
-		
+
 		$form .= '<option value="'.$key.'"'.$sel.'>'.$val."</option>\n";
 	}
 
 	$form .= '</select>';
-	
+
 	return $form;
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -257,15 +262,15 @@ function form_dropdown($name = '', $options = array(), $selected = '', $extra = 
  * @param	bool
  * @param	string
  * @return	string
- */	
+ */
 function form_checkbox($data = '', $value = '', $checked = TRUE, $extra = '')
 {
 	$defaults = array('type' => 'checkbox', 'name' => (( ! is_array($data)) ? $data : ''), 'value' => $value);
-	
+
 	if (is_array($data) AND array_key_exists('checked', $data))
 	{
 		$checked = $data['checked'];
-		
+
 		if ($checked == FALSE)
 		{
 			unset($data['checked']);
@@ -275,7 +280,7 @@ function form_checkbox($data = '', $value = '', $checked = TRUE, $extra = '')
 			$data['checked'] = 'checked';
 		}
 	}
-	
+
 	if ($checked == TRUE)
 		$defaults['checked'] = 'checked';
 	else
@@ -283,7 +288,7 @@ function form_checkbox($data = '', $value = '', $checked = TRUE, $extra = '')
 
 	return "<input ".parse_form_attributes($data, $defaults).$extra." />\n";
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -295,18 +300,18 @@ function form_checkbox($data = '', $value = '', $checked = TRUE, $extra = '')
  * @param	bool
  * @param	string
  * @return	string
- */	
+ */
 function form_radio($data = '', $value = '', $checked = TRUE, $extra = '')
 {
 	if ( ! is_array($data))
-	{	
+	{
 		$data = array('name' => $data);
 	}
 
 	$data['type'] = 'radio';
 	return form_checkbox($data, $value, $checked, $extra);
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -317,14 +322,14 @@ function form_radio($data = '', $value = '', $checked = TRUE, $extra = '')
  * @param	string
  * @param	string
  * @return	string
- */	
+ */
 function form_submit($data = '', $value = '', $extra = '')
 {
 	$defaults = array('type' => 'submit', 'name' => (( ! is_array($data)) ? $data : ''), 'value' => $value);
 
 	return "<input ".parse_form_attributes($data, $defaults).$extra." />\n";
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -333,12 +338,12 @@ function form_submit($data = '', $value = '', $extra = '')
  * @access	public
  * @param	string
  * @return	string
- */	
+ */
 function form_close($extra = '')
 {
 	return "</form>\n".$extra;
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -349,7 +354,7 @@ function form_close($extra = '')
  * @access	public
  * @param	string
  * @return	string
- */	
+ */
 function form_prep($str = '')
 {
 	if ($str === '')
@@ -359,17 +364,17 @@ function form_prep($str = '')
 
 	//Convert ampersands to entities only if they're not part of an existing entity
 	$str = preg_replace('/&(?!(?:#\d+|[a-z]+);)/i', '&amp;', $str);
-	   
+
 	// Convert: < > ' " -
 	$str = str_replace(
 		array('<', '>', '\'', '"', '-'),
 		array('&lt;', '&gt;', '&#39;', '&quot;', '&#45;'),
 		$str
 	);
-	   
-	return $str;	
+
+	return $str;
 }
-	
+
 // ------------------------------------------------------------------------
 
 /**
@@ -381,7 +386,7 @@ function form_prep($str = '')
  * @param	array
  * @param	array
  * @return	string
- */	
+ */
 function parse_form_attributes($attributes, $default)
 {
 	if (is_array($attributes))
@@ -394,13 +399,13 @@ function parse_form_attributes($attributes, $default)
 				unset($attributes[$key]);
 			}
 		}
-		
+
 		if (count($attributes) > 0)
-		{	
+		{
 			$default = array_merge($default, $attributes);
 		}
 	}
-	
+
 	$att = '';
 	foreach ($default as $key => $val)
 	{
@@ -408,7 +413,7 @@ function parse_form_attributes($attributes, $default)
 		{
 			$val = form_prep($val);
 		}
-	
+
 		$att .= $key . '="' . $val . '" ';
 	}
 
