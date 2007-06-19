@@ -263,13 +263,12 @@ class CI_DB_driver {
 			if ($this->db_debug)
 			{
 				log_message('error', 'Query error: '.$this->_error_message());
-				return $this->display_error(
-										array(
-												'Error Number: '.$this->_error_number(),
-												$this->_error_message(),
-												$sql
-											)
-										);
+				return $this->display_error(array
+				(
+					'Error Number: '.$this->_error_number(),
+					$this->_error_message(),
+					$sql
+				));
 			}
 
 		  return FALSE;
@@ -311,17 +310,16 @@ class CI_DB_driver {
 		}
 
 		// Load and instantiate the result driver
-
-		$driver 		= $this->load_rdriver();
-		$RES 			= new $driver();
-		$RES->conn_id	= $this->conn_id;
-		$RES->result_id	= $this->result_id;
+		$driver         = $this->load_rdriver();
+		$RES            = new $driver();
+		$RES->conn_id   = $this->conn_id;
+		$RES->result_id = $this->result_id;
 
 		if ($this->dbdriver == 'oci8')
 		{
-			$RES->stmt_id		= $this->stmt_id;
-			$RES->curs_id		= NULL;
-			$RES->limit_used	= $this->limit_used;
+			$RES->stmt_id    = $this->stmt_id;
+			$RES->curs_id    = NULL;
+			$RES->limit_used = $this->limit_used;
 		}
 
 		// Is query caching enabled?  If so, we'll serialize the
@@ -335,13 +333,13 @@ class CI_DB_driver {
 			// result object, so we'll have to compile the data
 			// and save it)
 			$CR = new CI_DB_result();
-			$CR->num_rows 		= $RES->num_rows();
-			$CR->result_object	= $RES->result_object();
-			$CR->result_array	= $RES->result_array();
+			$CR->_num_rows     = $RES->num_rows();
+			$CR->result_object = $RES->result_object();
+			$CR->result_array  = $RES->result_array();
 
 			// Reset these since cached objects can not utilize resource IDs.
-			$CR->conn_id		= NULL;
-			$CR->result_id		= NULL;
+			$CR->conn_id    = NULL;
+			$CR->result_id  = NULL;
 
 			$this->CACHE->write($sql, $CR);
 		}
