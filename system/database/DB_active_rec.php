@@ -172,7 +172,7 @@ class CI_DB_active_record extends CI_DB_driver {
 	 */
 	function where($key, $value = NULL, $quote = TRUE)
 	{
-		if (func_num_args() < 2)
+		if (func_num_args() < 2 AND ! is_array($key))
 		{
 			$quote = -1;
 		}
@@ -196,7 +196,7 @@ class CI_DB_active_record extends CI_DB_driver {
 	 */
 	function orwhere($key, $value = NULL, $quote = TRUE)
 	{
-		if (func_num_args() < 2)
+		if (func_num_args() < 2 AND ! is_array($key))
 		{
 			$quote = -1;
 		}
