@@ -37,14 +37,14 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/libraries/zip.html
  */
-class CI_Zip  {
+class Core_Zip  {
 
-	var $zipfile	= '';
-	var $zipdata	= array();
-	var $directory	= array();
-	var $offset		= 0;
+	var $zipfile   = '';
+	var $zipdata   = array();
+	var $directory = array();
+	var $offset    = 0;
 
-	function CI_Zip()
+	function Core_Zip()
 	{
 		log_message('debug', "Zip Compression Class Initialized");
 	}

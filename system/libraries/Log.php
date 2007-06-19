@@ -31,7 +31,7 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/general/errors.html
  */
-class CI_Log {
+class Core_Log {
 
 	var $log_path;
 	var $_threshold	= 1;
@@ -47,7 +47,7 @@ class CI_Log {
 	 * @param	string	the error threshold
 	 * @param	string	the date formatting codes
 	 */
-	function CI_Log()
+	function Core_Log()
 	{
 		$config =& get_config();
 

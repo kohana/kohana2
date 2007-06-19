@@ -46,8 +46,8 @@
  */
 function site_url($uri = '')
 {
-	$CI =& get_instance();
-	return $CI->config->site_url($uri);
+	$CORE =& get_instance();
+	return $CORE->config->site_url($uri);
 }
 
 // ------------------------------------------------------------------------
@@ -62,8 +62,8 @@ function site_url($uri = '')
  */
 function base_url()
 {
-	$CI =& get_instance();
-	return $CI->config->slash_item('base_url');
+	$CORE =& get_instance();
+	return $CORE->config->slash_item('base_url');
 }
 
 // ------------------------------------------------------------------------
@@ -78,8 +78,8 @@ function base_url()
  */
 function index_page()
 {
-	$CI =& get_instance();
-	return $CI->config->item('index_page');
+	$CORE =& get_instance();
+	return $CORE->config->item('index_page');
 }
 
 // ------------------------------------------------------------------------

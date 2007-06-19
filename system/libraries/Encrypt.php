@@ -33,7 +33,7 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/libraries/encryption.html
  */
-class CI_Encrypt {
+class Core_Encrypt {
 
 	var $encryption_key	= '';
 	var $_hash_type	= 'sha1';
@@ -47,7 +47,7 @@ class CI_Encrypt {
 	 * Simply determines whether the mcrypt library exists.
 	 *
 	 */
-	function CI_Encrypt()
+	function Core_Encrypt()
 	{
 		$this->_mcrypt_exists = ( ! function_exists('mcrypt_encrypt')) ? FALSE : TRUE;
 		log_message('debug', "Encrypt Class Initialized");
@@ -74,8 +74,8 @@ class CI_Encrypt {
 				return $this->encryption_key;
 			}
 		
-			$CI =& get_instance();
-			$key = $CI->config->item('encryption_key');
+			$CORE =& get_instance();
+			$key = $CORE->config->item('encryption_key');
 
 			if ($key === FALSE)
 			{

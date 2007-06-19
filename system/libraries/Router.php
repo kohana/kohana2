@@ -33,7 +33,7 @@
  * @category    Libraries
  * @link        http://kohanaphp.com/user_guide/general/routing.html
  */
-class CI_Router {
+class Core_Router {
 
 	var $config;
 	var $uri_string   = '';
@@ -53,7 +53,7 @@ class CI_Router {
 	 *
 	 * Runs the route mapping function.
 	 */
-	function CI_Router()
+	function Core_Router()
 	{
 		$this->config =& load_class('Config');
 		$this->_set_route_mapping();

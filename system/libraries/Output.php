@@ -33,15 +33,14 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/libraries/output.html
  */
-class CI_Output {
+class Core_Output {
 
 	var $final_output;
 	var $cache_expiration = 0;
 	var $headers          = array();
 	var $enable_profiler  = FALSE;
 
-
-	function CI_Output()
+	function Core_Output()
 	{
 		log_message('debug', "Output Class Initialized");
 	}
@@ -142,7 +141,7 @@ class CI_Output {
 	 */
 	function _display($output = '')
 	{
-		// Note:  We use globals because we can't use $CI =& get_instance()
+		// Note:  We use globals because we can't use $CORE =& get_instance()
 		// since this function is sometimes called by the caching mechanism,
 		// which happens before the CI super object is available.
 		global $BM, $CFG;
@@ -215,23 +214,23 @@ class CI_Output {
 		// --------------------------------------------------------------------
 
 		// Grab the super object.  We'll need it in a moment...
-		$CI =& get_instance();
+		$CORE =& get_instance();
 
 		// Do we need to generate profile data?
 		// If so, load the Profile class and run it.
 		if ($this->enable_profiler == TRUE)
 		{
-			$CI->load->library('profiler');
+			$CORE->load->library('profiler');
 
 			// If the output data contains html,
 			// we will insert the profile data right before </body>.
 			if (strpos($output, '</body>') !== FALSE)
 			{
-				$output = str_replace('</body>', $CI->profiler->run() .'</body>', $output);
+				$output = str_replace('</body>', $CORE->profiler->run() .'</body>', $output);
 			}
 			else
 			{
-				$output .= $CI->profiler->run();
+				$output .= $CORE->profiler->run();
 			}
 		}
 
@@ -239,9 +238,9 @@ class CI_Output {
 
 		// Does the controller contain a function named _output()?
 		// If so send the output there.  Otherwise, echo it.
-		if (method_exists($CI, '_output'))
+		if (method_exists($CORE, '_output'))
 		{
-			$CI->_output($output);
+			$CORE->_output($output);
 		}
 		else
 		{
@@ -262,8 +261,8 @@ class CI_Output {
 	 */
 	function _write_cache($output)
 	{
-		$CI =& get_instance();
-		$path = $CI->config->item('cache_path');
+		$CORE =& get_instance();
+		$path = $CORE->config->item('cache_path');
 
 		$cache_path = ($path == '') ? BASEPATH.'cache/' : $path;
 
@@ -272,9 +271,9 @@ class CI_Output {
 			return;
 		}
 
-		$uri =	$CI->config->item('base_url').
-				$CI->config->item('index_page').
-				$CI->uri->uri_string();
+		$uri =	$CORE->config->item('base_url').
+				$CORE->config->item('index_page').
+				$CORE->uri->uri_string();
 
 		$cache_path .= md5($uri);
 

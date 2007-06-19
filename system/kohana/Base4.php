@@ -23,7 +23,7 @@
 // ------------------------------------------------------------------------
 
 /**
- * CI_BASE - For PHP 4
+ * Core_Base - For PHP 4
  *
  * This file is used only when Kohana is being run under PHP 4.
  *
@@ -44,9 +44,9 @@
  * @category	front-controller
  * @author		Rick Ellis
  */
- class CI_Base extends CI_Loader {
+ class Core_Base extends CI_Loader {
 
-	function CI_Base()
+	function Core_Base()
 	{
 		// This allows syntax like $this->load->foo() to work
 		parent::CI_Loader();
@@ -60,11 +60,11 @@
 
 function &get_instance()
 {
-	global $CI, $OBJ;
+	global $CORE, $OBJ;
 	
-	if (is_object($CI))
+	if (is_object($CORE))
 	{
-		return $CI;
+		return $CORE;
 	}
 	
 	return $OBJ->load;

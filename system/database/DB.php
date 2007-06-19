@@ -86,8 +86,8 @@ function &DB($params = '')
 
 	require_once(BASEPATH.'database/DB_driver'.EXT);
 
-	$CI =& get_instance();
-	if ($CI->config->item('disable_ar')==FALSE)
+	$CORE =& get_instance();
+	if ($CORE->config->item('disable_ar')==FALSE)
 	{
 		require_once(BASEPATH.'database/DB_active_rec'.EXT);
 

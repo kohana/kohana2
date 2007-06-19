@@ -31,7 +31,8 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/libraries/exceptions.html
  */
-class CI_Exceptions {
+class Core_Exceptions {
+
 	var $action;
 	var $severity;
 	var $message;
@@ -58,13 +59,13 @@ class CI_Exceptions {
 	/**
 	 * Constructor
 	 *
-	 */	
-	function CI_Exceptions()
+	 */
+	function Core_Exceptions()
 	{
 		$this->ob_level = ob_get_level();
 		// Note:  Do not log messages from this constructor.
 	}
-  	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -80,9 +81,9 @@ class CI_Exceptions {
 	 * @return	string
 	 */
 	function log_exception($severity, $message, $filepath, $line)
-	{	
+	{
 		$severity = ( ! isset($this->levels[$severity])) ? $severity : $this->levels[$severity];
-		
+
 		log_message('error', 'Severity: '.$severity.'  --> '.$message. ' '.$filepath.' '.$line, TRUE);
 	}
 
@@ -96,7 +97,7 @@ class CI_Exceptions {
 	 * @return	string
 	 */
 	function show_404($page = '')
-	{	
+	{
 		$heading = "404 Page Not Found";
 		$message = "The page you requested was not found.";
 
@@ -104,7 +105,7 @@ class CI_Exceptions {
 		echo $this->show_error($heading, $message, 'error_404');
 		exit;
 	}
-  	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -126,7 +127,7 @@ class CI_Exceptions {
 
 		if (ob_get_level() > $this->ob_level + 1)
 		{
-			ob_end_flush();	
+			ob_end_flush();
 		}
 		ob_start();
 		include(APPPATH.'errors/'.$template.EXT);
@@ -148,21 +149,21 @@ class CI_Exceptions {
 	 * @return	string
 	 */
 	function show_php_error($severity, $message, $filepath, $line)
-	{	
+	{
 		$severity = ( ! isset($this->levels[$severity])) ? $severity : $this->levels[$severity];
-	
+
 		$filepath = str_replace("\\", "/", $filepath);
-		
+
 		// For safety reasons we do not show the full file path
 		if (strpos($filepath, '/') !== FALSE)
 		{
 			$x = explode('/', $filepath);
 			$filepath = $x[count($x)-2].'/'.end($x);
 		}
-		
+
 		if (ob_get_level() > $this->ob_level + 1)
 		{
-			ob_end_flush();	
+			ob_end_flush();
 		}
 		ob_start();
 		include(APPPATH.'errors/error_php'.EXT);

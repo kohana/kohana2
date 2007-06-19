@@ -31,9 +31,9 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/libraries/validation.html
  */
-class CI_Validation {
+class Core_Validation {
 
-	var $CI;
+	var $CORE;
 	var $error_string    = '';
 	var $_error_array    = array();
 	var $_rules          = array();
@@ -47,9 +47,9 @@ class CI_Validation {
 	/**
 	 * Constructor
 	 */
-	function CI_Validation()
+	function Core_Validation()
 	{
-		$this->CI =& get_instance();
+		$this->CORE =& get_instance();
 		log_message('debug', "Validation Class Initialized");
 	}
 
@@ -190,7 +190,7 @@ class CI_Validation {
 		}
 
 		// Load the language file containing error messages
-		$this->CI->lang->load('validation');
+		$this->CORE->lang->load('validation');
 
 		// Cycle through the rules and test for errors
 		foreach ($this->_rules as $field => $rules)
@@ -222,7 +222,7 @@ class CI_Validation {
 				{
 					if ( ! isset($this->_error_messages['isset']))
 					{
-						if (FALSE === ($line = $this->CI->lang->line('isset')))
+						if (FALSE === ($line = $this->CORE->lang->line('isset')))
 						{
 							$line = 'The field was not set';
 						}
@@ -272,12 +272,12 @@ class CI_Validation {
 				// Call the function that corresponds to the rule
 				if ($callback === TRUE)
 				{
-					if ( ! method_exists($this->CI, $rule))
+					if ( ! method_exists($this->CORE, $rule))
 					{
 						continue;
 					}
 
-					$result = $this->CI->$rule($_POST[$field], $param);
+					$result = $this->CORE->$rule($_POST[$field], $param);
 
 					// If the field isn't required and we just processed a callback we'll move on...
 					if ( ! in_array('required', $ex, TRUE) AND $result !== FALSE)
@@ -313,7 +313,7 @@ class CI_Validation {
 				{
 					if ( ! isset($this->_error_messages[$rule]))
 					{
-						if (($line = $this->CI->lang->line($rule)) === FALSE)
+						if (($line = $this->CORE->lang->line($rule)) === FALSE)
 						{
 							$line = 'Unable to access an error message corresponding to your field name.';
 						}
@@ -524,8 +524,8 @@ class CI_Validation {
 	 */
 	function valid_ip($ip)
 	{
-		$CI =& get_instance();
-		return $CI->input->valid_ip($ip);
+		$CORE =& get_instance();
+		return $CORE->input->valid_ip($ip);
 	}
 
 	// --------------------------------------------------------------------
@@ -766,7 +766,7 @@ class CI_Validation {
 	 */
 	function xss_clean($str)
 	{
-		$_POST[$this->_current_field] = $this->CI->input->xss_clean($str);
+		$_POST[$this->_current_field] = $this->CORE->input->xss_clean($str);
 	}
 
 	// --------------------------------------------------------------------

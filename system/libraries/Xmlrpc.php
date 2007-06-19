@@ -25,7 +25,6 @@ if ( ! function_exists('xml_parser_create'))
 	show_error('Your PHP installation does not support XML');
 }
 
-
 // ------------------------------------------------------------------------
 
 /**
@@ -37,45 +36,45 @@ if ( ! function_exists('xml_parser_create'))
  * @author		Paul Burdick
  * @link		http://kohanaphp.com/user_guide/libraries/xmlrpc.html
  */
-class CI_Xmlrpc {
+class Core_Xmlrpc {
 
-	var $debug			= FALSE; 	// Debugging on or off
-	var $xmlrpcI4		= 'i4';
-	var $xmlrpcInt		= 'int';
-	var $xmlrpcBoolean	= 'boolean';
-	var $xmlrpcDouble	= 'double';
-	var $xmlrpcString	= 'string';
-	var $xmlrpcDateTime	= 'dateTime.iso8601';
-	var $xmlrpcBase64	= 'base64';
-	var $xmlrpcArray	= 'array';
-	var $xmlrpcStruct	= 'struct';
+	var $debug          = FALSE; // Debugging on or off
+	var $xmlrpcI4       = 'i4';
+	var $xmlrpcInt      = 'int';
+	var $xmlrpcBoolean  = 'boolean';
+	var $xmlrpcDouble   = 'double';
+	var $xmlrpcString   = 'string';
+	var $xmlrpcDateTime = 'dateTime.iso8601';
+	var $xmlrpcBase64   = 'base64';
+	var $xmlrpcArray    = 'array';
+	var $xmlrpcStruct   = 'struct';
 
-	var $xmlrpcTypes	= array();
-	var $valid_parents	= array();
-	var $xmlrpcerr		= array();	// Response numbers
-	var $xmlrpcstr		= array();  // Response strings
+	var $xmlrpcTypes    = array();
+	var $valid_parents  = array();
+	var $xmlrpcerr      = array();  // Response numbers
+	var $xmlrpcstr      = array();  // Response strings
 
 	var $xmlrpc_defencoding = 'UTF-8';
-	var $xmlrpcName			= 'XML-RPC for Kohana';
-	var $xmlrpcVersion		= '1.1';
-	var $xmlrpcerruser		= 800; // Start of user errors
-	var $xmlrpcerrxml		= 100; // Start of XML Parse errors
-	var $xmlrpc_backslash	= ''; // formulate backslashes for escaping regexp
+	var $xmlrpcName         = 'XML-RPC for Kohana';
+	var $xmlrpcVersion      = '1.1';
+	var $xmlrpcerruser      = 800;  // Start of user errors
+	var $xmlrpcerrxml       = 100;  // Start of XML Parse errors
+	var $xmlrpc_backslash   = '';   // Formulate backslashes for escaping regexp
 
 	var $client;
 	var $method;
 	var $data;
-	var $message			= '';
-	var $error				= '';  		// Error string for request
+	var $message            = '';
+	var $error              = '';       // Error string for request
 	var $result;
-	var $response			= array();  // Response from remote server
+	var $response           = array();  // Response from remote server
 
 
 	//-------------------------------------
 	//  VALUES THAT MULTIPLE CLASSES NEED
 	//-------------------------------------
 
-	function CI_Xmlrpc ($config = array())
+	function Core_Xmlrpc ($config = array())
 	{
 
 		$this->xmlrpcName 		= $this->xmlrpcName;
@@ -348,7 +347,7 @@ class CI_Xmlrpc {
  * @author		Paul Burdick
  * @link		http://kohanaphp.com/user_guide/libraries/xmlrpc.html
  */
-class XML_RPC_Client extends CI_Xmlrpc
+class XML_RPC_Client extends Core_Xmlrpc
 {
 	var $path			= '';
 	var $server			= '';
@@ -360,7 +359,7 @@ class XML_RPC_Client extends CI_Xmlrpc
 
 	function XML_RPC_Client($path, $server, $port=80)
 	{
-		parent::CI_Xmlrpc();
+		parent::Core_Xmlrpc();
 
 		$this->port = $port;
 		$this->server = $server;
@@ -500,7 +499,7 @@ class XML_RPC_Response
 
 	function decode($array=FALSE)
 	{
-		$CI =& get_instance();
+		$CORE =& get_instance();
 
 		if ($array !== FALSE && is_array($array))
 		{
@@ -512,7 +511,7 @@ class XML_RPC_Response
 				}
 				else
 				{
-					$array[$key] = $CI->input->xss_clean($array[$key]);
+					$array[$key] = $CORE->input->xss_clean($array[$key]);
 				}
 			}
 
@@ -528,7 +527,7 @@ class XML_RPC_Response
 			}
 			else
 			{
-				$result = $CI->input->xss_clean($result);
+				$result = $CORE->input->xss_clean($result);
 			}
 		}
 
@@ -606,7 +605,7 @@ class XML_RPC_Response
  * @author		Paul Burdick
  * @link		http://kohanaphp.com/user_guide/libraries/xmlrpc.html
  */
-class XML_RPC_Message extends CI_Xmlrpc
+class XML_RPC_Message extends Core_Xmlrpc
 {
 	var $payload;
 	var $method_name;
@@ -615,7 +614,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 
 	function XML_RPC_Message($method, $pars=0)
 	{
-		parent::CI_Xmlrpc();
+		parent::Core_Xmlrpc();
 
 		$this->method_name = $method;
 		if (is_array($pars) && sizeof($pars) > 0)
@@ -1114,7 +1113,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 
 	function output_parameters($array=FALSE)
 	{
-		$CI =& get_instance();
+		$CORE =& get_instance();
 
 		if ($array !== FALSE && is_array($array))
 		{
@@ -1126,7 +1125,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 				}
 				else
 				{
-					$array[$key] = $CI->input->xss_clean($array[$key]);
+					$array[$key] = $CORE->input->xss_clean($array[$key]);
 				}
 			}
 
@@ -1146,7 +1145,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 				}
 				else
 				{
-					$parameters[] = $CI->input->xss_clean($a_param);
+					$parameters[] = $CORE->input->xss_clean($a_param);
 				}
 			}
 		}
@@ -1203,14 +1202,14 @@ class XML_RPC_Message extends CI_Xmlrpc
  * @author		Paul Burdick
  * @link		http://kohanaphp.com/user_guide/libraries/xmlrpc.html
  */
-class XML_RPC_Values extends CI_Xmlrpc
+class XML_RPC_Values extends Core_Xmlrpc
 {
 	var $me 	= array();
 	var $mytype	= 0;
 
 	function XML_RPC_Values($val=-1, $type='')
 	{
-		parent::CI_Xmlrpc();
+		parent::Core_Xmlrpc();
 
 		if ($val != -1 || $type != '')
 		{

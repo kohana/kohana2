@@ -31,7 +31,7 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/libraries/config.html
  */
-class Model {
+class Core_Model {
 
 	var $_parent_name = '';
 
@@ -40,7 +40,7 @@ class Model {
 	 *
 	 * @access public
 	 */
-	function Model()
+	function Core_Model()
 	{
 		// If the magic __get() or __set() methods are used in a Model references can't be used.
 		$this->_assign_libraries( (method_exists($this, '__get') OR method_exists($this, '__set')) ? FALSE : TRUE );
@@ -63,8 +63,8 @@ class Model {
 	 */	
 	function _assign_libraries($use_reference = TRUE)
 	{
-		$CI =& get_instance();				
-		foreach (array_keys(get_object_vars($CI)) as $key)
+		$CORE =& get_instance();				
+		foreach (array_keys(get_object_vars($CORE)) as $key)
 		{
 			if ( ! isset($this->$key) AND $key != $this->_parent_name)
 			{			
@@ -74,11 +74,11 @@ class Model {
 				{
 					// Needed to prevent reference errors with some configurations
 					$this->$key = '';
-					$this->$key =& $CI->$key;
+					$this->$key =& $CORE->$key;
 				}
 				else
 				{
-					$this->$key = $CI->$key;
+					$this->$key = $CORE->$key;
 				}
 			}
 		}		

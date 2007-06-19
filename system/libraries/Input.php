@@ -33,7 +33,8 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/libraries/input.html
  */
-class CI_Input {
+class Core_Input {
+
 	var $use_xss_clean		= FALSE;
 	var $ip_address			= FALSE;
 	var $user_agent			= FALSE;
@@ -47,7 +48,7 @@ class CI_Input {
 	 *
 	 * @access	public
 	 */
-	function CI_Input()
+	function Core_Input()
 	{
 		log_message('debug', "Input Class Initialized");
 

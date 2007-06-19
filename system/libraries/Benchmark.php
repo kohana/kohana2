@@ -34,7 +34,7 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/libraries/benchmark.html
  */
-class CI_Benchmark {
+class Core_Benchmark {
 
 	var $marker = array();
 
@@ -54,7 +54,7 @@ class CI_Benchmark {
 	{
 		$this->marker[$name] = microtime();
 	}
-  	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -77,23 +77,23 @@ class CI_Benchmark {
 		{
 			return '{elapsed_time}';
 		}
-		
+
 		if ( ! isset($this->marker[$point1]))
 		{
 			return '';
 		}
-		
+
 		if ( ! isset($this->marker[$point2]))
 		{
 			$this->marker[$point2] = microtime();
 		}
-			
+
 		list($sm, $ss) = explode(' ', $this->marker[$point1]);
 		list($em, $es) = explode(' ', $this->marker[$point2]);
 
 		return number_format(($em + $es) - ($sm + $ss), $decimals);
 	}
- 	
+
 	// --------------------------------------------------------------------
 
 	/**

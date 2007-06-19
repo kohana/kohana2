@@ -25,7 +25,7 @@ if ( ! function_exists('xml_parser_create'))
 	show_error('Your PHP installation does not support XML');
 }
 
-if ( ! class_exists('CI_Xmlrpc'))
+if ( ! class_exists('Core_Xmlrpc'))
 {
 	show_error('You must load the Xmlrpc class before loading the Xmlrpcs class in order to create a server.');
 }
@@ -41,10 +41,11 @@ if ( ! class_exists('CI_Xmlrpc'))
  * @author		Paul Burdick
  * @link		http://kohanaphp.com/user_guide/libraries/xmlrpc.html
  */
-class CI_Xmlrpcs extends CI_Xmlrpc
+class Core_Xmlrpcs extends Core_Xmlrpc
 {
-	var $methods		= array(); 	//array of methods mapped to function names and signatures
-	var $debug_msg		= '';		// Debug Message
+
+	var $methods        = array(); // Array of methods mapped to function names and signatures
+	var $debug_msg      = '';      // Debug Message
 	var $system_methods = array(); // XML RPC Server methods
 	var $controller_obj;
 
@@ -52,9 +53,9 @@ class CI_Xmlrpcs extends CI_Xmlrpc
 	//  Constructor, more or less
 	//-------------------------------------
 
-	function CI_Xmlrpcs($config=array())
+	function Core_Xmlrpcs($config = array())
 	{
-		parent::CI_Xmlrpc();
+		parent::Core_Xmlrpc();
 		$this->set_system_methods();
 
 		if (isset($config['functions']) && is_array($config['functions']))
@@ -69,7 +70,7 @@ class CI_Xmlrpcs extends CI_Xmlrpc
 	//  Initialize Prefs and Serve
 	//-------------------------------------
 
-	function initialize($config=array())
+	function initialize($config = array())
 	{
 		if (isset($config['functions']) && is_array($config['functions']))
 		{
@@ -324,8 +325,8 @@ class CI_Xmlrpcs extends CI_Xmlrpc
 			}
 			else
 			{
-				$CI =& get_instance();
-				return $CI->$method_parts['1']($m);
+				$CORE =& get_instance();
+				return $CORE->$method_parts['1']($m);
 				//$class = new $method_parts['0'];
 				//return $class->$method_parts['1']($m);
 				//return call_user_func(array(&$method_parts['0'],$method_parts['1']), $m);

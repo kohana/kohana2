@@ -43,8 +43,8 @@ class CI_DB_utility {
 	function CI_DB_utility()
 	{
 		// Assign the main database object to $this->db
-		$CI =& get_instance();
-		$this->db =& $CI->db;
+		$CORE =& get_instance();
+		$this->db =& $CORE->db;
 		
 		log_message('debug', "Database Utility Class Initialized");
 	}
@@ -305,8 +305,8 @@ class CI_DB_utility {
 		extract($params);
 			
 		// Load the xml helper
-		$CI =& get_instance();
-		$CI->load->helper('xml');
+		$CORE =& get_instance();
+		$CORE->load->helper('xml');
 
 		// Generate the result
 		$xml = "<{$root}>".$newline;
@@ -441,10 +441,10 @@ class CI_DB_utility {
 
 			// Load the Zip class and output it
 			
-			$CI =& get_instance();
-			$CI->load->library('zip');
-			$CI->zip->add_data($prefs['filename'], $this->_backup($prefs));							
-			return $CI->zip->get_zip();
+			$CORE =& get_instance();
+			$CORE->load->library('zip');
+			$CORE->zip->add_data($prefs['filename'], $this->_backup($prefs));							
+			return $CORE->zip->get_zip();
 		}
 		
 	}

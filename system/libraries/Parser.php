@@ -31,12 +31,12 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/libraries/parser.html
  */
-class CI_Parser {
+class Core_Parser {
 
 	var $l_delim = '{';
 	var $r_delim = '}';
 	var $object;
-		
+
 	/**
 	 *  Parse a template
 	 *
@@ -51,14 +51,14 @@ class CI_Parser {
 	 */
 	function parse($template, $data, $return = FALSE)
 	{
-		$CI =& get_instance();
-		$template = $CI->load->view($template, $data, TRUE);
-		
+		$CORE =& get_instance();
+		$template = $CORE->load->view($template, $data, TRUE);
+
 		if ($template == '')
 		{
 			return FALSE;
 		}
-		
+
 		foreach ($data as $key => $val)
 		{
 			if (is_string($val))
@@ -67,20 +67,20 @@ class CI_Parser {
 			}
 			elseif (is_array($val))
 			{
-				$template = $this->_parse_pair($key, $val, $template);		
+				$template = $this->_parse_pair($key, $val, $template);
 			}
 		}
-		
+
 		if ($return == FALSE)
 		{
-			$CI->output->final_output = $template;
+			$CORE->output->final_output = $template;
 		}
-		
+
 		return $template;
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 *  Set the left/right variable delimiters
 	 *
@@ -94,9 +94,9 @@ class CI_Parser {
 		$this->l_delim = $l;
 		$this->r_delim = $r;
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 *  Parse a single key/value
 	 *
@@ -110,9 +110,9 @@ class CI_Parser {
 	{
 		return str_replace($this->l_delim.$key.$this->r_delim, $val, $string);
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 *  Parse a tag pair
 	 *
@@ -125,7 +125,7 @@ class CI_Parser {
 	 * @return	string
 	 */
 	function _parse_pair($variable, $data, $string)
-	{	
+	{
 		if (FALSE === ($match = $this->_match_pair($string, $variable)))
 		{
 			return $string;
@@ -146,15 +146,15 @@ class CI_Parser {
 					$temp = $this->_parse_pair($key, $val, $temp);
 				}
 			}
-			
+
 			$str .= $temp;
 		}
-		
+
 		return str_replace($match['0'], $str, $string);
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 *  Matches a variable pair
 	 *
@@ -169,7 +169,7 @@ class CI_Parser {
 		{
 			return FALSE;
 		}
-		
+
 		return $match;
 	}
 

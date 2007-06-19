@@ -47,9 +47,9 @@
  */
 function form_open($action = '', $attributes = array(), $hidden = array())
 {
-	$CI =& get_instance();
+	$CORE =& get_instance();
 
-	$form = '<form action="'.$CI->config->site_url($action).'"';
+	$form = '<form action="'.$CORE->config->site_url($action).'"';
 
 	if ( ! isset($attributes['method']))
 	{

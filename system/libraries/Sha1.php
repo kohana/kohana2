@@ -49,9 +49,9 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/general/encryption.html
  */
-class CI_SHA {
+class Core_SHA {
 
-	function CI_SHA()
+	function Core_SHA()
 	{
 		log_message('debug', "SHA1 Class Initialized");
 	}
@@ -252,5 +252,5 @@ class CI_SHA {
 		return bindec($bin);
 	}
 }
-// END CI_SHA
+// END SHA1 Class
 ?>

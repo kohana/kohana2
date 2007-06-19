@@ -44,8 +44,8 @@
  */
 function xss_clean($str, $charset = 'ISO-8859-1')
 {
-	$CI =& get_instance();
-	return $CI->input->xss_clean($str, $charset);
+	$CORE =& get_instance();
+	return $CORE->input->xss_clean($str, $charset);
 }
 
 // --------------------------------------------------------------------

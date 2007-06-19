@@ -33,7 +33,7 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/libraries/email.html
  */
-class CI_Email {
+class Core_Email {
 
 	var $useragent      = 'Kohana';
 	var $mailpath       = '/usr/sbin/sendmail'; // Sendmail path
@@ -85,7 +85,7 @@ class CI_Email {
 	 *
 	 * The constructor can be passed an array of config values
 	 */
-	function CI_Email($config = array())
+	function Core_Email($config = array())
 	{
 		if (count($config) > 0)
 		{
@@ -1538,10 +1538,10 @@ class CI_Email {
 	 */
 	function _set_error_message($msg, $val = '')
 	{
-		$CI =& get_instance();
-		$CI->lang->load('email');
+		$CORE =& get_instance();
+		$CORE->lang->load('email');
 
-		if (($line = $CI->lang->line($msg)) === FALSE)
+		if (($line = $CORE->lang->line($msg)) === FALSE)
 		{
 			$this->_debug_msg[] = str_replace('%s', $val, $msg).'<br />';
 		}

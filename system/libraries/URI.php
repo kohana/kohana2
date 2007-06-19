@@ -33,7 +33,7 @@
  * @author     Rick Ellis, Kohana Team
  * @link       http://kohanaphp.com/user_guide/libraries/uri.html
  */
-class CI_URI {
+class Core_URI {
 
 	var $router;
 	var $keyval = array();
@@ -47,7 +47,7 @@ class CI_URI {
 	 *
 	 * @access	public
 	 */
-	function CI_URI()
+	function Core_URI()
 	{
 		$this->router =& load_class('Router');
 		log_message('debug', "URI Class Initialized");

@@ -33,7 +33,7 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/libraries/config.html
  */
-class CI_Config {
+class Core_Config {
 
 	var $config = array();
 	var $is_loaded = array();
@@ -49,7 +49,7 @@ class CI_Config {
 	 * @param   boolean  true if errors should just return false, false if an error message should be displayed
 	 * @return  boolean  if the file was successfully loaded or not
 	 */
-	function CI_Config()
+	function Core_Config()
 	{
 		$this->config =& get_config();
 		log_message('debug', 'Config Class Initialized');

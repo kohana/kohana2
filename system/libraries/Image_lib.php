@@ -31,7 +31,7 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/libraries/image_lib.html
  */
-class CI_Image_lib {
+class Core_Image_lib {
 
 	var $image_library		= 'gd2';  	// Can be:  imagemagick, netpbm, gd, gd2
 	var $library_path		= '';
@@ -90,7 +90,7 @@ class CI_Image_lib {
 	 * @param	string
 	 * @return	void
 	 */
-	function CI_Image_lib($props = array())
+	function Core_Image_lib($props = array())
 	{
 		if (count($props) > 0)
 		{
@@ -1488,22 +1488,22 @@ class CI_Image_lib {
 	 */
 	function set_error($msg)
 	{
-		$CI =& get_instance();
-		$CI->lang->load('imglib');
+		$CORE =& get_instance();
+		$CORE->lang->load('imglib');
 
 		if (is_array($msg))
 		{
 			foreach ($msg as $val)
 			{
 
-				$msg = ($CI->lang->line($val) == FALSE) ? $val : $CI->lang->line($val);
+				$msg = ($CORE->lang->line($val) == FALSE) ? $val : $CORE->lang->line($val);
 				$this->error_msg[] = $msg;
 				log_message('error', $msg);
 			}
 		}
 		else
 		{
-			$msg = ($CI->lang->line($msg) == FALSE) ? $msg : $CI->lang->line($msg);
+			$msg = ($CORE->lang->line($msg) == FALSE) ? $msg : $CORE->lang->line($msg);
 			$this->error_msg[] = $msg;
 			log_message('error', $msg);
 		}

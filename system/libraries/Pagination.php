@@ -31,7 +31,7 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/libraries/pagination.html
  */
-class CI_Pagination {
+class Core_Pagination {
 
 	var $base_url			= ''; // The page we are linking to
 	var $total_rows  		= ''; // Total number of items (database results)
@@ -64,18 +64,18 @@ class CI_Pagination {
 	 * @access	public
 	 * @param	array	initialization parameters
 	 */
-	function CI_Pagination($params = array())
+	function Core_Pagination($params = array())
 	{
 		if (count($params) > 0)
 		{
-			$this->initialize($params);		
+			$this->initialize($params);
 		}
-		
+
 		log_message('debug', "Pagination Class Initialized");
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Initialize Preferences
 	 *
@@ -93,18 +93,18 @@ class CI_Pagination {
 				{
 					$this->$key = $val;
 				}
-			}		
+			}
 		}
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Generate the pagination links
 	 *
 	 * @access	public
 	 * @return	string
-	 */	
+	 */
 	function create_links()
 	{
 		// If our item count or per-page total is zero there is no need to continue.
@@ -122,28 +122,28 @@ class CI_Pagination {
 			return '';
 		}
 
-		// Determine the current page number.		
-		$CI =& get_instance();	
-		if ($CI->uri->segment($this->uri_segment) != 0)
+		// Determine the current page number.
+		$CORE =& get_instance();
+		if ($CORE->uri->segment($this->uri_segment) != 0)
 		{
-			$this->cur_page = $CI->uri->segment($this->uri_segment);
-			
+			$this->cur_page = $CORE->uri->segment($this->uri_segment);
+
 			// Prep the current page - no funny business!
 			$this->cur_page = (int) $this->cur_page;
 		}
-				
+
 		if ( ! is_numeric($this->cur_page))
 		{
 			$this->cur_page = 0;
 		}
-		
+
 		// Is the page number beyond the result range?
 		// If so we show the last page
 		if ($this->cur_page > $this->total_rows)
 		{
 			$this->cur_page = ($num_pages - 1) * $this->per_page;
 		}
-		
+
 		$uri_page_number = $this->cur_page;
 		$this->cur_page = floor(($this->cur_page/$this->per_page) + 1);
 
@@ -176,7 +176,7 @@ class CI_Pagination {
 		for ($loop = $start -1; $loop <= $end; $loop++)
 		{
 			$i = ($loop * $this->per_page) - $this->per_page;
-					
+
 			if ($i >= 0)
 			{
 				if ($this->cur_page == $loop)
@@ -210,8 +210,8 @@ class CI_Pagination {
 
 		// Add the wrapper HTML if exists
 		$output = $this->full_tag_open.$output.$this->full_tag_close;
-		
-		return $output;		
+
+		return $output;
 	}
 }
 // END Pagination Class

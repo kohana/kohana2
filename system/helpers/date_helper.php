@@ -44,9 +44,9 @@
  */	
 function now()
 {
-	$CI =& get_instance();
+	$CORE =& get_instance();
 	
-	if (strtolower($CI->config->item('time_reference')) == 'gmt')
+	if (strtolower($CORE->config->item('time_reference')) == 'gmt')
 	{
 		$now = time();
 		$system_time = mktime(gmdate("H", $now), gmdate("i", $now), gmdate("s", $now), gmdate("m", $now), gmdate("d", $now), gmdate("Y", $now));
@@ -146,8 +146,8 @@ function standard_date($fmt = 'DATE_RFC822', $time = '')
  */	
 function timespan($seconds = 1, $time = '')
 {
-	$CI =& get_instance();
-	$CI->lang->load('date');
+	$CORE =& get_instance();
+	$CORE->lang->load('date');
 
 	if ( ! is_numeric($seconds))
 	{
@@ -173,7 +173,7 @@ function timespan($seconds = 1, $time = '')
 	
 	if ($years > 0)
 	{	
-		$str .= $years.' '.$CI->lang->line((($years	> 1) ? 'date_years' : 'date_year')).', ';
+		$str .= $years.' '.$CORE->lang->line((($years	> 1) ? 'date_years' : 'date_year')).', ';
 	}	
 	
 	$seconds -= $years * 31536000;
@@ -183,7 +183,7 @@ function timespan($seconds = 1, $time = '')
 	{
 		if ($months > 0)
 		{	
-			$str .= $months.' '.$CI->lang->line((($months	> 1) ? 'date_months' : 'date_month')).', ';
+			$str .= $months.' '.$CORE->lang->line((($months	> 1) ? 'date_months' : 'date_month')).', ';
 		}	
 	
 		$seconds -= $months * 2628000;
@@ -195,7 +195,7 @@ function timespan($seconds = 1, $time = '')
 	{
 		if ($weeks > 0)
 		{	
-			$str .= $weeks.' '.$CI->lang->line((($weeks	> 1) ? 'date_weeks' : 'date_week')).', ';
+			$str .= $weeks.' '.$CORE->lang->line((($weeks	> 1) ? 'date_weeks' : 'date_week')).', ';
 		}
 		
 		$seconds -= $weeks * 604800;
@@ -207,7 +207,7 @@ function timespan($seconds = 1, $time = '')
 	{
 		if ($days > 0)
 		{	
-			$str .= $days.' '.$CI->lang->line((($days	> 1) ? 'date_days' : 'date_day')).', ';
+			$str .= $days.' '.$CORE->lang->line((($days	> 1) ? 'date_days' : 'date_day')).', ';
 		}
 	
 		$seconds -= $days * 86400;
@@ -219,7 +219,7 @@ function timespan($seconds = 1, $time = '')
 	{
 		if ($hours > 0)
 		{
-			$str .= $hours.' '.$CI->lang->line((($hours	> 1) ? 'date_hours' : 'date_hour')).', ';
+			$str .= $hours.' '.$CORE->lang->line((($hours	> 1) ? 'date_hours' : 'date_hour')).', ';
 		}
 		
 		$seconds -= $hours * 3600;
@@ -231,7 +231,7 @@ function timespan($seconds = 1, $time = '')
 	{
 		if ($minutes > 0)
 		{	
-			$str .= $minutes.' '.$CI->lang->line((($minutes	> 1) ? 'date_minutes' : 'date_minute')).', ';
+			$str .= $minutes.' '.$CORE->lang->line((($minutes	> 1) ? 'date_minutes' : 'date_minute')).', ';
 		}
 		
 		$seconds -= $minutes * 60;
@@ -239,7 +239,7 @@ function timespan($seconds = 1, $time = '')
 	
 	if ($str == '')
 	{
-		$str .= $seconds.' '.$CI->lang->line((($seconds	> 1) ? 'date_seconds' : 'date_second')).', ';
+		$str .= $seconds.' '.$CORE->lang->line((($seconds	> 1) ? 'date_seconds' : 'date_second')).', ';
 	}
 			
 	return substr(trim($str), 0, -1);
@@ -431,8 +431,8 @@ function human_to_unix($datestr = '')
  */	
 function timezone_menu($default = 'UTC', $class = "", $name = 'timezones')
 {
-	$CI =& get_instance();
-	$CI->lang->load('date');
+	$CORE =& get_instance();
+	$CORE->lang->load('date');
 	
 	if ($default == 'GMT')
 		$default = 'UTC';
@@ -449,7 +449,7 @@ function timezone_menu($default = 'UTC', $class = "", $name = 'timezones')
 	foreach (timezones() as $key => $val)
 	{
 		$selected = ($default == $key) ? " selected='selected'" : '';
-		$menu .= "<option value='{$key}'{$selected}>".$CI->lang->line($key)."</option>\n";
+		$menu .= "<option value='{$key}'{$selected}>".$CORE->lang->line($key)."</option>\n";
 	}
 
 	$menu .= "</select>";

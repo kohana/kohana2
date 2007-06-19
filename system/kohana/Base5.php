@@ -23,7 +23,7 @@
 // ------------------------------------------------------------------------
 
 /**
- * CI_BASE - For PHP 5
+ * Core_Base - For PHP 5
  *
  * This file contains some code used only when Kohana is being
  * run under PHP 5.  It allows us to manage the CI super object more
@@ -34,12 +34,11 @@
  * @category	front-controller
  * @author		Rick Ellis
  */
-
-class CI_Base {
+class Core_Base {
 
 	private static $instance;
 
-	public function CI_Base()
+	public function Core_Base()
 	{
 		self::$instance =& $this;
 	}
@@ -52,8 +51,7 @@ class CI_Base {
 
 function &get_instance()
 {
-	return CI_Base::get_instance();
+	return Core_Base::get_instance();
 }
-
 
 ?>

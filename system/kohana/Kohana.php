@@ -186,14 +186,14 @@ $EXT->_call_hook('pre_controller');
 $BM->mark('controller_execution_time_( '.$class.' / '.$method.' )_start');
 
 // Instantiate the Controller
-$CI = new $class();
+$CORE = new $class();
 
 // Is this a scaffolding request?
 if ($RTR->scaffolding_request === TRUE)
 {
 	if ($EXT->_call_hook('scaffolding_override') === FALSE)
 	{
-		$CI->_ci_scaffolding();
+		$CORE->_ci_scaffolding();
 	}
 }
 else
@@ -206,21 +206,21 @@ else
 	$EXT->_call_hook('post_controller_constructor');
 
 	// Is there a "remap" function?
-	if (method_exists($CI, '_remap'))
+	if (method_exists($CORE, '_remap'))
 	{
-		$CI->_remap($method, array_slice($RTR->rsegments, (($RTR->fetch_directory() == '') ? 1 : 2)));
+		$CORE->_remap($method, array_slice($RTR->rsegments, (($RTR->fetch_directory() == '') ? 1 : 2)));
 	}
 	else
 	{
 		// Any URI segments present (besides the class/function) will be passed to the method for convenience
 		$args = array_slice($RTR->rsegments, (($RTR->fetch_directory() == '') ? 2 : 3));
 		
-		if ( ! method_exists($CI, $method))
+		if ( ! method_exists($CORE, $method))
 		{
 			// Attempt to call the "default" method instead of showing a 404
-			if (method_exists($CI, '_default'))
+			if (method_exists($CORE, '_default'))
 			{
-				$CI->_default($method, $args);
+				$CORE->_default($method, $args);
 			}
 			else
 			{
@@ -230,7 +230,7 @@ else
 		else
 		{
 			// Call the requested method
-			call_user_func_array(array(&$CI, $method), $args);
+			call_user_func_array(array(&$CORE, $method), $args);
 		}
 	}
 }
@@ -268,9 +268,9 @@ $EXT->_call_hook('post_system');
  *  Close the DB connection if one exists
  * ------------------------------------------------------
  */
-if (class_exists('CI_DB') AND isset($CI->db))
+if (class_exists('CI_DB') AND isset($CORE->db))
 {
-	$CI->db->close();
+	$CORE->db->close();
 }
 
 

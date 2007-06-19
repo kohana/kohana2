@@ -37,14 +37,14 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/general/profiling.html
  */
-class CI_Profiler {
+class Core_Profiler {
 
-	var $CI;
+	var $CORE;
 
- 	function CI_Profiler()
+ 	function Core_Profiler()
  	{
- 		$this->CI =& get_instance();
- 		$this->CI->load->language('profiler');
+ 		$this->CORE =& get_instance();
+ 		$this->CORE->load->language('profiler');
  	}
 
 	// --------------------------------------------------------------------
@@ -63,15 +63,15 @@ class CI_Profiler {
  	function _compile_benchmarks()
  	{
   		$profile = array();
- 		foreach ($this->CI->benchmark->marker as $key => $val)
+ 		foreach ($this->CORE->benchmark->marker as $key => $val)
  		{
  			// We match the "end" marker so that the list ends
  			// up in the order that it was defined
  			if (preg_match('/(.+?)_end$/iD', $key, $match))
  			{
- 				if (isset($this->CI->benchmark->marker[$match[1].'_end']) AND isset($this->CI->benchmark->marker[$match[1].'_start']))
+ 				if (isset($this->CORE->benchmark->marker[$match[1].'_end']) AND isset($this->CORE->benchmark->marker[$match[1].'_start']))
  				{
- 					$profile[$match[1]] = $this->CI->benchmark->elapsed_time($match[1].'_start', $key);
+ 					$profile[$match[1]] = $this->CORE->benchmark->elapsed_time($match[1].'_start', $key);
  				}
  			}
  		}
@@ -83,7 +83,7 @@ class CI_Profiler {
 		$output  = "\n\n";
 		$output .= '<fieldset style="border:1px solid #990000;padding:6px 10px 10px 10px;margin:0 0 20px 0;background-color:#eee">';
 		$output .= "\n";
-		$output .= '<legend style="color:#990000;">&nbsp;&nbsp;'.$this->CI->lang->line('profiler_benchmarks').'&nbsp;&nbsp;</legend>';
+		$output .= '<legend style="color:#990000;">&nbsp;&nbsp;'.$this->CORE->lang->line('profiler_benchmarks').'&nbsp;&nbsp;</legend>';
 		$output .= "\n";
 		$output .= "\n\n<table cellpadding='4' cellspacing='1' border='0' width='100%'>\n";
 
@@ -109,33 +109,33 @@ class CI_Profiler {
 	 */
 	function _compile_queries()
 	{
-		$query_count = ( ! isset($this->CI->db)) ? '0' : $this->CI->db->query_count;
+		$query_count = ( ! isset($this->CORE->db)) ? '0' : $this->CORE->db->query_count;
 		
 		$output  = "\n\n";
 		$output .= '<fieldset style="border:1px solid #0000FF;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">';
 		$output .= "\n";
-		$output .= '<legend style="color:#0000FF;">&nbsp;&nbsp;'.$this->CI->lang->line('profiler_queries').' ('.$query_count.')&nbsp;&nbsp;</legend>';
+		$output .= '<legend style="color:#0000FF;">&nbsp;&nbsp;'.$this->CORE->lang->line('profiler_queries').' ('.$query_count.')&nbsp;&nbsp;</legend>';
 		$output .= "\n";
 
 		if ( ! class_exists('CI_DB_driver'))
 		{
-			$output .= "<div style='color:#0000FF;font-weight:normal;padding:4px 0 0 0;'>".$this->CI->lang->line('profiler_no_db')."</div>";
+			$output .= "<div style='color:#0000FF;font-weight:normal;padding:4px 0 0 0;'>".$this->CORE->lang->line('profiler_no_db')."</div>";
 		}
 		else
 		{
-			if ($this->CI->db->query_count < 1)
+			if ($this->CORE->db->query_count < 1)
 			{
-				$output .= "<div style='color:#0000FF;font-weight:normal;padding:4px 0 4px 0;'>".$this->CI->lang->line('profiler_no_queries')."</div>";
+				$output .= "<div style='color:#0000FF;font-weight:normal;padding:4px 0 4px 0;'>".$this->CORE->lang->line('profiler_no_queries')."</div>";
 			}
 			else
 			{
 				$output .= "\n\n<table cellpadding='4' cellspacing='1' border='0' width='100%'>\n";
 
-				for ($i = 0; $i < $this->CI->db->query_count; $i++)
+				for ($i = 0; $i < $this->CORE->db->query_count; $i++)
 				{
 					$output .= '<tr>';
-					$output .= "<td width='85%' style='color:#000;background-color:#ddd;'>".htmlspecialchars($this->CI->db->queries[$i])."</td>";
-					$output .= "<td width='15%' style='color:#0000FF;font-weight:normal;background-color:#ddd;'>".number_format($this->CI->db->query_times[$i], 4)."</td>";
+					$output .= "<td width='85%' style='color:#000;background-color:#ddd;'>".htmlspecialchars($this->CORE->db->queries[$i])."</td>";
+					$output .= "<td width='15%' style='color:#0000FF;font-weight:normal;background-color:#ddd;'>".number_format($this->CORE->db->query_times[$i], 4)."</td>";
 					$output .= "</tr>\n";
 				}
 
@@ -161,12 +161,12 @@ class CI_Profiler {
 		$output  = "\n\n";
 		$output .= '<fieldset style="border:1px solid #009900;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">';
 		$output .= "\n";
-		$output .= '<legend style="color:#009900;">&nbsp;&nbsp;'.$this->CI->lang->line('profiler_post_data').'&nbsp;&nbsp;</legend>';
+		$output .= '<legend style="color:#009900;">&nbsp;&nbsp;'.$this->CORE->lang->line('profiler_post_data').'&nbsp;&nbsp;</legend>';
 		$output .= "\n";
 
 		if (count($_POST) == 0)
 		{
-			$output .= "<div style='color:#009900;font-weight:normal;padding:4px 0 4px 0'>".$this->CI->lang->line('profiler_no_post')."</div>";
+			$output .= "<div style='color:#009900;font-weight:normal;padding:4px 0 4px 0'>".$this->CORE->lang->line('profiler_no_post')."</div>";
 		}
 		else
 		{

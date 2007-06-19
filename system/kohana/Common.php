@@ -92,7 +92,7 @@ function &load_class($class, $instantiate = TRUE)
 		return $objects[$class];
 	}
 
-	$name = ($class != 'Controller') ? 'CI_'.$class : $class;
+	$name = 'Core_'.$class;
 
 	$objects[$class] =& new $name();
 	return $objects[$class];
