@@ -41,7 +41,7 @@
 | NO TRAILING SLASH!
 |
 */
-	$application_folder = "application";
+	$application_folder = 'application';
 
 /*
 |===============================================================
@@ -60,7 +60,8 @@
 */
 if (function_exists('realpath') AND @realpath(dirname(__FILE__)) !== FALSE)
 {
-	$system_folder = str_replace("\\", "/", realpath(dirname(__FILE__))).'/'.$system_folder;
+	$system_folder      = str_replace('\\', '/', realpath(dirname(__FILE__))).'/'.$system_folder;
+	$application_folder = str_replace('\\', '/', realpath(dirname(__FILE__))).'/'.$application_folder;
 }
 
 /*
@@ -75,9 +76,10 @@ if (function_exists('realpath') AND @realpath(dirname(__FILE__)) !== FALSE)
 | APPPATH	- The full server path to the "application" folder
 |
 */
-define('EXT', '.'.pathinfo(__FILE__, PATHINFO_EXTENSION));
-define('FCPATH', __FILE__);
-define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
+define('EXT',   '.'.pathinfo(__FILE__, PATHINFO_EXTENSION));
+define('FCPATH',   __FILE__);
+define('SELF',     pathinfo(__FILE__, PATHINFO_BASENAME));
+define('DOCPATH',  pathinfo(__FILE__, PATHINFO_DIRNAME));
 define('BASEPATH', $system_folder.'/');
 
 if (is_dir($application_folder))
