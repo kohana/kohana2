@@ -30,7 +30,7 @@
  * @package		Kohana
  * @subpackage	Core
  * @category	Common Functions
- * @author		Rick Ellis
+ * @author		Rick Ellis, Kohana Team
  */
 
 // ------------------------------------------------------------------------

@@ -34,7 +34,7 @@
  * @link		http://kohanaphp.com/user_guide/libraries/loader.html
  */
 
-if (floor(phpversion()) >= 5)
+if (KOHANA_IS_PHP5)
 {
 	/**
 	 * Autoloader
@@ -46,7 +46,7 @@ if (floor(phpversion()) >= 5)
 	 */
 	function __autoload($class)
 	{
-		if (! function_exists('get_instance'))
+		if ( ! function_exists('get_instance'))
 			return;
 
 		static $CORE;
@@ -72,7 +72,6 @@ class Core_Loader {
 	// All these are set automatically. Don't mess with them.
 	var $_ob_level;
 	var $_view_path   = '';
-	var $_is_php5     = FALSE;
 	var $_is_instance = FALSE; // Whether we should use $this or $CORE =& get_instance()
 	var $_cached_vars = array();
 	var $_paths       = array(APPPATH, BASEPATH);
@@ -92,7 +91,6 @@ class Core_Loader {
 	 */
 	function Core_Loader()
 	{
-		$this->_is_php5   = (floor(phpversion()) >= 5) ? TRUE : FALSE;
 		$this->_view_path = APPPATH.'views/';
 		$this->_ob_level  = ob_get_level();
 
@@ -891,7 +889,14 @@ class Core_Loader {
 		// Load any custome config file
 		if (count($autoload['config']) > 0)
 		{
-			$CORE =& get_instance();
+			if (KOHANA_IS_PHP5)
+			{
+				$CORE = get_instance();
+			}
+			else
+			{
+				$CORE =& get_instance();
+			}
 			foreach ($autoload['config'] as $key => $val)
 			{
 				$CORE->config->load($val);
@@ -1008,7 +1013,7 @@ class Core_Loader {
 	 */
 	function _is_instance()
 	{
-		if ($this->_is_php5 == TRUE)
+		if (KOHANA_IS_PHP5)
 		{
 			return TRUE;
 		}

@@ -26,7 +26,7 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/database/
  */
-function &DB($params = '')
+function &Core_DB($params = '')
 {
 	// Load the DB config file if a DSN string wasn't passed
 	if (is_string($params))
