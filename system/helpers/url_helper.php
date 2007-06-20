@@ -205,7 +205,7 @@ function safe_mailto($email, $title = '', $attributes = '')
 		$x[] = substr('<a href="mailto:', $i, 1);
 	}
 
-	for ($i = 0; $i < strlen($email); $i++)
+	for ($i = 0, $s = strlen($email); $i < $s; $i++)
 	{
 		$x[] = '|'.ord(substr($email, $i, 1));
 	}
@@ -219,7 +219,7 @@ function safe_mailto($email, $title = '', $attributes = '')
 			foreach ($attributes as $key => $val)
 			{
 				$x[] =  ' '.$key.'="';
-				for ($i = 0; $i < strlen($val); $i++)
+				for ($i = 0, $s = strlen($val); $i < $s; $i++)
 				{
 					$x[] = '|'.ord(substr($val, $i, 1));
 				}
@@ -228,7 +228,7 @@ function safe_mailto($email, $title = '', $attributes = '')
 		}
 		else
 		{
-			for ($i = 0; $i < strlen($attributes); $i++)
+			for ($i = 0, $s = strlen($attributes); $i < $s; $i++)
 			{
 				$x[] = substr($attributes, $i, 1);
 			}
@@ -238,7 +238,7 @@ function safe_mailto($email, $title = '', $attributes = '')
 	$x[] = '>';
 
 	$temp = array();
-	for ($i = 0; $i < strlen($title); $i++)
+	for ($i = 0, $s = strlen($title); $i < $s; $i++)
 	{
 		$ordinal = ord($title[$i]);
 
@@ -311,7 +311,7 @@ function auto_link($str, $type = 'both', $popup = FALSE)
 		{
 			$pop = ($popup == TRUE) ? ' target="_blank" ' : '';
 
-			for ($i = 0; $i < count($matches[0]); $i++)
+			for ($i = 0, $c = count($matches[0]); $i < $c; $i++)
 			{
 				$period = '';
 				if (substr($matches[6][$i], -1) == '.')
@@ -337,7 +337,7 @@ function auto_link($str, $type = 'both', $popup = FALSE)
 	{
 		if (preg_match_all('/([-a-z0-9_.]+)@([-a-z0-9]+)\.([-a-z0-9.]*)/i', $str, $matches))
 		{
-			for ($i = 0; $i < count($matches[0]); $i++)
+			for ($i = 0, $c = count($matches[0]); $i < $c; $i++)
 			{
 				$period = '';
 				if (substr($matches[3][$i], -1) == '.')

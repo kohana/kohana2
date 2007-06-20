@@ -661,7 +661,7 @@ class CI_Email {
 
 		$clean_email = array();
 
-		for ($i = 0; $i < count($email); $i++)
+		for ($i = 0, $c = count($email); $i < $c; $i++)
 		{
 			if (preg_match('/\<(.*)\>/', $email[$i], $match))
 		   		$clean_email[] = $match[1];
@@ -728,7 +728,7 @@ class CI_Email {
 		$unwrap = array();
 		if (preg_match_all('|(\{unwrap\}.+?\{/unwrap\})|s', $str, $matches))
 		{
-			for ($i = 0; $i < count($matches[0]); $i++)
+			for ($i = 0, $c = count($matches[0]); $i < $c; $i++)
 			{
 				$unwrap[] = $matches[1][$i];
 				$str = str_replace($matches[1][$i], '{{unwrapped'.$i.'}}', $str);
@@ -959,7 +959,7 @@ class CI_Email {
 
 		$z = 0;
 
-		for ($i = 0; $i < count($this->_attach_name); $i++)
+		for ($i = 0, $c = count($this->_attach_name); $i < $c; $i++)
 		{
 			$filename = $this->_attach_name[$i];
 			$basename = basename($filename);
@@ -1055,7 +1055,7 @@ class CI_Email {
 
 		$chunk = array();
 
-		for ($i = 0; $i < count($this->_bcc_array); $i++)
+		for ($i = 0, $c = count($this->_bcc_array); $i < $c; $i++)
 		{
 			if (isset($this->_bcc_array[$i]))
 				$set .= ', '.$this->_bcc_array[$i];
@@ -1071,7 +1071,7 @@ class CI_Email {
 					$chunk[] = substr($set, 1);
 		}
 
-		for ($i = 0; $i < count($chunk); $i++)
+		for ($i = 0, $c = count($chunk); $i < $c; $i++)
 		{
 			unset($this->_headers['Bcc']);
 			unset($bcc);

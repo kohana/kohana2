@@ -72,7 +72,7 @@ class CI_SHA {
 			$x[$i] = 0;
 		}
 
-		for ($i = 0; $i < strlen($str); $i++)
+		for ($i = 0, $s = strlen($str); $i < $s; $i++)
 		{
 			$x[$i >> 2] |= ord(substr($str, $i, 1)) << (24 - ($i % 4) * 8);
 		}
@@ -87,7 +87,7 @@ class CI_SHA {
 		$d =  271733878;
 		$e = -1009589776;
 
-		for ($i = 0; $i < sizeof($x); $i += 16)
+		for ($i = 0, $c = count($x); $i < $c; $i += 16)
 		{
 			$olda = $a;
 			$oldb = $b;

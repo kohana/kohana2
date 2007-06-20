@@ -459,7 +459,7 @@ class CI_Input {
 		 * the conversion of entities to ASCII later.
 		 *
 		 */
-		$str = preg_replace('#(&\#*\w+)[\x00-\x20]+;#u',"\\1;",$str);
+		$str = preg_replace('#(&\#*\w+)[\x00-\x20]+;#u', '$1;', $str);
 
 		/*
 		 * Validate UTF16 two byte encoding (x00)
@@ -479,7 +479,7 @@ class CI_Input {
 		 * Note: Normally urldecode() would be easier but it removes plus signs
 		 *
 		 */
-		$str = preg_replace('/(%20)+/', '9u3iovBnRThju941s89rKozm', $str);
+		$str = preg_replace('/(?:%20)+/', '9u3iovBnRThju941s89rKozm', $str);
 		$str = preg_replace('/%u0([a-z0-9]{3})/i', '&#x$1;', $str);
 		$str = preg_replace('/%([a-z0-9]{2})/i', '&#x$1;', $str);
 		$str = str_replace('9u3iovBnRThju941s89rKozm', '%20', $str);
@@ -494,7 +494,7 @@ class CI_Input {
 		 */
 		if (preg_match_all('/<(.+?)>/si', $str, $matches))
 		{
-			for ($i = 0; $i < count($matches[0]); $i++)
+			for ($i = 0, $c = count($matches[0]); $i < $c; $i++)
 			{
 				$str = str_replace($matches[1][$i],
 									$this->_html_entity_decode($matches[1][$i], $charset),
@@ -552,14 +552,14 @@ class CI_Input {
 		foreach ($words as $word)
 		{
 			$temp = '';
-			for ($i = 0; $i < strlen($word); $i++)
+			for ($i = 0, $s = strlen($word); $i < $s; $i++)
 			{
 				$temp .= substr($word, $i, 1)."\s*";
 			}
 
 			// We only want to do this when it is followed by a non-word character
 			// That way valid stuff like "dealer to" does not become "dealerto"
-			$str = preg_replace('#('.substr($temp, 0, -3).')(\W)#ise', "preg_replace('/\s+/s', '', '\\1').'\\2'", $str);
+			$str = preg_replace('#('.substr($temp, 0, -3).')(\W)#ise', "preg_replace('/\s+/s', '', '$1').'$2'", $str);
 		}
 
 		/*
@@ -567,7 +567,7 @@ class CI_Input {
 		 */
 		$str = preg_replace_callback('#<a.*?</a>#si', array($this, '_js_link_removal'), $str);
 		$str = preg_replace_callback('#<img.*?>#si', array($this, '_js_img_removal'), $str);
-	 	$str = preg_replace('#<(script|xss).*?>#si', '', $str);
+	 	$str = preg_replace('#<(?:script|xss).*?>#si', '', $str);
 
 		/*
 		 * Remove JavaScript Event Handlers

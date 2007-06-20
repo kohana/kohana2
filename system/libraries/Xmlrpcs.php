@@ -206,7 +206,7 @@ class CI_Xmlrpcs extends CI_Xmlrpc
 			$m = new XML_RPC_Message($parser_object->xh[$parser]['method']);
 			$plist='';
 
-			for($i=0; $i < sizeof($parser_object->xh[$parser]['params']); $i++)
+			for($i = 0, $c = count($parser_object->xh[$parser]['params']); $i < $c; $i++)
 			{
 				$plist .= "$i - " .  print_r(get_object_vars($parser_object->xh[$parser]['params'][$i]), TRUE). ";\n";
 
@@ -286,13 +286,13 @@ class CI_Xmlrpcs extends CI_Xmlrpc
 		if (isset($methods[$methName]['signature']))
 		{
 			$sig = $methods[$methName]['signature'];
-			for($i=0; $i<sizeof($sig); $i++)
+			for($i = 0, $c = count($sig); $i < $c; $i++)
 			{
 				$current_sig = $sig[$i];
 
 				if (sizeof($current_sig) == sizeof($m->params)+1)
 				{
-					for($n=0; $n < sizeof($m->params); $n++)
+					for($n = 0, $c = count($m->params); $n < $c; $n++)
 					{
 						$p = $m->params[$n];
 						$pt = ($p->kindOf() == 'scalar') ? $p->scalartyp() : $p->kindOf();
@@ -378,11 +378,11 @@ class CI_Xmlrpcs extends CI_Xmlrpc
 				$sigs = array();
 				$signature = $methods[$method_name]['signature'];
 
-				for($i=0; $i < sizeof($signature); $i++)
+				for($i = 0, $c = count($signature); $i < $c; $i++)
 				{
 					$cursig = array();
 					$inSig = $signature[$i];
-					for($j=0; $j<sizeof($inSig); $j++)
+					for($j = 0, $c = count($inSig); $j < $c; $j++)
 					{
 						$cursig[]= new XML_RPC_Values($inSig[$j], 'string');
 					}
@@ -435,7 +435,7 @@ class CI_Xmlrpcs extends CI_Xmlrpc
 		list($a,$b)=each($calls->me);
 		$result = array();
 
-		for ($i = 0; $i < sizeof($b); $i++)
+		for ($i = 0, $c = count($b); $i < $c; $i++)
 		{
 			$call = $calls->me['array'][$i];
 			$result[$i] = $this->do_multicall($call);

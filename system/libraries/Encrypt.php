@@ -184,7 +184,7 @@ class CI_Encrypt {
 		$rand = $this->hash($rand);
 		
 		$enc = '';
-		for ($i = 0; $i < strlen($string); $i++)
+		for ($i = 0, $s = strlen($string); $i < $s; $i++)
 		{			
 			$enc .= substr($rand, ($i % strlen($rand)), 1).(substr($rand, ($i % strlen($rand)), 1) ^ substr($string, $i, 1));
 		}
@@ -210,7 +210,7 @@ class CI_Encrypt {
 		$string = $this->_xor_merge($string, $key);
 		
 		$dec = '';
-		for ($i = 0; $i < strlen($string); $i++)
+		for ($i = 0, $s = strlen($string); $i < $s; $i++)
 		{
 			$dec .= (substr($string, $i++, 1) ^ substr($string, $i, 1));
 		}
@@ -234,7 +234,7 @@ class CI_Encrypt {
 	{
 		$hash = $this->hash($key);
 		$str = '';
-		for ($i = 0; $i < strlen($string); $i++)
+		for ($i = 0, $s = strlen($string); $i < $s; $i++)
 		{
 			$str .= substr($string, $i, 1) ^ substr($hash, ($i % strlen($hash)), 1);
 		}

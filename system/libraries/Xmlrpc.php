@@ -620,7 +620,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 		$this->method_name = $method;
 		if (is_array($pars) && sizeof($pars) > 0)
 		{
-			for($i=0; $i<sizeof($pars); $i++)
+			for($i = 0, $c = count($pars); $i < $c; $i++)
 			{
 				// $pars[$i] = XML_RPC_Values
 				$this->params[] = $pars[$i];
@@ -638,7 +638,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 		$this->payload .= '<methodName>' . $this->method_name . "</methodName>\r\n";
 		$this->payload .= "<params>\r\n";
 
-		for($i=0; $i<sizeof($this->params); $i++)
+		for($i = 0, $c = count($this->params); $i < $c; $i++)
 		{
 			// $p = XML_RPC_Values
 			$p = $this->params[$i];
@@ -1136,7 +1136,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 		{
 			$parameters = array();
 
-			for ($i = 0; $i < sizeof($this->params); $i++)
+			for ($i = 0, $c = count($this->params); $i < $c; $i++)
 			{
 				$a_param = $this->decode_message($this->params[$i]);
 
@@ -1170,7 +1170,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 
 			$arr = array();
 
-			for($i = 0; $i < sizeof($b); $i++)
+			for($i = 0, $c = count($b); $i < $c; $i++)
 			{
 				$arr[] = $this->decode_message($param->me['array'][$i]);
 			}
@@ -1339,7 +1339,7 @@ class XML_RPC_Values extends CI_Xmlrpc
 			case 2:
 				// array
 				$rs .= "<array>\n<data>\n";
-				for($i=0; $i < sizeof($val); $i++)
+				for($i = 0, $c = count($val); $i < $c; $i++)
 				{
 					$rs .= $this->serializeval($val[$i]);
 				}

@@ -310,7 +310,7 @@ function create_captcha($data = '', $img_path = '', $img_url = '', $font_path = 
 		$y = $font_size+2;
 	}
 
-	for ($i = 0; $i < strlen($word); $i++)
+	for ($i = 0, $s = strlen($word); $i < $s; $i++)
 	{
 		if ($use_font == FALSE)
 		{

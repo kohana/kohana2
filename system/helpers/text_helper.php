@@ -341,7 +341,7 @@ function word_wrap($str, $charlim = 76)
 	$unwrap = array();
 	if (preg_match_all('|(\{unwrap\}.+?\{/unwrap\})|s', $str, $matches))
 	{
-		for ($i = 0; $i < count($matches[0]); $i++)
+		for ($i = 0, $c = count($matches[0]); $i < $c; $i++)
 		{
 			$unwrap[] = $matches[1][$i];
 			$str = str_replace($matches[1][$i], '{{unwrapped'.$i.'}}', $str);

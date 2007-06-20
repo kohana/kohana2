@@ -527,11 +527,11 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * and runs the query
 	 *
 	 * @access	public
-	 * @param	string	the limit clause
-	 * @param	string	the offset clause
+	 * @param	integer	the limit clause
+	 * @param	integer	the offset clause
 	 * @return	object
 	 */
-	function get($table = '', $limit = null, $offset = null)
+	function get($table = '', $limit = NULL, $offset = NULL)
 	{
 		if ($table != '')
 		{

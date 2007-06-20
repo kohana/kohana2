@@ -122,10 +122,10 @@ class Auto_typography {
 		 */
 		if (preg_match_all("#\<.+?>#si", $str, $matches))
 		{
-			for ($i = 0; $i < count($matches['0']); $i++)
+			for ($i = 0, $c = count($matches[0]); $i < $c; $i++)
 			{
-				$str = str_replace($matches['0'][$i],
-									str_replace(array("'",'"'), array('{@SQ}', '{@DQ}'), $matches['0'][$i]),
+				$str = str_replace($matches[0][$i],
+									str_replace(array("'",'"'), array('{@SQ}', '{@DQ}'), $matches[0][$i]),
 									$str);
 			}
 		}
