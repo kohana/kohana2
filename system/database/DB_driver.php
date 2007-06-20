@@ -288,7 +288,7 @@ class CI_DB_driver {
 		$this->query_count++;
 
 		// Was the query a "write" type?
-		// If so we'll simply return true
+		// If so we'll simply return TRUE
 		if ($this->is_write_type($sql) === TRUE)
 		{
 			// If caching is enabled we'll auto-cleanup any
@@ -579,7 +579,7 @@ class CI_DB_driver {
 	 * "Smart" Escape String
 	 *
 	 * Escapes data based on type
-	 * Sets boolean and null types
+	 * Sets boolean and NULL types
 	 *
 	 * @access	public
 	 * @param	string
@@ -823,7 +823,7 @@ class CI_DB_driver {
 	function update_string($table, $data, $where)
 	{
 		if ($where == '')
-			return false;
+			return FALSE;
 
 		$fields = array();
 		foreach($data as $key => $val)
@@ -888,7 +888,7 @@ class CI_DB_driver {
 		}
 		else
 		{
-			$args = (func_num_args() > 1) ? array_splice(func_get_args(), 1) : null;
+			$args = (func_num_args() > 1) ? array_splice(func_get_args(), 1) : NULL;
 
 			return call_user_func_array($function, $args);
 		}

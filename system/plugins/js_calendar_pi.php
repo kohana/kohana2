@@ -37,7 +37,7 @@ The above function will be passed the name of your form.
 
 Then to show the actual calendar you'll do this:
 
-<?php echo js_calendar_write('entry_date', time(), true); ?>
+<?php echo js_calendar_write('entry_date', time(), TRUE); ?>
 <form name="my_form">
 <input type="text" name="entry_date" value="" onblur="update_calendar(this.name, this.value);" />
 <p><a href="javascript:void(0);" onClick="set_to_time('entry_date', '<?php echo time(); ?>')" >Today</a></p>
@@ -224,7 +224,7 @@ function build_calendar()
 		{
 			str += '<td class="calblanktop">&nbsp;<\/td>';
 		}
-		else if (displayNum == selDate && this.highlight == true) // Selected date
+		else if (displayNum == selDate && this.highlight == TRUE) // Selected date
 		{
 			str += '<td id="' + this.id +'selected" class="caldayselected" onClick="set_date(this,\'' + this.id + '\')">' + displayNum + '<\/td>';
 		}

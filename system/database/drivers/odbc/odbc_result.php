@@ -117,7 +117,7 @@ class CI_DB_odbc_result extends CI_DB_result {
 	/**
 	 * Free the result
 	 *
-	 * @return	null
+	 * @return	void
 	 */		
 	function free_result()
 	{
@@ -202,7 +202,7 @@ class CI_DB_odbc_result extends CI_DB_result {
 
 	function _odbc_fetch_object(& $odbc_result) {
 		$rs = array();
-		$rs_obj = false;
+		$rs_obj = FALSE;
 		if (odbc_fetch_into($odbc_result, $rs)) {
 			foreach ($rs as $k=>$v) {
 				$field_name= odbc_field_name($odbc_result, $k+1);
@@ -225,7 +225,7 @@ class CI_DB_odbc_result extends CI_DB_result {
 
 	function _odbc_fetch_array(& $odbc_result) {
 		$rs = array();
-		$rs_assoc = false;
+		$rs_assoc = FALSE;
 		if (odbc_fetch_into($odbc_result, $rs)) {
 			$rs_assoc=array();
 			foreach ($rs as $k=>$v) {

@@ -517,12 +517,12 @@ class CI_Email {
 	 * @param	bool
 	 * @return	string
 	 */
-	function _get_protocol($return = true)
+	function _get_protocol($return = TRUE)
 	{
 		$this->protocol = strtolower($this->protocol);
 		$this->protocol = ( ! in_array($this->protocol, $this->_protocols, TRUE)) ? 'mail' : $this->protocol;
 
-		if ($return == true)
+		if ($return == TRUE)
 			return $this->protocol;
 	}
 
@@ -535,14 +535,14 @@ class CI_Email {
 	 * @param	bool
 	 * @return	string
 	 */
-	function _get_encoding($return = true)
+	function _get_encoding($return = TRUE)
 	{
 		$this->_encoding = ( ! in_array($this->_encoding, $this->_bit_depths)) ? '7bit' : $this->_encoding;
 
 		if ( ! in_array($this->charset, $this->_base_charsets, TRUE))
 			$this->_encoding = '8bit';
 
-		if ($return == true)
+		if ($return == TRUE)
 			return $this->_encoding;
 	}
 
@@ -1154,7 +1154,7 @@ class CI_Email {
 		}
 
 		$this->_set_error_message('email_sent', $this->_get_protocol());
-		return true;
+		return TRUE;
 	}
 
 	// --------------------------------------------------------------------
@@ -1259,7 +1259,7 @@ class CI_Email {
 		}
 
 		$this->_send_command('quit');
-		return true;
+		return TRUE;
 	}
 
 	// --------------------------------------------------------------------

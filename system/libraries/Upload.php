@@ -222,7 +222,7 @@ class CI_Upload {
 		 * Validate the file name
 		 * This function appends an number onto the end of
 		 * the file if one with the same name already exists.
-		 * If it returns false there was a problem.
+		 * If it returns FALSE there was a problem.
 		 */
 		$this->orig_name = $this->file_name;
 

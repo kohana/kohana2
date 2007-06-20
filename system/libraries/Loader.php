@@ -774,7 +774,7 @@ class CI_Loader {
 	 * @param	array	paths to search in
 	 * @return 	void
 	 */
-	function _ci_find_class($class, $paths = false)
+	function _ci_find_class($class, $paths = FALSE)
 	{
 		// Default to using the standard paths
 		if ( ! is_array($paths))
@@ -809,7 +809,7 @@ class CI_Loader {
 	 * @access	private
 	 * @param	string
 	 * @param	string
-	 * @return	null
+	 * @return	void
 	 */
 	function _ci_init_class($class, $prefix = '', $config = FALSE)
 	{

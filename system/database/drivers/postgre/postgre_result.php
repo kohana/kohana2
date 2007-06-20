@@ -117,7 +117,7 @@ class CI_DB_postgre_result extends CI_DB_result {
 	/**
 	 * Free the result
 	 *
-	 * @return	null
+	 * @return	void
 	 */		
 	function free_result()
 	{

@@ -89,7 +89,7 @@ Array Method, and Discrete Parameters:</p>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'domain' => '.some-domain.com',<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'path'&nbsp;&nbsp;&nbsp;=> '/',<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'prefix' => 'myprefix_',<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'secure' => false<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'secure' => FALSE<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br />
 <br />
 set_cookie($cookie);
@@ -109,23 +109,23 @@ value, as configured in $config['cookie_lifetime'], to be used.</p>
 
 <p><strong>Domain:</strong></p>
 <p>For site-wide cookies regardless of how your site is requested, add your site <strong>FQDN</strong> starting with a period, like this:  .your-domain.com</p>
-<p>If you do not pass the domain param, or pass it as null, the default
+<p>If you do not pass the domain param, or pass it as NULL, the default
 option as configured in $config['cookie_domain'] will be used. Passing
 an empty string will cause no domain to be set.</p>
 
 <p><strong>Path:</strong></p>
-<p>If you do not pass the path param, or pass it as null, the default
+<p>If you do not pass the path param, or pass it as NULL, the default
 option as configured in $config['cookie_path'] will be used. Passing an
 empty string will cause no path to be set.</p>
 
 <p><strong>Prefix:</strong></p>
 <p>The prefix is only needed if you need to avoid name collisions with other identically named cookies for your server.</p>
-<p>If you do not pass the prefix param, or pass it as null, the default
+<p>If you do not pass the prefix param, or pass it as NULL, the default
 option as configured in $config['cookie_prefix'] will be used. Passing
 an empty string will cause no prefix to be used.</p>
 
 <p><strong>Secure:</strong></p>
-<p>If this cookie can ONLY be sent over HTTPS (SSL), set this value to true.</p>
+<p>If this cookie can ONLY be sent over HTTPS (SSL), set this value to TRUE.</p>
 
 <h4>Discrete Parameters</h4>
 
@@ -142,18 +142,18 @@ an empty string will cause no prefix to be used.</p>
 <p>The function returns FALSE (boolean) if the item you are attempting to retrieve does not exist.</p>
 
 <p>The second optional parameter is the prefix to use in front of the
-name. If you do not pass this param, or pass it as null, the default
+name. If you do not pass this param, or pass it as NULL, the default
 site cookie parameter as configured in $config['cookie_prefix'] will be
 used. Pass this as empty string to use no prefix.</p>
 
-<code>get_cookie('some_cookie','myprefix_');</code>
+<code>get_cookie('some_cookie', 'myprefix_');</code>
 
 <p>The third optional parameter lets you run the data through the XSS
 filter. It's enabled by setting the third parameter to boolean TRUE;</p>
 
-<code>get_cookie('some_cookie','myprefix_', TRUE);</code>
+<code>get_cookie('some_cookie', 'myprefix_', TRUE);</code>
 -OR-
-<code>get_cookie('some_cookie',null, TRUE);</code>
+<code>get_cookie('some_cookie', NULL, TRUE);</code>
 
 <h2>delete_cookie()</h2>
 
@@ -169,7 +169,7 @@ expiration trigger to the browser. If you would like to keep this value
 in the array, pass discrete
 parameters and explicitly set this flag to FALSE.</p>
 
-<code>delete_cookie($name, $domain = null, $path = null, $prefix = null, $remove_live = TRUE)</code>
+<code>delete_cookie($name, $domain = NULL, $path = NULL, $prefix = NULL, $remove_live = TRUE)</code>
 
 
 </div>

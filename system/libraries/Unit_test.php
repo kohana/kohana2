@@ -143,7 +143,7 @@ class CI_Unit_test {
 	 *
 	 * @access	public
 	 * @param	bool
-	 * @return	null
+	 * @return	void
 	 */
 	function use_strict($state = TRUE)
 	{
@@ -159,7 +159,7 @@ class CI_Unit_test {
 	 *
 	 * @access	public
 	 * @param	bool
-	 * @return	null
+	 * @return	void
 	 */
 	function active($state = TRUE)
 	{
@@ -320,7 +320,7 @@ class CI_Unit_test {
 // END Unit_test Class
 
 /**
- * Helper functions to test boolean true/false
+ * Helper functions to test boolean TRUE/FALSE
  *
  *
  * @access	private

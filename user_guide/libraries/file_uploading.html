@@ -267,7 +267,7 @@ $this->upload->initialize($config);</code>
 <td class="td"><strong>overwrite</strong></td>
 <td class="td">FALSE</td>
 <td class="td">TRUE/FALSE (boolean)</td>
-<td class="td">If set to true, if a file with the same name as the one you are uploading exists, it will be overwritten. If set to false, a number will be appended to the filename if another with the same name exists.</td>
+<td class="td">If set to TRUE, if a file with the same name as the one you are uploading exists, it will be overwritten. If set to FALSE, a number will be appended to the filename if another with the same name exists.</td>
 </tr>
 
 
@@ -338,7 +338,7 @@ $this->upload->do_upload($field_name)</code>
 
 <h2>$this->upload->display_errors()</h2>
 
-<p>Retrieves any error messages if the <dfn>do_upload()</dfn> function returned false.  The function does not echo automatically, it
+<p>Retrieves any error messages if the <dfn>do_upload()</dfn> function returned FALSE.  The function does not echo automatically, it
 returns the data so you can assign it however you need.</p>
 
 <h3>Formatting Errors</h3>

@@ -445,7 +445,7 @@ class CI_Input {
 		/*
 		 * Remove Null Characters
 		 *
-		 * This prevents sandwiching null characters
+		 * This prevents sandwiching NULL characters
 		 * between ascii characters, like Java\0script.
 		 *
 		 */

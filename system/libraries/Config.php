@@ -46,7 +46,7 @@ class CI_Config {
 	 * @access   public
 	 * @param   string	the config file name
 	 * @param   boolean  if configuration values should be loaded into their own section
-	 * @param   boolean  true if errors should just return false, false if an error message should be displayed
+	 * @param   boolean  TRUE if errors should just return FALSE, FALSE if an error message should be displayed
 	 * @return  boolean  if the file was successfully loaded or not
 	 */
 	function CI_Config()

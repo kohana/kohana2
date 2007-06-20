@@ -138,7 +138,7 @@ class CI_DB_oci8_result extends CI_DB_result {
 	/**
 	 * Free the result
 	 *
-	 * @return	null
+	 * @return	void
 	 */		
 	function free_result()
 	{

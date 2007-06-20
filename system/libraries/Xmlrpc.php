@@ -356,7 +356,7 @@ class XML_RPC_Client extends CI_Xmlrpc
 	var $errno			= '';
 	var $errstring		= '';
 	var $timeout		= 5;
-	var $no_multicall	= false;
+	var $no_multicall	= FALSE;
 
 	function XML_RPC_Client($path, $server, $port=80)
 	{
@@ -710,7 +710,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 		$this->xh[$parser]['isf_reason'] = 0;
 
 		xml_set_object($parser, $this);
-		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, true);
+		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, TRUE);
 		xml_set_element_handler($parser, 'open_tag', 'closing_tag');
 		xml_set_character_data_handler($parser, 'character_data');
 		//xml_set_default_handler($parser, 'default_handler');
@@ -888,7 +888,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 				$this->xh[$the_parser]['isf'] = 1;
 			break;
 			case 'PARAM':
-				$this->xh[$the_parser]['value'] = null;
+				$this->xh[$the_parser]['value'] = NULL;
 			break;
 			case 'VALUE':
 				$this->xh[$the_parser]['vt'] = 'value';
@@ -917,7 +917,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 				$this->xh[$the_parser]['valuestack'][0]['name'] = '';
 
 				// Set NULL value to check to see if value passed for this param/member
-				$this->xh[$the_parser]['value'] = null;
+				$this->xh[$the_parser]['value'] = NULL;
 			break;
 			case 'DATA':
 			case 'METHODCALL':
@@ -1249,7 +1249,7 @@ class XML_RPC_Values extends CI_Xmlrpc
 
 		if ($type == $this->xmlrpcBoolean)
 		{
-			if (strcasecmp($val,'true')==0 || $val==1 || ($val==true && strcasecmp($val,'false')))
+			if (strcasecmp($val,'true')==0 || $val==1 || ($val==TRUE && strcasecmp($val,'false')))
 			{
 				$val = 1;
 			}

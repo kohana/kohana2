@@ -88,7 +88,7 @@ Each library is described in detail in its own page, so please read the informat
 <p>Parameters can be passed to the library via an array in the second parameter.
 
 
-<h2>$this->load->view('<var>file_name</var>', <samp>$data</samp>, <kbd>true/false</kbd>)</h2>
+<h2>$this->load->view('<var>file_name</var>', <samp>$data</samp>, <kbd>TRUE/FALSE</kbd>)</h2>
 
 <p>This function is used to load your View files.  If you haven't read the <a href="../general/views.html">Views</a> section of the
 user guide it is recommended that you do since it shows you how this function is typically used.</p>
@@ -102,13 +102,13 @@ how this might be useful.</p>
 
 <p>The third <strong>optional</strong> parameter lets you change the behavior of the function so that it returns data as a string
 rather than sending it to your browser.  This can be useful if you want to process the data in some way.  If you
-set the parameter to <kbd>true</kbd> (boolean) it will return data.  The default behavior is <kbd>false</kbd>, which sends it
+set the parameter to <kbd>TRUE</kbd> (boolean) it will return data.  The default behavior is <kbd>FALSE</kbd>, which sends it
 to your browser.  Remember to assign it to a variable if you want the data returned:</p>
 
-<code>$string = $this->load->view('<var>myfile</var>', '', <kbd>true</kbd>);</code>
+<code>$string = $this->load->view('<var>myfile</var>', '', <kbd>TRUE</kbd>);</code>
 
 
-<h2>$this->load->database('<var>options</var>', <kbd>true/false</kbd>)</h2>
+<h2>$this->load->database('<var>options</var>', <kbd>TRUE/FALSE</kbd>)</h2>
 
 <p>This function lets you load the database class.  The two parameters are <strong>optional</strong>.  Please see the
 <a href="./database/index.html">database</a> section for more info.</p>
@@ -138,9 +138,9 @@ and merged into one array for conversion to variables.
 <h2>$this->load->plugin('<var>file_name</var>')</h2>
 <p>This function loads plugins files, where <var>file_name</var> is the name of the file, without the <kbd>_plugin.php</kbd> extension.</p>
 
-<h2>$this->load->file('<var>filepath/filename</var>', <kbd>true/false</kbd>)</h2>
+<h2>$this->load->file('<var>filepath/filename</var>', <kbd>TRUE/FALSE</kbd>)</h2>
 <p>This is a generic file loading function.  Supply the filepath and name in the first parameter and it will open and read the file.
-By default the data is sent to your browser, just like a View file, but if you set the second parameter to <kbd>true</kbd> (boolean)
+By default the data is sent to your browser, just like a View file, but if you set the second parameter to <kbd>TRUE</kbd> (boolean)
 it will instead return the data as a string.</p>
 
 

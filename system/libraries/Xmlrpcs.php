@@ -173,7 +173,7 @@ class CI_Xmlrpcs extends CI_Xmlrpc
 		$parser_object->xh[$parser]['method']		= '';
 
 		xml_set_object($parser, $parser_object);
-		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, true);
+		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, TRUE);
 		xml_set_element_handler($parser, 'open_tag', 'closing_tag');
 		xml_set_character_data_handler($parser, 'character_data');
 		//xml_set_default_handler($parser, 'default_handler');
@@ -263,7 +263,7 @@ class CI_Xmlrpcs extends CI_Xmlrpc
 			// See if we are calling function in an object
 
 			$method_parts = explode(".",$methods[$methName]['function']);
-			$objectCall = (isset($method_parts['1']) && $method_parts['1'] != "") ? true : false;
+			$objectCall = (isset($method_parts['1']) && $method_parts['1'] != "") ? TRUE : FALSE;
 
 			if ($objectCall && !is_callable(array($method_parts['0'],$method_parts['1'])))
 			{

@@ -460,7 +460,7 @@ class CI_Image_lib {
 			// If the target width/height match the source then it's pointless to crop, right?
 			if ($this->width >= $this->orig_width AND $this->height >= $this->orig_height)
 			{
-				// We'll return true so the user thinks the process succeeded.
+				// We'll return TRUE so the user thinks the process succeeded.
 				// It'll be our little secret...
 
 				return TRUE;
@@ -754,7 +754,7 @@ class CI_Image_lib {
 
 		@chmod($this->full_dst_path, 0777);
 
-		return true;
+		return TRUE;
 	}
 
 	// --------------------------------------------------------------------

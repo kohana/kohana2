@@ -177,7 +177,7 @@ class CI_Profiler {
 				$output .= "<tr><td width='50%' style='color:#000;background-color:#ddd;'>".$key."</td><td width='50%' style='color:#009900;font-weight:normal;background-color:#ddd;'>";
 				if (is_array($val))
 				{
-					$output .= "<pre>" . htmlspecialchars(print_r($val, true)) . "</pre>";
+					$output .= "<pre>" . htmlspecialchars(print_r($val, TRUE)) . "</pre>";
 				}
 				else
 				{

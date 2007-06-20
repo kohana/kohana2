@@ -563,7 +563,7 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * @param	string	the offset clause
 	 * @return	object
 	 */
-	function getwhere($table = '', $where = null, $limit = null, $offset = null)
+	function getwhere($table = '', $where = NULL, $limit = NULL, $offset = NULL)
 	{
 		if ($table != '')
 		{
@@ -640,7 +640,7 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * @param	mixed	the where clause
 	 * @return	object
 	 */
-	function update($table = '', $set = NULL, $where = null)
+	function update($table = '', $set = NULL, $where = NULL)
 	{
 		if ( ! is_null($set))
 		{
@@ -662,7 +662,7 @@ class CI_DB_active_record extends CI_DB_driver {
 			$table = $this->ar_from[0];
 		}
 
-		if ($where != null)
+		if ($where != NULL)
 		{
 			$this->where($where);
 		}
