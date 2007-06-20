@@ -587,20 +587,15 @@ class CI_Validation {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Numeric
+	 * Numeric [0-9, dots and dashes]
 	 *
 	 * @access	public
 	 * @param	int
 	 * @return	bool
 	 */
-	function numeric($str) {
-		if (!is_numeric($str))
-		    return FALSE;
-
-		if (!preg_match('/^[-0-9.]+$/', $str))
-		    return FALSE;
-
-		return TRUE;
+	function numeric($str)
+	{
+		return (bool) (is_numeric($str) AND preg_match('/^[-0-9.]+$/', $str));
 	}
 
 	// --------------------------------------------------------------------
