@@ -602,19 +602,6 @@ class CI_Validation {
 
 		return TRUE;
 	}
-	// --------------------------------------------------------------------
-
-	/**
-	 * Is Numeric
-	 *
-	 * @access	public
-	 * @param	string
-	 * @return	bool
-	 */
-	function is_numeric($str)
-	{
-		return ( ! is_numeric($str)) ? FALSE : TRUE;
-	}
 
 	// --------------------------------------------------------------------
 
