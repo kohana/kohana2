@@ -426,7 +426,7 @@ class CI_Validation {
 			return FALSE;
 		}
 
-		return (bool) (strlen($str) > $val);
+		return (bool) (strlen($str) >= $val);
 	}
 
 	// --------------------------------------------------------------------
@@ -445,7 +445,7 @@ class CI_Validation {
 			return FALSE;
 		}
 
-		return (bool) (strlen($str) < $val);
+		return (bool) (strlen($str) <= $val);
 	}
 
 	// --------------------------------------------------------------------
