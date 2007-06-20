@@ -870,41 +870,6 @@ class Core_Loader {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Runs __construct() on PHP4
-	 *
-	 * @access	private
-	 * @param	mixed	string or object
-	 * @return	void
-	 */
-	function _do_construct($class)
-	{
-		if ($this->_is_php5 == FALSE)
-		{
-			if (is_object($class))
-			{
-				if (method_exists($class, '__construct'))
-				{
-					$class->__construct();
-				}
-			}
-			else
-			{
-				$CORE =& get_instance();
-				$class = (string) $class;
-
-				if (method_exists($CORE->$class, '__construct'))
-				{
-					$CORE->$class->__construct();
-				}
-			}
-		}
-
-		return ((is_object($class)) ? $class : TRUE);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Autoloader
 	 *
 	 * The config/autoload.php file contains an array that permits sub-systems,
