@@ -567,7 +567,7 @@ class CI_Input {
 		 */
 		$str = preg_replace_callback('#<a.*?</a>#si', array($this, '_js_link_removal'), $str);
 		$str = preg_replace_callback('#<img.*?>#si', array($this, '_js_img_removal'), $str);
-	 	$str = preg_replace('<(script|xss).*?>#si', '', $str);
+	 	$str = preg_replace('#<(script|xss).*?>#si', '', $str);
 
 		/*
 		 * Remove JavaScript Event Handlers
