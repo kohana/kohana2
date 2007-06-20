@@ -44,30 +44,38 @@
  * @category	front-controller
  * @author		Rick Ellis
  */
- class Core_Base extends Core_Loader {
+class Kohana extends Core_Loader {
 
-	function Core_Base()
+	var $_shutdown_events = array();
+
+	function Kohana()
 	{
 		// This allows syntax like $this->load->foo() to work
 		parent::Core_Loader();
 		$this->load =& $this;
-		
+
 		// This allows resources used within controller constructors to work
 		global $OBJ;
 		$OBJ = $this->load; // Do NOT use a reference.
 	}
+
 }
 
 function &get_instance()
 {
 	global $CORE, $OBJ;
-	
-	if (is_object($CORE))
+
+	return (is_object($CORE) ? $CORE : $OBJ->load);
+}
+
+function add_shutdown_event($array)
+{
+	if ($array != FALSE)
 	{
-		return $CORE;
+		global $CORE;
+
+		$CORE->_shutdown_events[] = $array;
 	}
-	
-	return $OBJ->load;
 }
 
 ?>

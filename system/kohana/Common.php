@@ -87,15 +87,9 @@ function &load_class($class, $instantiate = TRUE)
 		return $objects[$class];
 	}
 
-	if ($is_subclass == TRUE)
-	{
-		$objects[$class] =& new $class();
-		return $objects[$class];
-	}
+	$name = ($is_subclass == TRUE) ? $class : 'Core_'.$class;
 
-	$name = 'Core_'.$class;
-
-	$objects[$class] =& new $name();
+	$objects[$class] =& new $class();
 	return $objects[$class];
 }
 
@@ -217,7 +211,7 @@ function log_message($level = 'error', $message, $php_error = FALSE)
 /**
 * Exception Handler
 *
-* This is the custom exception handler that is declaired at the top
+* This is the custom exception handler that is declared at the top
 * of Kohana.php.  The main reason we use this is permit
 * PHP errors to be logged in our own log files since we may
 * not have access to server logs. Since this function
@@ -230,17 +224,15 @@ function log_message($level = 'error', $message, $php_error = FALSE)
 */
 function _exception_handler($severity, $message, $filepath, $line)
 {
-	 // We don't bother with "strict" notices since they will fill up
-	 // the log file with information that isn't normally very
-	 // helpful.  For example, if you are running PHP 5 and you
-	 // use version 4 style class functions (without prefixes
-	 // like "public", "private", etc.) you'll get notices telling
-	 // you that these have been deprecated.
+	// We don't bother with "strict" notices since they will fill up
+	// the log file with information that isn't normally very
+	// helpful.  For example, if you are running PHP 5 and you
+	// use version 4 style class functions (without prefixes
+	// like "public", "private", etc.) you'll get notices telling
+	// you that these have been deprecated.
 
 	if ($severity == E_STRICT)
-	{
 		return;
-	}
 
 	$error =& load_class('Exceptions');
 
@@ -254,14 +246,34 @@ function _exception_handler($severity, $message, $filepath, $line)
 	}
 
 	// Should we log the error?  No?  We're done...
-	$config =& get_config();
-	if ($config['log_threshold'] == 0)
+	if (config_item('log_threshold') > 0)
 	{
-		return;
+		$error->log_exception($severity, $message, $filepath, $line);
 	}
-
-	$error->log_exception($severity, $message, $filepath, $line);
 }
 
+/**
+* Shutdown Handler
+*
+* This is the custom shutdown function. It allows us to register multiple
+* shutdown events with add_shutdown_event(), and call them all when exiting
+*
+* @access	private
+* @return	void
+*/
+function _shutdown_handler()
+{
+	foreach(get_shutdown_events() as $event)
+	{
+		if (is_array($event) AND is_array($event[0]))
+		{
+			call_user_func_array($event[0], $event[1]);
+		}
+		else
+		{
+			call_user_func($event);
+		}
+	}
+}
 
 ?>

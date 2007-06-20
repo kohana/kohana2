@@ -34,24 +34,54 @@
  * @category	front-controller
  * @author		Rick Ellis
  */
-class Core_Base {
+class Kohana {
 
 	private static $instance;
 
-	public function Core_Base()
+	public function Kohana()
 	{
-		self::$instance =& $this;
+		self::$instance = $this;
 	}
 
-	public static function &get_instance()
+	public static function make_instance(&$obj)
 	{
-		return self::$instance;
+		$obj = self::$instance;
+	}
+
+	// ------------------------------------------------------------------------
+
+	private $_shutdown_events = array();
+
+	public function add_shutdown_event($array)
+	{
+		if ($array != FALSE)
+		{
+			$this->_shutdown_events[] = $array;
+		}
+	}
+
+	public function get_shutdown_events()
+	{
+		return $this->_shutdown_events;
 	}
 }
 
 function &get_instance()
 {
-	return Core_Base::get_instance();
+	Kohana::make_instance($CORE);
+	return $CORE;
+}
+
+function add_shutdown_event($array)
+{
+	Kohana::make_instance($CORE);
+	return $CORE->add_shutdown_event($array);
+}
+
+function get_shutdown_events()
+{
+	Kohana::make_instance($CORE);
+	return $CORE->get_shutdown_events();
 }
 
 ?>
