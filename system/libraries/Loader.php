@@ -49,12 +49,20 @@ if (floor(phpversion()) >= 5)
 		if (! function_exists('get_instance'))
 			return;
 
-		$CORE =& get_instance();
-		$fp = $CORE->load->_find_class($class);
-
-		if ($fp !== FALSE AND $fp !== TRUE)
+		static $CORE;
+		if (is_null($CORE))
 		{
-			require_once($fp);
+			$CORE =& get_instance();
+		}
+
+		if (isset($CORE->load))
+		{
+			$fp = $CORE->load->_find_class($class);
+
+			if ($fp !== FALSE AND $fp !== TRUE)
+			{
+				require_once($fp);
+			}
 		}
 	}
 }
@@ -67,6 +75,7 @@ class Core_Loader {
 	var $_is_php5     = FALSE;
 	var $_is_instance = FALSE; // Whether we should use $this or $CORE =& get_instance()
 	var $_cached_vars = array();
+	var $_paths       = array(APPPATH, BASEPATH);
 	var $_classes     = array();
 	var $_models      = array();
 	var $_helpers     = array();
@@ -762,27 +771,49 @@ class Core_Loader {
 	 * @param	array	paths to search in
 	 * @return 	void
 	 */
-	function _find_class($class, $paths = false)
+	function _find_class($class, $paths = NULL)
 	{
-		// Default to using the standard paths
-		if ( ! is_array($paths))
-		{
-			$paths = array(APPPATH, BASEPATH);
-		}
+		$paths = array_merge($this->_paths, (array) $paths);
 
 		foreach ($paths as $path)
 		{
 			$fp = $path.'libraries/'.$class.EXT;
+
 			// Safety:  Was the class already loaded by a previous call?
 			if (in_array($fp, $this->_classes))
-			{
 				return TRUE;
-			}
+
 			// Does the file exist?
 			if (file_exists($fp))
-			{
 				return $fp;
-			}
+		}
+
+		// No class was found
+		return FALSE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Find class
+	 *
+	 * This function finds the requested class.
+	 *
+	 * @access	private
+	 * @param 	string	the item that is being loaded
+	 * @param	array	paths to search in
+	 * @return 	void
+	 */
+	function _find_driver($library, $name, $paths = NULL)
+	{
+		$paths = array_merge($this->_paths, (array) $paths);
+
+		foreach ($paths as $path)
+		{
+			$fp = $path.'libraries/drivers/'.$library.'_'.$name.EXT;
+
+			if (file_exists($fp))
+				return $fp;
 		}
 
 		// No class was found
@@ -834,6 +865,41 @@ class Core_Loader {
 		{
 			$CORE->$classvar = new $name;
 		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Runs __construct() on PHP4
+	 *
+	 * @access	private
+	 * @param	mixed	string or object
+	 * @return	void
+	 */
+	function _do_construct($class)
+	{
+		if ($this->_is_php5 == FALSE)
+		{
+			if (is_object($class))
+			{
+				if (method_exists($class, '__construct'))
+				{
+					$class->__construct();
+				}
+			}
+			else
+			{
+				$CORE =& get_instance();
+				$class = (string) $class;
+
+				if (method_exists($CORE->$class, '__construct'))
+				{
+					$CORE->$class->__construct();
+				}
+			}
+		}
+
+		return ((is_object($class)) ? $class : TRUE);
 	}
 
 	// --------------------------------------------------------------------

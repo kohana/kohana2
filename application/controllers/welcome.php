@@ -9,8 +9,10 @@ class Welcome extends Controller {
 
 	function index()
 	{
-		$this->load->model('blog');
+		$this->load->library('session');
+		$this->session->set('hi');
 		$this->load->view('welcome_message');
 	}
 }
+
 ?>

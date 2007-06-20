@@ -96,6 +96,10 @@ function &load_class($class, $instantiate = TRUE)
 	$name = 'Core_'.$class;
 
 	$objects[$class] =& new $name();
+	if (method_exists('__int', $objects[$class]))
+	{
+		$objects[$class]->__int();
+	}
 	return $objects[$class];
 }
 

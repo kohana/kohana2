@@ -250,6 +250,7 @@ $config['encryption_key'] = '';
 |  by default sessions last 7200 seconds (two hours).  Set to zero for no expiration.
 |
 */
+$config['session_driver']       = 'cookie';
 $config['sess_cookie_name']     = 'kohana_session';
 $config['sess_expiration']      = 7200;
 $config['sess_encrypt_cookie']  = FALSE;
