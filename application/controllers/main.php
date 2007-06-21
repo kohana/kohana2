@@ -5,30 +5,37 @@ class Main extends Controller {
 	function Main()
 	{
 		parent::Controller();
+
+		// Enable Profiler for debugging
+		$this->output->enable_profiler(TRUE);
 	}
 
 	function index()
 	{
-		$this->output->enable_profiler(TRUE);
-		$this->load->helper('url');
 		$this->load->library('session');
-		
-		// $this->session->create();
-		// $this->session->set('foo', 'bar');
-		// $this->session->set('ip_address', null);
-		// $this->session->set_flash('foo', 'bar');
-		// $this->session->set_userdata('foo', 'bar');
+
+		// Test session creation
+		$this->session->create();
+
+		// Test setting data
+		$this->session->set('foo', 'bar');
+		$this->session->set('bar', 'baz');
+
+		// Test deleting data
+		$this->session->del('bar');
+
+		// Test setting protected key
+		$this->session->set('ip_address', null);
+
+		// Test setting flash data
+		$this->session->set_flash('foo', 'bar');
+
+		// Test setting data via CI Session method
+		$this->session->set_userdata('foo', 'bar');
+
 		print_r ($_SESSION);
-		
-		// $this->session->death();
-		
-		// array_merge(array(), $null);
 	}
-	
-	function foo($arg = 'none')
-	{
-		print $arg;
-	}
+
 }
 
 ?>
