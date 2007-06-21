@@ -11,7 +11,7 @@
 |	http://www.your-site.com/
 |
 */
-$config['base_url']	= 'http://localhost/~wgilk/kfe/';
+$config['base_url']	= 'http://127.0.0.1/Kohana/';
 
 /*
 |--------------------------------------------------------------------------
@@ -261,13 +261,6 @@ $config['session_match']      = array('useragent');
 $config['session_expiration'] = 7200;
 $config['session_encryption'] = FALSE;
 $config['session_regenerate'] = 5;
-// $config['sess_cookie_name']     = 'kohana_session';
-// $config['sess_expiration']      = 7200;
-// $config['sess_encrypt_cookie']  = FALSE;
-// $config['sess_use_database']    = FALSE;
-// $config['sess_table_name']      = 'kohana_sessions';
-// $config['sess_match_ip']        = FALSE;
-// $config['sess_match_useragent'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
