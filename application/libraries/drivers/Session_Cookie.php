@@ -96,7 +96,7 @@ class Session_Cookie extends Session_Driver {
 
 		if (strlen($data) > 4048)
 		{
-			log_message('debug', 'Session data exceeds the 4KB limit, ignoring write.');
+			log_message('debug', 'Session data exceeds the 4KB limit, ignoring write.'); 
 			return FALSE;
 		}
 
