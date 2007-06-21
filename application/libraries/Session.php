@@ -39,15 +39,23 @@ class Core_Session {
 	var $encryption = FALSE;
 	var $expiration = 7200;
 	var $regenerate = 3;
-	var $protected  = array('session_id', 'ip_address', 'user_agent', 'last_activity', 'total_hits');
+	var $safe_keys  = array();
 
 	function Core_Session()
 	{
 		// Load session config
-		foreach(array('driver', 'name', 'match', 'expiration', 'encryption', 'regenerate') as $var)
+		$_vars = array('driver', 'name', 'match', 'expiration', 'encryption', 'regenerate');
+		foreach($_vars as $var)
 		{
 			$value = config_item('session_'.$var);
 			$config[$var] = $this->$var = $value;
+		}
+
+		// Set protected keys
+		$_vars = array('session_id', 'user_agent', 'last_activity', 'ip_address', 'total_hits', '_kf_flash_');
+		foreach($_vars as $var)
+		{
+			$this->safe_keys[$var] = TRUE;
 		}
 
 		// Load driver
@@ -150,6 +158,9 @@ class Core_Session {
 
 		foreach($keys as $key => $val)
 		{
+			if (isset($this->safe_keys[$key]))
+				continue;
+
 			$_SESSION[$key] = $val;
 		}
 	}
@@ -176,10 +187,10 @@ class Core_Session {
 
 		foreach($keys as $key => $val)
 		{
-			if ($key == FALSE OR $val == FALSE)
+			if ($key == FALSE)
 				continue;
 
-			$_SESSION[$key] = $val;
+			$this->set($key, $val);
 			$this->flash[$key] = 'new';
 		}
 	}
@@ -370,11 +381,10 @@ class Core_Session {
 		{
 			session_unset();
 			$this->regenerate();
-
 			// Set default session values
 			$_SESSION['user_agent']    = $input->user_agent();
-			$_SESSION['last_activity'] = time();
 			$_SESSION['ip_address']    = $input->ip_address();
+			$_SESSION['last_activity'] = time();
 			$_SESSION['total_hits']    = 1;
 			$_SESSION['_kf_flash_']    = array();
 
