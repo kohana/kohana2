@@ -33,37 +33,85 @@
  */
 class Session_Driver {
 
+	/**
+	 * Open a session
+	 *
+	 * @access	public
+	 * @param	string	file path
+	 * @param	string	session name
+	 * @return	bool
+	 */
 	function open($path, $name)
 	{
 		show_error(get_class($this).'::open has not been defined');
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Close a session
+	 *
+	 * @access	public
+	 * @return	void
+	 */
 	function close()
 	{
 		show_error(get_class($this).'::close has not been defined');
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Read a session
+	 *
+	 * @access	public
+	 * @param	string	id
+	 * @return	string
+	 */
 	function read($id)
 	{
 		show_error(get_class($this).'::read has not been defined');
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Write a session
+	 *
+	 * @access	public
+	 * @param	string	id
+	 * @param	string	data
+	 * @return	bool
+	 */
 	function write($id, $data)
 	{
 		show_error(get_class($this).'::write has not been defined');
 	}
+	
+	// --------------------------------------------------------------------
 
-	function regenerate()
-	{
-		show_error(get_class($this).'::regenerate has not been defined');
-	}
-
+	/**
+	 * Destroy a session
+	 *
+	 * @access	public
+	 * @param	string	id
+	 * @return	bool
+	 */
 	function destroy($id)
 	{
 		show_error(get_class($this).'::destroy has not been defined');
 	}
 
-	function gc($life)
+	// --------------------------------------------------------------------
+
+	/**
+	 * Garbage collection, called by close()
+	 *
+	 * @access	public
+	 * @param	integer	session life
+	 * @return	bool
+	 */
+	function gc($max_life)
 	{
 		show_error(get_class($this).'::gc has not been defined');
 	}

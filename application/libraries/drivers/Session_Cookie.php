@@ -37,12 +37,16 @@ class Session_Cookie extends Session_Driver {
 	var $encrypt;
 	var $cookie_name;
 
+	/**
+	 * Constructor
+	 */
 	function Session_Cookie($config)
 	{
 		foreach(((array) $config) as $key => $val)
 		{
 			$this->$key = $val;
 		}
+		$this->cookie_name = config_item('cookie_prefix').$this->name;
 
 		// Load necessary classes
 		$this->input =& load_class('Input');
@@ -51,28 +55,50 @@ class Session_Cookie extends Session_Driver {
 			$this->encrypt =& load_class('Encrypt');
 		}
 
+		// Set "no expiration" to two years
 		if ($this->expiration == 0)
 		{
-			// Set "no expiration" to two years
 			$this->expiration = 60*60*24*365*2;
 		}
-
-		$this->cookie_name = config_item('cookie_prefix').$this->name;
 
 		log_message('debug', 'Session Cookie Driver Initialized');
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Open the session
+	 *
+	 * @access	public
+	 * @return	bool
+	 */
 	function open()
 	{
 		return TRUE;
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Close the session
+	 *
+	 * @access	public
+	 * @return	bool
+	 */
 	function close()
 	{
-		$this->gc();
 		return TRUE;
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Read a session
+	 *
+	 * @access	public
+	 * @param	string	session id
+	 * @return	string
+	 */
 	function read($id)
 	{
 		$data = $this->input->cookie($this->cookie_name);
@@ -85,6 +111,16 @@ class Session_Cookie extends Session_Driver {
 		return $data;
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Write session data
+	 *
+	 * @access	public
+	 * @param	string	session id
+	 * @param	string	session data
+	 * @return	bool
+	 */
 	function write($id, $data)
 	{
 		if ($this->encryption == TRUE)
@@ -101,6 +137,44 @@ class Session_Cookie extends Session_Driver {
 		return $this->_setcookie($data, ($this->expiration + time()));
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Destroy the session
+	 *
+	 * @access	public
+	 * @return	bool
+	 */
+	function destroy()
+	{
+		unset($_COOKIE[$this->cookie_name]);
+
+		return $this->_setcookie('', (time() - 86400));
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Collect garbage
+	 *
+	 * @access	public
+	 * @return	bool
+	 */
+	function gc()
+	{
+		return TRUE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Proxy for setcookie()
+	 *
+	 * @access	private
+	 * @param	string	session data
+	 * @param	integer	session expiration
+	 * @return	void
+	 */
 	function _setcookie($data, $expiration)
 	{
 		return setcookie
@@ -112,23 +186,6 @@ class Session_Cookie extends Session_Driver {
 			config_item('cookie_domain'),
 			config_item('cookie_secure')
 		);
-	}
-
-	function destroy()
-	{
-		unset($_COOKIE[$this->cookie_name]);
-
-		return $this->_setcookie('', (time() - 86400));
-	}
-
-	function gc()
-	{
-		return TRUE;
-
-		if ((rand(0, 100)) % 50 == 0)
-		{
-			log_message('info', 'Session garbage collected');
-		}
 	}
 }
 

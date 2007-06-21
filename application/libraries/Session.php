@@ -33,38 +33,261 @@
  */
 class Core_Session {
 
-	var $conf;
-	var $protected = array('session_id', 'ip_address', 'user_agent', 'last_activity', 'total_hits');
+	var $driver     = 'cookie';
+	var $name       = 'kohana_session';
+	var $match      =  array('user_agent');
+	var $encryption = FALSE;
+	var $expiration = 7200;
+	var $regenerate = 3;
+	var $protected  = array('session_id', 'ip_address', 'user_agent', 'last_activity', 'total_hits');
 
 	function Core_Session()
 	{
 		// Load session config
 		foreach(array('driver', 'name', 'match', 'expiration', 'encryption', 'regenerate') as $var)
 		{
-			$this->conf[$var] = config_item('session_'.$var);
+			$value = config_item('session_'.$var);
+			$config[$var] = $this->$var = $value;
 		}
 
 		// Load driver
-		$driver = strtolower(config_item('session_driver'));
-		$this->_load_driver($driver);
+		$this->_load_driver($config);
 
 		log_message('debug', 'Session Class Initialized');
 	}
 
-	function _load_driver($driver)
+	// --------------------------------------------------------------------
+
+	/**
+	 * Return the session id
+	 *
+	 * @access	public
+	 * @return	string
+	 */
+	function id()
+	{
+		return session_id();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Create a new session
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	function create($vars = NULL)
+	{
+		$this->_register();
+
+		if ( ! isset($_SESSION['session_id']))
+		{
+			session_name($this->name);
+			session_start();
+		}
+		else
+		{
+			session_unset();
+		}
+
+		$this->_validate();
+		$this->set($vars);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Destroy the current session
+	 *
+	 * @access	public
+	 * @return	bool
+	 */
+	function destroy()
+	{
+		return session_destroy();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Regenerate the session id
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	function regenerate()
+	{
+		// We use a 7 character hash of the user's IP address for a id prefix
+		// to prevent collisions. This should be very safe.
+		$input =& load_class('Input');
+		$session_id = substr(sha1($input->ip_address()), 0, 7);
+
+		session_id(uniqid($session_id));
+
+		$_SESSION['session_id'] = session_id();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Set a session variable
+	 *
+	 * @access	public
+	 * @param	mixed	array of values, or key
+	 * @param	mixed	value (optional)
+	 * @return	void
+	 */
+	function set($keys, $val = FALSE)
+	{
+		if ($keys == FALSE)
+			return;
+
+		if ( ! is_array($keys))
+		{
+			$keys = array($keys => $val);
+		}
+
+		foreach($keys as $key => $val)
+		{
+			$_SESSION[$key] = $val;
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Set a flash variable
+	 *
+	 * @access	public
+	 * @param	mixed	array of values, or key
+	 * @param	mixed	value (optional)
+	 * @return	void
+	 */
+	function set_flash($keys, $val = FALSE)
+	{
+		if ($keys == FALSE)
+			return;
+
+		if ( ! is_array($keys))
+		{
+			$keys = array($keys => $val);
+		}
+
+		foreach($keys as $key => $val)
+		{
+			if ($key == FALSE OR $val == FALSE)
+				continue;
+
+			$_SESSION[$key] = $val;
+			$this->flash[$key] = 'new';
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Freshen a flash variable
+	 *
+	 * @access	public
+	 * @param	string	variable key
+	 * @return	bool
+	 */
+	function keep_flash($key)
+	{
+		if (isset($this->flash[$key]))
+		{
+			$this->flash[$key] = 'new';
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Get a flash variable
+	 *
+	 * @access	public
+	 * @param	string	key (optional)
+	 * @return	mixed
+	 */
+	function get($key = FALSE)
+	{
+		if ($key == FALSE)
+		{
+			return $_SESSION;
+		}
+
+		return (isset($_SESSION[$key]) ? $_SESSION[$key] : FALSE);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Get a variable, and delete it
+	 *
+	 * @access	public
+	 * @param	string	key (optional)
+	 * @return	mixed
+	 */
+	function get_once($key)
+	{
+		$return = $this->get($key);
+		$this->del($key);
+
+		return $return;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Delete a variable
+	 *
+	 * @access	public
+	 * @param	string	key
+	 * @return	void
+	 */
+	function del($key)
+	{
+		if (is_array($key))
+		{
+			foreach($key as $k)
+			{
+				unset($_SESSION[$k]);
+			}
+		}
+		else
+		{
+			unset($_SESSION[$key]);
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Load the session driver
+	 *
+	 * @access	private
+	 * @param	array	configuration options
+	 * @return	void
+	 */
+	function _load_driver($config)
 	{
 		static $loaded;
-		// We can only load the driver once
-		// Native backend does not require a driver
 		if ($loaded == TRUE)
 			return TRUE;
 
-		if ($driver != 'native')
+		// Native backend does not require a driver
+		if ($this->driver != 'native')
 		{
-			$driver = ucfirst($driver);
+			$driver = ucfirst(strtolower($this->driver));
 			$loader =& load_class('Loader');
 
-			if ( ! $file = $loader->_find_driver('Session', ucfirst($driver)))
+			if ( ! $file = $loader->_find_driver('Session', $driver))
 			{
 				show_error('The Session driver you have configured does not exist: '.$driver);
 			}
@@ -80,7 +303,7 @@ class Core_Session {
 
 			// Load the driver
 			$class = 'Session_'.$driver;
-			$this->_driver =& new $class($this->conf);
+			$this->_driver =& new $class($config);
 			// Make sure that the driver is actually an extension of the API
 			if ( ! is_subclass_of($this->_driver, 'Session_Driver'))
 			{
@@ -90,15 +313,27 @@ class Core_Session {
 			// Register driver as the session handler
 			$this->_register();
 		}
+		// Create or load a session
 		$this->create();
+
+		// Set up flash variables
+		$this->_init_flash();
 
 		add_shutdown_event('session_write_close');
 		$loaded = TRUE;
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Register a driver as the session handler
+	 *
+	 * @access	private
+	 * @return	void
+	 */
 	function _register()
 	{
-		if ($this->conf['driver'] != 'native')
+		if ($this->driver != 'native')
 		{
 			// Destroy any auto created sessions
 			if (@ini_get('session.auto_start') == TRUE)
@@ -119,40 +354,14 @@ class Core_Session {
 		}
 	}
 
-	function create()
-	{
-		$this->_register();
+	// --------------------------------------------------------------------
 
-		if ( ! isset($_SESSION['session_id']))
-		{
-			session_name($this->conf['name']);
-			session_start();
-		}
-		else
-		{
-			session_unset();
-		}
-
-		return $this->_validate();
-	}
-
-	function destroy()
-	{
-		return session_destroy();
-	}
-
-	function regenerate()
-	{
-		// We use a 7 character hash of the user's IP address for a id prefix
-		// to prevent collisions. This should be very safe.
-		$input =& load_class('Input');
-		$session_id = substr(sha1($input->ip_address()), 0, 7);
-
-		session_id(uniqid($session_id));
-
-		$_SESSION['session_id'] = session_id();
-	}
-
+	/**
+	 * Validate the session
+	 *
+	 * @access	private
+	 * @return	bool
+	 */
 	function _validate()
 	{
 		// Set defaults
@@ -161,16 +370,19 @@ class Core_Session {
 		{
 			session_unset();
 			$this->regenerate();
+
+			// Set default session values
 			$_SESSION['user_agent']    = $input->user_agent();
 			$_SESSION['last_activity'] = time();
 			$_SESSION['ip_address']    = $input->ip_address();
 			$_SESSION['total_hits']    = 1;
+			$_SESSION['_kf_flash_']    = array();
 
 			return TRUE;
 		}
 
 		// Process config defined checks
-		foreach($this->conf['match'] as $var)
+		foreach($this->match as $var)
 		{
 			switch($var)
 			{
@@ -186,7 +398,7 @@ class Core_Session {
 		}
 
 		// Regenerate session ID
-		if (($_SESSION['total_hits'] % $this->conf['regenerate']) === 0)
+		if (($_SESSION['total_hits'] % $this->regenerate) === 0)
 		{
 			$this->regenerate();
 		}
@@ -198,8 +410,35 @@ class Core_Session {
 		return TRUE;
 	}
 
+	// --------------------------------------------------------------------
 
+	/**
+	 * Initialize flash variables
+	 *
+	 * @access	private
+	 * @return	void
+	 */
+	function _init_flash()
+	{
+		$this->flash =& $_SESSION['_kf_flash_'];
+
+		if (count($this->flash) > 0)
+		{
+			foreach($this->flash as $key => $state)
+			{
+				if ($state == 'old')
+				{
+					$this->del($key);
+					unset($this->flash[$key]);
+				}
+				else
+				{
+					$this->flash[$key] = 'old';
+				}
+			}
+		}
+	}
 
 }
-
+// END Session Class
 ?>

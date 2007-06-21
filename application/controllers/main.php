@@ -13,6 +13,9 @@ class Main extends Controller {
 		$this->load->helper('url');
 		$this->load->library('session');
 		
+		// $this->session->create();
+		// $this->session->set('foo', 'bar');
+		// $this->session->set_flash('foo', 'bar');
 		print_r ($_SESSION);
 		
 		// $this->session->death();
