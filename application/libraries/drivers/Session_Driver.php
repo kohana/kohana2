@@ -53,6 +53,11 @@ class Session_Driver {
 		show_error(get_class($this).'::write has not been defined');
 	}
 
+	function regenerate()
+	{
+		show_error(get_class($this).'::regenerate has not been defined');
+	}
+
 	function destroy($id)
 	{
 		show_error(get_class($this).'::destroy has not been defined');

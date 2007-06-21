@@ -237,7 +237,7 @@ $config['cache_path'] = '';
 | enabled you MUST set an encryption key.  See the user guide for info.
 |
 */
-$config['encryption_key'] = '';
+$config['encryption_key'] = 'a234987234jhakldsjhlkjzxcxoi7qwreo6*&^*&#Q';
 
 /*
 |--------------------------------------------------------------------------
@@ -247,7 +247,7 @@ $config['encryption_key'] = '';
 | 'session_driver'      = cookie, database, or native
 | 'session_name'        = the name you want for the session
 | 'session_match'       = array of items to match, can contain:
-|                         ip, useragent
+|                         ip_address, user_agent
 | 'session_expiration'  = the number of SECONDS you want the session to last,
 |                         by default sessions last 7200 seconds (two hours).
 |                         Set to zero for no expiration.
@@ -257,10 +257,10 @@ $config['encryption_key'] = '';
 */
 $config['session_driver']     = 'cookie';
 $config['session_name']       = 'kohana_session';
-$config['session_match']      = array('useragent');
+$config['session_match']      = array('user_agent');
 $config['session_expiration'] = 7200;
 $config['session_encryption'] = FALSE;
-$config['session_regenerate'] = 5;
+$config['session_regenerate'] = 3;
 
 /*
 |--------------------------------------------------------------------------

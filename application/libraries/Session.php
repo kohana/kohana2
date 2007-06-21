@@ -34,12 +34,12 @@
 class Core_Session {
 
 	var $conf;
-	var $protected = array('session_id', 'ip_address', 'user_agent', 'last_activity');
+	var $protected = array('session_id', 'ip_address', 'user_agent', 'last_activity', 'total_hits');
 
 	function Core_Session()
 	{
 		// Load session config
-		foreach(array('name', 'match', 'expiration', 'encryption') as $var)
+		foreach(array('driver', 'name', 'match', 'expiration', 'encryption', 'regenerate') as $var)
 		{
 			$this->conf[$var] = config_item('session_'.$var);
 		}
@@ -56,85 +56,149 @@ class Core_Session {
 		static $loaded;
 		// We can only load the driver once
 		// Native backend does not require a driver
-		if ($loaded == TRUE OR $driver == 'native')
-			return ($loaded = TRUE);
+		if ($loaded == TRUE)
+			return TRUE;
 
-		// If a session already exists, we need to remove it
-		if ($id = session_id())
+		if ($driver != 'native')
 		{
-			die('session exists, must die');
-			if ($name = session_name() AND isset($_COOKIE[$name]))
+			$driver = ucfirst($driver);
+			$loader =& load_class('Loader');
+
+			if ( ! $file = $loader->_find_driver('Session', ucfirst($driver)))
 			{
-				// This will prevent the session from being restored
-				setcookie($name, '', time()-86400, '/');
+				show_error('The Session driver you have configured does not exist: '.$driver);
 			}
-			session_destroy();
-		}
+			elseif ( ! $api = $loader->_find_driver('Session', 'Driver'))
+			{
+				show_error('The Session API must be available for drivers to be loaded');
+			}
+			else
+			{
+				require($api);
+				require($file);
+			}
 
-		$driver = ucfirst($driver);
-		$loader =& load_class('Loader');
+			// Load the driver
+			$class = 'Session_'.$driver;
+			$this->_driver =& new $class($this->conf);
+			// Make sure that the driver is actually an extension of the API
+			if ( ! is_subclass_of($this->_driver, 'Session_Driver'))
+			{
+				show_error('Invalid Session driver configured: '.$driver);
+			}
 
-		if ( ! $file = $loader->_find_driver('Session', ucfirst($driver)))
-		{
-			show_error('The Session driver you have configured does not exist: '.$driver);
+			// Register driver as the session handler
+			$this->_register();
 		}
-		elseif ( ! $api = $loader->_find_driver('Session', 'Driver'))
-		{
-			show_error('The Session API must be available for drivers to be loaded');
-		}
-		else
-		{
-			require($api);
-			require($file);
-		}
-
-		// Load the driver
-		$class = 'Session_'.$driver;
-		$sess =& new $class($this->conf);
-		// Make sure that the driver is actually an extension of the API
-		if ( ! is_subclass_of($sess, 'Session_Driver'))
-		{
-			show_error('Invalid Session driver configured: '.$driver);
-		}
-
-		// Register driver as the session handler
-		session_set_save_handler
-		(
-			array(&$sess, 'open'),
-			array(&$sess, 'close'),
-			array(&$sess, 'read'),
-			array(&$sess, 'write'),
-			array(&$sess, 'destroy'),
-			array(&$sess, 'gc')
-		);
-		// And away we go!
-		session_name($this->conf['name']);
-		session_start();
-		
-		// Set defaults
-		$input =& load_class('Input');
-		if ( ! isset($_SESSION['last_activity']))
-		{
-			$_SESSION['session_id']    = session_id();
-			$_SESSION['user_agent']    = md5($input->user_agent());
-			$_SESSION['last_activity'] = time();
-			$_SESSION['ip_address']    = $input->ip_address();
-			$_SESSION['total_hits']    = 1;
-		}
-		elseif ($_SESSION['user_agent'] != md5($input->user_agent()))
-		{
-			session_destroy();
-			session_start();
-		}
-		else
-		{
-			$_SESSION['last_activity'] = time();
-			$_SESSION['total_hits']   += 1;
-		}
+		$this->create();
 
 		add_shutdown_event('session_write_close');
 		$loaded = TRUE;
 	}
+
+	function _register()
+	{
+		if ($this->conf['driver'] != 'native')
+		{
+			// Destroy any auto created sessions
+			if (@ini_get('session.auto_start') == TRUE)
+			{
+				session_destroy();
+			}
+
+			// Register driver as the session handler
+			session_set_save_handler
+			(
+				array(&$this->_driver, 'open'),
+				array(&$this->_driver, 'close'),
+				array(&$this->_driver, 'read'),
+				array(&$this->_driver, 'write'),
+				array(&$this->_driver, 'destroy'),
+				array(&$this->_driver, 'gc')
+			);
+		}
+	}
+
+	function create()
+	{
+		$this->_register();
+
+		if ( ! isset($_SESSION['session_id']))
+		{
+			session_name($this->conf['name']);
+			session_start();
+		}
+		else
+		{
+			session_unset();
+		}
+
+		return $this->_validate();
+	}
+
+	function destroy()
+	{
+		return session_destroy();
+	}
+
+	function regenerate()
+	{
+		// We use a 7 character hash of the user's IP address for a id prefix
+		// to prevent collisions. This should be very safe.
+		$input =& load_class('Input');
+		$session_id = substr(sha1($input->ip_address()), 0, 7);
+
+		session_id(uniqid($session_id));
+
+		$_SESSION['session_id'] = session_id();
+	}
+
+	function _validate()
+	{
+		// Set defaults
+		$input =& load_class('Input');
+		if ( ! isset($_SESSION['last_activity']))
+		{
+			session_unset();
+			$this->regenerate();
+			$_SESSION['user_agent']    = $input->user_agent();
+			$_SESSION['last_activity'] = time();
+			$_SESSION['ip_address']    = $input->ip_address();
+			$_SESSION['total_hits']    = 1;
+
+			return TRUE;
+		}
+
+		// Process config defined checks
+		foreach($this->conf['match'] as $var)
+		{
+			switch($var)
+			{
+				case 'user_agent':
+				case 'ip_address':
+					if ($_SESSION[$var] != $input->$var())
+					{
+						session_unset();
+						return $this->_validate();
+					}
+				break;
+			}
+		}
+
+		// Regenerate session ID
+		if (($_SESSION['total_hits'] % $this->conf['regenerate']) === 0)
+		{
+			$this->regenerate();
+		}
+
+		// Update the last activity and add another hit
+		$_SESSION['last_activity'] = time();
+		$_SESSION['total_hits']   += 1;
+
+		return TRUE;
+	}
+
+
 
 }
 

@@ -13,7 +13,6 @@ class Main extends Controller {
 		$this->load->helper('url');
 		$this->load->library('session');
 		
-		// $_SESSION['hello'] = 'hi world!';
 		print_r ($_SESSION);
 		
 		// $this->session->death();

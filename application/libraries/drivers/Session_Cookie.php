@@ -69,7 +69,7 @@ class Session_Cookie extends Session_Driver {
 
 	function close()
 	{
-		$this->gc(rand());
+		$this->gc();
 		return TRUE;
 	}
 
@@ -81,8 +81,6 @@ class Session_Cookie extends Session_Driver {
 		{
 			$data = $this->encrypt->decode($data);
 		}
-
-		// $data = unserialize($data);
 
 		return $data;
 	}
@@ -96,23 +94,37 @@ class Session_Cookie extends Session_Driver {
 
 		if (strlen($data) > 4048)
 		{
-			log_message('debug', 'Session data exceeds the 4KB limit, ignoring write.'); 
+			log_message('error', 'Session data exceeds the 4KB limit, ignoring write.');
 			return FALSE;
 		}
 
+		return $this->_setcookie($data, ($this->expiration + time()));
+	}
+
+	function _setcookie($data, $expiration)
+	{
 		return setcookie
 		(
 			$this->cookie_name,
 			$data,
-			$this->expiration + time(),
+			$expiration,
 			config_item('cookie_path'),
 			config_item('cookie_domain'),
 			config_item('cookie_secure')
 		);
 	}
 
+	function destroy()
+	{
+		unset($_COOKIE[$this->cookie_name]);
+
+		return $this->_setcookie('', (time() - 86400));
+	}
+
 	function gc()
 	{
+		return TRUE;
+
 		if ((rand(0, 100)) % 50 == 0)
 		{
 			log_message('info', 'Session garbage collected');
