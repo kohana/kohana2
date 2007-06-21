@@ -56,7 +56,7 @@ class Kohana {
 	{
 		if ($array != FALSE)
 		{
-			$this->_shutdown_events[] = $array;
+			array_unshift($this->_shutdown_events, $array);
 		}
 	}
 

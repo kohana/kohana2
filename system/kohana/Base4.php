@@ -74,7 +74,7 @@ function add_shutdown_event($array)
 	{
 		global $CORE;
 
-		$CORE->_shutdown_events[] = $array;
+		array_unshift($CORE->_shutdown_events, $array);
 	}
 }
 

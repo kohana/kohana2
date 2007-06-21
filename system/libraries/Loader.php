@@ -857,11 +857,11 @@ class Core_Loader {
 		$CORE =& get_instance();
 		if ($config !== NULL)
 		{
-			$CORE->$classvar = new $name($config);
+			$CORE->$classvar =& new $name($config);
 		}
 		else
 		{
-			$CORE->$classvar = new $name;
+			$CORE->$classvar =& new $name;
 		}
 	}
 

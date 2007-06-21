@@ -39,7 +39,7 @@ class Core_Session {
 	var $use_database   = FALSE;
 	var $session_table  = FALSE;
 	var $sess_length    = 7200;
-	var $sess_cookie    = 'Core_Session';
+	var $sess_cookie    = 'kohana_session';
 	var $userdata       = array();
 	var $gc_probability = 5;
 	var $protected_keys = array('session_id', 'ip_address', 'user_agent', 'last_activity');

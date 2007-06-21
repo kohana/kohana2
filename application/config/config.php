@@ -11,7 +11,7 @@
 |	http://www.your-site.com/
 |
 */
-$config['base_url']	= 'http://127.0.0.1/Kohana/';
+$config['base_url']	= 'http://localhost/~wgilk/kfe/';
 
 /*
 |--------------------------------------------------------------------------
@@ -244,20 +244,30 @@ $config['encryption_key'] = '';
 | Session Variables
 |--------------------------------------------------------------------------
 |
-| 'session_cookie_name' = the name you want for the cookie
-| 'encrypt_sess_cookie' = TRUE/FALSE (boolean).  Whether to encrypt the cookie
-| 'session_expiration'  = the number of SECONDS you want the session to last.
-|  by default sessions last 7200 seconds (two hours).  Set to zero for no expiration.
+| 'session_driver'      = cookie, database, or native
+| 'session_name'        = the name you want for the session
+| 'session_match'       = array of items to match, can contain:
+|                         ip, useragent
+| 'session_expiration'  = the number of SECONDS you want the session to last,
+|                         by default sessions last 7200 seconds (two hours).
+|                         Set to zero for no expiration.
+| 'session_encryption'  = TRUE/FALSE, use encrpytion
+| 'session_regenerate'  = number of loads before regenerating the session_id
 |
 */
-$config['session_driver']       = 'cookie';
-$config['sess_cookie_name']     = 'kohana_session';
-$config['sess_expiration']      = 7200;
-$config['sess_encrypt_cookie']  = FALSE;
-$config['sess_use_database']    = FALSE;
-$config['sess_table_name']      = 'kohana_sessions';
-$config['sess_match_ip']        = FALSE;
-$config['sess_match_useragent'] = TRUE;
+$config['session_driver']     = 'cookie';
+$config['session_name']       = 'kohana_session';
+$config['session_match']      = array('useragent');
+$config['session_expiration'] = 7200;
+$config['session_encryption'] = FALSE;
+$config['session_regenerate'] = 5;
+// $config['sess_cookie_name']     = 'kohana_session';
+// $config['sess_expiration']      = 7200;
+// $config['sess_encrypt_cookie']  = FALSE;
+// $config['sess_use_database']    = FALSE;
+// $config['sess_table_name']      = 'kohana_sessions';
+// $config['sess_match_ip']        = FALSE;
+// $config['sess_match_useragent'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -266,12 +276,14 @@ $config['sess_match_useragent'] = TRUE;
 |
 | 'cookie_prefix' = Set a prefix if you need to avoid collisions
 | 'cookie_domain' = Set to .your-domain.com for site-wide cookies
-| 'cookie_path'   =  Typically will be a forward slash
+| 'cookie_path'   = Typically will be a forward slash
+| 'cookie_secure' = TRUE/FALSE, only allow cookies to be secure (HTTPS)
 |
 */
 $config['cookie_prefix'] = '';
 $config['cookie_domain'] = '';
 $config['cookie_path']   = '/';
+$config['cookie_secure'] = FALSE;
 
 /*
 |--------------------------------------------------------------------------

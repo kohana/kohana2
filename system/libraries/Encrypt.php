@@ -35,8 +35,8 @@
  */
 class Core_Encrypt {
 
-	var $encryption_key	= '';
-	var $_hash_type	= 'sha1';
+	var $encryption_key = '';
+	var $_hash_type     = 'sha1';
 	var $_mcrypt_exists = FALSE;
 	var $_mcrypt_cipher;
 	var $_mcrypt_mode;

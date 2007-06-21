@@ -38,12 +38,21 @@ define('KOHANA_VERSION', '1.0');
 
 // Is this PHP5?
 define('KOHANA_IS_PHP5', (floor(phpversion()) >= 5));
+
 /*
  * ------------------------------------------------------
  *  Load the global functions
  * ------------------------------------------------------
  */
 require(BASEPATH.'kohana/Common'.EXT);
+
+
+/*
+ * ------------------------------------------------------
+ *  Register a shutdown function for catching more errors
+ * ------------------------------------------------------
+ */
+register_shutdown_function('_shutdown_handler');
 
 /*
  * ------------------------------------------------------
@@ -52,13 +61,6 @@ require(BASEPATH.'kohana/Common'.EXT);
  */
 set_error_handler('_exception_handler');
 set_magic_quotes_runtime(0); // Kill magic quotes
-
-/*
- * ------------------------------------------------------
- *  Register a shutdown function for catching more errors
- * ------------------------------------------------------
- */
-register_shutdown_function('_shutdown_handler');
 
 /*
  * ------------------------------------------------------
