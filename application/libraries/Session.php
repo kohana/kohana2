@@ -74,7 +74,7 @@ class Core_Session {
 	 */
 	function id()
 	{
-		return session_id();
+		return @session_id();
 	}
 
 	// --------------------------------------------------------------------
@@ -91,12 +91,12 @@ class Core_Session {
 
 		if ( ! isset($_SESSION['session_id']))
 		{
-			session_name($this->name);
-			session_start();
+			@session_name($this->name);
+			@session_start();
 		}
 		else
 		{
-			session_unset();
+			@session_unset();
 		}
 
 		$this->_validate();
@@ -113,7 +113,7 @@ class Core_Session {
 	 */
 	function destroy()
 	{
-		return session_destroy();
+		return @session_destroy();
 	}
 
 	// --------------------------------------------------------------------
@@ -126,12 +126,21 @@ class Core_Session {
 	 */
 	function regenerate()
 	{
-		// We use a 7 character hash of the user's IP address for a id prefix
-		// to prevent collisions. This should be very safe.
-		$input =& load_class('Input');
-		$session_id = substr(sha1($input->ip_address()), 0, 7);
+		if ($this->driver == 'native')
+		{
+			session_regenerate_id();
+		}
+		else
+		{
+			$input =& load_class('Input');
+			// We use 13 characters of a hash of the user's IP address for
+			// an id prefix to prevent collisions. This should be very safe.
+			$sessid = sha1($input->ip_address());
+			$_start = rand(0, strlen($sessid)-13);
+			$sessid = substr($sessid, $_start, 13);
 
-		session_id(uniqid($session_id));
+			session_id(uniqid($sessid));
+		}
 
 		$_SESSION['session_id'] = session_id();
 	}
@@ -275,6 +284,20 @@ class Core_Session {
 		{
 			unset($_SESSION[$key]);
 		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Save the session
+	 *
+	 * @access	public
+	 * @return	bool
+	 */
+	function save()
+	{
+		$data = session_encode();
+		return $this->_driver->write(session_id(), $data);
 	}
 
 	// --------------------------------------------------------------------

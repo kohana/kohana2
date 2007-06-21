@@ -744,11 +744,12 @@ class Core_Loader {
 			if ($ex == TRUE)
 			{
 				include($ex);
-				return $this->_init_class($class, config_item('subclass_prefix'), $params);
+				return $this->_init_class($class, $params);
 			}
 			else
 			{
-				return $this->_init_class($class, '', $params);
+				eval('class '.$class.' extends Core_'.$class.' {}');
+				return $this->_init_class($class, $params);
 			}
 		}// END FOREACH
 
@@ -828,7 +829,7 @@ class Core_Loader {
 	 * @param	string
 	 * @return	null
 	 */
-	function _init_class($class, $prefix = '', $config = FALSE)
+	function _init_class($class, $config = FALSE)
 	{
 		// Is there an associated config file for this class?
 		if ($config === NULL)
@@ -840,16 +841,8 @@ class Core_Loader {
 			}
 		}
 
-		if ($prefix == '')
-		{
-			$name = (class_exists('Core_'.$class)) ? 'Core_'.$class : $class;
-		}
-		else
-		{
-			$name = $prefix.$class;
-		}
-
 		// Set the variable name we will assign the class to
+		$name  = $class;
 		$class = strtolower($class);
 		$classvar = ( ! isset($this->_varmap[$class])) ? $class : $this->_varmap[$class];
 

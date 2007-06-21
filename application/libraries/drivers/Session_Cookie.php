@@ -134,7 +134,7 @@ class Session_Cookie extends Session_Driver {
 			return FALSE;
 		}
 
-		return $this->_setcookie($data, ($this->expiration + time()));
+		return $this->_setcookie($data, (time() + $this->expiration));
 	}
 
 	// --------------------------------------------------------------------

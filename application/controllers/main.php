@@ -15,7 +15,9 @@ class Main extends Controller {
 		
 		// $this->session->create();
 		// $this->session->set('foo', 'bar');
+		// $this->session->set('ip_address', null);
 		// $this->session->set_flash('foo', 'bar');
+		// $this->session->set_userdata('foo', 'bar');
 		print_r ($_SESSION);
 		
 		// $this->session->death();
