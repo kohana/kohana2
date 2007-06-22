@@ -41,6 +41,9 @@ class Core_Session {
 	var $regenerate = 3;
 	var $safe_keys  = array();
 
+	/**
+	 * Session Constructor
+	 */
 	function Core_Session()
 	{
 		// Load session config
@@ -69,8 +72,8 @@ class Core_Session {
 	/**
 	 * Return the session id
 	 *
-	 * @access	public
-	 * @return	string
+	 * @access public
+	 * @return string
 	 */
 	function id()
 	{
@@ -82,8 +85,8 @@ class Core_Session {
 	/**
 	 * Create a new session
 	 *
-	 * @access	public
-	 * @return	void
+	 * @access public
+	 * @return void
 	 */
 	function create($vars = NULL)
 	{
@@ -108,8 +111,8 @@ class Core_Session {
 	/**
 	 * Destroy the current session
 	 *
-	 * @access	public
-	 * @return	bool
+	 * @access public
+	 * @return bool
 	 */
 	function destroy()
 	{
@@ -121,8 +124,8 @@ class Core_Session {
 	/**
 	 * Regenerate the session id
 	 *
-	 * @access	public
-	 * @return	void
+	 * @access public
+	 * @return void
 	 */
 	function regenerate()
 	{
@@ -143,10 +146,10 @@ class Core_Session {
 	/**
 	 * Set a session variable
 	 *
-	 * @access	public
-	 * @param	mixed	array of values, or key
-	 * @param	mixed	value (optional)
-	 * @return	void
+	 * @access public
+	 * @param  mixed   array of values, or key
+	 * @param  mixed   value (optional)
+	 * @return void
 	 */
 	function set($keys, $val = FALSE)
 	{
@@ -172,10 +175,10 @@ class Core_Session {
 	/**
 	 * Set a flash variable
 	 *
-	 * @access	public
-	 * @param	mixed	array of values, or key
-	 * @param	mixed	value (optional)
-	 * @return	void
+	 * @access public
+	 * @param  mixed   array of values, or key
+	 * @param  mixed   value (optional)
+	 * @return void
 	 */
 	function set_flash($keys, $val = FALSE)
 	{
@@ -202,9 +205,9 @@ class Core_Session {
 	/**
 	 * Freshen a flash variable
 	 *
-	 * @access	public
-	 * @param	string	variable key
-	 * @return	bool
+	 * @access public
+	 * @param  string  variable key
+	 * @return bool
 	 */
 	function keep_flash($key)
 	{
@@ -224,9 +227,9 @@ class Core_Session {
 	/**
 	 * Get a flash variable
 	 *
-	 * @access	public
-	 * @param	string	key (optional)
-	 * @return	mixed
+	 * @access public
+	 * @param  string  key (optional)
+	 * @return mixed
 	 */
 	function get($key = FALSE)
 	{
@@ -243,9 +246,9 @@ class Core_Session {
 	/**
 	 * Get a variable, and delete it
 	 *
-	 * @access	public
-	 * @param	string	key (optional)
-	 * @return	mixed
+	 * @access public
+	 * @param  string  key (optional)
+	 * @return mixed
 	 */
 	function get_once($key)
 	{
@@ -260,9 +263,9 @@ class Core_Session {
 	/**
 	 * Delete a variable
 	 *
-	 * @access	public
-	 * @param	string	key
-	 * @return	void
+	 * @access public
+	 * @param  string  key
+	 * @return void
 	 */
 	function del($key)
 	{
@@ -284,9 +287,9 @@ class Core_Session {
 	/**
 	 * Load the session driver
 	 *
-	 * @access	private
-	 * @param	array	configuration options
-	 * @return	void
+	 * @access private
+	 * @param  array   configuration options
+	 * @return void
 	 */
 	function _load_driver($config)
 	{
@@ -352,7 +355,7 @@ class Core_Session {
 			if (@ini_get('session.auto_start') == TRUE)
 			{
 				unset($_COOKIE[session_name()]);
-				session_destroy();
+				@session_destroy();
 			}
 
 			// Register driver as the session handler
@@ -365,6 +368,35 @@ class Core_Session {
 				array(&$this->_driver, 'destroy'),
 				array(&$this->_driver, 'gc')
 			);
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Initialize flash variables
+	 *
+	 * @access	private
+	 * @return	void
+	 */
+	function _init_flash()
+	{
+		$this->flash =& $_SESSION['_kf_flash_'];
+
+		if (count($this->flash) > 0)
+		{
+			foreach($this->flash as $key => $state)
+			{
+				if ($state == 'old')
+				{
+					$this->del($key);
+					unset($this->flash[$key]);
+				}
+				else
+				{
+					$this->flash[$key] = 'old';
+				}
+			}
 		}
 	}
 
@@ -421,35 +453,6 @@ class Core_Session {
 		$_SESSION['total_hits']   += 1;
 
 		return TRUE;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Initialize flash variables
-	 *
-	 * @access	private
-	 * @return	void
-	 */
-	function _init_flash()
-	{
-		$this->flash =& $_SESSION['_kf_flash_'];
-
-		if (count($this->flash) > 0)
-		{
-			foreach($this->flash as $key => $state)
-			{
-				if ($state == 'old')
-				{
-					$this->del($key);
-					unset($this->flash[$key]);
-				}
-				else
-				{
-					$this->flash[$key] = 'old';
-				}
-			}
-		}
 	}
 
 }

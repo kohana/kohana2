@@ -41,7 +41,6 @@ class Core_Hooks {
 
 	/**
 	 * Constructor
-	 *
 	 */
 	function Core_Hooks()
 	{

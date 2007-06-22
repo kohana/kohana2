@@ -199,5 +199,5 @@ class Session_Cookie extends Session_Driver {
 		);
 	}
 }
-
+// END Session Cookie Driver Class
 ?>
