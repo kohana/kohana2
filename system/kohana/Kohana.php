@@ -152,7 +152,7 @@ if (KOHANA_IS_PHP5)
 }
 else
 {
-	load_class('Loader', FALSE);
+	load_class('Loader');
 	require(BASEPATH.'kohana/Base4'.EXT);
 }
 

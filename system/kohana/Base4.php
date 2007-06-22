@@ -64,8 +64,16 @@ class Kohana extends Core_Loader {
 function &get_instance()
 {
 	global $CORE, $OBJ;
-
-	return (is_object($CORE) ? $CORE : $OBJ->load);
+	
+	// We can't use a ternary here, PHP4 bug
+	if (is_object($CORE))
+	{
+		return $CORE;
+	}
+	else
+	{
+		return $OBJ->load;
+	}
 }
 
 function add_shutdown_event($array)
@@ -76,6 +84,13 @@ function add_shutdown_event($array)
 
 		array_unshift($CORE->_shutdown_events, $array);
 	}
+}
+
+function get_shutdown_events()
+{
+	global $CORE;
+
+	return $CORE->_shutdown_events;
 }
 
 ?>

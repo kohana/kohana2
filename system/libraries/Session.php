@@ -109,6 +109,19 @@ class Core_Session {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Save the Session
+	 *
+	 * @access public
+	 * @return void
+	 */
+	function save($vars = NULL)
+	{
+		session_write_close();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Destroy the current session
 	 *
 	 * @access public
@@ -167,6 +180,13 @@ class Core_Session {
 				continue;
 
 			$_SESSION[$key] = $val;
+		}
+
+		// Because the cookie is sent with the headers, we can't register a
+		// shutdown event for writing, so we call save() every set()
+		if ($this->driver = 'cookie')
+		{
+			$this->save();
 		}
 	}
 
@@ -335,7 +355,7 @@ class Core_Session {
 		// Set up flash variables
 		$this->_init_flash();
 
-		add_shutdown_event('session_write_close');
+		// add_shutdown_event('session_write_close');
 		$loaded = TRUE;
 	}
 
