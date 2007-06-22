@@ -263,7 +263,6 @@ function _exception_handler($severity, $message, $filepath, $line)
 */
 function _shutdown_handler()
 {
-	die((string) ob_get_level());
 	foreach(get_shutdown_events() as $event)
 	{
 		if (is_array($event) AND is_array($event[0]))
