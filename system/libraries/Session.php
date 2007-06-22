@@ -116,7 +116,7 @@ class Core_Session {
 	 */
 	function save($vars = NULL)
 	{
-		session_write_close();
+		@session_write_close();
 	}
 
 	// --------------------------------------------------------------------
@@ -144,7 +144,22 @@ class Core_Session {
 	{
 		if ($this->driver == 'native')
 		{
-			session_regenerate_id();
+			// PHP5 allows you to delete the old session when calling
+			// session_regenerate_id. Naturally, PHP4 doesn't do this,
+			// and we have to do it manually. :(
+			if (KOHANA_IS_PHP5)
+			{
+				session_regenerate_id(TRUE);
+			}
+			else
+			{
+				$session_file = session_save_path().'/sess_'.session_id();
+				// Delete the old session file if regeneration succeded
+				if (session_regenerate_id() AND file_exists($session_file))
+				{
+					@unlink($session_file);
+				}
+			}
 		}
 		else
 		{
