@@ -153,6 +153,17 @@ class Session_Cookie extends Session_Driver {
 	}
 
 	// --------------------------------------------------------------------
+	
+	function regenerate()
+	{
+		// We use 13 characters of a hash of the user's IP address for
+		// an id prefix to prevent collisions. This should be very safe.
+		$sessid = sha1($this->input->ip_address());
+		$_start = rand(0, strlen($sessid)-13);
+		$sessid = substr($sessid, $_start, 13);
+
+		session_id(uniqid($sessid));
+	}
 
 	/**
 	 * Collect garbage
@@ -177,7 +188,7 @@ class Session_Cookie extends Session_Driver {
 	 */
 	function _setcookie($data, $expiration)
 	{
-		return setcookie
+		return @setcookie
 		(
 			$this->cookie_name,
 			$data,

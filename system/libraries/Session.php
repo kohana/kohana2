@@ -132,14 +132,7 @@ class Core_Session {
 		}
 		else
 		{
-			$input =& load_class('Input');
-			// We use 13 characters of a hash of the user's IP address for
-			// an id prefix to prevent collisions. This should be very safe.
-			$sessid = sha1($input->ip_address());
-			$_start = rand(0, strlen($sessid)-13);
-			$sessid = substr($sessid, $_start, 13);
-
-			session_id(uniqid($sessid));
+			$this->_driver->regenerate();
 		}
 
 		$_SESSION['session_id'] = session_id();
@@ -289,20 +282,6 @@ class Core_Session {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Save the session
-	 *
-	 * @access	public
-	 * @return	bool
-	 */
-	function save()
-	{
-		$data = session_encode();
-		return $this->_driver->write(session_id(), $data);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Load the session driver
 	 *
 	 * @access	private
@@ -312,6 +291,7 @@ class Core_Session {
 	function _load_driver($config)
 	{
 		static $loaded;
+		// Driver can only be loaded once
 		if ($loaded == TRUE)
 			return TRUE;
 
@@ -349,7 +329,6 @@ class Core_Session {
 		}
 		// Create or load a session
 		$this->create();
-
 		// Set up flash variables
 		$this->_init_flash();
 
@@ -372,6 +351,7 @@ class Core_Session {
 			// Destroy any auto created sessions
 			if (@ini_get('session.auto_start') == TRUE)
 			{
+				unset($_COOKIE[session_name()]);
 				session_destroy();
 			}
 

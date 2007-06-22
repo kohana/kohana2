@@ -101,6 +101,19 @@ class Session_Driver {
 	{
 		show_error(get_class($this).'::destroy has not been defined');
 	}
+	
+	// --------------------------------------------------------------------
+
+	/**
+	 * Regenerate a session
+	 *
+	 * @access	public
+	 * @return	bool
+	 */
+	function regenerate()
+	{
+		show_error(get_class($this).'::regenerate has not been defined');
+	}
 
 	// --------------------------------------------------------------------
 

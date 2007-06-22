@@ -67,17 +67,30 @@ set_magic_quotes_runtime(0); // Kill magic quotes
  *  Start the timer... tick tock tick tock...
  * ------------------------------------------------------
  */
-
 $BM =& load_class('Benchmark');
 $BM->mark('total_execution_time_start');
 $BM->mark('loading_time_base_classes_start');
+
+
+/*
+ * ------------------------------------------------------
+ *  Create SHA1 function for PHP <4.3
+ * ------------------------------------------------------
+ */
+if ( ! function_exists('sha1'))
+{
+	function sha1($str)
+	{
+		$class =& load_class('SHA');
+		return $class->generate($str);
+	}
+}
 
 /*
  * ------------------------------------------------------
  *  Instantiate the hooks class
  * ------------------------------------------------------
  */
-
 $EXT =& load_class('Hooks');
 
 /*
