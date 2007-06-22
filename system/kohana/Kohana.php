@@ -36,7 +36,6 @@
 define('KOHANA_VERSION', '1.0');
 // Is this PHP5?
 define('KOHANA_IS_PHP5', (floor(PHP_VERSION) >= 5));
-ob_start();
 
 /*
  * ------------------------------------------------------
