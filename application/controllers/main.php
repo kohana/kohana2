@@ -12,26 +12,28 @@ class Main extends Controller {
 
 	function index()
 	{
+		// ob_start();
 		$this->load->library('session');
 
 		// Test session creation
-		$this->session->create();
+		// $this->session->create();
 
 		// Test setting data
 		$this->session->set('foo', 'bar');
-		$this->session->set('bar', 'baz');
-
+		$this->session->set('baz', 'foo');
+		
 		// Test deleting data
-		$this->session->del('bar');
+		$this->session->del('baz');
 
 		// Test setting protected key
 		$this->session->set('ip_address', null);
 
 		// Test setting flash data
-		$this->session->set_flash('foo', 'baz');
+		// $this->session->set_flash('foo', 'baz');
+		$this->session->keep_flash('foo');
 
 		// Test setting data via CI Session method
-		$this->session->set_userdata('foo', 'bar');
+		// $this->session->set_userdata('foo', 'bar');
 		
 		print_r ($_SESSION);
 	}

@@ -1194,7 +1194,7 @@ class Core_Image_lib {
 							return FALSE;
 						}
 
-						if (phpversion() == '4.4.1')
+						if (PHP_VERSION == '4.4.1')
 						{
 							@touch($this->full_dst_path); // PHP 4.4.1 bug #35060 - workaround
 						}

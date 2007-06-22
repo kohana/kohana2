@@ -32,12 +32,11 @@
  * @category	Front-controller
  * @author		Rick Ellis
  */
-
 // Kohana Version
 define('KOHANA_VERSION', '1.0');
-
 // Is this PHP5?
-define('KOHANA_IS_PHP5', (floor(phpversion()) >= 5));
+define('KOHANA_IS_PHP5', (floor(PHP_VERSION) >= 5));
+ob_start();
 
 /*
  * ------------------------------------------------------
@@ -296,6 +295,5 @@ if (class_exists('Core_DB') AND isset($CORE->db))
 {
 	$CORE->db->close();
 }
-
 
 ?>

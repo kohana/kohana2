@@ -153,7 +153,7 @@ class Session_Cookie extends Session_Driver {
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	function regenerate()
 	{
 		// We use 13 characters of a hash of the user's IP address for
@@ -188,7 +188,10 @@ class Session_Cookie extends Session_Driver {
 	 */
 	function _setcookie($data, $expiration)
 	{
-		return @setcookie
+		if (headers_sent())
+			return;
+
+		return setcookie
 		(
 			$this->cookie_name,
 			$data,

@@ -706,16 +706,16 @@ class Core_Input {
 		// correctly.  html_entity_decode() does not convert entities without
 		// semicolons, so we are left with our own little solution here. Bummer.
 
-		if (function_exists('html_entity_decode') && (strtolower($charset) != 'utf-8' OR version_compare(phpversion(), '5.0.0', '>=')))
+		if (function_exists('html_entity_decode') AND (strtolower($charset) != 'utf-8' OR KOHANA_IS_PHP5))
 		{
 			$str = html_entity_decode($str, ENT_COMPAT, $charset);
-			$str = preg_replace('~&#x([0-9a-f]{2,5})~ei', 'chr(hexdec("\\1"))', $str);
-			return preg_replace('~&#([0-9]{2,4})~e', 'chr(\\1)', $str);
+			$str = preg_replace('~&#x([0-9a-f]{2,5})~ei', 'chr(hexdec($1))', $str);
+			return preg_replace('~&#([0-9]{2,4})~e', 'chr($1)', $str);
 		}
 
 		// Numeric Entities
-		$str = preg_replace('~&#x([0-9a-f]{2,5});{0,1}~ei', 'chr(hexdec("\\1"))', $str);
-		$str = preg_replace('~&#([0-9]{2,4});{0,1}~e', 'chr(\\1)', $str);
+		$str = preg_replace('~&#x([0-9a-f]{2,5});{0,1}~ei', 'chr(hexdec($1))', $str);
+		$str = preg_replace('~&#([0-9]{2,4});{0,1}~e', 'chr($1)', $str);
 
 		// Literal Entities - Slightly slow so we do another check
 		if (stristr($str, '&') === FALSE)

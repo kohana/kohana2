@@ -64,6 +64,7 @@ class Core_Session {
 		// Load driver
 		$this->_load_driver($config);
 
+		add_shutdown_event('session_write_close');
 		log_message('debug', 'Session Class Initialized');
 	}
 
@@ -94,12 +95,12 @@ class Core_Session {
 
 		if ( ! isset($_SESSION['session_id']))
 		{
-			@session_name($this->name);
-			@session_start();
+			session_name($this->name);
+			session_start();
 		}
 		else
 		{
-			@session_unset();
+			session_unset();
 		}
 
 		$this->_validate();
@@ -116,7 +117,10 @@ class Core_Session {
 	 */
 	function save($vars = NULL)
 	{
-		@session_write_close();
+		if ($this->driver == 'cookie')
+		{
+			$this->_driver->write($this->id(), session_encode());
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -129,7 +133,7 @@ class Core_Session {
 	 */
 	function destroy()
 	{
-		return @session_destroy();
+		return session_destroy();
 	}
 
 	// --------------------------------------------------------------------
@@ -158,6 +162,17 @@ class Core_Session {
 				if (session_regenerate_id() AND file_exists($session_file))
 				{
 					@unlink($session_file);
+					// Workaround for a bug fixed in PHP 4.3.3
+					if (version_compare(PHP_VERSION, '4.3.3', '<'))
+					{
+						setcookie
+						(
+							session_name(),
+							session_id(),
+							@ini_get('session.cookie_lifetime'),
+							'/'
+						);
+					}
 				}
 			}
 		}
@@ -165,8 +180,9 @@ class Core_Session {
 		{
 			$this->_driver->regenerate();
 		}
-
 		$_SESSION['session_id'] = session_id();
+
+		$this->save();
 	}
 
 	// --------------------------------------------------------------------
@@ -197,12 +213,7 @@ class Core_Session {
 			$_SESSION[$key] = $val;
 		}
 
-		// Because the cookie is sent with the headers, we can't register a
-		// shutdown event for writing, so we call save() every set()
-		if ($this->driver = 'cookie')
-		{
-			$this->save();
-		}
+		$this->save();
 	}
 
 	// --------------------------------------------------------------------
@@ -230,8 +241,8 @@ class Core_Session {
 			if ($key == FALSE)
 				continue;
 
-			$this->set($key, $val);
 			$this->flash[$key] = 'new';
+			$this->set($key, $val);
 		}
 	}
 
@@ -249,6 +260,7 @@ class Core_Session {
 		if (isset($this->flash[$key]))
 		{
 			$this->flash[$key] = 'new';
+			$this->save();
 			return TRUE;
 		}
 		else
@@ -315,6 +327,8 @@ class Core_Session {
 		{
 			unset($_SESSION[$key]);
 		}
+
+		$this->save();
 	}
 
 	// --------------------------------------------------------------------
@@ -370,7 +384,6 @@ class Core_Session {
 		// Set up flash variables
 		$this->_init_flash();
 
-		// add_shutdown_event('session_write_close');
 		$loaded = TRUE;
 	}
 
@@ -390,7 +403,7 @@ class Core_Session {
 			if (@ini_get('session.auto_start') == TRUE)
 			{
 				unset($_COOKIE[session_name()]);
-				@session_destroy();
+				session_destroy();
 			}
 
 			// Register driver as the session handler
@@ -457,6 +470,8 @@ class Core_Session {
 			$_SESSION['last_activity'] = time();
 			$_SESSION['total_hits']    = 1;
 			$_SESSION['_kf_flash_']    = array();
+			// Save the session
+			$this->save();
 
 			return TRUE;
 		}
@@ -486,6 +501,8 @@ class Core_Session {
 		// Update the last activity and add another hit
 		$_SESSION['last_activity'] = time();
 		$_SESSION['total_hits']   += 1;
+		// Save session
+		$this->save();
 
 		return TRUE;
 	}
