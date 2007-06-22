@@ -31,14 +31,11 @@ Load the plugin using:
 
 Once loaded you'll add the calendar script to the <head> of your page like this:
 
-<?php echo js_calendar_script('my_form');  ?>
-
-The above function will be passed the name of your form.
+<?php echo js_calendar_script('my_form');  ?>The above function will be passed the name of your form.
 
 Then to show the actual calendar you'll do this:
 
-<?php echo js_calendar_write('entry_date', time(), true); ?>
-<form name="my_form">
+<?php echo js_calendar_write('entry_date', time(), true); ?><form name="my_form">
 <input type="text" name="entry_date" value="" onblur="update_calendar(this.name, this.value);" />
 <p><a href="javascript:void(0);" onClick="set_to_time('entry_date', '<?php echo time(); ?>')" >Today</a></p>
 </form>
@@ -134,8 +131,7 @@ function js_calendar_script($form_name = 'entryform')
 {
 
 ob_start();
-?>
-<script type="text/javascript">
+?><script type="text/javascript">
 <!--
 var form_name	= "<?php echo $form_name; ?>";
 var format		= 'us'; // eu or us

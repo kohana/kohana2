@@ -5,8 +5,7 @@
 <title><?php echo $title; ?></title>
 
 <style type='text/css'>
-<?php $this->file(BASEPATH.'scaffolding/views/stylesheet.css'); ?>
-</style>
+<?php $this->file(BASEPATH.'scaffolding/views/stylesheet.css'); ?></style>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv='expires' content='-1' />
@@ -21,8 +20,7 @@
 </div>
 <div id="header_right">
 <?php echo anchor(array($base_uri, 'view'), $scaff_view_records); ?> &nbsp;&nbsp;|&nbsp;&nbsp;
-<?php echo anchor(array($base_uri, 'add'),  $scaff_create_record); ?>
-</div>
+<?php echo anchor(array($base_uri, 'add'),  $scaff_create_record); ?></div>
 </div>
 
 <br clear="all">
