@@ -77,7 +77,7 @@ class Core_Session {
 	 */
 	function id()
 	{
-		return @session_id();
+		return $_SESSION['session_id'];
 	}
 
 	// --------------------------------------------------------------------
