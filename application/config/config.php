@@ -261,6 +261,8 @@ $config['session_match']      = array('user_agent');
 $config['session_expiration'] = 7200;
 $config['session_encryption'] = FALSE;
 $config['session_regenerate'] = 3;
+$config['session_db_group']   = 'default';
+$config['session_table']      = 'kohana_sessions';
 
 /*
 |--------------------------------------------------------------------------
