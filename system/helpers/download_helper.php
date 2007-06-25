@@ -46,9 +46,16 @@
  */	
 function force_download($filename = '', $data = '')
 {
-	if ($filename == '' OR $data == '')
-	{
+	if ($filename == '')
 		return FALSE;
+
+	if ($data == '')
+	{
+		if ( ! file_exists($filename) OR ! is_readable($filename))
+			return FALSE;
+
+		$data = (function_exists('file_get_contents')) ? file_get_contents($filename) : implode('', file($filename));
+		$filename = basename($filename);
 	}
 
 	// Try to determine if the filename includes a file extension.
@@ -57,14 +64,14 @@ function force_download($filename = '', $data = '')
 	{
 		return FALSE;
 	}
-	
+
 	// Grab the file extension
 	$x = explode('.', $filename);
 	$extension = end($x);
 
 	// Load the mime types
 	@include(APPPATH.'config/mimes'.EXT);
-	
+
 	// Set a default mime if we can't find it
 	if ( ! isset($mimes[$extension]))
 	{
@@ -74,7 +81,7 @@ function force_download($filename = '', $data = '')
 	{
 		$mime = (is_array($mimes[$extension])) ? $mimes[$extension][0] : $mimes[$extension];
 	}
-	
+
 	// Generate the server headers
 	if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE"))
 	{
@@ -95,9 +102,8 @@ function force_download($filename = '', $data = '')
 		header('Pragma: no-cache');
 		header("Content-Length: ".strlen($data));
 	}
-	
+
 	echo $data;
 }
-
 
 ?>
