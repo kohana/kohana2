@@ -263,15 +263,18 @@ function _exception_handler($severity, $message, $filepath, $line)
 */
 function _shutdown_handler()
 {
-	foreach(get_shutdown_events() as $event)
+	if (function_exists('get_shutdown_events'))
 	{
-		if (is_array($event) AND is_array($event[0]))
+		foreach(get_shutdown_events() as $event)
 		{
-			call_user_func_array($event[0], $event[1]);
-		}
-		else
-		{
-			call_user_func($event);
+			if (is_array($event) AND is_array($event[0]))
+			{
+				call_user_func_array($event[0], $event[1]);
+			}
+			else
+			{
+				call_user_func($event);
+			}
 		}
 	}
 }

@@ -75,13 +75,13 @@ function &get_instance()
 function add_shutdown_event($array)
 {
 	Kohana::make_instance($CORE);
-	return $CORE->add_shutdown_event($array);
+	return (is_object($CORE) ? $CORE->add_shutdown_event($array) : FALSE);
 }
 
 function get_shutdown_events()
 {
 	Kohana::make_instance($CORE);
-	return $CORE->get_shutdown_events();
+	return (is_object($CORE) ? $CORE->get_shutdown_events() : array());
 }
 
 ?>

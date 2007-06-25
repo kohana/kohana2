@@ -53,6 +53,30 @@ function site_url($uri = '')
 // ------------------------------------------------------------------------
 
 /**
+ * Current URI
+ *
+ * Return the current URI string
+ *
+ * @access	public
+ * @return	string
+ */
+function current_uri()
+{
+	$CORE =& get_instance();
+	
+	$uri = $CORE->uri->uri_string();
+	if ($uri == '')
+	{
+		$router =& load_class('Router');
+		$uri = $router->default_controller;
+	}
+
+	return trim($uri, '/');
+}
+
+// ------------------------------------------------------------------------
+
+/**
  * Base URL
  *
  * Returns the "base_url" item from your config file
