@@ -29,10 +29,8 @@
  */
 class Core_View {
 
-	// Loader
-	var $load;
-	// Storage
-	var $data = array();
+	var $load     = '';
+	var $data     = array();
 	var $template = 'template';
 
 	/**
@@ -40,7 +38,8 @@ class Core_View {
 	 */
 	function Core_View()
 	{
-		$this->load =& load_class('Loader');
+		$CORE =& get_instance();
+		$this->load =& $CORE->load;
 	}
 
 	/**
@@ -64,12 +63,9 @@ class Core_View {
 	 */
 	function set($key, $data = FALSE)
 	{
-		if ($data == FALSE)
+		if (is_array($key))
 		{
-			if (is_array($key))
-			{
-				$this->data = array_merge($this->data, $key);
-			}
+			$this->data = array_merge($this->data, $key);
 		}
 		else
 		{
@@ -87,7 +83,7 @@ class Core_View {
 	 */
 	function add($key, $data)
 	{
-		if ($data == '' OR ! is_string($key) OR ! is_string($data))
+		if (! is_string($key) OR ! is_string($data))
 			return;
 
 		if (isset($this->data[$key]))
@@ -122,7 +118,7 @@ class Core_View {
 	 *
 	 * EXAMPLES:
 	 * Load the "blog_content" view into the "body" variable:
-	 *   load('body', 'blog_content')
+	 *   load('blog_content', 'body')
 	 * Load the "blog_content" view into the "blog_content" variable:
 	 *   load('blog_content', TRUE)
 	 * Load the currently set template and return it as a string:
