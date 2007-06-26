@@ -117,8 +117,8 @@ class Session_Database extends Session_Driver {
 	{
 		$sql = "SELECT data 
 				FROM $this->table 
-				WHERE session_id ='$id' ";
-		$query = $this->sdb->query($sql);
+				WHERE session_id = ?";
+		$query = $this->sdb->query($sql, array($id));
 		
 		if ($query->num_rows() > 0)
 		{
@@ -145,21 +145,23 @@ class Session_Database extends Session_Driver {
 	{
 		$last_activity = time();
 		$total_hits = 1;
+
 		// Does session exist?
 		$sql = "SELECT session_id, last_activity, total_hits, data 
 				FROM $this->table 
-				WHERE session_id ='$id' ";
-		$query = $this->sdb->query($sql);
+				WHERE session_id = ?";
+		$query = $this->sdb->query($sql, array($id));
+		
 		// Yes? Do update
 		if ($query->num_rows() > 0)
 		{
 			$row = $query->row();
 			$total_hits += $row->total_hits;
-			$sql = "UPDATE $this->table 
-					SET last_activity ='$last_activity',
-						total_hits ='$total_hits',
-						data ='$data'
-					WHERE session_id ='$id' ";
+			
+			$db_data = array('last_activity' => $last_activity, 'total_hits' => $total_hits, 'data' => $data);
+			$where = "session_id = '$id'";
+			$sql = $this->sdb->update_string($this->table, $db_data, $where);
+
 			$this->sdb->query($sql);
 			// Did we succeed?
 			if ($this->sdb->affected_rows())
@@ -169,20 +171,9 @@ class Session_Database extends Session_Driver {
 		}
 		else // No? Add the session
 		{
-			$sql = "INSERT INTO $this->table 
-					(
-						session_id,
-						last_activity,
-						total_hits,
-						data
-					)
-					VALUES 
-					(
-						'$id',
-						'$last_activity',
-						'$total_hits',
-						'$data'
-					)";
+			$db_data = array('session_id'=> $id, 'last_activity' => $last_activity, 'total_hits' => $total_hits, 'data' => $data);
+			$sql = $this->sdb->insert_string($this->table, $db_data);
+
 			$this->sdb->query($sql);
 			// Did we succeed?
 			if ($this->sdb->affected_rows())
@@ -205,6 +196,7 @@ class Session_Database extends Session_Driver {
 	function destroy()
 	{
 		$id = session_id();
+
 		$sql = "DELETE FROM $this->table 
 				WHERE session_id = '$id'";
 		$this->sdb->query($sql);
@@ -236,10 +228,12 @@ class Session_Database extends Session_Driver {
 		
 		// Get session data, using the old session id
 		$id = session_id();
+
 		$sql = "SELECT total_hits, data 
 				FROM $this->table 
-				WHERE session_id ='$id' ";
-		$query = $this->sdb->query($sql);
+				WHERE session_id = ?";
+		$query = $this->sdb->query($sql, array($id));
+		
 		$row = $query->row();
 		// Session exists? Then store the data
 		if ($query->num_rows() > 0)
@@ -252,6 +246,7 @@ class Session_Database extends Session_Driver {
 			$total_hits = 0;
 			$data = '';
 		}
+		
 		// Reset session control items
 		$last_activity = time();
 		
@@ -261,21 +256,11 @@ class Session_Database extends Session_Driver {
 		
 		// Add the new session to the db
 		$id = session_id();
-		$sql = "INSERT INTO $this->table 
-				(
-					session_id,
-					last_activity,
-					total_hits,
-					data
-				)
-				VALUES 
-				(
-					'$id',
-					'$last_activity',
-					'$total_hits',
-					'$data'
-				)";
-			$this->sdb->query($sql);
+
+		$db_data = array('session_id'=> $id, 'last_activity' => $last_activity, 'total_hits' => $total_hits, 'data' => $data);
+		$sql = $this->sdb->insert_string($this->table, $db_data);
+ 
+		$this->sdb->query($sql);
 	}
 
 	/**
