@@ -382,11 +382,6 @@ class Core_DB_driver {
 	 */
 	function simple_query($sql)
 	{
-		if ( ! $this->conn_id)
-		{
-			$this->initialize();
-		}
-
 		return $this->_execute($sql);
 	}
 

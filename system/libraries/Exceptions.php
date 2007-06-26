@@ -170,6 +170,8 @@ class Core_Exceptions {
 		$buffer = ob_get_contents();
 		ob_end_clean();
 		print $buffer;
+		if (strpos('Error', $buffer) !== FALSE)
+			exit;
 	}
 
 

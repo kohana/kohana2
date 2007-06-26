@@ -227,7 +227,12 @@ class Core_Loader {
 		// returning our database object on this call, we need to stop
 		if ($return === TRUE OR ($return == FALSE AND isset($CORE->db)))
 		{
-			return ($return ? Core_DB($params) : FALSE);
+			if ($return == TRUE)
+			{
+				$return =& Core_DB($params);
+			}
+
+			return $return;
 		}
 
 		// Initialize the db variable. Needed to prevent reference errors

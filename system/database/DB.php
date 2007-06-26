@@ -59,7 +59,6 @@ function &Core_DB($params = '')
 			'conn_id'  => FALSE,
 			'dbdriver' => 'mysql',
 			'dbprefix' => '',
-			'port'     => '',
 			'pconnect' => FALSE,
 			'db_debug' => FALSE,
 			'cachedir' => '',

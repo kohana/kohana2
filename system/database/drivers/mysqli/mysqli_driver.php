@@ -252,7 +252,7 @@ class Core_DB_mysqli_driver extends Core_DB {
 	 */
 	function escape_str($str)
 	{
-		return mysqli_real_escape_string($this->conn_id, $str);
+		return @mysqli_real_escape_string($this->conn_id, $str);
 	}
 
 	// --------------------------------------------------------------------
@@ -331,6 +331,14 @@ class Core_DB_mysqli_driver extends Core_DB {
 				$keys = array_map('strtolower', array_keys($field));
 				$vals = array_values($field);
 				$field = array_combine($keys, $vals);
+				$field += array
+				(
+					'name'    => '',
+					'default' => '',
+					'type'    => '',
+					'size'    => '',
+					'null'    => ''
+				);
 
 				if (($unsigned = stripos($field['type'], 'unsigned')) !== FALSE)
 				{

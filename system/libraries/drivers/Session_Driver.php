@@ -34,6 +34,32 @@
 class Session_Driver {
 
 	/**
+	 * Constructor
+	 *
+	 * Developers should always run this, parent::Session_Driver()
+	 */
+	function Session_Driver($config)
+	{
+		foreach(((array) $config) as $key => $val)
+		{
+			$this->$key = $val;
+		}
+
+		// Load necessary classes
+		$this->input =& load_class('Input');
+		if ($this->encryption == TRUE)
+		{
+			$this->encrypt =& load_class('Encrypt');
+		}
+
+		// Set "no expiration" to two years
+		if ($this->expiration == 0)
+		{
+			$this->expiration = 60*60*24*365*2;
+		}
+	}
+
+	/**
 	 * Open a session
 	 *
 	 * @access	public
@@ -87,7 +113,7 @@ class Session_Driver {
 	{
 		show_error(get_class($this).'::write has not been defined');
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -101,7 +127,7 @@ class Session_Driver {
 	{
 		show_error(get_class($this).'::destroy has not been defined');
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -112,7 +138,17 @@ class Session_Driver {
 	 */
 	function regenerate()
 	{
-		show_error(get_class($this).'::regenerate has not been defined');
+		if ( ! isset($this->name))
+		{
+			show_error(get_class($this).'::regenerate has not been defined');
+		}
+
+		// We use 13 characters of a hash of the user's IP address for
+		// an id prefix to prevent collisions. This should be very safe.
+		$sessid = sha1($this->input->ip_address());
+		$_start = rand(0, strlen($sessid)-13);
+		$sessid = substr($sessid, $_start, 13);
+		return uniqid($sessid);
 	}
 
 	// --------------------------------------------------------------------
@@ -121,12 +157,11 @@ class Session_Driver {
 	 * Garbage collection, called by close()
 	 *
 	 * @access	public
-	 * @param	integer	session life
 	 * @return	bool
 	 */
-	function gc($max_life)
+	function gc()
 	{
-		show_error(get_class($this).'::gc has not been defined');
+		return ((rand(0, 100) % 50) === 0);
 	}
 
 }

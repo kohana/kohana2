@@ -117,7 +117,7 @@ class Core_Profiler {
 		$output .= '<legend style="color:#0000FF;">&nbsp;&nbsp;'.$this->CORE->lang->line('profiler_queries').' ('.$query_count.')&nbsp;&nbsp;</legend>';
 		$output .= "\n";
 
-		if ( ! class_exists('Core_DB_driver'))
+		if ( ! isset($this->CORE->db))
 		{
 			$output .= "<div style='color:#0000FF;font-weight:normal;padding:4px 0 0 0;'>".$this->CORE->lang->line('profiler_no_db')."</div>";
 		}

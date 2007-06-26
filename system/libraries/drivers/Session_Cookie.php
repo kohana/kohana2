@@ -42,24 +42,9 @@ class Session_Cookie extends Session_Driver {
 	 */
 	function Session_Cookie($config)
 	{
-		foreach(((array) $config) as $key => $val)
-		{
-			$this->$key = $val;
-		}
+		parent::Session_Driver($config);
+
 		$this->cookie_name = config_item('cookie_prefix').$this->name;
-
-		// Load necessary classes
-		$this->input =& load_class('Input');
-		if ($this->encryption == TRUE)
-		{
-			$this->encrypt =& load_class('Encrypt');
-		}
-
-		// Set "no expiration" to two years
-		if ($this->expiration == 0)
-		{
-			$this->expiration = 60*60*24*365*2;
-		}
 
 		log_message('debug', 'Session Cookie Driver Initialized');
 	}
@@ -149,20 +134,14 @@ class Session_Cookie extends Session_Driver {
 	{
 		unset($_COOKIE[$this->cookie_name]);
 
-		return $this->_setcookie('', (time() - 86400));
+		return $this->_setcookie(session_id(), (time() - 86400));
 	}
 
 	// --------------------------------------------------------------------
 
 	function regenerate()
 	{
-		// We use 13 characters of a hash of the user's IP address for
-		// an id prefix to prevent collisions. This should be very safe.
-		$sessid = sha1($this->input->ip_address());
-		$_start = rand(0, strlen($sessid)-13);
-		$sessid = substr($sessid, $_start, 13);
-
-		session_id(uniqid($sessid));
+		session_id(parent::regenerate());
 	}
 
 	/**
