@@ -878,7 +878,7 @@ class CI_Email {
 			break;
 			case 'html' :
 
-				$hdr .= 'Content-Type: multipart/alternative; boundary=\'' . $this->_alt_boundary . '\'' . $this->newline;
+				$hdr .= 'Content-Type: multipart/alternative; boundary="' . $this->_alt_boundary . '"' . $this->newline;
 				$hdr .= $this->_get_mime_message() . $this->newline . $this->newline;
 				$hdr .= '--' . $this->_alt_boundary . $this->newline;
 
@@ -906,7 +906,7 @@ class CI_Email {
 			break;
 			case 'plain-attach' :
 
-				$hdr .= 'Content-Type: multipart/'.$this->multipart.'; boundary=\'' . $this->_atc_boundary.'\'' . $this->newline;
+				$hdr .= 'Content-Type: multipart/'.$this->multipart.'; boundary="' . $this->_atc_boundary.'"' . $this->newline;
 				$hdr .= $this->_get_mime_message() . $this->newline . $this->newline;
 				$hdr .= '--' . $this->_atc_boundary . $this->newline;
 
@@ -926,11 +926,11 @@ class CI_Email {
 			break;
 			case 'html-attach' :
 
-				$hdr .= 'Content-Type: multipart/'.$this->multipart.'; boundary=\'' . $this->_atc_boundary.'\'' . $this->newline;
+				$hdr .= 'Content-Type: multipart/'.$this->multipart.'; boundary="' . $this->_atc_boundary.'"' . $this->newline;
 				$hdr .= $this->_get_mime_message() . $this->newline . $this->newline;
 				$hdr .= '--' . $this->_atc_boundary . $this->newline;
 
-				$hdr .= 'Content-Type: multipart/alternative; boundary=\'' . $this->_alt_boundary . '\'' . $this->newline .$this->newline;
+				$hdr .= 'Content-Type: multipart/alternative; boundary="' . $this->_alt_boundary . '"' . $this->newline .$this->newline;
 				$hdr .= '--' . $this->_alt_boundary . $this->newline;
 
 				$hdr .= 'Content-Type: text/plain; charset=' . $this->charset . $this->newline;
@@ -973,7 +973,7 @@ class CI_Email {
 
 			$h  = '--'.$this->_atc_boundary.$this->newline;
 			$h .= 'Content-type: '.$ctype.'; ';
-			$h .= 'name=\''.$basename.'\''.$this->newline;
+			$h .= 'name="'.$basename.'"'.$this->newline;
 			$h .= 'Content-Disposition: '.$this->_attach_disp[$i].';'.$this->newline;
 			$h .= 'Content-Transfer-Encoding: base64'.$this->newline;
 
