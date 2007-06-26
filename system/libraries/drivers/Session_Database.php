@@ -16,7 +16,7 @@
  * @orig_package     CodeIgniter
  * @orig_author      Rick Ellis
  * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
- * @orig_license     http://www.codeignitor.com/user_guide/license.html
+ * @orig_license     http://www.codeigniter.com/user_guide/license.html
  * @filesource
  */
 
@@ -43,21 +43,11 @@ class Session_Database extends Session_Driver {
 	 */
 	function Session_Database($config)
 	{
-		foreach(((array) $config) as $key => $val)
-		{
-			$this->$key = $val;
-		}
+		parent::Session_Driver($config);
 
-		$this->input =& load_class('Input');
 		$this->CORE =& get_instance();
 		
 		$this->table = config_item('session_table');
-
-		// Set "no expiration" to two years
-		if ($this->expiration == 0)
-		{
-			$this->expiration = 60*60*24*365*2;
-		}
 
 		log_message('debug', 'Session Database Driver Initialized');
 	}
@@ -220,12 +210,6 @@ class Session_Database extends Session_Driver {
 	 */
 	function regenerate()
 	{
-		// We use 13 characters of a hash of the user's IP address for
-		// an id prefix to prevent collisions. This should be very safe.
-		$sessid = sha1($this->input->ip_address());
-		$_start = rand(0, strlen($sessid)-13);
-		$sessid = substr($sessid, $_start, 13);
-		
 		// Get session data, using the old session id
 		$id = session_id();
 
@@ -251,8 +235,8 @@ class Session_Database extends Session_Driver {
 		$last_activity = time();
 		
 		// Regenerate the session
-		session_id(uniqid($sessid));
-		session_regenerate_id(TRUE);
+		session_id(parent::regenerate());
+		session_regenerate_id();
 		
 		// Add the new session to the db
 		$id = session_id();
@@ -262,7 +246,9 @@ class Session_Database extends Session_Driver {
  
 		$this->sdb->query($sql);
 	}
-
+	
+	// --------------------------------------------------------------------
+	
 	/**
 	 * Collect garbage
 	 *
