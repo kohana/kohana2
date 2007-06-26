@@ -279,6 +279,9 @@ $config['encryption_key'] = '';
 |                         Set to zero for no expiration.
 | 'session_encryption'  = TRUE/FALSE, use encrpytion
 | 'session_regenerate'  = number of loads before regenerating the session_id
+| 'session_db_group'    = Which database group to use, defined in Database.php
+|                         'default' will use your default group.
+| 'session_table'       = The name of the table used for sessions.
 |
 */
 $config['session_driver']     = 'cookie';
