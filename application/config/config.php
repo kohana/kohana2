@@ -108,6 +108,32 @@ $config['enable_hooks'] = FALSE;
 */
 $config['subclass_prefix'] = 'MY_';
 
+/*
+|---------------------------------------------------------------
+| LOADER INCLUDE PATHS
+|---------------------------------------------------------------
+|
+| If you want this application to share globally accessible directories
+| of configurations, helpers, libraries, etc. with other applications
+| you can tell Kohana where to look for these items.  This setting is an array and
+| can have as many entries as you want.  Know, though, that the more you have
+| the longer it will take to load a file that is actually in the system directory.
+|
+| By default, the Kohana loader looks in the local application directory for
+| these sorts of files, and if nothing exists it looks in the core
+| system directory.  Adding entries here adds intermediate place to look
+| for code files.  Kohana will now look in the local application directory, then
+| in any directory you configure here (in order from first listed to last
+| if more than one), then finally the core system directory.
+|
+| This path can be
+|    -Relative (to the front controller which THIS config file controls)
+|    -Absolute
+|
+*/
+$config['include_paths'] = Array(
+
+);
 
 /*
 |--------------------------------------------------------------------------

@@ -44,6 +44,13 @@ define('KOHANA_IS_PHP5', (floor(PHP_VERSION) >= 5));
  */
 require(BASEPATH.'kohana/Common'.EXT);
 
+/*
+ * ------------------------------------------------------
+ *  Get the list of search paths for resource/config loading
+ * ------------------------------------------------------
+ */
+$IPATHS = set_include_paths();
+$CPATHS = array_reverse($IPATHS);
 
 /*
  * ------------------------------------------------------
@@ -236,7 +243,7 @@ else
 	{
 		// Any URI segments present (besides the class/function) will be passed to the method for convenience
 		$args = array_slice($RTR->rsegments, (($RTR->fetch_directory() == '') ? 2 : 3));
-		
+
 		if ( ! method_exists($CORE, $method))
 		{
 			// Attempt to call the "default" method instead of showing a 404

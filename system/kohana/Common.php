@@ -279,4 +279,97 @@ function _shutdown_handler()
 	}
 }
 
+
+/**
+* Set Include Paths
+*
+* Build an array of absolute paths where the first entry is the local
+* application directory (APPPATH), the next entries are validated entries
+* from the 'include_paths' entry in main config, and the last entry is
+* the system directory (BASEPATH)
+*
+* @access	public
+* @return	array
+*/
+function set_include_paths()
+{
+	$include_paths = array(APPPATH);
+	$conf_include_paths = config_item('include_paths');
+	if ( is_array($conf_include_paths) && count($conf_include_paths)>0 )
+	{
+		foreach($conf_include_paths as $path)
+		{
+			$path = (substr($path,0,1)=='/' || substr($path,1,1)==':')
+			      ? $path
+			      : realpath(dirname(SELF)).'/'.$path;
+			if ( ($path=realpath($path))!==FALSE && is_dir($path) )
+			{
+				$include_paths[] = $path.'/';
+			}
+		}
+	}
+	$include_paths[] = BASEPATH;
+
+	return $include_paths;
+}
+/**
+ * Find Resource
+ *
+ * Takes a filename, resource subdirectory (libraries, helpers, plugins, etc),
+ * and optional list of paths to exclude in the search and returns absolute
+ * path to first matching filename in search path hierarchy or BOOL FALSE if
+ * not found
+ *
+ * @access   public
+ * @param    string
+ * @param    string
+ * @param    array
+ * @return   mixed
+ */
+function ci_find_resource($resource_file,$resource_subdir,$exclude_in_search=array())
+{
+    global $IPATHS;
+    $return_val = FALSE;
+    foreach ( $IPATHS as $path )
+    {
+        if ( is_file($path.$resource_subdir.'/'.$resource_file) )
+        {
+        	if( is_array($exclude_in_search) && !in_array($path,$exclude_in_search) )
+        		continue;
+
+           	$return_val = $path.$resource_subdir.'/'.$resource_file;
+           	break;
+
+        }
+    }
+    return $return_val;
+}
+
+/**
+ * Verify Directory Exists in Include Path
+ *
+ * Takes a directory name, resource sub-directory name (libraries, helpers, plugins, etc),
+ * and optional list of include paths to exclude in the search and returns absolute path to
+ * first matching filename in search path hierarchy or BOOL FALSE if not found
+ *
+ * @access   public
+ * @param    string
+ * @param    string
+ * @param    array
+ * @return   mixed
+ */
+function ci_verify_include_dir($dir_name,$resource_subdir,$exclude_in_search=array())
+{
+    global $IPATHS;
+    $return_val = FALSE;
+    foreach ( $IPATHS as $path )
+    {
+        if ( (is_array($exclude_in_search) && !in_array($path,$exclude_in_search)) && is_dir($path.$resource_subdir.'/'.$dir_name) )
+        {
+            $return_val = $path.$resource_subdir.'/'.$dir_name;
+            break;
+        }
+    }
+    return $return_val;
+}
 ?>
