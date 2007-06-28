@@ -272,6 +272,8 @@ $config['encryption_key'] = '';
 |
 | 'session_driver'      = cookie, database, or native
 | 'session_name'        = the name you want for the session
+|                         if driver is 'database', a database group & table
+|                         must exist, with the same name as 'session_name'.
 | 'session_match'       = array of items to match, can contain:
 |                         ip_address, user_agent
 | 'session_expiration'  = the number of SECONDS you want the session to last,
@@ -290,8 +292,6 @@ $config['session_match']      = array('user_agent');
 $config['session_expiration'] = 7200;
 $config['session_encryption'] = FALSE;
 $config['session_regenerate'] = 3;
-$config['session_db_group']   = 'default';
-$config['session_table']      = 'kohana_sessions';
 
 /*
 |--------------------------------------------------------------------------

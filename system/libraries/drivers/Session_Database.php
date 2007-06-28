@@ -33,9 +33,7 @@
  */
 class Session_Database extends Session_Driver {
 
-	var $input;
-	var $sdb;
-	var $table;
+	var $sdb;               // session db connection
 	var $CORE;
 
 	/**
@@ -44,10 +42,6 @@ class Session_Database extends Session_Driver {
 	function Session_Database($config)
 	{
 		parent::Session_Driver($config);
-
-		$this->CORE =& get_instance();
-		
-		$this->table = config_item('session_table');
 
 		log_message('debug', 'Session Database Driver Initialized');
 	}
@@ -58,7 +52,7 @@ class Session_Database extends Session_Driver {
 	 * Open the session
 	 * Session opens a dedicated database connection.
 	 * This is done for 3 reasons:
-	 * 1. To allow the developer to configure a non-default db group.
+	 * 1. A sessions database group MUST be configured.
 	 * 2. To prevent data loss occurring with different db connections.
 	 * 3. To keep the session db connection available in the shutdown handler.
 	 *
@@ -67,8 +61,16 @@ class Session_Database extends Session_Driver {
 	 */
 	function open()
 	{
-		$db_group = config_item('session_db_group');
-		$this->sdb = $this->CORE->load->database($db_group, TRUE);
+		$this->CORE =& get_instance();
+		// $this->name contains the configured 'session_name'. A db group
+		// AND an actual database table must exist of the SAME name.
+		$this->sdb = $this->CORE->load->database($this->name, TRUE);
+		
+		if (! $this->sdb->table_exists($this->name))
+		{
+			show_error(get_class($this).'::The configured session table name was not found');
+		}
+		
 		if ($this->sdb)
 		{
 			return TRUE;
@@ -106,7 +108,7 @@ class Session_Database extends Session_Driver {
 	function read($id)
 	{
 		$sql = "SELECT data 
-				FROM $this->table 
+				FROM $this->name 
 				WHERE session_id = ?";
 		$query = $this->sdb->query($sql, array($id));
 		
@@ -138,7 +140,7 @@ class Session_Database extends Session_Driver {
 
 		// Does session exist?
 		$sql = "SELECT session_id, last_activity, total_hits, data 
-				FROM $this->table 
+				FROM $this->name 
 				WHERE session_id = ?";
 		$query = $this->sdb->query($sql, array($id));
 		
@@ -150,7 +152,7 @@ class Session_Database extends Session_Driver {
 			
 			$db_data = array('last_activity' => $last_activity, 'total_hits' => $total_hits, 'data' => $data);
 			$where = "session_id = '$id'";
-			$sql = $this->sdb->update_string($this->table, $db_data, $where);
+			$sql = $this->sdb->update_string($this->name, $db_data, $where);
 
 			$this->sdb->query($sql);
 			// Did we succeed?
@@ -162,7 +164,7 @@ class Session_Database extends Session_Driver {
 		else // No? Add the session
 		{
 			$db_data = array('session_id'=> $id, 'last_activity' => $last_activity, 'total_hits' => $total_hits, 'data' => $data);
-			$sql = $this->sdb->insert_string($this->table, $db_data);
+			$sql = $this->sdb->insert_string($this->name, $db_data);
 
 			$this->sdb->query($sql);
 			// Did we succeed?
@@ -187,7 +189,7 @@ class Session_Database extends Session_Driver {
 	{
 		$id = session_id();
 
-		$sql = "DELETE FROM $this->table 
+		$sql = "DELETE FROM $this->name 
 				WHERE session_id = '$id'";
 		$this->sdb->query($sql);
 		// Did we succeed?
@@ -214,7 +216,7 @@ class Session_Database extends Session_Driver {
 		$id = session_id();
 
 		$sql = "SELECT total_hits, data 
-				FROM $this->table 
+				FROM $this->name 
 				WHERE session_id = ?";
 		$query = $this->sdb->query($sql, array($id));
 		
@@ -242,7 +244,7 @@ class Session_Database extends Session_Driver {
 		$id = session_id();
 
 		$db_data = array('session_id'=> $id, 'last_activity' => $last_activity, 'total_hits' => $total_hits, 'data' => $data);
-		$sql = $this->sdb->insert_string($this->table, $db_data);
+		$sql = $this->sdb->insert_string($this->name, $db_data);
  
 		$this->sdb->query($sql);
 	}
@@ -252,20 +254,30 @@ class Session_Database extends Session_Driver {
 	/**
 	 * Collect garbage
 	 *
+	 * For the randomly challenged, the parent::gc() function will return
+	 * true with a probability of 0.03 This means there is a three % chance
+	 * of deleting sessions older than session.gc.maxlifetime for each gc().
+	 *
 	 * @access	public
 	 * @return	int	Number of rows deleted
 	 */
 	function gc()
 	{
-		$lifetime = ini_get('session.gc_maxlifetime');
-		$expiry = ($lifetime > 0) ? (time() - $lifetime) : (time() - 1440);
+		if (parent::gc())
+		{
+			$lifetime = ini_get('session.gc_maxlifetime');
+			$expiry = ($lifetime > 0) ? (time() - $lifetime) : (time() - 1440);
 
-		$sql = "DELETE FROM $this->table 
-				WHERE last_activity < $expiry";
-		$this->sdb->query($sql);
+			$sql = "DELETE FROM $this->name 
+					WHERE last_activity < $expiry";
+			$this->sdb->query($sql);
 		
-		return $this->sdb->affected_rows();
-
+			return $this->sdb->affected_rows();
+			return 0;
+		}
+		
+		return 0;
+		
 	}
 
 	// --------------------------------------------------------------------

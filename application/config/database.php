@@ -41,7 +41,11 @@
 | ['cachedir'] The path to the folder where cache files should be stored
 |
 | The $active_group variable lets you choose which connection group to
-| make active.  By default there is only one group (the 'default' group). 
+| make active.
+|
+| A database group 'kohana_session' is required if you are using the
+| Session_Database driver. If you are not using a database for session
+| storage, you may remove this group.
 |
 */
 
@@ -58,5 +62,18 @@ $db['default']['db_debug'] = TRUE;
 $db['default']['cache_on'] = FALSE;
 $db['default']['cachedir'] = '';
 $db['default']['charset']  = '';
+//
+// Sessions database group
+$db['kohana_session']['hostname'] = 'localhost';
+$db['kohana_session']['username'] = 'sessions';
+$db['kohana_session']['password'] = 'sessions';
+$db['kohana_session']['database'] = 'sessions';
+$db['kohana_session']['dbdriver'] = 'mysql';
+$db['kohana_session']['dbprefix'] = '';
+$db['kohana_session']['pconnect'] = TRUE;
+$db['kohana_session']['db_debug'] = TRUE;
+$db['kohana_session']['cache_on'] = FALSE;
+$db['kohana_session']['cachedir'] = '';
+$db['kohana_session']['charset']  = '';
 
 ?>
