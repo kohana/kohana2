@@ -599,6 +599,24 @@ class CI_DB_driver {
 
 		return (string) $str;
 	}
+	
+	/**
+	 * "Smart" Escape Column Names
+	 *
+	 * Escapes column names
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	string
+	 */
+	function escape_column($column)
+	{
+		//Look for a table and column, then we don't need to escape
+		if (strpos($column, '.') !== FALSE) 
+			return $column;
+		else
+			return '"'.$column.'"';
+	}
 
 	// --------------------------------------------------------------------
 
