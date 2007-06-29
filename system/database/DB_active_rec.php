@@ -512,7 +512,7 @@ class CI_DB_active_record extends CI_DB_driver {
 
 		foreach ($key as $k => $v)
 		{
-			$this->ar_set[$k] = $this->escape($v);
+			$this->ar_set['`'.$k.'`'] = $this->escape($v);
 		}
 
 		return $this;
