@@ -170,7 +170,7 @@ class CI_Email {
 	 */
 	function from($from, $name = '')
 	{
-		if (preg_match( '/\<(.*)\>/', $from, $match))
+		if (preg_match('/<(.*)>/', $from, $match))
 			$from = $match[1];
 
 		if ($this->validate)
@@ -195,7 +195,7 @@ class CI_Email {
 	 */
 	function reply_to($replyto, $name = '')
 	{
-		if (preg_match( '/\<(.*)\>/', $replyto, $match))
+		if (preg_match('/<(.*)>/', $replyto, $match))
 			$replyto = $match[1];
 
 		if ($this->validate)
@@ -637,7 +637,7 @@ class CI_Email {
 	 */
 	function valid_email($address)
 	{
-		return (bool) preg_match('/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix', $address);
+		return (bool) preg_match('/^([a-z0-9+_-]+)(\.[a-z0-9+_-]+)*@([a-z0-9-]+\.)+[a-z]{2,6}$/iD', $address);
 	}
 
 	// --------------------------------------------------------------------
@@ -653,7 +653,7 @@ class CI_Email {
 	{
 		if ( ! is_array($email))
 		{
-			if (preg_match('/\<(.*)\>/', $email, $match))
+			if (preg_match('/<(.*)>/', $email, $match))
 		   		return $match[1];
 		   	else
 		   		return $email;
@@ -663,7 +663,7 @@ class CI_Email {
 
 		for ($i = 0, $c = count($email); $i < $c; $i++)
 		{
-			if (preg_match('/\<(.*)\>/', $email[$i], $match))
+			if (preg_match('/<(.*)>/', $email[$i], $match))
 		   		$clean_email[] = $match[1];
 		   	else
 		   		$clean_email[] = $email[$i];
@@ -692,7 +692,7 @@ class CI_Email {
 			return $this->word_wrap($this->alt_message, '76');
 		}
 
-		$body = (preg_match('#<body(?:.*?)>(.*)</body>#is', $this->_body, $match)) ? $match[1] : $this->_body;
+		$body = (preg_match('#<body[^>]*>(.*)</body>#is', $this->_body, $match)) ? $match[1] : $this->_body;
 
 		$body = trim(strip_tags($body));
 		$body = preg_replace('#<!--(.*?)-->#s', '', $body);
