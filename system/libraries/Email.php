@@ -689,7 +689,7 @@ class CI_Email {
 	{
 		if ($this->alt_message != '')
 		{
-			return $this->word_wrap($this->alt_message, '76');
+			return $this->word_wrap($this->alt_message, 76);
 		}
 
 		$body = (preg_match('#<body[^>]*>(.*)</body>#is', $this->_body, $match)) ? $match[1] : $this->_body;
@@ -699,7 +699,7 @@ class CI_Email {
 		$body = str_replace("\t", '', $body);
 		$body = preg_replace('#\n{3,}#', "\n\n", $body);
 
-		return $this->word_wrap($body, '76');
+		return $this->word_wrap($body, 76);
 	}
 
 	// --------------------------------------------------------------------
@@ -715,7 +715,7 @@ class CI_Email {
 	function word_wrap($str, $charlim = FALSE)
 	{
 		// Set the character limit
-		$charlim = ($charlim != FALSE) ? (int) $charlim : $this->wrapchars;
+		$charlim = (int) (($charlim != FALSE) ? $charlim : $this->wrapchars);
 
 		// Reduce multiple spaces
 		$str = preg_replace('|  +|', ' ', $str);
@@ -790,8 +790,7 @@ class CI_Email {
 	 * Build final headers
 	 *
 	 * @access	public
-	 * @param	string
-	 * @return	string
+	 * @return	void
 	 */
 	function _build_headers()
 	{
