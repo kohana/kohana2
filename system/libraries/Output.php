@@ -264,7 +264,7 @@ class Core_Output {
 		$CORE =& get_instance();
 		$path = $CORE->config->item('cache_path');
 
-		$cache_path = ($path == '') ? BASEPATH.'cache/' : $path;
+		$cache_path = ($path == '') ? APPPATH.'cache/' : $path;
 
 		if ( ! is_dir($cache_path) OR ! is_writable($cache_path))
 		{
