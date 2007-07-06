@@ -408,8 +408,8 @@ class Core_Loader {
 
 		foreach ($plugins as $plugin)
 		{
-			$plugin = strtolower(str_replace(array(EXT, '_plugin'), '').'_pi');
-
+			$plugin = strtolower(str_replace(array(EXT, '_plugin'), '', $plugin).'_pi');
+			
 			if (isset($this->_plugins[$plugin]))
 				continue;
 
