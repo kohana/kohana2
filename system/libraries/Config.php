@@ -152,12 +152,8 @@ class Core_Config {
 	/**
 	 * Fetch a config file item - adds slash after item
 	 *
-	 * The second parameter allows a slash to be added to the end of
-	 * the item, in the case of a path.
-	 *
 	 * @access	public
 	 * @param	string	the config item name
-	 * @param	bool
 	 * @return	string
 	 */
 	function slash_item($item)
@@ -169,7 +165,7 @@ class Core_Config {
 
 		if ($pref != '')
 		{
-			$pref = trim($pref, '/').'/';
+			$pref = rtrim($pref, '/').'/';
 		}
 
 		return $pref;
@@ -195,17 +191,29 @@ class Core_Config {
 			$uri = trim($uri, '/');
 		}
 
+		if (strpos($uri, '?') !== FALSE)
+		{
+			$get = explode('?', $uri);
+			$uri = array_shift($get);
+			// Remove the query string if GET is disabled
+			$get = ($this->item('enable_get_requests') == TRUE) ?  '?'.implode('&', $get) : '';
+		}
+		else
+		{
+			$get = '';
+		}
+
 		$url = $this->slash_item('base_url');
 		// Append uri to the site_url
 		if ($uri != '')
 		{
-			$url .= $this->slash_item('index_page').$uri.$this->item('url_suffix');
+			$url .= $this->slash_item('index_page').$uri.$this->item('url_suffix').$get;
 		}
 		else
 		{
 			$url .= $this->item('index_page');
 		}
-	
+
 		return $url;
 	}
 
