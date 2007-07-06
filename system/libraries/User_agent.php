@@ -91,10 +91,11 @@ class Core_User_agent {
 	 */
 	function _load_agent_file()
 	{
-		if ( ! @include(APPPATH.'config/user_agents'.EXT))
-		{
+		if (($abs_resource_path = find_resource('user_agents'.EXT,'config')) !== FALSE)
+			include($abs_resource_path);
+		else
 			return FALSE;
-		}
+
 
 		$return = FALSE;
 

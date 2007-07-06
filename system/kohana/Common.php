@@ -53,32 +53,29 @@ function &load_class($class, $instantiate = TRUE)
 
 	// Does the class exist?  If so, we're done...
 	if (isset($objects[$class]))
-	{
 		return $objects[$class];
-	}
 
-	// If the requested class does not exist in the application/libraries
-	// folder we'll load the native class from the system/libraries folder.
-	if (file_exists(APPPATH.'libraries/'.config_item('subclass_prefix').$class.EXT))
+
+	// If the requested class does not exist in the /libraries folders of any
+	// extension folder we'll load the native class from the system/libraries folder.
+	if (($abs_resource_path = find_resource(config_item('subclass_prefix').$class.EXT,'libraries',array(BASEPATH))) !== FALSE)
 	{
 		require(BASEPATH.'libraries/'.$class.EXT);
-		require(APPPATH.'libraries/'.config_item('subclass_prefix').$class.EXT);
+		require($abs_resource_path);
 		$is_subclass = TRUE;
 	}
-	else
+	elseif (($abs_resource_path = find_resource($class.EXT,'libraries')) !== FALSE)
 	{
-		if (file_exists(APPPATH.'libraries/'.$class.EXT))
-		{
-			require(APPPATH.'libraries/'.$class.EXT);
-		}
-		else
-		{
-			require(BASEPATH.'libraries/'.$class.EXT);
-		}
+		require($abs_resource_path);
 		$is_subclass = FALSE;
 
 		// We do this to allow the transparent extension of classes
 		eval('class '.$class.' extends Core_'.$class.' {}');
+	}
+	//could not find class anywhere in search paths--error
+	else
+	{
+		show_error("Initial core load failed for class: $class");
 	}
 
 	if ($instantiate == FALSE)
@@ -86,8 +83,6 @@ function &load_class($class, $instantiate = TRUE)
 		$objects[$class] = TRUE;
 		return $objects[$class];
 	}
-
-	$name = ($is_subclass == TRUE) ? $class : 'Core_'.$class;
 
 	$objects[$class] =& new $class();
 	return $objects[$class];
@@ -295,14 +290,14 @@ function set_include_paths()
 {
 	$include_paths = array(APPPATH);
 	$conf_include_paths = config_item('include_paths');
-	if ( is_array($conf_include_paths) && count($conf_include_paths)>0 )
+	if (is_array($conf_include_paths) AND count($conf_include_paths)>0)
 	{
-		foreach($conf_include_paths as $path)
+		foreach ($conf_include_paths as $path)
 		{
-			$path = (substr($path,0,1)=='/' || substr($path,1,1)==':')
+			$path = (substr($path,0,1)=='/' OR substr($path,1,1)==':')
 			      ? $path
 			      : realpath(dirname(SELF)).'/'.$path;
-			if ( ($path=realpath($path))!==FALSE && is_dir($path) )
+			if (($path=realpath($path))!==FALSE AND is_dir($path))
 			{
 				$include_paths[] = $path.'/';
 			}
@@ -326,23 +321,22 @@ function set_include_paths()
  * @param    array
  * @return   mixed
  */
-function ci_find_resource($resource_file,$resource_subdir,$exclude_in_search=array())
+function find_resource($resource_file,$resource_subdir,$exclude_in_search=array())
 {
-    global $IPATHS;
-    $return_val = FALSE;
-    foreach ( $IPATHS as $path )
-    {
-        if ( is_file($path.$resource_subdir.'/'.$resource_file) )
-        {
-        	if( is_array($exclude_in_search) && !in_array($path,$exclude_in_search) )
-        		continue;
+	global $IPATHS;
+	$return_val = FALSE;
+	foreach ($IPATHS as $path)
+	{
+		if (is_file($path.$resource_subdir.'/'.$resource_file))
+		{
+			if (is_array($exclude_in_search) AND in_array($path,$exclude_in_search))
+				continue;
 
-           	$return_val = $path.$resource_subdir.'/'.$resource_file;
-           	break;
-
-        }
-    }
-    return $return_val;
+			$return_val = $path.$resource_subdir.'/'.$resource_file;
+			break;
+		}
+	}
+	return $return_val;
 }
 
 /**
@@ -358,18 +352,18 @@ function ci_find_resource($resource_file,$resource_subdir,$exclude_in_search=arr
  * @param    array
  * @return   mixed
  */
-function ci_verify_include_dir($dir_name,$resource_subdir,$exclude_in_search=array())
+function verify_include_dir($dir_name,$resource_subdir,$exclude_in_search=array())
 {
-    global $IPATHS;
-    $return_val = FALSE;
-    foreach ( $IPATHS as $path )
-    {
-        if ( (is_array($exclude_in_search) && !in_array($path,$exclude_in_search)) && is_dir($path.$resource_subdir.'/'.$dir_name) )
-        {
-            $return_val = $path.$resource_subdir.'/'.$dir_name;
-            break;
-        }
-    }
-    return $return_val;
+	global $IPATHS;
+	$return_val = FALSE;
+	foreach ($IPATHS as $path)
+	{
+		if ((is_array($exclude_in_search) && !in_array($path,$exclude_in_search)) && is_dir($path.$resource_subdir.'/'.$dir_name))
+		{
+			$return_val = $path.$resource_subdir.'/'.$dir_name;
+			break;
+		}
+	}
+	return $return_val;
 }
 ?>

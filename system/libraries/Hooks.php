@@ -62,21 +62,16 @@ class Core_Hooks {
 
 		// If hooks are not enabled in the config file
 		// there is nothing else to do
-
 		if ($CFG->item('enable_hooks') == FALSE)
-		{
 			return;
-		}
 
 		// Grab the "hooks" definition file.
+		if(($abs_resource_path = find_resource('hooks'.EXT,'config')) !== FALSE)
+			include($abs_resource_path);
+
 		// If there are no hooks, we're done.
-
-		@include(APPPATH.'config/hooks'.EXT);
-
 		if ( ! isset($hook) OR ! is_array($hook))
-		{
 			return;
-		}
 
 		$this->hooks =& $hook;
 		$this->enabled = TRUE;
@@ -129,9 +124,7 @@ class Core_Hooks {
 	function _run_hook($data)
 	{
 		if ( ! is_array($data))
-		{
 			return FALSE;
-		}
 
 		// -----------------------------------
 		// Safety - Prevents run-away loops
@@ -141,25 +134,17 @@ class Core_Hooks {
 		// hook call within it a loop can happen
 
 		if ($this->in_progress == TRUE)
-		{
 			return;
-		}
 
 		// -----------------------------------
 		// Set file path
 		// -----------------------------------
 
 		if ( ! isset($data['filepath']) OR ! isset($data['filename']))
-		{
 			return FALSE;
-		}
 
-		$filepath = APPPATH.$data['filepath'].'/'.$data['filename'];
-
-		if ( ! file_exists($filepath))
-		{
+		if (($filepath = find_resource($data['filename'],$data['filepath'])) === FALSE)
 			return FALSE;
-		}
 
 		// -----------------------------------
 		// Set class/function name
@@ -185,9 +170,7 @@ class Core_Hooks {
 		}
 
 		if ($class === FALSE AND $function === FALSE)
-		{
 			return FALSE;
-		}
 
 		// -----------------------------------
 		// Set the in_progress flag

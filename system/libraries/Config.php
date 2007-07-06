@@ -36,6 +36,7 @@
 class Core_Config {
 
 	var $config = array();
+	var $search_paths;
 	var $is_loaded = array();
 
 	/**
@@ -52,7 +53,22 @@ class Core_Config {
 	function Core_Config()
 	{
 		$this->config =& get_config();
+		$this->_set_search_paths();
 		log_message('debug', 'Config Class Initialized');
+	}
+
+	/**
+	 * Set list of paths in which to search for config files
+	 *
+	 * @access private
+	 * @return void
+	 */
+	function _set_search_paths()
+	{
+		global $CPATHS;
+		$this->search_paths = (isset($CPATHS) AND is_array($CPATHS) AND count($CPATHS)>0 )
+		                    ? $CPATHS
+		                    : array(BASEPATH,APPPATH);
 	}
 
 	// --------------------------------------------------------------------
@@ -71,43 +87,53 @@ class Core_Config {
 		if (in_array($file, $this->is_loaded, TRUE))
 			return TRUE;
 
-		if ( ! file_exists(APPPATH.'config/'.$file.EXT))
+		$include_count = 0;
+		foreach($this->search_paths as $path)
 		{
-			if ($fail_gracefully === TRUE)
-				return FALSE;
-
-			show_error('The configuration file '.$file.EXT.' does not exist.');
-		}
-
-		include(APPPATH.'config/'.$file.EXT);
-
-		if ( ! isset($config) OR ! is_array($config))
-		{
-			if ($fail_gracefully === TRUE)
-				return FALSE;
-
-			show_error('Your '.$file.EXT.' file does not appear to contain a valid configuration array.');
-		}
-
-		if ($use_sections === TRUE)
-		{
-			if (isset($this->config[$file]))
+			if (is_file($path.'config/'.$file.EXT))
 			{
-				$this->config[$file] = array_merge($this->config[$file], $config);
+				include($path.'config/'.$file.EXT);
+
+				if (!isset($config) OR ! is_array($config))
+				{
+					if ($fail_gracefully === TRUE)
+						continue;
+
+					show_error('Your '.$file.EXT.' file does not appear to contain a valid configuration array.');
+				}
+			}
+			else
+				continue;
+
+			$include_count++;
+			if ($use_sections === TRUE)
+			{
+				if (isset($this->config[$file]))
+				{
+					$this->config[$file] = array_merge($this->config[$file], $config);
+				}
+				else
+				{
+						$this->config[$file] = $config;
+				}
 			}
 			else
 			{
-				$this->config[$file] = $config;
+				$this->config = array_merge($this->config, $config);
 			}
+			unset($config);
+		}
+		if($include_count>0)
+		{
+			$this->is_loaded[] = $file;
 		}
 		else
 		{
-			$this->config = array_merge($this->config, $config);
+			if ($fail_gracefully === TRUE)
+				return FALSE;
+
+			show_error('The configuration file '.$file.EXT.' does not exist in the search paths.');
 		}
-
-		$this->is_loaded[] = $file;
-		unset($config);
-
 		log_message('debug', 'Config file loaded: config/'.$file.EXT);
 		return TRUE;
 	}

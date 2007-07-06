@@ -131,7 +131,7 @@ $config['subclass_prefix'] = 'MY_';
 |    -Absolute
 |
 */
-$config['include_paths'] = Array(
+$config['include_paths'] = array(
 
 );
 

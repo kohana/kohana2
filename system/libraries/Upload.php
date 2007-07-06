@@ -800,8 +800,9 @@ class Core_Upload {
 	{
 		if (count($this->mimes) == 0)
 		{
-			if (@include(APPPATH.'config/mimes'.EXT))
+			if (($abs_resource_path = find_resource('mimes'.EXT,'config')) !== FALSE)
 			{
+				include($abs_resource_path);
 				$this->mimes = $mimes;
 				unset($mimes);
 			}

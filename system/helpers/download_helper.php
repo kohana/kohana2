@@ -70,7 +70,10 @@ function force_download($filename = '', $data = '')
 	$extension = end($x);
 
 	// Load the mime types
-	@include(APPPATH.'config/mimes'.EXT);
+	if(($abs_resource_path = find_resource('mimes'.EXT,'config')) !== FALSE)
+	{
+		include($abs_resource_path);
+	}
 
 	// Set a default mime if we can't find it
 	if ( ! isset($mimes[$extension]))

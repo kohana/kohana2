@@ -130,10 +130,16 @@ class Core_Exceptions {
 			ob_end_flush();
 		}
 		ob_start();
-		include(APPPATH.'errors/'.$template.EXT);
+		if(($abs_resource_path = find_resource($template.EXT,'errors')) !== FALSE)
+		{
+			include($abs_resource_path);
+		}
+		else {
+			die('An error occured but the error display template could not be loaded.');
+		}
 		$buffer = ob_get_contents();
 		ob_end_clean();
-		print $buffer;
+		return $buffer;
 	}
 
 	// --------------------------------------------------------------------
@@ -166,12 +172,16 @@ class Core_Exceptions {
 			ob_end_flush();
 		}
 		ob_start();
-		include(APPPATH.'errors/error_php'.EXT);
+		if(($abs_resource_path = find_resource('error_php'.EXT,'errors')) !== FALSE)
+		{
+			include($abs_resource_path);
+		}
+		else {
+			die('A PHP error occured but the error display template could not be loaded.');
+		}
 		$buffer = ob_get_contents();
 		ob_end_clean();
-		print $buffer;
-		if (strpos('Error', $buffer) !== FALSE)
-			exit;
+		echo $buffer;
 	}
 
 

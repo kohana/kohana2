@@ -61,9 +61,7 @@ class Core_Language {
 		$langfile = str_replace(EXT, '', str_replace('_lang.', '', $langfile)).'_lang'.EXT;
 
 		if (in_array($langfile, $this->is_loaded, TRUE))
-		{
 			return;
-		}
 
 		if ($idiom == '')
 		{
@@ -73,21 +71,10 @@ class Core_Language {
 		}
 
 		// Determine where the language file is and load it
-		if (file_exists(APPPATH.'language/'.$idiom.'/'.$langfile))
-		{
-			include(APPPATH.'language/'.$idiom.'/'.$langfile);
-		}
+		if ((($abs_resource_path = find_resource($idiom.'/'.$langfile,'language'))) !== FALSE)
+			include($abs_resource_path);
 		else
-		{
-			if (file_exists(BASEPATH.'language/'.$idiom.'/'.$langfile))
-			{
-				include(BASEPATH.'language/'.$idiom.'/'.$langfile);
-			}
-			else
-			{
-				show_error('Unable to load the requested language file: language/'.$langfile);
-			}
-		}
+			show_error('Unable to load the requested language file: language/'.$langfile);
 
 
 		if ( ! isset($lang))
@@ -97,9 +84,8 @@ class Core_Language {
 		}
 
 		if ($return == TRUE)
-		{
 			return $lang;
-		}
+
 
 		$this->is_loaded[] = $langfile;
 		$this->language = array_merge($this->language, $lang);

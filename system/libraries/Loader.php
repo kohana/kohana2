@@ -71,10 +71,9 @@ class Core_Loader {
 
 	// All these are set automatically. Don't mess with them.
 	var $_ob_level;
-	var $_view_path   = '';
+	var $_view_path		= '';
 	var $_is_instance = FALSE; // Whether we should use $this or $CORE =& get_instance()
 	var $_cached_vars = array();
-	var $_paths       = array(APPPATH, BASEPATH);
 	var $_classes     = array();
 	var $_models      = array();
 	var $_helpers     = array();
@@ -91,9 +90,7 @@ class Core_Loader {
 	 */
 	function Core_Loader()
 	{
-		$this->_view_path = APPPATH.'views/';
 		$this->_ob_level  = ob_get_level();
-
 		log_message('debug', 'Loader Class Initialized');
 	}
 
@@ -166,9 +163,7 @@ class Core_Loader {
 		}
 
 		if (in_array($name, $this->_models, TRUE))
-		{
 			return;
-		}
 
 		$CORE =& get_instance();
 		if (isset($CORE->$name))
@@ -178,7 +173,7 @@ class Core_Loader {
 
 		$model = strtolower($model);
 
-		if ( ! file_exists(APPPATH.'models/'.$path.$model.EXT))
+		if (($abs_resource_path = find_resource($path.$model.EXT,'models')) === FALSE)
 		{
 			show_error('Unable to locate the model you have specified: '.$model);
 		}
@@ -186,13 +181,15 @@ class Core_Loader {
 		if ($db_conn !== FALSE AND ! class_exists('Core_DB'))
 		{
 			if ($db_conn === TRUE)
+			{
 				$db_conn = '';
+			}
 
 			$CORE->load->database($db_conn, FALSE, TRUE);
 		}
 
 		load_class('Model', FALSE);
-		require_once(APPPATH.'models/'.$path.$model.EXT);
+		require_once($abs_resource_path);
 
 		$model = ucfirst($model);
 
@@ -362,21 +359,11 @@ class Core_Loader {
 			if (isset($this->_helpers[$helper]))
 				continue;
 
-			if (file_exists(APPPATH.'helpers/'.$helper.EXT))
-			{
-				include_once(APPPATH.'helpers/'.$helper.EXT);
-			}
+			if (($abs_resource_path = find_resource($helper.EXT,'helpers')) !== FALSE)
+				include_once($abs_resource_path);
 			else
-			{
-				if (file_exists(BASEPATH.'helpers/'.$helper.EXT))
-				{
-					include(BASEPATH.'helpers/'.$helper.EXT);
-				}
-				else
-				{
-					show_error('Unable to load the requested file: helpers/'.$helper.EXT);
-				}
-			}
+				show_error('Unable to load the requested file: helpers/'.$helper.EXT);
+
 
 			$this->_helpers[$helper] = TRUE;
 		}
@@ -424,25 +411,13 @@ class Core_Loader {
 			$plugin = strtolower(str_replace(array(EXT, '_plugin'), '').'_pi');
 
 			if (isset($this->_plugins[$plugin]))
-			{
 				continue;
-			}
 
-			if (file_exists(APPPATH.'plugins/'.$plugin.EXT))
-			{
-				include(APPPATH.'plugins/'.$plugin.EXT);
-			}
+			if (($abs_resource_path = find_resource($plugin.EXT,'plugins')) !== FALSE)
+				include_once($abs_resource_path);
 			else
-			{
-				if (file_exists(BASEPATH.'plugins/'.$plugin.EXT))
-				{
-					include(BASEPATH.'plugins/'.$plugin.EXT);
-				}
-				else
-				{
-					show_error('Unable to load the requested file: plugins/'.$plugin.EXT);
-				}
-			}
+				show_error('Unable to load the requested file: plugins/'.$plugin.EXT);
+
 
 			$this->_plugins[$plugin] = TRUE;
 		}
@@ -494,18 +469,13 @@ class Core_Loader {
 			$script = strtolower(str_replace(EXT, '', $script));
 
 			if (isset($this->_scripts[$script]))
-			{
 				continue;
-			}
 
-			if ( ! file_exists(APPPATH.'scripts/'.$script.EXT))
-			{
-				show_error('Unable to load the requested script: scripts/'.$script.EXT);
-			}
-
-			include(APPPATH.'scripts/'.$script.EXT);
+			if (($abs_resource_path = find_resource($script.EXT,'scripts')) !== FALSE)
+				include($abs_resource_path);
+			else
+				show_error('Unable to load the requested file: scripts/'.$script.EXT);
 		}
-
 		log_message('debug', 'Scripts loaded: '.implode(', ', $scripts));
 	}
 
@@ -587,12 +557,19 @@ class Core_Loader {
 			$$val = ( ! isset($data[$val])) ? FALSE : $data[$val];
 		}
 
-		// Set the path to the requested file
-		if ($path == '')
+		//Since this is a private method called only by $this->view() and $this->file()
+		//and they pass the data formatted appropriately, we can make assumptions about
+		//the data, which I fully plan on doing  :)
+
+		// Set the path to the requested file--assumption one, $path will be empty string
+		//if loading a view, will be path to file if loading a file
+		if ($view !== FALSE)
 		{
 			$ext = pathinfo($view, PATHINFO_EXTENSION);
 			$file = ($ext == '') ? $view.EXT : $view;
-			$path = $this->_view_path.$file;
+			$path = (empty($this->_view_path) || !is_file($this->_view_path.$file) )
+			      ? find_resource($file,'views')
+			      : $this->_view_path.$file;
 		}
 		else
 		{
@@ -600,9 +577,9 @@ class Core_Loader {
 			$file = end($x);
 		}
 
-		if ( ! file_exists($path))
+		if ($path===FALSE OR ! file_exists($path))
 		{
-			show_error('Unable to load the requested file: '.$file);
+			show_error('Unable to load the requested view/file: '.$file);
 		}
 
 		// This allows anything loaded using $this->load (views, files, etc.)
@@ -734,13 +711,10 @@ class Core_Loader {
 
 			// No class found
 			if ($fp == FALSE)
-			{
 				continue;
-			}
 			else
-			{
 				include($fp);
-			}
+
 
 			// For safety checks
 			$this->_classes[] = $fp;
@@ -772,28 +746,21 @@ class Core_Loader {
 	 *
 	 * @access	private
 	 * @param 	string	the item that is being loaded
-	 * @param	array	paths to search in
 	 * @return 	void
 	 */
-	function _find_class($class, $paths = NULL)
+	function _find_class($class)
 	{
-		$paths = array_merge($this->_paths, (array) $paths);
+		$fp = find_resource($class.EXT,'libraries');
 
-		foreach ($paths as $path)
+		if($fp !== FALSE)
 		{
-			$fp = $path.'libraries/'.$class.EXT;
-
 			// Safety:  Was the class already loaded by a previous call?
 			if (in_array($fp, $this->_classes))
-				return TRUE;
-
-			// Does the file exist?
-			if (file_exists($fp))
-				return $fp;
+			{
+				$fp = TRUE;
+			}
 		}
-
-		// No class was found
-		return FALSE;
+		return $fp;
 	}
 
 	// --------------------------------------------------------------------
@@ -804,24 +771,14 @@ class Core_Loader {
 	 * This function finds the requested class.
 	 *
 	 * @access	private
-	 * @param 	string	the item that is being loaded
-	 * @param	array	paths to search in
+	 * @param	string	the name of the library to which the driver belongs
+	 * @param	string	the item that is being loaded
 	 * @return 	void
 	 */
-	function _find_driver($library, $name, $paths = NULL)
+	function _find_driver($library, $name)
 	{
-		$paths = array_merge($this->_paths, (array) $paths);
-
-		foreach ($paths as $path)
-		{
-			$fp = $path.'libraries/drivers/'.$library.'_'.$name.EXT;
-
-			if (file_exists($fp))
-				return $fp;
-		}
-
-		// No class was found
-		return FALSE;
+		$fp = find_resource($library.'_'.$name.EXT,'libraries/drivers');
+		return $fp;
 	}
 
 	// --------------------------------------------------------------------
@@ -839,10 +796,14 @@ class Core_Loader {
 		// Is there an associated config file for this class?
 		if ($config === NULL)
 		{
-			$config = NULL;
-			if (file_exists(APPPATH.'config/'.$class.EXT))
+			global $CPATHS;
+			foreach ($CPATHS as $path)
 			{
-				include(APPPATH.'config/'.$class.EXT);
+				$config_file = $path.'config/'.$class.EXT;
+				if (file_exists($config_file))
+				{
+					include($config_file);
+				}
 			}
 		}
 
@@ -877,14 +838,17 @@ class Core_Loader {
 	 */
 	function _autoloader()
 	{
-		include(APPPATH.'config/autoload'.EXT);
+		if(($abs_resource_path = find_resource('autoload'.EXT,'config')) !== FALSE)
+		{
+			include($abs_resource_path);
+		}
 
 		if ( ! isset($autoload))
 		{
 			return FALSE;
 		}
 
-		// Load any custome config file
+		// Load any custom config file
 		if (count($autoload['config']) > 0)
 		{
 			if (KOHANA_IS_PHP5)

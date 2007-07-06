@@ -33,11 +33,35 @@ function &Core_DB($params = '')
 	{
 		if (strpos($params, '://'))
 		{
-			$params = (array) _parse_db_dsn($params['database']);
+			$params = (array) _parse_db_dsn($params);
 		}
 		else
 		{
-			include(APPPATH.'config/database'.EXT);
+			global $CPATHS;
+			$CPATHS = (isset($CPATHS) AND is_array($CPATHS) AND count($CPATHS)>0 )
+			        ? $CPATHS
+			        : array(BASEPATH,APPPATH);
+			$merged_db_settings = array();
+			$included_configs = 0;
+			foreach($CPATHS as $path)
+			{
+				if(is_file($path.'config/'.'database'.EXT))
+				{
+					require($path.'config/'.'database'.EXT);
+
+					if(isset($db) && is_array($db) && count($db)>0)
+					{
+						$merged_db_settings = array_merge($merged_db_settings,$db);
+						$included_configs++;
+						unset($db);
+					}
+				}
+			}
+			if($included_configs<1)
+			{
+				show_error('No database connection information found.');
+			}
+			$db = $merged_db_settings;
 
 			$group = ($params == '') ? $active_group : $params;
 
