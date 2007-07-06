@@ -567,7 +567,7 @@ class Core_Loader {
 		{
 			$ext = pathinfo($view, PATHINFO_EXTENSION);
 			$file = ($ext == '') ? $view.EXT : $view;
-			$path = (empty($this->_view_path) || !is_file($this->_view_path.$file) )
+			$path = (empty($this->_view_path) OR !is_file($this->_view_path.$file) )
 			      ? find_resource($file,'views')
 			      : $this->_view_path.$file;
 		}

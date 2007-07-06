@@ -358,7 +358,7 @@ function verify_include_dir($dir_name,$resource_subdir,$exclude_in_search=array(
 	$return_val = FALSE;
 	foreach ($IPATHS as $path)
 	{
-		if ((is_array($exclude_in_search) && !in_array($path,$exclude_in_search)) && is_dir($path.$resource_subdir.'/'.$dir_name))
+		if ((is_array($exclude_in_search) AND !in_array($path,$exclude_in_search)) AND is_dir($path.$resource_subdir.'/'.$dir_name))
 		{
 			$return_val = $path.$resource_subdir.'/'.$dir_name;
 			break;

@@ -49,7 +49,7 @@ function &Core_DB($params = '')
 				{
 					require($path.'config/'.'database'.EXT);
 
-					if(isset($db) && is_array($db) && count($db)>0)
+					if(isset($db) AND is_array($db) AND count($db)>0)
 					{
 						$merged_db_settings = array_merge($merged_db_settings,$db);
 						$included_configs++;
