@@ -86,10 +86,23 @@ class Core_Router {
 			return;
 		}
 
-		// Load the routes.php file.
-		@include(APPPATH.'config/routes'.EXT);
-		$this->routes = ( ! isset($route) OR ! is_array($route)) ? array() : $route;
-		unset($route);
+		// Load the routes.php file(s).
+		global $CPATHS;
+		$CPATHS = (isset($CPATHS) AND is_array($CPATHS) AND count($CPATHS)>0 )
+		        ? $CPATHS
+		        : array(BASEPATH,APPPATH);
+		foreach($CPATHS as $path)
+		{
+			if(is_file($path.'config/routes'.EXT))
+			{
+				require($path.'config/routes'.EXT);
+				if(isset($route) AND is_array($route) AND count($route)>0)
+				{
+					$this->routes = array_merge($this->routes,$route);
+					unset($route);
+				}
+			}
+		}
 
 		// Set the default controller so we can display it in the event
 		// the URI doesn't correlated to a valid controller.
@@ -203,13 +216,11 @@ class Core_Router {
 	function _validate_segments($segments)
 	{
 		// Does the requested controller exist in the root folder?
-		if (file_exists(APPPATH.'controllers/'.$segments[0].EXT))
-		{
+		if (find_resource($segments[0].EXT,'controllers') !== FALSE)
 			return $segments;
-		}
 
 		// Is the controller in a sub-folder?
-		if (is_dir(APPPATH.'controllers/'.$segments[0]))
+		if (verify_include_dir($segments[0],'controllers') !== FALSE)
 		{
 			// Set the directory and remove it from the segment array
 			$this->set_directory($segments[0]);
@@ -218,7 +229,7 @@ class Core_Router {
 			if (count($segments) > 0)
 			{
 				// Does the requested controller exist in the sub-folder?
-				if ( ! file_exists(APPPATH.'controllers/'.$this->fetch_directory().$segments[0].EXT))
+				if (find_resource($this->fetch_directory().$segments[0].EXT,'controllers') === FALSE)
 				{
 					show_404();
 				}
@@ -229,7 +240,7 @@ class Core_Router {
 				$this->set_method('index');
 
 				// Does the default controller exist in the sub-folder?
-				if ( ! file_exists(APPPATH.'controllers/'.$this->fetch_directory().$this->default_controller.EXT))
+				if (find_resource($this->fetch_directory().$this->default_controller.EXT,'controllers') === FALSE)
 				{
 					$this->directory = '';
 					return array();
