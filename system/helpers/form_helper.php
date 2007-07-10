@@ -64,7 +64,7 @@ function form_open($action = '', $attributes = array(), $hidden = array())
 		}
 	}
 
-	$form .= '>';
+	$form .= ">\n";
 
 	if (is_array($hidden) AND count($hidden > 0))
 	{
@@ -333,6 +333,24 @@ function form_submit($data = '', $value = '', $extra = '')
 // ------------------------------------------------------------------------
 
 /**
+ * Button Input
+ *
+ * @access	public
+ * @param	mixed
+ * @param	string
+ * @param	string
+ * @return	string
+ */
+function form_button($data = '', $value = '', $extra = '')
+{
+	$defaults = array('type' => 'button', 'name' => (( ! is_array($data)) ? $data : ''));
+
+	return "<button ".parse_form_attributes($data, $defaults).$extra.">".$value."</button>\n";
+}
+
+// ------------------------------------------------------------------------
+
+/**
  * Form Close Tag
  *
  * @access	public
@@ -342,6 +360,30 @@ function form_submit($data = '', $value = '', $extra = '')
 function form_close($extra = '')
 {
 	return "</form>\n".$extra;
+}
+
+// ------------------------------------------------------------------------
+
+/**
+ * Form Label
+ *
+ * @access	public
+ * @param	string
+ * @return	string
+ */
+function form_label($data = '', $text = '', $extra = '')
+{
+	if ($data == '' AND $text == '')
+		return '';
+
+	if ($data != '' AND ! is_array($data))
+	{
+		$data = array('for' => $data);
+	}
+	
+	$extra = ($extra != '') ? ' '.$extra : '';
+
+	return sprintf("<label%s%s>%s</label>", (is_array($data) ? parse_form_attributes(FALSE, $data) : $data), $extra, $text);
 }
 
 // ------------------------------------------------------------------------
@@ -406,6 +448,11 @@ function parse_form_attributes($attributes, $default)
 		}
 	}
 
+	if ( ! isset($default['id']) AND isset($default['name']))
+	{
+		$default['id'] = $default['name'];
+	}
+
 	$att = '';
 	foreach ($default as $key => $val)
 	{
@@ -414,7 +461,7 @@ function parse_form_attributes($attributes, $default)
 			$val = form_prep($val);
 		}
 
-		$att .= $key . '="' . $val . '" ';
+		$att .= ' '.$key.'="'.$val.'"';
 	}
 
 	return $att;
