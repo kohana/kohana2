@@ -12,7 +12,7 @@ $mimes = array
 (
 	'hqx'   => 'application/mac-binhex40',
 	'cpt'   => 'application/mac-compactpro',
-	'csv'   => array('text/x-comma-separated-values', 'application/vnd.ms-excel'),
+	'csv'   => array('text/comma-separated-values', 'text/csv', 'application/csv', 'application/vnd.ms-excel'),
 	'bin'   => 'application/macbinary',
 	'dms'   => 'application/octet-stream',
 	'lha'   => 'application/octet-stream',
@@ -33,6 +33,7 @@ $mimes = array
 	'mif'   => 'application/vnd.mif',
 	'xls'   => array('application/excel', 'application/vnd.ms-excel'),
 	'ppt'   => 'application/powerpoint',
+	'pps'   => 'application/powerpoint',
 	'wbxml' => 'application/wbxml',
 	'wmlc'  => 'application/wmlc',
 	'dcr'   => 'application/x-director',
