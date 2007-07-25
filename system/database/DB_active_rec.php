@@ -239,7 +239,7 @@ class CI_DB_active_record extends CI_DB_driver {
 				{
 					if ( ! $this->_has_operator($k))
 					{
-						$k .= ' IS';
+						$k = $this->escape_column($k) . ' IS';
 					}
 
 					$v = ' NULL';
@@ -248,7 +248,7 @@ class CI_DB_active_record extends CI_DB_driver {
 				{
 					if ( ! $this->_has_operator($k))
 					{
-						$k .= ' =';
+						$k = $this->escape_column($k) . ' =';
 					}
 
 					$v = ($v == TRUE) ? ' 1' : ' 0';
@@ -257,7 +257,7 @@ class CI_DB_active_record extends CI_DB_driver {
 				{
 					if ( ! $this->_has_operator($k))
 					{
-						$k .= ' =';
+						$k = $this->escape_column($k) . ' =';
 					}
 
 					$v = ' '.(($quote == TRUE) ? $this->escape($v) : $v);
