@@ -25,7 +25,7 @@ if (@preg_match('/^.{1}/u', 'ñ') === 1 AND extension_loaded('iconv'))
 	if (PHP_SAPI == 'cli')
 	{
 		global $argv;
-		$argv = self::clean($argv);
+		$argv = utf8::clean($argv);
 	}
 }
 else
