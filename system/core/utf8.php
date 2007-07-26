@@ -86,7 +86,10 @@ final class utf8 {
 		}
 		elseif (is_string($str))
 		{
-			$str = preg_replace('/^[\x09\x0A\x0D\x20-\x7E]/u', '', $str);
+			/**
+			 * @todo need to fix this, it breaks things
+			 */
+			// $str = preg_replace('/^[\x09\x0A\x0D\x20-\x7E]/u', '', $str);
 			// iconv is somewhat expensive, so don't do it unless we need to
 			(self::is_multibyte($str)) and ($str = @iconv('', 'UTF-8//IGNORE', $str));
 		}
