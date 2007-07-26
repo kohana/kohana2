@@ -17,7 +17,7 @@ class Core_Router {
 	{
 		try
 		{
-			require Kohana::find_file('confdig', 'routes', TRUE);
+			require Kohana::find_file('config', 'routes', TRUE);
 
 			self::$segments = '';
 			self::$routes   = $config;
