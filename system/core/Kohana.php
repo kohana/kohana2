@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
+(defined('E_RECOVERABLE_ERROR')) or (define('E_RECOVERABLE_ERROR', 4096));
+
 // Set error handler
 set_error_handler(array('Kohana', 'error_handler'), E_ALL ^ E_NOTICE);
 // Set execption handler
