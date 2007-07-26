@@ -195,8 +195,6 @@ class Core_Router {
 		 */
 		foreach(self::$rsegments as $key => $segment)
 		{
-			(utf8::is_multibyte($segment)) and ($segment = @iconv('UTF-8', 'ASCII//TRANSLIT', $segment));
-
 			foreach($include_paths as $path)
 			{
 				$path .= 'controllers/';
@@ -262,7 +260,7 @@ class Core_Router {
 
 		if (($allowed = Config::item('permitted_uri_chars')) != '')
 		{
-			if ( ! preg_match('|^['.preg_quote($allowed).']+$|iu', @iconv('UTF-8', 'ASCII//TRANSLIT', $str)))
+			if ( ! preg_match('|^['.preg_quote($allowed).']+$|iu', $str))
 			{
 				header('HTTP/1.1 400 Bad Request');
 				exit('The URI you submitted has disallowed characters.');
