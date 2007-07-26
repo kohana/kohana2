@@ -17,7 +17,7 @@ class Core_Router {
 	{
 		try
 		{
-			require Kohana::find_file('config', 'routes');
+			require Kohana::find_file('confdig', 'routes', TRUE);
 
 			self::$segments = '';
 			self::$routes   = $config;
@@ -27,7 +27,7 @@ class Core_Router {
 			/**
 			 * @todo this needs to be handled better
 			 */
-			die('Your <kbd>config/routes'.EXT.'</kbd> file could not be loaded.');
+			exit('Your <kbd>config/routes'.EXT.'</kbd> file could not be loaded.');
 		}
 
 		/**
@@ -41,7 +41,7 @@ class Core_Router {
 			// Command line requires a bit of hacking
 			if (isset($argv[1]))
 			{
-				self::$segments = preg_replace('#/+#', '/', $argv[1]);
+				self::$segments = preg_replace('#/+#u', '/', $argv[1]);
 				// Remove GET string from segments
 				if (($query = strpos(self::$segments, '?')) !== FALSE)
 				{
@@ -195,7 +195,8 @@ class Core_Router {
 		 */
 		foreach(self::$rsegments as $key => $segment)
 		{
-			$segment = @iconv('UTF-8', 'ASCII//TRANSLIT', $segment);
+			(utf8::is_multibyte($segment)) and ($segment = @iconv('UTF-8', 'ASCII//TRANSLIT', $segment));
+
 			foreach($include_paths as $path)
 			{
 				$path .= 'controllers/';
