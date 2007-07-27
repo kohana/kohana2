@@ -1,40 +1,66 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
-if (@preg_match('/^.{1}/u', 'ñ') === 1 AND extension_loaded('iconv'))
+/**
+ * Check whether the server supports the UTF-8 encoding. We need:
+ * - PCRE compiled with UTF-8 support
+ * - The iconv module
+ */
+$utf8_check['pcre'] = (bool) preg_match('/^.{1}/u', 'ñ');
+$utf8_check['iconv'] = extension_loaded('iconv');
+
+if (in_array(FALSE, $utf8_check, TRUE))
 {
-	/**
-	 * @todo  this should really be detected from either config.php or from $_SERVER['HTTP_ACCEPT_LANGUAGE']
-	 */
-	setlocale(LC_ALL, 'en_US.UTF-8');
+	$utf8_error = '';
+	
+	if (!$utf8_check['pcre']) {
+		$utf8_error .= '<p>'.
+		               'PCRE is not compiled with UTF-8 support! '.
+		               'That\'s why we were unable to use the u modifier on PCRE functions. '.
+		               'This modifier is available from PHP 4.1.0 or greater on Unix and from PHP 4.2.3 on win32. '.
+		               'See: http://php.net/manual/reference.pcre.pattern.modifiers.php '.
+		               '</p>';
+	}
+	
+	if (!$utf8_check['iconv']) {
+		$utf8_error .= '<p>'.
+		               'We were unable to load the iconv module! '.
+		               'This is needed to convert strings from one character set to another. '.
+		               'See: http://php.net/manual/ref.iconv.php '.
+		               '</p>';
+	}
+	
+	die($utf8_error);
+}
 
-	if (extension_loaded('mbstring'))
-	{
-		mb_internal_encoding('UTF-8');
-		define('SERVER_UTF8', (@ini_get('mbstring.func_overload') ? 3 : 2));
-	}
-	else
-	{
-		define('SERVER_UTF8', 1);
-	}
-	// Make sure that all the global variables are converted to UTF-8
-	$_POST   = utf8::clean($_POST);
-	$_GET    = utf8::clean($_GET);
-	$_SERVER = utf8::clean($_SERVER);
-	$_COOKIE = utf8::clean($_COOKIE);
+// All UTF-8 compatibility checks passed
+unset($utf8_check);
 
-	if (PHP_SAPI == 'cli')
-	{
-		global $argv;
-		$argv = utf8::clean($argv);
-	}
+/**
+ * @todo  this should really be detected from either config.php or from $_SERVER['HTTP_ACCEPT_LANGUAGE']
+ */
+setlocale(LC_ALL, 'en_US.UTF-8');
+
+if (extension_loaded('mbstring'))
+{
+	mb_internal_encoding('UTF-8');
+	define('SERVER_UTF8', (@ini_get('mbstring.func_overload') ? 3 : 2));
 }
 else
 {
-	/**
-	 * @todo Maybe this should be a bit more helpful?
-	 */
-	die('Your server does not support UTF-8 encoding. ');
+	define('SERVER_UTF8', 1);
 }
+// Make sure that all the global variables are converted to UTF-8
+$_POST   = utf8::clean($_POST);
+$_GET    = utf8::clean($_GET);
+$_SERVER = utf8::clean($_SERVER);
+$_COOKIE = utf8::clean($_COOKIE);
+
+if (PHP_SAPI == 'cli')
+{
+	global $argv;
+	$argv = utf8::clean($argv);
+}
+
 
 final class utf8 {
 
