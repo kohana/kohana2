@@ -26,7 +26,7 @@ if (extension_loaded('iconv') == FALSE)
 		E_USER_ERROR
 	);
 }
-if (extension_loaded('mbstring') AND (@ini_get('mbstring.func_overload') & MB_OVERLOAD_STRING))
+if (extension_loaded('mbstring') AND (ini_get('mbstring.func_overload') & MB_OVERLOAD_STRING))
 {
 	trigger_error
 	(
@@ -41,6 +41,11 @@ if (extension_loaded('mbstring') AND (@ini_get('mbstring.func_overload') & MB_OV
  * @todo  this should really be detected from either config.php or from $_SERVER['HTTP_ACCEPT_LANGUAGE']
  */
 setlocale(LC_ALL, 'en_US.UTF-8');
+
+/**
+ * Send default text/html UTF-8 header. Can be overwritten.
+ */
+header('Content-type:text/html; charset=UTF-8');
 
 /**
  * Set SERVER_UTF8. Possible values are:
@@ -103,8 +108,8 @@ final class utf8 {
 	 *
 	 * @package Kohana Core
 	 * @subpackage UTF-8
-	 * @param  string
-	 * @return string
+	 * @param  mixed
+	 * @return mixed
 	 */
 	public static function clean($str)
 	{
@@ -125,7 +130,7 @@ final class utf8 {
 			// iconv is somewhat expensive, so don't do it unless we need to
 			if (self::is_ascii($str) == FALSE)
 			{
-				$str = @iconv('', 'UTF-8//IGNORE', $str);
+				$str = @iconv('UTF-8', 'UTF-8//IGNORE', $str);
 			}
 		}
 
