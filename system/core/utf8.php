@@ -1,10 +1,33 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php
+/**
+ * PHP UTF-8 Support
+ *
+ * A port of phputf8 to a unified file/class. This single file will check PHP
+ * to ensure that UTF-8 support is available and normalize global variables to
+ * UTF-8. It also provides multi-byte aware replacement string functions. These
+ * functions have been adapted from phputf8 to be optimized and fit our needs.
+ *
+ * NOTE: This file is licensed differently from the rest of Kohana. As a port of
+ * phputf8, this library is released under the LGPL to prevent license violations.
+ *
+ * @package          Kohana
+ * @subpackage       UTF-8
+ * @author           Kohana Development Team
+ * @copyright        Copyright (c) 2007 Kohana Framework Team
+ * @link             http://kohanaphp.com
+ * @link             http://phputf8.sourceforge.net
+ * @license          http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
+ * @since            Version 1.2
+ * @filesource
+ */
+
+// ------------------------------------------------------------------------
 
 /**
  * Check whether the server supports the UTF-8 encoding. We need:
  * - PCRE compiled with UTF-8 support
- * - The iconv module
- * - The mbstring module is okay as long as it is not overloading string functions
+ * - The iconv extension
+ * - The mbstring extension must not be overloading string functions
  */
 if (preg_match('/^.{1}/u', 'ñ') !== 1)
 {
@@ -38,14 +61,15 @@ if (extension_loaded('mbstring') AND (ini_get('mbstring.func_overload') & MB_OVE
 }
 
 /**
- * @todo  this should really be detected from either config.php or from $_SERVER['HTTP_ACCEPT_LANGUAGE']
+ * @todo  this should really be detected from either config.php
+ * @todo  move this out of this file and into Kohana or Bootstrap so that this file is re-usable
  */
 setlocale(LC_ALL, 'en_US.UTF-8');
 
 /**
  * Send default text/html UTF-8 header. Can be overwritten.
  */
-header('Content-type:text/html; charset=UTF-8');
+header('Content-type: text/html; charset=UTF-8');
 
 /**
  * Set SERVER_UTF8. Possible values are:
@@ -85,8 +109,6 @@ final class utf8 {
 	 * Checks if a given string has multi-byte characters. This is used to
 	 * determine when to use native functions or UTF-8 functions.
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @param  string
 	 * @return boolean
 	 */
@@ -106,8 +128,6 @@ final class utf8 {
 	 * Recursively cleans arrays, objects, and strings. Removes ASCII control codes
 	 * and converts to UTF-8 while silently discarding incompatible UTF-8 characters
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @param  mixed
 	 * @return mixed
 	 */
@@ -142,10 +162,7 @@ final class utf8 {
 	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @see    http://php.net/ord
-	 * @see    http://phputf8.sourceforge.net/
 	 * @param  string  character to return code of
 	 * @return integer
 	 *
@@ -161,10 +178,7 @@ final class utf8 {
 	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @see    http://php.net/str_ireplace
-	 * @see    http://phputf8.sourceforge.net/
 	 * @param  string  text to replace
 	 * @param  string  replacement text
 	 * @param  string
@@ -183,10 +197,7 @@ final class utf8 {
 	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @see    http://php.net/str_replace
-	 * @see    http://phputf8.sourceforge.net/
 	 * @param  string  text to replace
 	 * @param  string  replacement text
 	 * @param  string
@@ -204,10 +215,7 @@ final class utf8 {
 	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @see    http://php.net/str_pad
-	 * @see    http://phputf8.sourceforge.net/
 	 * @param  string
 	 * @param  integer length of return
 	 * @param  string  string to use as padding
@@ -226,10 +234,7 @@ final class utf8 {
 	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @see    http://php.net/str_split
-	 * @see    http://phputf8.sourceforge.net/
 	 * @param  string
 	 * @param  string  search string
 	 * @return array
@@ -260,10 +265,7 @@ final class utf8 {
 	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @see    http://php.net/strcasecmp
-	 * @see    http://phputf8.sourceforge.net/
 	 * @param  string
 	 * @param  string
 	 * @return integer
@@ -280,10 +282,7 @@ final class utf8 {
 	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @see    http://php.net/strpos
-	 * @see    http://phputf8.sourceforge.net/
 	 * @param  string
 	 * @param  string  search string
 	 * @return string
@@ -301,8 +300,6 @@ final class utf8 {
 	/**
 	 * UTF-8 version of strlen()
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @see    http://php.net/strlen
 	 * @param  string
 	 * @return integer
@@ -330,10 +327,7 @@ final class utf8 {
 	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @see    http://php.net/strpos
-	 * @see    http://phputf8.sourceforge.net/
 	 * @param  string
 	 * @param  string  search string
 	 * @param  integer (optional) characters to offset
@@ -351,10 +345,7 @@ final class utf8 {
 	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @see    http://php.net/strrev
-	 * @see    http://phputf8.sourceforge.net/
 	 * @param  string
 	 * @return string
 	 */
@@ -378,10 +369,7 @@ final class utf8 {
 	 *
 	 * Original function written by Chris Smith <chris@jalakai.co.uk> for phputf8
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @see    http://php.net/strspn
-	 * @see    http://phputf8.sourceforge.net/
 	 * @param  string
 	 * @param  string  mask for search
 	 * @param  integer (optional) starting character position
@@ -420,10 +408,7 @@ final class utf8 {
 	 *
 	 * Original function written by Chris Smith <chris@jalakai.co.uk> for phputf8
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @see    http://php.net/substr
-	 * @see    http://phputf8.sourceforge.net/
 	 * @param  string
 	 * @param  integer number of characters to offset
 	 * @param  integer (optional) length of return
@@ -534,10 +519,7 @@ final class utf8 {
 	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @see    http://php.net/substr_replace
-	 * @see    http://phputf8.sourceforge.net/
 	 * @param  string
 	 * @param  string  replacement string
 	 * @param  integer number of characters to offset
@@ -570,10 +552,7 @@ final class utf8 {
 	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @see    http://php.net/ucfirst
-	 * @see    http://phputf8.sourceforge.net/
 	 * @param  string
 	 * @return string
 	 *
@@ -589,10 +568,7 @@ final class utf8 {
 	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * @package Kohana Core
-	 * @subpackage UTF-8
 	 * @see    http://php.net/ucwords
-	 * @see    http://phputf8.sourceforge.net/
 	 * @param  string
 	 * @return string
 	 *
