@@ -39,7 +39,7 @@ if (preg_match('/^.{1}/u', 'ñ') !== 1)
 		E_USER_ERROR
 	);
 }
-if (extension_loaded('iconv') == FALSE)
+if ( ! extension_loaded('iconv'))
 {
 	trigger_error
 	(
@@ -86,9 +86,11 @@ else
 	define('SERVER_UTF8', FALSE);
 }
 
-// Make sure that all the global variables are converted to UTF-8
-$_POST   = utf8::clean($_POST);
+/*
+ * Make sure that all the global variables are converted to UTF-8
+ */
 $_GET    = utf8::clean($_GET);
+$_POST   = utf8::clean($_POST);
 $_SERVER = utf8::clean($_SERVER);
 $_COOKIE = utf8::clean($_COOKIE);
 // Convert command line arguments
@@ -115,7 +117,7 @@ final class utf8 {
 	public static function is_ascii($str)
 	{
 		// Skip checking empty strings and non-strings
-		if ($str == '' OR ! is_string($str))
+		if ( ! is_string($str) OR $str == '')
 			return TRUE;
 
 		// Attempts to locate 1 byte outside the ASCII range, returning FALSE if we find one
@@ -142,13 +144,13 @@ final class utf8 {
 		}
 		elseif (is_string($str) AND $str != '')
 		{
-			/**
-			 * @todo need to fix this, it breaks things
-			 */
-			// $str = preg_replace('/^[\x09\x0A\x0D\x20-\x7E]/u', '', $str);
+			// Remove ASCII control characters
+			// @todo: more testing
+			// @todo: optimizing (S modifier?)
+			$str = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+/', '', $str);
 
 			// iconv is somewhat expensive, so don't do it unless we need to
-			if (self::is_ascii($str) == FALSE)
+			if ( ! self::is_ascii($str))
 			{
 				$str = @iconv('UTF-8', 'UTF-8//IGNORE', $str);
 			}
