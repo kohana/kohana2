@@ -108,9 +108,6 @@ final class utf8 {
 	 */
 	public static function clean($str)
 	{
-		if (empty($str))
-			return $str;
-
 		if (is_array($str) OR is_object($str))
 		{
 			foreach($str as $key => $val)
@@ -118,7 +115,7 @@ final class utf8 {
 				$str[self::clean($key)] = self::clean($val);
 			}
 		}
-		elseif (is_string($str))
+		elseif (is_string($str) AND $str != '')
 		{
 			/**
 			 * @todo need to fix this, it breaks things
