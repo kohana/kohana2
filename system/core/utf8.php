@@ -12,7 +12,7 @@ if (preg_match('/^.{1}/u', 'ñ') !== 1)
 	(
 		'<a href="http://php.net/pcre">PCRE</a> has not been compiled with UTF-8 support. '.
 		'See <a href="http://php.net/manual/reference.pcre.pattern.modifiers.php">PCRE Pattern Modifiers</a> '.
-		'for more information. This application cannot be run without UTF-8 support.', 
+		'for more information. This application cannot be run without UTF-8 support.',
 		E_USER_ERROR
 	);
 }
@@ -26,12 +26,11 @@ if (extension_loaded('iconv') == FALSE)
 		E_USER_ERROR
 	);
 }
-if (extension_loaded('mbstring') && (ini_get('mbstring.func_overload') & MB_OVERLOAD_STRING))
+if (extension_loaded('mbstring') AND (@ini_get('mbstring.func_overload') & MB_OVERLOAD_STRING))
 {
 	trigger_error
 	(
 		'The <a href="http://php.net/mbstring">mbstring</a> extension is overloading PHP\'s native string functions. '.
-		'This will break Kohana\'s custom utf8 functions. '.
 		'Disable this by setting mbstring.func_overload to 0, 1, 4 or 5 in php.ini or a .htaccess file.'.
 		'This application cannot be run without UTF-8 support.',
 		E_USER_ERROR
@@ -45,17 +44,17 @@ setlocale(LC_ALL, 'en_US.UTF-8');
 
 /**
  * Set SERVER_UTF8. Possible values are:
- *   1 - use non-native replacement functions
- *   2 - use mb_* replacement functions
+ *   TRUE  - use mb_* replacement functions
+ *   FALSE - use non-native replacement functions
  */
 if (extension_loaded('mbstring'))
 {
 	mb_internal_encoding('UTF-8');
-	define('SERVER_UTF8', 2);
+	define('SERVER_UTF8', TRUE);
 }
 else
 {
-	define('SERVER_UTF8', 1);
+	define('SERVER_UTF8', FALSE);
 }
 
 // Make sure that all the global variables are converted to UTF-8
@@ -79,23 +78,21 @@ final class utf8 {
 	 * UTF-8 String Checking
 	 *
 	 * Checks if a given string has multi-byte characters. This is used to
-	 * determine when to use native functions or UTF-8 functions. When using
-	 * this function, be sure to check it's return value explicitly. When
-	 * calling this function on non-string variables, the variable is returned
-	 * without issuing any kind of warning.
+	 * determine when to use native functions or UTF-8 functions.
 	 *
 	 * @package Kohana Core
 	 * @subpackage UTF-8
 	 * @param  string
-	 * @return mixed
+	 * @return boolean
 	 */
-	public static function is_multibyte($str)
+	public static function is_ascii($str)
 	{
+		// Skip checking empty strings and non-strings
 		if ($str == '' OR ! is_string($str))
-			return $str;
+			return TRUE;
 
-		// Attempts to locate 1 byte outside the ASCII range
-		return (bool) preg_match('/[^\x00-\x7F]/', $str);
+		// Attempts to locate 1 byte outside the ASCII range, returning FALSE if we find one
+		return preg_match('/[^\x00-\x7F]/', $str) ? FALSE : TRUE;
 	}
 
 	/**
@@ -127,8 +124,12 @@ final class utf8 {
 			 * @todo need to fix this, it breaks things
 			 */
 			// $str = preg_replace('/^[\x09\x0A\x0D\x20-\x7E]/u', '', $str);
+
 			// iconv is somewhat expensive, so don't do it unless we need to
-			(self::is_multibyte($str)) and ($str = @iconv('', 'UTF-8//IGNORE', $str));
+			if (self::is_ascii($str) == FALSE)
+			{
+				$str = @iconv('', 'UTF-8//IGNORE', $str);
+			}
 		}
 
 		return $str;
@@ -233,7 +234,7 @@ final class utf8 {
 	 */
 	public static function str_split($str, $length = 1)
 	{
-		if (self::is_multibyte($str) === FALSE)
+		if (self::is_ascii($str))
 		{
 			return str_split($str, $length);
 		}
@@ -306,19 +307,20 @@ final class utf8 {
 	 */
 	public static function strlen($str)
 	{
-		if (self::is_multibyte($str) === FALSE)
+		if (self::is_ascii($str))
 		{
-			return strlen($str);
+			$str = strlen($str);
+		}
+		elseif (SERVER_UTF8)
+		{
+			$str = mb_strlen($str);
+		}
+		else
+		{
+			$str = strlen(utf8_decode($str));
 		}
 
-		switch(SERVER_UTF8)
-		{
-			case 2:
-				return mb_strlen($str);
-			default:
-				// Fastest way to find the length of a unicode string
-				return strlen(utf8_decode($str));
-		}
+		return $str;
 	}
 
 	/**
@@ -356,15 +358,14 @@ final class utf8 {
 	 */
 	public static function strrev($str)
 	{
-		switch(self::is_multibyte($str))
+		if (self::is_ascii($str))
 		{
-			case TRUE:
-				preg_match_all('/./us', $str, $chars);
-				$str = implode('', $chars[0]);
-			break;
-			case FALSE:
-				$str = strrev($str);
-			break;
+			$str = strrev($str);
+		}
+		else
+		{
+			preg_match_all('/./us', $str, $chars);
+			$str = implode('', $chars[0]);
 		}
 
 		return $str;
@@ -387,22 +388,29 @@ final class utf8 {
 	 */
 	public static function strspn($str, $mask, $start = NULL, $length = NULL)
 	{
-		if (self::is_multibyte($str) === FALSE)
+		if (self::is_ascii($str))
 		{
 			if ($start !== NULL)
 			{
-				return ($length !== NULL) ? strspn($str, $mask, $start, $length) : strspn($str, $mask, $start);
+				$str = ($length !== NULL) ? strspn($str, $mask, $start, $length) : strspn($str, $mask, $start);
 			}
-			return strspn($str, $mask);
+			else
+			{
+				$str = strspn($str, $mask);
+			}
+		}
+		else
+		{
+			($start !== NULL OR $length !== NULL) and ($str = self::substr($str, $start, $length));
+
+			$mask = preg_replace('!([\\\\\\-\\]\\[/^])!', '\\\${1}', $mask);
+
+			preg_match('!^['.$mask.']+!u', $str, $chars);
+
+			$str = isset($chars[0]) ? $chars[0] : 0;
 		}
 
-		$mask = preg_replace('!([\\\\\\-\\]\\[/^])!','\\\${1}',$mask);
-
-		($start !== NULL OR $length !== NULL) and ($str = self::substr($str, $start, $length));
-
-		preg_match('!^['.$mask.']+!u', $str, $chars);
-
-		return isset($chars[0]) ? $chars[0] : 0;
+		return $str;
 	}
 
 	/**
@@ -421,102 +429,102 @@ final class utf8 {
 	 */
 	public static function substr($str, $offset, $length = NULL)
 	{
-		// If the string does not have multibyte characters or the server is
-		// using mb_* overloading, we can call the native function
-		if (self::is_multibyte($str) == FALSE OR SERVER_UTF8 === 3)
+		if (self::is_ascii($str))
 		{
-			return ($length === NULL) ? substr($str, $offset) : substr($str, $offset, $length);
+			$str = ($length === NULL) ? substr($str, $offset) : substr($str, $offset, $length);
 		}
-
-		switch(SERVER_UTF8)
+		elseif (SERVER_UTF8)
 		{
-			case 2:
-				return ($length === NULL) ? mb_substr($str, $offset) : mb_substr($str, $offset, $length);
-			default:
-				// Make sure the string is a string
-				$str = (string) $str;
+			$str = ($length === NULL) ? mb_substr($str, $offset) : mb_substr($str, $offset, $length);
+		}
+		else
+		{
+			// Make sure the string is a string
+			$str = (string) $str;
 
-				// Normalize the offset and length to integers
-				$offset = is_numeric($offset) ? (int) $offset : 0;
-				$length = !is_null($length)   ? (int) $length : NULL;
+			// Normalize the offset and length to integers
+			$offset = is_numeric($offset) ? (int) $offset : 0;
+			$length = ! is_null($length)  ? (int) $length : NULL;
 
-				// Length is 0, or impossible search
-				if ($length === 0 OR ($length < 0 AND $offset < 0 AND $length < $offset))
+			// Length is 0, or impossible search
+			if ($length === 0 OR ($length < 0 AND $offset < 0 AND $length < $offset))
+				return '';
+
+			// Normalize negative offset to a positive one
+			if ($offset < 0)
+			{
+				$strlen = self::strlen($str);
+				$offset = (($strlen + $offset) > 0) ? $strlen + $offset : 0;
+			}
+
+			// Will be concantated for the regex
+			$char = '';
+			$size = '';
+
+			// Create an offset expression.
+			if ($offset > 0)
+			{
+				// PCRE only supports 65535 repeitions, so we need to repeat when necessary
+				$x = (int) ($offset / 65535);
+				$y = $offset % 65535;
+
+				($x == TRUE) and ($char = '(?:.{65535}){'.$x.'}');
+
+				$char = '^(?:'.$char.'.{'.$y.'})';
+			}
+			// No offset necessary, just anchor
+			else
+			{
+				$char = '^';
+			}
+
+			// Create a length expression
+			if ($length !== NULL)
+			{
+				// Get string length if it's not set yet
+				(isset($strlen)) or ($strlen = self::strlen($str));
+
+				// Nothing will be found
+				if ($offset > $strlen)
 					return '';
 
-				// Normalize negative offset to a positive one
-				if ($offset < 0)
+				// Find length from the left (position length)
+				if ($length > 0)
 				{
-					$strlen = self::strlen($str);
-					$offset = (($strlen + $offset) > 0) ? $strlen + $offset : 0;
+					// Reduce length so that it can't go beyond the end of the string
+					$length = min($strlen - $offset, $length);
+
+					$x = (int) ($length / 65535);
+					$y = $length % 65535;
+
+					($x == TRUE) and ($size = '(?:.{65535}){'.$x.'}');
+
+					$size = '('.$size.'.{'.$y.'})';
 				}
-
-				// Will be concantated for the regex
-				$char = '';
-				$size = '';
-
-				// Create an offset expression.
-				if ($offset > 0)
+				// Find length from the right (negative length)
+				elseif ($length < 0)
 				{
-					// PCRE only supports 65535 repeitions, so we need to repeat when necessary
-					$x = (int) ($offset / 65535);
-					$y = $offset % 65535;
-
-					($x == TRUE) and ($char = '(?:.{65535}){'.$x.'}');
-
-					$char = '^(?:'.$char.'.{'.$y.'})';
-				}
-				// No offset necessary, just anchor
-				else
-				{
-					$char = '^';
-				}
-
-				// Create a length expression
-				if ($length !== NULL)
-				{
-					// Get string length if it's not set yet
-					(isset($strlen)) or ($strlen = self::strlen($str));
-
-					// Nothing will be found
-					if ($offset > $strlen)
+					if ($length < ($offset - $strlen))
 						return '';
 
-					// Find length from the left (position length)
-					if ($length > 0)
-					{
-						// Reduce length so that it can't go beyond the end of the string
-						$length = min($strlen - $offset, $length);
+					$x = (int) ((-$length) / 65535);
+					$y = (-$length) % 65535;
 
-						$x = (int) ($length / 65535);
-						$y = $length % 65535;
+					($x == TRUE) and $size = '(?:.{65535}){'.$x.'}';
 
-						($x == TRUE) and ($size = '(?:.{65535}){'.$x.'}');
-
-						$size = '('.$size.'.{'.$y.'})';
-					}
-					// Find length from the right (negative length)
-					elseif ($length < 0)
-					{
-						if ($length < ($offset - $strlen))
-							return '';
-
-						$x = (int) ((-$length) / 65535);
-						$y = (-$length) % 65535;
-
-						($x == TRUE) and $size = '(?:.{65535}){'.$x.'}';
-
-						$size = '(.*)(?:'.$size.'.{'.$y.'})$';
-					}
+					$size = '(.*)(?:'.$size.'.{'.$y.'})$';
 				}
-				// No length set, grab it all
-				else
-				{
-					$size = '(.*)$';
-				}
+			}
+			// No length set, grab it all
+			else
+			{
+				$size = '(.*)$';
+			}
 
-				return preg_match('#'.$char.$size.'#us', $str, $substr) ? $substr[1] : '';
+			$str = preg_match('#'.$char.$size.'#us', $str, $substr) ? $substr[1] : '';
 		}
+
+		return $str;
 	}
 
 	/**
@@ -536,19 +544,23 @@ final class utf8 {
 	 */
 	public static function substr_replace($str, $replace, $offset, $length = NULL)
 	{
-		if (self::is_multibyte($str) === FALSE)
+		if (self::is_ascii($str))
 		{
-			return ($length === NULL) ? substr_replace($str, $replace, $offset) : substr_replace($str, $replace, $offset, $length);
+			$str = ($length === NULL) ? substr_replace($str, $replace, $offset) : substr_replace($str, $replace, $offset, $length);
+		}
+		else
+		{
+			preg_match_all('/./us', $str, $chars);
+			preg_match_all('/./us', $replace, $change);
+
+			$length = ($length === NULL) ? self::strlen($str) : $length;
+
+			array_splice($chars[0], $offset, $length, $change[0]);
+
+			$str = implode('', $chars[0]);
 		}
 
-		preg_match_all('/./us', $str, $chars);
-		preg_match_all('/./us', $replace, $change);
-
-		$length = ($length === NULL) ? self::strlen($str) : $length;
-
-		array_splice($chars[0], $offset, $length, $change[0]);
-
-		return implode('', $chars[0]);
+		return $str;
 	}
 
 	/**
