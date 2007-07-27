@@ -5,41 +5,38 @@
  * - PCRE compiled with UTF-8 support
  * - The iconv module
  */
-$utf8_check['pcre'] = (bool) preg_match('/^.{1}/u', 'ñ');
-$utf8_check['iconv'] = extension_loaded('iconv');
-
-if (in_array(FALSE, $utf8_check, TRUE))
+if (preg_match('/^.{1}/u', 'ñ') !== 1)
 {
-	$utf8_error = '';
-	
-	if (!$utf8_check['pcre']) {
-		$utf8_error .= '<p>'.
-		               'PCRE is not compiled with UTF-8 support! '.
-		               'That\'s why we were unable to use the u modifier on PCRE functions. '.
-		               'This modifier is available from PHP 4.1.0 or greater on Unix and from PHP 4.2.3 on win32. '.
-		               'See: http://php.net/manual/reference.pcre.pattern.modifiers.php '.
-		               '</p>';
-	}
-	
-	if (!$utf8_check['iconv']) {
-		$utf8_error .= '<p>'.
-		               'We were unable to load the iconv module! '.
-		               'This is needed to convert strings from one character set to another. '.
-		               'See: http://php.net/manual/ref.iconv.php '.
-		               '</p>';
-	}
-	
-	die($utf8_error);
+	trigger_error
+	(
+		'<a href="http://php.net/pcre">PCRE</a> has not been compiled with UTF-8 support. '.
+		'See <a href="http://php.net/manual/reference.pcre.pattern.modifiers.php">PCRE Pattern Modifiers</a> '.
+		'for more information. This application cannot be run without UTF-8 support.', 
+		E_USER_ERROR
+	);
 }
-
-// All UTF-8 compatibility checks passed
-unset($utf8_check);
+if (extension_loaded('icov') == FALSE)
+{
+	trigger_error
+	(
+		'The <a href="http://php.net/iconv">iconv</a> extension is not loaded. '.
+		'Without iconv, strings cannot be properly translated to UTF-8 from user input. '.
+		'This application cannot be run without UTF-8 support.',
+		E_USER_ERROR
+	);
+}
 
 /**
  * @todo  this should really be detected from either config.php or from $_SERVER['HTTP_ACCEPT_LANGUAGE']
  */
 setlocale(LC_ALL, 'en_US.UTF-8');
 
+/**
+ * Set SERVER_UTF8. Possible values are:
+ *   1 - use non-native replacement functions
+ *   2 - use mb_* replacement functions
+ *   3 - use native functions (mb_* overloading is enabled)
+ */
 if (extension_loaded('mbstring'))
 {
 	mb_internal_encoding('UTF-8');
@@ -49,19 +46,22 @@ else
 {
 	define('SERVER_UTF8', 1);
 }
+
 // Make sure that all the global variables are converted to UTF-8
 $_POST   = utf8::clean($_POST);
 $_GET    = utf8::clean($_GET);
 $_SERVER = utf8::clean($_SERVER);
 $_COOKIE = utf8::clean($_COOKIE);
-
+// Convert command line arguments
 if (PHP_SAPI == 'cli')
 {
 	global $argv;
 	$argv = utf8::clean($argv);
 }
 
-
+/**
+ * @todo We need to add the copyright notice (LGPL) and link to phputf8
+ */
 final class utf8 {
 
 	/**
