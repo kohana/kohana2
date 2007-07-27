@@ -99,7 +99,7 @@ if (PHP_SAPI == 'cli')
 }
 
 /**
- * @todo We need to add the copyright notice (LGPL) and link to phputf8
+ * UTF-8 helper and replacement functions
  */
 final class utf8 {
 
