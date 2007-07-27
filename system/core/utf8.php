@@ -15,7 +15,7 @@ if (preg_match('/^.{1}/u', 'ñ') !== 1)
 		E_USER_ERROR
 	);
 }
-if (extension_loaded('icov') == FALSE)
+if (extension_loaded('iconv') == FALSE)
 {
 	trigger_error
 	(
