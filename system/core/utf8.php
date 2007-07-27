@@ -4,6 +4,7 @@
  * Check whether the server supports the UTF-8 encoding. We need:
  * - PCRE compiled with UTF-8 support
  * - The iconv module
+ * - The mbstring module is okay as long as it is not overloading string functions
  */
 if (preg_match('/^.{1}/u', 'ñ') !== 1)
 {
@@ -25,6 +26,17 @@ if (extension_loaded('iconv') == FALSE)
 		E_USER_ERROR
 	);
 }
+if (extension_loaded('mbstring') && (ini_get('mbstring.func_overload') & MB_OVERLOAD_STRING))
+{
+	trigger_error
+	(
+		'The <a href="http://php.net/mbstring">mbstring</a> extension is overloading PHP\'s native string functions. '.
+		'This will break Kohana\'s custom utf8 functions. '.
+		'Disable this by setting mbstring.func_overload to 0, 1, 4 or 5 in php.ini or a .htaccess file.'.
+		'This application cannot be run without UTF-8 support.',
+		E_USER_ERROR
+	);
+}
 
 /**
  * @todo  this should really be detected from either config.php or from $_SERVER['HTTP_ACCEPT_LANGUAGE']
@@ -35,12 +47,11 @@ setlocale(LC_ALL, 'en_US.UTF-8');
  * Set SERVER_UTF8. Possible values are:
  *   1 - use non-native replacement functions
  *   2 - use mb_* replacement functions
- *   3 - use native functions (mb_* overloading is enabled)
  */
 if (extension_loaded('mbstring'))
 {
 	mb_internal_encoding('UTF-8');
-	define('SERVER_UTF8', (@ini_get('mbstring.func_overload') ? 3 : 2));
+	define('SERVER_UTF8', 2);
 }
 else
 {
@@ -84,7 +95,7 @@ final class utf8 {
 			return $str;
 
 		// Attempts to locate 1 byte outside the ASCII range
-		return (bool) preg_match('/(?:[^\x00-\x7F])/', $str);
+		return (bool) preg_match('/[^\x00-\x7F]/', $str);
 	}
 
 	/**
@@ -295,7 +306,7 @@ final class utf8 {
 	 */
 	public static function strlen($str)
 	{
-		if (self::is_multibyte($str) === FALSE OR SERVER_UTF8 === 3)
+		if (self::is_multibyte($str) === FALSE)
 		{
 			return strlen($str);
 		}
