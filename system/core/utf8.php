@@ -226,6 +226,39 @@ final class utf8 {
 	}
 
 	/**
+	 * UTF-8 version of strrpos()
+	 *
+	 * @see    http://php.net/strrpos
+	 * @param  string
+	 * @param  string  search string
+	 * @param  integer (optional) characters to offset
+	 * @return integer (FALSE if not found)
+	 */
+	public static function strrpos($str, $search, $offset = 0)
+	{
+		$offset = (int) $offset;
+		
+		if (self::is_ascii($str) AND self::is_ascii($search))
+		{
+			return strrpos($str, $search, $offset);
+		}
+		elseif (SERVER_UTF8)
+		{
+			return mb_strrpos($str, $search, $offset);
+		}
+		
+		if ($offset == 0)
+		{
+			$array = explode($search, $string, -1);
+			return (count($array) != 0) ? self::strlen(implode($search, $array)) : FALSE;
+		}
+		
+		$str = self::substr($str, $offset);
+		$pos = self::strrpos($str, $search);
+		return ($pos === FALSE) ? FALSE : $pos + $offset;
+	}
+
+	/**
 	 * UTF-8 version of ord()
 	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
