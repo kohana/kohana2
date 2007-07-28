@@ -27,7 +27,7 @@
  * Check whether the server supports the UTF-8 encoding. We need:
  * - PCRE compiled with UTF-8 support
  * - The iconv extension
- * - The mbstring extension must not be overloading string functions
+ * - The mbstring extension (if loaded) must not be overloading string functions
  */
 if (preg_match('/^.{1}/u', 'ñ') !== 1)
 {
@@ -87,12 +87,12 @@ else
 }
 
 /*
- * Make sure that all the global variables are converted to UTF-8
+ * Make sure that all the global variables are converted to UTF-8.
  */
 $_GET    = utf8::clean($_GET);
 $_POST   = utf8::clean($_POST);
-$_SERVER = utf8::clean($_SERVER);
 $_COOKIE = utf8::clean($_COOKIE);
+$_SERVER = utf8::clean($_SERVER);
 // Convert command line arguments
 if (PHP_SAPI == 'cli')
 {
@@ -106,29 +106,10 @@ if (PHP_SAPI == 'cli')
 final class utf8 {
 
 	/**
-	 * UTF-8 String Checking
-	 *
-	 * Checks if a given string has multi-byte characters. This is used to
-	 * determine when to use native functions or UTF-8 functions.
-	 *
-	 * @param  string
-	 * @return boolean
-	 */
-	public static function is_ascii($str)
-	{
-		// Skip checking empty strings and non-strings
-		if ( ! is_string($str) OR $str == '')
-			return TRUE;
-
-		// Attempts to locate 1 byte outside the ASCII range, returning FALSE if we find one
-		return preg_match('/[^\x00-\x7F]/', $str) ? FALSE : TRUE;
-	}
-
-	/**
 	 * UTF-8 Normalizer/Cleaner
 	 *
-	 * Recursively cleans arrays, objects, and strings. Removes ASCII control codes
-	 * and converts to UTF-8 while silently discarding incompatible UTF-8 characters
+	 * Recursively cleans arrays, objects, and strings. Removes ASCII control characters
+	 * and converts to UTF-8 while silently discarding incompatible UTF-8 characters.
 	 *
 	 * @param  mixed
 	 * @return mixed
@@ -144,16 +125,72 @@ final class utf8 {
 		}
 		elseif (is_string($str) AND $str != '')
 		{
-			// Remove ASCII control characters
-			// @todo: more testing
-			// @todo: optimizing (S modifier?)
-			$str = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+/', '', $str);
-
 			// iconv is somewhat expensive, so don't do it unless we need to
 			if ( ! self::is_ascii($str))
 			{
 				$str = @iconv('UTF-8', 'UTF-8//IGNORE', $str);
 			}
+			
+			$str = self::strip_ascii_ctrl($str);
+		}
+
+		return $str;
+	}
+
+	/**
+	 * Tests whether a string contains only 7bit ASCII bytes. This is used to
+	 * determine when to use native functions or UTF-8 functions.
+	 *
+	 * @param  string
+	 * @return boolean
+	 */
+	public static function is_ascii($str)
+	{
+		return ! preg_match('/[^\x00-\x7F]/', $str);
+	}
+	
+	/**
+	 * Strips out device control codes in the ASCII range.
+	 *
+	 * @param  string
+	 * @return string
+	 */
+	public static function strip_ascii_ctrl($str)
+	{
+		return preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+/S', '', $str);
+	}
+	
+	/**
+	 * Strips out all non-7bit ASCII bytes.
+	 *
+	 * @param  string
+	 * @return string
+	 */
+	public static function strip_non_ascii($str)
+	{
+		return preg_replace('/[^\x00-\x7F]+/S', '', $str);
+	}
+
+	/**
+	 * UTF-8 version of strlen()
+	 *
+	 * @see    http://php.net/strlen
+	 * @param  string
+	 * @return integer
+	 */
+	public static function strlen($str)
+	{
+		if (self::is_ascii($str))
+		{
+			$str = strlen($str);
+		}
+		elseif (SERVER_UTF8)
+		{
+			$str = mb_strlen($str);
+		}
+		else
+		{
+			$str = strlen(utf8_decode($str));
 		}
 
 		return $str;
@@ -297,31 +334,6 @@ final class utf8 {
 			return $str;
 
 		return stristr($str, $search);
-	}
-
-	/**
-	 * UTF-8 version of strlen()
-	 *
-	 * @see    http://php.net/strlen
-	 * @param  string
-	 * @return integer
-	 */
-	public static function strlen($str)
-	{
-		if (self::is_ascii($str))
-		{
-			$str = strlen($str);
-		}
-		elseif (SERVER_UTF8)
-		{
-			$str = mb_strlen($str);
-		}
-		else
-		{
-			$str = strlen(utf8_decode($str));
-		}
-
-		return $str;
 	}
 
 	/**
