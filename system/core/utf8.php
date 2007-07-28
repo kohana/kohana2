@@ -184,7 +184,7 @@ final class utf8 {
 		{
 			return strlen($str);
 		}
-		elseif (SERVER_UTF8)
+		if (SERVER_UTF8)
 		{
 			return mb_strlen($str);
 		}
@@ -199,7 +199,7 @@ final class utf8 {
 	 * @param  string
 	 * @param  string  search string
 	 * @param  integer (optional) characters to offset
-	 * @return integer (FALSE if not found)
+	 * @return integer (FALSE on failure)
 	 */
 	public static function strpos($str, $search, $offset = 0)
 	{
@@ -209,7 +209,7 @@ final class utf8 {
 		{
 			return strpos($str, $search, $offset);
 		}
-		elseif (SERVER_UTF8)
+		if (SERVER_UTF8)
 		{
 			return mb_strpos($str, $search, $offset);
 		}
@@ -232,7 +232,7 @@ final class utf8 {
 	 * @param  string
 	 * @param  string  search string
 	 * @param  integer (optional) characters to offset
-	 * @return integer (FALSE if not found)
+	 * @return integer (FALSE on failure)
 	 */
 	public static function strrpos($str, $search, $offset = 0)
 	{
@@ -242,7 +242,7 @@ final class utf8 {
 		{
 			return strrpos($str, $search, $offset);
 		}
-		elseif (SERVER_UTF8)
+		if (SERVER_UTF8)
 		{
 			return mb_strrpos($str, $search, $offset);
 		}
@@ -256,6 +256,94 @@ final class utf8 {
 		$str = self::substr($str, $offset);
 		$pos = self::strrpos($str, $search);
 		return ($pos === FALSE) ? FALSE : $pos + $offset;
+	}
+
+	/**
+	 * UTF-8 version of substr()
+	 *
+	 * Original function written by Chris Smith <chris@jalakai.co.uk> for phputf8
+	 *
+	 * @see    http://php.net/substr
+	 * @param  string
+	 * @param  integer characters to offset
+	 * @param  integer (optional) length of return
+	 * @return string  (FALSE on failure)
+	 */
+	public static function substr($str, $offset, $length = NULL)
+	{
+		if (self::is_ascii($str))
+		{
+			return ($length === NULL) ? substr($str, $offset) : substr($str, $offset, $length);
+		}
+		if (SERVER_UTF8)
+		{
+			return ($length === NULL) ? mb_substr($str, $offset) : mb_substr($str, $offset, $length);
+		}
+		
+		// Normalize params
+		$str    = (string) $str;
+		$strlen = self::strlen($str);
+		$offset = (int) ($offset < 0) ? max(0, $strlen + $offset) : $offset; // Normalize to positive offset
+		$length = ($length === NULL) ? NULL : (int) $length;
+
+		// Impossible
+		if ($length === 0 OR $offset >= $strlen OR ($length < 0 AND $length < $offset - $strlen))
+		{
+			return '';
+		}
+		
+		// Whole string
+		if ($offset == 0 AND ($length === NULL OR $length >= $strlen))
+		{
+			return $str;
+		}
+
+		// Build regex
+		$regex = '^';
+
+		// Create an offset expression
+		if ($offset > 0)
+		{
+			// PCRE repeating quantifiers must be less than 65536, so repeat when necessary
+			$x = (int) ($offset / 65535);
+			$y = (int) ($offset % 65535);
+			$regex .= ($x == 0) ? '' : '(?:.{65535}){'.$x.'}';
+			$regex .= ($y == 0) ? '' : '.{'.$y.'}';
+		}
+
+		// Create a length expression
+		if ($length === NULL)
+		{
+			$regex .= '(.*)'; // No length set, grab it all
+		}
+		else
+		{
+			// Find length from the left (positive length)
+			if ($length > 0)
+			{
+				// Reduce length so that it can't go beyond the end of the string
+				$length = min($strlen - $offset, $length);
+
+				$x = (int) ($length / 65535);
+				$y = (int) ($length % 65535);
+				$regex .= '(';
+				$regex .= ($x == 0) ? '' : '(?:.{65535}){'.$x.'}';
+				$regex .= '.{'.$y.'})';
+			}
+			// Find length from the right (negative length)
+			else
+			{
+				$x = (int) (-$length / 65535);
+				$y = (int) (-$length % 65535);
+				$regex .= '(.*)';
+				$regex .= ($x == 0) ? '' : '(?:.{65535}){'.$x.'}';
+				$regex .= '.{'.$y.'}';
+			}
+		}
+		
+		preg_match('/'.$regex.'/us', $str, $matches);
+
+		return (isset($matches[1])) ? $matches[1] : '';
 	}
 
 	/**
@@ -456,117 +544,6 @@ final class utf8 {
 			preg_match('!^['.$mask.']+!u', $str, $chars);
 
 			$str = isset($chars[0]) ? $chars[0] : 0;
-		}
-
-		return $str;
-	}
-
-	/**
-	 * UTF-8 version of substr()
-	 *
-	 * Original function written by Chris Smith <chris@jalakai.co.uk> for phputf8
-	 *
-	 * @see    http://php.net/substr
-	 * @param  string
-	 * @param  integer number of characters to offset
-	 * @param  integer (optional) length of return
-	 * @return string (success) or FALSE
-	 */
-	public static function substr($str, $offset, $length = NULL)
-	{
-		if (self::is_ascii($str))
-		{
-			$str = ($length === NULL) ? substr($str, $offset) : substr($str, $offset, $length);
-		}
-		elseif (SERVER_UTF8)
-		{
-			$str = ($length === NULL) ? mb_substr($str, $offset) : mb_substr($str, $offset, $length);
-		}
-		else
-		{
-			// Make sure the string is a string
-			$str = (string) $str;
-
-			// Normalize the offset and length to integers
-			$offset = is_numeric($offset) ? (int) $offset : 0;
-			$length = ! is_null($length)  ? (int) $length : NULL;
-
-			// Length is 0, or impossible search
-			if ($length === 0 OR ($length < 0 AND $offset < 0 AND $length < $offset))
-				return '';
-
-			// Normalize negative offset to a positive one
-			if ($offset < 0)
-			{
-				$strlen = self::strlen($str);
-				$offset = (($strlen + $offset) > 0) ? $strlen + $offset : 0;
-			}
-
-			// Will be concantated for the regex
-			$char = '';
-			$size = '';
-
-			// Create an offset expression.
-			if ($offset > 0)
-			{
-				// PCRE only supports 65535 repeitions, so we need to repeat when necessary
-				$x = (int) ($offset / 65535);
-				$y = $offset % 65535;
-
-				($x == TRUE) and ($char = '(?:.{65535}){'.$x.'}');
-
-				$char = '^(?:'.$char.'.{'.$y.'})';
-			}
-			// No offset necessary, just anchor
-			else
-			{
-				$char = '^';
-			}
-
-			// Create a length expression
-			if ($length !== NULL)
-			{
-				// Get string length if it's not set yet
-				(isset($strlen)) or ($strlen = self::strlen($str));
-
-				// Nothing will be found
-				if ($offset > $strlen)
-					return '';
-
-				// Find length from the left (position length)
-				if ($length > 0)
-				{
-					// Reduce length so that it can't go beyond the end of the string
-					$length = min($strlen - $offset, $length);
-
-					$x = (int) ($length / 65535);
-					$y = $length % 65535;
-
-					($x == TRUE) and ($size = '(?:.{65535}){'.$x.'}');
-
-					$size = '('.$size.'.{'.$y.'})';
-				}
-				// Find length from the right (negative length)
-				elseif ($length < 0)
-				{
-					if ($length < ($offset - $strlen))
-						return '';
-
-					$x = (int) ((-$length) / 65535);
-					$y = (-$length) % 65535;
-
-					($x == TRUE) and $size = '(?:.{65535}){'.$x.'}';
-
-					$size = '(.*)(?:'.$size.'.{'.$y.'})$';
-				}
-			}
-			// No length set, grab it all
-			else
-			{
-				$size = '(.*)$';
-			}
-
-			$str = preg_match('#'.$char.$size.'#us', $str, $substr) ? $substr[1] : '';
 		}
 
 		return $str;
