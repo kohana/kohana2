@@ -108,7 +108,7 @@ final class utf8 {
 	/**
 	 * UTF-8 Normalizer/Cleaner
 	 *
-	 * Recursively cleans arrays, objects, and strings. Removes ASCII control characters
+	 * Recursively cleans arrays, objects, and strings. Removes ASCII control codes
 	 * and converts to UTF-8 while silently discarding incompatible UTF-8 characters.
 	 *
 	 * @param  mixed
@@ -182,18 +182,47 @@ final class utf8 {
 	{
 		if (self::is_ascii($str))
 		{
-			$str = strlen($str);
+			return strlen($str);
 		}
 		elseif (SERVER_UTF8)
 		{
-			$str = mb_strlen($str);
+			return mb_strlen($str);
 		}
-		else
-		{
-			$str = strlen(utf8_decode($str));
-		}
+		
+		return strlen(utf8_decode($str));
+	}
 
-		return $str;
+	/**
+	 * UTF-8 version of strpos()
+	 *
+	 * @see    http://php.net/strpos
+	 * @param  string
+	 * @param  string  search string
+	 * @param  integer (optional) characters to offset
+	 * @return integer (FALSE if not found)
+	 */
+	public static function strpos($str, $search, $offset = 0)
+	{
+		$offset = (int) $offset;
+		
+		if (self::is_ascii($str) AND self::is_ascii($search))
+		{
+			return strpos($str, $search, $offset);
+		}
+		elseif (SERVER_UTF8)
+		{
+			return mb_strpos($str, $search, $offset);
+		}
+		
+		if ($offset == 0)
+		{
+			$array = explode($search, $string, 2);
+			return (count($array) > 1) ? self::strlen($array[0]) : FALSE;
+		}
+		
+		$str = self::substr($str, $offset);
+		$pos = self::strpos($str, $search);
+		return ($pos === FALSE) ? FALSE : $pos + $offset;
 	}
 
 	/**
@@ -334,24 +363,6 @@ final class utf8 {
 			return $str;
 
 		return stristr($str, $search);
-	}
-
-	/**
-	 * UTF-8 version of strpos()
-	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
-	 *
-	 * @see    http://php.net/strpos
-	 * @param  string
-	 * @param  string  search string
-	 * @param  integer (optional) characters to offset
-	 * @return string
-	 *
-	 * @todo FIXME!
-	 */
-	public static function strpos($str, $search, $offset = NULL)
-	{
-		return ($offset === NULL) ? strpos($str, $search) : strpos($str, $search, $offset);
 	}
 
 	/**
