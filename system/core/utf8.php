@@ -423,7 +423,32 @@ final class utf8 {
 
 		return (isset($matches[1])) ? $matches[1] : '';
 	}
-
+	
+	/**
+	 * UTF-8 version of substr_replace()
+	 *
+	 * @see    http://php.net/substr_replace
+	 * @param  string
+	 * @param  string
+	 * @param  integer characters to offset
+	 * @param  integer (optional) length of part to replace
+	 * @return string
+	 */
+	public static function substr_replace($str, $replacement, $offset, $length = NULL)
+	{
+		if (self::is_ascii($str))
+		{
+			return substr_replace($str, $replacement, $offset, $length);
+		}
+		
+		$length = ($length === NULL) ? self::strlen($str) : $length;
+	    preg_match_all('/./us', $str, $str_array);
+	    preg_match_all('/./us', $replacement, $replacement_array);
+        
+	    array_splice($str_array[0], $start, $length, $replacement_array[0]);
+	    return implode('', $str_array[0]);
+	}
+	
 	/**
 	 * UTF-8 version of strtolower()
 	 *
@@ -1138,39 +1163,6 @@ final class utf8 {
 			preg_match('!^['.$mask.']+!u', $str, $chars);
 
 			$str = isset($chars[0]) ? $chars[0] : 0;
-		}
-
-		return $str;
-	}
-
-	/**
-	 * UTF-8 version of substr_replace()
-	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
-	 *
-	 * @see    http://php.net/substr_replace
-	 * @param  string
-	 * @param  string  replacement string
-	 * @param  integer number of characters to offset
-	 * @param  integer (optional) length of return
-	 * @return string
-	 */
-	public static function substr_replace($str, $replace, $offset, $length = NULL)
-	{
-		if (self::is_ascii($str))
-		{
-			$str = ($length === NULL) ? substr_replace($str, $replace, $offset) : substr_replace($str, $replace, $offset, $length);
-		}
-		else
-		{
-			preg_match_all('/./us', $str, $chars);
-			preg_match_all('/./us', $replace, $change);
-
-			$length = ($length === NULL) ? self::strlen($str) : $length;
-
-			array_splice($chars[0], $offset, $length, $change[0]);
-
-			$str = implode('', $chars[0]);
 		}
 
 		return $str;
