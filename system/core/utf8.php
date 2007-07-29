@@ -172,14 +172,14 @@ final class utf8 {
 	}
 
 	/**
-	* Replaces accented UTF-8 characters by unaccented ASCII-7 'equivalents'.
-	*
-	* Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
-	*
-	* @param  string
-	* @param  integer (optional) -1 lowercase only, +1 uppercase only, 0 both cases
-	* @return string  accented chars replaced with ASCII equivalents
-	*/
+	 * Replaces accented UTF-8 characters by unaccented ASCII-7 'equivalents'.
+	 *
+	 * Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
+	 *
+	 * @param  string
+	 * @param  integer (optional) -1 lowercase only, +1 uppercase only, 0 both cases
+	 * @return string  accented chars replaced with ASCII equivalents
+	 */
 	public static function accents_to_ascii($str, $case = 0)
 	{
 		static $UTF8_LOWER_ACCENTS = NULL;
@@ -601,6 +601,88 @@ final class utf8 {
 		return self::from_unicode($uni);
 	}
 
+	/**
+	 * UTF-8 version of trim()
+	 * 
+	 * Note: if you don't need the $charlist you can use PHP's native trim function.
+	 * 
+	 * Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
+	 *
+	 * @see    http://php.net/trim
+	 * @param  string
+	 * @param  string  (optional) characters that need to be stripped (specify a range of characters with ..)
+	 * @return string
+	 */
+	public static function trim($str, $charlist = NULL)
+	{
+		if ($charlist === NULL OR (self::is_ascii($str) AND self::is_ascii($charlist)))
+		{
+			return trim($str, $charlist);
+		}
+		
+		return self::ltrim(self::rtrim($str, $charlist), $charlist);
+	}
+	
+	/**
+	 * UTF-8 version of ltrim()
+	 * 
+	 * Note: if you don't need the $charlist you can use PHP's native ltrim function.
+	 * 
+	 * Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
+	 *
+	 * @see    http://php.net/ltrim
+	 * @param  string
+	 * @param  string  (optional) characters that need to be stripped (specify a range of characters with ..)
+	 * @return string
+	 */
+	public static function ltrim($str, $charlist = NULL)
+	{
+		if ($charlist === NULL OR (self::is_ascii($str) AND self::is_ascii($charlist)))
+		{
+			return ltrim($str, $charlist);
+		}
+		
+		// Escape these characters:  - . : / \ [ ] ^
+		// The . and : are escaped to prevent possible warnings about POSIX regex elements
+		$charlist = preg_replace('/([-.:\/\\\[\]^])/', '\\\$1', $charlist);
+		
+		// Try to support .. character ranges, if they cause errors drop its support
+		$charlist_ranged = str_replace('\.\.', '-', $charlist);
+		$str_ranged = @preg_replace('/^['.$charlist_ranged.']+/u', '', $str);
+
+		return ($str_ranged !== NULL) ? $str_ranged : preg_replace('/^['.$charlist.']+/u', '', $str);
+	}
+	
+	/**
+	 * UTF-8 version of rtrim()
+	 * 
+	 * Note: if you don't need the $charlist you can use PHP's native rtrim function.
+	 * 
+	 * Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
+	 *
+	 * @see    http://php.net/rtrim
+	 * @param  string
+	 * @param  string  (optional) characters that need to be stripped (specify a range of characters with ..)
+	 * @return string
+	 */
+	public static function rtrim($str, $charlist = NULL)
+	{
+		if ($charlist === NULL OR (self::is_ascii($str) AND self::is_ascii($charlist)))
+		{
+			return rtrim($str, $charlist);
+		}
+		
+		// Escape these characters:  - . : / \ [ ] ^
+		// The . and : are escaped to prevent possible warnings about POSIX regex elements
+		$charlist = preg_replace('/([-.:\/\\\[\]^])/', '\\\$1', $charlist);
+		
+		// Try to support .. character ranges, if they cause errors drop its support
+		$charlist_ranged = str_replace('\.\.', '-', $charlist);
+		$str_ranged = @preg_replace('/['.$charlist_ranged.']+$/u', '', $str);
+
+		return ($str_ranged !== NULL) ? $str_ranged : preg_replace('/['.$charlist.']+$/u', '', $str);
+	}
+	
 	/**
 	 * Takes an UTF-8 string and returns an array of ints representing the Unicode characters.
 	 * Astral planes are supported i.e. the ints in the output can be > 0xFFFF.
