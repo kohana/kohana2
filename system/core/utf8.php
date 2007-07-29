@@ -749,16 +749,23 @@ final class utf8 {
 
 	/**
 	 * UTF-8 version of strspn()
+	 * 
+	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/strspn
 	 * @param  string
 	 * @param  string  mask for search
-	 * @param  integer (optional) starting character position
-	 * @param  integer (optional) length of return
+	 * @param  integer (optional) start position of the string to examine
+	 * @param  integer (optional) length of the string to examine
 	 * @return integer
 	 */
 	public static function strspn($str, $mask, $offset = NULL, $length = NULL)
 	{
+		if ($str == '' OR $mask == '')
+		{
+			return 0;
+		}
+		
 		if (self::is_ascii($str) AND self::is_ascii($mask))
 		{
 			return strspn($str, $mask, $offset, $length);
@@ -773,6 +780,43 @@ final class utf8 {
 		// The . and : are escaped to prevent possible warnings about POSIX regex elements
 		$mask = preg_replace('/([-.:\/\\\[\]^])/', '\\\$1', $mask);
 		preg_match('/^['.$mask.']+/u', $str, $matches);
+		
+		return (isset($matches[0])) ? self::strlen($matches[0]) : 0;
+	}
+	
+	/**
+	 * UTF-8 version of strcspn()
+	 * 
+	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 *
+	 * @see    http://php.net/strspn
+	 * @param  string
+	 * @param  string  negative mask for search
+	 * @param  integer (optional) start position of the string to examine
+	 * @param  integer (optional) length of the string to examine
+	 * @return integer
+	 */
+	public static function strcspn($str, $mask, $offset = NULL, $length = NULL)
+	{
+		if ($str == '' OR $mask == '')
+		{
+			return 0;
+		}
+		
+		if (self::is_ascii($str) AND self::is_ascii($mask))
+		{
+			return strcspn($str, $mask, $offset, $length);
+		}
+		
+		if ($start !== NULL OR $length !== NULL)
+		{
+			$str = self::substr($str, $offset, $length);
+		}
+
+		// Escape these characters:  - . : / \ [ ] ^
+		// The . and : are escaped to prevent possible warnings about POSIX regex elements
+		$mask = preg_replace('/([-.:\/\\\[\]^])/', '\\\$1', $mask);
+		preg_match('/^[^'.$mask.']+/u', $str, $matches);
 		
 		return (isset($matches[0])) ? self::strlen($matches[0]) : 0;
 	}
