@@ -68,6 +68,7 @@ setlocale(LC_ALL, 'en_US.UTF-8');
 
 /**
  * Send default text/html UTF-8 header. Can be overwritten.
+ * @todo  move this out of this file and into Kohana or Bootstrap so that this file is re-usable
  */
 header('Content-type: text/html; charset=UTF-8');
 
@@ -599,6 +600,24 @@ final class utf8 {
 		}
 
 		return self::from_unicode($uni);
+	}
+
+	/**
+	 * UTF-8 version of ucfirst()
+	 *
+	 * @see    http://php.net/ucfirst
+	 * @param  string
+	 * @return string
+	 */
+	public static function ucfirst($str)
+	{
+		if (self::is_ascii($str))
+		{
+			return ucfirst($str);
+		}
+		
+		preg_match('/^(.?)(.*)$/us', $str, $matches);
+		return self::strtoupper($matches[1]).$matches[2];
 	}
 
 	/**
@@ -1155,22 +1174,6 @@ final class utf8 {
 		}
 
 		return $str;
-	}
-
-	/**
-	 * UTF-8 version of ucfirst()
-	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
-	 *
-	 * @see    http://php.net/ucfirst
-	 * @param  string
-	 * @return string
-	 *
-	 * @todo FIXME!
-	 */
-	public static function ucfirst($str)
-	{
-		return ucfirst($str);
 	}
 
 	/**
