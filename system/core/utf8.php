@@ -755,6 +755,94 @@ final class utf8 {
 	}
 	
 	/**
+	 * UTF-8 version of ord()
+	 * 
+	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 *
+	 * @see    http://php.net/ord
+	 * @param  string  UTF-8 encoded character
+	 * @return integer unicode ordinal for that character
+	 */
+	public static function ord($chr)
+	{
+		$ord0 = ord($chr);
+
+		if ($ord0 >= 0 AND $ord0 <= 127)
+		{
+			return $ord0;
+		}
+
+		if ( ! isset($chr[1]))
+		{
+			trigger_error('Short sequence - at least 2 bytes expected, only 1 seen');
+			return FALSE;
+		}
+
+		$ord1 = ord($chr[1]);
+		
+		if ($ord0 >= 192 AND $ord0 <= 223)
+		{
+			return ($ord0 - 192) * 64 + ($ord1 - 128);
+		}
+
+		if ( ! isset($chr[2]))
+		{
+			trigger_error('Short sequence - at least 3 bytes expected, only 2 seen');
+			return FALSE;
+		}
+		
+		$ord2 = ord($chr[2]);
+		
+		if ($ord0 >= 224 AND $ord0 <= 239)
+		{
+			return ($ord0 - 224) * 4096 + ($ord1 - 128) * 64 + ($ord2 - 128);
+		}
+
+		if ( ! isset($chr[3]))
+		{
+			trigger_error('Short sequence - at least 4 bytes expected, only 3 seen');
+			return FALSE;
+		}
+		
+		$ord3 = ord($chr[3]);
+		
+		if ($ord0 >= 240 AND $ord0 <= 247)
+		{
+			return ($ord0 - 240) * 262144 + ($ord1 - 128) * 4096 + ($ord2-128) * 64 + ($ord3 - 128);
+		}
+
+		if ( ! isset($chr[4]))
+		{
+			trigger_error('Short sequence - at least 5 bytes expected, only 4 seen');
+			return FALSE;
+		}
+		
+		$ord4 = ord($chr[4]);
+		
+		if ($ord0 >= 248 AND $ord0 <= 251)
+		{
+			return ($ord0 - 248) * 16777216 + ($ord1-128) * 262144 + ($ord2 - 128) * 4096 + ($ord3 - 128) * 64 + ($ord4 - 128);
+		}
+
+		if ( ! isset($chr[5]))
+		{
+			trigger_error('Short sequence - at least 6 bytes expected, only 5 seen');
+			return FALSE;
+		}
+		
+		if ($ord0 >= 252 AND $ord0 <= 253)
+		{
+			return ($ord0 - 252) * 1073741824 + ($ord1 - 128) * 16777216 + ($ord2 - 128) * 262144 + ($ord3 - 128) * 4096 + ($ord4 - 128) * 64 + (ord($c[5]) - 128);
+		}
+
+		if ($ord0 >= 254 AND $ord0 <= 255)
+		{ 
+			trigger_error('Invalid UTF-8 with surrogate ordinal '.$ord0);
+			return FALSE;
+		}
+	}
+	
+	/**
 	 * Takes an UTF-8 string and returns an array of ints representing the Unicode characters.
 	 * Astral planes are supported i.e. the ints in the output can be > 0xFFFF.
 	 * Occurrances of the BOM are ignored. Surrogates are not allowed.
@@ -992,22 +1080,6 @@ final class utf8 {
 	
 //// CODE BELOW STILL TODO //////////////////////////////////////////////////////////////
 	
-	/**
-	 * UTF-8 version of ord()
-	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
-	 *
-	 * @see    http://php.net/ord
-	 * @param  string  character to return code of
-	 * @return integer
-	 *
-	 * @todo FIXME!
-	 */
-	public static function ord($chr)
-	{
-		return ord($chr);
-	}
-
 	/**
 	 * UTF-8 version of str_ireplace()
 	 *
