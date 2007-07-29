@@ -445,7 +445,7 @@ final class utf8 {
 	    preg_match_all('/./us', $str, $str_array);
 	    preg_match_all('/./us', $replacement, $replacement_array);
         
-	    array_splice($str_array[0], $start, $length, $replacement_array[0]);
+	    array_splice($str_array[0], $offset, $length, $replacement_array[0]);
 	    return implode('', $str_array[0]);
 	}
 	
@@ -670,6 +670,81 @@ final class utf8 {
 			'self::strtoupper(\'$1\')',
 			$str
 		);
+	}
+
+	/**
+	 * UTF-8 version of str_ireplace()
+	 *
+	 * Note: it's not fast and gets slower if $search and/or $replace are arrays
+	 * 
+	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 *
+	 * @see    http://php.net/str_ireplace
+	 * @param  string  (or array) text to replace
+	 * @param  string  (or array) replacement text
+	 * @param  string  (or array) subject text
+	 * @param  integer (optional) number of matched and replaced needles will be returned in count which is passed by reference
+	 * @return string
+	 */
+	public static function str_ireplace($search, $replace, $str, &$count = NULL)
+	{
+		if (self::is_ascii($search) AND self::is_ascii($replace) AND self::is_ascii($str))
+		{
+			return str_ireplace($search, $replace, $str, $count);
+		}
+        
+		if (is_array($str))
+		{
+			foreach ($str as $key => $val)
+			{
+				$str[$key] = self::str_ireplace($search, $replace, $val, $count);
+			}
+			return $str;
+		}
+		
+		if (is_array($search))
+		{
+			foreach (array_keys($search) as $k)
+			{
+				if (is_array($replace))
+				{
+					if (array_key_exists($k, $replace))
+					{
+						$str = self::str_ireplace($search[$k], $replace[$k], $str, $count);
+					}
+					else
+					{
+						$str = self::str_ireplace($search[$k], '', $str, $count);
+					}
+				}
+				else
+				{
+					$str = self::str_ireplace($search[$k], $replace, $str, $count);
+				}
+			}
+			return $str;
+		}
+        
+		$search = self::strtolower($search);
+		$str_lower = self::strtolower($str);
+		
+		$total_matched_strlen = 0;
+		$i = 0;
+		
+		while (preg_match('/(.*?)'.preg_quote($search, '/').'/us', $str_lower, $matches))
+		{
+			$matched_strlen = self::strlen($matches[0]);
+			$str_lower = self::substr($str_lower, $matched_strlen);
+			
+			$offset = $total_matched_strlen + self::strlen($matches[1]) + ($i * (self::strlen($replace) - 1));
+			$str = self::substr_replace($str, $replace, $offset, self::strlen($search));
+			
+			$total_matched_strlen += $matched_strlen;
+			$i++;
+		}
+		
+		$count += $i;
+		return $str;
 	}
 
 	/**
@@ -1080,43 +1155,6 @@ final class utf8 {
 	
 //// CODE BELOW STILL TODO //////////////////////////////////////////////////////////////
 	
-	/**
-	 * UTF-8 version of str_ireplace()
-	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
-	 *
-	 * @see    http://php.net/str_ireplace
-	 * @param  string  text to replace
-	 * @param  string  replacement text
-	 * @param  string
-	 * @param  integer (optional) number of replacements to make
-	 * @return string
-	 *
-	 * @todo FIXME!
-	 */
-	public static function str_ireplace($search, $replace, $str, &$count = NULL)
-	{
-		return ($count === NULL) ? str_ireplace($search, $replace, $str) : str_ireplace($search, $replace, $str, $count);
-	}
-
-	/**
-	 * UTF-8 version of str_replace()
-	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
-	 *
-	 * @see    http://php.net/str_replace
-	 * @param  string  text to replace
-	 * @param  string  replacement text
-	 * @param  string
-	 * @return string
-	 *
-	 * @todo FIXME!
-	 */
-	public static function str_replace($search, $replace, $string)
-	{
-		return str_replace($search, $replace, $string);
-	}
-
 	/**
 	 * UTF-8 version of str_pad()
 	 *
