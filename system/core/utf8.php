@@ -748,6 +748,36 @@ final class utf8 {
 	}
 
 	/**
+	 * UTF-8 version of strspn()
+	 *
+	 * @see    http://php.net/strspn
+	 * @param  string
+	 * @param  string  mask for search
+	 * @param  integer (optional) starting character position
+	 * @param  integer (optional) length of return
+	 * @return integer
+	 */
+	public static function strspn($str, $mask, $offset = NULL, $length = NULL)
+	{
+		if (self::is_ascii($str) AND self::is_ascii($mask))
+		{
+			return strspn($str, $mask, $offset, $length);
+		}
+		
+		if ($start !== NULL OR $length !== NULL)
+		{
+			$str = self::substr($str, $offset, $length);
+		}
+
+		// Escape these characters:  - . : / \ [ ] ^
+		// The . and : are escaped to prevent possible warnings about POSIX regex elements
+		$mask = preg_replace('/([-.:\/\\\[\]^])/', '\\\$1', $mask);
+		preg_match('/^['.$mask.']+/u', $str, $matches);
+		
+		return (isset($matches[0])) ? self::strlen($matches[0]) : 0;
+	}
+
+	/**
 	 * UTF-8 version of trim()
 	 * 
 	 * Note: if you don't need the $charlist you can use PHP's native trim function.
@@ -1266,42 +1296,4 @@ final class utf8 {
 		return $str;
 	}
 
-	/**
-	 * UTF-8 version of strspn()
-	 *
-	 * Original function written by Chris Smith <chris@jalakai.co.uk> for phputf8
-	 *
-	 * @see    http://php.net/strspn
-	 * @param  string
-	 * @param  string  mask for search
-	 * @param  integer (optional) starting character position
-	 * @param  integer (optional) length of return
-	 * @return integer
-	 */
-	public static function strspn($str, $mask, $start = NULL, $length = NULL)
-	{
-		if (self::is_ascii($str))
-		{
-			if ($start !== NULL)
-			{
-				$str = ($length !== NULL) ? strspn($str, $mask, $start, $length) : strspn($str, $mask, $start);
-			}
-			else
-			{
-				$str = strspn($str, $mask);
-			}
-		}
-		else
-		{
-			($start !== NULL OR $length !== NULL) and ($str = self::substr($str, $start, $length));
-
-			$mask = preg_replace('!([\\\\\\-\\]\\[/^])!', '\\\${1}', $mask);
-
-			preg_match('!^['.$mask.']+!u', $str, $chars);
-
-			$str = isset($chars[0]) ? $chars[0] : 0;
-		}
-
-		return $str;
-	}
 } // End utf8 class
