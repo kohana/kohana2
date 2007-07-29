@@ -646,6 +646,33 @@ final class utf8 {
 	}
 
 	/**
+	 * UTF-8 version of ucwords()
+	 *
+	 * @see    http://php.net/ucwords
+	 * @param  string
+	 * @return string
+	 */
+	public static function ucwords($str)
+	{
+		if (self::is_ascii($str))
+		{
+			return ucwords($str);
+		}
+		if (SERVER_UTF8)
+		{
+			return mb_convert_case($str, MB_CASE_TITLE);
+		}
+		
+		// Note: [\x0c\x09\x0b\x0a\x0d\x20] matches form feeds, horizontal tabs, vertical tabs, linefeeds and carriage returns
+		// This corresponds to the definition of a 'word' defined at http://php.net/ucwords
+		return preg_replace(
+			'/(?<=^|[\x0c\x09\x0b\x0a\x0d\x20])([^\x0c\x09\x0b\x0a\x0d\x20])/ue',
+			'self::strtoupper(\'$1\')',
+			$str
+		);
+	}
+
+	/**
 	 * UTF-8 version of trim()
 	 * 
 	 * Note: if you don't need the $charlist you can use PHP's native trim function.
@@ -1167,21 +1194,4 @@ final class utf8 {
 
 		return $str;
 	}
-
-	/**
-	 * UTF-8 version of ucwords()
-	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
-	 *
-	 * @see    http://php.net/ucwords
-	 * @param  string
-	 * @return string
-	 *
-	 * @todo FIXME!
-	 */
-	public static function ucwords($str)
-	{
-		return ucwords($str);
-	}
-
 } // End utf8 class
