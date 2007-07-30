@@ -673,6 +673,28 @@ final class utf8 {
 	}
 
 	/**
+	 * UTF-8 version of strcasecmp()
+	 *
+	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 *
+	 * @see    http://php.net/strcasecmp
+	 * @param  string
+	 * @param  string
+	 * @return integer
+	 */
+	public static function strcasecmp($str1, $str2)
+	{
+		if (self::is_ascii($str1) AND self::is_ascii($str2))
+		{
+			return strcasecmp($str1, $str2);
+		}
+		
+		$str1 = self::strtolower($str1);
+		$str2 = self::strtolower($str2);
+		return strcmp($str1, $str2);
+	}
+
+	/**
 	 * UTF-8 version of str_ireplace()
 	 *
 	 * Note: it's not fast and gets slower if $search and/or $replace are arrays
@@ -1277,23 +1299,6 @@ final class utf8 {
 		preg_match_all('!.{'.$length.'}|[^\x00]{1,'.$length.'}$!us', $str, $chars);
 
 		return $chars[0];
-	}
-
-	/**
-	 * UTF-8 version of strcasecmp()
-	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
-	 *
-	 * @see    http://php.net/strcasecmp
-	 * @param  string
-	 * @param  string
-	 * @return integer
-	 *
-	 * @todo FIXME!
-	 */
-	public static function strcasecmp($one, $two)
-	{
-		return strcmp($one, $two);
 	}
 
 	/**
