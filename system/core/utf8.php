@@ -901,6 +901,40 @@ final class utf8 {
 	}
 
 	/**
+	 * UTF-8 version of str_split()
+	 *
+	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 *
+	 * @see    http://php.net/str_split
+	 * @param  string
+	 * @param  integer maximum length of chunk
+	 * @return array   (FALSE if split_length < 1)
+	 */
+	public static function str_split($str, $split_length = 1)
+	{
+		$split_length = (int) $split_length;
+		
+		if (self::is_ascii($str))
+		{
+			return str_split($str, $split_length);
+		}
+		
+		if ($split_length < 1)
+		{
+			return FALSE;
+		}
+
+		if (self::strlen($str) <= $split_length)
+		{
+			return array($str);
+		}
+
+		preg_match_all('/.{'.$split_length.'}|[^\x00]{1,'.$split_length.'}$/us', $str, $matches);
+
+		return $matches[0];
+	}
+
+	/**
 	 * UTF-8 version of trim()
 	 * 
 	 * Note: if you don't need the $charlist you can use PHP's native trim function.
@@ -1308,37 +1342,6 @@ final class utf8 {
 	
 //// CODE BELOW STILL TODO //////////////////////////////////////////////////////////////
 	
-	/**
-	 * UTF-8 version of str_split()
-	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
-	 *
-	 * @see    http://php.net/str_split
-	 * @param  string
-	 * @param  string  search string
-	 * @return array
-	 */
-	public static function str_split($str, $length = 1)
-	{
-		if (self::is_ascii($str))
-		{
-			return str_split($str, $length);
-		}
-		elseif ( ! ctype_digit($length) OR $length < 1)
-		{
-			return FALSE;
-		}
-
-		if (self::strlen($str) <= $length)
-		{
-			return array($str);
-		}
-
-		preg_match_all('!.{'.$length.'}|[^\x00]{1,'.$length.'}$!us', $str, $chars);
-
-		return $chars[0];
-	}
-
 	/**
 	 * UTF-8 version of stristr()
 	 *
