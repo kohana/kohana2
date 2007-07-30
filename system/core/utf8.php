@@ -970,6 +970,26 @@ final class utf8 {
 	}
 
 	/**
+	 * UTF-8 version of strrev()
+	 *
+	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 *
+	 * @see    http://php.net/strrev
+	 * @param  string
+	 * @return string
+	 */
+	public static function strrev($str)
+	{
+		if (self::is_ascii($str))
+		{
+			return strrev($str);
+		}
+
+		preg_match_all('/./us', $str, $matches);
+		return implode('', array_reverse($matches[0]));
+	}
+
+	/**
 	 * UTF-8 version of trim()
 	 * 
 	 * Note: if you don't need the $charlist you can use PHP's native trim function.
@@ -1373,32 +1393,4 @@ final class utf8 {
 		return $result;
 	}
 	
-	
-	
-//// CODE BELOW STILL TODO //////////////////////////////////////////////////////////////
-	
-	/**
-	 * UTF-8 version of strrev()
-	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
-	 *
-	 * @see    http://php.net/strrev
-	 * @param  string
-	 * @return string
-	 */
-	public static function strrev($str)
-	{
-		if (self::is_ascii($str))
-		{
-			$str = strrev($str);
-		}
-		else
-		{
-			preg_match_all('/./us', $str, $chars);
-			$str = implode('', $chars[0]);
-		}
-
-		return $str;
-	}
-
 } // End utf8 class
