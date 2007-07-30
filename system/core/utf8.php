@@ -844,6 +844,63 @@ final class utf8 {
 	}
 
 	/**
+	 * UTF-8 version of str_pad()
+	 *
+	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 *
+	 * @see    http://php.net/str_pad
+	 * @param  string
+	 * @param  integer desired string length after padding
+	 * @param  string  string to use as padding
+	 * @param  define  STR_PAD_RIGHT, STR_PAD_LEFT, STR_PAD_BOTH
+	 * @return string
+	 */
+	public static function str_pad($str, $final_str_length, $pad_str = ' ', $pad_type = STR_PAD_RIGHT)
+	{
+		if (self::is_ascii($str) AND self::is_ascii($pad_str))
+		{
+			return str_pad($str, $final_str_length, $pad_str, $pad_type);
+		}
+		
+		$str_length = self::strlen($str);
+		
+		if ($final_str_length <= 0 OR $final_str_length <= $str_length)
+		{
+			return $str;
+		}
+		
+		$pad_str_length = self::strlen($pad_str);
+		$pad_length = $final_str_length - $str_length;
+		
+		if ($pad_type == STR_PAD_RIGHT)
+		{
+			$repeat = ceil($pad_length / $pad_str_length);
+			return self::substr($str.str_repeat($pad_str, $repeat), 0, $final_str_length);
+		}
+
+		if ($pad_type == STR_PAD_LEFT)
+		{
+			$repeat = ceil($pad_length / $pad_str_length);
+			return self::substr(str_repeat($pad_str, $repeat), 0, floor($pad_length)).$str;
+		}
+
+		if ($pad_type == STR_PAD_BOTH)
+		{
+			$pad_length /= 2;
+			$pad_length_left = floor($pad_length);
+			$pad_length_right = ceil($pad_length);
+			$repeat_left = ceil($pad_length_left / $pad_str_length);
+			$repeat_right = ceil($pad_length_right / $pad_str_length);
+
+			$pad_left = self::substr(str_repeat($pad_str, $repeat_left), 0, $pad_length_left);
+			$pad_right = self::substr(str_repeat($pad_str, $repeat_right), 0, $pad_length_left);
+			return $pad_left.$str.$pad_right;
+		}
+
+		trigger_error('utf8::str_pad: Unknown padding type (' . $type . ')', E_USER_ERROR);
+	}
+
+	/**
 	 * UTF-8 version of trim()
 	 * 
 	 * Note: if you don't need the $charlist you can use PHP's native trim function.
@@ -1251,25 +1308,6 @@ final class utf8 {
 	
 //// CODE BELOW STILL TODO //////////////////////////////////////////////////////////////
 	
-	/**
-	 * UTF-8 version of str_pad()
-	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
-	 *
-	 * @see    http://php.net/str_pad
-	 * @param  string
-	 * @param  integer length of return
-	 * @param  string  string to use as padding
-	 * @param  define  STR_PAD_RIGHT, STR_PAD_LEFT, STR_PAD_BOTH
-	 * @return string
-	 *
-	 * @todo FIXME!
-	 */
-	public static function str_pad($str, $length, $padding = ' ', $type = STR_PAD_RIGHT)
-	{
-		return str_pad($str, $length, $padding, $type);
-	}
-
 	/**
 	 * UTF-8 version of str_split()
 	 *
