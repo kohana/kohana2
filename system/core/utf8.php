@@ -26,7 +26,7 @@
  * Check whether the server supports the UTF-8 encoding. Conditions:
  * - PCRE needs to be compiled with UTF-8 support.
  * - The iconv extension needs to be loaded.
- * - The mbstring extension is recommended but must not be overloading string functions.
+ * - The mbstring extension is highly recommended but must not be overloading string functions.
  */
 if (preg_match('/^.{1}/u', 'ñ') !== 1)
 {
@@ -292,15 +292,16 @@ final class utf8 {
 			return strpos($str, $search, $offset);
 		}
 		
-		if ($offset == 0)
-		{
-			$array = explode($search, $string, 2);
-			return (count($array) > 1) ? self::strlen($array[0]) : FALSE;
-		}
-		
-		$str = self::substr($str, $offset);
-		$pos = self::strpos($str, $search);
-		return ($pos === FALSE) ? FALSE : $pos + $offset;
+		$regex = '(';
+		$x = (int) ($offset / 65535);
+		$y = (int) ($offset % 65535);
+		$regex .= ($x == 0) ? '' : '(?:.{65535}){'.$x.'}'; // PCRE repeating quantifiers must be less than 65536, so repeat when necessary
+		$regex .= ($y == 0) ? '' : '.{'.$y.'}';
+		$regex .= '.*?)';
+		$regex .= preg_quote($search, '-');
+
+		preg_match('|'.$regex.'|us', $str, $matches);
+		return (isset($matches[1])) ? self::strlen($matches[1]) : FALSE;
 	}
 
 	/**
@@ -351,11 +352,11 @@ final class utf8 {
 	{
 		if (SERVER_UTF8)
 		{
-			return mb_substr($str, $offset, $length);
+			return ($length === NULL) ? mb_substr($str, $offset) : mb_substr($str, $offset, $length);
 		}
 		if (self::is_ascii($str))
 		{
-			return substr($str, $offset, $length);
+			return ($length === NULL) ? substr($str, $offset) : substr($str, $offset, $length);
 		}
 		
 		// Normalize params
@@ -438,7 +439,7 @@ final class utf8 {
 	{
 		if (self::is_ascii($str))
 		{
-			return substr_replace($str, $replacement, $offset, $length);
+			return ($length === NULL) ? substr_replace($str, $replacement, $offset) : substr_replace($str, $replacement, $offset, $length);
 		}
 		
 		$length = ($length === NULL) ? self::strlen($str) : $length;
@@ -825,10 +826,10 @@ final class utf8 {
 		
 		if (self::is_ascii($str) AND self::is_ascii($mask))
 		{
-			return strspn($str, $mask, $offset, $length);
+			return ($offset === NULL) ? strspn($str, $mask) : (($length === NULL) ? strspn($str, $mask, $offset) : strspn($str, $mask, $offset, $length));
 		}
 		
-		if ($start !== NULL OR $length !== NULL)
+		if ($offset !== NULL OR $length !== NULL)
 		{
 			$str = self::substr($str, $offset, $length);
 		}
@@ -862,7 +863,7 @@ final class utf8 {
 		
 		if (self::is_ascii($str) AND self::is_ascii($mask))
 		{
-			return strcspn($str, $mask, $offset, $length);
+			return ($offset === NULL) ? strcspn($str, $mask) : (($length === NULL) ? strcspn($str, $mask, $offset) : strcspn($str, $mask, $offset, $length));
 		}
 		
 		if ($start !== NULL OR $length !== NULL)
@@ -1005,7 +1006,7 @@ final class utf8 {
 	{
 		if ($charlist === NULL OR (self::is_ascii($str) AND self::is_ascii($charlist)))
 		{
-			return trim($str, $charlist);
+			return ($charlist === NULL) ? trim($str) : trim($str, $charlist);
 		}
 		
 		return self::ltrim(self::rtrim($str, $charlist), $charlist);
@@ -1027,7 +1028,7 @@ final class utf8 {
 	{
 		if ($charlist === NULL OR (self::is_ascii($str) AND self::is_ascii($charlist)))
 		{
-			return ltrim($str, $charlist);
+			return ($charlist === NULL) ? ltrim($str) : ltrim($str, $charlist);
 		}
 		
 		// Escape these characters:  - . : / \ [ ] ^
@@ -1057,7 +1058,7 @@ final class utf8 {
 	{
 		if ($charlist === NULL OR (self::is_ascii($str) AND self::is_ascii($charlist)))
 		{
-			return rtrim($str, $charlist);
+			return ($charlist === NULL) ? rtrim($str) : rtrim($str, $charlist);
 		}
 		
 		// Escape these characters:  - . : / \ [ ] ^
