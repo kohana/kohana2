@@ -283,13 +283,13 @@ final class utf8 {
 	{
 		$offset = (int) $offset;
 		
-		if (self::is_ascii($str) AND self::is_ascii($search))
-		{
-			return strpos($str, $search, $offset);
-		}
 		if (SERVER_UTF8)
 		{
 			return mb_strpos($str, $search, $offset);
+		}
+		if (self::is_ascii($str) AND self::is_ascii($search))
+		{
+			return strpos($str, $search, $offset);
 		}
 		
 		if ($offset == 0)
@@ -316,13 +316,13 @@ final class utf8 {
 	{
 		$offset = (int) $offset;
 		
-		if (self::is_ascii($str) AND self::is_ascii($search))
-		{
-			return strrpos($str, $search, $offset);
-		}
 		if (SERVER_UTF8)
 		{
 			return mb_strrpos($str, $search, $offset);
+		}
+		if (self::is_ascii($str) AND self::is_ascii($search))
+		{
+			return strrpos($str, $search, $offset);
 		}
 		
 		if ($offset == 0)
@@ -349,13 +349,13 @@ final class utf8 {
 	 */
 	public static function substr($str, $offset, $length = NULL)
 	{
-		if (self::is_ascii($str))
-		{
-			return ($length === NULL) ? substr($str, $offset) : substr($str, $offset, $length);
-		}
 		if (SERVER_UTF8)
 		{
-			return ($length === NULL) ? mb_substr($str, $offset) : mb_substr($str, $offset, $length);
+			return mb_substr($str, $offset, $length);
+		}
+		if (self::is_ascii($str))
+		{
+			return substr($str, $offset, $length);
 		}
 		
 		// Normalize params
@@ -460,13 +460,13 @@ final class utf8 {
 	 */
 	public static function strtolower($str)
 	{
-		if (self::is_ascii($str))
-		{
-			return strtolower($str);
-		}
 		if (SERVER_UTF8)
 		{
 			return mb_strtolower($str);
+		}
+		if (self::is_ascii($str))
+		{
+			return strtolower($str);
 		}
 		
 		static $UTF8_UPPER_TO_LOWER = NULL;
@@ -549,13 +549,13 @@ final class utf8 {
 	 */
 	public static function strtoupper($str)
 	{
-		if (self::is_ascii($str))
-		{
-			return strtoupper($str);
-		}
 		if (SERVER_UTF8)
 		{
 			return mb_strtoupper($str);
+		}
+		if (self::is_ascii($str))
+		{
+			return strtoupper($str);
 		}
 		
 		static $UTF8_LOWER_TO_UPPER = NULL;
@@ -654,13 +654,13 @@ final class utf8 {
 	 */
 	public static function ucwords($str)
 	{
-		if (self::is_ascii($str))
-		{
-			return ucwords($str);
-		}
 		if (SERVER_UTF8)
 		{
 			return mb_convert_case($str, MB_CASE_TITLE);
+		}
+		if (self::is_ascii($str))
+		{
+			return ucwords($str);
 		}
 		
 		// Note: [\x0c\x09\x0b\x0a\x0d\x20] matches form feeds, horizontal tabs, vertical tabs, linefeeds and carriage returns
