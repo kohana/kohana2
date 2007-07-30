@@ -753,13 +753,13 @@ final class utf8 {
 		$total_matched_strlen = 0;
 		$i = 0;
 		
-		while (preg_match('/(.*?)'.preg_quote($search, '/').'/us', $str_lower, $matches))
+		while (preg_match('/(.*?)'.preg_quote($search, '/').'/s', $str_lower, $matches))
 		{
-			$matched_strlen = self::strlen($matches[0]);
-			$str_lower = self::substr($str_lower, $matched_strlen);
+			$matched_strlen = strlen($matches[0]);
+			$str_lower = substr($str_lower, $matched_strlen);
 			
-			$offset = $total_matched_strlen + self::strlen($matches[1]) + ($i * (self::strlen($replace) - 1));
-			$str = self::substr_replace($str, $replace, $offset, self::strlen($search));
+			$offset = $total_matched_strlen + strlen($matches[1]) + ($i * (strlen($replace) - 1));
+			$str = substr_replace($str, $replace, $offset, strlen($search));
 			
 			$total_matched_strlen += $matched_strlen;
 			$i++;
@@ -767,6 +767,41 @@ final class utf8 {
 		
 		$count += $i;
 		return $str;
+	}
+
+	/**
+	 * UTF-8 version of stristr()
+	 *
+	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 *
+	 * @see    http://php.net/stristr
+	 * @param  string
+	 * @param  string  search string
+	 * @return string  (FALSE if search string not found)
+	 */
+	public static function stristr($str, $search)
+	{
+		if (self::is_ascii($str) AND self::is_ascii($search))
+		{
+			return stristr($str, $search);
+		}
+		
+		if ($search == '')
+		{
+			return $str;
+		}
+
+		$str_lower = self::strtolower($str);
+		$search_lower = self::strtolower($search);
+		
+		preg_match('/^(.*?)'.preg_quote($search, '/').'/s', $str_lower, $matches);
+		
+		if (isset($matches[1]))
+		{
+			return substr($str, strlen($matches[1]));
+		}
+		
+		return FALSE;
 	}
 
 	/**
@@ -1342,26 +1377,6 @@ final class utf8 {
 	
 //// CODE BELOW STILL TODO //////////////////////////////////////////////////////////////
 	
-	/**
-	 * UTF-8 version of stristr()
-	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
-	 *
-	 * @see    http://php.net/strpos
-	 * @param  string
-	 * @param  string  search string
-	 * @return string
-	 *
-	 * @todo FIXME!
-	 */
-	public static function stristr($str, $search)
-	{
-		if ($search == FALSE)
-			return $str;
-
-		return stristr($str, $search);
-	}
-
 	/**
 	 * UTF-8 version of strrev()
 	 *
