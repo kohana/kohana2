@@ -18,16 +18,15 @@
  * @link             http://phputf8.sourceforge.net
  * @license          http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
  * @since            Version 1.2
- * @filesource
  */
 
 // ------------------------------------------------------------------------
 
 /**
- * Check whether the server supports the UTF-8 encoding. We need:
- * - PCRE compiled with UTF-8 support
- * - The iconv extension
- * - The mbstring extension (if loaded) must not be overloading string functions
+ * Check whether the server supports the UTF-8 encoding. Conditions:
+ * - PCRE needs to be compiled with UTF-8 support.
+ * - The iconv extension needs to be loaded.
+ * - The mbstring extension is recommended but must not be overloading string functions.
  */
 if (preg_match('/^.{1}/u', 'ñ') !== 1)
 {
@@ -73,9 +72,9 @@ setlocale(LC_ALL, 'en_US.UTF-8');
 header('Content-type: text/html; charset=UTF-8');
 
 /**
- * Set SERVER_UTF8. Possible values are:
- *   TRUE  - use mb_* replacement functions
- *   FALSE - use non-native replacement functions
+ * Set SERVER_UTF8 boolean:
+ * - TRUE   use mb_* replacement functions
+ * - FALSE  use non-native replacement functions
  */
 if (extension_loaded('mbstring'))
 {
@@ -88,7 +87,7 @@ else
 }
 
 /*
- * Make sure that all the global variables are converted to UTF-8.
+ * Convert all global variables to UTF-8.
  */
 $_GET    = utf8::clean($_GET);
 $_POST   = utf8::clean($_POST);
@@ -147,7 +146,7 @@ final class utf8 {
 	 */
 	public static function is_ascii($str)
 	{
-		return ! preg_match('/[^\x00-\x7F]/', $str);
+		return ! preg_match('/[^\x00-\x7F]/S', $str);
 	}
 	
 	/**
@@ -258,13 +257,14 @@ final class utf8 {
 	 */
 	public static function strlen($str)
 	{
-		if (self::is_ascii($str))
-		{
-			return strlen($str);
-		}
+		// Try mb_strlen() first because it's faster than combination of is_ascii() and strlen()
 		if (SERVER_UTF8)
 		{
 			return mb_strlen($str);
+		}
+		if (self::is_ascii($str))
+		{
+			return strlen($str);
 		}
 		
 		return strlen(utf8_decode($str));
