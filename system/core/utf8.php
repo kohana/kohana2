@@ -10,8 +10,6 @@
  * NOTE: This file is licensed differently from the rest of Kohana. As a port of
  * phputf8, this library is released under the LGPL to prevent license violations.
  *
- * @package          Kohana
- * @subpackage       UTF-8
  * @author           Kohana Development Team
  * @copyright        Copyright (c) 2007 Kohana Framework Team
  * @link             http://kohanaphp.com
@@ -73,8 +71,8 @@ header('Content-type: text/html; charset=UTF-8');
 
 /**
  * Set SERVER_UTF8 boolean:
- * - TRUE   use mb_* replacement functions
- * - FALSE  use non-native replacement functions
+ * - TRUE  (use mb_* replacement functions)
+ * - FALSE (to use non-native replacement functions)
  */
 if (extension_loaded('mbstring'))
 {
@@ -101,6 +99,9 @@ if (PHP_SAPI == 'cli')
 
 /**
  * UTF-8 helper and replacement functions
+ *
+ * @package     Kohana
+ * @subpackage  UTF-8
  */
 final class utf8 {
 
@@ -110,6 +111,7 @@ final class utf8 {
 	 * Recursively cleans arrays, objects, and strings. Removes ASCII control codes
 	 * and converts to UTF-8 while silently discarding incompatible UTF-8 characters.
 	 *
+	 * @access public
 	 * @param  mixed
 	 * @return mixed
 	 */
@@ -129,7 +131,7 @@ final class utf8 {
 			{
 				$str = @iconv('UTF-8', 'UTF-8//IGNORE', $str);
 			}
-			
+
 			$str = self::strip_ascii_ctrl($str);
 		}
 
@@ -140,6 +142,7 @@ final class utf8 {
 	 * Tests whether a string contains only 7bit ASCII bytes. This is used to
 	 * determine when to use native functions or UTF-8 functions.
 	 *
+	 * @access public
 	 * @param  string
 	 * @return boolean
 	 */
@@ -147,10 +150,11 @@ final class utf8 {
 	{
 		return ! preg_match('/[^\x00-\x7F]/S', $str);
 	}
-	
+
 	/**
 	 * Strips out device control codes in the ASCII range.
 	 *
+	 * @access public
 	 * @param  string
 	 * @return string
 	 */
@@ -158,10 +162,11 @@ final class utf8 {
 	{
 		return preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+/S', '', $str);
 	}
-	
+
 	/**
 	 * Strips out all non-7bit ASCII bytes.
 	 *
+	 * @access public
 	 * @param  string
 	 * @return string
 	 */
@@ -175,6 +180,7 @@ final class utf8 {
 	 *
 	 * Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
 	 *
+	 * @access public
 	 * @param  string
 	 * @param  integer (optional) -1 lowercase only, +1 uppercase only, 0 both cases
 	 * @return string  accented chars replaced with ASCII equivalents
@@ -203,7 +209,7 @@ final class utf8 {
 					'ÿ' => 'y', 'ũ' => 'u', 'ŭ' => 'u', 'ư' => 'u', 'ţ' => 't', 'ý' => 'y', 'ő' => 'o',
 					'â' => 'a', 'ľ' => 'l', 'ẅ' => 'w', 'ż' => 'z', 'ī' => 'i', 'ã' => 'a', 'ġ' => 'g',
 					'ṁ' => 'm', 'ō' => 'o', 'ĩ' => 'i', 'ù' => 'u', 'į' => 'i', 'ź' => 'z', 'á' => 'a',
-					'û' => 'u', 'þ' => 'th', 'ð' => 'dh', 'æ' => 'ae', 'µ' => 'u', 'ĕ' => 'e', 
+					'û' => 'u', 'þ' => 'th', 'ð' => 'dh', 'æ' => 'ae', 'µ' => 'u', 'ĕ' => 'e',
 				);
 			}
 
@@ -236,7 +242,7 @@ final class utf8 {
 					'Û' => 'U', 'Þ' => 'Th', 'Ð' => 'Dh', 'Æ' => 'Ae', 'Ĕ' => 'E',
 				);
 			}
-			
+
 			$str = str_replace(
 				array_keys($UTF8_UPPER_ACCENTS),
 				array_values($UTF8_UPPER_ACCENTS),
@@ -251,6 +257,7 @@ final class utf8 {
 	 * UTF-8 version of strlen()
 	 *
 	 * @see    http://php.net/strlen
+	 * @access public
 	 * @param  string
 	 * @return integer
 	 */
@@ -265,7 +272,7 @@ final class utf8 {
 		{
 			return strlen($str);
 		}
-		
+
 		return strlen(utf8_decode($str));
 	}
 
@@ -273,6 +280,7 @@ final class utf8 {
 	 * UTF-8 version of strpos()
 	 *
 	 * @see    http://php.net/strpos
+	 * @access public
 	 * @param  string
 	 * @param  string  search string
 	 * @param  integer (optional) characters to offset
@@ -281,7 +289,7 @@ final class utf8 {
 	public static function strpos($str, $search, $offset = 0)
 	{
 		$offset = (int) $offset;
-		
+
 		if (SERVER_UTF8)
 		{
 			return mb_strpos($str, $search, $offset);
@@ -290,7 +298,7 @@ final class utf8 {
 		{
 			return strpos($str, $search, $offset);
 		}
-		
+
 		$regex = '(';
 		$x = (int) ($offset / 65535);
 		$y = (int) ($offset % 65535);
@@ -307,6 +315,7 @@ final class utf8 {
 	 * UTF-8 version of strrpos()
 	 *
 	 * @see    http://php.net/strrpos
+	 * @access public
 	 * @param  string
 	 * @param  string  search string
 	 * @param  integer (optional) characters to offset
@@ -315,7 +324,7 @@ final class utf8 {
 	public static function strrpos($str, $search, $offset = 0)
 	{
 		$offset = (int) $offset;
-		
+
 		if (SERVER_UTF8)
 		{
 			return mb_strrpos($str, $search, $offset);
@@ -324,13 +333,13 @@ final class utf8 {
 		{
 			return strrpos($str, $search, $offset);
 		}
-		
+
 		if ($offset == 0)
 		{
 			$array = explode($search, $string, -1);
 			return (count($array) != 0) ? self::strlen(implode($search, $array)) : FALSE;
 		}
-		
+
 		$str = self::substr($str, $offset);
 		$pos = self::strrpos($str, $search);
 		return ($pos === FALSE) ? FALSE : $pos + $offset;
@@ -342,6 +351,7 @@ final class utf8 {
 	 * Original function written by Chris Smith <chris@jalakai.co.uk> for phputf8
 	 *
 	 * @see    http://php.net/substr
+	 * @access public
 	 * @param  string
 	 * @param  integer characters to offset
 	 * @param  integer (optional) length of return
@@ -357,7 +367,7 @@ final class utf8 {
 		{
 			return ($length === NULL) ? substr($str, $offset) : substr($str, $offset, $length);
 		}
-		
+
 		// Normalize params
 		$str    = (string) $str;
 		$strlen = self::strlen($str);
@@ -369,7 +379,7 @@ final class utf8 {
 		{
 			return '';
 		}
-		
+
 		// Whole string
 		if ($offset == 0 AND ($length === NULL OR $length >= $strlen))
 		{
@@ -418,16 +428,17 @@ final class utf8 {
 				$regex .= '.{'.$y.'}';
 			}
 		}
-		
+
 		preg_match('/'.$regex.'/us', $str, $matches);
 
 		return (isset($matches[1])) ? $matches[1] : '';
 	}
-	
+
 	/**
 	 * UTF-8 version of substr_replace()
 	 *
 	 * @see    http://php.net/substr_replace
+	 * @access public
 	 * @param  string
 	 * @param  string
 	 * @param  integer characters to offset
@@ -440,21 +451,22 @@ final class utf8 {
 		{
 			return ($length === NULL) ? substr_replace($str, $replacement, $offset) : substr_replace($str, $replacement, $offset, $length);
 		}
-		
+
 		$length = ($length === NULL) ? self::strlen($str) : $length;
-	    preg_match_all('/./us', $str, $str_array);
-	    preg_match_all('/./us', $replacement, $replacement_array);
-        
-	    array_splice($str_array[0], $offset, $length, $replacement_array[0]);
-	    return implode('', $str_array[0]);
+		preg_match_all('/./us', $str, $str_array);
+		preg_match_all('/./us', $replacement, $replacement_array);
+
+		array_splice($str_array[0], $offset, $length, $replacement_array[0]);
+		return implode('', $str_array[0]);
 	}
-	
+
 	/**
 	 * UTF-8 version of strtolower()
 	 *
 	 * Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
 	 *
 	 * @see    http://php.net/strtolower
+	 * @access public
 	 * @param  string
 	 * @return string
 	 */
@@ -468,7 +480,7 @@ final class utf8 {
 		{
 			return strtolower($str);
 		}
-		
+
 		static $UTF8_UPPER_TO_LOWER = NULL;
 
 		if ($UTF8_UPPER_TO_LOWER === NULL)
@@ -521,7 +533,7 @@ final class utf8 {
 		}
 
 		$uni = self::to_unicode($str);
-		
+
 		if ($uni === FALSE)
 		{
 			return FALSE;
@@ -544,6 +556,7 @@ final class utf8 {
 	 * Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
 	 *
 	 * @see    http://php.net/strtoupper
+	 * @access public
 	 * @param  string
 	 * @return string
 	 */
@@ -557,7 +570,7 @@ final class utf8 {
 		{
 			return strtoupper($str);
 		}
-		
+
 		static $UTF8_LOWER_TO_UPPER = NULL;
 
 		if ($UTF8_LOWER_TO_UPPER === NULL)
@@ -610,7 +623,7 @@ final class utf8 {
 		}
 
 		$uni = self::to_unicode($str);
-		
+
 		if ($uni === FALSE)
 		{
 			return FALSE;
@@ -631,6 +644,7 @@ final class utf8 {
 	 * UTF-8 version of ucfirst()
 	 *
 	 * @see    http://php.net/ucfirst
+	 * @access public
 	 * @param  string
 	 * @return string
 	 */
@@ -640,7 +654,7 @@ final class utf8 {
 		{
 			return ucfirst($str);
 		}
-		
+
 		preg_match('/^(.?)(.*)$/us', $str, $matches);
 		return self::strtoupper($matches[1]).$matches[2];
 	}
@@ -649,6 +663,7 @@ final class utf8 {
 	 * UTF-8 version of ucwords()
 	 *
 	 * @see    http://php.net/ucwords
+	 * @access public
 	 * @param  string
 	 * @return string
 	 */
@@ -662,9 +677,11 @@ final class utf8 {
 		{
 			return ucwords($str);
 		}
-		
-		// Note: [\x0c\x09\x0b\x0a\x0d\x20] matches form feeds, horizontal tabs, vertical tabs, linefeeds and carriage returns
-		// This corresponds to the definition of a 'word' defined at http://php.net/ucwords
+
+		/**
+		 * [\x0c\x09\x0b\x0a\x0d\x20] matches form feeds, horizontal tabs, vertical tabs, linefeeds and carriage returns. 
+		 * This corresponds to the definition of a 'word' defined at http://php.net/ucwords
+		 */
 		return preg_replace(
 			'/(?<=^|[\x0c\x09\x0b\x0a\x0d\x20])[^\x0c\x09\x0b\x0a\x0d\x20]/ue',
 			'self::strtoupper(\'$0\')',
@@ -678,6 +695,7 @@ final class utf8 {
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/strcasecmp
+	 * @access public
 	 * @param  string
 	 * @param  string
 	 * @return integer
@@ -688,7 +706,7 @@ final class utf8 {
 		{
 			return strcasecmp($str1, $str2);
 		}
-		
+
 		$str1 = self::strtolower($str1);
 		$str2 = self::strtolower($str2);
 		return strcmp($str1, $str2);
@@ -697,11 +715,12 @@ final class utf8 {
 	/**
 	 * UTF-8 version of str_ireplace()
 	 *
-	 * Note: it's not fast and gets slower if $search and/or $replace are arrays
-	 * 
+	 * NOTE: it's not fast and gets slower if $search and/or $replace are arrays
+	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/str_ireplace
+	 * @access public
 	 * @param  string  (or array) text to replace
 	 * @param  string  (or array) replacement text
 	 * @param  string  (or array) subject text
@@ -714,7 +733,7 @@ final class utf8 {
 		{
 			return str_ireplace($search, $replace, $str, $count);
 		}
-        
+
 		if (is_array($str))
 		{
 			foreach ($str as $key => $val)
@@ -723,7 +742,7 @@ final class utf8 {
 			}
 			return $str;
 		}
-		
+
 		if (is_array($search))
 		{
 			foreach (array_keys($search) as $k)
@@ -746,25 +765,25 @@ final class utf8 {
 			}
 			return $str;
 		}
-        
+
 		$search = self::strtolower($search);
 		$str_lower = self::strtolower($str);
-		
+
 		$total_matched_strlen = 0;
 		$i = 0;
-		
+
 		while (preg_match('/(.*?)'.preg_quote($search, '/').'/s', $str_lower, $matches))
 		{
 			$matched_strlen = strlen($matches[0]);
 			$str_lower = substr($str_lower, $matched_strlen);
-			
+
 			$offset = $total_matched_strlen + strlen($matches[1]) + ($i * (strlen($replace) - 1));
 			$str = substr_replace($str, $replace, $offset, strlen($search));
-			
+
 			$total_matched_strlen += $matched_strlen;
 			$i++;
 		}
-		
+
 		$count += $i;
 		return $str;
 	}
@@ -775,6 +794,7 @@ final class utf8 {
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/stristr
+	 * @access public
 	 * @param  string
 	 * @param  string  search string
 	 * @return string  (FALSE if search string not found)
@@ -785,7 +805,7 @@ final class utf8 {
 		{
 			return stristr($str, $search);
 		}
-		
+
 		if ($search == '')
 		{
 			return $str;
@@ -793,23 +813,24 @@ final class utf8 {
 
 		$str_lower = self::strtolower($str);
 		$search_lower = self::strtolower($search);
-		
+
 		preg_match('/^(.*?)'.preg_quote($search, '/').'/s', $str_lower, $matches);
-		
+
 		if (isset($matches[1]))
 		{
 			return substr($str, strlen($matches[1]));
 		}
-		
+
 		return FALSE;
 	}
 
 	/**
 	 * UTF-8 version of strspn()
-	 * 
+	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/strspn
+	 * @access public
 	 * @param  string
 	 * @param  string  mask for search
 	 * @param  integer (optional) start position of the string to examine
@@ -822,31 +843,34 @@ final class utf8 {
 		{
 			return 0;
 		}
-		
+
 		if (self::is_ascii($str) AND self::is_ascii($mask))
 		{
 			return ($offset === NULL) ? strspn($str, $mask) : (($length === NULL) ? strspn($str, $mask, $offset) : strspn($str, $mask, $offset, $length));
 		}
-		
+
 		if ($offset !== NULL OR $length !== NULL)
 		{
 			$str = self::substr($str, $offset, $length);
 		}
 
-		// Escape these characters:  - . : / \ [ ] ^
-		// The . and : are escaped to prevent possible warnings about POSIX regex elements
+		/**
+		 * Escape these characters:  - . : / \ [ ] ^
+		 * The . and : are escaped to prevent possible warnings about POSIX regex elements
+		 */
 		$mask = preg_replace('/([-.:\/\\\[\]^])/', '\\\$1', $mask);
 		preg_match('/^['.$mask.']+/u', $str, $matches);
-		
+
 		return (isset($matches[0])) ? self::strlen($matches[0]) : 0;
 	}
-	
+
 	/**
 	 * UTF-8 version of strcspn()
-	 * 
+	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/strspn
+	 * @access public
 	 * @param  string
 	 * @param  string  negative mask for search
 	 * @param  integer (optional) start position of the string to examine
@@ -859,12 +883,12 @@ final class utf8 {
 		{
 			return 0;
 		}
-		
+
 		if (self::is_ascii($str) AND self::is_ascii($mask))
 		{
 			return ($offset === NULL) ? strcspn($str, $mask) : (($length === NULL) ? strcspn($str, $mask, $offset) : strcspn($str, $mask, $offset, $length));
 		}
-		
+
 		if ($start !== NULL OR $length !== NULL)
 		{
 			$str = self::substr($str, $offset, $length);
@@ -874,7 +898,7 @@ final class utf8 {
 		// The . and : are escaped to prevent possible warnings about POSIX regex elements
 		$mask = preg_replace('/([-.:\/\\\[\]^])/', '\\\$1', $mask);
 		preg_match('/^[^'.$mask.']+/u', $str, $matches);
-		
+
 		return (isset($matches[0])) ? self::strlen($matches[0]) : 0;
 	}
 
@@ -884,6 +908,7 @@ final class utf8 {
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/str_pad
+	 * @access public
 	 * @param  string
 	 * @param  integer desired string length after padding
 	 * @param  string  string to use as padding
@@ -896,17 +921,17 @@ final class utf8 {
 		{
 			return str_pad($str, $final_str_length, $pad_str, $pad_type);
 		}
-		
+
 		$str_length = self::strlen($str);
-		
+
 		if ($final_str_length <= 0 OR $final_str_length <= $str_length)
 		{
 			return $str;
 		}
-		
+
 		$pad_str_length = self::strlen($pad_str);
 		$pad_length = $final_str_length - $str_length;
-		
+
 		if ($pad_type == STR_PAD_RIGHT)
 		{
 			$repeat = ceil($pad_length / $pad_str_length);
@@ -941,6 +966,7 @@ final class utf8 {
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/str_split
+	 * @access public
 	 * @param  string
 	 * @param  integer maximum length of chunk
 	 * @return array   (FALSE if split_length < 1)
@@ -948,12 +974,12 @@ final class utf8 {
 	public static function str_split($str, $split_length = 1)
 	{
 		$split_length = (int) $split_length;
-		
+
 		if (self::is_ascii($str))
 		{
 			return str_split($str, $split_length);
 		}
-		
+
 		if ($split_length < 1)
 		{
 			return FALSE;
@@ -975,6 +1001,7 @@ final class utf8 {
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/strrev
+	 * @access public
 	 * @param  string
 	 * @return string
 	 */
@@ -991,12 +1018,13 @@ final class utf8 {
 
 	/**
 	 * UTF-8 version of trim()
-	 * 
+	 *
 	 * Note: if you don't need the $charlist you can use PHP's native trim function.
-	 * 
+	 *
 	 * Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
 	 *
 	 * @see    http://php.net/trim
+	 * @access public
 	 * @param  string
 	 * @param  string  (optional) characters that need to be stripped (specify a range of characters with ..)
 	 * @return string
@@ -1007,18 +1035,19 @@ final class utf8 {
 		{
 			return ($charlist === NULL) ? trim($str) : trim($str, $charlist);
 		}
-		
+
 		return self::ltrim(self::rtrim($str, $charlist), $charlist);
 	}
-	
+
 	/**
 	 * UTF-8 version of ltrim()
-	 * 
+	 *
 	 * Note: if you don't need the $charlist you can use PHP's native ltrim function.
-	 * 
+	 *
 	 * Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
 	 *
 	 * @see    http://php.net/ltrim
+	 * @access public
 	 * @param  string
 	 * @param  string  (optional) characters that need to be stripped (specify a range of characters with ..)
 	 * @return string
@@ -1029,26 +1058,25 @@ final class utf8 {
 		{
 			return ($charlist === NULL) ? ltrim($str) : ltrim($str, $charlist);
 		}
-		
-		// Escape these characters:  - . : / \ [ ] ^
-		// The . and : are escaped to prevent possible warnings about POSIX regex elements
+
 		$charlist = preg_replace('/([-.:\/\\\[\]^])/', '\\\$1', $charlist);
-		
+
 		// Try to support .. character ranges, if they cause errors drop its support
 		$charlist_ranged = str_replace('\.\.', '-', $charlist);
 		$str_ranged = @preg_replace('/^['.$charlist_ranged.']+/u', '', $str);
 
 		return ($str_ranged !== NULL) ? $str_ranged : preg_replace('/^['.$charlist.']+/u', '', $str);
 	}
-	
+
 	/**
 	 * UTF-8 version of rtrim()
-	 * 
+	 *
 	 * Note: if you don't need the $charlist you can use PHP's native rtrim function.
-	 * 
+	 *
 	 * Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
 	 *
 	 * @see    http://php.net/rtrim
+	 * @access public
 	 * @param  string
 	 * @param  string  (optional) characters that need to be stripped (specify a range of characters with ..)
 	 * @return string
@@ -1059,24 +1087,22 @@ final class utf8 {
 		{
 			return ($charlist === NULL) ? rtrim($str) : rtrim($str, $charlist);
 		}
-		
-		// Escape these characters:  - . : / \ [ ] ^
-		// The . and : are escaped to prevent possible warnings about POSIX regex elements
+
 		$charlist = preg_replace('/([-.:\/\\\[\]^])/', '\\\$1', $charlist);
-		
-		// Try to support .. character ranges, if they cause errors drop its support
+
 		$charlist_ranged = str_replace('\.\.', '-', $charlist);
 		$str_ranged = @preg_replace('/['.$charlist_ranged.']+$/u', '', $str);
 
 		return ($str_ranged !== NULL) ? $str_ranged : preg_replace('/['.$charlist.']+$/u', '', $str);
 	}
-	
+
 	/**
 	 * UTF-8 version of ord()
-	 * 
+	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/ord
+	 * @access public
 	 * @param  string  UTF-8 encoded character
 	 * @return integer unicode ordinal for that character
 	 */
@@ -1091,12 +1117,12 @@ final class utf8 {
 
 		if ( ! isset($chr[1]))
 		{
-			trigger_error('Short sequence - at least 2 bytes expected, only 1 seen');
+			trigger_error('Short sequence - at least 2 bytes expected, only 1 seen', E_USER_WARNING);
 			return FALSE;
 		}
 
 		$ord1 = ord($chr[1]);
-		
+
 		if ($ord0 >= 192 AND $ord0 <= 223)
 		{
 			return ($ord0 - 192) * 64 + ($ord1 - 128);
@@ -1104,12 +1130,12 @@ final class utf8 {
 
 		if ( ! isset($chr[2]))
 		{
-			trigger_error('Short sequence - at least 3 bytes expected, only 2 seen');
+			trigger_error('Short sequence - at least 3 bytes expected, only 2 seen', E_USER_WARNING);
 			return FALSE;
 		}
-		
+
 		$ord2 = ord($chr[2]);
-		
+
 		if ($ord0 >= 224 AND $ord0 <= 239)
 		{
 			return ($ord0 - 224) * 4096 + ($ord1 - 128) * 64 + ($ord2 - 128);
@@ -1117,12 +1143,12 @@ final class utf8 {
 
 		if ( ! isset($chr[3]))
 		{
-			trigger_error('Short sequence - at least 4 bytes expected, only 3 seen');
+			trigger_error('Short sequence - at least 4 bytes expected, only 3 seen', E_USER_WARNING);
 			return FALSE;
 		}
-		
+
 		$ord3 = ord($chr[3]);
-		
+
 		if ($ord0 >= 240 AND $ord0 <= 247)
 		{
 			return ($ord0 - 240) * 262144 + ($ord1 - 128) * 4096 + ($ord2-128) * 64 + ($ord3 - 128);
@@ -1130,12 +1156,12 @@ final class utf8 {
 
 		if ( ! isset($chr[4]))
 		{
-			trigger_error('Short sequence - at least 5 bytes expected, only 4 seen');
+			trigger_error('Short sequence - at least 5 bytes expected, only 4 seen', E_USER_WARNING);
 			return FALSE;
 		}
-		
+
 		$ord4 = ord($chr[4]);
-		
+
 		if ($ord0 >= 248 AND $ord0 <= 251)
 		{
 			return ($ord0 - 248) * 16777216 + ($ord1-128) * 262144 + ($ord2 - 128) * 4096 + ($ord3 - 128) * 64 + ($ord4 - 128);
@@ -1143,22 +1169,22 @@ final class utf8 {
 
 		if ( ! isset($chr[5]))
 		{
-			trigger_error('Short sequence - at least 6 bytes expected, only 5 seen');
+			trigger_error('Short sequence - at least 6 bytes expected, only 5 seen', E_USER_WARNING);
 			return FALSE;
 		}
-		
+
 		if ($ord0 >= 252 AND $ord0 <= 253)
 		{
 			return ($ord0 - 252) * 1073741824 + ($ord1 - 128) * 16777216 + ($ord2 - 128) * 262144 + ($ord3 - 128) * 4096 + ($ord4 - 128) * 64 + (ord($c[5]) - 128);
 		}
 
 		if ($ord0 >= 254 AND $ord0 <= 255)
-		{ 
-			trigger_error('Invalid UTF-8 with surrogate ordinal '.$ord0);
+		{
+			trigger_error('Invalid UTF-8 with surrogate ordinal '.$ord0, E_USER_WARNING);
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * Takes an UTF-8 string and returns an array of ints representing the Unicode characters.
 	 * Astral planes are supported i.e. the ints in the output can be > 0xFFFF.
@@ -1171,6 +1197,7 @@ final class utf8 {
 	 * Slight modifications to fit with phputf8 library by Harry Fuecks <hfuecks@gmail.com>
 	 *
 	 * @see    http://hsivonen.iki.fi/php-utf8/
+	 * @access public
 	 * @param  string  UTF-8 encoded string
 	 * @return mixed   array of unicode code points or FALSE if UTF-8 invalid
 	 */
@@ -1225,7 +1252,7 @@ final class utf8 {
 				elseif (0xF8 == (0xFC & $in))
 				{
 					// First octet of 5 octet sequence.
-					// 
+					//
 					// This is illegal because the encoded codepoint must be either
 					// (a) not the shortest form or
 					// (b) outside the Unicode range of 0-0x10FFFF.
@@ -1247,10 +1274,7 @@ final class utf8 {
 				else
 				{
 					// Current octet is neither in the US-ASCII range nor a legal first octet of a multi-octet sequence.
-					trigger_error(
-						'utf8::to_unicode: Illegal sequence identifier in UTF-8 at byte '.$i,
-						E_USER_WARNING
-					);
+					trigger_error('utf8::to_unicode: Illegal sequence identifier in UTF-8 at byte '.$i, E_USER_WARNING);
 					return FALSE;
 				}
 			}
@@ -1280,10 +1304,7 @@ final class utf8 {
 							// Codepoints outside the Unicode range are illegal
 							($mUcs4 > 0x10FFFF))
 						{
-							trigger_error(
-								'utf8_to_unicode: Illegal sequence or codepoint in UTF-8 at byte '.$i,
-								E_USER_WARNING
-							);
+							trigger_error('utf8::to_unicode: Illegal sequence or codepoint in UTF-8 at byte '.$i, E_USER_WARNING);
 							return FALSE;
 						}
 
@@ -1303,15 +1324,12 @@ final class utf8 {
 				{
 					// ((0xC0 & (*in) != 0x80) AND (mState != 0))
 					// Incomplete multi-octet sequence
-					trigger_error(
-						'utf8_to_unicode: Incomplete multi-octet sequence in UTF-8 at byte '.$i,
-						E_USER_WARNING
-					);
+					trigger_error('utf8::to_unicode: Incomplete multi-octet sequence in UTF-8 at byte '.$i, E_USER_WARNING);
 					return FALSE;
 				}
 			}
 		}
-		
+
 		return $out;
 	}
 
@@ -1327,6 +1345,7 @@ final class utf8 {
 	 * Slight modifications to fit with phputf8 library by Harry Fuecks <hfuecks@gmail.com>
 	 *
 	 * @see    http://hsivonen.iki.fi/php-utf8/
+	 * @access public
 	 * @param  array  of unicode code points representing a string
 	 * @return mixed  UTF-8 string or FALSE if array contains invalid code points
 	 */
@@ -1356,10 +1375,7 @@ final class utf8 {
 			elseif ($arr[$k] >= 0xD800 AND $arr[$k] <= 0xDFFF)
 			{
 				// Found a surrogate
-				trigger_error(
-					'utf8_from_unicode: Illegal surrogate at index: '.$k.', value: '.$arr[$k],
-					E_USER_WARNING
-				);
+				trigger_error('utf8::from_unicode: Illegal surrogate at index: '.$k.', value: '.$arr[$k], E_USER_WARNING);
 				return FALSE;
 			}
 			// 3 byte sequence
@@ -1380,10 +1396,7 @@ final class utf8 {
 			// Out of range
 			else
 			{
-				trigger_error(
-					'utf8_from_unicode: Codepoint out of Unicode range at index: '.$k.', value: '.$arr[$k],
-					E_USER_WARNING
-				);
+				trigger_error('utf8::from_unicode: Codepoint out of Unicode range at index: '.$k.', value: '.$arr[$k], E_USER_WARNING);
 				return FALSE;
 			}
 		}
@@ -1392,5 +1405,5 @@ final class utf8 {
 		ob_end_clean();
 		return $result;
 	}
-	
+
 } // End utf8 class
