@@ -96,8 +96,7 @@ $_SERVER = utf8::clean($_SERVER);
 // Convert command line arguments
 if (PHP_SAPI == 'cli')
 {
-	global $argv;
-	$argv = utf8::clean($argv);
+	$_SERVER['argv'] = utf8::clean($_SERVER['argv']);
 }
 
 /**
