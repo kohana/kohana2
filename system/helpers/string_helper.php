@@ -151,15 +151,17 @@ function alternator()
 
 /**
  * Repeater function
+ * 
+ * This function is deprecated. Please use PHP's native str_repeat().
  *
  * @access	public
  * @param	string
  * @param	integer	number of repeats
  * @return	string
  */
-function repeater($data, $num = 1)
+function repeater($str, $num = 1)
 {
-	return (($num > 0) ? str_repeat($data, $num) : '');
+	return str_repeat($str, $num);
 }
 
 ?>
