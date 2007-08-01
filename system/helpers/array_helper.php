@@ -36,6 +36,8 @@
 
 /**
  * Element
+ * 
+ * This function is deprecated.
  *
  * Lets you determine whether an array index is set and whether it has a value.
  * If the element is empty it returns FALSE (or whatever you specify as the default value.)
@@ -48,7 +50,7 @@
  */	
 function element($item, $array, $default = FALSE)
 {
-	if ( ! isset($array[$item]) OR $array[$item] == "")
+	if ( ! isset($array[$item]) OR $array[$item] == '')
 	{
 		return $default;
 	}
@@ -60,6 +62,8 @@ function element($item, $array, $default = FALSE)
 
 /**
  * Random Element - Takes an array as input and returns a random element
+ * 
+ * This function is deprecated.
  *
  * @access	public
  * @param	array
