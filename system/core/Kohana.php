@@ -66,9 +66,7 @@ final class Kohana {
 	public static $registry;
 	public static $instance;
 
-	public static $ob_level;
 	public static $error_types;
-
 	public static $shutdown_events;
 
 	public static function initialize()
@@ -139,7 +137,7 @@ final class Kohana {
 
 		$template = self::find_file('errors', 'php_error');
 
-		while(ob_get_level() > self::$ob_level)
+		while(ob_get_level() > 1)
 		{
 			ob_end_clean();
 		}
@@ -190,34 +188,58 @@ final class Kohana {
 			eval('class '.$class.' extends Core_'.$class.' { }');
 		}
 
-		self::$registry[$class] = new $class();
+		if ($class == 'Controller')
+		{
+			self::$registry[$class] = TRUE;
+		}
+		else
+		{
+			self::$registry[$class] = new $class();
+		}
 
 		return self::$registry[$class];
 	}
 
 	public static function find_file($directory, $filename, $required = FALSE)
 	{
-		static $files;
+		static $found = array();
 
-		if ( ! is_array($files))
+		$search = $directory.'/'.$filename;
+
+		if (isset($found[$search]))
 		{
-			$files = array();
+			return $found[$search];
 		}
 
-		if (isset($files[$directory.'/'.$filename]))
-		{
-			return $files[$directory.'/'.$filename];
-		}
+		$paths = Config::item('include_paths');
 
-		$search = $directory.'/'.$filename.EXT;
-
-		foreach (Config::item('include_paths') as $path)
+		if ($directory == 'config' OR $directory == 'i18n')
 		{
-			if (file_exists($path.$search) AND is_file($path.$search))
+			// Search from SYSPATH up
+			$paths = array_reverse($paths);
+			// Create a braced list for glob
+			$paths = '{'.implode(',', $paths).'}';
+			// Find all matching files, without sorting
+			$files = glob($paths.$search.EXT, GLOB_BRACE + GLOB_NOSORT);
+
+			if ( ! empty($files))
 			{
-				$files[$directory.'/'.$filename] = $path.$search;
+				$found[$search] = $files;
 
-				return $path.$search;
+				return $files;
+			}
+		}
+		else
+		{
+			foreach ($paths as $path)
+			{
+				// File found? Return it!
+				if (file_exists($path.$search.EXT) AND is_file($path.$search.EXT))
+				{
+					$found[$search] = $path.$search.EXT;
+
+					return $path.$search.EXT;
+				}
 			}
 		}
 
@@ -232,9 +254,27 @@ final class Kohana {
 		}
 	}
 
-}
+	public static function attributes($attrs)
+	{
+		if (is_string($attrs))
+		{
+			return ($attrs == FALSE) ? '' : ' '.$attrs;
+		}
+		else
+		{
+			$compiled = '';
 
-Kohana::$ob_level = ob_get_level();
+			foreach($attrs as $key => $val)
+			{
+				$compiled .= ' '.$key.'="'.$val.'"';
+			}
+
+			return $compiled;
+		}
+	}
+
+} // End Kohana class
+
 Kohana::$error_types = array
 (
 	E_RECOVERABLE_ERROR => 'Recoverable Error',
@@ -246,6 +286,9 @@ Kohana::$error_types = array
 	E_USER_WARNING      => 'Warning Warning'
 );
 
+/**
+ * Exceptions
+ */
 class file_not_found       extends Exception {}
 class library_not_found    extends file_not_found {}
 class controller_not_found extends file_not_found {}
