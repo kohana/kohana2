@@ -130,8 +130,11 @@ class Core_Config {
 		else
 		{
 			if ($fail_gracefully === TRUE)
+			{
+				log_message('error', 'The configuration file '.$file.EXT.' does not exist in the search paths.');
 				return FALSE;
-
+			}
+			
 			show_error('The configuration file '.$file.EXT.' does not exist in the search paths.');
 		}
 		log_message('debug', 'Config file loaded: config/'.$file.EXT);
