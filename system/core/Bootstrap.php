@@ -8,11 +8,10 @@ define('KOHANA_VERSION', '1.2');
  */
 define('SYSTEM_BENCHMARK', uniqid(rand(1,100)));
 
-// UTF-8 compatible string functions
-require SYSPATH.'core/utf8'.EXT;
-
 // Core class, common functions, and magic PHP functions.
 require SYSPATH.'core/Kohana'.EXT;
+// UTF-8 compatible string functions
+require SYSPATH.'core/utf8'.EXT;
 // Start output buffering
 ob_start(array('Kohana', 'output'));
 

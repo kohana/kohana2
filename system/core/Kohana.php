@@ -79,17 +79,20 @@ final class Kohana {
 		{
 			throw new controller_not_found($class);
 		}
+		
 
 		self::$instance = new $class;
+		self::$instance->load = new Loader();
 
 		call_user_func_array(array(self::$instance, Router::$method), Router::$arguments);
+		
 	}
 
 	public static function output($output)
 	{
 		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024/1024) : 0;
 
-		return utf8::str_replace(
+		return str_replace(
 			array
 			(
 				'{kohana_version}',
@@ -145,13 +148,12 @@ final class Kohana {
 		ob_start(array('Kohana', 'output'));
 		include $template;
 		ob_end_flush();
-
 		exit;
 	}
 
 	public static function exception_handler($exception)
 	{
-		while(ob_get_level() > self::$ob_level)
+		while(ob_get_level() > 1)
 		{
 			ob_end_clean();
 		}
@@ -161,8 +163,9 @@ final class Kohana {
 
 	public static function load_class($class)
 	{
-		$type  = preg_match('/_Model\b/u', $class) ? 'models' : 'libraries';
-		$class = preg_replace('/(\bCore_|_Model\b)/u', '', $class);
+		$type  = preg_match('/_Model\b/', $class) ? 'models' : 'libraries';
+		$file  = preg_replace('/(\bCore_|_Model\b)/', '', $class);
+		$class = preg_replace('/\bCore_/', '', $class);
 
 		if (isset(self::$registry[$class]))
 		{
@@ -171,21 +174,24 @@ final class Kohana {
 
 		try
 		{
-			require self::find_file('libraries', $class, TRUE);
+			require self::find_file($type, $file, TRUE);
 		}
 		catch (file_not_found $exception)
 		{
-			print $exception->getMessage().' Library not be loaded.';
+			print $exception->getMessage().' Class of type '.$type.' could not be loaded.';
 			exit;
 		}
 
-		if ($extension = self::find_file('libraries', Config::item('subclass_prefix').$class))
+		if ($type == 'libraries')
 		{
-			require $extension;
-		}
-		else
-		{
-			eval('class '.$class.' extends Core_'.$class.' { }');
+			if ($extension = self::find_file('libraries', Config::item('subclass_prefix').$class))
+			{
+				require $extension;
+			}
+			else
+			{
+				eval('class '.$class.' extends Core_'.$class.' { }');
+			}
 		}
 
 		if ($class == 'Controller')

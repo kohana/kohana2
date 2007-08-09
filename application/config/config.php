@@ -2,6 +2,8 @@
 
 $config['base_url'] = 'http://localhost/kfsk/';
 
+$config['index_page'] = '';
+
 $config['url_suffix'] = '.html';
 
 $config['permitted_uri_chars'] = 'a-z 0-9~%.:_-';
