@@ -1,20 +1,17 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
-define('KOHANA_VERSION', '1.2');
-
-/**
- * We define a variable to hold a random string for the system benchmark prefix.
- * This allows 100% freeform benchmarking for application.
- */
+// Kohana version
+define('KOHANA_VERSION', '2.0');
+// Kohana benchmarks are prefixed by a random string to prevent collisions
 define('SYSTEM_BENCHMARK', uniqid(rand(1,100)));
 
-// Core class, common functions, and magic PHP functions.
+// Load up core classes
 require SYSPATH.'core/Kohana'.EXT;
-// UTF-8 compatible string functions
+// Load UTF-8 compatible string functions
 require SYSPATH.'core/utf8'.EXT;
-// Start output buffering
-ob_start(array('Kohana', 'output'));
 
+// Setup Kohana
+Kohana::setup();
 // Start the system benchmarks
 Benchmark::start(SYSTEM_BENCHMARK.'_total_execution_time');
 Benchmark::start(SYSTEM_BENCHMARK.'_base_classes_loading');
@@ -45,6 +42,5 @@ Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
 // Initialize the system, load Controller
 Kohana::initialize();
 
-exit('done: {execution_time} seconds');
 // Stop the controller execution benchmark
 Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');

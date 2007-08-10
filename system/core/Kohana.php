@@ -1,20 +1,30 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
+/**
+ * Kohana
+ *
+ * A secure and lightweight open source web application framework.
+ *
+ * @package          Kohana
+ * @author           Kohana Development Team
+ * @copyright        Copyright (c) 2007, Kohana Framework Team
+ * @link             http://kohanaphp.com
+ * @license          http://kohanaphp.com/license.html
+ * @since            Version 2.0
+ * @filesource
+ */
 
-(defined('E_RECOVERABLE_ERROR')) or (define('E_RECOVERABLE_ERROR', 4096));
+// ----------------------------------------------------------------------------
 
-// Set error handler
-set_error_handler(array('Kohana', 'error_handler'), E_ALL ^ E_NOTICE);
-// Set execption handler
-set_exception_handler(array('Kohana', 'exception_handler'));
-// Set autoloader
-spl_autoload_register(array('Kohana', 'load_class'));
-// Set shutdown handler
-register_shutdown_function(array('Kohana', 'shutdown'));
-// Start output buffering
-
+/**
+ * Configuration class
+ *
+ * @category    Core
+ * @author      Kohana Development Team
+ * @link        http://kohanaphp.com/user_guide/core_classes.html
+ */
 final class Config {
 
-	public static $conf;
+	public static $conf; // Configuration array
 
 	/**
 	 * Return a config item
@@ -61,16 +71,88 @@ final class Config {
 
 } // End Config class
 
+/**
+ * Kohana Kernel class
+ *
+ * @category    Core
+ * @author      Kohana Development Team
+ * @link        http://kohanaphp.com/user_guide/core_classes.html
+ */
 final class Kohana {
 
-	public static $registry;
-	public static $instance;
+	public static $registry; // Library registery
+	public static $instance; // Controller instance
 
-	public static $error_types;
-	public static $shutdown_events;
+	public static $buffer_level;    // Ouput buffering level
+	public static $error_types;     // Human readable error types
+	public static $shutdown_events; // Registered shutdown events
 
+	/**
+	 * PHP Preparation and Setup Routine
+	 *
+	 * This function prepares PHP's error/exception handling, output buffering,
+	 * and adds an auto-loading method for loading classes
+	 *
+	 * @access  public
+	 * @return  void
+	 */
+	public static function setup()
+	{
+		static $run;
+
+		// This function can only be run once
+		if ($run === TRUE) return;
+
+		// Define E_RECOVERABLE_ERROR for PHP < 5.2
+		(defined('E_RECOVERABLE_ERROR')) or (define('E_RECOVERABLE_ERROR', 4096));
+
+		// Set autoloader
+		spl_autoload_register(array('Kohana', 'load_class'));
+
+		// Set error types
+		self::$error_types = array
+		(
+			E_RECOVERABLE_ERROR => 'Recoverable Error',
+			E_ERROR             => 'Fatal Error',
+			E_USER_ERROR        => 'Fatal Error',
+			E_PARSE             => 'Syntax Error',
+			E_NOTICE            => 'Runtime Message',
+			E_WARNING           => 'Warning Message',
+			E_USER_WARNING      => 'Warning Warning'
+		);
+		// Set error handler
+		set_error_handler(array('Kohana', 'error_handler'));
+
+		// Set execption handler
+		set_exception_handler(array('Kohana', 'exception_handler'));
+
+		// Set shutdown handler
+		register_shutdown_function(array('Kohana', 'shutdown'));
+
+		// Start output buffering
+		ob_start(array('Kohana', 'output'));
+
+		// Save buffering level
+		self::$buffer_level = ob_get_level();
+
+		// Setup is complete
+		$run = TRUE;
+	}
+
+	/**
+	 * Controller Initialization
+	 *
+	 * Loads the controller and instantiates it. The controller object is
+	 * cached as Kohana::$instance
+	 *
+	 * @access public
+	 * @return void
+	 */
 	public static function initialize()
 	{
+		// The controller can only be loaded once
+		if (is_object(self::$instance)) return;
+
 		$class = Router::$controller;
 
 		require Router::$directory.Router::$controller.EXT;
@@ -79,18 +161,26 @@ final class Kohana {
 		{
 			throw new controller_not_found($class);
 		}
-		
 
 		self::$instance = new $class;
 		self::$instance->load = new Loader();
 
+		/**
+		 * @todo This needs to check for _remap and _default, as well as validating that method exists
+		 */
 		call_user_func_array(array(self::$instance, Router::$method), Router::$arguments);
-		
 	}
 
+	/**
+	 * Output Handler
+	 *
+	 * @access public
+	 * @return string
+	 */
 	public static function output($output)
 	{
-		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024/1024) : 0;
+		// Fetch memory usage in MB
+		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
 
 		return str_replace(
 			array
@@ -109,6 +199,12 @@ final class Kohana {
 		);
 	}
 
+	/**
+	 * Shutdown Handler
+	 *
+	 * @access public
+	 * @return void
+	 */
 	public static function shutdown()
 	{
 		if ( ! empty(self::$shutdown_events))
@@ -133,6 +229,12 @@ final class Kohana {
 		}
 	}
 
+	/**
+	 * Error Handler
+	 *
+	 * @access public
+	 * @return void
+	 */
 	public static function error_handler($error, $message, $file, $line)
 	{
 		$error   = isset(self::$error_types[$error]) ? self::$error_types[$error] : 'Unknown Error';
@@ -140,7 +242,7 @@ final class Kohana {
 
 		$template = self::find_file('errors', 'php_error');
 
-		while(ob_get_level() > 1)
+		while(ob_get_level() > self::$ob_level)
 		{
 			ob_end_clean();
 		}
@@ -151,9 +253,15 @@ final class Kohana {
 		exit;
 	}
 
+	/**
+	 * Exception Handler
+	 *
+	 * @access public
+	 * @return void
+	 */
 	public static function exception_handler($exception)
 	{
-		while(ob_get_level() > 1)
+		while(ob_get_level() > self::$ob_level)
 		{
 			ob_end_clean();
 		}
@@ -161,6 +269,19 @@ final class Kohana {
 		die('Uncaught exeception: '.get_class($exception).' ('.$exception->getMessage().')');
 	}
 
+	/**
+	 * Class Auto-Loader
+	 *
+	 * This function is used as an auto-loader, but can also be used directly.
+	 * When a class is loaded with this method, it will also cache the resulting
+	 * object for later use, to prevent the loading of multiple instances of the
+	 * same object.
+	 *
+	 * @todo Let's re-evaluate the intelligence of a registry, should it cache the object, or the filename?
+	 *
+	 * @access public
+	 * @return object
+	 */
 	public static function load_class($class)
 	{
 		$type  = preg_match('/_Model\b/', $class) ? 'models' : 'libraries';
@@ -206,6 +327,12 @@ final class Kohana {
 		return self::$registry[$class];
 	}
 
+	/**
+	 * Find a Resource
+	 *
+	 * @access public
+	 * @return mixed
+	 */
 	public static function find_file($directory, $filename, $required = FALSE)
 	{
 		static $found = array();
@@ -252,6 +379,12 @@ final class Kohana {
 		if ($required == TRUE) throw new file_not_found($filename);
 	}
 
+	/**
+	 * Hook Loader
+	 *
+	 * @access public
+	 * @return void
+	 */
 	public static function load_hook($name)
 	{
 		if (Config::item('enable_hooks') AND $hook = self::findFile('hooks', $name))
@@ -260,6 +393,12 @@ final class Kohana {
 		}
 	}
 
+	/**
+	 * HTML Attribute Parser
+	 *
+	 * @access public
+	 * @return string
+	 */
 	public static function attributes($attrs)
 	{
 		if (is_string($attrs))
@@ -280,17 +419,6 @@ final class Kohana {
 	}
 
 } // End Kohana class
-
-Kohana::$error_types = array
-(
-	E_RECOVERABLE_ERROR => 'Recoverable Error',
-	E_ERROR             => 'Fatal Error',
-	E_USER_ERROR        => 'Fatal Error',
-	E_PARSE             => 'Syntax Error',
-	E_NOTICE            => 'Runtime Message',
-	E_WARNING           => 'Warning Message',
-	E_USER_WARNING      => 'Warning Warning'
-);
 
 /**
  * Exceptions
