@@ -278,6 +278,8 @@ final class utf8 {
 
 	/**
 	 * UTF-8 version of strpos()
+	 * 
+	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/strpos
 	 * @access public
@@ -299,20 +301,21 @@ final class utf8 {
 			return strpos($str, $search, $offset);
 		}
 
-		$regex = '(';
-		$x = (int) ($offset / 65535);
-		$y = (int) ($offset % 65535);
-		$regex .= ($x == 0) ? '' : '(?:.{65535}){'.$x.'}'; // PCRE repeating quantifiers must be less than 65536, so repeat when necessary
-		$regex .= ($y == 0) ? '' : '.{'.$y.'}';
-		$regex .= '.*?)';
-		$regex .= preg_quote($search, '-');
-
-		preg_match('|'.$regex.'|us', $str, $matches);
-		return (isset($matches[1])) ? self::strlen($matches[1]) : FALSE;
+		if ($offset == 0)
+		{
+			$array = explode($search, $str, 2);
+			return (isset($array[1])) ? self::strlen($array[0]) : FALSE;
+		}
+		
+		$str = self::substr($str, $offset);
+		$pos = self::strpos($str, $search);
+		return ($pos === FALSE) ? FALSE : $pos + $offset;
 	}
 
 	/**
 	 * UTF-8 version of strrpos()
+	 * 
+	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/strrpos
 	 * @access public
