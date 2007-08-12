@@ -339,8 +339,8 @@ final class utf8 {
 
 		if ($offset == 0)
 		{
-			$array = explode($search, $string, -1);
-			return (count($array) != 0) ? self::strlen(implode($search, $array)) : FALSE;
+			$array = explode($search, $str, -1);
+			return (isset($array[0])) ? self::strlen(implode($search, $array)) : FALSE;
 		}
 
 		$str = self::substr($str, $offset);
