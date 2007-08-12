@@ -378,7 +378,7 @@ final class utf8 {
 		$length = ($length === NULL) ? NULL : (int) $length;
 
 		// Impossible
-		if ($length === 0 OR $offset >= $strlen OR ($length < 0 AND $length < $offset - $strlen))
+		if ($length === 0 OR $offset >= $strlen OR ($length < 0 AND $length <= $offset - $strlen))
 		{
 			return '';
 		}
@@ -433,12 +433,13 @@ final class utf8 {
 		}
 
 		preg_match('/'.$regex.'/us', $str, $matches);
-
-		return (isset($matches[1])) ? $matches[1] : '';
+		return $matches[1];
 	}
 
 	/**
 	 * UTF-8 version of substr_replace()
+	 * 
+	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/substr_replace
 	 * @access public
@@ -645,6 +646,8 @@ final class utf8 {
 
 	/**
 	 * UTF-8 version of ucfirst()
+	 * 
+	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/ucfirst
 	 * @access public
@@ -664,6 +667,8 @@ final class utf8 {
 
 	/**
 	 * UTF-8 version of ucwords()
+	 * 
+	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/ucwords
 	 * @access public
@@ -681,10 +686,8 @@ final class utf8 {
 			return ucwords($str);
 		}
 
-		/**
-		 * [\x0c\x09\x0b\x0a\x0d\x20] matches form feeds, horizontal tabs, vertical tabs, linefeeds and carriage returns. 
-		 * This corresponds to the definition of a 'word' defined at http://php.net/ucwords
-		 */
+		// [\x0c\x09\x0b\x0a\x0d\x20] matches form feeds, horizontal tabs, vertical tabs, linefeeds and carriage returns. 
+		// This corresponds to the definition of a 'word' defined at http://php.net/ucwords
 		return preg_replace(
 			'/(?<=^|[\x0c\x09\x0b\x0a\x0d\x20])[^\x0c\x09\x0b\x0a\x0d\x20]/ue',
 			'self::strtoupper(\'$0\')',
