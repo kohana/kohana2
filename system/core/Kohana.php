@@ -238,7 +238,7 @@ final class Kohana {
 	public static function error_handler($error, $message, $file, $line)
 	{
 		$error   = isset(self::$error_types[$error]) ? self::$error_types[$error] : 'Unknown Error';
-		$file    = preg_replace('#^'.DOCROOT.'#', '', $file);
+		$file    = preg_replace('#^'.preg_quote(DOCROOT, '-').'#', '', $file);
 
 		$template = self::find_file('errors', 'php_error');
 
@@ -284,9 +284,9 @@ final class Kohana {
 	 */
 	public static function load_class($class)
 	{
-		$type  = preg_match('/_Model\b/', $class) ? 'models' : 'libraries';
-		$file  = preg_replace('/(\bCore_|_Model\b)/', '', $class);
-		$class = preg_replace('/\bCore_/', '', $class);
+		$type  = preg_match('/_Model$/', $class) ? 'models' : 'libraries';
+		$file  = preg_replace('/(?:^Core_|_Model$)/', '', $class);
+		$class = preg_replace('/^Core_/', '', $class);
 
 		if (isset(self::$registry[$class]))
 		{
