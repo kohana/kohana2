@@ -18,8 +18,9 @@ class Core_Loader {
 	}
 	
 	// Weird prefixes to prevent collisions
-	function view($kohana_name, $kohana_data = array(), $kohana_return = FALSE)
+	function view($name, $data = array())
 	{
+		return new View($name, $data);
 		$kohana_filename = Kohana::find_file('views', $name, TRUE);
 		
 		ob_start();
