@@ -99,7 +99,6 @@ final class Kohana {
 	public static function setup()
 	{
 		static $run;
-
 		// This function can only be run once
 		if ($run === TRUE) return;
 
@@ -107,7 +106,10 @@ final class Kohana {
 		(defined('E_RECOVERABLE_ERROR')) or (define('E_RECOVERABLE_ERROR', 4096));
 
 		// Set autoloader
-		spl_autoload_register(array('Kohana', 'load_class'));
+		spl_autoload_register(array('Kohana', 'auto_load'));
+
+		// Set shutdown handler
+		register_shutdown_function(array('Kohana', 'shutdown'));
 
 		// Set error types
 		self::$error_types = array
@@ -126,11 +128,8 @@ final class Kohana {
 		// Set execption handler
 		set_exception_handler(array('Kohana', 'exception_handler'));
 
-		// Set shutdown handler
-		register_shutdown_function(array('Kohana', 'shutdown'));
-
 		// Start output buffering
-		ob_start(array('Kohana', 'output'));
+		// ob_start(array('Kohana', 'output'));
 
 		// Save buffering level
 		self::$buffer_level = ob_get_level();
@@ -179,6 +178,11 @@ final class Kohana {
 	 */
 	public static function output($output)
 	{
+		while(ob_get_level() > self::$buffer_level)
+		{
+			ob_end_flush();
+		}
+
 		// Fetch memory usage in MB
 		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
 
@@ -237,12 +241,11 @@ final class Kohana {
 	 */
 	public static function error_handler($error, $message, $file, $line)
 	{
-		$error   = isset(self::$error_types[$error]) ? self::$error_types[$error] : 'Unknown Error';
-		$file    = preg_replace('#^'.preg_quote(DOCROOT, '-').'#', '', $file);
-
+		$error = isset(self::$error_types[$error]) ? self::$error_types[$error] : 'Unknown Error';
+		$file  = preg_replace('#^'.preg_quote(DOCROOT, '-').'#', '', $file);
 		$template = self::find_file('errors', 'php_error');
 
-		while(ob_get_level() > self::$ob_level)
+		while(ob_get_level() > self::$buffer_level)
 		{
 			ob_end_clean();
 		}
@@ -261,12 +264,43 @@ final class Kohana {
 	 */
 	public static function exception_handler($exception)
 	{
-		while(ob_get_level() > self::$ob_level)
+		while(ob_get_level() > self::$buffer_level)
 		{
 			ob_end_clean();
 		}
 
 		die('Uncaught exeception: '.get_class($exception).' ('.$exception->getMessage().')');
+	}
+
+	/**
+	 * Autoloader
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public static function auto_load($class)
+	{
+		try
+		{
+			$class = preg_replace('/^Core_/', '', $class);
+
+			require self::find_file('libraries', $class, TRUE);
+
+			if ($extension = self::find_file('libraries', Config::item('subclass_prefix').$class))
+			{
+				require $extension;
+			}
+			else
+			{
+				eval('class '.$class.' extends Core_'.$class.' { }');
+			}
+
+		}
+		catch (file_not_found $exception)
+		{
+			print $exception->getMessage().' Library could not be loaded.';
+			exit;
+		}
 	}
 
 	/**
@@ -284,8 +318,6 @@ final class Kohana {
 	 */
 	public static function load_class($class)
 	{
-		$type  = preg_match('/_Model$/', $class) ? 'models' : 'libraries';
-		$file  = preg_replace('/(?:^Core_|_Model$)/', '', $class);
 		$class = preg_replace('/^Core_/', '', $class);
 
 		if (isset(self::$registry[$class]))
@@ -293,27 +325,7 @@ final class Kohana {
 			return self::$registry[$class];
 		}
 
-		try
-		{
-			require self::find_file($type, $file, TRUE);
-		}
-		catch (file_not_found $exception)
-		{
-			print $exception->getMessage().' Class of type '.$type.' could not be loaded.';
-			exit;
-		}
-
-		if ($type == 'libraries')
-		{
-			if ($extension = self::find_file('libraries', Config::item('subclass_prefix').$class))
-			{
-				require $extension;
-			}
-			else
-			{
-				eval('class '.$class.' extends Core_'.$class.' { }');
-			}
-		}
+		self::auto_load($class);
 
 		if ($class == 'Controller')
 		{
