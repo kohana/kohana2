@@ -2,6 +2,11 @@
 
 class url {
 
+	public static function base_url()
+	{
+		return rtrim(Config::item('base_url'), '/').'/';
+	}
+
 	public static function site_url($uri)
 	{
 		$uri = trim($uri, '/');

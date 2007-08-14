@@ -69,6 +69,34 @@ final class Config {
 		return (isset(self::$conf[$key]) ? self::$conf[$key] : FALSE);
 	}
 
+	public static function load($name)
+	{
+		try
+		{
+			$configuration = array();
+
+			foreach(Kohana::find_file('config', $name, TRUE) as $filename)
+			{
+				include $filename;
+
+				// Merge in configuration
+				if (isset($config) AND is_array($config))
+				{
+					$configuration = array_merge($configuration, $config);
+				}
+			}
+		}
+		catch (file_not_found $execption)
+		{
+			/**
+			 * @todo this needs to be handled better
+			 */
+			exit('Your <kbd>config/'.$name.EXT.'</kbd> file could not be loaded.');
+		}
+
+		return $configuration;
+	}
+
 } // End Config class
 
 /**
@@ -163,6 +191,9 @@ final class Kohana {
 
 		self::$instance = new $class;
 		self::$instance->load = new Loader();
+
+		// Run autoloader
+		self::$instance->load->autoload();
 
 		/**
 		 * @todo This needs to check for _remap and _default, as well as validating that method exists
@@ -440,3 +471,4 @@ class library_not_found    extends file_not_found {}
 class controller_not_found extends file_not_found {}
 class model_not_found      extends file_not_found {}
 class helper_not_found     extends file_not_found {}
+class invalid_file_format  extends Exception {}

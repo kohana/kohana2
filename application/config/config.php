@@ -1,6 +1,6 @@
 <?php
 
-$config['base_url'] = 'http://localhost/kfsk/';
+$config['base_url'] = 'http://'.$_SERVER['SERVER_NAME'].'/kfsk/';
 
 $config['index_page'] = '';
 
