@@ -5,7 +5,9 @@ define('KOHANA_VERSION', '2.0');
 // Kohana benchmarks are prefixed by a random string to prevent collisions
 define('SYSTEM_BENCHMARK', uniqid(rand(1,100)));
 
-// Load up core classes
+// Load core classes
+require SYSPATH.'core/Config'.EXT;
+require SYSPATH.'core/Event'.EXT;
 require SYSPATH.'core/Kohana'.EXT;
 // Load UTF-8 compatible string functions
 require SYSPATH.'core/utf8'.EXT;
