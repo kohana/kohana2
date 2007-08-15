@@ -2,23 +2,23 @@
 
 class User_guide extends Controller {
 
-	function index()
+	public function index()
 	{
 		include Kohana::find_file('vendor', 'markdown');
 
-		$view['menu'] = markdown($this->load->view('user_guide/menu')->render());
+		$this->data['menu'] = markdown($this->load->view('user_guide/menu')->render());
 
-		$this->load->view('user_guide/template', $view)->render(TRUE);
+		$this->load->view('user_guide/template', $this->data)->render(TRUE);
 	}
 
-	function js($filename)
+	public function js($filename)
 	{
 		header('Content-type: text/javascript');
 
 		$this->_media('js', preg_replace('/\.js$/u', '', $filename));
 	}
 
-	function css($filename)
+	public function css($filename)
 	{
 		header('Content-type: text/css');
 
@@ -36,6 +36,5 @@ class User_guide extends Controller {
 			print '/* script not found */';
 		}
 	}
-
 
 } // End User_guide Controller

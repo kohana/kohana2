@@ -75,6 +75,11 @@ class Core_View {
 		return FALSE;
 	}
 
+	public function __toString()
+	{
+		return $this->render();
+	}
+
 	public function render($kohana_display_output = FALSE)
 	{
 		ob_start();

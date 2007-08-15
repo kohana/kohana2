@@ -51,31 +51,32 @@ final class Kohana {
 		// Start output buffering
 		ob_start(array('Kohana', 'output'));
 
-		// Define E_RECOVERABLE_ERROR for PHP < 5.2
-		(defined('E_RECOVERABLE_ERROR')) or (define('E_RECOVERABLE_ERROR', 4096));
-
 		// Set autoloader
 		spl_autoload_register(array('Kohana', 'auto_load'));
 
-		// Set shutdown handler
-		register_shutdown_function(array('Event', 'run'), 'system.shutdown');
+		defined('E_RECOVERABLE_ERROR')  or define('E_RECOVERABLE_ERROR',  4096);
+		defined('E_UNCAUGHT_EXCEPTION') or define('E_UNCAUGHT_EXCEPTION', 4097);
 
 		// Set error types
 		self::$error_types = array
 		(
-			E_RECOVERABLE_ERROR => 'Recoverable Error',
-			E_ERROR             => 'Fatal Error',
-			E_USER_ERROR        => 'Fatal Error',
-			E_PARSE             => 'Syntax Error',
-			E_NOTICE            => 'Runtime Message',
-			E_WARNING           => 'Warning Message',
-			E_USER_WARNING      => 'Warning Warning'
+			E_UNCAUGHT_EXCEPTION => 'Uncaught Exception',
+			E_RECOVERABLE_ERROR  => 'Recoverable Error',
+			E_ERROR              => 'Fatal Error',
+			E_USER_ERROR         => 'Fatal Error',
+			E_PARSE              => 'Syntax Error',
+			E_NOTICE             => 'Runtime Message',
+			E_WARNING            => 'Warning Message',
+			E_USER_WARNING       => 'Warning Warning'
 		);
 		// Set error handler
 		set_error_handler(array('Kohana', 'error_handler'));
 
 		// Set execption handler
 		set_exception_handler(array('Kohana', 'exception_handler'));
+
+		// Set shutdown handler to run the "system.shutdown" event
+		register_shutdown_function(array('Event', 'run'), 'system.shutdown');
 
 		// Setup is complete
 		$run = TRUE;
@@ -161,9 +162,7 @@ final class Kohana {
 			ob_end_clean();
 		}
 
-		ob_start(array('Kohana', 'output'));
 		include $template;
-		ob_end_flush();
 		exit;
 	}
 
@@ -175,12 +174,16 @@ final class Kohana {
 	 */
 	public static function exception_handler($exception)
 	{
-		while(ob_get_level() > self::$buffer_level)
-		{
-			ob_end_clean();
-		}
-
-		die('Uncaught exeception: '.get_class($exception).' ('.$exception->getMessage().')');
+		/**
+		 * @todo This needs to choose a i18n message based on the type of exception + message
+		 */
+		self::error_handler
+		(
+			E_UNCAUGHT_EXCEPTION,
+			get_class($exception).': '.$exception->getMessage(),
+			$exception->getFile(),
+			$exception->getLine()
+		);
 	}
 
 	/**
