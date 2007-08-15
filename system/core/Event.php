@@ -23,12 +23,36 @@
  * @link        http://kohanaphp.com/user_guide/core_classes.html
  */
 final class Event {
-	
-	public static $events;
-	
+
+	public static $events = array();
+
+	public static function add($name, $callback, $params = array())
+	{
+		if ($name == FALSE OR $callback == FALSE)
+			return FALSE;
+
+		self::$events[$name][] = array($callback, $params);
+	}
+
 	public static function run($name)
 	{
-		
+		if ($name == FALSE)
+			return FALSE;
+
+		if (isset(self::$events[$name]) AND count(self::$events[$name]))
+		{
+			foreach(array_reverse(self::$events[$name]) as $event)
+			{
+				if ( ! empty($event[1]))
+				{
+					call_user_func_array($event[0], $event[1]);
+				}
+				else
+				{
+					call_user_func($event[0]);
+				}
+			}
+		}
 	}
-	
+
 } // End Event Class

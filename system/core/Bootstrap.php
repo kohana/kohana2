@@ -12,6 +12,9 @@ require SYSPATH.'core/Kohana'.EXT;
 // Load UTF-8 compatible string functions
 require SYSPATH.'core/utf8'.EXT;
 
+// Run system.pre_init event
+Event::run('system.pre_init');
+
 // Setup Kohana
 Kohana::setup();
 // Start the system benchmarks

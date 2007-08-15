@@ -16,7 +16,7 @@
 // ----------------------------------------------------------------------------
 
 /**
- * Kohana Kernel class
+ * Kohana class
  *
  * @category    Core
  * @author      Kohana Development Team
@@ -24,12 +24,11 @@
  */
 final class Kohana {
 
-	public static $registry; // Library registery
-	public static $instance; // Controller instance
+	public static $registry = array(); // Library registery
+	public static $instance = FALSE;   // Controller instance
 
-	public static $buffer_level;    // Ouput buffering level
-	public static $error_types;     // Human readable error types
-	public static $shutdown_events; // Registered shutdown events
+	public static $buffer_level = 0;       // Ouput buffering level
+	public static $error_types  = array(); // Human readable error types
 
 	/**
 	 * PHP Preparation and Setup Routine
@@ -46,6 +45,12 @@ final class Kohana {
 		// This function can only be run once
 		if ($run === TRUE) return;
 
+		// Save buffering level
+		self::$buffer_level = ob_get_level();
+
+		// Start output buffering
+		ob_start(array('Kohana', 'output'));
+
 		// Define E_RECOVERABLE_ERROR for PHP < 5.2
 		(defined('E_RECOVERABLE_ERROR')) or (define('E_RECOVERABLE_ERROR', 4096));
 
@@ -53,7 +58,7 @@ final class Kohana {
 		spl_autoload_register(array('Kohana', 'auto_load'));
 
 		// Set shutdown handler
-		register_shutdown_function(array('Kohana', 'shutdown'));
+		register_shutdown_function(array('Event', 'run'), 'system.shutdown');
 
 		// Set error types
 		self::$error_types = array
@@ -71,12 +76,6 @@ final class Kohana {
 
 		// Set execption handler
 		set_exception_handler(array('Kohana', 'exception_handler'));
-
-		// Start output buffering
-		// ob_start(array('Kohana', 'output'));
-
-		// Save buffering level
-		self::$buffer_level = ob_get_level();
 
 		// Setup is complete
 		$run = TRUE;
@@ -125,11 +124,6 @@ final class Kohana {
 	 */
 	public static function output($output)
 	{
-		while(ob_get_level() > self::$buffer_level)
-		{
-			ob_end_flush();
-		}
-
 		// Fetch memory usage in MB
 		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
 
@@ -148,36 +142,6 @@ final class Kohana {
 			),
 			$output
 		);
-	}
-
-	/**
-	 * Shutdown Handler
-	 *
-	 * @access public
-	 * @return void
-	 */
-	public static function shutdown()
-	{
-		if ( ! empty(self::$shutdown_events))
-		{
-			foreach(array_reverse(self::$shutdown_events) as $event)
-			{
-				if ( ! is_array($event))
-					continue;
-
-				$func = $event[0];
-				$args = isset($event[1]) ? (array) $event[1] : FALSE;
-
-				if ($args == FALSE)
-				{
-					call_user_func($func);
-				}
-				else
-				{
-					call_user_func_array($func, $args);
-				}
-			}
-		}
 	}
 
 	/**
