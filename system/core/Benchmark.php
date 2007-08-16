@@ -36,11 +36,18 @@ class Benchmark {
 		}
 	}
 
+	/**
+	 * Get the elapsed time for a benchmark point
+	 *
+	 * @access  public
+	 * @param   string
+	 * @param   integer
+	 */
 	public static function get($name, $decimals = 4)
 	{
 		if (isset(self::$marks[$name]))
 		{
-			if (self::$marks[$name]['stop'] == 0)
+			if (self::$marks[$name]['stop'] === FALSE)
 			{
 				self::stop($name);
 			}
