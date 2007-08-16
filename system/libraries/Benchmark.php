@@ -48,4 +48,5 @@ class Core_Benchmark {
 			return number_format(self::$marks[$name]['stop'] - self::$marks[$name]['start'], $decimals);
 		}
 	}
+
 } // End Benchmark Class
