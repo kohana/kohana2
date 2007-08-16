@@ -42,6 +42,7 @@ class Benchmark {
 	 * @access  public
 	 * @param   string
 	 * @param   integer
+	 * @return  string
 	 */
 	public static function get($name, $decimals = 4)
 	{
