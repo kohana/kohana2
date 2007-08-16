@@ -31,8 +31,8 @@ final class Event {
 	 *
 	 * @access  public
 	 * @param   string
-	 * @param   string
-	 * @param   array
+	 * @param   callback
+	 * @param   mixed
 	 * @return  void
 	 */
 	public static function add($name, $callback, $params = array())
