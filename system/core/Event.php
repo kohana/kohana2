@@ -26,6 +26,15 @@ final class Event {
 
 	public static $events = array();
 
+	/**
+	 * Add an event
+	 *
+	 * @access  public
+	 * @param   string
+	 * @param   string
+	 * @param   array
+	 * @return  void
+	 */
 	public static function add($name, $callback, $params = array())
 	{
 		if ($name == FALSE OR $callback == FALSE)
@@ -34,6 +43,13 @@ final class Event {
 		self::$events[$name][] = array($callback, $params);
 	}
 
+	/**
+	 * Run an event
+	 *
+	 * @access  public
+	 * @param   string
+	 * @return  mixed
+	 */
 	public static function run($name)
 	{
 		if ($name == FALSE)
