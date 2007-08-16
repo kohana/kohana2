@@ -10,7 +10,7 @@ for($n=10000;$n>0;$n--)
 	{
 		foreach(scandir($path.'/libraries/') as $file)
 		{
-			if (preg_match('/'.EXT.'$/', $file))
+			if (preg_match('/'.preg_quote(EXT).'$/', $file))
 			{
 				$out[] = $file;
 			}

@@ -21,14 +21,14 @@ class User_guide extends Controller {
 	{
 		header('Content-type: text/javascript');
 
-		$this->_media('js', preg_replace('/\.js$/u', '', $filename));
+		$this->_media('js', preg_replace('/\.js$/', '', $filename));
 	}
 
 	public function css($filename)
 	{
 		header('Content-type: text/css');
 
-		$this->_media('css', preg_replace('/\.css$/u', '', $filename));
+		$this->_media('css', preg_replace('/\.css$/', '', $filename));
 	}
 
 	private function _media($type, $filename)
