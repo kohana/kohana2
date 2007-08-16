@@ -1,13 +1,11 @@
 $(document).ready(function(){
-	// Hide menu
-	var menu = $('#menu ul:first > li');
-	menu.children('ul').children('li').hide();
-	menu.eq(1).addClass('active').children('ul').children('li').stack('animate', {
-		height: 'toggle', marginLeft: 'toggle', opacity: 'show'
-	}, 400, 'expoin');
-	menu.not('.active').hover(function(){
-		$(this).children('ul').children('li').stack('show', 200);
-	}, function(){
-		$(this).children('ul').children('li').stack('hide', 200);
-	});
+	$('#menu ul:first > li').addClass('first');
+	$('#menu li ul li')
+		.hide()   // Hide these li's
+		.parent() // Parent ul
+		.parent() // Parent li
+		.hover(   // Hover affects the ul > li inside of this li
+			function(){ $('ul > li', this).stack('show', 200); },
+			function(){ $('ul > li', this).stack('hide', 200); }
+		);
 });

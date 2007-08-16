@@ -9,11 +9,33 @@
 
 <script type="text/javascript" src="<?= url::base_url() ?>user_guide/js/jquery.js"></script>
 <script type="text/javascript" src="<?= url::base_url() ?>user_guide/js/plugins.js"></script>
-<script type="text/javascript" src="<?= url::base_url() ?>user_guide/js/kohana.js"></script>
+<script type="text/javascript" src="<?= url::base_url() ?>user_guide/js/effects.js"></script>
 
 </head>
 <body>
-<div id="menu"><?= $menu ?></div>
+<div id="container">
 
+<!-- @start Header -->
+<div id="header">
+<div id="menu">
+<?= $menu ?>
+</div>
+</div>
+<!-- @end Header -->
+
+<!-- @start Body -->
+<div id="body">
+<p>This is the body</p>
+
+<!-- @start Footer -->
+<div id="footer">
+<p id="copyright">copyright (c) 2007 Kohana Team :: All rights reserved.</p>
+</div>
+<!-- @end Footer -->
+
+</div>
+<!-- @end Body -->
+
+</div>
 </body>
 </html>
