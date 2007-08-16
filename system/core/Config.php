@@ -69,6 +69,13 @@ final class Config {
 		return (isset(self::$conf[$key]) ? self::$conf[$key] : FALSE);
 	}
 
+	/**
+	 * Load a config file
+	 *
+	 * @access  public
+	 * @param   string
+	 * @return  array
+	 */
 	public static function load($name)
 	{
 		try
