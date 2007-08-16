@@ -5,7 +5,7 @@ $(document).ready(function(){
 		.parent() // Parent ul
 		.parent() // Parent li
 		.hover(   // Hover affects the ul > li inside of this li
-			function(){ $('ul > li', this).stack('show', 200); },
-			function(){ $('ul > li', this).stack('hide', 200); }
+			function(){ $('ul > li', this).stack('show', 200).children('a').css('color', '#45721d'); },
+			function(){ $('ul > li', this).stack('hide', 200).children('a').css('color', ''); }
 		);
 });

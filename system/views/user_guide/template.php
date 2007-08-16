@@ -5,7 +5,7 @@
 
 <title>Kohana User Guide</title>
 
-<link type="text/css" rel="stylesheet" href="<?= url::base_url() ?>user_guide/css/kohana.css" />
+<link type="text/css" rel="stylesheet" href="<?= url::base_url() ?>user_guide/css/layout.css" />
 
 <script type="text/javascript" src="<?= url::base_url() ?>user_guide/js/jquery.js"></script>
 <script type="text/javascript" src="<?= url::base_url() ?>user_guide/js/plugins.js"></script>
@@ -25,7 +25,7 @@
 
 <!-- @start Body -->
 <div id="body">
-<p>This is the body</p>
+<?= $content ?>
 
 <!-- @start Footer -->
 <div id="footer">

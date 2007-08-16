@@ -10,6 +10,9 @@ Default Styles
 */
 body { background: #111; color: #111; font-size: 82%; line-height: 140%; font-family: "Lucida Grande", Arial, Verdana, sans-serif; }
 a { color: #449; text-decoration: none; }
+h1 { border-bottom: solid 1px #999; font-size: 2em; text-align: center; color: #222; }
+h1, h2, h3, h4, h5, h6 { padding: 0.3em 0; margin-bottom: 0.2em; }
+p { padding-bottom: 1em; }
 /*
 Template Styles
 */
@@ -23,8 +26,8 @@ Template Styles
 #menu li li { margin-left: 0.5em; }
 #menu li.first { font-size: 1.2em; }
 #menu li.first > a { color: #b43f11; }
-#body { padding: 0.2em; }
+#body { padding: 0 0.5em; }
 /*
 Content Styles
 */
-#copyright { margin-top: 1em; border-top: solid 1px #666; text-align: center; font-size: 0.8em; color: #555; }
+#copyright { border-top: solid 1px #999; text-align: center; font-size: 0.8em; color: #555; }

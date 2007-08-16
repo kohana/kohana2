@@ -4,9 +4,15 @@ class User_guide extends Controller {
 
 	public function index()
 	{
+		$this->kohana();
+	}
+
+	public function kohana()
+	{
 		include Kohana::find_file('vendor', 'markdown');
 
-		$this->data['menu'] = markdown($this->load->view('user_guide/menu')->render());
+		$this->data['menu'] = $this->load->view('user_guide/menu')->render();
+		$this->data['content'] = $this->load->view('user_guide/content/kohana')->render();
 
 		$this->load->view('user_guide/template', $this->data)->render(TRUE);
 	}
