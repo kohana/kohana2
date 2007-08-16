@@ -148,6 +148,7 @@ class Kohana {
 	 * Output Handler
 	 *
 	 * @access public
+	 * @param  string
 	 * @return string
 	 */
 	public static function output($output)
@@ -181,6 +182,10 @@ class Kohana {
 	 * Error Handler
 	 *
 	 * @access public
+	 * @param  string
+	 * @param  string
+	 * @param  string
+	 * @param  integer
 	 * @return void
 	 */
 	public static function error_handler($error, $message, $file, $line)
@@ -205,6 +210,7 @@ class Kohana {
 	 * Exception Handler
 	 *
 	 * @access public
+	 * @param  object
 	 * @return void
 	 */
 	public static function exception_handler($exception)
@@ -225,6 +231,7 @@ class Kohana {
 	 * Autoloader
 	 *
 	 * @access public
+	 * @param  string
 	 * @return void
 	 */
 	public static function auto_load($class)
@@ -263,6 +270,7 @@ class Kohana {
 	 * @todo Let's re-evaluate the intelligence of a registry, should it cache the object, or the filename?
 	 *
 	 * @access public
+	 * @param  string
 	 * @return object
 	 */
 	public static function load_class($class)
@@ -292,6 +300,9 @@ class Kohana {
 	 * Find a Resource
 	 *
 	 * @access public
+	 * @param  string
+	 * @param  string
+	 * @param  boolean
 	 * @return mixed
 	 */
 	public static function find_file($directory, $filename, $required = FALSE)
@@ -301,9 +312,7 @@ class Kohana {
 		$search = $directory.'/'.$filename;
 
 		if (isset($found[$search]))
-		{
 			return $found[$search];
-		}
 
 		$paths = Config::item('include_paths');
 
@@ -344,11 +353,12 @@ class Kohana {
 	 * Hook Loader
 	 *
 	 * @access public
+	 * @param  string
 	 * @return void
 	 */
 	public static function load_hook($name)
 	{
-		if (Config::item('enable_hooks') AND $hook = self::findFile('hooks', $name))
+		if (Config::item('enable_hooks') AND $hook = self::find_file('hooks', $name))
 		{
 			require $hook;
 		}
@@ -358,6 +368,7 @@ class Kohana {
 	 * HTML Attribute Parser
 	 *
 	 * @access public
+	 * @param  mixed
 	 * @return string
 	 */
 	public static function attributes($attrs)
