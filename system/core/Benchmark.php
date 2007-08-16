@@ -1,8 +1,8 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
-class Core_Benchmark {
+class Benchmark {
 
-	public static $marks;
+	private static $marks;
 
 	/**
 	 * Set a benchmark start point

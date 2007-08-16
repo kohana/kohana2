@@ -22,13 +22,45 @@
  * @author      Kohana Development Team
  * @link        http://kohanaphp.com/user_guide/core_classes.html
  */
-final class Kohana {
-
-	public static $registry = array(); // Library registery
-	public static $instance = FALSE;   // Controller instance
+class Kohana {
 
 	public static $buffer_level = 0;       // Ouput buffering level
 	public static $error_types  = array(); // Human readable error types
+	public static $registry     = array(); // Library registery
+
+	private static $instance = FALSE;   // Controller instance
+
+	/**
+	 * Constructor
+	 *
+	 * Called by the controller constructor, this piece of magic allows the
+	 * controller to be a true singleton class
+	 *
+	 * @access  protected
+	 * @return  void
+	 */
+	public function __construct()
+	{
+		if (self::$instance == FALSE)
+		{
+			self::$instance = $this;
+		}
+		else
+		{
+			trigger_error('<em>&#8220;There can be only one [instance of Kohana]!&#8220;</em>', E_USER_ERROR);
+		}
+	}
+
+	/**
+	 * Clone Protector
+	 *
+	 * @access public
+	 * @return error
+	 */
+	final public function __clone()
+	{
+		$this->__construct();
+	}
 
 	/**
 	 * PHP Preparation and Setup Routine
@@ -91,30 +123,25 @@ final class Kohana {
 	 * @access public
 	 * @return void
 	 */
-	public static function initialize()
+	public static function & instance()
 	{
-		// The controller can only be loaded once
-		if (is_object(self::$instance)) return;
-
-		$class = Router::$controller;
-
-		require Router::$directory.Router::$controller.EXT;
-
-		if ( ! class_exists($class))
+		if (self::$instance == FALSE)
 		{
-			throw new controller_not_found($class);
+			$controller = Router::$directory.Router::$controller.EXT;
+
+			// Validate Controller
+			if ( ! file_exists($controller))
+				throw new controller_not_found(ucfirst(Router::$controller));
+
+			require $controller;
+
+			$controller = ucfirst(Router::$controller);
+
+			// Load the controller
+			$controller = new $controller();
 		}
 
-		self::$instance = new $class;
-		self::$instance->load = new Loader();
-
-		// Run autoloader
-		self::$instance->load->autoload();
-
-		/**
-		 * @todo This needs to check for _remap and _default, as well as validating that method exists
-		 */
-		call_user_func_array(array(self::$instance, Router::$method), Router::$arguments);
+		return self::$instance;
 	}
 
 	/**
@@ -127,6 +154,11 @@ final class Kohana {
 	{
 		// Fetch memory usage in MB
 		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
+
+		while(self::$buffer_level AND ob_get_level() > self::$buffer_level)
+		{
+			ob_end_flush();
+		}
 
 		return str_replace(
 			array
@@ -157,12 +189,15 @@ final class Kohana {
 		$file  = preg_replace('#^'.preg_quote(DOCROOT, '-').'#', '', $file);
 		$template = self::find_file('errors', 'php_error');
 
-		while(ob_get_level() > self::$buffer_level)
+		while(ob_get_level())
 		{
 			ob_end_clean();
 		}
+		self::$buffer_level = 0;
 
+		ob_start(array('Kohana', 'output'));
 		include $template;
+		ob_end_flush();
 		exit;
 	}
 

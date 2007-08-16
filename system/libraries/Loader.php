@@ -2,7 +2,7 @@
 
 class Core_Loader {
 
-	function autoload()
+	function __construct()
 	{
 		foreach(Config::load('autoload') as $type => $load)
 		{

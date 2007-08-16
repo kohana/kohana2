@@ -13,7 +13,7 @@ class Core_Router {
 	public static $method;
 	public static $arguments;
 
-	public static function initialize()
+	public static function setup()
 	{
 		try
 		{

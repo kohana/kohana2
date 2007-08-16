@@ -29,7 +29,7 @@
 
 <!-- @start Footer -->
 <div id="footer">
-<p id="copyright">copyright (c) 2007 Kohana Team :: All rights reserved.</p>
+<p id="copyright">copyright (c) 2007 Kohana Team :: All rights reserved :: Rendered in {execution_time} seconds</p>
 </div>
 <!-- @end Footer -->
 

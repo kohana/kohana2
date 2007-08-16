@@ -5,47 +5,65 @@ define('KOHANA_VERSION', '2.0');
 // Kohana benchmarks are prefixed by a random string to prevent collisions
 define('SYSTEM_BENCHMARK', uniqid(rand(1,100)));
 
+// Load the benchmarking class
+require SYSPATH.'core/Benchmark'.EXT;
+
+// Start the system benchmarks
+Benchmark::start(SYSTEM_BENCHMARK.'_total_execution_time');
+Benchmark::start(SYSTEM_BENCHMARK.'_base_classes_loading');
+
 // Load core classes
 require SYSPATH.'core/Config'.EXT;
 require SYSPATH.'core/Event'.EXT;
 require SYSPATH.'core/Kohana'.EXT;
 // Load UTF-8 compatible string functions
 require SYSPATH.'core/utf8'.EXT;
+// Load Router library
 
-// Run system.pre_init event
-Event::run('system.pre_init');
-
-// Setup Kohana
+// Run Kohana's setup routine
+// This registers the Kohana handlers and prepares the output buffer
 Kohana::setup();
-// Start the system benchmarks
-Benchmark::start(SYSTEM_BENCHMARK.'_total_execution_time');
-Benchmark::start(SYSTEM_BENCHMARK.'_base_classes_loading');
 
-// Load Routing
-try
-{
-	Router::initialize();
-}
-catch (file_not_found $exception)
-{
-	/**
-	 * @todo make this display a real error
-	 */
-	die('File not found: '.$exception);
-}
+// Run system.ready event
+Event::run('system.ready');
 
-// Validate Controller
-if ( ! file_exists(Router::$directory.Router::$controller.EXT))
-	throw new controller_not_found(ucfirst(Router::$controller));
+// Run Router's setup routine
+// All routing is performed at this stage
+Router::setup();
 
 // Stop base class loading benchmark
 Benchmark::stop(SYSTEM_BENCHMARK.'_base_classes_loading');
+// Start system initialization benchmark
+Benchmark::start(SYSTEM_BENCHMARK.'_system_initialization');
 
+// Run system.initialize
+Event::run('system.initialize');
+
+// Stop system initialization benchmark
+Benchmark::stop(SYSTEM_BENCHMARK.'_system_initialization');
 // Start the controller execution benchmark
 Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
 
-// Initialize the system, load Controller
-Kohana::initialize();
+try
+{
+	// Load the controller
+	Kohana::instance();
+
+	// Run system.ready_controller
+	Event::run('system.ready_controller');
+
+	/**
+	 * @todo This needs to check for _remap and _default, as well as validating that method exists
+	 */
+	call_user_func_array(array(Kohana::instance(), Router::$method), Router::$arguments);
+
+	// Run system.post_controller
+	Event::run('system.post_controller');
+}
+catch (controller_not_found $exception)
+{
+	die('Controller not found: '.$exception);
+}
 
 // Stop the controller execution benchmark
 Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
