@@ -16,6 +16,7 @@ Benchmark::start(SYSTEM_BENCHMARK.'_base_classes_loading');
 require SYSPATH.'core/Config'.EXT;
 require SYSPATH.'core/Event'.EXT;
 require SYSPATH.'core/Kohana'.EXT;
+require SYSPATH.'core/Log'.EXT;
 // Load UTF-8 compatible string functions
 require SYSPATH.'core/utf8'.EXT;
 
