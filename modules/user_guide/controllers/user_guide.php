@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
-class User_guide extends Controller {
+class User_Guide_Controller extends Controller {
 
 	public function index()
 	{

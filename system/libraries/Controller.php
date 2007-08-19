@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
-class Core_Controller extends Kohana {
+class Controller_Core extends Kohana {
 	
 	public function __construct()
 	{

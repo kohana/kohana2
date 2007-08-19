@@ -13,7 +13,7 @@ $config['locale'] = 'en';
 
 $config['include_paths'] = array
 (
-	'modules'
+	'modules/user_guide'
 );
 
 $config['enable_hooks'] = FALSE;

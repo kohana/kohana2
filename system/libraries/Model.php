@@ -1,6 +1,6 @@
 <?php
 
-class Core_Model {
+class Model_Core {
 	
 	
 }

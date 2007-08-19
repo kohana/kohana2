@@ -30,7 +30,7 @@
 
 // View($kohana_name, $kohana_data, $kohana_return)
 
-class Core_View {
+class View_Core {
 
 	private $kohana_view_filename;
 	private $data = array();

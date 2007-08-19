@@ -18,7 +18,6 @@ require SYSPATH.'core/Event'.EXT;
 require SYSPATH.'core/Kohana'.EXT;
 // Load UTF-8 compatible string functions
 require SYSPATH.'core/utf8'.EXT;
-// Load Router library
 
 // Run Kohana's setup routine
 // This registers the Kohana handlers and prepares the output buffer

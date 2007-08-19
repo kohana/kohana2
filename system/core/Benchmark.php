@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
-class Benchmark {
+final class Benchmark {
 
 	private static $marks;
 

@@ -135,7 +135,7 @@ class Kohana {
 
 			require $controller;
 
-			$controller = ucfirst(Router::$controller);
+			$controller = ucfirst(Router::$controller).'_Controller';
 
 			// Load the controller
 			$controller = new $controller();
@@ -236,25 +236,51 @@ class Kohana {
 	 */
 	public static function auto_load($class)
 	{
+		preg_match('/_(.+)$/', $class, $type);
+
+		switch($type)
+		{
+			case 'Core':
+				$type = 'libraries';
+				$file = substr($class, 0, -5);
+			break;
+			case 'Controller':
+				$type = 'controllers';
+				$file = substr($class, 0, -11);
+			break;
+			case 'Model':
+				$type = 'models';
+				$file = substr($class, 0, -6);
+			break;
+			default:
+				// This can mean either a library or a helper, but libraries must
+				// always be capitalized, so we check if the first character is
+				// lowercase. If it is, we are loading a helper, not a library.
+				$type = (ord($class[0]) > 96) ? 'helpers' : 'libraries';
+				$file = $class;
+			break;
+		}
+
 		try
 		{
-			$class = preg_replace('/^Core_/', '', $class);
+			require self::find_file($type, $file, TRUE);
 
-			require self::find_file('libraries', $class, TRUE);
-
-			if ($extension = self::find_file('libraries', Config::item('subclass_prefix').$class))
+			if ($type == 'libraries')
 			{
-				require $extension;
-			}
-			else
-			{
-				eval('class '.$class.' extends Core_'.$class.' { }');
+				if ($extension = self::find_file('libraries', Config::item('subclass_prefix').$class))
+				{
+					require $extension;
+				}
+				else
+				{
+					eval('class '.$class.' extends '.$class.'_Core { }');
+				}
 			}
 
 		}
 		catch (file_not_found $exception)
 		{
-			print $exception->getMessage().' Library could not be loaded.';
+			print $exception->getMessage().' could not be found in any '.$type.' directory.';
 			exit;
 		}
 	}
@@ -275,14 +301,10 @@ class Kohana {
 	 */
 	public static function load_class($class)
 	{
-		$class = preg_replace('/^Core_/', '', $class);
-
 		if (isset(self::$registry[$class]))
 		{
 			return self::$registry[$class];
 		}
-
-		self::auto_load($class);
 
 		if ($class == 'Controller')
 		{
