@@ -1,7 +1,3 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
-$config['_default'] = 'welcome';
-
-$config['test/(:any)'] = 'test/index/$1';
-
-$config['foo/bar'] = 'bar/foo';
+$config['_default'] = 'user_guide/index';

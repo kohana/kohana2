@@ -102,14 +102,14 @@ class Router_Core {
 
 			self::$segments = implode('/', $ruri);
 		}
-
+		
 		/**
 		 * Use the default route when no segments exist
 		 */
-		if (self::$segments == '')
+		if (self::$segments == '' OR self::$segments == '/')
 		{
 			if ( ! isset(self::$routes['_default']))
-				trigger_error('Please set a default route in routes'.EXT);
+				trigger_error('Please set a default route in routes'.EXT, E_USER_ERROR);
 
 			self::$segments = self::$routes['_default'];
 		}
@@ -270,7 +270,7 @@ class Router_Core {
 
 		if (($allowed = Config::item('permitted_uri_chars')) != '')
 		{
-			if ( ! preg_match('|^['.preg_quote($allowed).']+$|iu', $str))
+			if (! preg_match('|^['.preg_quote($allowed).']+$|iu', $str))
 			{
 				header('HTTP/1.1 400 Bad Request');
 				exit('The URI you submitted has disallowed characters.');

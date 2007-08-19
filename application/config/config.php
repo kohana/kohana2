@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 $config['base_url'] = 'http://'.$_SERVER['SERVER_NAME'].'/kfsk/';
 
@@ -19,6 +19,3 @@ $config['include_paths'] = array
 $config['enable_hooks'] = FALSE;
 
 $config['subclass_prefix'] = 'MY_';
-
-
-?>
