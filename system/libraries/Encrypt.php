@@ -74,7 +74,7 @@ class Encrypt_Core {
 				return $this->encryption_key;
 			}
 
-			if (($key = Config::item('encryption_key')) === FALSE)
+			if (($key = Config::item('encryption.key')) === FALSE)
 			{
 				/**
 				 * @todo This should return an i18n error

@@ -2,7 +2,7 @@
 /**
  * Kohana
  *
- * A secure and lightweight open source web application framework.
+ * A secure and lightweight open source web application framework for PHP5
  *
  * @package          Kohana
  * @author           Kohana Development Team
@@ -161,6 +161,8 @@ class Kohana {
 			ob_end_flush();
 		}
 
+		Event::run('system.pre_output');
+
 		return str_replace(
 			array
 			(
@@ -238,6 +240,8 @@ class Kohana {
 	{
 		preg_match('/_(.+)$/', $class, $type);
 
+		$type = isset($type[1]) ? $type[1] : FALSE;
+
 		switch($type)
 		{
 			case 'Core':
@@ -251,6 +255,10 @@ class Kohana {
 			case 'Model':
 				$type = 'models';
 				$file = substr($class, 0, -6);
+			break;
+			case 'Driver':
+				$type = 'libraries/drivers';
+				$file = $class;
 			break;
 			default:
 				// This can mean either a library or a helper, but libraries must
@@ -267,7 +275,7 @@ class Kohana {
 
 			if ($type == 'libraries')
 			{
-				if ($extension = self::find_file('libraries', Config::item('subclass_prefix').$class))
+				if ($extension = self::find_file('libraries', Config::item('core.subclass_prefix').$class))
 				{
 					require $extension;
 				}
@@ -336,7 +344,7 @@ class Kohana {
 		if (isset($found[$search]))
 			return $found[$search];
 
-		$paths = Config::item('include_paths');
+		$paths = Config::item('core.include_paths');
 
 		if ($directory == 'config' OR $directory == 'i18n')
 		{
@@ -380,7 +388,7 @@ class Kohana {
 	 */
 	public static function load_hook($name)
 	{
-		if (Config::item('enable_hooks') AND $hook = self::find_file('hooks', $name))
+		if (Config::item('core.enable_hooks') AND $hook = self::find_file('hooks', $name))
 		{
 			require $hook;
 		}

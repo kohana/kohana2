@@ -117,7 +117,7 @@ class Router_Core {
 		/**
 		 * Remove the URL suffix
 		 */
-		if ($suffix = Config::item('url_suffix'))
+		if ($suffix = Config::item('core.url_suffix'))
 		{
 			self::$segments = preg_replace('!'.preg_quote($suffix).'$!u', '', self::$segments);
 		}
@@ -198,7 +198,7 @@ class Router_Core {
 		self::$directory = '';
 		self::$controller = FALSE;
 
-		$include_paths = Config::item('include_paths');
+		$include_paths = Config::item('core.include_paths');
 
 		/**
 		 * Search for the Controller and set Controller parameters
@@ -268,7 +268,7 @@ class Router_Core {
 	{
 		$str = trim($str);
 
-		if (($allowed = Config::item('permitted_uri_chars')) != '')
+		if (($allowed = Config::item('core.permitted_uri_chars')) != '')
 		{
 			if (! preg_match('|^['.preg_quote($allowed).']+$|iu', $str))
 			{

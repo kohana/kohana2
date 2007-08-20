@@ -14,6 +14,7 @@ Benchmark::start(SYSTEM_BENCHMARK.'_base_classes_loading');
 
 // Load core classes
 require SYSPATH.'core/Config'.EXT;
+
 require SYSPATH.'core/Event'.EXT;
 require SYSPATH.'core/Kohana'.EXT;
 require SYSPATH.'core/Log'.EXT;
@@ -67,3 +68,5 @@ catch (controller_not_found $exception)
 
 // Stop the controller execution benchmark
 Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
+
+// End --- Have a nice day!

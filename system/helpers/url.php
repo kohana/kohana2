@@ -4,16 +4,16 @@ class url {
 
 	public static function base_url()
 	{
-		return rtrim(Config::item('base_url'), '/').'/';
+		return rtrim(Config::item('core.base_url'), '/').'/';
 	}
 
 	public static function site_url($uri)
 	{
 		$uri = trim($uri, '/');
 
-		$base_url   = rtrim(Config::item('base_url'), '/');
-		$index_page = Config::item('index_page').'/';
-		$url_suffix = Config::item('url_suffix');
+		$base_url   = rtrim(Config::item('core.base_url'), '/');
+		$index_page = Config::item('core.index_page').'/';
+		$url_suffix = Config::item('core.url_suffix');
 
 		return $base_url.$index_page.$uri.$url_suffix;
 	}

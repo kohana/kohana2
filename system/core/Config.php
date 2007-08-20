@@ -36,7 +36,7 @@ final class Config {
 	public static function item($key)
 	{
 		// Configuration autoloading
-		if (self::$conf == NULL)
+		if (self::$conf === NULL)
 		{
 			require APPPATH.'config/config'.EXT;
 
@@ -44,15 +44,15 @@ final class Config {
 			(isset($config) AND is_array($config)) or die('Core configuration file is not valid.');
 
 			// Normalize all paths to be absolute and have a trailing slash
-			foreach($config['include_paths'] as $n => $path)
+			foreach($config['include_paths'] as $path)
 			{
 				if (substr($path, 0, 1) !== '/')
 				{
-					$config['include_paths'][$n] = realpath(DOCROOT.$path).'/';
+					$config['include_paths'][] = realpath(DOCROOT.$path).'/';
 				}
 				else
 				{
-					$config['include_paths'][$n] = rtrim($path, '/').'/';
+					$config['include_paths'][] = rtrim($path, '/').'/';
 				}
 			}
 
@@ -63,10 +63,34 @@ final class Config {
 				array(SYSPATH)  // SYSPATH last
 			);
 
-			self::$conf = $config;
+			self::$conf['core'] = $config;
 		}
 
-		return (isset(self::$conf[$key]) ? self::$conf[$key] : FALSE);
+		// Find the requested key
+		$key  = explode('.', $key);
+		// Find type and reset the key
+		$type = $key[0];
+		$key  = isset($key[1]) ? $key[1] : FALSE;
+
+		// Load config arrays
+		if ( ! isset(self::$conf[$type]))
+		{
+			self::$conf[$type] = self::load($type);
+		}
+		
+		// Return groups
+		if ($key === FALSE)
+		{
+			return self::$conf[$type];
+		}
+		elseif (isset(self::$conf[$type][$key]))
+		{
+			return self::$conf[$type][$key];
+		}
+		else
+		{
+			return FALSE;
+		}
 	}
 
 	/**
@@ -76,13 +100,14 @@ final class Config {
 	 * @param   string
 	 * @return  array
 	 */
-	public static function load($name)
+	public static function load($name, $required = TRUE)
 	{
+		$required = (bool) $required;
+		$configuration = array();
+
 		try
 		{
-			$configuration = array();
-
-			foreach(Kohana::find_file('config', $name, TRUE) as $filename)
+			foreach(Kohana::find_file('config', $name, $required) as $filename)
 			{
 				include $filename;
 
