@@ -28,6 +28,8 @@ class Kohana {
 	public static $error_types  = array(); // Human readable error types
 	public static $registry     = array(); // Library registery
 
+	public static $output = '';
+
 	private static $instance = FALSE;   // Controller instance
 
 	/**
@@ -156,14 +158,22 @@ class Kohana {
 		// Fetch memory usage in MB
 		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
 
+		// Flush the buffer until it is the same as when initialized
 		while(self::$buffer_level AND ob_get_level() > self::$buffer_level)
 		{
 			ob_end_flush();
 		}
 
+		// Bind the output to this output
+		self::$output =& $output;
+
+		// Run the pre_output Event
+		// This can be used for functions that require completion before headers
+		// are sent. One example is cookies, which are sent with the headers.
 		Event::run('system.pre_output');
 
-		return str_replace(
+		// Replace the global template variables
+		self::$output = str_replace(
 			array
 			(
 				'{kohana_version}',
@@ -176,8 +186,10 @@ class Kohana {
 				Benchmark::get(SYSTEM_BENCHMARK.'_total_execution_time'),
 				number_format($memory, 2)
 			),
-			$output
+			self::$output
 		);
+
+		return self::$output;
 	}
 
 	/**

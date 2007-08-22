@@ -2,19 +2,72 @@
 
 class User_Guide_Controller extends Controller {
 
-	public function index()
+	public function __construct()
 	{
-		$this->kohana();
+		parent::__construct();
+
+		$this->lang = array
+		(
+			'benchmark' => array
+			(
+				'total_execution_time' => 'Benchmark: Total execution time of the application, starting at the earliest possible point',
+				'base_classes_loading' => 'Time to load the core classes that are required for Kohana to run'
+			),
+			'event' => array
+			(
+				'system.ready'    => 'Basic system is prepared, but no routing has been performed',
+				'system.shutdown' => 'Last event called before Kohana stops processing the current request'
+			)
+		);
 	}
 
-	public function kohana()
+	public function _remap()
 	{
-		include Kohana::find_file('vendor', 'markdown');
+		$category = strtolower($this->uri->segment(2));
+		$section  = strtolower($this->uri->segment(3));
 
-		$this->data['menu'] = $this->load->view('user_guide/menu')->render();
-		$this->data['content'] = $this->load->view('user_guide/content/kohana')->render();
+		// Media resource loading
+		if ($category === 'js' OR $category === 'css')
+		{
+			return $this->$category($section);
+		}
 
+		// For Kohana's custom tags to be handled properly
+		Event::add('system.pre_output', array($this, '_tags'));
+
+		// Set the view that will be loaded
+		$category = ($category == FALSE)  ? 'kohana' : $category;
+		$content  = rtrim('user_guide/content/'.$category.'/'.$section, '/');
+
+		// Show content
+		$this->data['menu'] = $this->load->view('user_guide/menu', array('active_category' => $category, 'active_section' => $section));
+		$this->data['content'] = $this->load->view($content);
+
+		// Display output
 		$this->load->view('user_guide/template', $this->data)->render(TRUE);
+	}
+
+	public function _tags()
+	{
+		Kohana::$output = preg_replace_callback('!<(benchmark|event|file)>.+?</.+?>!', array($this, '_tag_update'), Kohana::$output);
+	}
+
+	public function _tag_update($match)
+	{
+		preg_match('!^<(.+?)>(.+?)</.+>$!', $match[0], $tag);
+
+		$type = $tag[2];
+		$tag  = $tag[1];
+
+		switch($tag)
+		{
+			case 'file':
+				return '<tt class="filename">'.$type.EXT.'</tt>';
+			case 'benchmark':
+				return isset($this->lang['benchmark'][$type]) ? '<abbr title="Benchmark: '.$this->lang['benchmark'][$type].'">'.$type.'</abbr>' : $type;
+			case 'event':
+				return isset($this->lang['event'][$type]) ? '<abbr title="Event: '.$this->lang['event'][$type].'">'.$type.'</abbr>' : $type;
+		}
 	}
 
 	public function js($filename)
@@ -33,6 +86,9 @@ class User_Guide_Controller extends Controller {
 
 	private function _media($type, $filename)
 	{
+		/**
+		 * @todo Enable Caching
+		 */
 		try
 		{
 			$this->load->view('user_guide/'.$type.'/'.$filename)->render(TRUE);

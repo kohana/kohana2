@@ -11,10 +11,13 @@ $menus = array
 	),
 	'General' => array
 	(
+		'Bootstrapping',
 		'Configuration',
+		'Libraries',
 		'Controllers',
 		'Models',
-		'Views'
+		'Views',
+		'Helpers'
 	),
 	'Libraries' => array
 	(
@@ -27,16 +30,20 @@ $menus = array
 <ul>
 <?php
 
-foreach($menus as $section => $menu):
+foreach($menus as $category => $menu):
+
+	$class = (strtolower($category) == $active_category) ? ' class="active"' : '';
 
 ?>
-<li><?= url::anchor(strtolower('user_guide/'.$section), $section) ?><ul>
+<li<?= $class ?>><?= $category ?><ul>
 <?php
 
-	foreach($menu as $link):
+	foreach($menu as $section):
+
+		$before = (strtolower($section) == $active_section) ? '<em>&laquo;</em> ' : '&laquo; ';
 
 ?>
-<li><?= url::anchor(strtolower('user_guide/'.$section.'/'.$link), $link) ?></li>
+<li><?= $before.url::anchor(strtolower('user_guide/'.$category.'/'.$section), $section) ?></li>
 <?php
 
 	endforeach;

@@ -14,7 +14,6 @@ Benchmark::start(SYSTEM_BENCHMARK.'_base_classes_loading');
 
 // Load core classes
 require SYSPATH.'core/Config'.EXT;
-
 require SYSPATH.'core/Event'.EXT;
 require SYSPATH.'core/Kohana'.EXT;
 require SYSPATH.'core/Log'.EXT;
@@ -28,14 +27,14 @@ Kohana::setup();
 // Run system.ready event
 Event::run('system.ready');
 
-// Run Router's setup routine
-// All routing is performed at this stage
-Router::setup();
-
 // Stop base class loading benchmark
 Benchmark::stop(SYSTEM_BENCHMARK.'_base_classes_loading');
 // Start system initialization benchmark
 Benchmark::start(SYSTEM_BENCHMARK.'_system_initialization');
+
+// Run Router's setup routine
+// All routing is performed at this stage
+Router::setup();
 
 // Run system.initialize
 Event::run('system.initialize');
@@ -56,7 +55,43 @@ try
 	/**
 	 * @todo This needs to check for _remap and _default, as well as validating that method exists
 	 */
-	call_user_func_array(array(Kohana::instance(), Router::$method), Router::$arguments);
+	$controller = Kohana::instance();
+	
+	if (method_exists($controller, '_remap'))
+	{
+		// Change arguments to be $method, $arguments.
+		// This makes _remap capable of being a much more effecient dispatcher
+		Router::$arguments = array(Router::$method, Router::$arguments);
+		// Set the method to _remap
+		Router::$method = '_remap';
+	}
+	elseif (method_exists($controller, Router::$method))
+	{
+		Router::$method = Router::$method;
+	}
+	elseif (method_exists($controller, '_default'))
+	{
+		// Change arguments to be $method, $arguments.
+		// This makes _default a much more effecient 404 handler
+		Router::$arguments = array(Router::$method, Router::$arguments);
+		// Set the method to _default
+		Router::$method = '_default';
+	}
+	else
+	{
+		/**
+		 * @todo This needs to have an i18n error
+		 */
+		trigger_error('404: Page not found');
+	}
+	if (count(Router::$arguments) > 0)
+	{
+		call_user_func_array(array(Kohana::instance(), Router::$method), Router::$arguments);
+	}
+	else
+	{
+		call_user_func(array(Kohana::instance(), Router::$method));
+	}
 
 	// Run system.post_controller
 	Event::run('system.post_controller');

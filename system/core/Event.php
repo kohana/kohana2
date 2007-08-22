@@ -40,7 +40,7 @@ final class Event {
 		if ($name == FALSE OR $callback == FALSE)
 			return FALSE;
 
-		self::$events[$name][] = array($callback, $params);
+		self::$events[$name][] = $callback;
 	}
 
 	/**
@@ -50,7 +50,7 @@ final class Event {
 	 * @param   string
 	 * @return  mixed
 	 */
-	public static function run($name)
+	public static function run($name, $args = array())
 	{
 		if ($name == FALSE)
 			return FALSE;
@@ -59,13 +59,13 @@ final class Event {
 		{
 			foreach(array_reverse(self::$events[$name]) as $event)
 			{
-				if ( ! empty($event[1]))
+				if ($args == TRUE)
 				{
-					call_user_func_array($event[0], $event[1]);
+					call_user_func_array($event, (array) $args);
 				}
 				else
 				{
-					call_user_func($event[0]);
+					call_user_func($event);
 				}
 			}
 		}

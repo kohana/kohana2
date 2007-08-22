@@ -9,6 +9,9 @@ class Controller_Core extends Kohana {
 
 		// Loader should always be available
 		$this->load = new Loader();
+		
+		// URI should always be available
+		$this->uri = new URI();
 	}
 
 } // End Controller Class
