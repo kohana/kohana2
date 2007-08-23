@@ -51,7 +51,7 @@ class Router_Core {
 			// Command line requires a bit of hacking
 			if (isset($argv[1]))
 			{
-				self::$segments = preg_replace('#/+#u', '/', $argv[1]);
+				self::$segments = preg_replace('#//+#u', '/', $argv[1]);
 				// Remove GET string from segments
 				if (($query = strpos(self::$segments, '?')) !== FALSE)
 				{
@@ -85,7 +85,7 @@ class Router_Core {
 			 * @todo this needs a lot more work, and tests need to be made on IIS5/6/7
 			 */
 			$ruri = urldecode(trim($_SERVER['REQUEST_URI'], '/'));
-			$path = trim(preg_replace('!^'.getcwd().'!u', '', DOCROOT), '/');
+			$path = trim(preg_replace('!^'.preg_quote(getcwd(), '-').'!u', '', DOCROOT), '/');
 
 			$ruri = explode('/', $ruri);
 			$path = explode('/', $path);
@@ -119,13 +119,13 @@ class Router_Core {
 		 */
 		if ($suffix = Config::item('core.url_suffix'))
 		{
-			self::$segments = preg_replace('!'.preg_quote($suffix).'$!u', '', self::$segments);
+			self::$segments = preg_replace('!'.preg_quote($suffix, '-').'$!u', '', self::$segments);
 		}
 
 		/**
 		 * Remove extra slashes from the segments that could cause fucked up routing.
 		 */
-		self::$segments = preg_replace('!/+!u', '/', self::$segments);
+		self::$segments = preg_replace('!//+!u', '/', self::$segments);
 		self::$segments = self::$rsegments = self::$current_uri = trim(self::$segments, '/');
 
 		/**
