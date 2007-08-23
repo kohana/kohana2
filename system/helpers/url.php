@@ -11,20 +11,21 @@ class url {
 	{
 		$uri = trim($uri, '/');
 
-		$base_url   = rtrim(Config::item('core.base_url'), '/');
 		$index_page = Config::item('core.index_page').'/';
 		$url_suffix = Config::item('core.url_suffix');
 
-		return $base_url.$index_page.$uri.$url_suffix;
+		return self::base_url().$index_page.$uri.$url_suffix;
 	}
 
 	public static function title($title, $separator = 'dash')
 	{
-		$separator = ($separator == 'dash') ? 'dash' : 'underscore';
+		$separator = ($separator == 'dash') ? '-' : '_';
 		
-		// Remove all dashes, underscores, and whitespace
+		// Replace all dashes, underscores and whitespace by the separator
 		$title = preg_replace('/[-_\s]+/', $separator, $title);
-		// Remove all characters that are not a-z, 9-9, or the separator
+		// Replace accented characters by their unaccented equivalents
+		$title = utf8::accents_to_ascii($title);
+		// Remove all characters that are not a-z, 0-9, or the separator
 		$title = preg_replace('/[^a-zA-Z0-9'.$separator.']/', '', $title);
 		
 		return $title;
@@ -55,7 +56,7 @@ class url {
 	{
 		if (strpos($uri, '://') === FALSE)
 		{
-			$uri = site_url($uri);
+			$uri = self::site_url($uri);
 		}
 
 		if ($method == 'refresh')
