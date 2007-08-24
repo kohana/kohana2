@@ -2,9 +2,16 @@
 
 class url {
 
-	public static function base_url()
+	public static function base_url($index = FALSE)
 	{
-		return rtrim(Config::item('core.base_url'), '/').'/';
+		$base_url = rtrim(Config::item('core.base_url'), '/').'/';
+
+		if ($index == TRUE AND $index = Config::item('core.index_page'))
+		{
+			$base_url = $base_url.$index.'/';
+		}
+
+		return $base_url;
 	}
 
 	public static function site_url($uri)
@@ -20,14 +27,14 @@ class url {
 	public static function title($title, $separator = 'dash')
 	{
 		$separator = ($separator == 'dash') ? '-' : '_';
-		
+
 		// Replace all dashes, underscores and whitespace by the separator
 		$title = preg_replace('/[-_\s]+/', $separator, $title);
 		// Replace accented characters by their unaccented equivalents
 		$title = utf8::accents_to_ascii($title);
 		// Remove all characters that are not a-z, 0-9, or the separator
 		$title = preg_replace('/[^a-zA-Z0-9'.$separator.']/', '', $title);
-		
+
 		return $title;
 	}
 
