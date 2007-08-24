@@ -7,9 +7,9 @@
 
 <link type="text/css" rel="stylesheet" href="<?= url::base_url() ?>user_guide/css/layout.css" />
 
-<script type="text/javascript" src="<?= url::base_url() ?>user_guide/js/jquery.js"></script>
-<script type="text/javascript" src="<?= url::base_url() ?>user_guide/js/plugins.js"></script>
-<script type="text/javascript" src="<?= url::base_url() ?>user_guide/js/effects.js"></script>
+<script type="text/javascript" src="<?= url::base_url(TRUE) ?>user_guide/js/jquery.js"></script>
+<script type="text/javascript" src="<?= url::base_url(TRUE) ?>user_guide/js/plugins.js"></script>
+<script type="text/javascript" src="<?= url::base_url(TRUE) ?>user_guide/js/effects.js"></script>
 
 </head>
 <body>
