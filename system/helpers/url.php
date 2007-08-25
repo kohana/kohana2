@@ -32,8 +32,12 @@ class url {
 		$title = preg_replace('/[-_\s]+/', $separator, $title);
 		// Replace accented characters by their unaccented equivalents
 		$title = utf8::accents_to_ascii($title);
+		// Convert to lowercase
+		$title = strtolower($title);
 		// Remove all characters that are not a-z, 0-9, or the separator
-		$title = preg_replace('/[^a-zA-Z0-9'.$separator.']/', '', $title);
+		$title = preg_replace('/[^a-z0-9'.$separator.']+/', '', $title);
+		// Trim separators from the beginning and end
+		$title = trim($title, $separator);
 
 		return $title;
 	}
