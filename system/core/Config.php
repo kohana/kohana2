@@ -33,7 +33,7 @@ final class Config {
 	 * @param   string
 	 * @return  mixed
 	 */
-	public static function item($key)
+	public static function item($key, $slash = FALSE)
 	{
 		// Configuration autoloading
 		if (self::$conf === NULL)
@@ -77,20 +77,20 @@ final class Config {
 		{
 			self::$conf[$type] = self::load($type);
 		}
-		
-		// Return groups
+
+		$value = FALSE;
+
 		if ($key === FALSE)
 		{
-			return self::$conf[$type];
+			$value = self::$conf[$type];
 		}
 		elseif (isset(self::$conf[$type][$key]))
 		{
-			return self::$conf[$type][$key];
+			$value = self::$conf[$type][$key];
+			$value = ($slash == TRUE AND $value != '') ? rtrim($value, '/').'/' : $value;
 		}
-		else
-		{
-			return FALSE;
-		}
+
+		return $value;
 	}
 
 	/**

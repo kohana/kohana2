@@ -10,7 +10,7 @@ class User_Guide_Controller extends Controller {
 		(
 			'benchmark' => array
 			(
-				'total_execution_time' => 'Benchmark: Total execution time of the application, starting at the earliest possible point',
+				'total_execution_time' => 'Total execution time of the application, starting at the earliest possible point',
 				'base_classes_loading' => 'Time to load the core classes that are required for Kohana to run'
 			),
 			'event' => array
@@ -39,9 +39,12 @@ class User_Guide_Controller extends Controller {
 		$category = ($category == FALSE)  ? 'kohana' : $category;
 		$content  = rtrim('user_guide/content/'.$category.'/'.$section, '/');
 
+		// Load markdown
+		require Kohana::find_file('vendor', 'Markdown');
+
 		// Show content
 		$this->data['menu'] = $this->load->view('user_guide/menu', array('active_category' => $category, 'active_section' => $section));
-		$this->data['content'] = $this->load->view($content);
+		$this->data['content'] = $this->load->view($content)->render(FALSE, 'Markdown');
 
 		// Display output
 		$this->load->view('user_guide/template', $this->data)->render(TRUE);
@@ -49,7 +52,7 @@ class User_Guide_Controller extends Controller {
 
 	public function _tags()
 	{
-		Kohana::$output = preg_replace_callback('!<(benchmark|event|file)>.+?</.+?>!', array($this, '_tag_update'), Kohana::$output);
+		Kohana::$output = preg_replace_callback('!<(benchmark|event|file|definition)>.+?</.+?>!', array($this, '_tag_update'), Kohana::$output);
 	}
 
 	public function _tag_update($match)
@@ -61,6 +64,8 @@ class User_Guide_Controller extends Controller {
 
 		switch($tag)
 		{
+			case 'definition':
+				return html::anchor('user_guide/general/definitions?search='.$type, $type);
 			case 'file':
 				return '<tt class="filename">'.$type.EXT.'</tt>';
 			case 'benchmark':

@@ -33,6 +33,7 @@
 class View_Core {
 
 	private $kohana_view_filename;
+	private $kohana_renderer = '';
 	private $data = array();
 
 	public function __construct($name, $data = NULL)
@@ -80,14 +81,19 @@ class View_Core {
 		return $this->render();
 	}
 
-	public function render($kohana_display_output = FALSE)
+	public function render($kohana_display_output = FALSE, $kohana_render_function = FALSE)
 	{
 		ob_start();
 		extract($this->data);
 		include $this->kohana_view_filename;
 		$kohana_view_output = ob_get_contents();
 		ob_end_clean();
-		
+
+		if ($kohana_render_function != FALSE AND function_exists($kohana_render_function))
+		{
+			$kohana_view_output = $kohana_render_function($kohana_view_output);
+		}
+
 		if ($kohana_display_output == TRUE)
 		{
 			print $kohana_view_output;

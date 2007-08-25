@@ -1,10 +1,10 @@
-<?php
+<?php defined('SYSPATH') or die('No direct access allowed.');
 
 class url {
 
-	public static function base_url($index = FALSE)
+	public static function base($index = FALSE)
 	{
-		$base_url = rtrim(Config::item('core.base_url'), '/').'/';
+		$base_url = Config::item('core.base_url', TRUE);
 
 		if ($index == TRUE AND $index = Config::item('core.index_page'))
 		{
@@ -14,14 +14,14 @@ class url {
 		return $base_url;
 	}
 
-	public static function site_url($uri)
+	public static function site($uri)
 	{
 		$uri = trim($uri, '/');
 
-		$index_page = Config::item('core.index_page').'/';
+		$index_page = Config::item('core.index_page', TRUE);
 		$url_suffix = Config::item('core.url_suffix');
 
-		return self::base_url().$index_page.$uri.$url_suffix;
+		return self::base().$index_page.$uri.$url_suffix;
 	}
 
 	public static function title($title, $separator = 'dash')
@@ -42,32 +42,11 @@ class url {
 		return $title;
 	}
 
-	public static function anchor($uri, $title = FALSE, $attributes = FALSE)
-	{
-		if ( ! is_array($uri))
-		{
-			$site_url = (strpos($uri, '://') === FALSE) ? self::site_url($uri) : $uri;
-		}
-		else
-		{
-			$site_url = self::site_url($uri);
-		}
-
-		if ($title == '')
-		{
-			$title = $site_url;
-		}
-
-		$attributes = ($attributes == TRUE) ? Kohana::attributes($attributes) : '';
-
-		return '<a href="'.$site_url.'"'.$attributes.'>'.$title.'</a>';
-	}
-
 	public static function redirect($uri = '', $method = '302')
 	{
 		if (strpos($uri, '://') === FALSE)
 		{
-			$uri = self::site_url($uri);
+			$uri = self::site($uri);
 		}
 
 		if ($method == 'refresh')
@@ -98,6 +77,4 @@ class url {
 		exit('You should have been redirected to <a href="'.$uri.'">'.$uri.'</a>.');
 	}
 
-
-
-}
+} // End url class

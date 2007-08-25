@@ -15,11 +15,14 @@ h1, h2, h3, h4, h5, h6 { padding: 0.5em 0; margin-bottom: 0.2em; }
 p { padding-bottom: 1em; }
 abbr { color: #141; border-bottom: dotted 1px #999; }
 tt { font-family: "Monaco", monospace; background: #ddd; padding: 1px 2px; border: solid 1px #ccc; }
+dl { padding: 0.5em; }
+dt { float: left; clear: left; width: 12em; font-weight: bold; }
+dd { padding-bottom: 0.5em; margin: 0 0 0.5em 12em; border-bottom: dotted 1px #aaa; }
 /*
 Template Styles
 */
-#container { width: 60em; margin-left: 5em; background: #eee; }
-#menu { float: right; width: 14em; margin-right: -14.2em; padding: 0.2em 0; }
+#container { width: 70%; min-width: 30em; max-width: 60em; margin: 0 auto; background: #eee; }
+#menu { float: right; width: 10em; margin-right: -10.2em; padding: 0.2em 0; }
 #menu ul { margin: 0 0.2em; list-style: none; color: #b43f11; cursor: pointer; }
 #menu li ul { padding: 0.1em 0; margin-right: 0; font-size: 0.8em; color: #444; }
 #menu li ul a { color: #666; }

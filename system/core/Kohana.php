@@ -99,10 +99,12 @@ class Kohana {
 			E_ERROR              => 'Fatal Error',
 			E_USER_ERROR         => 'Fatal Error',
 			E_PARSE              => 'Syntax Error',
+			E_STRICT             => 'Strict Mode Error',
 			E_NOTICE             => 'Runtime Message',
 			E_WARNING            => 'Warning Message',
 			E_USER_WARNING       => 'Warning Warning'
 		);
+
 		// Set error handler
 		set_error_handler(array('Kohana', 'error_handler'));
 
@@ -111,6 +113,11 @@ class Kohana {
 
 		// Set shutdown handler to run the "system.shutdown" event
 		register_shutdown_function(array('Event', 'run'), 'system.shutdown');
+
+		if (function_exists('date_default_timezone_set'))
+		{
+			date_default_timezone_set(Config::item('core.timezone'));
+		}
 
 		// Setup is complete
 		$run = TRUE;
@@ -158,12 +165,6 @@ class Kohana {
 		// Fetch memory usage in MB
 		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
 
-		// Flush the buffer until it is the same as when initialized
-		while(self::$buffer_level AND ob_get_level() > self::$buffer_level)
-		{
-			ob_end_flush();
-		}
-
 		// Bind the output to this output
 		self::$output =& $output;
 
@@ -208,11 +209,11 @@ class Kohana {
 		$file  = preg_replace('#^'.preg_quote(DOCROOT, '-').'#', '', $file);
 		$template = self::find_file('errors', 'php_error');
 
+		// Flush the entire buffer here, to ensure the error is displayed
 		while(ob_get_level())
 		{
 			ob_end_clean();
 		}
-		self::$buffer_level = 0;
 
 		ob_start(array('Kohana', 'output'));
 		include $template;
@@ -403,32 +404,6 @@ class Kohana {
 		if (Config::item('core.enable_hooks') AND $hook = self::find_file('hooks', $name))
 		{
 			require $hook;
-		}
-	}
-
-	/**
-	 * HTML Attribute Parser
-	 *
-	 * @access public
-	 * @param  mixed
-	 * @return string
-	 */
-	public static function attributes($attrs)
-	{
-		if (is_string($attrs))
-		{
-			return ($attrs == FALSE) ? '' : ' '.$attrs;
-		}
-		else
-		{
-			$compiled = '';
-
-			foreach($attrs as $key => $val)
-			{
-				$compiled .= ' '.$key.'="'.$val.'"';
-			}
-
-			return $compiled;
 		}
 	}
 

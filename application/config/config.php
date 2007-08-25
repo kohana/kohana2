@@ -18,3 +18,5 @@ $config['include_paths'] = array
 $config['enable_hooks'] = FALSE;
 
 $config['subclass_prefix'] = 'MY_';
+
+$config['timezone'] = 'America/Chicago';

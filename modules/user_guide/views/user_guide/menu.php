@@ -11,6 +11,7 @@ $menus = array
 	),
 	'General' => array
 	(
+		'Definitions',
 		'Bootstrapping',
 		'Configuration',
 		'Libraries',
@@ -43,7 +44,7 @@ foreach($menus as $category => $menu):
 		$before = (strtolower($section) == $active_section) ? '<em>&laquo;</em> ' : '&laquo; ';
 
 ?>
-<li><?= $before.url::anchor(strtolower('user_guide/'.$category.'/'.$section), $section) ?></li>
+<li><?= $before.html::anchor(strtolower('user_guide/'.$category.'/'.$section), $section) ?></li>
 <?php
 
 	endforeach;
