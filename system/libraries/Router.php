@@ -15,36 +15,11 @@ class Router_Core {
 
 	public static function setup()
 	{
-		try
-		{
-			self::$segments = '';
-			self::$routes   = array();
+		self::$segments = '';
+		self::$routes   = Config::item('routes');
 
-			// Load all of the route configurations
-			foreach(Kohana::find_file('config', 'routes', TRUE) as $filename)
-			{
-				include $filename;
-
-				// Merge in new routes
-				if (isset($config) AND is_array($config))
-				{
-					self::$routes = array_merge(self::$routes, $config);
-				}
-			}
-		}
-		catch (file_not_found $execption)
-		{
-			/**
-			 * @todo this needs to be handled better
-			 */
-			exit('Your <kbd>config/routes'.EXT.'</kbd> file could not be loaded.');
-		}
-
-		/**
-		 * The follow block of if/else attempts to retrieve the URI segments automagically
-		 *
-		 * Supported methods: CLI, GET, PATH_INFO, ORIG_PATH_INFO, REQUEST_URI
-		 */
+		// The follow block of if/else attempts to retrieve the URI segments automagically
+		// Supported methods: CLI, GET, PATH_INFO, ORIG_PATH_INFO, REQUEST_URI
 		if (PHP_SAPI == 'cli')
 		{
 			global $argv;
@@ -71,6 +46,7 @@ class Router_Core {
 		{
 			self::$segments = current(array_keys($_GET));
 		}
+		/*
 		elseif (isset($_SERVER['PATH_INFO']))
 		{
 			self::$segments = $_SERVER['PATH_INFO'];
@@ -79,33 +55,30 @@ class Router_Core {
 		{
 			self::$segments = $_SERVER['ORIG_PATH_INFO'];
 		}
+		*/
 		elseif (isset($_SERVER['REQUEST_URI']) AND $_SERVER['REQUEST_URI'])
 		{
 			/**
 			 * @todo this needs a lot more work, and tests need to be made on IIS5/6/7
 			 */
-			$ruri = urldecode(trim($_SERVER['REQUEST_URI'], '/'));
-			$path = trim(preg_replace('!^'.preg_quote(getcwd(), '-').'!u', '', DOCROOT), '/');
+			self::$segments = urldecode($_SERVER['REQUEST_URI']);
 
-			$ruri = explode('/', $ruri);
-			$path = explode('/', $path);
-
-			$i = 0;
-			while($dir = array_shift($path))
+			if (($offset = strpos(self::$segments, 'index'.EXT)) !== FALSE)
 			{
-				if ( ! $ruri[$i] == $dir)
-					break;
+				// Add the length of the index file to the offset
+				$offset += strlen('index'.EXT);
 
-				array_shift($ruri);
-				$i += 1;
+				// Segments have been located
+				self::$segments = substr(self::$segments, $offset);
+				self::$segments = trim(self::$segments, '/');
 			}
-
-			self::$segments = implode('/', $ruri);
+			else
+			{
+				self::$segments = '';
+			}
 		}
-		
-		/**
-		 * Use the default route when no segments exist
-		 */
+
+		// Use the default route when no segments exist
 		if (self::$segments == '' OR self::$segments == '/')
 		{
 			if ( ! isset(self::$routes['_default']))
@@ -114,23 +87,17 @@ class Router_Core {
 			self::$segments = self::$routes['_default'];
 		}
 
-		/**
-		 * Remove the URL suffix
-		 */
+		// Remove the URL suffix
 		if ($suffix = Config::item('core.url_suffix'))
 		{
 			self::$segments = preg_replace('!'.preg_quote($suffix, '-').'$!u', '', self::$segments);
 		}
 
-		/**
-		 * Remove extra slashes from the segments that could cause fucked up routing.
-		 */
+		// Remove extra slashes from the segments that could cause fucked up routing.
 		self::$segments = preg_replace('!//+!u', '/', self::$segments);
 		self::$segments = self::$rsegments = self::$current_uri = trim(self::$segments, '/');
 
-		/**
-		 * Custom routing
-		 */
+		// Custom routing
 		if (count(self::$routes) > 1);
 		{
 			if (isset(self::$routes[self::$current_uri]))
