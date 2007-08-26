@@ -407,6 +407,36 @@ class Kohana {
 		}
 	}
 
+	public static function callback ($callback, $params = FALSE)
+	{
+		if (is_string($callback))
+		{
+			if ($params == FALSE)
+			{
+				return $callback();
+			}
+			elseif (is_array($params))
+			{
+				return call_user_func_array($callback, $params);
+			}
+			else
+			{
+				return $callback($params);
+			}
+		}
+		else
+		{
+			if (is_array($params) AND $params != FALSE)
+			{
+				return call_user_func_array($callback, $params);
+			}
+			else
+			{
+				return call_user_func($callback);
+			}
+		}
+	}
+
 } // End Kohana class
 
 /**
