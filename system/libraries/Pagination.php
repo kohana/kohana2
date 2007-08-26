@@ -62,14 +62,14 @@ class Pagination_Core {
 		$this->items_per_page     = (int) max(1, $this->items_per_page);
 		$this->total_pages        = (int) ceil($this->total_items / $this->items_per_page);
 		$this->current_page       = (int) min(max(1, Kohana::instance()->uri->segment($this->uri_segment)), max(1, $this->total_pages));
-		$this->current_first_item = (int) (($this->current_page - 1) * $this->items_per_page) + 1;
+		$this->current_first_item = (int) min((($this->current_page - 1) * $this->items_per_page) + 1, $this->total_items);
 		$this->current_last_item  = (int) min($this->current_first_item + $this->items_per_page - 1, $this->total_items);
 		
 		// Helper variables
 		// - first_page/last_page     FALSE if the current page is the first/last page
 		// - previous_page/next_page  FALSE if that page doesn't exist relative to the current page
 		$this->first_page         = ($this->current_page == 1) ? FALSE : 1;
-		$this->last_page          = ($this->current_page == $this->total_pages) ? FALSE : $this->total_pages;
+		$this->last_page          = ($this->current_page >= $this->total_pages) ? FALSE : $this->total_pages;
 		$this->previous_page      = ($this->current_page > 1) ? $this->current_page - 1 : FALSE;
 		$this->next_page          = ($this->current_page < $this->total_pages) ? $this->current_page + 1 : FALSE;
 		
@@ -86,7 +86,7 @@ class Pagination_Core {
 	 */
 	public function create_links($style = NULL)
 	{
-		$style = (isset($style)) ? $this->style : $style;
+		$style = (isset($style)) ? $style : $this->style;
 		
 		return (string) new View('views/pagination/'.$style, get_object_vars($this));
 	}
