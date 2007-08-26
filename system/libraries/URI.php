@@ -2,14 +2,14 @@
 
 class URI_Core extends Router {
 	
-	public static function segment($index = 1)
+	public function segment($index = 1)
 	{
 		$index = (int) $index - 1;
 		
 		return isset(self::$segments[$index]) ? self::$segments[$index] : FALSE;
 	}
 
-	public static function segment_array()
+	public function segment_array()
 	{
 		$i = 1;
 		$segment_array = array();
@@ -22,7 +22,7 @@ class URI_Core extends Router {
 		return $segment_array;
 	}
 	
-	public static function string()
+	public function string()
 	{
 		return implode('/', self::$segments);
 	}

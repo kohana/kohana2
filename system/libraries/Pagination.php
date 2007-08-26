@@ -42,7 +42,7 @@ class Pagination_Core {
 		// If a uri_label is given, look for the corresponding uri_segment
 		if (isset($this->uri_label))
 		{
-			$uri_label_segment = array_search($this->uri_label, URI::segment_array());
+			$uri_label_segment = array_search($this->uri_label, Kohana::instance()->uri->segment_array());
 			
 			if ($uri_label_segment !== FALSE)
 			{
@@ -51,7 +51,7 @@ class Pagination_Core {
 		}
 		
 		// Create a generic base_url with {page} placeholder
-		$this->base_url = (isset($this->base_url)) ? $this->base_url : URI::string();
+		$this->base_url = (isset($this->base_url)) ? $this->base_url : Kohana::instance()->uri->string();
 		$this->base_url = explode('/', $this->base_url);
 		$this->base_url[$this->uri_segment - 1] = '{page}';
 		$this->base_url = implode('/', $this->base_url);
@@ -61,7 +61,7 @@ class Pagination_Core {
 		$this->total_items        = (int) max(0, $this->total_items);
 		$this->items_per_page     = (int) max(1, $this->items_per_page);
 		$this->total_pages        = (int) ceil($this->total_items / $this->items_per_page);
-		$this->current_page       = (int) min(max(1, URI::segment($this->uri_segment)), max(1, $this->total_pages));
+		$this->current_page       = (int) min(max(1, Kohana::instance()->uri->segment($this->uri_segment)), max(1, $this->total_pages));
 		$this->current_first_item = (int) (($this->current_page - 1) * $this->items_per_page) + 1;
 		$this->current_last_item  = (int) min($this->current_first_item + $this->items_per_page - 1, $this->total_items);
 		
