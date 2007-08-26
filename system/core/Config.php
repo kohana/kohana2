@@ -118,7 +118,7 @@ final class Config {
 				}
 			}
 		}
-		catch (file_not_found $execption)
+		catch (file_not_found $exception)
 		{
 			/**
 			 * @todo this needs to be handled better
