@@ -1,24 +1,18 @@
 <?php
 
-class Welcome extends Controller {
+class Welcome_Controller extends Controller {
 
 	function index()
 	{
-		$this->load->view('welcome')->set('message', 'testing')->render(TRUE);
-		print "hi";
+		print new View('welcome', array('message' => 'testing calls back to the controller'));
+		
+		// $db = new Database();
+		// print_r ($db);
 	}
 
-	function _index()
+	function say_hello()
 	{
-		$this->load->helper('url');
-		print "<p>Welcome to ".url::site('welcome')."!</p>\n";
-		
-		$this->load->model('users');
-		print "<p>Model test: ".$this->users->hi()."!</p>\n";
-
-		print "<p>Rendered in {execution_time} seconds</p>\n";
+		return '<strong>OMG HI!!!!1</strong>';
 	}
 
 }
-
-?>

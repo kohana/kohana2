@@ -81,156 +81,23 @@ class View_Core {
 		return $this->render();
 	}
 
-	public function render($kohana_display_output = FALSE, $kohana_render_function = FALSE)
+	public function render($print = FALSE, $callback = FALSE)
 	{
-		ob_start();
-		extract($this->data);
-		include $this->kohana_view_filename;
-		$kohana_view_output = ob_get_contents();
-		ob_end_clean();
+		$output = Kohana::instance()->kohana_include_view($this->kohana_view_filename, $this->data);
 
-		if ($kohana_render_function != FALSE AND function_exists($kohana_render_function))
+		if ($callback != FALSE)
 		{
-			$kohana_view_output = $kohana_render_function($kohana_view_output);
+			$output = Kohana::callback($callback, $output);
 		}
 
-		if ($kohana_display_output == TRUE)
+		if ($print == TRUE)
 		{
-			print $kohana_view_output;
+			print $output;
 		}
 		else
 		{
-			return $kohana_view_output;
+			return $output;
 		}
 	}
 
-}
-
-class NOT_Core_View {
-
-	var $load     = '';
-	var $data     = array();
-	var $template = 'template';
-
-	/**
-	 * Constructor
-	 */
-	function Core_View()
-	{
-		$CORE =& get_instance();
-		$this->load =& $CORE->load;
-	}
-
-	/**
-	 * Get Variable
-	 *
-	 * @access	public
-	 * @return	string
-	 */
-	function get($key)
-	{
-		return (isset($this->data[$key]) ? $this->data[$key] : '');
-	}
-
-	/**
-	 * Set Variable(s)
-	 *
-	 * @access	public
-	 * @param	mixed
-	 * @param	mixed
-	 * @return	void
-	 */
-	function set($key, $data = FALSE)
-	{
-		if (is_array($key))
-		{
-			$this->data = array_merge($this->data, $key);
-		}
-		else
-		{
-			$this->data[$key] = $data;
-		}
-	}
-
-	/**
-	 * Add to a Variable(s)
-	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string
-	 * @return	void
-	 */
-	function add($key, $data)
-	{
-		if (! is_string($key) OR ! is_string($data))
-			return;
-
-		if (isset($this->data[$key]))
-		{
-			$this->data[$key] .= $data;
-		}
-		else
-		{
-			$this->set($key, $data);
-		}
-	}
-
-	/**
-	 * Delete Variables
-	 *
-	 * @access	public
-	 * @param	string
-	 * @return	void
-	 */
-	function del($key)
-	{
-		if (isset($this->data[$key]))
-		{
-			unset($this->data[$key]);
-		}
-	}
-
-	/**
-	 * Load a View
-	 *
-	 * Loads a template for inclusion into the template, or displays the template
-	 *
-	 * EXAMPLES:
-	 * Load the "blog_content" view into the "body" variable:
-	 *   load('blog_content', 'body')
-	 * Load the "blog_content" view into the "blog_content" variable:
-	 *   load('blog_content', TRUE)
-	 * Load the currently set template and return it as a string:
-	 *   load(TRUE)
-	 * Load the current template and display it:
-	 *   load()
-	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string
-	 * @return	void
-	 */
-	function load($view = FALSE, $partial = FALSE)
-	{
-		if ($view == FALSE)
-		{
-			$view = $this->template;
-		}
-		elseif ($view === TRUE)
-		{
-			return $this->load->view($this->template, $this->data, TRUE);
-		}
-
-		if ($partial != FALSE)
-		{
-			$key = ($partial === TRUE) ? $view : $partial;
-			$this->data[$key] = $this->load->view($view, $this->data, TRUE);
-
-			return $this->data[$key];
-		}
-		else
-		{
-			$this->load->view($view, $this->data);
-		}
-	}
 } // End View Class
