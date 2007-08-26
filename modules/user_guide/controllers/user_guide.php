@@ -52,12 +52,12 @@ class User_Guide_Controller extends Controller {
 
 	public function _tags()
 	{
-		Kohana::$output = preg_replace_callback('!<(benchmark|event|file|definition)>.+?</.+?>!', array($this, '_tag_update'), Kohana::$output);
+		Kohana::$output = preg_replace_callback('!<(benchmark|event|file|definition)>.+?</[^>]+>!', array($this, '_tag_update'), Kohana::$output);
 	}
 
 	public function _tag_update($match)
 	{
-		preg_match('!^<(.+?)>(.+?)</.+>$!', $match[0], $tag);
+		preg_match('!^<([^>]+)>(.+?)</[^>]+>$!', $match[0], $tag);
 
 		$type = $tag[2];
 		$tag  = $tag[1];

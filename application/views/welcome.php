@@ -1,2 +1,2 @@
-<h2><?= $message ?></h2>
+<h2><?php echo $message ?></h2>
 <hr/>

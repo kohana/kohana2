@@ -1,6 +1,6 @@
 # System Bootstrapping
 
-Kohana uses a <definition>Front Controller</definition> as part of it's design. This file is the <file>index</file> file that rests in the directory that Kohana is installed in.
+Kohana uses a <definition>Front Controller</definition> as part of its design. This file is the <file>index</file> file that rests in the directory that Kohana is installed in.
 
 The front controller validates the application and system paths, then loads <file>system/core/Bootstrap</file>. The Bootstrap file begins the process of initializing Kohana.
 

@@ -407,7 +407,7 @@ class Kohana {
 		}
 	}
 
-	public static function callback ($callback, $params = FALSE)
+	public static function callback($callback, $params = FALSE)
 	{
 		if (is_string($callback))
 		{
