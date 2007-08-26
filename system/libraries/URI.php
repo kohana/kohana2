@@ -1,11 +1,11 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
 class URI_Core extends Router {
-	
+
 	public function segment($index = 1)
 	{
 		$index = (int) $index - 1;
-		
+
 		return isset(self::$segments[$index]) ? self::$segments[$index] : FALSE;
 	}
 
@@ -18,13 +18,13 @@ class URI_Core extends Router {
 		{
 			$segment_array[$i++] = $segment;
 		}
-		
+
 		return $segment_array;
 	}
-	
+
 	public function string()
 	{
 		return implode('/', self::$segments);
 	}
-	
+
 } // End URI Class

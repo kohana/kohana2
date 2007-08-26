@@ -56,7 +56,7 @@ try
 	 * @todo This needs to check for _remap and _default, as well as validating that method exists
 	 */
 	$controller = Kohana::instance();
-	
+
 	if (method_exists($controller, '_remap'))
 	{
 		// Change arguments to be $method, $arguments.
@@ -95,6 +95,9 @@ try
 
 	// Run system.post_controller
 	Event::run('system.post_controller');
+
+	// Make sure that $controller is not available globally
+	unset($controller);
 }
 catch (controller_not_found $exception)
 {
