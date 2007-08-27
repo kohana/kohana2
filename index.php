@@ -21,6 +21,7 @@ $system_path = 'system';
 define('APPPATH', realpath($application_path).'/');
 define('SYSPATH', realpath($system_path).'/');
 // More definitions
+define('KOHANA',  pathinfo(__FILE__, PATHINFO_BASENAME));
 define('DOCROOT', pathinfo(__FILE__, PATHINFO_DIRNAME).'/');
 define('EXT', '.'.pathinfo(__FILE__, PATHINFO_EXTENSION));
 
