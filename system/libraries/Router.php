@@ -19,7 +19,7 @@ class Router_Core {
 		self::$routes   = Config::item('routes');
 
 		// The follow block of if/else attempts to retrieve the URI segments automagically
-		// Supported methods: CLI, GET, PATH_INFO, ORIG_PATH_INFO, REQUEST_URI
+		// Supported methods: CLI, GET, PATH_INFO, ORIG_PATH_INFO, PHP_SELF
 		if (PHP_SAPI == 'cli')
 		{
 			global $argv;
@@ -45,6 +45,12 @@ class Router_Core {
 		elseif (count($_GET) === 1 AND current($_GET) == '')
 		{
 			self::$segments = current(array_keys($_GET));
+
+			// Fixes really stange handling of a suffix in a GET string
+			if ($suffix = Config::item('core.url_suffix') AND substr(self::$segments, -(strlen($suffix))) === '_'.substr($suffix, 1))
+			{
+				self::$segments = substr(self::$segments, 0, -(strlen($suffix)));
+			}
 		}
 		/*
 		elseif (isset($_SERVER['PATH_INFO']))
@@ -56,19 +62,26 @@ class Router_Core {
 			self::$segments = $_SERVER['ORIG_PATH_INFO'];
 		}
 		*/
-		elseif (isset($_SERVER['REQUEST_URI']) AND $_SERVER['REQUEST_URI'])
+		elseif (isset($_SERVER['PHP_SELF']) AND $_SERVER['PHP_SELF'])
 		{
 			/**
-			 * @todo this needs a lot more work, and tests need to be made on IIS5/6/7
+			 * @todo Needs to be tested on: 
+			 * - apache1
+			 * x apache2
+			 * x lighttpd (fcgi)
+			 * x cgi
+			 * - iis5
+			 * - iis6
+			 * - iis7
 			 */
-			self::$segments = urldecode($_SERVER['REQUEST_URI']);
+			self::$segments = urldecode($_SERVER['PHP_SELF']);
 
-			if (($offset = strpos(self::$segments, 'index'.EXT)) !== FALSE)
+			if (($offset = strpos(self::$segments, KOHANA)) !== FALSE)
 			{
 				// Add the length of the index file to the offset
-				$offset += strlen('index'.EXT);
+				$offset += strlen(KOHANA);
 
-				// Segments have been located
+				// Get the segment part of the URL
 				self::$segments = substr(self::$segments, $offset);
 				self::$segments = trim(self::$segments, '/');
 			}
@@ -81,8 +94,14 @@ class Router_Core {
 		// Use the default route when no segments exist
 		if (self::$segments == '' OR self::$segments == '/')
 		{
-			if ( ! isset(self::$routes['_default']))
-				trigger_error('Please set a default route in routes'.EXT, E_USER_ERROR);
+			/**
+			 * @todo i18n error
+			 */
+			isset(self::$routes['_default']) or trigger_error
+			(
+				'Please set a default route in routes'.EXT, 
+				E_USER_ERROR
+			);
 
 			self::$segments = self::$routes['_default'];
 		}
@@ -93,8 +112,11 @@ class Router_Core {
 			self::$segments = preg_replace('!'.preg_quote($suffix, '-').'$!u', '', self::$segments);
 		}
 
-		// Remove extra slashes from the segments that could cause fucked up routing.
+		// Remove extra slashes from the segments that could cause fucked up routing
 		self::$segments = preg_replace('!//+!u', '/', self::$segments);
+
+		// At this point, set the segments, rsegments, and current URI
+		// In many cases, all of these variables will match
 		self::$segments = self::$rsegments = self::$current_uri = trim(self::$segments, '/');
 
 		// Custom routing
@@ -227,8 +249,11 @@ class Router_Core {
 			}
 		}
 
-		if (self::$controller == FALSE)
-			trigger_error('Page not found', E_USER_ERROR);
+		(self::$controller == TRUE) or trigger_error
+		(
+			'Kohana was not able to determine a controller to process this request.',
+			E_USER_ERROR
+		);
 	}
 
 	public static function filter_uri($str)

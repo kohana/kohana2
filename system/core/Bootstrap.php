@@ -67,7 +67,11 @@ try
 	}
 	elseif (method_exists($controller, Router::$method))
 	{
-		Router::$method = Router::$method;
+		(Router::$method !== 'kohana_include_view') or trigger_error
+		(
+			'This method cannot be accessed directly.',
+			E_USER_ERROR
+		);
 	}
 	elseif (method_exists($controller, '_default'))
 	{

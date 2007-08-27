@@ -1,5 +1,37 @@
 <?php defined('SYSPATH') or die('No direct script access.');
+/**
+ * Kohana
+ *
+ * An open source application development framework for PHP 4.3.2 or newer
+ *
+ * NOTE: This file has been modified from the original CodeIgniter version for
+ * the Kohana framework by the Kohana Development Team.
+ *
+ * @package          Kohana
+ * @author           Kohana Development Team
+ * @copyright        Copyright (c) 2007, Kohana Framework Team
+ * @link             http://kohanaphp.com
+ * @license          http://kohanaphp.com/user_guide/license.html
+ * @since            Version 1.0
+ * @orig_package     CodeIgniter
+ * @orig_author      Rick Ellis
+ * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
+ * @orig_license     http://www.codeignitor.com/user_guide/license.html
+ * @filesource
+ */
 
+// ------------------------------------------------------------------------
+
+/**
+ * Active Record Class
+ *
+ * This is the platform-independent base Active Record implementation class.
+ *
+ * @package     Kohana
+ * @subpackage  Drivers
+ * @category    Database
+ * @author      Rick Ellis, Kohana Development Team
+ */
 class Database_Core {
 
 	// The PDO database connection
@@ -17,6 +49,7 @@ class Database_Core {
 
 	// Un-compiled parts of the SQL query
 	private $_select   = array();
+	private $_set      = array();
 	private $_from     = array();
 	private $_join     = array();
 	private $_where    = array();
@@ -63,16 +96,31 @@ class Database_Core {
 		// Set the PDO configuration
 		$config = array
 		(
-			PDO::ATTR_PERSISTENT => (bool) $this->config['persistent']
+			PDO::ATTR_PERSISTENT => (bool) $this->config['persistent'],
+			PDO::ATTR_ERRMODE    => ($this->config['show_errors'] == TRUE) ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT
 		);
 
 		// Initialize the PDO connection
 		$this->pdo = new PDO($type.':host='.$host.';dbname='.$database, $user, $pass, $config);
+		$this->pdo->query('fuck');
 	}
 
+	/**
+	 * Select
+	 *
+	 * Generates the SELECT portion of the query
+	 *
+	 * Several syntax types are supported for calling this method:
+	 * - list of strings:        ('foo', 'bar', 'baz')
+	 * - comma separated string: ('foo, bar, baz')
+	 * - array of strings:       (array('foo', 'bar', 'baz'))
+	 *
+	 * @access  public
+	 * @param   mixed
+	 * @return  object
+	 */
 	public function select($sql = '*')
 	{
-		// Syntax: select('foo', 'bar', 'baz')
 		if (func_num_args() > 1)
 		{
 			$sql = func_get_args();
@@ -80,6 +128,10 @@ class Database_Core {
 		elseif (is_string($sql))
 		{
 			$sql = explode(',', $sql);
+		}
+		else
+		{
+			$sql = (array) $sql;
 		}
 
 		foreach($sql as $val)
@@ -92,105 +144,6 @@ class Database_Core {
 		return $this;
 	}
 
-	public function distinct($sql = TRUE)
-	{
-		$this->_distict = (bool) $sql;
-
-		return $this;
-	}
-
-	public function from($sql)
-	{
-		foreach((array) $sql as $val)
-		{
-			if (($val = trim($val)) == '') continue;
-
-			$this->_from[] = $val;
-		}
-
-		return $this;
-	}
-
-
-} // End Database Class
-
-/**
- * Kohana
- *
- * An open source application development framework for PHP 4.3.2 or newer
- *
- * NOTE: This file has been modified from the original CodeIgniter version for
- * the Kohana framework by the Kohana Development Team.
- *
- * @package          Kohana
- * @author           Kohana Development Team
- * @copyright        Copyright (c) 2007, Kohana Framework Team
- * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/user_guide/license.html
- * @since            Version 1.0
- * @orig_package     CodeIgniter
- * @orig_author      Rick Ellis
- * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
- * @orig_license     http://www.codeignitor.com/user_guide/license.html
- * @filesource
- */
-
-// ------------------------------------------------------------------------
-
-/**
- * Active Record Class
- *
- * This is the platform-independent base Active Record implementation class.
- *
- * @package     Kohana
- * @subpackage  Drivers
- * @category    Database
- * @author      Rick Ellis, Kohana Development Team
- */
-class Core_DB_active_record extends stdClass {
-
-	var $ar_select   = array();
-	var $ar_distinct = FALSE;
-	var $ar_from     = array();
-	var $ar_join     = array();
-	var $ar_where    = array();
-	var $ar_like     = array();
-	var $ar_groupby  = array();
-	var $ar_having   = array();
-	var $ar_limit    = FALSE;
-	var $ar_offset   = FALSE;
-	var $ar_order    = FALSE;
-	var $ar_orderby  = array();
-	var $ar_set      = array();
-
-	/**
-	 * Select
-	 *
-	 * Generates the SELECT portion of the query
-	 *
-	 * @access	public
-	 * @param	string
-	 * @return	object
-	 */
-	function select($select = '*')
-	{
-		if (is_string($select))
-		{
-			$select = explode(',', $select);
-		}
-
-		foreach ($select as $val)
-		{
-			$val = trim($val);
-
-			if ($val != '')
-			{
-				$this->ar_select[] = $val;
-			}
-		}
-		return $this;
-	}
-
 	// --------------------------------------------------------------------
 
 	/**
@@ -198,13 +151,14 @@ class Core_DB_active_record extends stdClass {
 	 *
 	 * Sets a flag which tells the query string compiler to add DISTINCT
 	 *
-	 * @access	public
-	 * @param	bool
-	 * @return	object
+	 * @access  public
+	 * @param   boolean
+	 * @return  object
 	 */
-	function distinct($val = TRUE)
+	public function distinct($sql = TRUE)
 	{
-		$this->ar_distinct = (is_bool($val)) ? $val : TRUE;
+		$this->_distict = (bool) $sql;
+
 		return $this;
 	}
 
@@ -219,12 +173,15 @@ class Core_DB_active_record extends stdClass {
 	 * @param	mixed	can be a string or array
 	 * @return	object
 	 */
-	function from($from)
+	public function from($sql)
 	{
-		foreach ((array)$from as $val)
+		foreach((array) $sql as $val)
 		{
-			$this->ar_from[] = $this->dbprefix.$val;
+			if (($val = trim($val)) == '') continue;
+
+			$this->_from[] = $val;
 		}
+
 		return $this;
 	}
 
@@ -235,13 +192,13 @@ class Core_DB_active_record extends stdClass {
 	 *
 	 * Generates the JOIN portion of the query
 	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string	the join condition
-	 * @param	string	the type of join
-	 * @return	object
+	 * @access  public
+	 * @param   string
+	 * @param   string  the join condition
+	 * @param   string  the type of join
+	 * @return  object
 	 */
-	function join($table, $cond, $type = '')
+	public function join($table, $cond, $type = '')
 	{
 		if ($type != '')
 		{
@@ -258,16 +215,16 @@ class Core_DB_active_record extends stdClass {
 		}
 
 		// If a DB prefix is used we might need to add it to the column names
-		if ($this->dbprefix)
+		if ($this->config['table_prefix'])
 		{
 			// First we remove any existing prefixes in the condition to avoid duplicates
-			$cond = preg_replace('|('.$this->dbprefix.')([\w\.]+)([\W\s]+)|', "$2$3", $cond);
+			$cond = preg_replace('|('.$this->config['table_prefix'].')([\w\.]+)([\W\s]+)|', '$2$3', $cond);
 
 			// Next we add the prefixes to the condition
-			$cond = preg_replace('|([\w\.]+)([\W\s]+)(.+)|', $this->dbprefix . "$1$2" . $this->dbprefix . "$3", $cond);
+			$cond = preg_replace('|([\w\.]+)([\W\s]+)(.+)|', $this->config['table_prefix'].'$1$2'.$this->config['table_prefix'].'$3', $cond);
 		}
 
-		$this->ar_join[] = $type.'JOIN '.$this->dbprefix.$table.' ON '.$cond;
+		$this->_join[] = $type.'JOIN '.$this->config['table_prefix'].$table.' ON '.$cond;
 		return $this;
 	}
 
@@ -285,7 +242,7 @@ class Core_DB_active_record extends stdClass {
 	 * @param  bool
 	 * @return object
 	 */
-	function where($key, $value = NULL, $quote = TRUE)
+	public function where($key, $value = NULL, $quote = TRUE)
 	{
 		if (func_num_args() < 2 AND ! is_array($key))
 		{
@@ -309,7 +266,7 @@ class Core_DB_active_record extends stdClass {
 	 * @param  bool
 	 * @return object
 	 */
-	function orwhere($key, $value = NULL, $quote = TRUE)
+	public function orwhere($key, $value = NULL, $quote = TRUE)
 	{
 		if (func_num_args() < 2 AND ! is_array($key))
 		{
@@ -333,7 +290,7 @@ class Core_DB_active_record extends stdClass {
 	 * @param  bool
 	 * @return object
 	 */
-	function _where($key, $value = NULL, $type = 'AND ', $quote = TRUE)
+	public function _where($key, $value = NULL, $type = 'AND ', $quote = TRUE)
 	{
 		if ( ! is_array($key))
 		{
@@ -342,7 +299,7 @@ class Core_DB_active_record extends stdClass {
 
 		foreach ($key as $k => $v)
 		{
-			$prefix = (count($this->ar_where) == 0) ? '' : $type;
+			$prefix = (count($this->_where) == 0) ? '' : $type;
 
 			if ($quote === -1)
 			{
@@ -379,7 +336,7 @@ class Core_DB_active_record extends stdClass {
 				}
 			}
 
-			$this->ar_where[] = $prefix.$k.$v;
+			$this->_where[] = $prefix.$k.$v;
 		}
 		return $this;
 	}
@@ -397,7 +354,7 @@ class Core_DB_active_record extends stdClass {
 	 * @param	mixed
 	 * @return	object
 	 */
-	function like($field, $match = '')
+	public function like($field, $match = '')
 	{
 		return $this->_like($field, $match, 'AND ');
 	}
@@ -415,7 +372,7 @@ class Core_DB_active_record extends stdClass {
 	 * @param	mixed
 	 * @return	object
 	 */
-	function orlike($field, $match = '')
+	public function orlike($field, $match = '')
 	{
 		return $this->_like($field, $match, 'OR ');
 	}
@@ -433,7 +390,7 @@ class Core_DB_active_record extends stdClass {
 	 * @param	string
 	 * @return	object
 	 */
-	function _like($field, $match = '', $type = 'AND ')
+	public function _like($field, $match = '', $type = 'AND ')
 	{
 		if ( ! is_array($field))
 		{
@@ -442,11 +399,11 @@ class Core_DB_active_record extends stdClass {
 
 		foreach ($field as $k => $v)
 		{
-			$prefix = (count($this->ar_like) == 0) ? '' : $type;
+			$prefix = (count($this->_like) == 0) ? '' : $type;
 
 			$v = $this->escape_str($v);
 
-			$this->ar_like[] = $prefix." $k LIKE '%{$v}%'";
+			$this->_like[] = $prefix." $k LIKE '%{$v}%'";
 		}
 		return $this;
 	}
@@ -460,7 +417,7 @@ class Core_DB_active_record extends stdClass {
 	 * @param	string
 	 * @return	object
 	 */
-	function groupby($by)
+	public function groupby($by)
 	{
 		if ( ! is_array($by))
 		{
@@ -472,7 +429,7 @@ class Core_DB_active_record extends stdClass {
 			$val = trim($val);
 
 			if ($val != '')
-				$this->ar_groupby[] = $val;
+				$this->_groupby[] = $val;
 		}
 		return $this;
 	}
@@ -489,7 +446,7 @@ class Core_DB_active_record extends stdClass {
 	 * @param	string
 	 * @return	object
 	 */
-	function having($key, $value = '')
+	public function having($key, $value = '')
 	{
 		return $this->_having($key, $value, 'AND');
 	}
@@ -506,7 +463,7 @@ class Core_DB_active_record extends stdClass {
 	 * @param	string
 	 * @return	object
 	 */
-	function orhaving($key, $value = '')
+	public function orhaving($key, $value = '')
 	{
 		return $this->_having($key, $value, 'OR');
 	}
@@ -523,7 +480,7 @@ class Core_DB_active_record extends stdClass {
 	 * @param	string
 	 * @return	object
 	 */
-	function _having($key, $value = '', $type = 'AND')
+	public function _having($key, $value = '', $type = 'AND')
 	{
 		$type = trim($type).' ';
 
@@ -534,14 +491,14 @@ class Core_DB_active_record extends stdClass {
 
 		foreach ($key as $k => $v)
 		{
-			$prefix = (count($this->ar_having) < 1) ? '' : $type;
+			$prefix = (count($this->_having) < 1) ? '' : $type;
 
 			if ($v != '')
 			{
 				$v = ' '.$this->escape($v);
 			}
 
-			$this->ar_having[] = $prefix.$k.$v;
+			$this->_having[] = $prefix.$k.$v;
 		}
 		return $this;
 	}
@@ -556,7 +513,7 @@ class Core_DB_active_record extends stdClass {
 	 * @param	string	direction: asc or desc
 	 * @return	object
 	 */
-	function orderby($orderby, $direction = '')
+	public function orderby($orderby, $direction = '')
 	{
 		$direction = strtoupper(trim($direction));
 
@@ -565,7 +522,7 @@ class Core_DB_active_record extends stdClass {
 			$direction = (in_array($direction, array('ASC', 'DESC', 'RAND()'))) ? " $direction" : " ASC";
 		}
 
-		$this->ar_orderby[] = $orderby.$direction;
+		$this->_orderby[] = $orderby.$direction;
 		return $this;
 	}
 
@@ -579,13 +536,13 @@ class Core_DB_active_record extends stdClass {
 	 * @param	integer	the offset value
 	 * @return	object
 	 */
-	function limit($value, $offset = '')
+	public function limit($value, $offset = '')
 	{
-		$this->ar_limit = $value;
+		$this->_limit = $value;
 
 		if ($offset != '')
 		{
-			$this->ar_offset = $offset;
+			$this->_offset = $offset;
 		}
 
 		return $this;
@@ -600,9 +557,9 @@ class Core_DB_active_record extends stdClass {
 	 * @param	integer	the offset value
 	 * @return	object
 	 */
-	function offset($value)
+	public function offset($value)
 	{
-		$this->ar_offset = $value;
+		$this->_offset = $value;
 		return $this;
 	}
 
@@ -616,9 +573,9 @@ class Core_DB_active_record extends stdClass {
 	 * @param	string
 	 * @return	object
 	 */
-	function set($key, $value = '')
+	public function set($key, $value = '')
 	{
-		$key = $this->_object_to_array($key);
+		$key = $this->object_to_array($key);
 
 		if ( ! is_array($key))
 		{
@@ -627,7 +584,7 @@ class Core_DB_active_record extends stdClass {
 
 		foreach ($key as $k => $v)
 		{
-			$this->ar_set[$k] = $this->escape($v);
+			$this->_set[$k] = $this->escape($v);
 		}
 
 		return $this;
@@ -646,7 +603,7 @@ class Core_DB_active_record extends stdClass {
 	 * @param	string	the offset clause
 	 * @return	object
 	 */
-	function get($table = '', $limit = null, $offset = null)
+	public function get($table = '', $limit = null, $offset = null)
 	{
 		if ($table != '')
 		{
@@ -661,7 +618,7 @@ class Core_DB_active_record extends stdClass {
 		$sql = $this->_compile_select();
 
 		$result = $this->query($sql);
-		$this->_reset_select();
+		$this->reset_select();
 		return $result;
 	}
 
@@ -678,7 +635,7 @@ class Core_DB_active_record extends stdClass {
 	 * @param	string	the offset clause
 	 * @return	object
 	 */
-	function getwhere($table = '', $where = null, $limit = null, $offset = null)
+	public function getwhere($table = '', $where = null, $limit = null, $offset = null)
 	{
 		if ($table != '')
 		{
@@ -698,7 +655,7 @@ class Core_DB_active_record extends stdClass {
 		$sql = $this->_compile_select();
 
 		$result = $this->query($sql);
-		$this->_reset_select();
+		$this->reset_select();
 		return $result;
 	}
 
@@ -714,31 +671,31 @@ class Core_DB_active_record extends stdClass {
 	 * @param	array	an associative array of insert values
 	 * @return	object
 	 */
-	function insert($table = '', $set = NULL)
+	public function insert($table = '', $set = NULL)
 	{
 		if ( ! is_null($set))
 		{
 			$this->set($set);
 		}
 
-		if ($this->ar_set == FALSE)
+		if ($this->_set == FALSE)
 		{
 			return ($this->db_debug ? $this->display_error('db_must_use_set') : FALSE);
 		}
 
 		if ($table == '')
 		{
-			if ( ! isset($this->ar_from[0]))
+			if ( ! isset($this->_from[0]))
 			{
 				return ($this->db_debug ? $this->display_error('db_must_set_table') : FALSE);
 			}
 
-			$table = $this->ar_from[0];
+			$table = $this->_from[0];
 		}
 
-		$sql = $this->_insert($this->dbprefix.$table, array_keys($this->ar_set), array_values($this->ar_set));
+		$sql = $this->_insert($this->config['table_prefix'].$table, array_keys($this->_set), array_values($this->_set));
 
-		$this->_reset_write();
+		$this->reset_write();
 		return $this->query($sql);
 	}
 
@@ -755,26 +712,26 @@ class Core_DB_active_record extends stdClass {
 	 * @param	mixed	the where clause
 	 * @return	object
 	 */
-	function update($table = '', $set = NULL, $where = null)
+	public function update($table = '', $set = NULL, $where = null)
 	{
 		if ( ! is_null($set))
 		{
 			$this->set($set);
 		}
 
-		if ($this->ar_set == FALSE)
+		if ($this->_set == FALSE)
 		{
 			return ($this->db_debug ? $this->display_error('db_must_use_set') : FALSE);
 		}
 
 		if ($table == '')
 		{
-			if ( ! isset($this->ar_from[0]))
+			if ( ! isset($this->_from[0]))
 			{
 				return ($this->db_debug ? $this->display_error('db_must_set_table') : FALSE);
 			}
 
-			$table = $this->ar_from[0];
+			$table = $this->_from[0];
 		}
 
 		if ($where != null)
@@ -782,9 +739,9 @@ class Core_DB_active_record extends stdClass {
 			$this->where($where);
 		}
 
-		$sql = $this->_update($this->dbprefix.$table, $this->ar_set, $this->ar_where);
+		$sql = $this->_update($this->config['table_prefix'].$table, $this->_set, $this->_where);
 
-		$this->_reset_write();
+		$this->reset_write();
 		return $this->query($sql);
 	}
 
@@ -800,16 +757,16 @@ class Core_DB_active_record extends stdClass {
 	 * @param	mixed	the where clause
 	 * @return	object
 	 */
-	function delete($table = '', $where = '')
+	public function delete($table = '', $where = '')
 	{
 		if ($table == '')
 		{
-			if ( ! isset($this->ar_from[0]))
+			if ( ! isset($this->_from[0]))
 			{
 				return ($this->db_debug ? $this->display_error('db_must_set_table') : FALSE);
 			}
 
-			$table = $this->ar_from[0];
+			$table = $this->_from[0];
 		}
 
 		if ($where != '')
@@ -817,14 +774,14 @@ class Core_DB_active_record extends stdClass {
 			$this->where($where);
 		}
 
-		if (count($this->ar_where) < 1)
+		if (count($this->_where) < 1)
 		{
 			return (($this->db_debug) ? $this->display_error('db_del_must_use_where') : FALSE);
 		}
 
-		$sql = $this->_delete($this->dbprefix.$table, $this->ar_where);
+		$sql = $this->_delete($this->config['table_prefix'].$table, $this->_where);
 
-		$this->_reset_write();
+		$this->reset_write();
 		return $this->query($sql);
 	}
 
@@ -839,9 +796,9 @@ class Core_DB_active_record extends stdClass {
 	 * @param	string	name of table
 	 * @return	string
 	 */
-	function count_records($table = FALSE)
+	public function count_records($table = FALSE)
 	{
-		if (count($this->ar_from) < 1)
+		if (count($this->_from) < 1)
 		{
 			if ($table == FALSE)
 			{
@@ -865,41 +822,15 @@ class Core_DB_active_record extends stdClass {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Use Table - DEPRECATED
-	 *
-	 * @deprecated	use $this->db->from instead
-	 */
-	function use_table($table)
-	{
-		return $this->from($table);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**oh
-	 * ORDER BY - DEPRECATED
-	 *
-	 * @deprecated	use $this->db->orderby() instead
-	 */
-	function order_by($orderby, $direction = '')
-	{
-		return $this->orderby($orderby, $direction);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Tests whether the string has an SQL operator
 	 *
-	 * @access	private
-	 * @param	string
-	 * @return	bool
+	 * @access  private
+	 * @param   string
+	 * @return  bool
 	 */
-	function _has_operator($str)
+	public function _has_operator($str)
 	{
-		$str = trim($str);
-
-		return (bool) preg_match('/(\s|<|>|!|=|is |is not)/i', $str);
+		return (bool) preg_match('/(\s|<|>|!|=|is |is not)/i', trim($str));
 	}
 
 	// --------------------------------------------------------------------
@@ -910,70 +841,70 @@ class Core_DB_active_record extends stdClass {
 	 * Generates a query string based on which functions were used.
 	 * Should not be called directly.  The get() function calls it.
 	 *
-	 * @access	private
-	 * @return	string
+	 * @access  private
+	 * @return  string
 	 */
-	function _compile_select()
+	public function _compile_select()
 	{
-		$sql  = ( ! $this->ar_distinct) ? 'SELECT ' : 'SELECT DISTINCT ';
-		$sql .= (count($this->ar_select) == 0) ? '*' : implode(', ', $this->ar_select);
+		$sql  = ($this->_distinct == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
+		$sql .= (count($this->_select) > 0) ? implode(', ', $this->_select) : '*';
 
-		if (count($this->ar_from) > 0)
+		if (count($this->_from) > 0)
 		{
 			$sql .= "\nFROM ";
-			$sql .= implode(', ', $this->ar_from);
+			$sql .= implode(', ', $this->_from);
 		}
 
-		if (count($this->ar_join) > 0)
+		if (count($this->_join) > 0)
 		{
 			$sql .= "\n";
-			$sql .= implode("\n", $this->ar_join);
+			$sql .= implode("\n", $this->_join);
 		}
 
-		if (count($this->ar_where) > 0 OR count($this->ar_like) > 0)
+		if (count($this->_where) > 0 OR count($this->_like) > 0)
 		{
 			$sql .= "\nWHERE ";
 		}
 
-		$sql .= implode("\n", $this->ar_where);
+		$sql .= implode("\n", $this->_where);
 
-		if (count($this->ar_like) > 0)
+		if (count($this->_like) > 0)
 		{
-			if (count($this->ar_where) > 0)
+			if (count($this->_where) > 0)
 			{
 				$sql .= " AND ";
 			}
 
-			$sql .= implode("\n", $this->ar_like);
+			$sql .= implode("\n", $this->_like);
 		}
 
-		if (count($this->ar_groupby) > 0)
+		if (count($this->_groupby) > 0)
 		{
 			$sql .= "\nGROUP BY ";
-			$sql .= implode(', ', $this->ar_groupby);
+			$sql .= implode(', ', $this->_groupby);
 		}
 
-		if (count($this->ar_having) > 0)
+		if (count($this->_having) > 0)
 		{
 			$sql .= "\nHAVING ";
-			$sql .= implode("\n", $this->ar_having);
+			$sql .= implode("\n", $this->_having);
 		}
 
-		if (count($this->ar_orderby) > 0)
+		if (count($this->_orderby) > 0)
 		{
 			$sql .= "\nORDER BY ";
-			$sql .= implode(', ', $this->ar_orderby);
+			$sql .= implode(', ', $this->_orderby);
 
-			if ($this->ar_order !== FALSE)
+			if ($this->_order !== FALSE)
 			{
-				$sql .= ($this->ar_order == 'desc') ? ' DESC' : ' ASC';
+				$sql .= ($this->_order == 'desc') ? ' DESC' : ' ASC';
 			}
 		}
 
-		if (is_numeric($this->ar_limit))
+		if (is_numeric($this->_limit))
 		{
 			$sql .= "\n";
-			$sql = $this->_limit($sql, $this->ar_limit, $this->ar_offset);
+			$sql = $this->_limit($sql, $this->_limit, $this->_offset);
 		}
 
 		return $sql;
@@ -990,7 +921,7 @@ class Core_DB_active_record extends stdClass {
 	 * @param	object
 	 * @return	array
 	 */
-	function _object_to_array($object)
+	private function object_to_array($object)
 	{
 		if ( ! is_object($object))
 		{
@@ -1012,42 +943,39 @@ class Core_DB_active_record extends stdClass {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Resets the active record values.  Called by the get() function
+	 * Resets the SQL values, called by get()
 	 *
-	 * @access	private
-	 * @return	void
+	 * @access  private
+	 * @return  void
 	 */
-	function _reset_select()
+	private function reset_select()
 	{
-		$this->ar_select   = array();
-		$this->ar_distinct = FALSE;
-		$this->ar_from     = array();
-		$this->ar_join     = array();
-		$this->ar_where    = array();
-		$this->ar_like     = array();
-		$this->ar_groupby  = array();
-		$this->ar_having   = array();
-		$this->ar_limit    = FALSE;
-		$this->ar_offset   = FALSE;
-		$this->ar_order    = FALSE;
-		$this->ar_orderby  = array();
+		$this->_select   = array();
+		$this->_from     = array();
+		$this->_join     = array();
+		$this->_where    = array();
+		$this->_like     = array();
+		$this->_orderby  = array();
+		$this->_groupby  = array();
+		$this->_having   = array();
+		$this->_distinct = FALSE;
+		$this->_limit    = FALSE;
+		$this->_offset   = FALSE;
 	}
 
 	// --------------------------------------------------------------------
 
 	/**
-	 * Resets the active record "write" values.
+	 * Resets the SQL "write" values, called by insert() and update()
 	 *
-	 * Called by the insert() or update() functions
-	 *
-	 * @access	private
-	 * @return	void
+	 * @access  private
+	 * @return  void
 	 */
-	function _reset_write()
+	private function reset_write()
 	{
-		$this->ar_set   = array();
-		$this->ar_from  = array();
-		$this->ar_where = array();
+		$this->_set   = array();
+		$this->_from  = array();
+		$this->_where = array();
 	}
 
-}
+} // End Database Class

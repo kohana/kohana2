@@ -91,18 +91,18 @@ class Kohana {
 		defined('E_RECOVERABLE_ERROR')  or define('E_RECOVERABLE_ERROR',  4096);
 		defined('E_UNCAUGHT_EXCEPTION') or define('E_UNCAUGHT_EXCEPTION', 4097);
 
-		// Set error types
+		// Set error types, format: CONSTANT => array($log_level, $message)
 		self::$error_types = array
 		(
-			E_UNCAUGHT_EXCEPTION => 'Uncaught Exception',
-			E_RECOVERABLE_ERROR  => 'Recoverable Error',
-			E_ERROR              => 'Fatal Error',
-			E_USER_ERROR         => 'Fatal Error',
-			E_PARSE              => 'Syntax Error',
-			E_STRICT             => 'Strict Mode Error',
-			E_NOTICE             => 'Runtime Message',
-			E_WARNING            => 'Warning Message',
-			E_USER_WARNING       => 'Warning Warning'
+			E_UNCAUGHT_EXCEPTION => array( 1, 'Uncaught Exception'),
+			E_RECOVERABLE_ERROR  => array( 1, 'Recoverable Error'),
+			E_ERROR              => array( 1, 'Fatal Error'),
+			E_USER_ERROR         => array( 1, 'Fatal Error'),
+			E_PARSE              => array( 1, 'Syntax Error'),
+			E_WARNING            => array( 2, 'Warning Message'),
+			E_USER_WARNING       => array( 2, 'Warning Warning'),
+			E_STRICT             => array( 3, 'Strict Mode Error'),
+			E_NOTICE             => array( 3, 'Runtime Message')
 		);
 
 		// Set error handler
@@ -111,12 +111,19 @@ class Kohana {
 		// Set execption handler
 		set_exception_handler(array('Kohana', 'exception_handler'));
 
+		// Enable log writing if the log threshold is enabled
+		(Config::item('log.threshold') > 0) and Event::add('system.shutdown', array('Log', 'write'));
+
 		// Set shutdown handler to run the "system.shutdown" event
 		register_shutdown_function(array('Event', 'run'), 'system.shutdown');
 
 		if (function_exists('date_default_timezone_set'))
 		{
-			date_default_timezone_set(Config::item('core.timezone'));
+			// Set default timezone, due to increased validation of date settings
+			$timezone = Config::item('core.timezone');
+			$timezone = ($timezone == FALSE) ? @date_default_timezone_get() : $timezone;
+
+			date_default_timezone_set($timezone);
 		}
 
 		// Setup is complete
@@ -205,18 +212,38 @@ class Kohana {
 	 */
 	public static function error_handler($error, $message, $file, $line)
 	{
-		$error = isset(self::$error_types[$error]) ? self::$error_types[$error] : 'Unknown Error';
-		$file  = preg_replace('#^'.preg_quote(DOCROOT, '-').'#', '', $file);
-		$template = self::find_file('errors', 'php_error');
+		// Do not display E_STRICT notices, they are garbage
+		if ($error == E_STRICT) return FALSE;
 
-		// Flush the entire buffer here, to ensure the error is displayed
-		while(ob_get_level())
+		if (isset(self::$error_types[$error]))
 		{
-			ob_end_clean();
+			list($level, $error) = self::$error_types[$error];
+		}
+		else
+		{
+			$level = 1;
+			$error = 'Unknown Error';
 		}
 
+		// Remove the DOCROOT from the path, as a security precaution
+		$file = preg_replace('#^'.preg_quote(DOCROOT, '-').'#', '', $file);
+
+		// Log the error
+		if (Config::item('log.threshold') >= $level)
+		{
+			Log::add($error, $message.' in file: '.$file.' on line '.$line);
+		}
+
+		// Flush the entire buffer here, to ensure the error is displayed
+		while(ob_get_level()) ob_end_clean();
+
+		// Re-start the buffer
 		ob_start(array('Kohana', 'output'));
-		include $template;
+
+		// Load the error page
+		include self::find_file('views', 'kohana_php_error');
+
+		// Display the buffer and exit
 		ob_end_flush();
 		exit;
 	}
