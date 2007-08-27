@@ -1,10 +1,17 @@
 <?php
-
+/**
+* Kohana User Guide Menu
+* Topics in Categories (Eg, General, Libraries)
+* Articles in Sections (Eg, Installation)
+* Libraries and Helpers are in alphabetic order
+* Other Categories are in logical order
+*/
 $menus = array
 (
 	'Kohana' => array
 	(
 		'Requirements',
+		'Downloads',
 		'Installation',
 		'About',
 		'Links'
@@ -22,9 +29,24 @@ $menus = array
 	),
 	'Libraries' => array
 	(
-		'Session',
 		'Cache',
-		'Encryption'
+		'Controller',
+		'Database',
+		'Encryption',
+		'Input',
+		'Loader',
+		'Model',
+		'Pagination',
+		'Router',
+		'Session',
+		'URI',
+		'View'
+	),
+	'Helpers' => array
+	(
+		'File',
+		'Html',
+		'Url'
 	)
 );
 ?>

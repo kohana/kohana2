@@ -1,3 +1,4 @@
-<h1>Kohana User Guide</h1>
+# Kohana User Guide
 
-<p>Kohana is blah blah blah</p>
+Kohana is an open-source development framework for writing dynamic Web Applications using PHP.
+
