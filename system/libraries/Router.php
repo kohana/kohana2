@@ -15,7 +15,7 @@ class Router_Core {
 
 	public static function setup()
 	{
-		self::$routes   = Config::item('routes');
+		self::$routes = Config::item('routes');
 
 		// The follow block of if/else attempts to retrieve the URI segments automagically
 		// Supported methods: CLI, GET, PATH_INFO, ORIG_PATH_INFO, PHP_SELF
@@ -62,6 +62,17 @@ class Router_Core {
 		elseif (isset($_SERVER['PHP_SELF']) AND $_SERVER['PHP_SELF'])
 		{
 			self::$segments = $_SERVER['PHP_SELF'];
+		}
+
+		// Find the URI string based on the location of the front controller
+		if (($offset = strpos(self::$segments, KOHANA)) !== FALSE)
+		{
+			// Add the length of the index file to the offset
+			$offset += strlen(KOHANA);
+
+			// Get the segment part of the URL
+			self::$segments = substr(self::$segments, $offset);
+			self::$segments = trim(self::$segments, '/');
 		}
 
 		// Use the default route when no segments exist
