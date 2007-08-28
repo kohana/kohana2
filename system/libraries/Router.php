@@ -52,7 +52,6 @@ class Router_Core {
 				self::$segments = substr(self::$segments, 0, -(strlen($suffix)));
 			}
 		}
-		/*
 		elseif (isset($_SERVER['PATH_INFO']))
 		{
 			self::$segments = $_SERVER['PATH_INFO'];
@@ -61,7 +60,6 @@ class Router_Core {
 		{
 			self::$segments = $_SERVER['ORIG_PATH_INFO'];
 		}
-		*/
 		elseif (isset($_SERVER['PHP_SELF']) AND $_SERVER['PHP_SELF'])
 		{
 			/**
@@ -212,30 +210,18 @@ class Router_Core {
 				// individually and allows us to find sub-directories effeciently
 				if ($found = glob($include_paths.'{'.EXT.',}', GLOB_BRACE))
 				{
-					// Always take the first found path, only one should be returned at a time
+					// Always take the first found path
 					$found = current($found);
 
-					// If the found name is a file, then we have found the
-					// controller, the method and arguments can be set.
+					// The controller has been found, all arguments can be set
 					if (is_file($found))
 					{
+						self::$directory  = substr($found, 0, -(strlen($segment.EXT)));
 						self::$controller = $segment;
 						self::$method     = isset(self::$rsegments[$key+1]) ? self::$rsegments[$key+1] : 'index';
 						self::$arguments  = isset(self::$rsegments[$key+2]) ? array_slice(self::$rsegments, $key+2) : array();
-
-						// Make sure that the directory is set
-						if (self::$directory == '')
-						{
-							self::$directory = substr($found, 0, -(strlen($segment.EXT)));
-						}
-
 						// Stop searching
 						break;
-					}
-					else
-					{
-						// Add found path to the directory
-						self::$directory = $found.'/';
 					}
 				}
 			}
