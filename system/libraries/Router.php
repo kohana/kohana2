@@ -15,12 +15,11 @@ class Router_Core {
 
 	public static function setup()
 	{
-		self::$segments = '';
 		self::$routes   = Config::item('routes');
 
 		// The follow block of if/else attempts to retrieve the URI segments automagically
 		// Supported methods: CLI, GET, PATH_INFO, ORIG_PATH_INFO, PHP_SELF
-		if (PHP_SAPI == 'cli')
+		if (PHP_SAPI === 'cli')
 		{
 			global $argv;
 			// Command line requires a bit of hacking
@@ -52,41 +51,17 @@ class Router_Core {
 				self::$segments = substr(self::$segments, 0, -(strlen($suffix)));
 			}
 		}
-		elseif (isset($_SERVER['PATH_INFO']))
+		elseif (isset($_SERVER['PATH_INFO']) AND $_SERVER['PATH_INFO'])
 		{
 			self::$segments = $_SERVER['PATH_INFO'];
 		}
-		elseif (isset($_SERVER['ORIG_PATH_INFO']))
+		elseif (isset($_SERVER['ORIG_PATH_INFO']) AND $_SERVER['ORIG_PATH_INFO'])
 		{
 			self::$segments = $_SERVER['ORIG_PATH_INFO'];
 		}
 		elseif (isset($_SERVER['PHP_SELF']) AND $_SERVER['PHP_SELF'])
 		{
-			/**
-			 * @todo Needs to be tested on:
-			 * - apache1
-			 * x apache2
-			 * x lighttpd (fcgi)
-			 * x cgi
-			 * x iis5
-			 * x iis6
-			 * - iis7
-			 */
-			self::$segments = urldecode($_SERVER['PHP_SELF']);
-
-			if (($offset = strpos(self::$segments, KOHANA)) !== FALSE)
-			{
-				// Add the length of the index file to the offset
-				$offset += strlen(KOHANA);
-
-				// Get the segment part of the URL
-				self::$segments = substr(self::$segments, $offset);
-				self::$segments = trim(self::$segments, '/');
-			}
-			else
-			{
-				self::$segments = '';
-			}
+			self::$segments = $_SERVER['PHP_SELF'];
 		}
 
 		// Use the default route when no segments exist
