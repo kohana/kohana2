@@ -65,13 +65,13 @@ class Router_Core {
 		elseif (isset($_SERVER['PHP_SELF']) AND $_SERVER['PHP_SELF'])
 		{
 			/**
-			 * @todo Needs to be tested on: 
+			 * @todo Needs to be tested on:
 			 * - apache1
 			 * x apache2
 			 * x lighttpd (fcgi)
 			 * x cgi
-			 * - iis5
-			 * - iis6
+			 * x iis5
+			 * x iis6
 			 * - iis7
 			 */
 			self::$segments = urldecode($_SERVER['PHP_SELF']);
@@ -99,7 +99,7 @@ class Router_Core {
 			 */
 			isset(self::$routes['_default']) or trigger_error
 			(
-				'Please set a default route in routes'.EXT, 
+				'Please set a default route in routes'.EXT,
 				E_USER_ERROR
 			);
 
@@ -184,68 +184,61 @@ class Router_Core {
 		/**
 		 * Prepare for Controller search
 		 */
-		self::$directory = '';
-		self::$controller = FALSE;
+		self::$directory  = '';
+		self::$controller = '';
 
-		$include_paths = Config::item('core.include_paths');
-
-		/**
-		 * Search for the Controller and set Controller parameters
-		 */
-		foreach(self::$rsegments as $key => $segment)
+		// We check this path statically, because it's overwhelmingly the most
+		// common path for controllers to be located at
+		if (is_file(APPPATH.'controllers/'.self::$rsegments[0].EXT))
 		{
-			foreach($include_paths as $path)
+			self::$directory  = APPPATH.'controllers/';
+			self::$controller = self::$rsegments[0];
+		}
+		else
+		{
+			// Fetch the include paths
+			$include_paths = Config::item('core.include_paths');
+
+			// Construct a glob() string, so that we don't generate it every loop
+			$include_paths = '{'.implode(',', $include_paths).'}controllers';
+
+			// Use the rsegments to find the controller
+			foreach(self::$rsegments as $key => $segment)
 			{
-				$path .= 'controllers/';
+				// Add the current segment to the include paths
+				$include_paths .= '/'.$segment;
 
-				if (is_file($path.self::$directory.$segment.EXT))
+				// Search the include paths for the current segment
+				// Using glob() is much less expensive than searching the paths
+				// individually and allows us to find sub-directories effeciently
+				if ($found = glob($include_paths.'{'.EXT.',}', GLOB_BRACE))
 				{
-					self::$directory  = $path.self::$directory;
-					self::$controller = $segment;
-					break;
-				}
-				elseif (is_dir($path.$segment))
-				{
-					self::$directory .= $segment.'/';
+					// Always take the first found path, only one should be returned at a time
+					$found = current($found);
 
-					// If no controller can be determined, use default
-					if ( ! isset(self::$segments[$key+1]))
+					// If the found name is a file, then we have found the
+					// controller, the method and arguments can be set.
+					if (is_file($found))
 					{
-						self::$directory  = $path.self::$directory;
-						self::$controller = 'default';
+						self::$controller = $segment;
+						self::$method     = isset(self::$rsegments[$key+1]) ? self::$rsegments[$key+1] : 'index';
+						self::$arguments  = isset(self::$rsegments[$key+2]) ? array_slice(self::$rsegments, $key+2) : array();
+
+						// Make sure that the directory is set
+						if (self::$directory == '')
+						{
+							self::$directory = substr($found, 0, -(strlen($segment.EXT)));
+						}
+
+						// Stop searching
 						break;
 					}
+					else
+					{
+						// Add found path to the directory
+						self::$directory = $found.'/';
+					}
 				}
-			}
-
-			// A controller has been located, set method and arguments
-			if (self::$controller)
-			{
-				$method = $key+1; // First segment after the controller
-				$args   = $key+2; // All segments after the method
-
-				// Set method
-				if (isset(self::$rsegments[$method]))
-				{
-					self::$method = iconv('UTF-8', 'ASCII//TRANSLIT', self::$rsegments[$method]);
-				}
-				else
-				{
-					self::$method = 'index';
-				}
-
-				// Set arguments
-				if (isset(self::$rsegments[$args]))
-				{
-					self::$arguments = array_slice(self::$rsegments, $args);
-				}
-				else
-				{
-					self::$arguments = array();
-				}
-
-				// Routing is done
-				break;
 			}
 		}
 

@@ -43,23 +43,25 @@ final class Config {
 			// Invalid config file
 			(isset($config) AND is_array($config)) or die('Core configuration file is not valid.');
 
+			$include_paths = array();
+
 			// Normalize all paths to be absolute and have a trailing slash
 			foreach($config['include_paths'] as $path)
 			{
 				if (substr($path, 0, 1) !== '/')
 				{
-					$config['include_paths'][] = realpath(DOCROOT.$path).'/';
+					$include_paths[] = realpath(DOCROOT.$path).'/';
 				}
 				else
 				{
-					$config['include_paths'][] = rtrim($path, '/').'/';
+					$include_paths[] = rtrim($path, '/').'/';
 				}
 			}
 
 			$config['include_paths'] = array_merge
 			(
 				array(APPPATH), // APPPATH first
-				$config['include_paths'],
+				$include_paths,
 				array(SYSPATH)  // SYSPATH last
 			);
 
