@@ -44,7 +44,7 @@ class file {
 		fclose($input_file);
 
 		// Returns the number of pieces that were created
-		return ($piece-1);
+		return ($piece - 1);
 	}
 
 	public static function join($filename, $output = FALSE)
@@ -78,7 +78,7 @@ class file {
 		fclose($output_file);
 
 		// Return the number of pieces joined
-		return ($piece-1);
+		return ($piece - 1);
 	}
 
-} // End file Class
+} // End file class
