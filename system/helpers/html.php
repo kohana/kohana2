@@ -1,7 +1,41 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
 class html {
-
+	
+	/**
+	 * Convert special characters to HTML entities
+	 *
+	 * @access public
+	 * @param  string
+	 * @param  boolean
+	 * @return string
+	 */
+	public static function specialchars($str, $double_encode = TRUE)
+	{
+		// Do encode existing html entities (default)
+		if ($double_encode)
+			return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
+		
+		// Do not encode existing html entities
+		// From PHP 5.2.3 this functionality is built-in, otherwise use a regex
+		if (version_compare(PHP_VERSION, '5.2.3', '>='))
+			return htmlspecialchars($str, ENT_QUOTES, 'UTF-8', FALSE);
+		
+		$str = preg_replace('/&(?!(?:#\d+|[a-z]+);)/i', '&amp;', $str);
+		$str = str_replace(array('<', '>', '\'', '"'), array('&lt;', '&gt;', '&#039;', '&quot;'), $str);
+		
+		return $str;
+	}
+	
+	/**
+	 * HTML anchor generator
+	 *
+	 * @access public
+	 * @param  string
+	 * @param  string
+	 * @param  mixed
+	 * @return string
+	 */
 	public static function anchor($uri, $title = FALSE, $attributes = FALSE)
 	{
 		if (strpos($uri, '://') === FALSE)
