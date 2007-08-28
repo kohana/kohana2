@@ -1,3 +1,4 @@
+Article status [Draft] requires [Editing] 
 # Basic Requirements
 
 ## Mandatory requirements

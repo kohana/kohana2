@@ -1,3 +1,4 @@
+Article status [Draft] requires [Writing] Install for Experienced users
 # Install Kohana
 
 ## For New Users

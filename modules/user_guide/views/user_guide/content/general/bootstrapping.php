@@ -1,3 +1,4 @@
+Article status [Draft] requires [Proof Reading] 
 # System Bootstrapping
 
 Kohana uses a <definition>Front Controller</definition> as part of its design. This file is the <file>index</file> file that rests in the directory that Kohana is installed in.
@@ -17,6 +18,6 @@ Core classes (Config, Event, Kohana, Log, utf8) are loaded. Kohana setup is run:
  3. Error handling is changed to Kohana methods, rather than the PHP defaults
  4. <benchmark>base_classes_loading</benchmark> is stopped
  5. <event>system.shutdown</event> is registered
- 6. <event>system.ready</abbr> is executed
+ 6. <event>system.ready</event> is executed
 
 Routing is performed for the current request. A controller is chosen and located, the segments are prepared for executing the controller.

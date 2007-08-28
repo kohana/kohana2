@@ -1,3 +1,4 @@
+Article status [Draft] requires [Editing] Correct download locations
 # Download Kohana
 
 ## Current Stable Release version *(recommended)*

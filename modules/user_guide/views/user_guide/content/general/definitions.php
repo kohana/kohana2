@@ -1,3 +1,4 @@
+Article status [Draft] requires [Writing] Add definition terms
 # Definitions
 
 If you are looking for a term that you don't understand, this is the place.
