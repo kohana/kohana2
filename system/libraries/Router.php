@@ -132,8 +132,7 @@ class Router_Core {
 				// Loop through the routes and see if anything matches
 				foreach(self::$routes as $key => $val)
 				{
-					if ($key == '_default')
-						continue;
+					if ($key == '_default') continue;
 
 					// Replace helper strings
 					$key = str_replace
