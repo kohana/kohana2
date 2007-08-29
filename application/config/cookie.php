@@ -14,12 +14,3 @@ $config['prefix'] = '';
 $config['domain'] = '';
 $config['path']   = '/';
 $config['secure'] = FALSE;
-
-// DEFAULT SETTINGS -----------------------------------------------------------
-
-/*
-$config['prefix'] = '';
-$config['domain'] = '';
-$config['path']   = '/'
-$config['secure'] = FALSE;
-*/

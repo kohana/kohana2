@@ -102,7 +102,6 @@ class Database_Core {
 
 		// Initialize the PDO connection
 		$this->pdo = new PDO($type.':host='.$host.';dbname='.$database, $user, $pass, $config);
-		$this->pdo->query('fuck');
 	}
 
 	/**

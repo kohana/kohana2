@@ -143,14 +143,10 @@ class Kohana {
 	{
 		if (self::$instance == FALSE)
 		{
-			$controller = Router::$directory.Router::$controller.EXT;
+			//
+			require (Router::$directory.Router::$controller.EXT);
 
-			// Validate Controller
-			if ( ! file_exists($controller))
-				throw new controller_not_found(ucfirst(Router::$controller));
-
-			require $controller;
-
+			// Set controller class name
 			$controller = ucfirst(Router::$controller).'_Controller';
 
 			// Load the controller
@@ -297,7 +293,7 @@ class Kohana {
 				$file = substr($class, 0, -6);
 			break;
 			case 'Driver':
-				$type = 'libraries/drivers';
+				$type = 'libraries'.DIRECTORY_SEPARATOR.'drivers';
 				$file = $class;
 			break;
 			default:
@@ -309,27 +305,18 @@ class Kohana {
 			break;
 		}
 
-		try
-		{
-			require self::find_file($type, $file, TRUE);
+		require self::find_file($type, $file, TRUE);
 
-			if ($type == 'libraries')
+		if ($type == 'libraries')
+		{
+			if ($extension = self::find_file('libraries', Config::item('core.subclass_prefix').$class))
 			{
-				if ($extension = self::find_file('libraries', Config::item('core.subclass_prefix').$class))
-				{
-					require $extension;
-				}
-				else
-				{
-					eval('class '.$class.' extends '.$class.'_Core { }');
-				}
+				require $extension;
 			}
-
-		}
-		catch (file_not_found $exception)
-		{
-			print $exception->getMessage().' could not be found in any '.$type.' directory.';
-			exit;
+			else
+			{
+				eval('class '.$class.' extends '.$class.'_Core { }');
+			}
 		}
 	}
 
@@ -379,44 +366,49 @@ class Kohana {
 	{
 		static $found = array();
 
-		$search = $directory.'/'.$filename;
+		$search = $directory.DIRECTORY_SEPARATOR.$filename;
 
 		if (isset($found[$search]))
 			return $found[$search];
 
-		$paths = Config::item('core.include_paths');
+		$paths = Config::include_paths();
 
 		if ($directory == 'config' OR $directory == 'i18n')
 		{
 			// Search from SYSPATH up
 			$paths = array_reverse($paths);
+
 			// Create a braced list for glob
 			$paths = '{'.implode(',', $paths).'}';
+
 			// Find all matching files, without sorting
-			$files = glob($paths.$search.EXT, GLOB_BRACE + GLOB_NOSORT);
-
-			if ( ! empty($files))
+			if (($files = glob($paths.$search.EXT, GLOB_BRACE + GLOB_NOSORT)) != FALSE)
 			{
-				$found[$search] = $files;
-
-				return $files;
+				return $found[$search] = $files;
 			}
 		}
 		else
 		{
+			// Find the file and return it's filename
 			foreach ($paths as $path)
 			{
-				// File found? Return it!
-				if (file_exists($path.$search.EXT) AND is_file($path.$search.EXT))
+				if (is_file($path.$search.EXT))
 				{
-					$found[$search] = $path.$search.EXT;
-
-					return $path.$search.EXT;
+					return $found[$search] = $path.$search.EXT;
 				}
 			}
 		}
 
-		if ($required == TRUE) throw new file_not_found($filename);
+		// If the function gets this far in execution, it means that no file
+		// was located. If the file was flagged as required, return an error.
+		($required === TRUE) and trigger_error
+		(
+			'Unable to locate the requested file, <tt>'.$filename.EXT.'</tt>',
+			E_USER_ERROR
+		);
+
+		// File is not required, return FALSE
+		return FALSE;
 	}
 
 	/**
@@ -465,13 +457,3 @@ class Kohana {
 	}
 
 } // End Kohana class
-
-/**
- * Exceptions
- */
-class file_not_found       extends Exception {}
-class library_not_found    extends file_not_found {}
-class controller_not_found extends file_not_found {}
-class model_not_found      extends file_not_found {}
-class helper_not_found     extends file_not_found {}
-class invalid_file_format  extends Exception {}

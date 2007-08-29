@@ -1,43 +1,53 @@
 <?php
+/*
+| -----------------------------------------------------------------------------
+| Kohana - The Swift PHP5 Framework
+| -----------------------------------------------------------------------------
+| This file acts as the "front controller" to your application. If you do not
+| understand the configuration parameters below, please consult the Kohana
+| User Guide for more information.
+| -----------------------------------------------------------------------------
+| User Guide: http://kohanaphp.com/user_guide/kohana/installation.html
+| -----------------------------------------------------------------------------
+*/
 
-/**
- * Turn on full error reporting
- */
-error_reporting(E_ALL); ini_set('display_errors', TRUE);
+// Set the error reporting level
+@error_reporting(E_ALL);
 
-/**
- * Application Path
- */
-$application_path = 'application';
+// Enable or disable error reporting
+@ini_set('display_errors', TRUE);
 
-/**
- * System Path
- */
-$system_path = 'system';
+// Kohana application directory
+$kohana_application = 'application';
 
-/**** END CONFIGURATION ** DO NOT EDIT BELOW ****/
+// Kohana system directory
+$kohana_system = 'system';
 
-// Define absolute paths
-define('APPPATH', realpath($application_path).'/');
-define('SYSPATH', realpath($system_path).'/');
-// More definitions
+/*
+| -----------------------------------------------------------------------------
+| PLEASE DO NOT EDIT BELOW THIS LINE, unless you understand the repercussions!
+| -----------------------------------------------------------------------------
+| User Guide: http://kohanaphp.com/user_guide/general/bootstrapping.html
+| -----------------------------------------------------------------------------
+*/
+// Absolute path names for include purposes
+define('APPPATH', realpath($kohana_application).DIRECTORY_SEPARATOR); unset($kohana_application);
+define('SYSPATH', realpath($kohana_system).DIRECTORY_SEPARATOR); unset($kohana_system);
+// Information about the front controller
 define('KOHANA',  pathinfo(__FILE__, PATHINFO_BASENAME));
-define('DOCROOT', pathinfo(__FILE__, PATHINFO_DIRNAME).'/');
+define('DOCROOT', pathinfo(__FILE__, PATHINFO_DIRNAME).DIRECTORY_SEPARATOR);
 define('EXT', '.'.pathinfo(__FILE__, PATHINFO_EXTENSION));
-
-// Check APPPATH
-(is_dir(APPPATH) AND is_dir(APPPATH.'/config')) or die
+// Validate APPPATH
+(is_dir(APPPATH) AND is_dir(APPPATH.DIRECTORY_SEPARATOR.'config')) or die
 (
 	'Your <code>$application_path</code> does not exist. '.
 	'Set a valid <code>$application_path</code> in <kbd>index.php</kbd> and refresh the page.'
 );
-
-// Check SYSPATH
-(is_dir(SYSPATH) AND file_exists(SYSPATH.'/core/Bootstrap'.EXT)) or die
+// Validate SYSPATH
+(is_dir(SYSPATH) AND file_exists(SYSPATH.DIRECTORY_SEPARATOR.'core'.DIRECTORY_SEPARATOR.'Bootstrap'.EXT)) or die
 (
-	'Your <code>$system_path</code> does not exist. '.
-	'Set a valid <code>$system_path</code> in <kbd>index.php</kbd> and refresh the page.'
+	'Your <code>$kohana_system</code> does not exist. '.
+	'Set a valid <code>$kohana_system</code> in <kbd>index.php</kbd> and refresh the page.'
 );
-
 // Buckle those bootstraps!
-require_once SYSPATH.'core/Bootstrap'.EXT;
+require_once SYSPATH.'core'.DIRECTORY_SEPARATOR.'Bootstrap'.EXT;

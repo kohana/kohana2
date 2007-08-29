@@ -178,11 +178,12 @@ class Router_Core {
 		{
 			self::$directory  = APPPATH.'controllers/';
 			self::$controller = self::$rsegments[0];
+			self::$method     = isset(self::$rsegments[1]) ? self::$rsegments[1] : 'index';
 		}
 		else
 		{
 			// Fetch the include paths
-			$include_paths = Config::item('core.include_paths');
+			$include_paths = Config::include_paths();
 
 			// Construct a glob() string, so that we don't generate it every loop
 			$include_paths = '{'.implode(',', $include_paths).'}controllers';

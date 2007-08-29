@@ -13,12 +13,12 @@ Benchmark::start(SYSTEM_BENCHMARK.'_total_execution_time');
 Benchmark::start(SYSTEM_BENCHMARK.'_base_classes_loading');
 
 // Load core classes
-require SYSPATH.'core/Config'.EXT;
-require SYSPATH.'core/Event'.EXT;
-require SYSPATH.'core/Kohana'.EXT;
-require SYSPATH.'core/Log'.EXT;
+require SYSPATH.'core'.DIRECTORY_SEPARATOR.'Config'.EXT;
+require SYSPATH.'core'.DIRECTORY_SEPARATOR.'Event'.EXT;
+require SYSPATH.'core'.DIRECTORY_SEPARATOR.'Kohana'.EXT;
+require SYSPATH.'core'.DIRECTORY_SEPARATOR.'Log'.EXT;
 // Load UTF-8 compatible string functions
-require SYSPATH.'core/utf8'.EXT;
+require SYSPATH.'core'.DIRECTORY_SEPARATOR.'utf8'.EXT;
 
 // Run Kohana's setup routine
 // This registers the Kohana handlers and prepares the output buffer
@@ -110,5 +110,3 @@ catch (controller_not_found $exception)
 
 // Stop the controller execution benchmark
 Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
-
-// End --- Have a nice day!

@@ -26,6 +26,8 @@ final class Config {
 
 	public static $conf; // Configuration array
 
+	private static $include_paths;
+
 	/**
 	 * Return a config item
 	 *
@@ -38,33 +40,29 @@ final class Config {
 		// Configuration autoloading
 		if (self::$conf === NULL)
 		{
-			require APPPATH.'config/config'.EXT;
+			require APPPATH.'config'.DIRECTORY_SEPARATOR.'config'.EXT;
 
 			// Invalid config file
-			(isset($config) AND is_array($config)) or die('Core configuration file is not valid.');
+			(isset($config) AND is_array($config)) or die
+			(
+				'Core configuration file is not valid.'
+			);
 
-			$include_paths = array();
+			// Start setting include paths, APPPATH first
+			self::$include_paths = array(APPPATH);
 
 			// Normalize all paths to be absolute and have a trailing slash
 			foreach($config['include_paths'] as $path)
 			{
-				if (substr($path, 0, 1) !== '/')
-				{
-					$include_paths[] = realpath(DOCROOT.$path).'/';
-				}
-				else
-				{
-					$include_paths[] = rtrim($path, '/').'/';
-				}
+				if (($path = realpath($path)) == '') continue;
+
+				self::$include_paths[] = realpath($path).DIRECTORY_SEPARATOR;
 			}
 
-			$config['include_paths'] = array_merge
-			(
-				array(APPPATH), // APPPATH first
-				$include_paths,
-				array(SYSPATH)  // SYSPATH last
-			);
+			// Finish setting include paths by adding SYSPATH
+			self::$include_paths[] = SYSPATH;
 
+			// Load config into self
 			self::$conf['core'] = $config;
 		}
 
@@ -82,17 +80,35 @@ final class Config {
 
 		$value = FALSE;
 
+		// Fetch config groups
 		if ($key === FALSE)
 		{
 			$value = self::$conf[$type];
 		}
+		// Fetch config items
 		elseif (isset(self::$conf[$type][$key]))
 		{
 			$value = self::$conf[$type][$key];
-			$value = ($slash == TRUE AND $value != '') ? rtrim($value, '/').'/' : $value;
+
+			// Add ending slashes
+			if ($slash == TRUE AND $value != '')
+			{
+				$value = rtrim($value, '/').'/';
+			}
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Return the include paths
+	 *
+	 * @access  public
+	 * @return  array
+	 */
+	public static function include_paths()
+	{
+		return self::$include_paths;
 	}
 
 	/**
@@ -107,25 +123,15 @@ final class Config {
 		$required = (bool) $required;
 		$configuration = array();
 
-		try
+		foreach(Kohana::find_file('config', $name, $required) as $filename)
 		{
-			foreach(Kohana::find_file('config', $name, $required) as $filename)
-			{
-				include $filename;
+			include $filename;
 
-				// Merge in configuration
-				if (isset($config) AND is_array($config))
-				{
-					$configuration = array_merge($configuration, $config);
-				}
+			// Merge in configuration
+			if (isset($config) AND is_array($config))
+			{
+				$configuration = array_merge($configuration, $config);
 			}
-		}
-		catch (file_not_found $exception)
-		{
-			/**
-			 * @todo this needs to be handled better
-			 */
-			exit('Your <kbd>config/'.$name.EXT.'</kbd> file could not be loaded.');
 		}
 
 		return $configuration;
