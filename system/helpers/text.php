@@ -96,11 +96,10 @@ class text {
 	 */
 	public static function random($type = 'alnum', $length = 8)
 	{
-		if ($type == 'unique')
-			return md5(uniqid(mt_rand()));
-
 		switch ($type)
 		{
+			case 'unique':
+				return md5(uniqid(mt_rand()));
 			case '':
 			case 'alnum':
 				$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -128,6 +127,47 @@ class text {
 		}
 
 		return $str;
+	}
+	
+	/**
+	 * Word censor
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	mixed
+	 * @param	string
+	 * @param	boolean
+	 * @return	string
+	 */
+	public static function censor($str, $badwords, $replacement = '#', $replace_partial_words = FALSE)
+	{
+		if ( ! is_array($badwords))
+		{
+			$badwords = (array) $badwords;
+		}
+
+		foreach ($badwords as $key => $badword)
+		{
+			$badwords[$key] = str_replace('\*', '\S*?', preg_quote((string) $badword));
+		}
+
+		$regex = '('.implode('|', $badwords).')';
+
+		if ( ! $replace_partial_words)
+		{
+			// Just using \b isn't sufficient when we need to replace a badword that already contains word boundaries itself
+			$regex = '(?<=\b|\s|^)'.$regex.'(?=\b|\s|$)';
+		}
+
+		$regex = '!'.$regex.'!ui';
+
+		if (utf8::strlen($replacement) == 1)
+		{
+			$regex .= 'e';
+			return preg_replace($regex, 'str_repeat($replacement, utf8::strlen(\'$1\'))', $str);
+		}
+
+		return preg_replace($regex, $replacement, $str);
 	}
 
 } // End text class
