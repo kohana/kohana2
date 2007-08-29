@@ -6,7 +6,7 @@
  */
 ?>
 
-<p>
+<p class="pagination">
 	
 	<?php if ($first_page) { ?>
 		<a href="<?php echo $this->pagination->url(1) ?>">&lsaquo;&nbsp;First</a>

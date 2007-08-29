@@ -6,7 +6,7 @@
  */
 ?>
 
-<p>
+<p class="pagination">
 	
 	Pages:
 
