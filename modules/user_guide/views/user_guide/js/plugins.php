@@ -129,8 +129,8 @@ jQuery.extend({
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * $LastChangedDate: 2007-08-17 13:14:11 -0500 (Fri, 17 Aug 2007) $
- * $Rev: 2759 $
+ * $LastChangedDate$
+ * $Rev$
  *
  * Version: 1.1.2
  *
