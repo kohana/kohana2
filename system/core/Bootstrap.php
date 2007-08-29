@@ -1,5 +1,9 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
-
+/**
+ * $Id$
+ *
+ * @filesource
+ */
 // Kohana version
 define('KOHANA_VERSION', '2.0');
 // Kohana benchmarks are prefixed by a random string to prevent collisions
