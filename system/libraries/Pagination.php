@@ -2,7 +2,7 @@
 
 class Pagination_Core {
 	
-	public $base_url;
+	public $base_url           = '';
 	public $style              = 'classic';
 	public $uri_segment        = 3;
 	public $uri_label;
@@ -39,20 +39,21 @@ class Pagination_Core {
 			}
 		}
 		
+		// Explode the base_url into segments
+		$this->base_url = explode('/', trim($this->base_url, '/'));
+
 		// If a uri_label is given, look for the corresponding uri_segment
 		if (isset($this->uri_label))
 		{
-			$uri_label_segment = array_search($this->uri_label, Kohana::instance()->uri->segment_array());
+			$uri_label_segment = array_search($this->uri_label, $this->base_url);
 			
 			if ($uri_label_segment !== FALSE)
 			{
-				$this->uri_segment = $uri_label_segment + 1;
+				$this->uri_segment = $uri_label_segment + 2;
 			}
 		}
 		
 		// Create a generic base_url with {page} placeholder
-		$this->base_url = (isset($this->base_url)) ? $this->base_url : Kohana::instance()->uri->string();
-		$this->base_url = explode('/', $this->base_url);
 		$this->base_url[$this->uri_segment - 1] = '{page}';
 		$this->base_url = implode('/', $this->base_url);
 		$this->base_url = url::site($this->base_url);
@@ -88,7 +89,7 @@ class Pagination_Core {
 	{
 		$style = (isset($style)) ? $style : $this->style;
 		
-		return (string) new View('views/pagination/'.$style, get_object_vars($this));
+		return (string) new View('pagination/'.$style, get_object_vars($this));
 	}
 	
 	public function __toString()
@@ -97,7 +98,7 @@ class Pagination_Core {
 	}
 
 	/**
-	 * Returns a URL with the specified page number
+	 * Returns the base_url with the specified page number
 	 *
 	 * @access  public
 	 * @param   integer
@@ -105,7 +106,7 @@ class Pagination_Core {
 	 */
 	public function url($page = NULL)
 	{
-		$page = (int) (isset($page)) ? $this->current_page : $page;
+		$page = (int) (isset($page)) ? $page : $this->current_page;
 		
 		return str_replace('{page}', $page, $this->base_url);
 	}
