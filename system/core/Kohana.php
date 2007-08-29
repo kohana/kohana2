@@ -222,7 +222,7 @@ class Kohana {
 		}
 
 		// Remove the DOCROOT from the path, as a security precaution
-		$file = preg_replace('#^'.preg_quote(DOCROOT, '-').'#', '', $file);
+		$file = preg_replace('#^'.preg_quote(DOCROOT).'#', '', $file);
 
 		// Log the error
 		if (Config::item('log.threshold') >= $level)

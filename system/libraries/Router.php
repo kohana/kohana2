@@ -93,7 +93,7 @@ class Router_Core {
 		// Remove the URL suffix
 		if ($suffix = Config::item('core.url_suffix'))
 		{
-			self::$segments = preg_replace('!'.preg_quote($suffix, '-').'$!u', '', self::$segments);
+			self::$segments = preg_replace('!'.preg_quote($suffix).'$!u', '', self::$segments);
 		}
 
 		// Remove extra slashes from the segments that could cause fucked up routing
