@@ -15,13 +15,9 @@
 <body>
 <div id="container">
 
-<!-- @start Header -->
-<div id="header">
 <div id="menu">
 <?= $menu ?>
 </div>
-</div>
-<!-- @end Header -->
 
 <!-- @start Body -->
 <div id="body">

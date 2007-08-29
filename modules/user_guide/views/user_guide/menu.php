@@ -55,10 +55,10 @@ $menus = array
 
 foreach($menus as $category => $menu):
 
-	$class = (strtolower($category) == $active_category) ? ' class="active"' : '';
+	$active = (strtolower($category) == $active_category) ? ' active' : '';
 
 ?>
-<li<?= $class ?>><?= $category ?><ul>
+<li class="first<?= $active ?>"><span><?= $category ?></span><ul>
 <?php
 
 	foreach($menu as $section):

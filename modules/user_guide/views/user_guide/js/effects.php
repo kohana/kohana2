@@ -1,6 +1,8 @@
 $(document).ready(function(){
-	$('#menu ul:first > li').addClass('first');
-	$('#menu li ul li')
+	$(window).scroll(function(){
+		$('#menu').css('top', $(window).scrollTop());
+	});
+	$('#menu li.first li')
 	.hide()   // Hide these li's
 	.parent() // Parent ul
 	.parent() // Parent li

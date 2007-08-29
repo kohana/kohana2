@@ -21,15 +21,16 @@ dd { padding-bottom: 0.5em; margin: 0 0 0.5em 12em; border-bottom: dotted 1px #a
 /*
 Template Styles
 */
-#container { width: 70%; min-width: 30em; max-width: 60em; margin: 0 auto; background: #eee; }
-#menu { float: right; width: 10em; margin-right: -10.2em; padding: 0.2em 0; }
-#menu ul { margin: 0 0.2em; list-style: none; color: #b43f11; cursor: pointer; }
+#container { position: relative; width: 70%; min-width: 30em; max-width: 60em; margin: 0 auto; }
+#menu { position: absolute; right: -10.1em; width: 10em; padding: 0.2em 0; }
+#menu ul { margin: 0 0.2em; list-style: none; color: #b43f11; }
 #menu li ul { padding: 0.1em 0; margin-right: 0; font-size: 0.8em; color: #444; }
 #menu li ul a { color: #666; }
 #menu ul a:hover { text-decoration: underline; color: #45721d; }
 #menu li em { color: #b43f11; font-style: normal; }
 #menu li.first { font-size: 1.2em; }
-#body { padding: 0 0.5em; }
+#menu li span { cursor: pointer; }
+#body { padding: 0 0.5em; background: #eee; }
 #body ol, #body ul { margin: 1em; margin-left: 2.5em; }
 #body ol { list-style: decimal; }
 #body ul { list-style: circle; }
