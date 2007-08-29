@@ -94,7 +94,7 @@ class text {
 	 * @param	integer
 	 * @return	string
 	 */
-	random($type = 'alnum', $length = 8)
+	public static function random($type = 'alnum', $length = 8)
 	{
 		if ($type == 'unique')
 			return md5(uniqid(mt_rand()));
