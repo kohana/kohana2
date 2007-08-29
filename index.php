@@ -9,9 +9,7 @@
 | -----------------------------------------------------------------------------
 | User Guide: http://kohanaphp.com/user_guide/kohana/installation.html
 | -----------------------------------------------------------------------------
-| $Author$
-| $Revision$
-| $Date$
+| $Id$
 */
 
 // Set the error reporting level
