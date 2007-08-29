@@ -4,6 +4,8 @@
  *
  * A secure and lightweight open source web application framework for PHP5
  *
+ * $Id$
+ *
  * @package          Kohana
  * @author           Kohana Development Team
  * @copyright        Copyright (c) 2007, Kohana Framework Team
