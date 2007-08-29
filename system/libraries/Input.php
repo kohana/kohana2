@@ -1,4 +1,4 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Kohana
  *
@@ -27,17 +27,18 @@
  *
  * Pre-processes global input data for security
  *
- * @package		Kohana
- * @subpackage	Libraries
- * @category	Input
- * @author		Rick Ellis
- * @link		http://kohanaphp.com/user_guide/libraries/input.html
+ * @package     Kohana
+ * @subpackage  Libraries
+ * @category    Input
+ * @author      Rick Ellis
+ * @link        http://kohanaphp.com/user_guide/libraries/input.html
  */
-class CI_Input {
-	var $use_xss_clean		= FALSE;
-	var $ip_address			= FALSE;
-	var $user_agent			= FALSE;
-	var $allow_get_array	= FALSE;
+class Input_Core {
+
+	public $use_xss_clean   = FALSE;
+	public $ip_address      = FALSE;
+	public $user_agent      = FALSE;
+	public $allow_get_array = FALSE;
 
 	/**
 	 * Constructor
@@ -47,15 +48,14 @@ class CI_Input {
 	 *
 	 * @access	public
 	 */
-	function CI_Input()
+	public function __construct()
 	{
-		log_message('debug', "Input Class Initialized");
-
-		$CFG =& load_class('Config');
-		$this->use_xss_clean    = ($CFG->item('global_xss_filtering') === TRUE) ? TRUE : FALSE;
-		$this->allow_get_array  = ($CFG->item('enable_query_strings') === TRUE
-		                        OR $CFG->item('enable_get_requests')  === TRUE) ? TRUE : FALSE;
+		$this->use_xss_clean    = (Config::item('core.global_xss_filtering') === TRUE) ? TRUE : FALSE;
+		$this->allow_get_array  = (Config::item('core.enable_query_strings') === TRUE
+		                        OR Config::item('core.enable_get_requests')  === TRUE) ? TRUE : FALSE;
 		$this->_sanitize_globals();
+
+		Log::add('debug', 'Input Class Initialized');
 	}
 
 	// --------------------------------------------------------------------
@@ -74,7 +74,7 @@ class CI_Input {
 	 * @access	private
 	 * @return	void
 	 */
-	function _sanitize_globals()
+	private function _sanitize_globals()
 	{
 		// Unset globals. This is effectively the same as register_globals = off
 		foreach (array($_GET, $_POST, $_COOKIE) as $global)
@@ -128,7 +128,7 @@ class CI_Input {
 			}
 		}
 
-		log_message('debug', "Global POST and COOKIE data sanitized");
+		Log::add('debug', 'Global POST and COOKIE data sanitized');
 	}
 
 	// --------------------------------------------------------------------
@@ -143,7 +143,7 @@ class CI_Input {
 	 * @param	string
 	 * @return	string
 	 */
-	function _clean_input_data($str)
+	private function _clean_input_data($str)
 	{
 		if (is_array($str))
 		{
@@ -182,7 +182,7 @@ class CI_Input {
 	 * @param	string
 	 * @return	string
 	 */
-	function _clean_input_keys($str)
+	private function _clean_input_keys($str)
 	{
 		if ( ! preg_match('#^[a-z0-9:_/-]+$#i', $str))
 		{
@@ -203,7 +203,7 @@ class CI_Input {
 	 * @param	bool
 	 * @return	string
 	 */
-	function _get_global($global, $index = FALSE, $xss_clean = FALSE)
+	private function _get_global($global, $index = FALSE, $xss_clean = FALSE)
 	{
 		$global = '_'.strtoupper(trim($global, '_'));
 
@@ -247,7 +247,7 @@ class CI_Input {
 	 * @param	bool
 	 * @return	string
 	 */
-	function get($index = FALSE, $xss_clean = FALSE)
+	public function get($index = FALSE, $xss_clean = FALSE)
 	{
 		return $this->_get_global('GET', $index, $xss_clean);
 	}
@@ -262,7 +262,7 @@ class CI_Input {
 	 * @param	bool
 	 * @return	string
 	 */
-	function post($index = FALSE, $xss_clean = FALSE)
+	public function post($index = FALSE, $xss_clean = FALSE)
 	{
 		return $this->_get_global('POST', $index, $xss_clean);
 	}
@@ -277,7 +277,7 @@ class CI_Input {
 	 * @param	bool
 	 * @return	string
 	 */
-	function cookie($index = FALSE, $xss_clean = FALSE)
+	public function cookie($index = FALSE, $xss_clean = FALSE)
 	{
 		return $this->_get_global('COOKIE', $index, $xss_clean);
 	}
@@ -292,7 +292,7 @@ class CI_Input {
 	 * @param	bool
 	 * @return	string
 	 */
-	function server($index = FALSE, $xss_clean = FALSE)
+	public function server($index = FALSE, $xss_clean = FALSE)
 	{
 		return $this->_get_global('SERVER', $index, $xss_clean);
 	}
@@ -305,7 +305,7 @@ class CI_Input {
 	 * @access	public
 	 * @return	string
 	 */
-	function ip_address()
+	public function ip_address()
 	{
 		if ($this->ip_address !== FALSE)
 		{
@@ -360,7 +360,7 @@ class CI_Input {
 	 * @param	string
 	 * @return	string
 	 */
-	function valid_ip($ip)
+	public function valid_ip($ip)
 	{
 		if ( ! preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/D', $ip))
 		{
@@ -400,7 +400,7 @@ class CI_Input {
 	 * @access	public
 	 * @return	string
 	 */
-	function user_agent()
+	public function user_agent()
 	{
 		if ($this->user_agent !== FALSE)
 		{
@@ -440,12 +440,12 @@ class CI_Input {
 	 * @param	string
 	 * @return	string
 	 */
-	function xss_clean($str, $charset = 'ISO-8859-1')
+	public function xss_clean($str, $charset = 'ISO-8859-1')
 	{
 		/*
 		 * Remove Null Characters
 		 *
-		 * This prevents sandwiching NULL characters
+		 * This prevents sandwiching null characters
 		 * between ascii characters, like Java\0script.
 		 *
 		 */
@@ -459,7 +459,7 @@ class CI_Input {
 		 * the conversion of entities to ASCII later.
 		 *
 		 */
-		$str = preg_replace('#(&\#*\w+)[\x00-\x20]+;#u', '$1;', $str);
+		$str = preg_replace('#(&\#*\w+)[\x00-\x20]+;#u',"\\1;",$str);
 
 		/*
 		 * Validate UTF16 two byte encoding (x00)
@@ -479,7 +479,7 @@ class CI_Input {
 		 * Note: Normally urldecode() would be easier but it removes plus signs
 		 *
 		 */
-		$str = preg_replace('/(?:%20)+/', '9u3iovBnRThju941s89rKozm', $str);
+		$str = preg_replace('/(%20)+/', '9u3iovBnRThju941s89rKozm', $str);
 		$str = preg_replace('/%u0([a-z0-9]{3})/i', '&#x$1;', $str);
 		$str = preg_replace('/%([a-z0-9]{2})/i', '&#x$1;', $str);
 		$str = str_replace('9u3iovBnRThju941s89rKozm', '%20', $str);
@@ -494,7 +494,7 @@ class CI_Input {
 		 */
 		if (preg_match_all('/<(.+?)>/si', $str, $matches))
 		{
-			for ($i = 0, $c = count($matches[0]); $i < $c; $i++)
+			for ($i = 0; $i < count($matches[0]); $i++)
 			{
 				$str = str_replace($matches[1][$i],
 									$this->_html_entity_decode($matches[1][$i], $charset),
@@ -552,14 +552,14 @@ class CI_Input {
 		foreach ($words as $word)
 		{
 			$temp = '';
-			for ($i = 0, $s = strlen($word); $i < $s; $i++)
+			for ($i = 0; $i < strlen($word); $i++)
 			{
 				$temp .= substr($word, $i, 1)."\s*";
 			}
 
 			// We only want to do this when it is followed by a non-word character
 			// That way valid stuff like "dealer to" does not become "dealerto"
-			$str = preg_replace('#('.substr($temp, 0, -3).')(\W)#ise', "preg_replace('/\s+/s', '', '$1').'$2'", $str);
+			$str = preg_replace('#('.substr($temp, 0, -3).')(\W)#ise', "preg_replace('/\s+/s', '', '\\1').'\\2'", $str);
 		}
 
 		/*
@@ -567,7 +567,7 @@ class CI_Input {
 		 */
 		$str = preg_replace_callback('#<a.*?</a>#si', array($this, '_js_link_removal'), $str);
 		$str = preg_replace_callback('#<img.*?>#si', array($this, '_js_img_removal'), $str);
-	 	$str = preg_replace('#<(?:script|xss).*?>#si', '', $str);
+	 	$str = preg_replace('#<(script|xss).*?>#si', '', $str);
 
 		/*
 		 * Remove JavaScript Event Handlers
@@ -629,7 +629,7 @@ class CI_Input {
 		}
 
 
-		log_message('debug', 'XSS Filtering completed');
+		Log::add('debug', 'XSS Filtering completed');
 		return $str;
 	}
 
@@ -647,7 +647,7 @@ class CI_Input {
 	 * @param	array
 	 * @return	string
 	 */
-	function _js_link_removal($match)
+	private function _js_link_removal($match)
 	{
 		return preg_replace('#<a.+?href=.*?(alert\(|alert&\#40;|javascript\:|window\.|document\.|\.cookie|<script|<xss).*?>.*?</a>#si', '', $match[0]);
 	}
@@ -664,7 +664,7 @@ class CI_Input {
 	 * @param	array
 	 * @return	string
 	 */
-	function _js_img_removal($match)
+	private function _js_img_removal($match)
 	{
 		return preg_replace('#<img.+?src=.*?(alert\(|alert&\#40;|javascript\:|window\.|document\.|\.cookie|<script|<xss).*?\>#si', '', $match[0]);
 	}
@@ -695,7 +695,7 @@ class CI_Input {
 	character set, and the PHP developers said they were not back porting the
 	fix to versions other than PHP 5.x.
 	*/
-	function _html_entity_decode($str, $charset='ISO-8859-1')
+	private function _html_entity_decode($str, $charset='ISO-8859-1')
 	{
 		if (stristr($str, '&') === FALSE) return $str;
 
@@ -705,16 +705,16 @@ class CI_Input {
 		// correctly.  html_entity_decode() does not convert entities without
 		// semicolons, so we are left with our own little solution here. Bummer.
 
-		if (function_exists('html_entity_decode') && (strtolower($charset) != 'utf-8' OR version_compare(phpversion(), '5.0.0', '>=')))
+		if (function_exists('html_entity_decode') AND (strtolower($charset) != 'utf-8' OR KOHANA_IS_PHP5))
 		{
 			$str = html_entity_decode($str, ENT_COMPAT, $charset);
-			$str = preg_replace('~&#x([0-9a-f]{2,5})~ei', 'chr(hexdec("\\1"))', $str);
-			return preg_replace('~&#([0-9]{2,4})~e', 'chr(\\1)', $str);
+			$str = preg_replace('~&#x([0-9a-f]{2,5})~ei', 'chr(hexdec($1))', $str);
+			return preg_replace('~&#([0-9]{2,4})~e', 'chr($1)', $str);
 		}
 
 		// Numeric Entities
-		$str = preg_replace('~&#x([0-9a-f]{2,5});{0,1}~ei', 'chr(hexdec("\\1"))', $str);
-		$str = preg_replace('~&#([0-9]{2,4});{0,1}~e', 'chr(\\1)', $str);
+		$str = preg_replace('~&#x([0-9a-f]{2,5});{0,1}~ei', 'chr(hexdec($1))', $str);
+		$str = preg_replace('~&#([0-9]{2,4});{0,1}~e', 'chr($1)', $str);
 
 		// Literal Entities - Slightly slow so we do another check
 		if (stristr($str, '&') === FALSE)
@@ -725,6 +725,4 @@ class CI_Input {
 		return $str;
 	}
 
-}
-// END Input class
-?>
+} // End Input class

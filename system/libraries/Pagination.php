@@ -1,218 +1,135 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
-/**
- * Kohana
- *
- * An open source application development framework for PHP 4.3.2 or newer
- *
- * NOTE: This file has been modified from the original CodeIgniter version for
- * the Kohana framework by the Kohana Development Team.
- *
- * @package          Kohana
- * @author           Kohana Development Team
- * @copyright        Copyright (c) 2007, Kohana Framework Team
- * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/user_guide/license.html
- * @since            Version 1.0
- * @orig_package     CodeIgniter
- * @orig_author      Rick Ellis
- * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
- * @orig_license     http://www.codeignitor.com/user_guide/license.html
- * @filesource
- */
+<?php defined('SYSPATH') or die('No direct access allowed.');
 
-// ------------------------------------------------------------------------
-
-/**
- * Pagination Class
- *
- * @package		Kohana
- * @subpackage	Libraries
- * @category	Pagination
- * @author		Rick Ellis
- * @link		http://kohanaphp.com/user_guide/libraries/pagination.html
- */
-class CI_Pagination {
-
-	var $base_url			= ''; // The page we are linking to
-	var $total_rows  		= ''; // Total number of items (database results)
-	var $per_page	 		= 10; // Max number of items you want shown per page
-	var $num_links			=  2; // Number of "digit" links to show before/after the currently viewed page
-	var $cur_page	 		=  0; // The current page being viewed
-	var $first_link   		= '&lsaquo; First';
-	var $next_link			= '&gt;';
-	var $prev_link			= '&lt;';
-	var $last_link			= 'Last &rsaquo;';
-	var $uri_segment		= 3;
-	var $full_tag_open		= '';
-	var $full_tag_close		= '';
-	var $first_tag_open		= '';
-	var $first_tag_close	= '&nbsp;';
-	var $last_tag_open		= '&nbsp;';
-	var $last_tag_close		= '';
-	var $cur_tag_open		= '&nbsp;<b>';
-	var $cur_tag_close		= '</b>';
-	var $next_tag_open		= '&nbsp;';
-	var $next_tag_close		= '&nbsp;';
-	var $prev_tag_open		= '&nbsp;';
-	var $prev_tag_close		= '';
-	var $num_tag_open		= '&nbsp;';
-	var $num_tag_close		= '';
+class Pagination_Core {
+	
+	public $base_url;
+	public $style              = 'classic';
+	public $uri_segment        = 3;
+	public $uri_label;
+	public $items_per_page     = 10;
+	
+	public $current_page;
+	public $total_pages;
+	public $total_items;
+	public $current_first_item;
+	public $current_last_item;
+	
+	public $first_page;
+	public $last_page;
+	public $previous_page;
+	public $next_page;
 
 	/**
 	 * Constructor
 	 *
-	 * @access	public
-	 * @param	array	initialization parameters
+	 * @access  public
+	 * @param   array
+	 * @return  void
 	 */
-	function CI_Pagination($params = array())
+	public function __construct($setup = array())
 	{
-		if (count($params) > 0)
-		{
-			$this->initialize($params);		
-		}
+		// Load pagination setup values
+		$setup = array_merge(Config::item('pagination'), $setup);
 		
-		log_message('debug', "Pagination Class Initialized");
-	}
-	
-	// --------------------------------------------------------------------
-	
-	/**
-	 * Initialize Preferences
-	 *
-	 * @access	public
-	 * @param	array	initialization parameters
-	 * @return	void
-	 */
-	function initialize($params = array())
-	{
-		if (count($params) > 0)
+		foreach ($setup as $key => $value)
 		{
-			foreach ($params as $key => $val)
+			if (property_exists($this, $key))
 			{
-				if (isset($this->$key))
-				{
-					$this->$key = $val;
-				}
-			}		
-		}
-	}
-	
-	// --------------------------------------------------------------------
-	
-	/**
-	 * Generate the pagination links
-	 *
-	 * @access	public
-	 * @return	string
-	 */	
-	function create_links()
-	{
-		// If our item count or per-page total is zero there is no need to continue.
-		if ($this->total_rows == 0 OR $this->per_page == 0)
-		{
-		   return '';
-		}
-
-		// Calculate the total number of pages
-		$num_pages = ceil($this->total_rows / $this->per_page);
-
-		// Is there only one page? Hm... nothing more to do here then.
-		if ($num_pages == 1)
-		{
-			return '';
-		}
-
-		// Determine the current page number.		
-		$CI =& get_instance();	
-		if ($CI->uri->segment($this->uri_segment) != 0)
-		{
-			$this->cur_page = $CI->uri->segment($this->uri_segment);
-			
-			// Prep the current page - no funny business!
-			$this->cur_page = (int) $this->cur_page;
-		}
-				
-		if ( ! is_numeric($this->cur_page))
-		{
-			$this->cur_page = 0;
-		}
-		
-		// Is the page number beyond the result range?
-		// If so we show the last page
-		if ($this->cur_page > $this->total_rows)
-		{
-			$this->cur_page = ($num_pages - 1) * $this->per_page;
-		}
-		
-		$uri_page_number = $this->cur_page;
-		$this->cur_page = floor(($this->cur_page/$this->per_page) + 1);
-
-		// Calculate the start and end numbers. These determine
-		// which number to start and end the digit links with
-		$start = (($this->cur_page - $this->num_links) > 0) ? $this->cur_page - ($this->num_links - 1) : 1;
-		$end   = (($this->cur_page + $this->num_links) < $num_pages) ? $this->cur_page + $this->num_links : $num_pages;
-
-		// Add a trailing slash to the base URL if needed
-		$this->base_url = rtrim($this->base_url, '/') .'/';
-
-  		// And here we go...
-		$output = '';
-
-		// Render the "First" link
-		if  ($this->cur_page > $this->num_links)
-		{
-			$output .= $this->first_tag_open.'<a href="'.$this->base_url.'">'.$this->first_link.'</a>'.$this->first_tag_close;
-		}
-
-		// Render the "previous" link
-		if  (($this->cur_page - $this->num_links) >= 0)
-		{
-			$i = $uri_page_number - $this->per_page;
-			if ($i == 0) $i = '';
-			$output .= $this->prev_tag_open.'<a href="'.$this->base_url.$i.'">'.$this->prev_link.'</a>'.$this->prev_tag_close;
-		}
-
-		// Write the digit links
-		for ($loop = $start -1; $loop <= $end; $loop++)
-		{
-			$i = ($loop * $this->per_page) - $this->per_page;
-					
-			if ($i >= 0)
-			{
-				if ($this->cur_page == $loop)
-				{
-					$output .= $this->cur_tag_open.$loop.$this->cur_tag_close; // Current page
-				}
-				else
-				{
-					$n = ($i == 0) ? '' : $i;
-					$output .= $this->num_tag_open.'<a href="'.$this->base_url.$n.'">'.$loop.'</a>'.$this->num_tag_close;
-				}
+				$this->$key = $value;
 			}
 		}
-
-		// Render the "next" link
-		if ($this->cur_page < $num_pages)
-		{
-			$output .= $this->next_tag_open.'<a href="'.$this->base_url.($this->cur_page * $this->per_page).'">'.$this->next_link.'</a>'.$this->next_tag_close;
-		}
-
-		// Render the "Last" link
-		if (($this->cur_page + $this->num_links) < $num_pages)
-		{
-			$i = (($num_pages * $this->per_page) - $this->per_page);
-			$output .= $this->last_tag_open.'<a href="'.$this->base_url.$i.'">'.$this->last_link.'</a>'.$this->last_tag_close;
-		}
-
-		// Kill double slashes.  Note: Sometimes we can end up with a double slash
-		// in the penultimate link so we'll kill all double slashes.
-		$output = preg_replace('#(?<!:)//+#', '/', $output);
-
-		// Add the wrapper HTML if exists
-		$output = $this->full_tag_open.$output.$this->full_tag_close;
 		
-		return $output;		
+		// If a uri_label is given, look for the corresponding uri_segment
+		if (isset($this->uri_label))
+		{
+			$uri_label_segment = array_search($this->uri_label, Kohana::instance()->uri->segment_array());
+			
+			if ($uri_label_segment !== FALSE)
+			{
+				$this->uri_segment = $uri_label_segment + 1;
+			}
+		}
+		
+		// Create a generic base_url with {page} placeholder
+		$this->base_url = (isset($this->base_url)) ? $this->base_url : Kohana::instance()->uri->string();
+		$this->base_url = explode('/', $this->base_url);
+		$this->base_url[$this->uri_segment - 1] = '{page}';
+		$this->base_url = implode('/', $this->base_url);
+		$this->base_url = url::site($this->base_url);
+		
+		// Core pagination values
+		$this->total_items        = (int) max(0, $this->total_items);
+		$this->items_per_page     = (int) max(1, $this->items_per_page);
+		$this->total_pages        = (int) ceil($this->total_items / $this->items_per_page);
+		$this->current_page       = (int) min(max(1, Kohana::instance()->uri->segment($this->uri_segment)), max(1, $this->total_pages));
+		$this->current_first_item = (int) min((($this->current_page - 1) * $this->items_per_page) + 1, $this->total_items);
+		$this->current_last_item  = (int) min($this->current_first_item + $this->items_per_page - 1, $this->total_items);
+		
+		// Helper variables
+		// - first_page/last_page     FALSE if the current page is the first/last page
+		// - previous_page/next_page  FALSE if that page doesn't exist relative to the current page
+		$this->first_page         = ($this->current_page == 1) ? FALSE : 1;
+		$this->last_page          = ($this->current_page >= $this->total_pages) ? FALSE : $this->total_pages;
+		$this->previous_page      = ($this->current_page > 1) ? $this->current_page - 1 : FALSE;
+		$this->next_page          = ($this->current_page < $this->total_pages) ? $this->current_page + 1 : FALSE;
+		
+		// Initialization done
+		Log::add('debug', 'Pagination Class Initialized');
 	}
-}
-// END Pagination Class
-?>
+	
+	/**
+	 * Generates the HTML for the chosen pagination style
+	 *
+	 * @access  public
+	 * @param   string
+	 * @return  string
+	 */
+	public function create_links($style = NULL)
+	{
+		$style = (isset($style)) ? $style : $this->style;
+		
+		return (string) new View('views/pagination/'.$style, get_object_vars($this));
+	}
+	
+	public function __toString()
+	{
+		return $this->create_links();
+	}
+
+	/**
+	 * Returns a URL with the specified page number
+	 *
+	 * @access  public
+	 * @param   integer
+	 * @return  string
+	 */
+	public function url($page = NULL)
+	{
+		$page = (int) (isset($page)) ? $this->current_page : $page;
+		
+		return str_replace('{page}', $page, $this->base_url);
+	}
+	
+	/**
+	 * Returns the SQL offset of the first row to return
+	 *
+	 * @access  public
+	 * @return  integer
+	 */
+	public function sql_offset()
+	{
+		return (int) ($this->current_page - 1) * $this->items_per_page;
+	}
+	
+	/**
+	 * Returns the complete SQL LIMIT clause
+	 *
+	 * @access  public
+	 * @return  string
+	 */
+	public function sql_limit()
+	{
+		return sprintf(' LIMIT %d OFFSET %d ', $this->items_per_page, $this->sql_offset());
+	}
+
+} // End Pagination Class

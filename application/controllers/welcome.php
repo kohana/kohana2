@@ -1,15 +1,11 @@
 <?php
 
-class Welcome extends Controller {
+class Welcome_Controller extends Controller {
 
-	function Welcome()
-	{
-		parent::Controller();	
-	}
-	
 	function index()
 	{
-		$this->load->view('welcome_message');
+		$db = new Database();
+		print_r ($db);
 	}
+
 }
-?>
