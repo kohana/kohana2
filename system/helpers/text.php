@@ -64,5 +64,70 @@ class text {
 
 		return rtrim($matches[0]).$end_char;
 	}
+	
+	/**
+	 * Alternator
+	 *
+	 * @access	public
+	 * @param	string (as many parameters as needed)
+	 * @return	string
+	 */		
+	public static function alternate()
+	{
+		static $i;	
+
+		if (func_num_args() == 0)
+		{
+			$i = 0;
+			return '';
+		}
+		
+		$args = func_get_args();
+		return $args[($i++ % count($args))];
+	}
+	
+	/**
+	 * Random string generator
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	integer
+	 * @return	string
+	 */
+	random($type = 'alnum', $length = 8)
+	{
+		if ($type == 'unique')
+			return md5(uniqid(mt_rand()));
+
+		switch ($type)
+		{
+			case '':
+			case 'alnum':
+				$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+			break;
+			case 'alpha':
+				$pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+			break;
+			case 'numeric':
+				$pool = '0123456789';
+			break;
+			case 'nozero':
+				$pool = '123456789';
+			break;
+			default:
+				$pool = (string) $type;
+			break;
+		}
+
+		$str = '';
+		$pool_size = utf8::strlen($pool);
+
+		for ($i = 0; $i < $length; $i++)
+		{
+			$str .= utf8::substr($pool, mt_rand(0, $pool_size - 1), 1);
+		}
+
+		return $str;
+	}
 
 } // End text class
