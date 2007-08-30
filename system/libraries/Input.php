@@ -18,6 +18,7 @@
  * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
  * @orig_license     http://www.codeignitor.com/user_guide/license.html
  * @filesource
+ * $Id$
  */
 
 // ------------------------------------------------------------------------
@@ -51,8 +52,6 @@ class Input_Core {
 	public function __construct()
 	{
 		$this->use_xss_clean    = (Config::item('core.global_xss_filtering') === TRUE) ? TRUE : FALSE;
-		$this->allow_get_array  = (Config::item('core.enable_query_strings') === TRUE
-		                        OR Config::item('core.enable_get_requests')  === TRUE) ? TRUE : FALSE;
 		$this->_sanitize_globals();
 
 		Log::add('debug', 'Input Class Initialized');
@@ -95,18 +94,11 @@ class Input_Core {
 		}
 
 		// Is $_GET data allowed? If not we'll set the $_GET to an empty array
-		if ($this->allow_get_array == FALSE)
+		if (is_array($_GET) AND count($_GET) > 0)
 		{
-			$_GET = array();
-		}
-		else
-		{
-			if (is_array($_GET) AND count($_GET) > 0)
+			foreach($_GET as $key => $val)
 			{
-				foreach($_GET as $key => $val)
-				{
-					$_GET[$this->_clean_input_keys($key)] = $this->_clean_input_data($val);
-				}
+				$_GET[$this->_clean_input_keys($key)] = $this->_clean_input_data($val);
 			}
 		}
 

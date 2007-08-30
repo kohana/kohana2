@@ -1,4 +1,5 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
+/* $Id$ */
 
 class User_Guide_Controller extends Controller {
 
@@ -39,15 +40,33 @@ class User_Guide_Controller extends Controller {
 		$category = ($category == FALSE)  ? 'kohana' : $category;
 		$content  = rtrim('user_guide/content/'.$category.'/'.$section, '/');
 
+		// Load session for AJAX page storage
+		$this->load->library('session');
+
 		// Load markdown
 		require Kohana::find_file('vendor', 'Markdown');
 
 		// Show content
-		$this->data['menu'] = $this->load->view('user_guide/menu', array('active_category' => $category, 'active_section' => $section));
-		$this->data['content'] = $this->load->view($content)->render(FALSE, 'Markdown');
+		if ($this->input->get('ajax') === 'true')
+		{
+			// Set the AJAX return page, for refreshing
+			$this->session->set('ajax_return', $this->uri->string());
 
-		// Display output
-		$this->load->view('user_guide/template', $this->data)->render(TRUE);
+			// Just the content, ma'am!
+			$this->load->view($content)->render(TRUE, 'Markdown');
+		}
+		else
+		{
+			// Return the user to the page they were on
+			if ($ajax_return = $this->session->get_once('ajax_return'))
+				url::redirect($ajax_return);
+			
+			$this->data['menu'] = $this->load->view('user_guide/menu', array('active_category' => $category, 'active_section' => $section));
+			$this->data['content'] = $this->load->view($content)->render(FALSE, 'Markdown');
+
+			// Display output
+			$this->load->view('user_guide/template', $this->data)->render(TRUE);
+		}
 	}
 
 	public function _tags()

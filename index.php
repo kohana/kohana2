@@ -9,7 +9,6 @@
 | -----------------------------------------------------------------------------
 | User Guide: http://kohanaphp.com/user_guide/kohana/installation.html
 | -----------------------------------------------------------------------------
-| $Id$
 */
 
 // Set the error reporting level
@@ -30,6 +29,7 @@ $kohana_system = 'system';
 | -----------------------------------------------------------------------------
 | User Guide: http://kohanaphp.com/user_guide/general/bootstrapping.html
 | -----------------------------------------------------------------------------
+| $Id$
 */
 // Absolute path names for include purposes
 define('APPPATH', realpath($kohana_application).DIRECTORY_SEPARATOR); unset($kohana_application);

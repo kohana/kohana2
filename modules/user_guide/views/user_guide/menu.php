@@ -58,15 +58,15 @@ foreach($menus as $category => $menu):
 	$active = (strtolower($category) == $active_category) ? ' active' : '';
 
 ?>
-<li class="first<?= $active ?>"><span><?= $category ?></span><ul>
+<li class="first<?php echo $active ?>"><span><?= $category ?></span><ul>
 <?php
 
 	foreach($menu as $section):
 
-		$before = (strtolower($section) == $active_section) ? '<em>&laquo;</em> ' : '&laquo; ';
+		$active = (strtolower($section) == $active_section) ? 'lite' : '';
 
 ?>
-<li><?= $before.html::anchor(strtolower('user_guide/'.$category.'/'.$section), $section) ?></li>
+<li class="<?php echo $active ?>">&laquo; <?php echo html::anchor(strtolower('user_guide/'.$category.'/'.$section), $section) ?></li>
 <?php
 
 	endforeach;

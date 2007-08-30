@@ -1,4 +1,5 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
+/* $Id$ */
 
 class Router_Core {
 

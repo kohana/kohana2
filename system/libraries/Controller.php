@@ -1,4 +1,6 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
+/* $Id$ */
+
 
 class Controller_Core extends Kohana {
 
@@ -12,6 +14,9 @@ class Controller_Core extends Kohana {
 
 		// URI should always be available
 		$this->uri = new URI();
+
+		// Input should always be available
+		$this->input = new Input();
 	}
 
 	public function kohana_include_view($kohana_view_filename, $kohana_input_data)
