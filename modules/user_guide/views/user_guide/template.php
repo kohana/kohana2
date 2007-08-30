@@ -22,15 +22,14 @@
 <!-- @start Body -->
 <div id="body">
 <?= $content ?>
+</div>
+<!-- @end Body -->
 
 <!-- @start Footer -->
 <div id="footer">
 <p id="copyright">copyright (c) 2007 Kohana Team :: All rights reserved :: Rendered in {execution_time} seconds</p>
 </div>
 <!-- @end Footer -->
-
-</div>
-<!-- @end Body -->
 
 </div>
 </body>

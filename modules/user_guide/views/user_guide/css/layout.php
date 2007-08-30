@@ -31,7 +31,7 @@ Template Styles
 #menu ul a:hover { text-decoration: underline; color: #45721d; }
 #menu li.first { font-size: 1.2em; }
 #menu li span { cursor: pointer; }
-#body { padding: 0 0.5em; background: #eee; }
+#body, #footer { padding: 0 0.5em; background: #eee; }
 #body ol, #body ul { margin: 1em; margin-left: 2.5em; }
 #body ol { list-style: decimal; }
 #body ul { list-style: circle; }
