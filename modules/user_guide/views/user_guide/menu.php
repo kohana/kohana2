@@ -10,10 +10,10 @@ $menus = array
 (
 	'Kohana' => array
 	(
+		'About',
 		'Requirements',
 		'Downloads',
 		'Installation',
-		'About',
 		'Links'
 	),
 	'General' => array
@@ -46,6 +46,7 @@ $menus = array
 	(
 		'File',
 		'Html',
+		'Text',
 		'Url'
 	)
 );
