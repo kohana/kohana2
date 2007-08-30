@@ -21,19 +21,27 @@ class URI_Core extends Router {
 	 * Returns an array containing all the URI segments
 	 *
 	 * @access	public
+	 * @param   integer
+	 * @param   boolean
 	 * @return	array
 	 */
-	public function segment_array()
+	public function segment_array($offset = 0, $associative = FALSE)
 	{
-		$i = 1;
-		$segment_array = array();
-
-		foreach (self::$segments as $segment)
+		$segment_array = self::$segments;
+		array_unshift($segment_array, 0);
+		$segment_array = array_slice($segment_array, $offset + 1, $this->total_segments(), TRUE);
+		
+		if ( ! $associative)
+			return $segment_array;
+		
+		$segment_array_assoc = array();
+		
+		foreach (array_chunk($segment_array, 2) as $pair)
 		{
-			$segment_array[$i++] = $segment;
+			$segment_array_assoc[$pair[0]] = isset($pair[1]) ? $pair[1] : '';
 		}
-
-		return $segment_array;
+		
+		return $segment_array_assoc;
 	}
 
 	/**
@@ -44,7 +52,7 @@ class URI_Core extends Router {
 	 */
 	public function string()
 	{
-		return implode('/', self::$segments);
+		return self::$current_uri;
 	}
 	
 	/**
@@ -56,6 +64,17 @@ class URI_Core extends Router {
 	public function total_segments()
 	{
 		return count(self::$segments);
+	}
+	
+	/**
+	 * Returns the last URI segment
+	 *
+	 * @access	public
+	 * @return	string
+	 */
+	public function last_segment()
+	{
+		return self::$segments[$this->total_segments() - 1];
 	}
 
 } // End URI Class
