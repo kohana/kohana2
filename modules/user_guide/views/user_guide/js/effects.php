@@ -1,7 +1,7 @@
 // $Id$
 $(document).ready(function(){
 	// Append the AJAX loader
-	$('body').append('<div id="loading">&hellip;loading&hellip;</div>');
+	$('#container').append('<div id="loading"><span>&hellip;loading</span></div>');
 	// To prevent extra querying
 	Kohana.loading = $('#loading').hide().css('opacity', 0.85);
 	// Make the menu sticky
@@ -38,11 +38,10 @@ $(document).ready(function(){
 		Kohana.toggleLoading(true);
 		// Fetch the current link
 		var link = $(this);
-		// Remove the "lite" class from the active link
-		$('#menu li.active li.lite').removeClass('lite');
 		// Make AJAX request
 		$.get(link.attr('href'), {ajax: 'true'}, function(data) {
 			// Add the "lite" class to the current link
+			$('#menu li.active li.lite').removeClass('lite');
 			link.parent().addClass('lite');
 			// Load new AJAX content
 			$('#body').html(data);
@@ -62,7 +61,7 @@ var Kohana = {
 	toggleLoading: function(on) {
 		// If we are waiting for an animation, retry in 5ms
 		if (Kohana.waiting == true) {
-			setTimeout('Kohana.toggleLoading('+on+')', 5);
+			setTimeout('Kohana.toggleLoading('+on+')', 100);
 			return false;
 		}
 		// Toggle waiting state

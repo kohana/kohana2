@@ -21,7 +21,6 @@ dd { padding-bottom: 0.5em; margin: 0 0 0.5em 12em; border-bottom: dotted 1px #a
 /*
 Template Styles
 */
-#loading { position: absolute; top: 0; left: 50%; z-index: 9999; width: 12em; margin-left: -6em; padding: 0.5em 2em; background: #fff; border: solid 1 #444; border-top: 0; text-align: center; font-size: 2em; color: #494; }
 #container { position: relative; width: 70%; min-width: 30em; max-width: 60em; margin: 0 auto; }
 #menu { position: absolute; right: -10.1em; width: 10em; padding: 0.2em 0; }
 #menu ul { margin: 0 0.2em; list-style: none; color: #b43f11; }
@@ -36,6 +35,8 @@ Template Styles
 #body ol { list-style: decimal; }
 #body ul { list-style: circle; }
 #body li { padding: 0.1em 0; }
+#loading { position: absolute; top: 0; right: 0; z-index: 9999; padding: 0.5em 2em; background: #fff; border: solid 0 #aaa; border-width: 0 0 1px 1px; text-align: center; text-transform: uppercase; font-size: 0.7em; }
+#loading span { color: #400; }
 /*
 Content Styles
 */
