@@ -1,4 +1,4 @@
-<?php  if (!defined('SYSPATH')) exit('No direct script access allowed');
+<?php defined('SYSPATH') or die('No direct access allowed.');
 /**
  * Kohana
  *
@@ -32,10 +32,11 @@
 
 class View_Core {
 
+	// The view file name and type
 	private $kohana_filename  = FALSE;
-	private $kohana_renderer  = FALSE;
 	private $kohana_filetype  = FALSE;
-	private $kohana_protected = FALSE;
+
+	// Set variables
 	private $data = array();
 
 	public function __construct($name, $data = NULL)
@@ -43,20 +44,14 @@ class View_Core {
 		if (preg_match('/\.(gif|jpg|png|swf)$/Di', $name, $type))
 		{
 			$type = $type[1];
+
 			$this->kohana_filename = Kohana::find_file('views', $name, TRUE, $type);
-			
-			if (function_exists('exif_imagetype'))
-			{
-				$this->kohana_filetype = image_type_to_mime_type(exif_imagetype($this->kohana_filename));
-			}
-			else
-			{
-				$this->kohana_filetype = 'image/'.$type;
-			}
+			$this->kohana_filetype = current(Config::item('mimes.'.$type));
 		}
 		else
 		{
 			$this->kohana_filename = Kohana::find_file('views', $name, TRUE);
+			$this->kohana_filetype = EXT;
 		}
 
 		// Preload data
@@ -104,7 +99,7 @@ class View_Core {
 
 	public function render($print = FALSE, $callback = FALSE)
 	{
-		if ($this->kohana_filetype == FALSE)
+		if ($this->kohana_filetype == EXT)
 		{
 			$output = Kohana::instance()->kohana_include_view($this->kohana_filename, $this->data);
 

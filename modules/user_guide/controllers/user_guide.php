@@ -61,11 +61,12 @@ class User_Guide_Controller extends Controller {
 			if ($ajax_return = $this->session->get_once('ajax_return'))
 				url::redirect($ajax_return);
 			
-			$this->data['menu'] = $this->load->view('user_guide/menu', array('active_category' => $category, 'active_section' => $section));
-			$this->data['content'] = $this->load->view($content)->render(FALSE, 'Markdown');
+			$template = $this->load->view('user_guide/template');
+			$template->menu   = $this->load->view('user_guide/menu', array('active_category' => $category, 'active_section' => $section));
+			$template->content = $this->load->view($content)->render(FALSE, 'Markdown');
 
 			// Display output
-			$this->load->view('user_guide/template', $this->data)->render(TRUE);
+			$template->render(TRUE);
 		}
 	}
 
