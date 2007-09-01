@@ -825,11 +825,11 @@ class Database_Core {
 	 *
 	 * @access  private
 	 * @param   string
-	 * @return  bool
+	 * @return  boolean
 	 */
 	public function _has_operator($str)
 	{
-		return (bool) preg_match('/(\s|<|>|!|=|is |is not)/i', trim($str));
+		return (bool) preg_match('/[\s=<>!]|is /i', trim($str));
 	}
 
 	// --------------------------------------------------------------------
