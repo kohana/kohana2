@@ -33,8 +33,8 @@ Template Styles
 #menu li ul a { padding-left: 0.4em; color: #333; }
 #menu li ul a:hover { font-weight: bold; color: #2f4f14; }
 #menu li ul li:before { content: "«"; }
-#menu li > span { text-shadow: 1px 1px 1px #333; } /* Don't add this style for IE6 */
-#menu li span { font-size: 1.3em; cursor: pointer; }
+#menu li span { text-shadow: 1px 1px 1px #333; font-size: 1.3em; cursor: pointer; }
+* html body #menu { text-shadow: none; } /* Remove the text shadow in IE6 */
 #body { padding: 0.3em 1em; background: #fff; }
 #body ol, #body ul { margin: 1em; margin-left: 2.5em; }
 #body ol { list-style: decimal; }
