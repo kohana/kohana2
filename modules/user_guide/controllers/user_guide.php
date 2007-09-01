@@ -71,7 +71,7 @@ class User_Guide_Controller extends Controller {
 
 	public function _tags()
 	{
-		self::$output = preg_replace_callback('!<(benchmark|event|file|definition)>.+?</[^>]+>!', array($this, '_tag_update'), self::$output);
+		Kohana::$output = preg_replace_callback('!<(benchmark|event|file|definition)>.+?</[^>]+>!', array($this, '_tag_update'), Kohana::$output);
 	}
 
 	public function _tag_update($match)
