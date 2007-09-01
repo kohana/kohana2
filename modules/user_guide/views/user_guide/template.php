@@ -5,29 +5,29 @@
 
 <title>Kohana User Guide</title>
 
-<link type="text/css" rel="stylesheet" href="<?= url::base(TRUE) ?>user_guide/css/layout.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo url::base(TRUE) ?>user_guide/css/layout.css" />
 
-<script type="text/javascript" src="<?= url::base(TRUE) ?>user_guide/js/jquery.js"></script>
-<script type="text/javascript" src="<?= url::base(TRUE) ?>user_guide/js/plugins.js"></script>
-<script type="text/javascript" src="<?= url::base(TRUE) ?>user_guide/js/effects.js"></script>
+<script type="text/javascript" src="<?php echo url::base(TRUE) ?>user_guide/js/jquery.js"></script>
+<script type="text/javascript" src="<?php echo url::base(TRUE) ?>user_guide/js/plugins.js"></script>
+<script type="text/javascript" src="<?php echo url::base(TRUE) ?>user_guide/js/effects.js"></script>
 
 </head>
 <body>
 <div id="container">
 
 <div id="menu">
-<?= $menu ?>
+<?php echo $menu ?>
 </div>
 
 <!-- @start Body -->
 <div id="body">
-<?= $content ?>
+<?php echo $content ?>
 </div>
 <!-- @end Body -->
 
 <!-- @start Footer -->
 <div id="footer">
-<p id="copyright">copyright (c) 2007 Kohana Team :: All rights reserved :: Rendered in {execution_time} seconds</p>
+<p id="copyright">copyright (c) <?php echo date('Y') ?> Kohana Team :: All rights reserved :: Rendered in {execution_time} seconds</p>
 </div>
 <!-- @end Footer -->
 

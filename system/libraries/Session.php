@@ -155,22 +155,6 @@ class Session_Core {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Save the Session
-	 *
-	 * @access public
-	 * @return void
-	 */
-	public function save($vars = NULL)
-	{
-		if ($this->driver == 'cookie')
-		{
-			$this->driver->write($this->id(), session_encode());
-		}
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Destroy the current session
 	 *
 	 * @access public
@@ -201,8 +185,6 @@ class Session_Core {
 		}
 
 		$_SESSION['session_id'] = session_id();
-
-		$this->save();
 	}
 
 	// --------------------------------------------------------------------
@@ -232,8 +214,6 @@ class Session_Core {
 
 			$_SESSION[$key] = $val;
 		}
-
-		$this->save();
 	}
 
 	// --------------------------------------------------------------------
@@ -280,7 +260,6 @@ class Session_Core {
 		if (isset($this->flash[$key]))
 		{
 			$this->flash[$key] = 'new';
-			$this->save();
 			return TRUE;
 		}
 		else
@@ -347,8 +326,6 @@ class Session_Core {
 		{
 			unset($_SESSION[$key]);
 		}
-
-		$this->save();
 	}
 
 	// --------------------------------------------------------------------
@@ -374,8 +351,6 @@ class Session_Core {
 			$_SESSION['last_activity'] = time();
 			$_SESSION['total_hits']    = 1;
 			$_SESSION['_kf_flash_']    = array();
-			// Save the session
-			$this->save();
 
 			return TRUE;
 		}
@@ -390,7 +365,7 @@ class Session_Core {
 					if ($_SESSION[$var] != $input->$var())
 					{
 						session_unset();
-						return $this->_validate();
+						return $this->validate();
 					}
 				break;
 			}
@@ -405,12 +380,8 @@ class Session_Core {
 		// Update the last activity and add another hit
 		$_SESSION['last_activity'] = time();
 		$_SESSION['total_hits']   += 1;
-		// Save session
-		$this->save();
 
 		return TRUE;
 	}
 
-}
-// END Session Class
-?>
+} // End Session Class

@@ -9,6 +9,8 @@ downloaded this file from somewhere other than KohanaPHP.com, pleaes report it.
 Default Styles
 */
 body { background: #f7fbf1; color: #111; font-size: 82%; line-height: 140%; font-family: "Lucida Grande", Arial, Verdana, sans-serif; }
+/* Hacks for Firefox and Safari */
+body { text-shadow: 0 0 0 #000; -moz-opacity: 0.999999; }
 a { color: #449; text-decoration: none; }
 h1 { border-bottom: solid 1px #999; font-size: 2.5em; text-align: center; color: #b43f11; }
 h1, h2, h3, h4, h5, h6 { padding: 0.5em 0; margin-bottom: 0.2em; }
@@ -24,12 +26,13 @@ Template Styles
 #container { position: relative; margin: 0 12em 2em 1em; border: solid 0 #e7f5d7; border-width: 0 0.2em 0.3em 0.2em; }
 #menu { position: fixed; top: 0; right: 1.5em; width: 10em; padding: 0.2em 0; }
 #menu ul { margin: 0 0.2em; list-style: none; color: #b43f11; }
-#menu li.first { font-size: 1.4em; padding-top: 0.2em; }
+#menu li.first { padding-top: 0.2em; }
 #menu li.active li.lite { color: #b43f11; }
-#menu li ul { padding: 0.1em 0; margin-right: 0; font-size: 0.7em; color: #444; }
-#menu li ul a { color: #333; }
+#menu li ul { padding: 0.1em 0; margin-right: 0; color: #444; }
+#menu li ul a { padding-left: 0.4em; color: #333; }
 #menu li ul a:hover { font-weight: bold; color: #2f4f14; }
-#menu li span { cursor: pointer; }
+#menu li ul li:before { content: "«"; }
+#menu li span { text-shadow: 1px 1px 1px #333; font-size: 1.3em; cursor: pointer; }
 #body { padding: 0.3em 1em; background: #fff; }
 #body ol, #body ul { margin: 1em; margin-left: 2.5em; }
 #body ol { list-style: decimal; }

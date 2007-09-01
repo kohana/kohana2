@@ -1,8 +1,8 @@
 // $Id$
 $(document).ready(function(){
 	// Menu opacity hover effect, much fancy pants!
-	$('#menu').css('opacity', 0.75).hover(function(){
-		$(this).fadeTo(100, 0.9);
+	$('#menu').css('opacity', 0.7).hover(function(){
+		$(this).fadeTo(100, 1);
 	}, function(){
 		$(this).fadeTo(300, 0.7)
 	});

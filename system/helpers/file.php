@@ -5,7 +5,7 @@ class file {
 	public static function split($filename, $output_dir = FALSE, $piece_size = 10)
 	{
 		// Find output dir
-		$output_dir = ($output_dir == FALSE) ? pathinfo(realpath($filename), PATHINFO_DIRNAME) : realpath($output_dir);
+		$output_dir = ($output_dir == FALSE) ? pathinfo(str_replace('\\', '/', realpath($filename)), PATHINFO_DIRNAME) : str_replace('\\', '/', realpath($output_dir));
 		$output_dir = rtrim($output_dir, '/').'/';
 
 		// Open files for writing

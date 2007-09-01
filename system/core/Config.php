@@ -41,7 +41,7 @@ final class Config {
 		// Configuration autoloading
 		if (self::$conf === NULL)
 		{
-			require APPPATH.'config'.DIRECTORY_SEPARATOR.'config'.EXT;
+			require APPPATH.'config/config'.EXT;
 
 			// Invalid config file
 			(isset($config) AND is_array($config)) or die
@@ -55,9 +55,9 @@ final class Config {
 			// Normalize all paths to be absolute and have a trailing slash
 			foreach($config['include_paths'] as $path)
 			{
-				if (($path = realpath($path)) == '') continue;
+				if (($path = str_replace('\\', '/', realpath($path))) == '') continue;
 
-				self::$include_paths[] = realpath($path).DIRECTORY_SEPARATOR;
+				self::$include_paths[] = $path.'/';
 			}
 
 			// Finish setting include paths by adding SYSPATH

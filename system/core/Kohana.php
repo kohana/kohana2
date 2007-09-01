@@ -304,7 +304,7 @@ class Kohana {
 				$file = substr($class, 0, -6);
 			break;
 			case 'Driver':
-				$type = 'libraries'.DIRECTORY_SEPARATOR.'drivers';
+				$type = 'libraries/drivers';
 				$file = $class;
 			break;
 			default:
@@ -377,7 +377,7 @@ class Kohana {
 	{
 		static $found = array();
 
-		$search = $directory.DIRECTORY_SEPARATOR.$filename;
+		$search = $directory.'/'.$filename;
 		$hash   = md5($search);
 
 		if (isset($found[$hash]))
@@ -435,7 +435,7 @@ class Kohana {
 			$messages = array();
 
 			// The name of the file to search for
-			$filename = Config::item('core.locale').DIRECTORY_SEPARATOR.ucfirst($type);
+			$filename = Config::item('core.locale').'/'.ucfirst($type);
 
 			// Loop through the files and include each one, so SYSPATH files
 			// can be overloaded by more localized files

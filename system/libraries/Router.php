@@ -18,6 +18,10 @@ class Router_Core {
 	{
 		self::$routes = Config::item('routes');
 
+		// Make sure the default route is set
+		if ( ! isset(self::$routes['_default']))
+			throw new Kohana_Exception('no_default_route');
+
 		// The follow block of if/else attempts to retrieve the URI segments automagically
 		// Supported methods: CLI, GET, PATH_INFO, ORIG_PATH_INFO, PHP_SELF
 		if (PHP_SAPI === 'cli')
@@ -26,9 +30,10 @@ class Router_Core {
 			// Command line requires a bit of hacking
 			if (isset($argv[1]))
 			{
-				self::$segments = preg_replace('#//+#u', '/', $argv[1]);
+				self::$segments = $argv[1];
+
 				// Remove GET string from segments
-				if (($query = strpos(self::$segments, '?')) !== FALSE)
+				if (($query = strrpos(self::$segments, '?')) !== FALSE)
 				{
 					list (self::$segments, $query) = explode('?', self::$segments);
 
@@ -79,15 +84,6 @@ class Router_Core {
 		// Use the default route when no segments exist
 		if (self::$segments == '' OR self::$segments == '/')
 		{
-			/**
-			 * @todo i18n error
-			 */
-			isset(self::$routes['_default']) or trigger_error
-			(
-				'Please set a default route in routes'.EXT,
-				E_USER_ERROR
-			);
-
 			self::$segments = self::$routes['_default'];
 		}
 
@@ -177,7 +173,7 @@ class Router_Core {
 		// common path for controllers to be located at
 		if (is_file(APPPATH.'controllers/'.self::$rsegments[0].EXT))
 		{
-			self::$directory  = APPPATH.'controllers/';
+			self::$directory  = APPPATH.'controllers'.'/';
 			self::$controller = self::$rsegments[0];
 			self::$method     = isset(self::$rsegments[1]) ? self::$rsegments[1] : 'index';
 		}
