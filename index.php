@@ -35,9 +35,11 @@ $kohana_system = 'system';
 define('APPPATH', str_replace('\\', '/', realpath($kohana_application)).'/'); unset($kohana_application);
 define('SYSPATH', str_replace('\\', '/', realpath($kohana_system)).'/'); unset($kohana_system);
 // Information about the front controller
-define('KOHANA',  pathinfo(__FILE__, PATHINFO_BASENAME));
-define('DOCROOT', pathinfo(__FILE__, PATHINFO_DIRNAME).'/');
-define('EXT', '.'.pathinfo(__FILE__, PATHINFO_EXTENSION));
+$docroot = str_replace('\\', '/', realpath(__FILE__));
+define('KOHANA',  pathinfo($docroot, PATHINFO_BASENAME));
+define('DOCROOT', pathinfo($docroot, PATHINFO_DIRNAME).'/');
+define('EXT', '.'.pathinfo($docroot, PATHINFO_EXTENSION));
+unset($docroot);
 // Validate APPPATH
 (is_dir(APPPATH) AND is_dir(APPPATH.'/config')) or die
 (
