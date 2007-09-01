@@ -21,6 +21,8 @@ class Controller_Core extends Kohana {
 
 	public function kohana_include_view($kohana_view_filename, $kohana_input_data)
 	{
+		if ($kohana_view_filename == '') return;
+
 		// Buffering on
 		ob_start();
 

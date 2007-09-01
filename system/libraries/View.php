@@ -32,13 +32,24 @@
 
 class View_Core {
 
-	private $kohana_view_filename;
-	private $kohana_renderer = '';
+	private $kohana_filename  = FALSE;
+	private $kohana_renderer  = FALSE;
+	private $kohana_filetype  = FALSE;
+	private $kohana_protected = FALSE;
 	private $data = array();
 
 	public function __construct($name, $data = NULL)
 	{
-		$this->kohana_view_filename = Kohana::find_file('views', $name, TRUE);
+		if (preg_match('/\.(gif|jpg|png|swf)$/Di', $name, $type))
+		{
+			$type = $type[1];
+			$this->kohana_filename = Kohana::find_file('views', $name, TRUE, $type);
+			$this->kohana_filetype = image_type_to_mime_type(exif_imagetype($this->kohana_filename));
+		}
+		else
+		{
+			$this->kohana_filename = Kohana::find_file('views', $name, TRUE);
+		}
 
 		// Preload data
 		if (is_array($data) AND ! empty($data))
@@ -58,9 +69,11 @@ class View_Core {
 
 	public function __set($name, $value)
 	{
-		if ($name == 'kohana_view_filename' AND $this->kohana_view_filename == FALSE)
+		$protected = array('kohana_filename', 'kohana_renderer', 'kohana_filetype');
+
+		if (in_array($name,  $protected) AND $this->$name === FALSE)
 		{
-			$this->kohana_view_filename = $value;
+			$this->$name = $value;
 		}
 		else
 		{
@@ -83,20 +96,38 @@ class View_Core {
 
 	public function render($print = FALSE, $callback = FALSE)
 	{
-		$output = Kohana::instance()->kohana_include_view($this->kohana_view_filename, $this->data);
-
-		if ($callback != FALSE)
+		if ($this->kohana_filetype == FALSE)
 		{
-			$output = Kohana::callback($callback, $output);
-		}
+			$output = Kohana::instance()->kohana_include_view($this->kohana_filename, $this->data);
 
-		if ($print == TRUE)
-		{
-			print $output;
+			if ($callback != FALSE)
+			{
+				$output = Kohana::callback($callback, $output);
+			}
+
+			if ($print == TRUE)
+			{
+
+				print $output;
+			}
+			else
+			{
+				return $output;
+			}
 		}
 		else
 		{
-			return $output;
+			header('Content-type: '.$this->kohana_filetype);
+
+			if ($print == TRUE)
+			{
+				fpassthru(($file = fopen($this->kohana_filename, 'rb')));
+				fclose($file);
+			}
+			else
+			{
+				return file_get_contents($this->kohana_filename);
+			}
 		}
 	}
 

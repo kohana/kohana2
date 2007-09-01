@@ -71,7 +71,7 @@ class User_Guide_Controller extends Controller {
 
 	public function _tags()
 	{
-		Kohana::$output = preg_replace_callback('!<(benchmark|event|file|definition)>.+?</[^>]+>!', array($this, '_tag_update'), Kohana::$output);
+		self::$output = preg_replace_callback('!<(benchmark|event|file|definition)>.+?</[^>]+>!', array($this, '_tag_update'), self::$output);
 	}
 
 	public function _tag_update($match)
@@ -98,14 +98,14 @@ class User_Guide_Controller extends Controller {
 	{
 		header('Content-type: text/javascript');
 
-		$this->_media('js', preg_replace('/\.js$/', '', $filename));
+		$this->_media('js', preg_replace('/\.js$/D', '', $filename));
 	}
 
 	public function css($filename)
 	{
 		header('Content-type: text/css');
 
-		$this->_media('css', preg_replace('/\.css$/', '', $filename));
+		$this->_media('css', preg_replace('/\.css$/D', '', $filename));
 	}
 
 	private function _media($type, $filename)
@@ -117,7 +117,7 @@ class User_Guide_Controller extends Controller {
 		{
 			$this->load->view('user_guide/'.$type.'/'.$filename)->render(TRUE);
 		}
-		catch (file_not_found $exception)
+		catch (Kohana_Exception $exception)
 		{
 			print '/* script not found */';
 		}

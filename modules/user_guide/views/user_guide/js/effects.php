@@ -1,47 +1,45 @@
 // $Id$
 $(document).ready(function(){
-	// Append the AJAX loader
-	$('#container').append('<div id="loading"><span>&hellip;loading</span></div>');
-	// To prevent extra querying
-	Kohana.loading = $('#loading').hide().css('opacity', 0.85);
-	// Make the menu sticky
-	$(window).scroll(function(){
-		$('#menu').css('top', $(window).scrollTop());
+	// Menu opacity hover effect, much fancy pants!
+	$('#menu').css('opacity', 0.75).hover(function(){
+		$(this).fadeTo(100, 0.9);
+	}, function(){
+		$(this).fadeTo(300, 0.7)
 	});
-	// Apply menu effects
-	$('#menu li.first li')
-	.hide()   // Hide these li's
-	.parent() // Parent ul
-	.parent() // Parent li
-	.click(function(){
-			// Hover affects the ul > li inside of this li
-			var curr = $('#menu li.active');
-			var self = $(this);
-			// Clicks to the same element will do nothing
-			if (self.is('.active') == false)
-			{
-				// Hide the current elements
-				curr.removeClass('active')
-				.find('ul > li')
-				.stack('animate', {height: 'hide', width: 'hide'}, 100);
-				// Show the new elements
-				self.addClass('active')
-				.find('ul > li')
-				.stack('animate', {height: 'show', width: 'show'}, 100);
-			}
+	// Append the AJAX loader
+	$('#container').append('<div id="loading">&nbsp;</div>');
+	// To prevent extra querying, add the loading element to Kohana after hiding it
+	Kohana.loading = $('#loading').hide();
+	// Apply menu sliding effect
+	$('#menu li.first').click(function(){
+		// Define the current menu and the clicked menu
+		var curr = $('#menu li.active');
+		var self = $(this);
+		// Clicks to the same menu will do nothing
+		if (self.is('.active') == false)
+		{
+			// Hide the current elements
+			curr.removeClass('active')
+			.find('ul')
+			.slideUp(250);
+			// Show the new elements
+			self.addClass('active')
+			.find('ul')
+			.slideDown(250);
 		}
-	).
-	// Find links in the menu
-	find('a')
-	.click(function(){
+	})
+	// Find and hide the sub menus that are not in the active menu
+	.not('.active').find('ul').hide();
+	// Add AJAX functionality to the menu links
+	$('#menu a').click(function(){
 		// Show loading
 		Kohana.toggleLoading(true);
 		// Fetch the current link
 		var link = $(this);
-		// Make AJAX request
+		// Make AJAX request, using ?ajax=true
 		$.get(link.attr('href'), {ajax: 'true'}, function(data) {
-			// Add the "lite" class to the current link
-			$('#menu li.active li.lite').removeClass('lite');
+			// Add the hilight class to the current link
+			$('#menu ul li.lite').removeClass('lite');
 			link.parent().addClass('lite');
 			// Load new AJAX content
 			$('#body').html(data);
@@ -50,9 +48,6 @@ $(document).ready(function(){
 		});
 		return false;
 	});
-	// Show the active menu
-	$('#menu li.active ul > li')
-	.stack('animate', {height: 'show', width: 'show'}, 100);
 });
 // Special Kohana functions
 var Kohana = {
@@ -61,17 +56,17 @@ var Kohana = {
 	toggleLoading: function(on) {
 		// If we are waiting for an animation, retry in 5ms
 		if (Kohana.waiting == true) {
-			setTimeout('Kohana.toggleLoading('+on+')', 100);
+			setTimeout('Kohana.toggleLoading('+on+')', 20);
 			return false;
 		}
 		// Toggle waiting state
 		Kohana.waiting = true;
 		if (on == true) { // Show loading
-			this.loading.slideDown(200, function() {
+			this.loading.slideDown(250, function() {
 				Kohana.waiting = false;
 			});
 		} else { // Hide loading
-			this.loading.slideUp(200, function() {
+			this.loading.slideUp(250, function() {
 				Kohana.waiting = false;
 			});
 		}

@@ -26,13 +26,24 @@
  */
 class Kohana {
 
-	public static $buffer_level = 0;       // Ouput buffering level
-	public static $error_types  = array(); // Human readable error types
-	public static $registry     = array(); // Library registery
+	// The singleton instance of the controller
+	private static $instance = NULL;
 
-	public static $output = '';
+	// Human readable error types, for PHP errors
+	private static $error_types = array();
 
-	private static $instance = FALSE;   // Controller instance
+	// Error strings that will be displayed by unhandled exceptions
+	private static $error_strings = array();
+
+	// Library registery, to prevent multiple loads of libraries
+	private static $libraries = array();
+
+	// Ouput buffering level
+	private static $buffer_level = 0;
+
+	// The final output that will displayed by Kohana
+	// This variable is protected, so that the controller can overload it
+	protected static $output = '';
 
 	/**
 	 * Constructor
@@ -45,14 +56,10 @@ class Kohana {
 	 */
 	public function __construct()
 	{
-		if (self::$instance == FALSE)
-		{
-			self::$instance = $this;
-		}
-		else
-		{
-			trigger_error('<em>&#8220;There can be only one [instance of Kohana]!&#8220;</em>', E_USER_ERROR);
-		}
+		if (is_object(self::$instance))
+			throw new Exception('there_can_be_only_one');
+
+		self::$instance = $this;
 	}
 
 	/**
@@ -78,6 +85,7 @@ class Kohana {
 	public static function setup()
 	{
 		static $run;
+
 		// This function can only be run once
 		if ($run === TRUE) return;
 
@@ -255,6 +263,7 @@ class Kohana {
 	 */
 	public static function exception_handler($exception)
 	{
+
 		/**
 		 * @todo This needs to choose a i18n message based on the type of exception + message
 		 */
@@ -338,21 +347,21 @@ class Kohana {
 	 */
 	public static function load_class($class)
 	{
-		if (isset(self::$registry[$class]))
+		if (isset(self::$libraries[$class]))
 		{
-			return self::$registry[$class];
+			return self::$libraries[$class];
 		}
 
 		if ($class == 'Controller')
 		{
-			self::$registry[$class] = TRUE;
+			self::$libraries[$class] = TRUE;
 		}
 		else
 		{
-			self::$registry[$class] = new $class();
+			self::$libraries[$class] = new $class();
 		}
 
-		return self::$registry[$class];
+		return self::$libraries[$class];
 	}
 
 	/**
@@ -364,53 +373,100 @@ class Kohana {
 	 * @param  boolean
 	 * @return mixed
 	 */
-	public static function find_file($directory, $filename, $required = FALSE)
+	public static function find_file($directory, $filename, $required = FALSE, $ext = FALSE)
 	{
 		static $found = array();
 
 		$search = $directory.DIRECTORY_SEPARATOR.$filename;
+		$hash   = md5($search);
 
-		if (isset($found[$search]))
-			return $found[$search];
-
-		$paths = Config::include_paths();
+		if (isset($found[$hash]))
+			return $found[$hash];
 
 		if ($directory == 'config' OR $directory == 'i18n')
 		{
+			$fnd = array();
+
 			// Search from SYSPATH up
-			$paths = array_reverse($paths);
-
-			// Create a braced list for glob
-			$paths = '{'.implode(',', $paths).'}';
-
-			// Find all matching files, without sorting
-			if (($files = glob($paths.$search.EXT, GLOB_BRACE + GLOB_NOSORT)) != FALSE)
+			foreach(array_reverse(Config::include_paths()) as $path)
 			{
-				return $found[$search] = $files;
+				if (is_file($path.$search.EXT)) $fnd[] = $path.$search.EXT;
 			}
+
+			// If required and nothing was found, throw an exception
+			if ($required == TRUE AND $fnd === array())
+				throw new Kohana_Exception('resource_not_found', $directory, $filename);
+
+			return $found[$hash] = $fnd;
 		}
 		else
 		{
+			// Users can define their own extensions, .css, etc
+			$ext = ($ext == FALSE) ? EXT : '';
+
 			// Find the file and return it's filename
-			foreach ($paths as $path)
+			foreach (Config::include_paths() as $path)
 			{
-				if (is_file($path.$search.EXT))
+				if (is_file($path.$search.$ext))
 				{
-					return $found[$search] = $path.$search.EXT;
+					return $found[$hash] = $path.$search.$ext;
 				}
 			}
+
+			// If the file is required, throw an exception
+			if ($required == TRUE)
+				throw new Kohana_Exception('resource_not_found', $directory, $filename);
+
+			return $found[$hash] = FALSE;
+		}
+	}
+
+	public static function lang($type = FALSE, $name = TRUE)
+	{
+		static $found = array();
+
+		// Throw an exception if the type is not specified
+		if ($type == FALSE)
+			throw new Kohana_Exception('A language message type must be used when calling <code>Kohan::lang()</code>.');
+
+		if ( ! isset($found[$type]))
+		{
+			// Messages from this file
+			$messages = array();
+
+			// The name of the file to search for
+			$filename = Config::item('core.locale').DIRECTORY_SEPARATOR.ucfirst($type);
+
+			// Loop through the files and include each one, so SYSPATH files
+			// can be overloaded by more localized files
+			foreach(array_reverse(self::find_file('i18n', $filename)) as $filename)
+			{
+				include $filename;
+
+				// Merge in configuration
+				if (isset($lang) AND is_array($lang))
+				{
+					$messages = array_merge($messages, $lang);
+				}
+			}
+
+			// Cache the type
+			$found[$type] = $messages;
 		}
 
-		// If the function gets this far in execution, it means that no file
-		// was located. If the file was flagged as required, return an error.
-		($required === TRUE) and trigger_error
-		(
-			'Unable to locate the requested file, <tt>'.$filename.EXT.'</tt>',
-			E_USER_ERROR
-		);
-
-		// File is not required, return FALSE
-		return FALSE;
+		// Return something
+		if ($name === TRUE)
+		{
+			return $found[$type];
+		}
+		elseif ($found[$type] == FALSE OR ! isset($found[$type][$name]))
+		{
+			return FALSE;
+		}
+		else
+		{
+			return $found[$type][$name];
+		}
 	}
 
 	/**
@@ -459,3 +515,43 @@ class Kohana {
 	}
 
 } // End Kohana class
+
+class Kohana_Exception extends Exception {
+
+	protected $message = 'Unknown Exception: ';
+
+	protected $file = '';
+	protected $line = 0;
+	protected $code = 0;
+
+
+	function __construct($error)
+	{
+		// Fetch the error message
+		$message = Kohana::lang('exceptions', $error);
+
+		// Handle error messages that are not set
+		if ($message == '')
+		{
+			$this->message .= $error;
+		}
+		else
+		{
+			// Add in the args if necessary, removing the $error arg
+			if (count($args = array_slice(func_get_args(), 1)) > 0)
+			{
+				$this->message = vsprintf($message, $args);
+			}
+			else
+			{
+				$this->message = $message;
+			}
+		}
+	}
+
+	public function __toString()
+	{
+		return $this->message;
+	}
+
+} // End Kohana Exception Class
