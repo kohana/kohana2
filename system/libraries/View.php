@@ -44,7 +44,15 @@ class View_Core {
 		{
 			$type = $type[1];
 			$this->kohana_filename = Kohana::find_file('views', $name, TRUE, $type);
-			$this->kohana_filetype = image_type_to_mime_type(exif_imagetype($this->kohana_filename));
+			
+			if (function_exists('exif_imagetype'))
+			{
+				$this->kohana_filetype = image_type_to_mime_type(exif_imagetype($this->kohana_filename));
+			}
+			else
+			{
+				$this->kohana_filetype = 'image/'.$type;
+			}
 		}
 		else
 		{
