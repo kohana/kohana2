@@ -26,7 +26,7 @@
  * - The iconv extension needs to be loaded.
  * - The mbstring extension is highly recommended but must not be overloading string functions.
  */
-if (preg_match('/^.{1}/u', 'ñ') !== 1)
+if (preg_match('/^.$/u', 'ñ') !== 1)
 {
 	trigger_error
 	(

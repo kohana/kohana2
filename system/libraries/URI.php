@@ -21,8 +21,8 @@ class URI_Core extends Router {
 	 * Returns an array containing all the URI segments
 	 *
 	 * @access	public
-	 * @param   integer
-	 * @param   boolean
+	 * @param	integer
+	 * @param	boolean
 	 * @return	array
 	 */
 	public function segment_array($offset = 0, $associative = FALSE)

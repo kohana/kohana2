@@ -21,6 +21,10 @@ Article status [Draft] requires [Editing]
      2. SQLite3
      3. Postgres
 
+2. The [mbstring](http://php.net/mbstring) extension.
+    * It will speed up the utf8 class
+    * However it must *not* be overloading the original string functions
+
 
 *[HTTP]: Hyper Text Transfer Protocol
 *[PDO]: PHP Database Object
