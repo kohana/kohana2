@@ -32,10 +32,9 @@ final class Event {
 	 * @access  public
 	 * @param   string
 	 * @param   callback
-	 * @param   mixed
 	 * @return  void
 	 */
-	public static function add($name, $callback, $params = array())
+	public static function add($name, $callback)
 	{
 		if ($name == FALSE OR $callback == FALSE)
 			return FALSE;
@@ -48,6 +47,7 @@ final class Event {
 	 *
 	 * @access  public
 	 * @param   string
+	 * @param   array
 	 * @return  mixed
 	 */
 	public static function run($name, $args = array())

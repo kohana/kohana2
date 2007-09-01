@@ -9,6 +9,7 @@ final class Benchmark {
 	 *
 	 * @access  public
 	 * @param   string
+	 * @return  void
 	 */
 	public static function start($name)
 	{
@@ -27,6 +28,7 @@ final class Benchmark {
 	 *
 	 * @access  public
 	 * @param   string
+	 * @return  void
 	 */
 	public static function stop($name)
 	{

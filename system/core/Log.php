@@ -4,6 +4,14 @@ final class Log {
 
 	public static $messages = array();
 
+	/**
+	 * Add a log message
+	 *
+	 * @access  public
+	 * @param   string
+	 * @param   string
+	 * @return  void
+	 */
 	public static function add($type, $message)
 	{
 		self::$messages[$type][] = array
@@ -13,6 +21,12 @@ final class Log {
 		);
 	}
 
+	/**
+	 * Write log messages to file
+	 *
+	 * @access  public
+	 * @return  void
+	 */
 	public static function write()
 	{
 		$filename = Config::item('log.directory');

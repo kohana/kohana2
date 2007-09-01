@@ -34,6 +34,7 @@ final class Config {
 	 *
 	 * @access  public
 	 * @param   string
+	 * @param   boolean
 	 * @return  mixed
 	 */
 	public static function item($key, $slash = FALSE)
@@ -117,6 +118,7 @@ final class Config {
 	 *
 	 * @access  public
 	 * @param   string
+	 * @param   boolean
 	 * @return  array
 	 */
 	public static function load($name, $required = TRUE)
