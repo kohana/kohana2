@@ -25,6 +25,7 @@ Template Styles
 */
 #container { position: relative; margin: 0 12em 2em 1em; border: solid 0 #e7f5d7; border-width: 0 0.2em 0.3em 0.2em; }
 #menu { position: fixed; top: 0; right: 1.5em; width: 10em; padding: 0.2em 0; }
+* html body #menu { position: absolute; } /* Add this style for IE6 */
 #menu ul { margin: 0 0.2em; list-style: none; color: #b43f11; }
 #menu li.first { padding-top: 0.2em; }
 #menu li.active li.lite { color: #b43f11; }
@@ -32,7 +33,8 @@ Template Styles
 #menu li ul a { padding-left: 0.4em; color: #333; }
 #menu li ul a:hover { font-weight: bold; color: #2f4f14; }
 #menu li ul li:before { content: "«"; }
-#menu li span { text-shadow: 1px 1px 1px #333; font-size: 1.3em; cursor: pointer; }
+#menu li > span { text-shadow: 1px 1px 1px #333; } /* Don't add this style for IE6 */
+#menu li span { font-size: 1.3em; cursor: pointer; }
 #body { padding: 0.3em 1em; background: #fff; }
 #body ol, #body ul { margin: 1em; margin-left: 2.5em; }
 #body ol { list-style: decimal; }
@@ -40,7 +42,6 @@ Template Styles
 #body li { padding: 0.1em 0; }
 #footer { padding: 0 1em; background: #fff; line-height: 2em; }
 #loading { position: absolute; top: 0; right: 0; z-index: 9999; width: 32px; height: 32px; background: transparent url(spinner.gif) center center no-repeat; }
-#loading span { color: #400; }
 /*
 Content Styles
 */

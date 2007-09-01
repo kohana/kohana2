@@ -3,16 +3,16 @@
 
 class Router_Core {
 
-	public static $current_uri;
-	public static $segments;
-	public static $rsegments;
+	protected static $routes = array();
 
-	public static $routes;
+	public static $current_uri = '';
+	public static $segments    = array();
+	public static $rsegments   = array();
 
-	public static $directory;
-	public static $controller;
-	public static $method;
-	public static $arguments;
+	public static $directory  = FALSE;
+	public static $controller = FALSE;
+	public static $method     = FALSE;
+	public static $arguments  = FALSE;
 
 	public static function setup()
 	{
@@ -182,34 +182,32 @@ class Router_Core {
 			// Fetch the include paths
 			$include_paths = Config::include_paths();
 
-			// Construct a glob() string, so that we don't generate it every loop
-			$include_paths = '{'.implode(',', $include_paths).'}controllers';
+			// Path to be added to as we search deeper
+			$search = 'controllers';
 
 			// Use the rsegments to find the controller
 			foreach(self::$rsegments as $key => $segment)
 			{
-				// Add the current segment to the include paths
-				$include_paths .= '/'.$segment;
-
-				// Search the include paths for the current segment
-				// Using glob() is much less expensive than searching the paths
-				// individually and allows us to find sub-directories effeciently
-				if ($found = glob($include_paths.'{'.EXT.',}', GLOB_BRACE))
+				foreach($include_paths as $path)
 				{
-					// Always take the first found path
-					$found = current($found);
-
 					// The controller has been found, all arguments can be set
-					if (is_file($found))
+					if (is_file($path.$search.'/'.$segment.EXT))
 					{
-						self::$directory  = substr($found, 0, -(strlen($segment.EXT)));
+						self::$directory  = $path.$search.'/';
 						self::$controller = $segment;
-						self::$method     = isset(self::$rsegments[$key+1]) ? self::$rsegments[$key+1] : 'index';
-						self::$arguments  = isset(self::$rsegments[$key+2]) ? array_slice(self::$rsegments, $key+2) : array();
+						self::$method     = isset(self::$rsegments[$key + 1]) ? self::$rsegments[$key + 1] : 'index';
+						self::$arguments  = isset(self::$rsegments[$key + 2]) ? array_slice(self::$rsegments, $key + 2) : array();
+
 						// Stop searching
 						break;
 					}
 				}
+
+				// Stop searching
+				if (self::$controller !== FALSE) break;
+
+				// Add the segment to the search
+				$search .= '/'.$segment;
 			}
 		}
 

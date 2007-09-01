@@ -232,7 +232,8 @@ class Kohana {
 		}
 
 		// Remove the DOCROOT from the path, as a security precaution
-		$file = preg_replace('#^'.preg_quote(DOCROOT).'#', '', $file);
+		$file = str_replace('\\', '/', realpath($file));
+		$file = preg_replace('#^'.preg_quote(DOCROOT, '-').'#', '', $file);
 
 		// Log the error
 		if (Config::item('log.threshold') >= $level)
@@ -270,7 +271,7 @@ class Kohana {
 		self::error_handler
 		(
 			E_UNCAUGHT_EXCEPTION,
-			get_class($exception).': '.$exception->getMessage(),
+			$exception->getMessage(),
 			$exception->getFile(),
 			$exception->getLine()
 		);
