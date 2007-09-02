@@ -32,12 +32,6 @@ Restricted COOKIES access. If set to TRUE, then COOKIES can not be read via Clie
 $config['httponly'] = FALSE;
 </code>
 
-## Using the Cookie Helper
-The helper is loaded in your <definition>Controller</definition>.
-<code>
-$this->load->helper('cookie');
-</code>
-
 ### Set a cookie.
 The **cookie::set()** method takes multiple parameters, Only the cookie name and value are required.<br />
 You may pass parameters to the set method as discrete values:
