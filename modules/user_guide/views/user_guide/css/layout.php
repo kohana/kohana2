@@ -10,7 +10,7 @@ Default Styles
 */
 body { background: #f7fbf1; color: #111; font-size: 82%; line-height: 140%; font-family: "Lucida Grande", Arial, Verdana, sans-serif; }
 /* Hacks for Firefox and Safari */
-body { text-shadow: 0 0 0 #000; -moz-opacity: 0.999999; }
+body > div { text-shadow: 0 0 0 #000; -moz-opacity: 0.999999; }
 a { color: #449; text-decoration: none; }
 h1 { border-bottom: solid 1px #999; font-size: 2.5em; text-align: center; color: #b43f11; }
 h1, h2, h3, h4, h5, h6 { padding: 0.5em 0; margin-bottom: 0.2em; }
@@ -34,7 +34,7 @@ Template Styles
 #menu li ul a:hover { font-weight: bold; color: #2f4f14; }
 #menu li ul li:before { content: "«"; }
 #menu li span { text-shadow: 1px 1px 1px #333; font-size: 1.3em; cursor: pointer; }
-* html body #menu { text-shadow: none; } /* Remove the text shadow in IE6 */
+* html body #menu li span { text-shadow: 0 0 0 transparent; } /* Remove the text shadow in IE6 */
 #body { padding: 0.3em 1em; background: #fff; }
 #body ol, #body ul { margin: 1em; margin-left: 2.5em; }
 #body ol { list-style: decimal; }
