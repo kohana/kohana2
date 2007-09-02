@@ -40,6 +40,7 @@ Template Styles
 #body ol { list-style: decimal; }
 #body ul { list-style: circle; }
 #body li { padding: 0.1em 0; }
+#body code { background: #eee; font-size: 1.1em; border: dotted 1px; padding: 0.5em; font-family: monospace; display: block; }
 #footer { padding: 0 1em; background: #fff; line-height: 2em; }
 #loading { position: absolute; top: 0; right: 0; z-index: 9999; width: 32px; height: 32px; background: transparent url(spinner.gif) center center no-repeat; }
 /*

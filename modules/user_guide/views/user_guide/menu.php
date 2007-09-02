@@ -44,6 +44,7 @@ $menus = array
 	),
 	'Helpers' => array
 	(
+		'Cookie',
 		'File',
 		'Html',
 		'Text',
