@@ -40,7 +40,7 @@ enable_hooks
 
 ## Configuration Files
 
-The following configuration files are reserved for Kohana components.:
+The following configuration files are reserved for Kohana components:
 
 <file>config</file>
 : Global Kohana configuration
