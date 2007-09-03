@@ -7,7 +7,7 @@
 | Upload class to help identify allowed file types.
 */
 
-$mimes = array
+$config = array
 (
 	'ai'    => array('application/postscript'),
 	'aif'   => array('audio/x-aiff'),
@@ -64,7 +64,7 @@ $mimes = array
 	'png'   => array('image/png', 'image/x-png'),
 	'ppt'   => array('application/powerpoint'),
 	'ps'    => array('application/postscript'),
-	'psd'   => array('application/x-photoshop'),
+	'psd'   => array('application/x-photoshop', 'image/x-photoshop'),
 	'qt'    => array('video/quicktime'),
 	'ra'    => array('audio/x-realaudio'),
 	'ram'   => array('audio/x-pn-realaudio'),

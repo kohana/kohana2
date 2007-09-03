@@ -5,7 +5,7 @@
 | Base Site URL
 | -------------------------------------------------------------------------
 |
-| URL to your CodeIgniter root. Example: http://mysite.com/kohana/
+| URL to your Kohana installation. Example: http://your-site.com/kohana/
 |
 */
 $config['base_url'] = 'http://'.$_SERVER['SERVER_NAME'].'/kohana/';
@@ -35,6 +35,12 @@ $config['include_paths'] = array
 
 $config['enable_hooks'] = FALSE;
 
-$config['subclass_prefix'] = 'MY_';
+$config['extension_prefix'] = 'MY_';
 
 $config['timezone'] = '';
+
+$config['autoload'] = array
+(
+	'libraries' => '',
+	'models'    => ''
+);
