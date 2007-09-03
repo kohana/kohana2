@@ -1,11 +1,30 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 /**
+ * Kohana
+ *
+ * A secure and lightweight open source web application framework for PHP5+
+ *
  * $Id$
  *
+ * @package          Kohana
+ * @author           Kohana Team
+ * @copyright        Copyright (c) 2007 Kohana Team
+ * @link             http://kohanaphp.com
+ * @license          http://kohanaphp.com/license.html
+ * @since            Version 2.0
  * @filesource
  */
-// Kohana version
+
+// ----------------------------------------------------------------------------
+
+/**
+ * Kohana Bootstrapping
+ *
+ * $Id$
+ */
+
 define('KOHANA_VERSION', '2.0');
+
 // Kohana benchmarks are prefixed by a random string to prevent collisions
 define('SYSTEM_BENCHMARK', uniqid(rand(1,100)));
 

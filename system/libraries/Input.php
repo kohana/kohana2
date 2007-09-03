@@ -5,13 +5,13 @@
  * An open source application development framework for PHP 4.3.2 or newer
  *
  * NOTE: This file has been modified from the original CodeIgniter version for
- * the Kohana framework by the Kohana Development Team.
+ * the Kohana framework by the Kohana Team.
  *
  * @package          Kohana
- * @author           Kohana Development Team
- * @copyright        Copyright (c) 2007, Kohana Framework Team
+ * @author           Kohana Team
+ * @copyright        Copyright (c) 2007 Kohana Team
  * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/user_guide/license.html
+ * @license          http://kohanaphp.com/user_guide/kohana/license.html
  * @since            Version 1.0
  * @orig_package     CodeIgniter
  * @orig_author      Rick Ellis

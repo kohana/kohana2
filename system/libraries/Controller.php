@@ -1,6 +1,23 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
-/* $Id$ */
+<?php defined('SYSPATH') or die('No direct script access.');
+/**
+ * Kohana: The swift, secure, and lightweight PHP5 framework
+ *
+ * @package          Kohana
+ * @author           Kohana Team
+ * @copyright        Copyright (c) 2007 Kohana Team
+ * @link             http://kohanaphp.com
+ * @license          http://kohanaphp.com/user_guide/kohana/license.html
+ * @since            Version 1.0
+ * @orig_package     CodeIgniter
+ * @orig_author      Rick Ellis
+ * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
+ * @orig_license     http://www.codeignitor.com/user_guide/license.html
+ * @filesource
+ */
 
+// ------------------------------------------------------------------------
+
+/* $Id$ */
 
 class Controller_Core extends Kohana {
 

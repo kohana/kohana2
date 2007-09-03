@@ -5,13 +5,13 @@
  * An open source application development framework for PHP 4.3.2 or newer
  *
  * NOTE: This file has been modified from the original CodeIgniter version for
- * the Kohana framework by the Kohana Development Team.
+ * the Kohana framework by the Kohana Team.
  *
  * @package          Kohana
- * @author           Kohana Development Team
- * @copyright        Copyright (c) 2007, Kohana Framework Team
+ * @author           Kohana Team
+ * @copyright        Copyright (c) 2007 Kohana Team
  * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/user_guide/license.html
+ * @license          http://kohanaphp.com/user_guide/kohana/license.html
  * @since            Version 1.0
  * @filesource
  */
@@ -41,7 +41,7 @@ class View_Core {
 
 	public function __construct($name, $data = NULL)
 	{
-		if (preg_match('/\.(gif|jpg|png|swf)$/Di', $name, $type))
+		if (preg_match('/\.(gif|jpg|png|swf|js|css)$/Di', $name, $type))
 		{
 			$type = $type[1];
 
@@ -97,41 +97,48 @@ class View_Core {
 		return $this->render();
 	}
 
-	public function render($print = FALSE, $callback = FALSE)
+	public function render($print = FALSE, $renderer = FALSE)
 	{
-		if ($this->kohana_filetype == EXT)
+		if ($this->kohana_filetype === EXT)
 		{
+			// Load the view in the controller for access to $this
 			$output = Kohana::instance()->kohana_include_view($this->kohana_filename, $this->data);
 
-			if ($callback != FALSE)
+			// Pass the output through the user defined renderer
+			if ($renderer == TRUE AND is_callable($renderer, FALSE, $renderer))
 			{
-				$output = Kohana::callback($callback, $output);
+				$output = $renderer($output);
 			}
 
+			// Display the output
 			if ($print == TRUE)
 			{
-
 				print $output;
-			}
-			else
-			{
-				return $output;
+				return;
 			}
 		}
 		else
 		{
+			// Send the filetype header
 			header('Content-type: '.$this->kohana_filetype);
 
+			// Display the output
 			if ($print == TRUE)
 			{
-				fpassthru(($file = fopen($this->kohana_filename, 'rb')));
-				fclose($file);
+				if ($file = fopen($this->kohana_filename, 'rb'))
+				{
+					fpassthru($file);
+					fclose($file);
+				}
+				return;
 			}
-			else
-			{
-				return file_get_contents($this->kohana_filename);
-			}
+
+			// Fetch the file contents
+			$output = file_get_contents($this->kohana_filename);
 		}
+
+		// Output has not been printed, return it
+		return $output;
 	}
 
 } // End View Class

@@ -1,4 +1,28 @@
 // $Id$
+// Special Kohana functions
+var Kohana = {
+	loading: false,
+	waiting: false,
+	toggleLoading: function(on) {
+		// If we are waiting for an animation, retry in 5ms
+		if (Kohana.waiting == true) {
+			setTimeout('Kohana.toggleLoading('+on+')', 20);
+			return false;
+		}
+		// Toggle waiting state
+		Kohana.waiting = true;
+		if (on == true) { // Show loading
+			this.loading.slideDown(250, function() {
+				Kohana.waiting = false;
+			});
+		} else { // Hide loading
+			this.loading.slideUp(250, function() {
+				Kohana.waiting = false;
+			});
+		}
+	}
+};
+// Behavior attachment
 $(document).ready(function(){
 	// Menu opacity hover effect, much fancy pants!
 	$('#menu').css('opacity', 0.7).hover(function(){
@@ -48,27 +72,6 @@ $(document).ready(function(){
 		});
 		return false;
 	});
+	// For syntax highlighting
+	prettyPrint();
 });
-// Special Kohana functions
-var Kohana = {
-	loading: false,
-	waiting: false,
-	toggleLoading: function(on) {
-		// If we are waiting for an animation, retry in 5ms
-		if (Kohana.waiting == true) {
-			setTimeout('Kohana.toggleLoading('+on+')', 20);
-			return false;
-		}
-		// Toggle waiting state
-		Kohana.waiting = true;
-		if (on == true) { // Show loading
-			this.loading.slideDown(250, function() {
-				Kohana.waiting = false;
-			});
-		} else { // Hide loading
-			this.loading.slideUp(250, function() {
-				Kohana.waiting = false;
-			});
-		}
-	}
-};

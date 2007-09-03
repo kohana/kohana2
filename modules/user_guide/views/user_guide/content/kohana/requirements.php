@@ -1,31 +1,24 @@
-Article status [Draft] requires [Editing] 
 # Basic Requirements
 
-## Mandatory requirements
-1. An Operating system capable of supporting [Unicode](http://unicode.org/) character sets.
-  1. Supported OS
-      1. Most Unix or Unix clones (Linux, BSD)
-	  2. Windows (XP, Vista, Windows 2000)
-	  3. Mac OS X
+Article status [Draft] requires [Editing]
 
-2. An HTTP Server.
- 1. Supported Servers (Any server capable of supporting CGI should work)
-     1. Apache httpd, version 1.1.37 or higher. (With CGI, FastCGI or Mod_php)
-2. PHP Hypertext Processor, version 5.2.0 or higher. (Earlier versions are *not* supported)
+Kohana will run in almost any environment with minimal configuration. There are a few minimum server requirements:
 
+ 1. [Unicode](http://unicode.org/) support
+ 2. PHP version >= 5.1
+ 3. An HTTP server. Kohana is known to work with:
+   * Apache 1.x
+   * Apache 2.x
+   * lighttpd
+   * IIS version >= 5
 
-## Optional requirements 
-1. A Relational Database.
- 1. Any database server currently supported by the PHP PDO database layer.
-     1. MySQL and MySQLi
-     2. SQLite3
-     3. Postgres
+Optionally, if you wish to use a database with Kohana, you will need a database server. Kohana use <?php echo html::anchor('http://php.net/pdo', 'PDO') ?> to connect to your database. All of the PDO <?php echo html::anchor('http://php.net/manual/en/ref.pdo.php#pdo.drivers', 'supported databases') ?> are supported by Kohana, provided that your server has the driver available.
 
-2. The [mbstring](http://php.net/mbstring) extension.
-    * It will speed up the utf8 class
-    * However it must *not* be overloading the original string functions
+## Recommended Extensions
 
+ 1. [mbstring](http://php.net/mbstring) will dramatically speed up Kohana's UTF-8 functions
+ 2. [mcrypt](http://php.net/mcrypt) will dramatically speed up Kohana's encryption and hashing routines
 
-*[HTTP]: Hyper Text Transfer Protocol
-*[PDO]: PHP Database Object
-*[PHP]: PHP Hypertext Processor
+<?php echo $this->load->view('user_guide/content/abbr') ?>
+
+<?php /* $Id$ */ ?>

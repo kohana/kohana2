@@ -4,15 +4,19 @@ class Loader_Core {
 
 	function __construct()
 	{
-		foreach(Config::load('autoload') as $type => $load)
+		foreach(Config::item('core.autoload') as $type => $load)
 		{
-			if (count($load) < 1) continue;
+			if ($load == FALSE) continue;
 
-			switch($type)
+			foreach(explode(',', $load) as $name)
 			{
-				case 'helpers':
-					$this->helper($load);
-				break;
+				if (($name = trim($name)) == FALSE) continue;
+
+				switch($type)
+				{
+					case 'libraries': $this->library($name); break;
+					case 'models':    $this->model($name);   break;
+				}
 			}
 		}
 	}
@@ -24,8 +28,10 @@ class Loader_Core {
 
 	function helper($name)
 	{
-		if (is_array($name) AND $helpers = $name)
+		if (is_array($name))
 		{
+			$helpers = $name;
+
 			foreach($helpers as $name)
 			{
 				$this->helper($name);

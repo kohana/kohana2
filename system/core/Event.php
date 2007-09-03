@@ -5,8 +5,8 @@
  * A secure and lightweight open source web application framework.
  *
  * @package          Kohana
- * @author           Kohana Development Team
- * @copyright        Copyright (c) 2007, Kohana Framework Team
+ * @author           Kohana Team
+ * @copyright        Copyright (c) 2007 Kohana Team
  * @link             http://kohanaphp.com
  * @license          http://kohanaphp.com/license.html
  * @since            Version 2.0
@@ -19,7 +19,7 @@
  * Kohana Event class
  *
  * @category    Core
- * @author      Kohana Development Team
+ * @author      Kohana Team
  * @link        http://kohanaphp.com/user_guide/core_classes.html
  */
 final class Event {

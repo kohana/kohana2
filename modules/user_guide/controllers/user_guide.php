@@ -72,7 +72,7 @@ class User_Guide_Controller extends Controller {
 
 	public function _tags()
 	{
-		Kohana::$output = preg_replace_callback('!<(benchmark|event|file|definition)>.+?</[^>]+>!', array($this, '_tag_update'), Kohana::$output);
+		Kohana::$output = preg_replace_callback('!<(benchmark|config|definition|event|file)>.+?</[^>]+>!', array($this, '_tag_update'), Kohana::$output);
 	}
 
 	public function _tag_update($match)
@@ -84,14 +84,16 @@ class User_Guide_Controller extends Controller {
 
 		switch($tag)
 		{
-			case 'definition':
-				return html::anchor('user_guide/general/definitions?search='.$type, $type);
-			case 'file':
-				return '<tt class="filename">'.$type.EXT.'</tt>';
 			case 'benchmark':
 				return isset($this->lang['benchmark'][$type]) ? '<abbr title="Benchmark: '.$this->lang['benchmark'][$type].'">'.$type.'</abbr>' : $type;
+			case 'config':
+				return '<tt class="config">'.$type.'</tt>';
+			case 'definition':
+				return html::anchor('user_guide/general/definitions?search='.$type, $type);
 			case 'event':
 				return isset($this->lang['event'][$type]) ? '<abbr title="Event: '.$this->lang['event'][$type].'">'.$type.'</abbr>' : $type;
+			case 'file':
+				return '<tt class="filename">'.$type.EXT.'</tt>';
 		}
 	}
 
@@ -99,14 +101,14 @@ class User_Guide_Controller extends Controller {
 	{
 		header('Content-type: text/javascript');
 
-		$this->_media('js', preg_replace('/\.js$/D', '', $filename));
+		$this->_media('js', $filename);
 	}
 
 	public function css($filename)
 	{
 		header('Content-type: text/css');
 
-		$this->_media('css', preg_replace('/\.css$/D', '', $filename));
+		$this->_media('css', $filename);
 	}
 
 	private function _media($type, $filename)

@@ -1,17 +1,18 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana
- *
- * A secure and lightweight open source web application framework.
+ * Kohana: The swift, secure, and lightweight PHP5 framework
  *
  * @package          Kohana
- * @author           Kohana Development Team
- * @copyright        Copyright (c) 2007, Kohana Framework Team
+ * @author           Kohana Team
+ * @copyright        Copyright (c) 2007 Kohana Team
  * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/license.html
- * @since            Version 2.0
+ * @license          http://kohanaphp.com/user_guide/kohana/license.html
+ * @since            Version 1.0
+ * @orig_package     CodeIgniter
+ * @orig_author      Rick Ellis
+ * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
+ * @orig_license     http://www.codeignitor.com/user_guide/license.html
  * @filesource
- * $Id$
  */
 
 // ----------------------------------------------------------------------------
@@ -19,8 +20,12 @@
 /**
  * Configuration class
  *
- * @category    Core
- * @author      Kohana Development Team
+ * $Id$
+ *
+ * @package     Kohana
+ * @subpackage  Core
+ * @category    Config
+ * @author      Kohana Team
  * @link        http://kohanaphp.com/user_guide/core_classes.html
  */
 final class Config {

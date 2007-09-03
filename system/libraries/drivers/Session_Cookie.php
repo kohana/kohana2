@@ -5,10 +5,10 @@
  * An open source application development framework for PHP 4.3.2 or newer
  *
  * @package          Kohana
- * @author           Kohana Development Team
- * @copyright        Copyright (c) 2007, Kohana Framework Team
+ * @author           Kohana Team
+ * @copyright        Copyright (c) 2007 Kohana Team
  * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/user_guide/license.html
+ * @license          http://kohanaphp.com/user_guide/kohana/license.html
  * @since            Version 1.0
  * @filesource
  */

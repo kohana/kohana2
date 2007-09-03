@@ -1,7 +1,35 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
+/**
+ * Kohana: The swift, secure, and lightweight PHP5 framework
+ *
+ * @package          Kohana
+ * @author           Kohana Team
+ * @copyright        Copyright (c) 2007 Kohana Team
+ * @link             http://kohanaphp.com
+ * @license          http://kohanaphp.com/user_guide/kohana/license.html
+ * @since            Version 1.0
+ * @orig_package     CodeIgniter
+ * @orig_author      Rick Ellis
+ * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
+ * @orig_license     http://www.codeignitor.com/user_guide/license.html
+ * @filesource
+ */
 
+// ------------------------------------------------------------------------
+
+/**
+ * HTML Generation Helper
+ *
+ * $Id$
+ *
+ * @package     Kohana
+ * @subpackage  Helpers
+ * @category    Helpers
+ * @author      Kohana Team
+ * @link        http://kohanaphp.com/user_guide/helpers/html.html
+ */
 class html {
-	
+
 	/**
 	 * Convert special characters to HTML entities
 	 *
@@ -12,21 +40,21 @@ class html {
 	 */
 	public static function specialchars($str, $double_encode = TRUE)
 	{
-		// Do encode existing html entities (default)
-		if ($double_encode)
+		// Do encode existing HTML entities (default)
+		if ($double_encode == TRUE)
 			return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
-		
-		// Do not encode existing html entities
+
+		// Do not encode existing HTML entities
 		// From PHP 5.2.3 this functionality is built-in, otherwise use a regex
 		if (version_compare(PHP_VERSION, '5.2.3', '>='))
 			return htmlspecialchars($str, ENT_QUOTES, 'UTF-8', FALSE);
-		
+
 		$str = preg_replace('/&(?!(?:#\d+|[a-z]+);)/i', '&amp;', $str);
-		$str = str_replace(array('<', '>', '\'', '"'), array('&lt;', '&gt;', '&#039;', '&quot;'), $str);
-		
+		$str = str_replace(array('<', '>', '\'', '"'), array('&lt;', '&gt;', '&#39;', '&quot;'), $str);
+
 		return $str;
 	}
-	
+
 	/**
 	 * HTML anchor generator
 	 *
@@ -40,8 +68,8 @@ class html {
 	{
 		if (strpos($uri, '://') === FALSE)
 		{
-			$id = ''; // Anchor #id
-			$qs = ''; // Anchor ?query=string
+			$id = ''; // anchor#id
+			$qs = ''; // anchor?query=string
 
 			if (($start = strpos($uri, '?')) !== FALSE)
 			{
@@ -62,11 +90,12 @@ class html {
 
 			$site_url = url::site($uri).$qs.$id;
 		}
-
-		if ($title == '')
+		else
 		{
-			$title = $site_url;
+			$site_url = $uri;
 		}
+
+		$title = ($title == FALSE) ? $site_url : str_replace(' ', '&nbsp;', $title);
 
 		$attributes = ($attributes == TRUE) ? self::attributes($attributes) : '';
 

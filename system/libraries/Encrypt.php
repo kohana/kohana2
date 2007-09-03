@@ -1,17 +1,12 @@
-<?php defined('SYSPATH') or die('No direct script access allowed');
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana
- *
- * An open source application development framework for PHP 4.3.2 or newer
- *
- * NOTE: This file has been modified from the original CodeIgniter version for
- * the Kohana framework by the Kohana Development Team.
+ * Kohana: The swift, secure, and lightweight PHP5 framework
  *
  * @package          Kohana
- * @author           Kohana Development Team
- * @copyright        Copyright (c) 2007, Kohana Framework Team
+ * @author           Kohana Team
+ * @copyright        Copyright (c) 2007 Kohana Team
  * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/user_guide/license.html
+ * @license          http://kohanaphp.com/user_guide/kohana/license.html
  * @since            Version 1.0
  * @orig_package     CodeIgniter
  * @orig_author      Rick Ellis
@@ -23,15 +18,15 @@
 // ------------------------------------------------------------------------
 
 /**
- * Kohana Encryption Class
+ * Encryption Class
  *
- * Provides two-way keyed encoding using XOR Hashing and mcrypt
+ * $Id$
  *
- * @package     Kohana
- * @subpackage  Libraries
- * @category    Libraries
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/libraries/encryption.html
+ * @package        Kohana
+ * @subpackage     Libraries
+ * @category       Encryption
+ * @author         Rick Ellis, Kohana Team
+ * @link           http://kohanaphp.com/user_guide/libraries/encryption.html
  */
 class Encrypt_Core {
 

@@ -6,9 +6,11 @@
 <title>Kohana User Guide</title>
 
 <link type="text/css" rel="stylesheet" href="<?php echo url::base(TRUE) ?>user_guide/css/layout.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo url::base(TRUE) ?>user_guide/css/prettify.css" />
 
 <script type="text/javascript" src="<?php echo url::base(TRUE) ?>user_guide/js/jquery.js"></script>
 <script type="text/javascript" src="<?php echo url::base(TRUE) ?>user_guide/js/plugins.js"></script>
+<script type="text/javascript" src="<?php echo url::base(TRUE) ?>user_guide/js/prettify.js"></script>
 <script type="text/javascript" src="<?php echo url::base(TRUE) ?>user_guide/js/effects.js"></script>
 
 </head>
@@ -27,7 +29,7 @@
 
 <!-- @start Footer -->
 <div id="footer">
-<p id="copyright">copyright (c) <?php echo date('Y') ?> Kohana Team :: All rights reserved :: Rendered in {execution_time} seconds</p>
+<p id="copyright">copyright (c) <?php echo date('Y') ?> Kohana Team :: All rights reserved :: Rendered in {execution_time} seconds using {memory_usage}MB of memory</p>
 </div>
 <!-- @end Footer -->
 

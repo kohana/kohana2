@@ -2,13 +2,13 @@
 /**
  * Kohana
  *
- * A secure and lightweight open source web application framework for PHP5
+ * A secure and lightweight open source web application framework for PHP5+
  *
  * $Id$
  *
  * @package          Kohana
- * @author           Kohana Development Team
- * @copyright        Copyright (c) 2007, Kohana Framework Team
+ * @author           Kohana Team
+ * @copyright        Copyright (c) 2007 Kohana Team
  * @link             http://kohanaphp.com
  * @license          http://kohanaphp.com/license.html
  * @since            Version 2.0
@@ -21,7 +21,7 @@
  * Kohana class
  *
  * @category    Core
- * @author      Kohana Development Team
+ * @author      Kohana Team
  * @link        http://kohanaphp.com/user_guide/core_classes.html
  */
 class Kohana {
@@ -82,7 +82,7 @@ class Kohana {
 	 * @access  public
 	 * @return  void
 	 */
-	public static function setup()
+	final public static function setup()
 	{
 		static $run;
 
@@ -98,8 +98,10 @@ class Kohana {
 		// Set autoloader
 		spl_autoload_register(array('Kohana', 'auto_load'));
 
+		// Define extra error constants
 		defined('E_RECOVERABLE_ERROR')  or define('E_RECOVERABLE_ERROR',  4096);
 		defined('E_UNCAUGHT_EXCEPTION') or define('E_UNCAUGHT_EXCEPTION', 4097);
+		defined('E_KOHANA_EXCEPTION')   or define('E_KOHANA_EXCEPTION',   4098);
 
 		// Set error types, format: CONSTANT => array($log_level, $message)
 		self::$error_types = array
@@ -130,6 +132,7 @@ class Kohana {
 		if (function_exists('date_default_timezone_set'))
 		{
 			// Set default timezone, due to increased validation of date settings
+			// which cause massive amounts of E_NOTICEs to be generated
 			$timezone = Config::item('core.timezone');
 			$timezone = ($timezone == FALSE) ? @date_default_timezone_get() : $timezone;
 
@@ -149,7 +152,7 @@ class Kohana {
 	 * @access public
 	 * @return void
 	 */
-	public static function & instance()
+	final public static function & instance()
 	{
 		if (self::$instance == FALSE)
 		{
@@ -173,7 +176,7 @@ class Kohana {
 	 * @param  string
 	 * @return string
 	 */
-	public static function output($output)
+	final public static function output($output)
 	{
 		// Fetch memory usage in MB
 		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
@@ -181,9 +184,12 @@ class Kohana {
 		// Bind the output to this output
 		self::$output =& $output;
 
-		// Run the pre_output Event
+		// Run the pre_output event
+		// --------------------------------------------------------------------
 		// This can be used for functions that require completion before headers
-		// are sent. One example is cookies, which are sent with the headers.
+		// are sent. One example is cookies, which are sent with the headers,
+		// and will trigger errors if you try to set them after headers.
+		// --------------------------------------------------------------------
 		Event::run('system.pre_output');
 
 		// Replace the global template variables
@@ -203,6 +209,7 @@ class Kohana {
 			self::$output
 		);
 
+		// Return the final output
 		return self::$output;
 	}
 
@@ -264,13 +271,11 @@ class Kohana {
 	 */
 	public static function exception_handler($exception)
 	{
-
-		/**
-		 * @todo This needs to choose a i18n message based on the type of exception + message
-		 */
 		self::error_handler
 		(
-			E_UNCAUGHT_EXCEPTION,
+			// Choose the exception type
+			(get_class($exception) == 'Kohana_Exception') ? E_KOHANA_EXCEPTION : E_UNCAUGHT_EXCEPTION,
+			// Pass in the exception details
 			$exception->getMessage(),
 			$exception->getFile(),
 			$exception->getLine()
@@ -321,7 +326,7 @@ class Kohana {
 
 		if ($type == 'libraries')
 		{
-			if ($extension = self::find_file('libraries', Config::item('core.subclass_prefix').$class))
+			if ($extension = self::find_file('libraries', Config::item('core.extension_prefix').$class))
 			{
 				require $extension;
 			}

@@ -10,7 +10,7 @@
  * NOTE: This file is licensed differently from the rest of Kohana. As a port of
  * phputf8, this library is released under the LGPL to prevent license violations.
  *
- * @author           Kohana Development Team
+ * @author           Kohana Team
  * @copyright        Copyright (c) 2007 Kohana Framework Team
  * @link             http://kohanaphp.com
  * @link             http://phputf8.sourceforge.net
