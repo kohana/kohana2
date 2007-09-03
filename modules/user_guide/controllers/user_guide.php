@@ -36,9 +36,12 @@ class User_Guide_Controller extends Controller {
 		// For Kohana's custom tags to be handled properly
 		Event::add('system.pre_output', array($this, '_tags'));
 
+		// For i18n
+		$locale = Config::item('core.locale', TRUE);
+
 		// Set the view that will be loaded
 		$category = ($category == FALSE)  ? 'kohana' : $category;
-		$content  = rtrim('user_guide/content/'.$category.'/'.$section, '/');
+		$content  = rtrim('user_guide/'.$locale.'content/'.$category.'/'.$section, '/');
 
 		// Load session for AJAX page storage
 		$this->load->library('session');
@@ -61,8 +64,8 @@ class User_Guide_Controller extends Controller {
 			if ($ajax_return = $this->session->get_once('ajax_return'))
 				url::redirect($ajax_return);
 			
-			$template = $this->load->view('user_guide/template');
-			$template->menu   = $this->load->view('user_guide/menu', array('active_category' => $category, 'active_section' => $section));
+			$template          = $this->load->view('user_guide/'.$locale.'template');
+			$template->menu    = $this->load->view('user_guide/'.$locale.'menu', array('active_category' => $category, 'active_section' => $section));
 			$template->content = $this->load->view($content)->render(FALSE, 'Markdown');
 
 			// Display output

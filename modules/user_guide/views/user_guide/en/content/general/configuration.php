@@ -69,5 +69,5 @@ The following configuration files are reserved for Kohana components:
 <file>session</file>
 : <?php echo html::anchor('user_guide/libraries/session', 'Session Library') ?> 
 
-<?php echo $this->load->view('user_guide/content/abbr') ?>
+<?php echo $this->load->view('user_guide/en/content/abbr') ?>
 <?php /* $Id$ */ ?>
