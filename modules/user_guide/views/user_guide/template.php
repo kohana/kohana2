@@ -36,7 +36,7 @@ echo html::script(array
 <ul>
 <?php
 
-foreach(Kohana::lang('user_guide.menu') as $category => $menu):
+foreach(Kohana::lang('user_guide_menu') as $category => $menu):
 
 	$active = (strtolower($category) == $active_category) ? ' active' : '';
 
