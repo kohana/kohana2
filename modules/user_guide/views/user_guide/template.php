@@ -36,20 +36,20 @@ echo html::script(array
 <ul>
 <?php
 
-foreach(Kohana::lang('user_guide_menu') as $category => $menu):
+foreach(Kohana::lang('user_guide_menu') as $cat => $menu):
 
-	$active = (strtolower($category) == $active_category) ? ' active' : '';
+	$active = (strtolower($cat) == $category) ? ' active' : '';
 
 ?>
-<li class="first<?php echo $active ?>"><span><?php echo $category ?></span><ul>
+<li class="first<?php echo $active ?>"><span><?php echo $cat ?></span><ul>
 <?php
 
-	foreach($menu as $section):
+	foreach($menu as $sec):
 
-		$active = (strtolower($section) == $active_section) ? 'lite' : '';
+		$active = (strtolower($sec) == $section) ? 'lite' : '';
 
 ?>
-<li class="<?php echo $active ?>"><?php echo html::anchor(strtolower('user_guide/'.$category.'/'.$section), $section) ?></li>
+<li class="<?php echo $active ?>"><?php echo html::anchor(strtolower('user_guide/'.$language.'/'.$cat.'/'.$sec), $sec) ?></li>
 <?php
 
 	endforeach;
@@ -64,11 +64,13 @@ endforeach;
 </ul>
 </div>
 <!-- @end Menu -->
+
 <!-- @start Body -->
 <div id="body">
 <?php echo $content ?>
 </div>
 <!-- @end Body -->
+
 <!-- @start Footer -->
 <div id="footer"><p id="copyright"><?php echo sprintf(Kohana::lang('user_guide.copyright'), date('Y')) ?></p></div>
 <!-- @end Footer -->

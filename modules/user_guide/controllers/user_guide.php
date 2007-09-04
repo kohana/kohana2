@@ -20,30 +20,47 @@ class User_Guide_Controller extends Controller {
 				'system.shutdown' => 'Last event called before Kohana stops processing the current request'
 			)
 		);
+		
+		if ($this->uri->segment(2) == FALSE)
+			url::redirect('user_guide/'.Config::item('core.locale').'/kohana/about');
 	}
 
 	public function _remap()
 	{
-		$category = strtolower($this->uri->segment(2));
-		$section  = strtolower($this->uri->segment(3));
+		$language = strtolower($this->uri->segment(2));
+		$category = strtolower($this->uri->segment(3));
+		$section  = strtolower($this->uri->segment(4));
 
 		// Media resource loading
-		if ($category === 'js' OR $category === 'css')
+		if ($language === 'js' OR $language === 'css')
 		{
-			return $this->$category($section);
+			return $this->$language($category);
+		}
+		elseif ($section == FALSE)
+		{
+			url::redirect('user_guide/'.$language.'/kohana/about');
 		}
 
 		// Set the view that will be loaded
 		$category = ($category == FALSE)  ? 'kohana' : $category;
-		$content  = rtrim('user_guide/'.Config::item('core.locale', TRUE).$category.'/'.$section, '/');
+		$content  = 'user_guide/'.$language.'/'.$category.'/'.$section;
+		$content  = rtrim($content, '/');
 
-		// Display output
-		$this->load->view('user_guide/template', array
-		(
-			'active_category' => $category,
-			'active_section'  => $section,
-			'content'         => $this->load->view($content)->render(FALSE, array($this, '_tags'))
-		))->render(TRUE);
+		try
+		{
+			// Display output
+			$this->load->view('user_guide/template', array
+			(
+				'category' => $category,
+				'section'  => $section,
+				'language' => $language,
+				'content'  => $this->load->view($content)->render(FALSE, array($this, '_tags'))
+			))->render(TRUE);
+		}
+		catch (Kohana_Exception $exception)
+		{
+			trigger_error('The Kohana User Guide has not been translated into the requested language.', E_USER_ERROR);
+		}
 	}
 
 	public function _tags($output)

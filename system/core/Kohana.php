@@ -113,7 +113,7 @@ class Kohana {
 			E_USER_ERROR         => array( 1, 'Fatal Error'),
 			E_PARSE              => array( 1, 'Syntax Error'),
 			E_WARNING            => array( 2, 'Warning Message'),
-			E_USER_WARNING       => array( 2, 'Warning Warning'),
+			E_USER_WARNING       => array( 2, 'Warning Message'),
 			E_STRICT             => array( 3, 'Strict Mode Error'),
 			E_NOTICE             => array( 3, 'Runtime Message')
 		);
