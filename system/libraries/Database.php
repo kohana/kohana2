@@ -99,6 +99,26 @@ class Database_Core {
 		$this->pdo = new PDO($type.':host='.$host.';dbname='.$database, $user, $pass, $config);
 	}
 
+	public function query($sql = NULL)
+	{
+		if ($sql == NULL)
+			return FALSE;
+		
+		$sth = $this->pdo->prepare($sql);
+		$sth->execute();
+		if ($sth->columnCount() == 0)
+		{
+			// there is no result set, so the statement modifies rows, return the number of rows
+			return $sth->rowCount();
+		}
+		else
+		{
+			// there is a result set, so return them
+			return $sth->fetch(PDO::FETCH_NUM);
+		}
+	}
+	
+	
 	/**
 	 * Select
 	 *
