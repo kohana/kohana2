@@ -40,12 +40,13 @@ class User_Guide_Controller extends Controller {
 		$category = ($category == FALSE)  ? 'kohana' : $category;
 		$content  = rtrim('user_guide/'.$locale.'content/'.$category.'/'.$section, '/');
 
-		$template          = $this->load->view('user_guide/'.$locale.'template');
-		$template->menu    = $this->load->view('user_guide/'.$locale.'menu', array('active_category' => $category, 'active_section' => $section));
-		$template->content = $this->load->view($content)->render(FALSE, array($this, '_tags'));
-
 		// Display output
-		$template->render(TRUE);
+		$this->load->view('user_guide/'.$locale.'template', array
+		(
+			'active_category' => $category,
+			'active_section'  => $section,
+			'content'         => $this->load->view($content)->render(FALSE, array($this, '_tags'))
+		))->render(TRUE);
 	}
 
 	public function _tags($output)

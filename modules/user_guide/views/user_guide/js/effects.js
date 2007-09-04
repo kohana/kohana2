@@ -1,31 +1,23 @@
 // $Id$
 $(document).ready(function(){
-	// Menu opacity hover effect, much fancy pants!
-	$('#menu').css('opacity', 0.7).hover(function(){
-		$(this).fadeTo(100, 1);
-	}, function(){
-		$(this).fadeTo(300, 0.7)
-	});
+	// Opacity animations in an element with an opacity of 1.0 cause Firefox bugs
+	$('#menu').css('opacity', 0.9999);
 	// Apply menu sliding effect
 	$('#menu li.first').click(function(){
-		// Define the current menu and the clicked menu
-		var curr = $('#menu li.active');
-		var self = $(this);
 		// Clicks to the same menu will do nothing
-		if (self.is('.active') == false)
-		{
-			// Hide the current elements
-			curr.removeClass('active')
+		if ($(this).is('.active') == false){
+			// Hide the current submenu
+			$('#menu li.active').removeClass('active')
 			.find('ul')
-			.slideUp(250);
-			// Show the new elements
-			self.addClass('active')
+			.animate({height: 'hide', opacity: 'hide'}, 200, 'easeout');
+			// Show the clicked submenu
+			$(this).addClass('active')
 			.find('ul')
-			.slideDown(250);
+			.slideDown({height: 'show', opacity: 'show'}, 200, 'easein');
 		}
 	})
 	// Find and hide the sub menus that are not in the active menu
 	.not('.active').find('ul').hide();
 	// For syntax highlighting
-	prettyPrint();
+	if ($('.prettyprint').length) prettyPrint();
 });

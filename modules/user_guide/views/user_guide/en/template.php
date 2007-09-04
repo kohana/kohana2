@@ -1,36 +1,76 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//<?php echo strtoupper(Config::item('core.locale')) ?>" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo Config::item('core.locale') ?>" lang="<?php echo Config::item('core.locale') ?>">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>Kohana User Guide</title>
+<title><?php echo Kohana::lang('user_guide.title') ?></title>
 
-<link type="text/css" rel="stylesheet" href="<?php echo url::base(TRUE) ?>user_guide/css/layout.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo url::base(TRUE) ?>user_guide/css/prettify.css" />
+<?php
 
-<script type="text/javascript" src="<?php echo url::base(TRUE) ?>user_guide/js/jquery.js"></script>
-<script type="text/javascript" src="<?php echo url::base(TRUE) ?>user_guide/js/plugins.js"></script>
-<script type="text/javascript" src="<?php echo url::base(TRUE) ?>user_guide/js/prettify.js"></script>
-<script type="text/javascript" src="<?php echo url::base(TRUE) ?>user_guide/js/effects.js"></script>
+echo html::stylesheet(array
+(
+	'user_guide/css/layout',
+	'user_guide/css/prettify'
+), TRUE)
+
+?>
+
+<?php
+
+echo html::script(array
+(
+	'user_guide/js/jquery',
+	'user_guide/js/plugins',
+	'user_guide/js/prettify',
+	'user_guide/js/effects'
+), TRUE)
+
+?>
 
 </head>
 <body>
 <div id="container">
 
+<!-- @start Menu -->
 <div id="menu">
-<?php echo $menu ?>
-</div>
+<ul>
+<?php
 
+foreach(Kohana::lang('user_guide.menu') as $category => $menu):
+
+	$active = (strtolower($category) == $active_category) ? ' active' : '';
+
+?>
+<li class="first<?php echo $active ?>"><span><?php echo $category ?></span><ul>
+<?php
+
+	foreach($menu as $section):
+
+		$active = (strtolower($section) == $active_section) ? 'lite' : '';
+
+?>
+<li class="<?php echo $active ?>"><?php echo html::anchor(strtolower('user_guide/'.$category.'/'.$section), $section) ?></li>
+<?php
+
+	endforeach;
+
+?>
+</ul></li>
+<?php
+
+endforeach;
+
+?>
+</ul>
+</div>
+<!-- @end Menu -->
 <!-- @start Body -->
 <div id="body">
 <?php echo $content ?>
 </div>
 <!-- @end Body -->
-
 <!-- @start Footer -->
-<div id="footer">
-<p id="copyright">copyright (c) <?php echo date('Y') ?> Kohana Team :: All rights reserved :: Rendered in {execution_time} seconds using {memory_usage}MB of memory</p>
-</div>
+<div id="footer"><p id="copyright"><?php echo sprintf(Kohana::lang('user_guide.copyright'), date('Y')) ?></p></div>
 <!-- @end Footer -->
 
 </div>

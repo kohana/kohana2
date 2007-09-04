@@ -427,13 +427,18 @@ class Kohana {
 		}
 	}
 
-	public static function lang($type = FALSE, $name = TRUE)
+	public static function lang($type)
 	{
 		static $found = array();
 
-		// Throw an exception if the type is not specified
-		if ($type == FALSE)
-			throw new Kohana_Exception('A language message type must be used when calling <code>Kohan::lang()</code>.');
+		if (strpos($type, '.') !== FALSE)
+		{
+			list ($type, $name) = explode('.', $type);
+		}
+		else
+		{
+			$name = TRUE;
+		}
 
 		if ( ! isset($found[$type]))
 		{
@@ -530,11 +535,10 @@ class Kohana_Exception extends Exception {
 	protected $line = 0;
 	protected $code = 0;
 
-
 	function __construct($error)
 	{
 		// Fetch the error message
-		$message = Kohana::lang('exceptions', $error);
+		$message = Kohana::lang('exceptions.'.$error);
 
 		// Handle error messages that are not set
 		if ($message == '')

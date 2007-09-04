@@ -105,9 +105,9 @@ class View_Core {
 			$output = Kohana::instance()->kohana_include_view($this->kohana_filename, $this->data);
 
 			// Pass the output through the user defined renderer
-			if ($renderer == TRUE AND is_callable($renderer, FALSE, $renderer))
+			if ($renderer == TRUE AND is_callable($renderer, TRUE))
 			{
-				$output = $renderer($output);
+				$output = call_user_func($renderer, $output);
 			}
 
 			// Display the output

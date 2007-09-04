@@ -102,6 +102,54 @@ class html {
 		return '<a href="'.$site_url.'"'.$attributes.'>'.$title.'</a>';
 	}
 
+	public static function stylesheet($style, $index = FALSE, $media = FALSE)
+	{
+		$compiled = '';
+
+		if (is_array($style))
+		{
+			foreach($style as $name)
+			{
+				$compiled .= self::stylesheet($name, $index, $media)."\n";
+			}
+		}
+		else
+		{
+			$media = ($media == FALSE) ? '' : ' media="'.$media.'"';
+
+			$compiled = '<link rel="stylesheet" href="'.url::base($index).$style.'.css"'.$media.' />';
+		}
+
+		return $compiled;
+	}
+
+	/**
+	 * Script generator
+	 *
+	 * @access public
+	 * @param  mixed    String or array of script names
+	 * @param  boolean  Add index to the URL
+	 * @return string
+	 */
+	public static function script($script, $index = FALSE)
+	{
+		$compiled = '';
+
+		if (is_array($script))
+		{
+			foreach($script as $name)
+			{
+				$compiled .= self::script($name, $index)."\n";
+			}
+		}
+		else
+		{
+			$compiled = '<script type="text/javascript" src="'.url::base($index).$script.'.js"></script>';
+		}
+
+		return $compiled;
+	}
+
 	/**
 	 * HTML Attribute Parser
 	 *
