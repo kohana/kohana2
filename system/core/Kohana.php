@@ -57,7 +57,7 @@ class Kohana {
 	public function __construct()
 	{
 		if (is_object(self::$instance))
-			throw new Exception('there_can_be_only_one');
+			throw new Kohana_Exception('there_can_be_only_one');
 
 		self::$instance = $this;
 	}
@@ -107,6 +107,7 @@ class Kohana {
 		self::$error_types = array
 		(
 			E_UNCAUGHT_EXCEPTION => array( 1, 'Uncaught Exception'),
+			E_KOHANA_EXCEPTION   => array( 1, 'Kohana Runtime Error'),
 			E_RECOVERABLE_ERROR  => array( 1, 'Recoverable Error'),
 			E_ERROR              => array( 1, 'Fatal Error'),
 			E_USER_ERROR         => array( 1, 'Fatal Error'),
