@@ -33,9 +33,6 @@ class User_Guide_Controller extends Controller {
 			return $this->$category($section);
 		}
 
-		// For Kohana's custom tags to be handled properly
-		Event::add('system.pre_output', array($this, '_tags'));
-
 		// For i18n
 		$locale = Config::item('core.locale', TRUE);
 
@@ -43,20 +40,35 @@ class User_Guide_Controller extends Controller {
 		$category = ($category == FALSE)  ? 'kohana' : $category;
 		$content  = rtrim('user_guide/'.$locale.'content/'.$category.'/'.$section, '/');
 
-		// Load markdown
-		require Kohana::find_file('vendor', 'Markdown');
-
 		$template          = $this->load->view('user_guide/'.$locale.'template');
 		$template->menu    = $this->load->view('user_guide/'.$locale.'menu', array('active_category' => $category, 'active_section' => $section));
-		$template->content = $this->load->view($content)->render(FALSE, 'Markdown');
+		$template->content = $this->load->view($content)->render(FALSE, array($this, '_tags'));
 
 		// Display output
 		$template->render(TRUE);
 	}
 
-	public function _tags()
+	public function _tags($output)
 	{
-		Kohana::$output = preg_replace_callback('!<(benchmark|config|definition|event|file)>.+?</[^>]+>!', array($this, '_tag_update'), Kohana::$output);
+		// Load markdown
+		require Kohana::find_file('vendor', 'Markdown');
+
+		$output = Markdown($output);
+
+		$output = str_replace(array
+		(
+			'<pre><code>', '</code></pre>',
+			'<code>', '</code>'
+		), array
+		(
+			'<pre class="prettyprint">', '</pre>',
+			'<code class="prettyprint">', '</code>'
+		),
+		$output);
+
+		$output = preg_replace_callback('!<(benchmark|config|definition|event|file)>.+?</[^>]+>!', array($this, '_tag_update'), $output);
+
+		return $output;
 	}
 
 	public function _tag_update($match)

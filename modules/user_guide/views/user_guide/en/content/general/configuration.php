@@ -18,7 +18,7 @@ url_suffix
 : [optional] Filename suffix which should be dynamically added to any URL that Kohana generates. This setting is completely optional.
 
 permitted_uri_chars
-: List of characters that are allowed in URI strings. The default settings should work for almost every application. **If you can this option, the security of Kohana may diminish.**
+: List of characters that are allowed in URI strings. The default settings should work for almost every application. **If you change this option, the security of Kohana may diminish.**
 
 locale
 : Sets the system locale using any standard two-letter language abbreviation. By default, Kohana only ships with English (en) language files.

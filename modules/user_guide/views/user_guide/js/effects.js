@@ -1,5 +1,4 @@
 // $Id$
-// Behavior attachment
 $(document).ready(function(){
 	// Menu opacity hover effect, much fancy pants!
 	$('#menu').css('opacity', 0.7).hover(function(){
