@@ -43,6 +43,7 @@ $lang = array
 		'Router',
 		'Session',
 		'URI',
+		'Validation',
 		'View'
 	),
 	'Helpers' => array
