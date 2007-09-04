@@ -15,5 +15,5 @@ Optionally, if you wish to use a database with Kohana, you will need a database 
  1. [mbstring](http://php.net/mbstring) will dramatically speed up Kohana's UTF-8 functions
  2. [mcrypt](http://php.net/mcrypt) will dramatically speed up Kohana's encryption and hashing routines
 
-<?php echo $this->load->view('user_guide/en/content/abbr') ?>
+<?php echo $this->load->view('user_guide/en/abbr') ?>
 <?php /* $Id$ */ ?>

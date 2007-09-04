@@ -33,15 +33,12 @@ class User_Guide_Controller extends Controller {
 			return $this->$category($section);
 		}
 
-		// For i18n
-		$locale = Config::item('core.locale', TRUE);
-
 		// Set the view that will be loaded
 		$category = ($category == FALSE)  ? 'kohana' : $category;
-		$content  = rtrim('user_guide/'.$locale.'content/'.$category.'/'.$section, '/');
+		$content  = rtrim('user_guide/'.Config::item('core.locale', TRUE).$category.'/'.$section, '/');
 
 		// Display output
-		$this->load->view('user_guide/'.$locale.'template', array
+		$this->load->view('user_guide/template', array
 		(
 			'active_category' => $category,
 			'active_section'  => $section,
@@ -115,7 +112,7 @@ class User_Guide_Controller extends Controller {
 		 */
 		try
 		{
-			$this->load->view('user_guide/'.$type.'/'.$filename)->render(TRUE);
+			$this->load->view('user_guide/media/'.$type.'/'.$filename)->render(TRUE);
 		}
 		catch (Kohana_Exception $exception)
 		{
