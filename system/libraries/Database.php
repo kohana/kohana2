@@ -52,6 +52,7 @@ class Database_Core {
 	private $_distinct = FALSE;
 	private $_limit    = FALSE;
 	private $_offset   = FALSE;
+	private $_connected = FALSE;
 
 	public function __construct($config = array())
 	{
@@ -102,6 +103,7 @@ class Database_Core {
 		}
 		
 		$this->connect();
+		Log::add('debug', 'Database Class Initialized');
 	}
 
 	/**
@@ -117,11 +119,14 @@ class Database_Core {
 	{
 		if ($this->driver->connect($this->config))
 		{
-			// Do stuff
+			// Do we need to do anything?
 		}
 		else
 		{
-			// Do other stuff
+			/**
+			 * @todo This should be an i18n error
+			 */
+			trigger_error('Database connection failed.');
 		}
 	}
 	
@@ -129,22 +134,9 @@ class Database_Core {
 	{
 		if ($sql == '')
 			return FALSE;
-
-		$query = $this->pdo->prepare($sql);
-
-		$query->execute();
-
-		if ($query->columnCount() > 0)
-		{
-			$mode = ($object == TRUE) ? PDO::FETCH_OBJ : PDO::FETCH_ASSOC;
-
-			return $query->fetchAll($mode);
-		}
-		else
-		{
-			// there is no result set, so the statement modifies rows, return the number of rows
-			return $query->rowCount();
-		}
+		if (!$this->_connected) $this->connect();
+		
+		$this->driver->query($sql, $object);
 	}
 
 
@@ -658,7 +650,7 @@ class Database_Core {
 			$this->limit($limit, $offset);
 		}
 
-		$sql = $this->_compile_select();
+		$sql = $this->driver->compile_select($this);
 
 		$result = $this->query($sql);
 		$this->reset_select();
@@ -695,7 +687,7 @@ class Database_Core {
 			$this->limit($limit, $offset);
 		}
 
-		$sql = $this->_compile_select();
+		$sql = $this->driver->compile_select($this);
 
 		$result = $this->query($sql);
 		$this->reset_select();
@@ -736,7 +728,7 @@ class Database_Core {
 			$table = $this->_from[0];
 		}
 
-		$sql = $this->_insert($this->config['table_prefix'].$table, array_keys($this->_set), array_values($this->_set));
+		$sql = $this->driver->insert($this->config['table_prefix'].$table, array_keys($this->_set), array_values($this->_set));
 
 		$this->reset_write();
 		return $this->query($sql);
@@ -782,7 +774,7 @@ class Database_Core {
 			$this->where($where);
 		}
 
-		$sql = $this->_update($this->config['table_prefix'].$table, $this->_set, $this->_where);
+		$sql = $this->driver->update($this->config['table_prefix'].$table, $this->_set, $this->_where);
 
 		$this->reset_write();
 		return $this->query($sql);
@@ -822,7 +814,7 @@ class Database_Core {
 			return (($this->db_debug) ? $this->display_error('db_del_must_use_where') : FALSE);
 		}
 
-		$sql = $this->_delete($this->config['table_prefix'].$table, $this->_where);
+		$sql = $this->driver->delete($this->config['table_prefix'].$table, $this->_where);
 
 		$this->reset_write();
 		return $this->query($sql);
