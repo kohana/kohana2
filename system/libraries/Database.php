@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana: The swift, secure, and lightweight PHP5 framework
+ * Kohana: The small, swift, and secure PHP5 framework
  *
  * @package          Kohana
  * @author           Kohana Team
@@ -99,26 +99,29 @@ class Database_Core {
 		$this->pdo = new PDO($type.':host='.$host.';dbname='.$database, $user, $pass, $config);
 	}
 
-	public function query($sql = NULL)
+	public function query($sql = '', $object = TRUE)
 	{
-		if ($sql == NULL)
+		if ($sql == '')
 			return FALSE;
-		
-		$sth = $this->pdo->prepare($sql);
-		$sth->execute();
-		if ($sth->columnCount() == 0)
+
+		$query = $this->pdo->prepare($sql);
+
+		$query->execute();
+
+		if ($query->columnCount() > 0)
 		{
-			// there is no result set, so the statement modifies rows, return the number of rows
-			return $sth->rowCount();
+			$mode = ($object == TRUE) ? PDO::FETCH_OBJ : PDO::FETCH_ASSOC;
+
+			return $query->fetchAll($mode);
 		}
 		else
 		{
-			// there is a result set, so return them
-			return $sth->fetch(PDO::FETCH_NUM);
+			// there is no result set, so the statement modifies rows, return the number of rows
+			return $query->rowCount();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Select
 	 *
