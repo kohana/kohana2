@@ -1,35 +1,61 @@
-Article status [First Draft] requires [Editing] Complete and Describe parameters
-# URL Helper
-Provides methods for working with Uniform Resource Locators
+Article status [Draft] requires [Editing] Amendments and corrections
+# Url Helper
+Provides methods for working with URL (s)
 
-### Base URL
-The **url::base()** method accepts one **optional** parameter.
+## Methods
+
+### Base
+<code>url::base()</code> accepts one **optional** parameter.
 Returns the *base_url* defined in <file>config</file>
 
-<code>echo url::base();</code>
+    // base_url = "http://localhost/kohana/"
+    echo url::base();
 
-### Site URL
-The **url::site()** method accepts one **mandatory** parameter.
+Generates 
+
+    http://localhost/kohana/
+
+****
+
+### Site
+<code>url::site()</code> accepts one **mandatory** parameter.
 Returns a url, based on the *base_url*, *index_page*, *url_suffix* defined in <file>config</file> and the url segments passed to the method.
 
-<code>echo url::site($uri);</code>
+    // base_url = 'http://localhost/kohana/'
+	// index_page = 'index.php'
+	// url_suffix = ''
+	$uri = 'welcome';
+    echo url::site($uri);
+
+Generates
+
+    http://localhost/kohana/index.php/welcome
+
+****
 
 ### Title
-The **url::title()** method accepts multiple parameters. Only the input **title** string is mandatory.
+<code>url::title()</code> accepts multiple parameters. Only the input **title** string is mandatory.
 Returns a properly formatted title, for use in a URI.
 
-<pre>
-<code>
-$input_title = " _Eclectic title's entered by crazed users- ?&gt;  ";
+    $input_title = " _Eclectic title's entered by crazed users- ?>  ";
 
-echo url::title($input_title, $seperator = '_');
-</code>
-</pre>
+    echo url::title($input_title, $seperator = '_');
 
-Generates: <pre>Eclectic_titles_entered_by_crazed_users-</pre>
+
+Generates: 
+	
+    Eclectic_titles_entered_by_crazed_users-
+
+****
 
 ### Redirect
-The **url::redirect()** method accepts multiple **optional** parameters.
-Generates an HTTP Server Header (302), which will redirect the browser to a specified URL, *base_url* by default.
+<code>url::redirect()</code> accepts multiple **optional** parameters.
+Generates an HTTP Server Header (302), which will redirect the browser to a specified URL, by default *base_url*.
 
-<code>url::redirect("www.whitehouse.gov");</code>
+    url::redirect("www.whitehouse.gov");
+
+Will redirect the browser to the Big house website.
+
+
+<?php echo $this->load->view('user_guide/en/abbr') ?>
+<?php /* $Id$ */ ?>

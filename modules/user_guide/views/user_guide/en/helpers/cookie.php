@@ -1,47 +1,43 @@
 Article status [Draft] requires [Editing] Comments and corrections
 # Cookie Helper
-Provides methods for setting, updating and deleting COOKIES.
+Provides methods for working with COOKIE data.
 
 ## Configuration
-Default settings for COOKIES are specified in <file>application/config/cookie</file>. You may override
-these settings by passing discrete parameters when calling the helper.
+Default settings for Cookies are specified in <file>application/config/cookie</file>. You may override
+these settings by passing parameters to the helper.
 
-A prefix may be set to avoid name collisions.
-<code>
-$config['prefix']   = '';
-</code>
-A valid domain must be provided, a blank setting is equivalent to *localhost*
-<code>
-$config['domain']   = '';
-</code>
-A valid path must be provided.
-<code>
-$config['path']     = '/';
-</code>
-The COOKIES lifetime. Set it to the number of seconds that COOKIES should persist until expired by the browser, starting from when the COOKIES are set.
-Note: Set to *0* (zero) seconds to create a cookie which expires when the browser is closed.
-<code>
-$config['expire']   = 0;
-</code>
-Secure COOKIES only. IF set to TRUE, COOKIES will **only** be created **if** the transfer protocol is secure (using HTTPS)
-<code>
-$config['secure']   = FALSE;
-</code>
-Restricted COOKIES access. If set to TRUE, then COOKIES can not be read via Client-side scripts.
-<code>
-$config['httponly'] = FALSE;
-</code>
+prefix
+: A prefix may be set to avoid name collisions. Default is <code>''</code>.
 
-### Set a cookie.
-The **cookie::set()** method takes multiple parameters, Only the cookie name and value are required.<br />
-You may pass parameters to the set method as discrete values:
-<code>
-cookie::set($name, $value, $expires, $path, $domain, $secure, $httponly, $prefix);
-</code>
-Or you may pass an array of values as a parameter:
-<pre>
-<code>
-$cookie_params = array(
+domain
+: A valid domain, for which the Cookie may be written. Default is <code>''</code> (equivalent to *localhost*.)
+For site-wide Cookies, prefix your domain with a period <code>.example.com</code>
+
+path
+: A valid path for which the Cookie may be written. Default is the root directory <code>'/'</code>
+
+expire
+: The Cookie lifetime. Set the number of seconds the Cookie should persist, until expired by the browser, starting from when the Cookie is set.
+Note: Set to *0* (zero) seconds for a Cookie which expires when the browser is closed.
+
+secure
+: The Cookie will **only** be allowed over a secure transfer protocol (HTTPS). Default is <code>FALSE</code>
+
+httponly
+: The Cookie can be accessed via HTTP only, and not via client scripts. Default is <code>FALSE</code>
+Note: Requires at least PHP version 5.2.0
+
+## Methods
+
+### Set a Cookie.
+<code>cookie::set()</code> accepts multiple parameters, Only the cookie name and value are required.<br />
+You may pass parameters to this method as discrete values:
+
+    cookie::set($name, $value, $expire, $path, $domain, $secure, $httponly, $prefix);
+
+Or you may pass an associative array of values as a parameter:
+
+    $cookie_params = array(
                    'name'   => 'Very_Important_Cookie',
                    'value'  => 'Choclate Flavoured Mint Delight',
                    'expire' => '86500',
@@ -49,26 +45,27 @@ $cookie_params = array(
                    'path'   => '/',
                    'prefix' => 'one_',
                        );
-cookie::set($cookie_params);
-</code>
-</pre>
-
-### Get a cookie
-The **cookie::get()** method takes multiple parameters, Only the cookie name is required.
-<pre>
-<code>
-$cookie_value = cookie::get($cookie_name, $prefix, TRUE);
-</code>
-</pre>
-Setting the third parameter to TRUE will filter the cookie data for unsafe data.
-
-### Delete a cookie
-The **cookie::delete()** method takes multiple parameters, Only the cookie name is required.<br />
-This method is identical to the **cookie::set()** method, but sets the cookie value to ''.
-<code>
-cookie::delete('stale_cookie');
-</code>
+    cookie::set($cookie_params);
 
 
-*[COOKIES]: Data passed between server and browser to provide persistent state 
-*[HTTPS]: HyperText Transfer Protocol Secured 
+*****
+
+### Get a Cookie
+<code>cookie::get()</code> accepts multiple parameters, Only the cookie name is required.
+
+    $cookie_value = cookie::get($cookie_name, $prefix, $xss_clean = FALSE);
+
+Setting the third parameter to <code>TRUE</code> will filter the Cookie for unsafe data.
+
+Returns <code>FALSE</code> if the Cookie item does not exist.
+
+*****
+
+### Delete a Cookie
+<code>cookie::delete()</code> accepts multiple parameters, Only the cookie name is required.<br />
+This method is identical <code>cookie::set()</code> but sets the cookie value to <code>''</code>. effectively deleting it.
+
+    cookie::delete('stale_cookie');
+
+<?php echo $this->load->view('user_guide/en/abbr') ?>
+<?php /* $Id$ */ ?>
