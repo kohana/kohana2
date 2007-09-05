@@ -20,7 +20,7 @@ class Router_Core {
 
 		// Make sure the default route is set
 		if ( ! isset(self::$routes['_default']))
-			throw new Kohana_Exception('no_default_route');
+			throw new Kohana_Exception('core.no_default_route');
 
 		// The follow block of if/else attempts to retrieve the URI segments automagically
 		// Supported methods: CLI, GET, PATH_INFO, ORIG_PATH_INFO, PHP_SELF

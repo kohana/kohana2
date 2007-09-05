@@ -57,7 +57,7 @@ class Kohana {
 	public function __construct()
 	{
 		if (is_object(self::$instance))
-			throw new Kohana_Exception('there_can_be_only_one');
+			throw new Kohana_Exception('core.there_can_be_only_one');
 
 		self::$instance = $this;
 	}
@@ -352,7 +352,7 @@ class Kohana {
 	 * @param  string
 	 * @return object
 	 */
-	public static function load_class($class)
+	public static function load_class($class, $configuration = array())
 	{
 		if (isset(self::$libraries[$class]))
 		{
@@ -365,7 +365,10 @@ class Kohana {
 		}
 		else
 		{
-			self::$libraries[$class] = new $class();
+			// Merge the config file and the passed configuration
+			$configuration = array_merge(Config::item($class, FALSE, FALSE), $configuration);
+
+			self::$libraries[$class] = new $class($configuration);
 		}
 
 		return self::$libraries[$class];
@@ -402,7 +405,7 @@ class Kohana {
 
 			// If required and nothing was found, throw an exception
 			if ($required == TRUE AND $fnd === array())
-				throw new Kohana_Exception('resource_not_found', $directory, $filename);
+				throw new Kohana_Exception('core.resource_not_found', $directory, $filename);
 
 			return $found[$hash] = $fnd;
 		}
@@ -422,7 +425,7 @@ class Kohana {
 
 			// If the file is required, throw an exception
 			if ($required == TRUE)
-				throw new Kohana_Exception('resource_not_found', $directory, $filename);
+				throw new Kohana_Exception('core.resource_not_found', $directory, $filename);
 
 			return $found[$hash] = FALSE;
 		}

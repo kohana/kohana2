@@ -59,7 +59,7 @@ class User_Guide_Controller extends Controller {
 		}
 		catch (Kohana_Exception $exception)
 		{
-			trigger_error('The Kohana User Guide has not been translated into the requested language.', E_USER_ERROR);
+			trigger_error('This Kohana User Guide page has not been translated into the requested language.', E_USER_ERROR);
 		}
 	}
 

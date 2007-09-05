@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 /**
- * Kohana: The swift, secure, and lightweight PHP5 framework
+ * Kohana: The small, swift, and secure PHP5 framework
  *
  * @package          Kohana
  * @author           Kohana Team

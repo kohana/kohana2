@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana: The swift, secure, and lightweight PHP5 framework
+ * Kohana: The small, swift, and secure PHP5 framework
  *
  * @package          Kohana
  * @author           Kohana Team
@@ -42,7 +42,7 @@ final class Config {
 	 * @param   boolean
 	 * @return  mixed
 	 */
-	public static function item($key, $slash = FALSE)
+	public static function item($key, $slash = FALSE, $required = TRUE)
 	{
 		// Configuration autoloading
 		if (self::$conf === NULL)
@@ -74,7 +74,7 @@ final class Config {
 		}
 
 		// Find the requested key
-		$key  = explode('.', $key);
+		$key  = explode('.', strtolower($key));
 		// Find type and reset the key
 		$type = $key[0];
 		$key  = isset($key[1]) ? $key[1] : FALSE;
@@ -82,7 +82,7 @@ final class Config {
 		// Load config arrays
 		if ( ! isset(self::$conf[$type]))
 		{
-			self::$conf[$type] = self::load($type);
+			self::$conf[$type] = self::load($type, $required);
 		}
 
 		$value = FALSE;

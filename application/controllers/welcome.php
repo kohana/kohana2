@@ -7,7 +7,42 @@ class Welcome_Controller extends Controller {
 		$db = new Database();
 		print_r ($db);
 	}
-	
+
+	function validation_example()
+	{
+		// To demonstrate Validation being able to validate any array, I will
+		// be using a pre-built array. When you load validation with no arguments
+		// it will default to validating the POST array.
+		$data = array
+		(
+			'user' => 'hi',
+			'pass' => 'bigsecret',
+			'reme' => '1'
+		);
+
+		$this->load->library('validation', $data);
+		
+		$this->validation->set(array
+		(
+			'user' => array('Username',    'trim|required[4,32]'),
+			'pass' => array('Password',    'required|sha1'),
+			'reme' => array('Remember Me', 'integer')
+		));
+
+		print $this->validation->debug();
+
+		print "{execution_time} ALL DONE!";
+	}
+
+	function database_example()
+	{
+		$db = new Database();
+		
+		print_r($db->query('SELECT * FROM pages'));
+		
+		print "done";
+	}
+
 	function pagination_example()
 	{
 		// You HAVE TO use $this->pagination when initializing the Pagination library.
@@ -20,10 +55,10 @@ class Welcome_Controller extends Controller {
 			'items_per_page' => 10, // it may be handy to set defaults for stuff like this in config/pagination.php
 			'style'          => 'classic' // pick one from: classic (default), digg, extended, punbb, or add your own!
 		));
-		
+
 		// Just echoing it is enough to display the links (__toString() rocks!)
 		echo 'Classic style: '.$this->pagination;
-		
+
 		// You can also use the create_links() method and pick a style on the fly if you want
 		echo '<hr />Digg style:     '.$this->pagination->create_links('digg');
 		echo '<hr />Extended style: '.$this->pagination->create_links('extended');
