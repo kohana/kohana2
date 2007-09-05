@@ -41,6 +41,7 @@ Template Styles
 #body ol { list-style: decimal; }
 #body ul { list-style: circle; }
 #body li { padding: 0.1em 0; }
+#body hr { margin-left: auto; margin-right: auto; margin-bottom: 1em; margin-top: 1.5em; width: 80%; background-color: #ddd; color: #ddd; height: 2px; }
 #footer { padding: 0 1em; background: #fff; line-height: 2em; }
 /*
 Content Styles
