@@ -29,9 +29,6 @@
  */
 class Database_Core {
 
-	// The PDO database connection
-	public $pdo;
-
 	// Character set of the database
 	private $config  = array
 	(
@@ -88,17 +85,46 @@ class Database_Core {
 		// The database may contain slash characters when read as a path
 		$database = trim($database, '/');
 
-		// Set the PDO configuration
-		$config = array
-		(
-			PDO::ATTR_PERSISTENT => (bool) $this->config['persistent'],
-			PDO::ATTR_ERRMODE    => ($this->config['show_errors'] == TRUE) ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT
-		);
+		$driver = 'Database_'.ucfirst(strtolower($this->config['driver']));
 
-		// Initialize the PDO connection
-		$this->pdo = new PDO($type.':host='.$host.';dbname='.$database, $user, $pass, $config);
+		require Kohana::find_file('libraries', 'drivers/'.$driver, TRUE);
+
+		$this->driver = new $driver();
+
+		$implements = class_implements($this->driver);
+
+		if ( ! isset($implements['Database_Driver']))
+		{
+			/**
+			 * @todo This should be an i18n error
+			 */
+			trigger_error('Database drivers must use the Database_Driver interface.');
+		}
+		
+		$this->connect();
 	}
 
+	/**
+	 * Connect
+	 *
+	 * Performs a connection to the database
+	 *
+	 * @access  public
+	 * @param   mixed
+	 * @return  object
+	 */
+	public function connect()
+	{
+		if ($this->driver->connect($this->config))
+		{
+			// Do stuff
+		}
+		else
+		{
+			// Do other stuff
+		}
+	}
+	
 	public function query($sql = '', $object = TRUE)
 	{
 		if ($sql == '')
