@@ -29,42 +29,53 @@
  */
 class Database_Core {
 
-	// Character set of the database
-	private $config  = array();
+	// Configuration
+	protected $config  = array
+	(
+		'connection'    => '',
+		'persistent'    => FALSE,
+		'show_errors'   => TRUE,
+		'character_set' => 'utf-8',
+		'table_prefix'  => ''
+	);
+
+	// Database driver object
+	protected $driver;
 
 	// Un-compiled parts of the SQL query
-	private $_select    = array();
-	private $_set       = array();
-	private $_from      = array();
-	private $_join      = array();
-	private $_where     = array();
-	private $_like      = array();
-	private $_orderby   = array();
-	private $_groupby   = array();
-	private $_having    = array();
-	private $_distinct  = FALSE;
-	private $_limit     = FALSE;
-	private $_offset    = FALSE;
-	private $_connected = FALSE;
+	protected $select    = array();
+	protected $set       = array();
+	protected $from      = array();
+	protected $join      = array();
+	protected $where     = array();
+	protected $like      = array();
+	protected $orderby   = array();
+	protected $groupby   = array();
+	protected $having    = array();
+	protected $distinct  = FALSE;
+	protected $limit     = FALSE;
+	protected $offset    = FALSE;
+	protected $connected = FALSE;
 
 	public function __construct($config = array())
 	{
 		if ($config == FALSE)
 		{
-			// Find the active group
-			$config = Config::item('database._active');
-			// Load the active group
-			$config = Config::item('database.'.$config);
+			// Load the default group
+			$config = Config::item('database.default');
 		}
 		elseif (is_string($config))
 		{
 			// This checks to see if the config is DSN string, or a config group name
-			$config = (strpos($config, '://') == FALSE) ? Config::item('database.'.$config) : array('connection' => $config);;
+			$config = (strpos($config, '://') == FALSE) ? Config::item('database.'.$config) : array('connection' => $config);
 		}
 
 		// Merge the default config with the passed config
 		$this->config = array_merge($this->config, $config);
 
+		/**
+		 * @todo make this an exception
+		 */
 		// Parse the DSN into an array and validate it's length
 		(count($connection = @parse_url($this->config['connection'])) === 5) or trigger_error
 		(
@@ -74,37 +85,37 @@ class Database_Core {
 
 		// Turn the DSN into local variables
 		// NOTE: This step has to be done, because the order is defined by parse_url
-		list($type, $host, $user, $pass,$database) = array_values($connection);
-		$connection_info = array('type' => $type, 
-								'host' => $host, 
-								'user' => $user, 
-								'pass' => $pass,
-								'database' =>  trim($database, '/'));
-		$this->config = array_merge($this->config, $connection_info);
-		
+		list($db['type'], $db['host'], $db['user'], $db['pass'], $db['database']) = array_values($connection);
+
+		// Reset the connection array to the database config
+		$this->config['connection'] = $db;
+
 		// The database may contain slash characters when read as a path
-		$database = trim($database, '/');
+		$this->config['connection']['database'] = trim($this->config['connection']['database'], '/');
 
-		$driver = 'Database_'.ucfirst(strtolower($this->config['driver']));
+		$driver = 'Database_'.ucfirst($this->config['connection']['type']);
 
-		require Kohana::find_file('libraries', 'drivers/'.$driver, TRUE);
+		try
+		{
+			require Kohana::find_file('libraries', 'drivers/'.$driver, TRUE);
+		}
+		catch (Kohana_Exception $exception)
+		{
+			throw new Kohana_Exception('database.driver_not_supported', $this->config['type']);
+		}
 
+		// Initialize the driver
 		$this->driver = new $driver();
 
-		$implements = class_implements($this->driver);
-
-		if ( ! isset($implements['Database_Driver']))
+		if ( ! in_array('Database_Driver', class_implements($this->driver)))
 		{
 			/**
-			 * @todo This should be an i18n error
+			 * @todo This should be an exception
 			 */
 			trigger_error('Database drivers must use the Database_Driver interface.');
 		}
-		
-		$this->connect();
+
 		Log::add('debug', 'Database Class Initialized');
-		
-		// We only connect if a query will be run
 	}
 
 	/**
@@ -118,11 +129,7 @@ class Database_Core {
 	 */
 	public function connect()
 	{
-		if ($this->driver->connect($this->config))
-		{
-			// Do we need to do anything?
-		}
-		else
+		if ( ! $this->driver->connect($this->config))
 		{
 			/**
 			 * @todo This should be an i18n error
@@ -130,15 +137,16 @@ class Database_Core {
 			trigger_error('Database connection failed.');
 		}
 	}
-	
-	public function query($sql = '', $object = '')
+
+	public function query($sql = '', $object = FALSE)
 	{
-		if ($sql == '')
-			return FALSE;
-			
-		if (!$this->_connected) $this->connect();
-		
-		return $this->driver->query($sql, ($object == '') ? $this->config['object'] : $object);
+		if ($sql == '') return FALSE;
+
+		if ( ! $this->connected) $this->connect();
+
+		$object = (bool) ($object == FALSE) ? $this->config['object'] : $object;
+
+		return $this->driver->query($sql, $object);
 	}
 
 

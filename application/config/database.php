@@ -18,11 +18,10 @@
 
 $config['default'] = array
 (
-	'driver'		=> 'MySQL',
 	'show_errors'   => TRUE,
 	'persistent'    => FALSE,
 	'connection'    => 'mysql://dbuser:secret@localhost/kohana',
-	'character_set' => 'utf-8',
+	'character_set' => 'utf8',
 	'table_prefix'  => '',
 	'object'        => TRUE
 );

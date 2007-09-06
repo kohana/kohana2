@@ -4,6 +4,8 @@
  *
  * An open source application development framework for PHP 4.3.2 or newer
  *
+ * $Id$
+ *
  * @package          Kohana
  * @author           Kohana Team
  * @copyright        Copyright (c) 2007 Kohana Team
@@ -24,13 +26,16 @@
  * @author      Kohana Team
  * @link        http://kohanaphp.com/user_guide/libraries/database.html
  */
-class Database_MySQL implements Database_Driver {
-	
+class Database_Mysql implements Database_Driver {
+
+	// Database connection link
+	private $link;
+
 	public function __construct()
 	{
 		Log::add('debug', 'MySQL Database Driver Initialized');
 	}
-	
+
 	/**
 	 * Connect to the database
 	 *
@@ -40,22 +45,29 @@ class Database_MySQL implements Database_Driver {
 	 */
 	public function connect($config)
 	{
-		if ($link = mysql_connect($config['host'], $config['user'], $config['pass']))
+		// Import the connect variables
+		extract($config['connection']);
+
+		// Persistent connections enabled?
+		$connect = ($config['persistent'] == TRUE) ? 'mysql_pconnect' : 'mysql_connect';
+
+		// Make the connection and select the database
+		if (($this->link = $connect($host, $user, $pass)) AND mysql_select_db($database, $this->link))
 		{
-			$database = mysql_select_db($config['database'], $link);
-			
-			if (!$database)
-				return FALSE;
-			else
+			if ($charset = $config['character_set'])
 			{
-				$this->set_character_set($config['character_set']);
-				return TRUE;
+				$this->set_charset($charset);
 			}
+
+			return TRUE;
 		}
-		else
-			return FALSE;				
+
+		/**
+		 * @todo this should use $config['show_errors'] and throw exceptions accordingly
+		 */
+		return FALSE;
 	}
-	
+
 	/**
 	 * Perform a query
 	 *
@@ -63,47 +75,42 @@ class Database_MySQL implements Database_Driver {
 	 * @param   string  SQL statement
 	 * @return  int
 	 */
-	public function query($sql, $object)
+	public function query($sql, $object = TRUE)
 	{
-		$result = mysql_query($sql);
-		
-		if ($result)
-			return FALSE;
-			
-		// Find out the type of the query
-		if (gettype($result) == 'boolean') // It's an update, etc
+		// If the query is a resource, it was a SELECT query
+		if (is_resource($result = mysql_query($sql, $this->link)))
 		{
-			return $result;
-		}
-		else // It's a SELECT type
-		{
-			$result_function = ($object) ? 'mysql_fetch_object' : 'mysql_fetch_array';
-		
-			$rows = array();
-			while ($row = $result_function($result))
+			$fetch = ($object == TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
+			$rows  = array();
+
+			while ($row = $fetch($result))
 			{
 				$rows[] = $row;
 			}
+
 			return $rows;
 		}
-		
+		else
+		{
+			return $result;
+		}
 	}
-	
+
 	public function delete($sql)
 	{
-		
+
 	}
-	
+
 	public function update($sql)
 	{
-		
+
 	}
-	
-	public function set_character_set($character_set)
+
+	public function set_charset($charset)
 	{
-		$this->query("SET NAMES '" . $character_set . "'");
+		$this->query('SET NAMES '.mysql_real_escape_string($charset));
 	}
-	
+
 	/**
 	 * Compile the SELECT statement
 	 *
@@ -178,6 +185,4 @@ class Database_MySQL implements Database_Driver {
 
 		return $sql;
 	}
-}
-
-?>
+} // End Database MySQL Driver

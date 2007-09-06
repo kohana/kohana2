@@ -20,7 +20,7 @@ class Welcome_Controller extends Controller {
 		);
 
 		$this->load->library('validation', $data);
-		
+
 		$this->validation->set(array
 		(
 			'user' => array('Username',    'trim|required[4,32]'),
@@ -36,10 +36,11 @@ class Welcome_Controller extends Controller {
 	function database_example()
 	{
 		$db = new Database();
-		
+
 		print_r($db->query('SELECT * FROM pages'));
-		
-		print "done";
+
+		print "<br/><br/>\n";
+		print "done in {execution_time} seconds";
 	}
 
 	function pagination_example()
