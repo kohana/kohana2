@@ -259,7 +259,7 @@ class Validation_Core {
 			$this->_current_field = $field;
 
 			// Cycle through the rules!
-			foreach ($ex As $rule)
+			foreach ($ex as $rule)
 			{
 				// Is the rule a callback?
 				$callback = FALSE;
@@ -272,7 +272,7 @@ class Validation_Core {
 				// Strip the parameter (if exists) from the rule
 				// Rules can contain a parameter: max_length[5]
 				$param = FALSE;
-				if (preg_match('/(.*?)\[(.*?)\]/', $rule, $match))
+				if (preg_match('/([^\[]*+)\[(.*?)\]/', $rule, $match))
 				{
 					$rule  = $match[1];
 					$param = $match[2];
@@ -603,28 +603,14 @@ class Validation_Core {
 	 * @return	bool
 	 */
 	public function numeric($str) {
-		if (!is_numeric($str))
+		if ( ! is_numeric($str))
 		    return FALSE;
 
-		if (!preg_match('/^[-0-9.]+$/', $str))
+		if ( ! preg_match('/^[-0-9.]+$/', $str))
 		    return FALSE;
 
 		return TRUE;
 	}
-	// --------------------------------------------------------------------
-
-	/**
-	 * Is Numeric
-	 *
-	 * @access	public
-	 * @param	string
-	 * @return	bool
-	 */
-	public function is_numeric($str)
-	{
-		return ( ! is_numeric($str)) ? FALSE : TRUE;
-	}
-
 	// --------------------------------------------------------------------
 
 	/**
@@ -722,7 +708,7 @@ class Validation_Core {
 			return $str;
 		}
 
-		return str_replace(array("'", '"', '<', '>'), array("&#39;", "&quot;", '&lt;', '&gt;'), $str);
+		return html::specialchars($str);
 	}
 
 	// --------------------------------------------------------------------
@@ -789,7 +775,7 @@ class Validation_Core {
 	 */
 	public function encode_php_tags($str)
 	{
-		$_POST[$this->_current_field] = str_replace(array('<?php', '<?PHP', '<?', '?>'),  array('&lt;?php', '&lt;?PHP', '&lt;?', '?&gt;'), $str);
+		$_POST[$this->_current_field] = str_replace(array('<?', '?>'),  array('&lt;?', '?&gt;'), $str);
 	}
 
 

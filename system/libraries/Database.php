@@ -263,10 +263,10 @@ class Database_Core {
 		if ($this->config['table_prefix'])
 		{
 			// First we remove any existing prefixes in the condition to avoid duplicates
-			$cond = preg_replace('|('.$this->config['table_prefix'].')([\w\.]+)([\W\s]+)|', '$2$3', $cond);
+			$cond = preg_replace('|'.preg_quote($prefix).'(?=[\w.]+[\W\s])|', '', $str);
 
 			// Next we add the prefixes to the condition
-			$cond = preg_replace('|([\w\.]+)([\W\s]+)(.+)|', $this->config['table_prefix'].'$1$2'.$this->config['table_prefix'].'$3', $cond);
+			$cond = preg_replace('|([\w.]+[\W\s]+)|', $this->config['table_prefix'].'$1'.$this->config['table_prefix'], $cond);
 		}
 
 		$this->_join[] = $type.'JOIN '.$this->config['table_prefix'].$table.' ON '.$cond;
@@ -648,7 +648,7 @@ class Database_Core {
 	 * @param	string	the offset clause
 	 * @return	object
 	 */
-	public function get($table = '', $limit = null, $offset = null)
+	public function get($table = '', $limit = NULL, $offset = NULL)
 	{
 		if ($table != '')
 		{
@@ -680,7 +680,7 @@ class Database_Core {
 	 * @param	string	the offset clause
 	 * @return	object
 	 */
-	public function getwhere($table = '', $where = null, $limit = null, $offset = null)
+	public function getwhere($table = '', $where = NULL, $limit = NULL, $offset = NULL)
 	{
 		if ($table != '')
 		{
@@ -757,7 +757,7 @@ class Database_Core {
 	 * @param	mixed	the where clause
 	 * @return	object
 	 */
-	public function update($table = '', $set = NULL, $where = null)
+	public function update($table = '', $set = NULL, $where = NULL)
 	{
 		if ( ! is_null($set))
 		{
@@ -779,7 +779,7 @@ class Database_Core {
 			$table = $this->_from[0];
 		}
 
-		if ($where != null)
+		if ($where != NULL)
 		{
 			$this->where($where);
 		}
