@@ -4,8 +4,7 @@ class Welcome_Controller extends Controller {
 
 	function index()
 	{
-		$db = new Database();
-		print_r ($db);
+		echo "Welcome!";
 	}
 
 	function validation_example()

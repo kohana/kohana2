@@ -31,14 +31,62 @@ class Database_MySQL implements Database_Driver {
 		Log::add('debug', 'MySQL Database Driver Initialized');
 	}
 	
+	/**
+	 * Connect to the database
+	 *
+	 * @access  public
+	 * @param   array  config array
+	 * @return  bool
+	 */
 	public function connect($config)
 	{
-		return mysql_connect($config['server'], $config['user'], $config['password']);		
+		if ($link = mysql_connect($config['host'], $config['user'], $config['pass']))
+		{
+			$database = mysql_select_db($config['database'], $link);
+			
+			if (!$database)
+				return FALSE;
+			else
+			{
+				$this->set_character_set($config['character_set']);
+				return TRUE;
+			}
+		}
+		else
+			return FALSE;				
 	}
 	
-	public function query($sql)
+	/**
+	 * Perform a query
+	 *
+	 * @access  public
+	 * @param   string  SQL statement
+	 * @return  int
+	 */
+	public function query($sql, $object)
 	{
 		$result = mysql_query($sql);
+		
+		if ($result)
+			return FALSE;
+			
+		// Find out the type of the query
+		if (gettype($result) == 'boolean') // It's an update, etc
+		{
+			return $result;
+		}
+		else // It's a SELECT type
+		{
+			$result_function = ($object) ? 'mysql_fetch_object' : 'mysql_fetch_array';
+		
+			$rows = array();
+			while ($row = $result_function($result))
+			{
+				$rows[] = $row;
+			}
+			return $rows;
+		}
+		
 	}
 	
 	public function delete($sql)
@@ -49,6 +97,11 @@ class Database_MySQL implements Database_Driver {
 	public function update($sql)
 	{
 		
+	}
+	
+	public function set_character_set($character_set)
+	{
+		$this->query("SET NAMES '" . $character_set . "'");
 	}
 	
 	/**

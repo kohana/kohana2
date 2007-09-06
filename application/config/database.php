@@ -18,6 +18,7 @@
 
 $config['default'] = array
 (
+	'driver'		=> 'MySQL',
 	'show_errors'   => TRUE,
 	'persistent'    => FALSE,
 	'connection'    => 'mysql://dbuser:secret@localhost/kohana',

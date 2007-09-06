@@ -30,28 +30,21 @@
 class Database_Core {
 
 	// Character set of the database
-	private $config  = array
-	(
-		'connection'    => '',
-		'persistent'    => FALSE,
-		'show_errors'   => TRUE,
-		'character_set' => 'utf-8',
-		'table_prefix'  => ''
-	);
+	private $config  = array();
 
 	// Un-compiled parts of the SQL query
-	private $_select   = array();
-	private $_set      = array();
-	private $_from     = array();
-	private $_join     = array();
-	private $_where    = array();
-	private $_like     = array();
-	private $_orderby  = array();
-	private $_groupby  = array();
-	private $_having   = array();
-	private $_distinct = FALSE;
-	private $_limit    = FALSE;
-	private $_offset   = FALSE;
+	private $_select    = array();
+	private $_set       = array();
+	private $_from      = array();
+	private $_join      = array();
+	private $_where     = array();
+	private $_like      = array();
+	private $_orderby   = array();
+	private $_groupby   = array();
+	private $_having    = array();
+	private $_distinct  = FALSE;
+	private $_limit     = FALSE;
+	private $_offset    = FALSE;
 	private $_connected = FALSE;
 
 	public function __construct($config = array())
@@ -82,7 +75,13 @@ class Database_Core {
 		// Turn the DSN into local variables
 		// NOTE: This step has to be done, because the order is defined by parse_url
 		list($type, $host, $user, $pass,$database) = array_values($connection);
-
+		$connection_info = array('type' => $type, 
+								'host' => $host, 
+								'user' => $user, 
+								'pass' => $pass,
+								'database' =>  trim($database, '/'));
+		$this->config = array_merge($this->config, $connection_info);
+		
 		// The database may contain slash characters when read as a path
 		$database = trim($database, '/');
 
@@ -104,6 +103,8 @@ class Database_Core {
 		
 		$this->connect();
 		Log::add('debug', 'Database Class Initialized');
+		
+		// We only connect if a query will be run
 	}
 
 	/**
@@ -130,13 +131,14 @@ class Database_Core {
 		}
 	}
 	
-	public function query($sql = '', $object = TRUE)
+	public function query($sql = '', $object = '')
 	{
 		if ($sql == '')
 			return FALSE;
+			
 		if (!$this->_connected) $this->connect();
 		
-		$this->driver->query($sql, $object);
+		return $this->driver->query($sql, ($object == '') ? $this->config['object'] : $object);
 	}
 
 

@@ -22,12 +22,12 @@
  * @subpackage  Drivers
  * @category    Database
  * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/libraries/sessions.html
+ * @link        http://kohanaphp.com/user_guide/libraries/database.html
  */
 interface Database_Driver {
 
 	/**
-	 * Open a session
+	 * Connect to the database
 	 *
 	 * @access  public
 	 * @param   string  config array
@@ -35,4 +35,40 @@ interface Database_Driver {
 	 */
 	public function connect($config);
 	
-} // End Session Driver Class
+	/**
+	 * Perform a select query
+	 *
+	 * @access  public
+	 * @param   string  config array
+	 * @return  bool
+	 */
+	public function query($sql);
+	
+	/**
+	 * Perform a delete statement
+	 *
+	 * @access  public
+	 * @param   string  config array
+	 * @return  bool
+	 */
+	public function delete($sql);
+	
+	/**
+	 * Perform an update statement
+	 *
+	 * @access  public
+	 * @param   string  config array
+	 * @return  bool
+	 */
+	public function update($sql);
+	
+	/**
+	 * Compile the select syntax for a query
+	 *
+	 * @access  public
+	 * @param   string  config array
+	 * @return  bool
+	 */
+	public function compile_select();
+	
+} // End Database Driver Class
