@@ -453,7 +453,7 @@ class Kohana {
 			$messages = array();
 
 			// The name of the file to search for
-			$filename = Config::item('core.locale').'/'.ucfirst($type);
+			$filename = Config::item('core.locale').'/'.$type;
 
 			// Loop through the files and include each one, so SYSPATH files
 			// can be overloaded by more localized files
