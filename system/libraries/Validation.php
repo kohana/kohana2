@@ -66,7 +66,7 @@ class Validation_Core {
 	{
 		if ($data === array())
 		{
-			$this->data =& $this->data;
+			$this->data =& $_POST;
 		}
 		elseif (is_array($data) AND count($data) > 0)
 		{
@@ -215,6 +215,12 @@ class Validation_Core {
 
 	public function add_error($func, $field)
 	{
+		if ($this->messages == FALSE)
+		{
+			// Load the default error messages
+			$this->messages = Kohana::lang('validation');
+		}
+
 		// Set the friendly field name
 		$friendly = isset($this->fields[$field]) ? $this->fields[$field] : $field;
 
@@ -245,9 +251,6 @@ class Validation_Core {
 		{
 			return FALSE;
 		}
-
-		// Load the default error messages
-		$this->messages = Kohana::lang('validation');
 
 		// Cycle through the rules and test for errors
 		foreach ($this->rules as $field => $rules)
