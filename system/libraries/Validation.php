@@ -215,12 +215,6 @@ class Validation_Core {
 
 	public function add_error($func, $field)
 	{
-		if ($this->messages == FALSE)
-		{
-			// Load the default error messages
-			$this->messages = Kohana::lang('validation');
-		}
-
 		// Set the friendly field name
 		$friendly = isset($this->fields[$field]) ? $this->fields[$field] : $field;
 
@@ -250,6 +244,12 @@ class Validation_Core {
 		if (count($this->data) == 0 OR count($this->rules) == 0)
 		{
 			return FALSE;
+		}
+
+		if ($this->messages == FALSE)
+		{
+			// Load the default error messages
+			$this->messages = Kohana::lang('validation');
 		}
 
 		// Cycle through the rules and test for errors
