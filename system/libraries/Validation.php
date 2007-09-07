@@ -30,17 +30,30 @@
  */
 class Validation_Core {
 
+	// Instance count
 	private static $instances = 0;
 
-	public $form_safe    = FALSE;
-	public $messages     = array();
+	// Currently validating field
+	public $current_field = '';
+
+	// Enable or disable safe form errors
+	public $form_safe = FALSE;
+
+	// Error message format
 	public $error_format = '<p class="error">{message}</p>';
+	public $newline_char = "\n";
 
-	private $fields = array();
-	private $rules  = array();
-	private $errors = array();
+	// Error messages
+	public $messages = array();
 
-	private $data = array();
+	// Field names, rules, and errors
+	protected $fields = array();
+	protected $rules  = array();
+	protected $errors = array();
+
+
+	// Data to validate
+	protected $data = array();
 
 	/**
 	 * Constructor
@@ -53,15 +66,12 @@ class Validation_Core {
 	{
 		if ($data === array())
 		{
-			$this->data =& $_POST;
+			$this->data =& $this->data;
 		}
 		elseif (is_array($data) AND count($data) > 0)
 		{
 			$this->data =& $data;
 		}
-
-		// Load the default error messages
-		$this->messages = Kohana::lang('validation');
 
 		// Add one more instance to the count
 		self::$instances++;
@@ -69,16 +79,40 @@ class Validation_Core {
 		Log::add('debug', 'Validation Library Initialized, instance '.self::$instances);
 	}
 
+	public function __get($key)
+	{
+		if ( ! isset($this->$key) AND substr($key, -6) === '_error')
+		{
+			// Get the field name
+			$field = substr($key, 0, -6);
+
+			// Return the error messages for this field
+			if (isset($this->errors[$field]) AND count($this->errors[$field]) > 0)
+			{
+				$messages = '';
+				foreach($this->errors[$field] as $error)
+				{
+					// Replace the message with the error in the html error string
+					$messages .= str_replace('{message}', $error, $this->error_format).$this->newline_char;
+				}
+				return $messages;
+			}
+		}
+	}
+
 	public function debug()
 	{
+		// Start buffering
 		ob_start();
 
+		// Debug important variables
 		foreach(array('data', 'fields', 'rules', 'errors', 'messages') as $var)
 		{
 			print strtoupper($var);
 			print "<pre>".print_r($this->$var, TRUE)."</pre>\n\n";
 		}
 
+		// Fetch the buffer
 		$output = ob_get_contents();
 		ob_end_clean();
 
@@ -91,17 +125,14 @@ class Validation_Core {
 	 * Set Field Information
 	 *
 	 * This function takes an array of key names, rules, and field names as
-	 * input and sets internal field information
+	 * input and sets internal field information.
 	 *
-	 *This function takes an array of field names and validation
-	 * rules as input ad simply stores is for use later.
-	 *
-	 * @access	public
-	 * @param	mixed
-	 * @param	string
-	 * @return	void
+	 * @access  public
+	 * @param   mixed
+	 * @param   string
+	 * @return  void
 	 */
-	public function set($data, $rules = '', $field = FALSE)
+	public function set_rules($data, $rules = '', $field = FALSE)
 	{
 		// Normalize rules to an array
 		if ( ! is_array($data))
@@ -142,10 +173,10 @@ class Validation_Core {
 	 * Lets users set their own error messages on the fly.  Note:  The key
 	 * name has to match the  function name that it corresponds to.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string
-	 * @return	string
+	 * @access  public
+	 * @param   string
+	 * @param   string
+	 * @return  string
 	 */
 	public function set_message($func, $message = '')
 	{
@@ -153,7 +184,7 @@ class Validation_Core {
 		{
 			$func = array($func, $message);
 		}
-		
+
 		foreach($func as $name => $message)
 		{
 			$this->messages[$name] = $message;
@@ -182,201 +213,120 @@ class Validation_Core {
 
 	// --------------------------------------------------------------------
 
+	public function add_error($func, $field)
+	{
+		// Set the friendly field name
+		$friendly = isset($this->fields[$field]) ? $this->fields[$field] : $field;
+
+		// Fetch the message
+		$message = isset($this->messages[$func]) ? $this->messages[$func] : $this->messages['unknown_error'];
+
+		// Replacements in strings
+		$replace = array_slice(func_get_args(), 1);
+
+		// Add the field name into the message, if there is a place for it
+		$message = (strpos($message, '%s') !== FALSE) ? vsprintf($message, $replace) : $message;
+
+		$this->errors[$field][] = $message;
+	}
+
 	/**
 	 * Run the Validator
 	 *
 	 * This function does all the work.
 	 *
-	 * @access	public
-	 * @return	bool
+	 * @access  public
+	 * @return  bool
 	 */
 	public function run()
 	{
 		// Do we even have any data to process?  Mm?
-		if (count($_POST) == 0 OR count($this->_rules) == 0)
+		if (count($this->data) == 0 OR count($this->rules) == 0)
 		{
 			return FALSE;
 		}
 
-		// Load the language file containing error messages
-		$this->CORE->lang->load('validation');
+		// Load the default error messages
+		$this->messages = Kohana::lang('validation');
 
 		// Cycle through the rules and test for errors
-		foreach ($this->_rules as $field => $rules)
+		foreach ($this->rules as $field => $rules)
 		{
-			// Is the field required, a callback, or a match? If not, we can continue
-			if ( ! preg_match('/required|callback|matches/', $rules, $ex))
+			// Set the current field, for other functions to use
+			$this->current_field = $field;
+
+			// Process empty fields
+			$required = FALSE;
+			if ( ! isset($this->data[$field]))
 			{
-				if ( ! isset($_POST[$field]) OR $_POST[$field] == '')
+				// This field is required
+				if (preg_match('/required|callback|matches/', $rules, $required))
 				{
-					continue;
-				}
-			}
-
-			//Explode out the rules!
-			$ex = explode('|', $rules);
-
-			/*
-			 * Are we dealing with an "isset" rule?
-			 *
-			 * Before going further, we'll see if one of the rules
-			 * is to check whether the item is set (typically this
-			 * applies only to checkboxes).  If so, we'll
-			 * test for it here since there's not reason to go
-			 * further
-			 */
-			if ( ! isset($_POST[$field]))
-			{
-				if (in_array('isset', $ex, TRUE) OR in_array('required', $ex))
-				{
-					if ( ! isset($this->_error_messages['isset']))
-					{
-						if (FALSE === ($line = $this->CORE->lang->line('isset')))
-						{
-							$line = 'The field was not set';
-						}
-					}
-					else
-					{
-						$line = $this->_error_messages['isset'];
-					}
-
-					$field = ( ! isset($this->_fields[$field])) ? $field : $this->_fields[$field];
-					$this->_error_array[] = sprintf($line, $field);
+					$this->add_error('required', $field);
 				}
 
 				continue;
 			}
 
-			/*
-			 * Set the current field
-			 *
-			 * The various prepping functions need to know the
-			 * current field name so they can do this:
-			 *
-			 * $_POST[$this->_current_field] == 'bla bla';
-			 */
-			$this->_current_field = $field;
-
-			// Cycle through the rules!
-			foreach ($ex as $rule)
+			// Loop through the rules and process each one
+			foreach(explode('|', $rules) as $rule)
 			{
-				// Is the rule a callback?
-				$callback = FALSE;
-				if (substr($rule, 0, 9) == 'callback_')
+				if ($rule === 'trim' OR $rule === 'sha1' OR $rule === 'md5')
 				{
-					$rule = substr($rule, 9);
-					$callback = TRUE;
+					/**
+					 * @todo safe_form_data
+					 */
+					$this->data[$field] = $rule($this->data[$field]);
 				}
 
-				// Strip the parameter (if exists) from the rule
-				// Rules can contain a parameter: max_length[5]
-				$param = FALSE;
+				// Handle callback rules
+				$callback = FALSE;
+				if (preg_match('/callback_(.+)/', $rule, $match))
+				{
+					$callback = $match[1];
+				}
+
+				// Handle params
+				$params = FALSE;
 				if (preg_match('/([^\[]*+)\[(.*?)\]/', $rule, $match))
 				{
-					$rule  = $match[1];
-					$param = $match[2];
+					$rule   = $match[1];
+					$params = explode(',', $match[2]);
 				}
 
-				// Call the function that corresponds to the rule
-				if ($callback === TRUE)
+				// Process this field with the rule
+				if ($callback !== FALSE)
 				{
-					if ( ! method_exists($this->CORE, $rule))
+					if ( ! method_exists(Kohana::instance(), $callback))
+						throw new Kohana_Exception('validation.invalid_rule', $callback);
+
+					$result = Kohana::instance()->$callback($this->data[$field], $params);
+				}
+				elseif (method_exists($this, $rule))
+				{
+					$result = $this->$rule($this->data[$field], $params);
+				}
+				elseif (is_callable($rule, TRUE))
+				{
+					if (strpos($rule, '::') !== FALSE)
 					{
-						continue;
+						$result = call_user_func(explode('::', $rule), $field);
 					}
-
-					$result = $this->CORE->$rule($_POST[$field], $param);
-
-					// If the field isn't required and we just processed a callback we'll move on...
-					if ( ! in_array('required', $ex, TRUE) AND $result !== FALSE)
+					else
 					{
-						continue 2;
+						$result = $rule($this->data[$field]);
 					}
 				}
 				else
 				{
-					if ( ! method_exists($this, $rule))
-					{
-						/*
-						 * Run the native PHP function if called for
-						 *
-						 * If our own wrapper function doesn't exist we see
-						 * if a native PHP function does. Users can use
-						 * any native PHP function call that has one param.
-						 */
-						if (function_exists($rule))
-						{
-							$_POST[$field] = $rule($_POST[$field]);
-							$this->$field = $_POST[$field];
-						}
-
-						continue;
-					}
-
-					$result = $this->$rule($_POST[$field], $param);
-				}
-
-				// Did the rule test negatively?  If so, grab the error.
-				if ($result === FALSE)
-				{
-					if ( ! isset($this->_error_messages[$rule]))
-					{
-						if (($line = $this->CORE->lang->line($rule)) === FALSE)
-						{
-							$line = 'Unable to access an error message corresponding to your field name.';
-						}
-					}
-					else
-					{
-						$line = $this->_error_messages[$rule];;
-					}
-
-					// Build the error message
-					$mfield = ( ! isset($this->_fields[$field])) ? $field : $this->_fields[$field];
-					$mparam = ( ! isset($this->_fields[$param])) ? $param : $this->_fields[$param];
-					$message = sprintf($line, $mfield, $mparam);
-
-					// Set the error variable.  Example: $this->username_error
-					$error = $field.'_error';
-					$this->$error = $this->_error_prefix.$message.$this->_error_suffix;
-
-					// Add the error to the error array
-					$this->_error_array[] = $message;
-					continue 2;
+					// Trying to validate with a rule that does not exist? No way!
+					throw new Kohana_Exception('validation.invalid_rule', $rule);
 				}
 			}
 		}
 
-		$total_errors = count($this->_error_array);
-
-		/*
-		 * Recompile the class variables
-		 *
-		 * If any prepping functions were called the $_POST data
-		 * might now be different then the corresponding class
-		 * variables so we'll set them anew.
-		 */
-		if ($total_errors > 0)
-		{
-			$this->_safe_form_data = TRUE;
-		}
-
-		$this->set_fields();
-
-		// Did we end up with any errors?
-		if ($total_errors == 0)
-		{
-			return TRUE;
-		}
-
-		// Generate the error string
-		foreach ($this->_error_array as $val)
-		{
-			$this->error_string .= $this->_error_prefix.$val.$this->_error_suffix."\n";
-		}
-
-		return FALSE;
+		// i haz error?
+		return (count($this->errors) == 0);
 	}
 
 	// --------------------------------------------------------------------
@@ -384,19 +334,50 @@ class Validation_Core {
 	/**
 	 * Required
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	bool
+	 * @access  public
+	 * @param   string
+	 * @return  bool
 	 */
-	public function required($str)
+	public function required($str, $length = FALSE)
 	{
-		if ( ! is_array($str))
+		if ($str === '' OR $str === FALSE OR (is_array($str) AND empty($str)))
 		{
-			return (trim($str) == '') ? FALSE : TRUE;
+			$this->add_error('required', $this->current_field);
+			return FALSE;
+		}
+		elseif ($length != FALSE AND is_array($length))
+		{
+			if (count($length) > 1)
+			{
+				// Get the min and max length
+				list ($min, $max) = $length;
+
+				// Change length to the length of the string
+				$length = strlen($str);
+
+				// Test min length
+				if ($length < $min)
+				{
+					$this->add_error('min_length', $this->current_field, (int) $min);
+					return FALSE;
+				}
+				// Test max length
+				elseif ($length > $max)
+				{
+					$this->add_error('max_length', $this->current_field, (int) $max);
+					return FALSE;
+				}
+			}
+			else
+			{
+				// Test exact length
+				$this->add_error('exact_length', $this->current_field, current($length));
+				return FALSE;
+			}
 		}
 		else
 		{
-			return ( ! empty($str));
+			return TRUE;
 		}
 	}
 
@@ -411,12 +392,12 @@ class Validation_Core {
 	 */
 	public function matches($str, $field)
 	{
-		if ( ! isset($_POST[$field]))
+		if ( ! isset($this->data[$field]))
 		{
 			return FALSE;
 		}
 
-		return ($str !== $_POST[$field]) ? FALSE : TRUE;
+		return ($str !== $this->data[$field]) ? FALSE : TRUE;
 	}
 
 	// --------------------------------------------------------------------
@@ -479,7 +460,7 @@ class Validation_Core {
 	// --------------------------------------------------------------------
 
 	/**
-	 * E-mail validator
+	 * Valid Email, Commonly used characters only
 	 *
 	 * @access  public
 	 * @param   string
@@ -493,16 +474,19 @@ class Validation_Core {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Valid Email RFC
+	 * Valid Email, RFC compliant version
+	 *
+	 * NOTE: This function is LESS strict than valid_email. Choose carefully.
 	 *
 	 * Originally by Cal Henderson, modified to fit Kohana syntax standards
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	bool
-	 * @author	Cal Henderson
-	 * @link	http://www.iamcal.com/publish/articles/php/parsing_email/
-	 * @link	http://www.w3.org/Protocols/rfc822/
+	 * @author  Cal Henderson
+	 * @link    http://www.iamcal.com/publish/articles/php/parsing_email/
+	 * @link    http://www.w3.org/Protocols/rfc822/
+	 *
+	 * @access  public
+	 * @param   string
+	 * @return  bool
 	 */
 	public function valid_email_rfc($str)
 	{
@@ -533,8 +517,7 @@ class Validation_Core {
 	 */
 	public function valid_ip($ip)
 	{
-		$CORE = Kohana::$instance;
-		return $CORE->input->valid_ip($ip);
+		return Kohana::instance()->input->valid_ip($ip);
 	}
 
 	// --------------------------------------------------------------------
@@ -556,9 +539,9 @@ class Validation_Core {
 	/**
 	 * Alpha-numeric
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	bool
+	 * @access  public
+	 * @param   string
+	 * @return  bool
 	 */
 	public function alpha_numeric($str)
 	{
@@ -582,11 +565,11 @@ class Validation_Core {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Digits Only [0-9, no dots or dashes]
+	 * Digits: 0-9, no dots or dashes
 	 *
-	 * @access	public
-	 * @param	int
-	 * @return	bool
+	 * @access  public
+	 * @param   int
+	 * @return  bool
 	 */
 	public function digit($str)
 	{
@@ -598,11 +581,12 @@ class Validation_Core {
 	/**
 	 * Numeric
 	 *
-	 * @access	public
-	 * @param	int
-	 * @return	bool
+	 * @access  public
+	 * @param   int
+	 * @return  bool
 	 */
-	public function numeric($str) {
+	public function numeric($str)
+	{
 		if ( ! is_numeric($str))
 		    return FALSE;
 
@@ -611,6 +595,7 @@ class Validation_Core {
 
 		return TRUE;
 	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -626,12 +611,12 @@ class Validation_Core {
 	 */
 	public function set_select($field = '', $value = '')
 	{
-		if ($field == '' OR $value == '' OR  ! isset($_POST[$field]))
+		if ($field == '' OR $value == '' OR  ! isset($this->data[$field]))
 		{
 			return '';
 		}
 
-		if ($_POST[$field] == $value)
+		if ($this->data[$field] == $value)
 		{
 			return ' selected="selected"';
 		}
@@ -652,12 +637,12 @@ class Validation_Core {
 	 */
 	public function set_radio($field = '', $value = '')
 	{
-		if ($field == '' OR $value == '' OR  ! isset($_POST[$field]))
+		if ($field == '' OR $value == '' OR  ! isset($this->data[$field]))
 		{
 			return '';
 		}
 
-		if ($_POST[$field] == $value)
+		if ($this->data[$field] == $value)
 		{
 			return ' checked="checked"';
 		}
@@ -678,12 +663,12 @@ class Validation_Core {
 	 */
 	public function set_checkbox($field = '', $value = '')
 	{
-		if ($field == '' OR $value == '' OR  ! isset($_POST[$field]))
+		if ($field == '' OR $value == '' OR  ! isset($this->data[$field]))
 		{
 			return '';
 		}
 
-		if ($_POST[$field] == $value)
+		if ($this->data[$field] == $value)
 		{
 			return ' checked="checked"';
 		}
@@ -703,7 +688,7 @@ class Validation_Core {
 	 */
 	public function prep_for_form($str = '')
 	{
-		if ($this->_safe_form_data == FALSE OR $str == '')
+		if ($this->form_safe == FALSE OR $str == '')
 		{
 			return $str;
 		}
@@ -724,16 +709,16 @@ class Validation_Core {
 	{
 		if ($str == 'http://' OR $str == '')
 		{
-			$_POST[$this->_current_field] = '';
+			$this->data[$this->current_field] = '';
 			return;
 		}
 
-		if (substr($str, 0, 7) != 'http://' && substr($str, 0, 8) != 'https://')
+		if (substr($str, 0, 7) != 'http://' AND substr($str, 0, 8) != 'https://')
 		{
 			$str = 'http://'.$str;
 		}
 
-		$_POST[$this->_current_field] = $str;
+		$this->data[$this->current_field] = $str;
 	}
 
 	// --------------------------------------------------------------------
@@ -747,7 +732,7 @@ class Validation_Core {
 	 */
 	public function strip_image_tags($str)
 	{
-		$_POST[$this->_current_field] = $this->input->strip_image_tags($str);
+		$this->data[$this->current_field] = Kohana::instance()->input->strip_image_tags($str);
 	}
 
 	// --------------------------------------------------------------------
@@ -761,7 +746,7 @@ class Validation_Core {
 	 */
 	public function xss_clean($str)
 	{
-		$_POST[$this->_current_field] = $this->CORE->input->xss_clean($str);
+		$this->data[$this->current_field] = Kohana::instance()->input->xss_clean($str);
 	}
 
 	// --------------------------------------------------------------------
@@ -775,7 +760,7 @@ class Validation_Core {
 	 */
 	public function encode_php_tags($str)
 	{
-		$_POST[$this->_current_field] = str_replace(array('<?', '?>'),  array('&lt;?', '?&gt;'), $str);
+		$this->data[$this->current_field] = str_replace(array('<?', '?>'),  array('&lt;?php', '?&gt;'), $str);
 	}
 
 

@@ -100,14 +100,17 @@ class Kohana {
 
 		// Define extra error constants
 		defined('E_RECOVERABLE_ERROR')  or define('E_RECOVERABLE_ERROR',  4096);
-		defined('E_UNCAUGHT_EXCEPTION') or define('E_UNCAUGHT_EXCEPTION', 4097);
-		defined('E_KOHANA_EXCEPTION')   or define('E_KOHANA_EXCEPTION',   4098);
+		// Define Kohana error constants
+		defined('E_UNCAUGHT_EXCEPTION') or define('E_UNCAUGHT_EXCEPTION', 'kf_error');
+		defined('E_KOHANA_EXCEPTION')   or define('E_KOHANA_EXCEPTION',   'kf_error');
+		defined('E_KOHANA_DEVERROR')    or define('E_KOHANA_DEVERROR',    'kf_error');
 
 		// Set error types, format: CONSTANT => array($log_level, $message)
 		self::$error_types = array
 		(
 			E_UNCAUGHT_EXCEPTION => array( 1, 'Uncaught Exception'),
 			E_KOHANA_EXCEPTION   => array( 1, 'Kohana Runtime Error'),
+			E_KOHANA_DEVERROR    => array( 1, 'Developer Error... RTFM.'),
 			E_RECOVERABLE_ERROR  => array( 1, 'Recoverable Error'),
 			E_ERROR              => array( 1, 'Fatal Error'),
 			E_USER_ERROR         => array( 1, 'Fatal Error'),
@@ -542,7 +545,7 @@ class Kohana_Exception extends Exception {
 	function __construct($error)
 	{
 		// Fetch the error message
-		$message = Kohana::lang('exceptions.'.$error);
+		$message = Kohana::lang($error);
 
 		// Handle error messages that are not set
 		if ($message == '')

@@ -4,7 +4,12 @@ class Welcome_Controller extends Controller {
 
 	function index()
 	{
-		echo "Welcome!";
+		foreach(get_class_methods(__CLASS__) as $method)
+		{
+			if ( ! preg_match('/_example$/', $method)) continue;
+			
+			echo html::anchor('welcome/'.$method, $method)."<br/>\n";
+		}
 	}
 
 	function validation_example()
@@ -14,22 +19,31 @@ class Welcome_Controller extends Controller {
 		// it will default to validating the POST array.
 		$data = array
 		(
-			'user' => 'hi',
+			'user' => 'hello',
 			'pass' => 'bigsecret',
 			'reme' => '1'
 		);
 
+		// Same as CI, but supports passing an array to the constructor
 		$this->load->library('validation', $data);
 
-		$this->validation->set(array
+		// Looks familiar...
+		$this->validation->set_rules(array
 		(
-			'user' => array('Username',    'trim|required[4,32]'),
-			'pass' => array('Password',    'required|sha1'),
-			'reme' => array('Remember Me', 'integer')
+			// Format:
+			// key          friendly name,  validation rules
+			'user' => array('username',    'trim|required[1,2]'),
+			'pass' => array('password',    'required|sha1'),
+			'reme' => array('remember me', 'required')
 		));
 
-		print $this->validation->debug();
+		// Same syntax as before
+		$this->validation->run();
 
+		// Same syntax, but dynamcially generated wth __get()
+		print $this->validation->user_error;
+
+		// Yay!
 		print "{execution_time} ALL DONE!";
 	}
 
@@ -63,6 +77,7 @@ class Welcome_Controller extends Controller {
 		echo '<hr />Digg style:     '.$this->pagination->create_links('digg');
 		echo '<hr />Extended style: '.$this->pagination->create_links('extended');
 		echo '<hr />PunBB style:    '.$this->pagination->create_links('punbb');
+		echo "done in {execution_time} seconds";
 	}
 
 }
