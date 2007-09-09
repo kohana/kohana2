@@ -1,7 +1,7 @@
 # About Kohana
 
-Article status [Stub] requires [Writing] Describing the Framework
+Article status [Draft] requires [Writing] Welcome article and synopsis
 
-This is a stub (please write me)
+Kohana is an open-source development framework for writing dynamic Web Applications using PHP.
 
 <?php /* $Id$ */ ?>
