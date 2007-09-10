@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
-/* $Id: user_guide.php 485 2007-09-04 00:12:20Z Shadowhand $ */
+/* $Id$ */
 
 $lang = array
 (

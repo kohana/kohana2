@@ -7,7 +7,7 @@
 * Libraries and helpers are in alphabetical order
 * Other categories are in logical order
 *
-* $Id: user_guide.php 485 2007-09-04 00:12:20Z Shadowhand $
+* $Id$
 */
 $lang = array
 (
