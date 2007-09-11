@@ -323,71 +323,6 @@ class Database_Core {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Where
-	 *
-	 * Called by where() or orwhere()
-	 *
-	 * @access private
-	 * @param  mixed
-	 * @param  mixed
-	 * @param  string
-	 * @param  bool
-	 * @return object
-	 */
-	public function _where($key, $value = NULL, $type = 'AND ', $quote = TRUE)
-	{
-		if ( ! is_array($key))
-		{
-			$key = array($key => $value);
-		}
-
-		foreach ($key as $k => $v)
-		{
-			$prefix = (count($this->where) == 0) ? '' : $type;
-
-			if ($quote === -1)
-			{
-				$v = '';
-			}
-			else
-			{
-				if ($v === NULL)
-				{
-					if ( ! $this->has_operator($k))
-					{
-						$k .= ' IS';
-					}
-
-					$v = ' NULL';
-				}
-				elseif ($v === FALSE OR $v === TRUE)
-				{
-					if ( ! $this->has_operator($k))
-					{
-						$k .= ' =';
-					}
-
-					$v = ($v == TRUE) ? ' 1' : ' 0';
-				}
-				else
-				{
-					if ( ! $this->has_operator($k))
-					{
-						$k .= ' =';
-					}
-
-					$v = ' '.(($quote == TRUE) ? $this->escape($v) : $v);
-				}
-			}
-
-			$this->where[] = $prefix.$k.$v;
-		}
-		return $this;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Like
 	 *
 	 * Generates a %LIKE% portion of the query. Separates
@@ -400,7 +335,8 @@ class Database_Core {
 	 */
 	public function like($field, $match = '')
 	{
-		return $this->like($field, $match, 'AND ');
+		$this->like = array_merge($this->like, $this->driver->like($field, $match, 'AND '));
+		return $this;
 	}
 
 	// --------------------------------------------------------------------

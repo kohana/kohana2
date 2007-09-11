@@ -159,6 +159,10 @@ class Database_Mysql implements Database_Driver {
 
 					$v = ($v == TRUE) ? ' 1' : ' 0';
 				}
+				elseif ( $this->has_operator($v))
+				{
+				    $k = '';
+				}
 				else
 				{
 					if ( ! $this->has_operator($k))
