@@ -58,7 +58,7 @@ class Database_Mysql implements Database_Driver {
 			{
 				$this->set_charset($charset);
 			}
-
+			echo print_r($this->link, true); die;
 			return TRUE;
 		}
 
@@ -96,14 +96,14 @@ class Database_Mysql implements Database_Driver {
 		}
 	}
 
-	public function delete($sql)
+	public function delete($table, $where)
 	{
-
+    	return "DELETE FROM ".$this->escape_table($table)." WHERE ".implode(" ", $where);
 	}
 
-	public function update($sql)
+	public function update($table, $where)
 	{
-
+		return "UPDATE ".$this->escape_table($table)." WHERE ".implode(" ",$where);
 	}
 
 	public function set_charset($charset)
@@ -111,6 +111,68 @@ class Database_Mysql implements Database_Driver {
 		$this->query('SET NAMES '.mysql_real_escape_string($charset));
 	}
 
+	public function escape_table($table)
+	{
+		return str_replace('.', '`.`', $table);
+	}
+	
+	public function escape_column($column)
+	{
+		return '`'.$column.'`';
+	}
+	
+	public function where($key, $value, $type, $num_wheres, $quote)
+	{
+		if ( ! is_array($key))
+		{
+			$key = array($key => $value);
+		}
+
+		$wheres = array();
+		foreach ($key as $k => $v)
+		{
+			$prefix = ($num_wheres == 0) ? '' : $type;
+
+			if ($quote === -1)
+			{
+				$v = '';
+			}
+			else
+			{
+				if ($v === NULL)
+				{
+					if ( ! $this->has_operator($k))
+					{
+						$k .= ' IS';
+					}
+
+					$v = ' NULL';
+				}
+				elseif ($v === FALSE OR $v === TRUE)
+				{
+					if ( ! $this->has_operator($k))
+					{
+						$k .= ' =';
+					}
+
+					$v = ($v == TRUE) ? ' 1' : ' 0';
+				}
+				else
+				{
+					if ( ! $this->has_operator($k))
+					{
+						$k .= ' =';
+					}
+
+					$v = ' '.(($quote == TRUE) ? $this->escape($v) : $v);
+				}
+			}
+
+			$wheres[] = $prefix.$k.$v;
+		}
+		return $wheres;
+	}
+	
 	/**
 	 * Compile the SELECT statement
 	 *
@@ -120,69 +182,105 @@ class Database_Mysql implements Database_Driver {
 	 * @access  private
 	 * @return  string
 	 */
-	public function compile_select()
+	public function compile_select($database)
 	{
-		$sql  = ($this->_distinct == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
-		$sql .= (count($this->_select) > 0) ? implode(', ', $this->_select) : '*';
+		//echo "<pre>" . print_r($database, true) . "</pre>"; die;
+		$sql  = ($database['distinct'] == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
+		$sql .= (count($database['select']) > 0) ? implode(', ', $database['select']) : '*';
 
-		if (count($this->_from) > 0)
+		if (count($database['from']) > 0)
 		{
 			$sql .= "\nFROM ";
-			$sql .= implode(', ', $this->_from);
+			$sql .= implode(', ', $database['from']);
 		}
 
-		if (count($this->_join) > 0)
+		if (count($database['join']) > 0)
 		{
 			$sql .= "\n";
-			$sql .= implode("\n", $this->_join);
+			$sql .= implode("\n", $database->join);
 		}
 
-		if (count($this->_where) > 0 OR count($this->_like) > 0)
+		if (count($database['where']) > 0 OR count($database['like']) > 0)
 		{
 			$sql .= "\nWHERE ";
 		}
 
-		$sql .= implode("\n", $this->_where);
+		$sql .= implode("\n", $database['where']);
 
-		if (count($this->_like) > 0)
+		if (count($database['like']) > 0)
 		{
-			if (count($this->_where) > 0)
+			if (count($database['where']) > 0)
 			{
 				$sql .= " AND ";
 			}
 
-			$sql .= implode("\n", $this->_like);
+			$sql .= implode("\n", $database['like']);
 		}
 
-		if (count($this->_groupby) > 0)
+		if (count($database['groupby']) > 0)
 		{
 			$sql .= "\nGROUP BY ";
-			$sql .= implode(', ', $this->_groupby);
+			$sql .= implode(', ', $database['groupby']);
 		}
 
-		if (count($this->_having) > 0)
+		if (count($database['having']) > 0)
 		{
 			$sql .= "\nHAVING ";
-			$sql .= implode("\n", $this->_having);
+			$sql .= implode("\n", $database['having']);
 		}
 
-		if (count($this->_orderby) > 0)
+		if (count($database['orderby']) > 0)
 		{
 			$sql .= "\nORDER BY ";
-			$sql .= implode(', ', $this->_orderby);
+			$sql .= implode(', ', $database['orderby']);
 
-			if ($this->_order !== FALSE)
+			if ($database['order'] !== FALSE)
 			{
-				$sql .= ($this->_order == 'desc') ? ' DESC' : ' ASC';
+				$sql .= ($database['order'] == 'desc') ? ' DESC' : ' ASC';
 			}
 		}
 
-		if (is_numeric($this->_limit))
+		if (is_numeric($database['limit']))
 		{
 			$sql .= "\n";
-			$sql = $this->_limit($sql, $this->_limit, $this->_offset);
+			$sql = $database->limit($sql, $database['limit'], $database['offset']);
 		}
 
 		return $sql;
+	}
+	
+	private function has_operator($str)
+	{
+		$str = trim($str);
+		
+		return (bool) preg_match('/(\s|<|>|!|=|is |is not)/i', $str);
+	}
+	
+	private function escape($str)
+	{
+		switch (gettype($str))
+		{
+			case 'string'   :       $str = "'".$this->escape_str($str)."'";
+ 				break;
+			case 'boolean'  :       $str = ($str === FALSE) ? 0 : 1;
+				break;
+			default                 :       $str = ($str === NULL) ? 'NULL' : $str;
+				break;
+		}
+
+		return (string) $str;
+	} 
+	
+	/**
+	* Escape String
+	*
+	* @access      public
+	* @param       string
+	* @return      string
+	*/
+	function escape_str($str)
+	{
+		echo "<pre>" . print_r($this, true) . "</pre>"; die;
+		return mysql_real_escape_string($str, $this->link);
 	}
 } // End Database MySQL Driver
