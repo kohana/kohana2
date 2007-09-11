@@ -40,7 +40,7 @@ interface Database_Driver {
 	 *
 	 * @access  public
 	 * @param   string  config array
-	 * @return  bool
+	 * @return  mixed
 	 */
 	public function query($sql);
 	
@@ -49,18 +49,18 @@ interface Database_Driver {
 	 *
 	 * @access  public
 	 * @param   string  config array
-	 * @return  bool
+	 * @return  string
 	 */
-	public function delete($sql);
+	public function delete($table, $where);
 	
 	/**
 	 * Perform an update statement
 	 *
 	 * @access  public
 	 * @param   string  config array
-	 * @return  bool
+	 * @return  string
 	 */
-	public function update($sql);
+	public function update($table, $where);
 	
 	/**
 	 * Compile the select syntax for a query
@@ -69,6 +69,24 @@ interface Database_Driver {
 	 * @param   string  config array
 	 * @return  bool
 	 */
-	public function compile_select();
+	public function compile_select($database);
+	
+	/**
+	 * Escape the table name for safe queries
+	 *
+	 * @access  public
+	 * @param   string  table name
+	 * @return  string
+	 */
+	public function escape_table($table);
+	
+	/**
+	 * Escape the column name for safe queries
+	 *
+	 * @access  public
+	 * @param   string  column name
+	 * @return  string
+	 */
+	public function escape_column($column);
 	
 } // End Database Driver Class
