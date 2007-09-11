@@ -660,7 +660,7 @@ class Database_Core {
 		}
 
 		$sql = $this->driver->compile_select(get_object_vars($this));
-		echo $sql;
+
 		$result = $this->query($sql);
 		$this->reset_select();
 		return $result;

@@ -184,7 +184,6 @@ class Database_Mysql implements Database_Driver {
 	 */
 	public function compile_select($database)
 	{
-		//echo "<pre>" . print_r($database, true) . "</pre>"; die;
 		$sql  = ($database['distinct'] == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
 		$sql .= (count($database['select']) > 0) ? implode(', ', $database['select']) : '*';
 
@@ -280,7 +279,6 @@ class Database_Mysql implements Database_Driver {
 	*/
 	function escape_str($str)
 	{
-		echo "<pre>" . print_r($this, true) . "</pre>"; die;
 		return mysql_real_escape_string($str, $this->link);
 	}
 } // End Database MySQL Driver
