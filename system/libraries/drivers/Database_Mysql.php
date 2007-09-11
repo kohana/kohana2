@@ -246,7 +246,7 @@ class Database_Mysql implements Database_Driver {
 			$sql .= "\n";
 			$sql = $database->limit($sql, $database['limit'], $database['offset']);
 		}
-		echo $sql;
+		
 		return $sql;
 	}
 	
@@ -285,7 +285,7 @@ class Database_Mysql implements Database_Driver {
 	   {
 	       $this->connect($this->db_config);
 	   }
-	   echo "<p>" . $str . "</p>";
+	   
 	   return mysql_real_escape_string($str, $this->link);
 	}
 } // End Database MySQL Driver
