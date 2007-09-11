@@ -30,10 +30,12 @@ class Database_Mysql implements Database_Driver {
 
 	// Database connection link
 	private $link;
-
-	public function __construct()
+    private $db_config;
+    
+	public function __construct($config)
 	{
-		Log::add('debug', 'MySQL Database Driver Initialized');
+	   $this->db_config = $config;
+	   Log::add('debug', 'MySQL Database Driver Initialized');
 	}
 
 	/**
@@ -161,7 +163,7 @@ class Database_Mysql implements Database_Driver {
 				{
 					if ( ! $this->has_operator($k))
 					{
-						$k .= ' =';
+					   $k .= ' =';
 					}
 
 					$v = ' '.(($quote == TRUE) ? $this->escape($v) : $v);
@@ -204,7 +206,7 @@ class Database_Mysql implements Database_Driver {
 			$sql .= "\nWHERE ";
 		}
 
-		$sql .= implode("\n", $database['where']);
+		$sql .= implode("\n AND ", $database['where']);
 
 		if (count($database['like']) > 0)
 		{
@@ -244,7 +246,7 @@ class Database_Mysql implements Database_Driver {
 			$sql .= "\n";
 			$sql = $database->limit($sql, $database['limit'], $database['offset']);
 		}
-
+		echo $sql;
 		return $sql;
 	}
 	
@@ -279,6 +281,11 @@ class Database_Mysql implements Database_Driver {
 	*/
 	function escape_str($str)
 	{
-		return mysql_real_escape_string($str, $this->link);
+	   if ( ! is_resource($this->link))
+	   {
+	       $this->connect($this->db_config);
+	   }
+	   echo "<p>" . $str . "</p>";
+	   return mysql_real_escape_string($str, $this->link);
 	}
 } // End Database MySQL Driver

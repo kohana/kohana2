@@ -105,7 +105,7 @@ class Database_Core {
 		}
 
 		// Initialize the driver
-		$this->driver = new $driver();
+		$this->driver = new $driver($this->config);
 
 		if ( ! in_array('Database_Driver', class_implements($this->driver)))
 		{
