@@ -143,7 +143,6 @@ class Database_Core {
 		if ($sql == '') return FALSE;
 
 		if ( ! $this->connected) $this->connect();
-
 		$object = (bool) ($object == FALSE) ? $this->config['object'] : $object;
 
 		return $this->driver->query($sql, $object);
@@ -183,7 +182,7 @@ class Database_Core {
 		{
 			if (($val = trim($val)) == '') continue;
 
-			$this->_select[] = $val;
+			$this->select[] = $this->driver->escape_column($val);
 		}
 
 		return $this;
@@ -202,7 +201,7 @@ class Database_Core {
 	 */
 	public function distinct($sql = TRUE)
 	{
-		$this->_distict = (bool) $sql;
+		$this->distict = (bool) $sql;
 
 		return $this;
 	}
@@ -224,7 +223,7 @@ class Database_Core {
 		{
 			if (($val = trim($val)) == '') continue;
 
-			$this->_from[] = $val;
+			$this->from[] = $val;
 		}
 
 		return $this;
@@ -269,7 +268,7 @@ class Database_Core {
 			$cond = preg_replace('|([\w.]+[\W\s]+)|', $this->config['table_prefix'].'$1'.$this->config['table_prefix'], $cond);
 		}
 
-		$this->_join[] = $type.'JOIN '.$this->config['table_prefix'].$table.' ON '.$cond;
+		$this->join[] = $type.'JOIN '.$this->config['table_prefix'].$table.' ON '.$cond;
 		return $this;
 	}
 
@@ -293,8 +292,8 @@ class Database_Core {
 		{
 			$quote = -1;
 		}
-
-		return $this->_where($key, $value, 'AND ', $quote);
+		$this->where = array_merge($this->where, $this->driver->where($key, $value, 'AND ', count($this->where), $quote));
+		return $this;
 	}
 
 	// --------------------------------------------------------------------
@@ -318,7 +317,7 @@ class Database_Core {
 			$quote = -1;
 		}
 
-		return $this->_where($key, $value, 'OR ', $quote);
+		return $this->where($key, $value, 'OR ', $quote);
 	}
 
 	// --------------------------------------------------------------------
@@ -344,7 +343,7 @@ class Database_Core {
 
 		foreach ($key as $k => $v)
 		{
-			$prefix = (count($this->_where) == 0) ? '' : $type;
+			$prefix = (count($this->where) == 0) ? '' : $type;
 
 			if ($quote === -1)
 			{
@@ -354,7 +353,7 @@ class Database_Core {
 			{
 				if ($v === NULL)
 				{
-					if ( ! $this->_has_operator($k))
+					if ( ! $this->has_operator($k))
 					{
 						$k .= ' IS';
 					}
@@ -363,7 +362,7 @@ class Database_Core {
 				}
 				elseif ($v === FALSE OR $v === TRUE)
 				{
-					if ( ! $this->_has_operator($k))
+					if ( ! $this->has_operator($k))
 					{
 						$k .= ' =';
 					}
@@ -372,7 +371,7 @@ class Database_Core {
 				}
 				else
 				{
-					if ( ! $this->_has_operator($k))
+					if ( ! $this->has_operator($k))
 					{
 						$k .= ' =';
 					}
@@ -381,7 +380,7 @@ class Database_Core {
 				}
 			}
 
-			$this->_where[] = $prefix.$k.$v;
+			$this->where[] = $prefix.$k.$v;
 		}
 		return $this;
 	}
@@ -401,7 +400,7 @@ class Database_Core {
 	 */
 	public function like($field, $match = '')
 	{
-		return $this->_like($field, $match, 'AND ');
+		return $this->like($field, $match, 'AND ');
 	}
 
 	// --------------------------------------------------------------------
@@ -419,7 +418,7 @@ class Database_Core {
 	 */
 	public function orlike($field, $match = '')
 	{
-		return $this->_like($field, $match, 'OR ');
+		return $this->like($field, $match, 'OR ');
 	}
 
 	// --------------------------------------------------------------------
@@ -444,11 +443,11 @@ class Database_Core {
 
 		foreach ($field as $k => $v)
 		{
-			$prefix = (count($this->_like) == 0) ? '' : $type;
+			$prefix = (count($this->like) == 0) ? '' : $type;
 
 			$v = $this->escape_str($v);
 
-			$this->_like[] = $prefix." $k LIKE '%{$v}%'";
+			$this->like[] = $prefix." $k LIKE '%{$v}%'";
 		}
 		return $this;
 	}
@@ -474,7 +473,7 @@ class Database_Core {
 			$val = trim($val);
 
 			if ($val != '')
-				$this->_groupby[] = $val;
+				$this->groupby[] = $val;
 		}
 		return $this;
 	}
@@ -493,7 +492,7 @@ class Database_Core {
 	 */
 	public function having($key, $value = '')
 	{
-		return $this->_having($key, $value, 'AND');
+		return $this->having($key, $value, 'AND');
 	}
 
 	// --------------------------------------------------------------------
@@ -510,7 +509,7 @@ class Database_Core {
 	 */
 	public function orhaving($key, $value = '')
 	{
-		return $this->_having($key, $value, 'OR');
+		return $this->having($key, $value, 'OR');
 	}
 
 	// --------------------------------------------------------------------
@@ -536,14 +535,14 @@ class Database_Core {
 
 		foreach ($key as $k => $v)
 		{
-			$prefix = (count($this->_having) < 1) ? '' : $type;
+			$prefix = (count($this->having) < 1) ? '' : $type;
 
 			if ($v != '')
 			{
 				$v = ' '.$this->escape($v);
 			}
 
-			$this->_having[] = $prefix.$k.$v;
+			$this->having[] = $prefix.$k.$v;
 		}
 		return $this;
 	}
@@ -567,7 +566,7 @@ class Database_Core {
 			$direction = (in_array($direction, array('ASC', 'DESC', 'RAND()'))) ? " $direction" : " ASC";
 		}
 
-		$this->_orderby[] = $orderby.$direction;
+		$this->orderby[] = $orderby.$direction;
 		return $this;
 	}
 
@@ -583,11 +582,11 @@ class Database_Core {
 	 */
 	public function limit($value, $offset = '')
 	{
-		$this->_limit = $value;
+		$this->limit = $value;
 
 		if ($offset != '')
 		{
-			$this->_offset = $offset;
+			$this->offset = $offset;
 		}
 
 		return $this;
@@ -604,7 +603,7 @@ class Database_Core {
 	 */
 	public function offset($value)
 	{
-		$this->_offset = $value;
+		$this->offset = $value;
 		return $this;
 	}
 
@@ -629,7 +628,7 @@ class Database_Core {
 
 		foreach ($key as $k => $v)
 		{
-			$this->_set[$k] = $this->escape($v);
+			$this->set[$k] = $this->escape($v);
 		}
 
 		return $this;
@@ -660,8 +659,8 @@ class Database_Core {
 			$this->limit($limit, $offset);
 		}
 
-		$sql = $this->driver->compile_select($this);
-
+		$sql = $this->driver->compile_select(get_object_vars($this));
+		echo $sql;
 		$result = $this->query($sql);
 		$this->reset_select();
 		return $result;
@@ -697,7 +696,7 @@ class Database_Core {
 			$this->limit($limit, $offset);
 		}
 
-		$sql = $this->driver->compile_select($this);
+		$sql = $this->driver->compile_select(get_object_vars($this));
 
 		$result = $this->query($sql);
 		$this->reset_select();
@@ -723,22 +722,22 @@ class Database_Core {
 			$this->set($set);
 		}
 
-		if ($this->_set == FALSE)
+		if ($this->set == FALSE)
 		{
 			return ($this->db_debug ? $this->display_error('db_must_use_set') : FALSE);
 		}
 
 		if ($table == '')
 		{
-			if ( ! isset($this->_from[0]))
+			if ( ! isset($this->from[0]))
 			{
 				return ($this->db_debug ? $this->display_error('db_must_set_table') : FALSE);
 			}
 
-			$table = $this->_from[0];
+			$table = $this->from[0];
 		}
 
-		$sql = $this->driver->insert($this->config['table_prefix'].$table, array_keys($this->_set), array_values($this->_set));
+		$sql = $this->driver->insert($this->config['table_prefix'].$table, array_keys($this->set), array_values($this->set));
 
 		$this->reset_write();
 		return $this->query($sql);
@@ -764,19 +763,19 @@ class Database_Core {
 			$this->set($set);
 		}
 
-		if ($this->_set == FALSE)
+		if ($this->set == FALSE)
 		{
 			return ($this->db_debug ? $this->display_error('db_must_use_set') : FALSE);
 		}
 
 		if ($table == '')
 		{
-			if ( ! isset($this->_from[0]))
+			if ( ! isset($this->from[0]))
 			{
 				return ($this->db_debug ? $this->display_error('db_must_set_table') : FALSE);
 			}
 
-			$table = $this->_from[0];
+			$table = $this->from[0];
 		}
 
 		if ($where != NULL)
@@ -784,7 +783,7 @@ class Database_Core {
 			$this->where($where);
 		}
 
-		$sql = $this->driver->update($this->config['table_prefix'].$table, $this->_set, $this->_where);
+		$sql = $this->driver->update($this->config['table_prefix'].$table, $this->set, $this->where);
 
 		$this->reset_write();
 		return $this->query($sql);
@@ -806,12 +805,12 @@ class Database_Core {
 	{
 		if ($table == '')
 		{
-			if ( ! isset($this->_from[0]))
+			if ( ! isset($this->from[0]))
 			{
 				return ($this->db_debug ? $this->display_error('db_must_set_table') : FALSE);
 			}
 
-			$table = $this->_from[0];
+			$table = $this->from[0];
 		}
 
 		if ($where != '')
@@ -819,12 +818,12 @@ class Database_Core {
 			$this->where($where);
 		}
 
-		if (count($this->_where) < 1)
+		if (count($this->where) < 1)
 		{
 			return (($this->db_debug) ? $this->display_error('db_del_must_use_where') : FALSE);
 		}
 
-		$sql = $this->driver->delete($this->config['table_prefix'].$table, $this->_where);
+		$sql = $this->driver->delete($this->config['table_prefix'].$table, $this->where);
 
 		$this->reset_write();
 		return $this->query($sql);
@@ -843,7 +842,7 @@ class Database_Core {
 	 */
 	public function count_records($table = FALSE)
 	{
-		if (count($this->_from) < 1)
+		if (count($this->from) < 1)
 		{
 			if ($table == FALSE)
 			{
@@ -876,83 +875,6 @@ class Database_Core {
 	public function _has_operator($str)
 	{
 		return (bool) preg_match('/[\s=<>!]|is /i', trim($str));
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Compile the SELECT statement
-	 *
-	 * Generates a query string based on which functions were used.
-	 * Should not be called directly.  The get() function calls it.
-	 *
-	 * @access  private
-	 * @return  string
-	 */
-	public function _compile_select()
-	{
-		$sql  = ($this->_distinct == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
-		$sql .= (count($this->_select) > 0) ? implode(', ', $this->_select) : '*';
-
-		if (count($this->_from) > 0)
-		{
-			$sql .= "\nFROM ";
-			$sql .= implode(', ', $this->_from);
-		}
-
-		if (count($this->_join) > 0)
-		{
-			$sql .= "\n";
-			$sql .= implode("\n", $this->_join);
-		}
-
-		if (count($this->_where) > 0 OR count($this->_like) > 0)
-		{
-			$sql .= "\nWHERE ";
-		}
-
-		$sql .= implode("\n", $this->_where);
-
-		if (count($this->_like) > 0)
-		{
-			if (count($this->_where) > 0)
-			{
-				$sql .= " AND ";
-			}
-
-			$sql .= implode("\n", $this->_like);
-		}
-
-		if (count($this->_groupby) > 0)
-		{
-			$sql .= "\nGROUP BY ";
-			$sql .= implode(', ', $this->_groupby);
-		}
-
-		if (count($this->_having) > 0)
-		{
-			$sql .= "\nHAVING ";
-			$sql .= implode("\n", $this->_having);
-		}
-
-		if (count($this->_orderby) > 0)
-		{
-			$sql .= "\nORDER BY ";
-			$sql .= implode(', ', $this->_orderby);
-
-			if ($this->_order !== FALSE)
-			{
-				$sql .= ($this->_order == 'desc') ? ' DESC' : ' ASC';
-			}
-		}
-
-		if (is_numeric($this->_limit))
-		{
-			$sql .= "\n";
-			$sql = $this->_limit($sql, $this->_limit, $this->_offset);
-		}
-
-		return $sql;
 	}
 
 	// --------------------------------------------------------------------
@@ -995,17 +917,17 @@ class Database_Core {
 	 */
 	private function reset_select()
 	{
-		$this->_select   = array();
-		$this->_from     = array();
-		$this->_join     = array();
-		$this->_where    = array();
-		$this->_like     = array();
-		$this->_orderby  = array();
-		$this->_groupby  = array();
-		$this->_having   = array();
-		$this->_distinct = FALSE;
-		$this->_limit    = FALSE;
-		$this->_offset   = FALSE;
+		$this->select   = array();
+		$this->from     = array();
+		$this->join     = array();
+		$this->where    = array();
+		$this->like     = array();
+		$this->orderby  = array();
+		$this->groupby  = array();
+		$this->having   = array();
+		$this->distinct = FALSE;
+		$this->limit    = FALSE;
+		$this->offset   = FALSE;
 	}
 
 	// --------------------------------------------------------------------
@@ -1018,9 +940,9 @@ class Database_Core {
 	 */
 	private function reset_write()
 	{
-		$this->_set   = array();
-		$this->_from  = array();
-		$this->_where = array();
+		$this->set   = array();
+		$this->from  = array();
+		$this->where = array();
 	}
 
 } // End Database Class
