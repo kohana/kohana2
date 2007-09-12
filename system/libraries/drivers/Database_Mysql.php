@@ -100,12 +100,12 @@ class Database_Mysql implements Database_Driver {
 
 	public function delete($table, $where)
 	{
-    	return "DELETE FROM ".$this->escape_table($table)." WHERE ".implode(" ", $where);
+    	return 'DELETE FROM '.$this->escape_table($table).' WHERE '.implode(' ', $where);
 	}
 
 	public function update($table, $where)
 	{
-		return "UPDATE ".$this->escape_table($table)." WHERE ".implode(" ",$where);
+		return 'UPDATE '.$this->escape_table($table).' WHERE '.implode(' ',$where);
 	}
 
 	public function set_charset($charset)
@@ -159,7 +159,7 @@ class Database_Mysql implements Database_Driver {
 
 					$v = ($v == TRUE) ? ' 1' : ' 0';
 				}
-				elseif ( $this->has_operator($v))
+				elseif ($this->has_operator($v))
 				{
 				    $k = '';
 				}
@@ -176,6 +176,7 @@ class Database_Mysql implements Database_Driver {
 
 			$wheres[] = $prefix.$k.$v;
 		}
+		
 		return $wheres;
 	}
 	
@@ -216,7 +217,7 @@ class Database_Mysql implements Database_Driver {
 		{
 			if (count($database['where']) > 0)
 			{
-				$sql .= " AND ";
+				$sql .= ' AND ';
 			}
 
 			$sql .= implode("\n", $database['like']);
@@ -256,21 +257,22 @@ class Database_Mysql implements Database_Driver {
 	
 	private function has_operator($str)
 	{
-		$str = trim($str);
-		
-		return (bool) preg_match('/(\s|<|>|!|=|is |is not)/i', $str);
+		return (bool) preg_match('/[\s=<>!]|is /i', trim($str));
 	}
 	
 	private function escape($str)
 	{
 		switch (gettype($str))
 		{
-			case 'string'   :       $str = "'".$this->escape_str($str)."'";
- 				break;
-			case 'boolean'  :       $str = ($str === FALSE) ? 0 : 1;
-				break;
-			default                 :       $str = ($str === NULL) ? 'NULL' : $str;
-				break;
+			case 'string':
+				$str = "'".$this->escape_str($str)."'";
+ 			break;
+			case 'boolean':
+				$str = ($str === FALSE) ? 0 : 1;
+			break;
+			default:
+				$str = ($str === NULL) ? 'NULL' : $str;
+			break;
 		}
 
 		return (string) $str;
