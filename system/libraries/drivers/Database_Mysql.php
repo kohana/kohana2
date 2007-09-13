@@ -196,6 +196,7 @@ class Database_Mysql implements Database_Driver {
 
 			$likes[] = $prefix." $k LIKE '%{$v}%'";
 		}
+		return $likes;
 	}
 	
 	/**
@@ -235,7 +236,7 @@ class Database_Mysql implements Database_Driver {
 		{
 			if (count($database['where']) > 0)
 			{
-				$sql .= ' AND ';
+				$sql .= ' ';
 			}
 
 			$sql .= implode("\n", $database['like']);
@@ -269,6 +270,7 @@ class Database_Mysql implements Database_Driver {
 			$sql .= "\n";
 			$sql = $database->limit($sql, $database['limit'], $database['offset']);
 		}
+		
 		return $sql;
 	}
 	
