@@ -317,7 +317,8 @@ class Database_Core {
 			$quote = -1;
 		}
 
-		return $this->where($key, $value, 'OR ', $quote);
+		$this->where = array_merge($this->where, $this->driver->where($key, $value, 'OR ', count($this->where), $quote));
+		return $this;
 	}
 
 	// --------------------------------------------------------------------
@@ -335,7 +336,7 @@ class Database_Core {
 	 */
 	public function like($field, $match = '')
 	{
-		$this->like = array_merge($this->like, $this->driver->like($field, $match, 'AND '));
+		$this->like = array_merge($this->like, $this->driver->like($field, $match, 'AND ', count($this->like)));
 		return $this;
 	}
 
@@ -354,37 +355,7 @@ class Database_Core {
 	 */
 	public function orlike($field, $match = '')
 	{
-		return $this->like($field, $match, 'OR ');
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Like
-	 *
-	 * Called by like() or orlike()
-	 *
-	 * @access	private
-	 * @param	mixed
-	 * @param	mixed
-	 * @param	string
-	 * @return	object
-	 */
-	public function _like($field, $match = '', $type = 'AND ')
-	{
-		if ( ! is_array($field))
-		{
-			$field = array($field => $match);
-		}
-
-		foreach ($field as $k => $v)
-		{
-			$prefix = (count($this->like) == 0) ? '' : $type;
-
-			$v = $this->escape_str($v);
-
-			$this->like[] = $prefix." $k LIKE '%{$v}%'";
-		}
+		$this->like = array_merge($this->like, $this->driver->like($field, $match, 'OR ', count($this->like)));
 		return $this;
 	}
 
@@ -446,41 +417,6 @@ class Database_Core {
 	public function orhaving($key, $value = '')
 	{
 		return $this->having($key, $value, 'OR');
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Sets the HAVING values
-	 *
-	 * Called by having() or orhaving()
-	 *
-	 * @access	private
-	 * @param	string
-	 * @param	string
-	 * @return	object
-	 */
-	public function _having($key, $value = '', $type = 'AND')
-	{
-		$type = trim($type).' ';
-
-		if ( ! is_array($key))
-		{
-			$key = array($key => $value);
-		}
-
-		foreach ($key as $k => $v)
-		{
-			$prefix = (count($this->having) < 1) ? '' : $type;
-
-			if ($v != '')
-			{
-				$v = ' '.$this->escape($v);
-			}
-
-			$this->having[] = $prefix.$k.$v;
-		}
-		return $this;
 	}
 
 	// --------------------------------------------------------------------
@@ -797,20 +733,6 @@ class Database_Core {
 		$query->free_result();
 
 		return $result;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Tests whether the string has an SQL operator
-	 *
-	 * @access  private
-	 * @param   string
-	 * @return  boolean
-	 */
-	public function _has_operator($str)
-	{
-		return (bool) preg_match('/[\s=<>!]|is /i', trim($str));
 	}
 
 	// --------------------------------------------------------------------

@@ -180,6 +180,24 @@ class Database_Mysql implements Database_Driver {
 		return $wheres;
 	}
 	
+	public function like($field, $match = '', $type = 'AND ', $num_likes)
+	{
+		if ( ! is_array($field))
+		{
+			$field = array($field => $match);
+		}
+
+		$likes = array();
+		foreach ($field as $k => $v)
+		{
+			$prefix = (count($num_likes) == 0) ? '' : $type;
+
+			$v = $this->escape_str($v);
+
+			$likes[] = $prefix." $k LIKE '%{$v}%'";
+		}
+	}
+	
 	/**
 	 * Compile the SELECT statement
 	 *
@@ -211,7 +229,7 @@ class Database_Mysql implements Database_Driver {
 			$sql .= "\nWHERE ";
 		}
 
-		$sql .= implode("\n AND ", $database['where']);
+		$sql .= implode("\n", $database['where']);
 
 		if (count($database['like']) > 0)
 		{
@@ -251,7 +269,6 @@ class Database_Mysql implements Database_Driver {
 			$sql .= "\n";
 			$sql = $database->limit($sql, $database['limit'], $database['offset']);
 		}
-		
 		return $sql;
 	}
 	
