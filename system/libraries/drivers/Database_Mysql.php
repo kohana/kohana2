@@ -194,7 +194,7 @@ class Database_Mysql implements Database_Driver {
 
 			$v = (substr($v, 0, 1) == '%' OR substr($v, (strlen($v)-1), 1) == '%') ? $this->escape_str($v) : '%'.$this->escape_str($v).'%';
 
-			$likes[] = $prefix." $k LIKE '{$v}'";
+			$likes[] = $prefix.' '.$k.' LIKE '.$v;
 		}
 		return $likes;
 	}

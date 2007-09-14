@@ -402,7 +402,8 @@ class Database_Core {
 	 */
 	public function having($key, $value = '')
 	{
-		return $this->driver->having($key, $value, 'AND');
+	    $this->like = array_merge($this->like, $this->driver->having($key, $value, 'AND'));
+        return $this;	
 	}
 
 	// --------------------------------------------------------------------
@@ -419,7 +420,8 @@ class Database_Core {
 	 */
 	public function orhaving($key, $value = '')
 	{
-		return $this->driver->having($key, $value, 'OR');
+		$this->like = array_merge($this->like, $this->driver->having($key, $value, 'OR'));
+        return $this;   
 	}
 
 	// --------------------------------------------------------------------
@@ -438,7 +440,7 @@ class Database_Core {
 
 		if ($direction != '')
 		{
-			$direction = (in_array($direction, array('ASC', 'DESC', 'RAND()'))) ? " $direction" : " ASC";
+			$direction = (in_array($direction, array('ASC', 'DESC', 'RAND()'))) ? ' '.$direction : ' ASC';
 		}
 
 		$this->orderby[] = $orderby.$direction;
@@ -494,8 +496,6 @@ class Database_Core {
 	 */
 	public function set($key, $value = '')
 	{
-		$key = $this->object_to_array($key);
-
 		if ( ! is_array($key))
 		{
 			$key = array($key => $value);
@@ -742,36 +742,6 @@ class Database_Core {
 		$query->free_result();
 
 		return $result;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Object to Array
-	 *
-	 * Takes an object as input and converts the class variables to array key/vals
-	 *
-	 * @access	public
-	 * @param	object
-	 * @return	array
-	 */
-	private function object_to_array($object)
-	{
-		if ( ! is_object($object))
-		{
-			return $object;
-		}
-
-		$array = array();
-		foreach (get_object_vars($object) as $key => $val)
-		{
-			if ( ! is_object($val) AND ! is_array($val))
-			{
-				$array[$key] = $val;
-			}
-		}
-
-		return $array;
 	}
 
 	// --------------------------------------------------------------------
