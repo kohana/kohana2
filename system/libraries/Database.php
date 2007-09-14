@@ -56,6 +56,8 @@ class Database_Core {
 	protected $limit     = FALSE;
 	protected $offset    = FALSE;
 	protected $connected = FALSE;
+	protected $benchmark = array();
+	protected $last_query = '';
 
 	public function __construct($config = array())
 	{
@@ -145,6 +147,7 @@ class Database_Core {
 		if ( ! $this->connected) $this->connect();
 		$object = (bool) ($object == FALSE) ? $this->config['object'] : $object;
 
+		$this->last_query = $sql;
 		return $this->driver->query($sql, $object);
 	}
 
@@ -535,6 +538,7 @@ class Database_Core {
 
 		$result = $this->query($sql);
 		$this->reset_select();
+		$this->last_query = $sql;
 		return $result;
 	}
 
@@ -701,6 +705,11 @@ class Database_Core {
 		return $this->query($sql);
 	}
 
+	public function last_query()
+	{
+	   return $this->last_query;
+	}
+	
 	// --------------------------------------------------------------------
 
 	/**

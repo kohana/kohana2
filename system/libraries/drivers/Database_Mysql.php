@@ -192,7 +192,7 @@ class Database_Mysql implements Database_Driver {
 		{
 			$prefix = (count($num_likes) == 0) ? '' : $type;
 
-			$v = $this->escape_str($v);
+			$v = (substr($v, 0, 1) == '%' OR substr($v, (strlen($v)-1), 1) == '%') ? $this->escape_str($v) : '%'.$this->escape_str($v).'%';
 
 			$likes[] = $prefix." $k LIKE '{$v}'";
 		}
