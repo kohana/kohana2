@@ -12,6 +12,15 @@ class Welcome_Controller extends Controller {
 		}
 	}
 
+	function form_example()
+	{
+		print form::open();
+
+		print form::label('test', 'this is a test').form::checkbox('test', '1');
+
+		print form::close();
+	}
+
 	function validation_example()
 	{
 		// To demonstrate Validation being able to validate any array, I will
