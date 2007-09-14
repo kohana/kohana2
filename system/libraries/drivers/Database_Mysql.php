@@ -219,12 +219,6 @@ class Database_Mysql implements Database_Driver {
 			$sql .= implode(', ', $database['from']);
 		}
 
-		if (count($database['join']) > 0)
-		{
-			$sql .= "\n";
-			$sql .= implode("\n", $database->join);
-		}
-
 		if (count($database['where']) > 0 OR count($database['like']) > 0)
 		{
 			$sql .= "\nWHERE ";
