@@ -194,7 +194,7 @@ class Database_Mysql implements Database_Driver {
 
 			$v = $this->escape_str($v);
 
-			$likes[] = $prefix." $k LIKE '%{$v}%'";
+			$likes[] = $prefix." $k LIKE '{$v}'";
 		}
 		return $likes;
 	}

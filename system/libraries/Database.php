@@ -399,7 +399,7 @@ class Database_Core {
 	 */
 	public function having($key, $value = '')
 	{
-		return $this->having($key, $value, 'AND');
+		return $this->driver->having($key, $value, 'AND');
 	}
 
 	// --------------------------------------------------------------------
@@ -416,7 +416,7 @@ class Database_Core {
 	 */
 	public function orhaving($key, $value = '')
 	{
-		return $this->having($key, $value, 'OR');
+		return $this->driver->having($key, $value, 'OR');
 	}
 
 	// --------------------------------------------------------------------
