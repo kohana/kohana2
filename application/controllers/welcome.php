@@ -58,11 +58,18 @@ class Welcome_Controller extends Controller {
 
 	function database_example()
 	{
-		$db = new Database();
+		$this->load->library('database');
 
-		print_r($db->query('SELECT * FROM pages'));
-
-		print "<br/><br/>\n";
+		$this->database->query('SELECT * FROM pages');
+        echo '<p>'.$this->database->last_query().'</p>';
+        
+        $this->database->from('pages')->where('id', 51)->orlike('title', 'home%')->get();
+        echo '<p>'.$this->database->last_query().'</p>';
+        
+        $this->database->from('pages')->where('id', 51)->get();
+        echo '<p>'.$this->database->last_query().'</p>';
+        
+        print "<br/><br/>\n";
 		print "done in {execution_time} seconds";
 	}
 
