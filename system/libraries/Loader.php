@@ -23,7 +23,7 @@ class Loader_Core {
 
 	function library($name, $config = array())
 	{
-		Kohana::instance()->$name = Kohana::load_class(ucfirst($name), $config);
+		Kohana::instance()->$name = Kohana::load_class(ucfirst($name), ($config == FALSE) ? Config::item('database.default') : $config);
 	}
 
 	function helper($name)
