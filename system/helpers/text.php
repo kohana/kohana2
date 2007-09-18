@@ -21,7 +21,7 @@ class text {
 		if ($limit <= 0)
 			return $end_char;
 
-		preg_match('/^\s*(?:\S+\s*){1,'.$limit.'}/u', $str, $matches);
+		preg_match('/^\s*+(?:\S++\s*+){1,'.$limit.'}/u', $str, $matches);
 
 		if (strlen($matches[0]) == strlen($str))
 		{
