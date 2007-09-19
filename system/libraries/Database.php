@@ -61,7 +61,7 @@ class Database_Core {
 
 	public function __construct($config = array())
 	{
-		if ($config == FALSE)
+		if ($config == FALSE OR count($config) == 0)
 		{
 			// Load the default group
 			$config = Config::item('database.default');
@@ -232,48 +232,6 @@ class Database_Core {
 		return $this;
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Join
-	 *
-	 * Generates the JOIN portion of the query
-	 *
-	 * @access  public
-	 * @param   string
-	 * @param   string  the join condition
-	 * @param   string  the type of join
-	 * @return  object
-	 */
-	public function join($table, $cond, $type = '')
-	{
-		if ($type != '')
-		{
-			$type = strtoupper(trim($type));
-
-			if ( ! in_array($type, array('LEFT', 'RIGHT', 'OUTER', 'INNER', 'LEFT OUTER', 'RIGHT OUTER'), TRUE))
-			{
-				$type = '';
-			}
-			else
-			{
-				$type .= ' ';
-			}
-		}
-
-		// If a DB prefix is used we might need to add it to the column names
-		if ($this->config['table_prefix'])
-		{
-			// First we remove any existing prefixes in the condition to avoid duplicates
-			$cond = preg_replace('|'.preg_quote($prefix).'(?=[\w.]+[\W\s])|', '', $str);
-
-			// Next we add the prefixes to the condition
-			$cond = preg_replace('|([\w.]+[\W\s]+)|', $this->config['table_prefix'].'$1'.$this->config['table_prefix'], $cond);
-		}
-
-		$this->join[] = $type.'JOIN '.$this->config['table_prefix'].$table.' ON '.$cond;
-		return $this;
-	}
 
 	// --------------------------------------------------------------------
 
