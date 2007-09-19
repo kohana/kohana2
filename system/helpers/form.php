@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+﻿<?php defined('SYSPATH') or die('No direct access allowed.');
 /**
  * Kohana
  *
@@ -343,7 +343,7 @@ class form {
 
 		if ($checked == TRUE OR (isset($data['checked']) AND $data['checked'] == TRUE))
 		{
-			$data['checked'] = 'chceked';
+			$data['checked'] = 'checked';
 		}
 		else
 		{
