@@ -79,23 +79,7 @@ class Database_Mysql implements Database_Driver {
 	 */
 	public function query($sql, $object = TRUE)
 	{
-		// If the query is a resource, it was a SELECT query
-		if (is_resource($result = mysql_query($sql, $this->link)))
-		{
-			$fetch = ($object == TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
-			$rows  = array();
-
-			while ($row = $fetch($result))
-			{
-				$rows[] = $row;
-			}
-
-			return $rows;
-		}
-		else
-		{
-			return $result;
-		}
+		return new Database_Result(mysql_query($sql, $this->link), $this->link, $object);
 	}
 
 	public function delete($table, $where)
@@ -308,3 +292,48 @@ class Database_Mysql implements Database_Driver {
 	   return mysql_real_escape_string($str, $this->link);
 	}
 } // End Database MySQL Driver
+
+class Database_Result implements Iterator
+{
+	private $rows = array();
+	private $num_rows = 0;
+	private $insert_id = NULL;
+	private $link;
+	
+	public function __construct($result, $link, $object)
+	{
+	   	$this->link = $link;
+	
+		// If the query is a resource, it was a SELECT query
+		if (is_resource($result)
+		{
+			$fetch = ($object == TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
+			
+			while ($row = $fetch($result))
+			{
+				$this->rows[] = $row;
+			}
+		}
+		else
+		{
+			if ($result == TRUE) // Its an Insert
+			{
+				$this->insert_id = mysql_insert_id($link);
+			}
+			else
+			{
+				$this->num_rows = $result;	
+			}
+		}
+	}
+	
+	public function result()
+	{
+		return $this->rows;
+	}
+	
+	public function num_rows()
+	{
+		return $this->num_rows;
+	} 
+}
