@@ -64,7 +64,7 @@ class html {
 	 * @param  mixed
 	 * @return string
 	 */
-	public static function anchor($uri, $title = FALSE, $attributes = FALSE)
+	public static function anchor($uri, $title = FALSE, $attributes = FALSE, $protocol = FALSE)
 	{
 		if (strpos($uri, '://') === FALSE)
 		{
@@ -88,7 +88,7 @@ class html {
 				$uri = substr($uri, 0, $start);
 			}
 
-			$site_url = url::site($uri).$qs.$id;
+			$site_url = url::site($uri, $protocol).$qs.$id;
 		}
 		else
 		{
@@ -100,6 +100,11 @@ class html {
 		$attributes = ($attributes == TRUE) ? self::attributes($attributes) : '';
 
 		return '<a href="'.$site_url.'"'.$attributes.'>'.$title.'</a>';
+	}
+
+	public static function panchor($protocol, $uri, $title = FALSE, $attributes = FALSE)
+	{
+		return self::anchor($uri, $title, $attributes, $protocol);
 	}
 
 	public static function stylesheet($style, $index = FALSE, $media = FALSE)

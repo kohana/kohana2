@@ -232,7 +232,7 @@ class Core_Config {
 			$get = '';
 		}
 
-		$url = $this->slash_item('base_url');
+		$url = $this->item('site_protocol').'://'.$this->slash_item('site_domain');
 		// Append uri to the site_url
 		if ($uri != '')
 		{
@@ -257,7 +257,7 @@ class Core_Config {
 	public function system_url()
 	{
 		$uri = explode('/', trim(BASEPATH, '/'));
-		return $this->slash_item('base_url').end($uri).'/';
+		return $this->item('site_protocol').'://'.$this->slash_item('site_domain').end($uri).'/';
 	}
 
 	// --------------------------------------------------------------------

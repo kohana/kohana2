@@ -2,18 +2,32 @@
 
 /*
 | -------------------------------------------------------------------------
-| Base Site URL
+| Site Domain
 | -------------------------------------------------------------------------
 |
-| URL to your Kohana installation. Example: http://your-site.com/kohana/
+| Domain part of the URL to your Kohana installation, with the install path.
+|
+| Example: your-site.com/kohana/
 |
 */
-$config['base_url'] = 'http://'.$_SERVER['SERVER_NAME'].'/kohana/';
+$config['site_domain'] = $_SERVER['SERVER_NAME'].'/kohana/';
 
 /*
-| -------------------------------------------------------------------------
+| -----------------------------------------------------------------------------
+| Site Protocol
+| -----------------------------------------------------------------------------
+| 
+| Protocol part of the URL to your Kohana installation.
+| 
+| Note: This is almost always be "http" or "https"
+|
+*/
+$config['site_protocol'] = 'http';
+
+/*
+| -----------------------------------------------------------------------------
 | Index File
-| -------------------------------------------------------------------------
+| -----------------------------------------------------------------------------
 |
 | Typically this will be your index.php file, unless you've renamed it to
 | something else. If you are using mod_rewrite to remove the page set this

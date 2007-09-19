@@ -2,9 +2,11 @@
 
 class url {
 
-	public static function base($index = FALSE)
+	public static function base($index = FALSE, $protocol = FALSE)
 	{
-		$base_url = Config::item('core.base_url', TRUE);
+		$protocol = ($protocol == FALSE) ? Config::item('core.site_protocol') : strtolower($protocol);
+
+ 		$base_url = $protocol.'://'.Config::item('core.site_domain', TRUE);
 
 		if ($index == TRUE AND $index = Config::item('core.index_page'))
 		{
@@ -14,14 +16,14 @@ class url {
 		return $base_url;
 	}
 
-	public static function site($uri)
+	public static function site($uri, $protocol = FALSE)
 	{
 		$uri = trim($uri, '/');
 
 		$index_page = Config::item('core.index_page', TRUE);
 		$url_suffix = Config::item('core.url_suffix');
 
-		return self::base().$index_page.$uri.$url_suffix;
+		return self::base(FALSE, $protocol).$index_page.$uri.$url_suffix;
 	}
 
 	public static function title($title, $separator = 'dash')
