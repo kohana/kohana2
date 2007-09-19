@@ -138,6 +138,7 @@ class Database_Core {
 			 */
 			trigger_error('Database connection failed.');
 		}
+		$this->connected = TRUE;
 	}
 
 	public function query($sql = '', $object = FALSE)

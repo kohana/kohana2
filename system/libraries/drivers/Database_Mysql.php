@@ -178,7 +178,7 @@ class Database_Mysql implements Database_Driver {
 
 			$v = (substr($v, 0, 1) == '%' OR substr($v, (strlen($v)-1), 1) == '%') ? $this->escape_str($v) : '%'.$this->escape_str($v).'%';
 
-			$likes[] = $prefix.' '.$k.' LIKE '.$v;
+			$likes[] = $prefix." ".$k." LIKE '".$v . "'";
 		}
 		return $likes;
 	}
@@ -299,20 +299,21 @@ class Database_Result implements Iterator
 	private $num_rows = 0;
 	private $insert_id = NULL;
 	private $link;
+	private $result;
 	
-	public function __construct($result, $link, $object)
+	public function __construct($result, $link, $object = TRUE)
 	{
-	   	$this->link = $link;
-	
+	   	//if (empty($result))
+	   	//{
+	   	//	trigger_error('There was an error running the query. Please check your syntax.');
+	   	//}
+		$this->link = $link;
+	    $this->object = (bool) $object;
+	    
 		// If the query is a resource, it was a SELECT query
-		if (is_resource($result)
+		if (is_resource($result))
 		{
-			$fetch = ($object == TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
-			
-			while ($row = $fetch($result))
-			{
-				$this->rows[] = $row;
-			}
+			$this->result = $result;
 		}
 		else
 		{
@@ -325,15 +326,53 @@ class Database_Result implements Iterator
 				$this->num_rows = $result;	
 			}
 		}
+		
 	}
 	
 	public function result()
 	{
-		return $this->rows;
+		$fetch = ($this->object == TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
+
+        while ($row = $fetch($this->result))
+        {
+            $this->rows[] = $row;
+        }
+	    return $this->rows;
 	}
 	
 	public function num_rows()
 	{
 		return $this->num_rows;
 	} 
+	
+	public function insert_id()
+	{
+		return $this->insert_id;
+	}
+	
+	public function current()
+	{
+		
+	}
+	
+	public function next()
+	{
+		
+	}
+	
+	public function key()
+	{
+		
+	}
+	
+	public function valid()
+	{
+		
+	}
+	
+	public function rewind()
+	{
+		
+	}
 }
+?>
