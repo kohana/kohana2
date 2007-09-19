@@ -71,10 +71,7 @@ class Encrypt_Core {
 
 			if (($key = Config::item('encryption.key')) === FALSE)
 			{
-				/**
-				 * @todo This should return an i18n error
-				 */
-				trigger_error('To use the Encrypt class, you need to set a encryption key in your config file.', E_USER_ERROR);
+				throw new Kohana_Exception('encrypt.no_encryption_key');
 			}
 		}
 
