@@ -35,7 +35,7 @@ class Database_Core {
 		'connection'    => '',
 		'persistent'    => FALSE,
 		'show_errors'   => TRUE,
-		'character_set' => 'utf-8',
+		'character_set' => 'utf8',
 		'table_prefix'  => ''
 	);
 

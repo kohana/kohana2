@@ -58,7 +58,7 @@ class Database_Mysql implements Database_Driver {
 		{
 			if ($charset = $config['character_set'])
 			{
-				$this->set_charset($charset);
+				echo $this->set_charset($charset);
 			}
 			
 			return TRUE;
@@ -178,7 +178,7 @@ class Database_Mysql implements Database_Driver {
 
 			$v = (substr($v, 0, 1) == '%' OR substr($v, (strlen($v)-1), 1) == '%') ? $this->escape_str($v) : '%'.$this->escape_str($v).'%';
 
-			$likes[] = $prefix." ".$k." LIKE '".$v . "'";
+			$likes[] = $prefix." ".$k." LIKE ".$v . "";
 		}
 		return $likes;
 	}
@@ -300,12 +300,13 @@ class Database_Result implements Iterator
 	private $insert_id = NULL;
 	private $link;
 	private $result;
+	private $object = TRUE;
 	
 	public function __construct($result, $link, $object = TRUE)
 	{
 	   	//if (empty($result))
 	   	//{
-	   	//	trigger_error('There was an error running the query. Please check your syntax.');
+	   	//	trigger_error(mysql_error());
 	   	//}
 		$this->link = $link;
 	    $this->object = (bool) $object;
@@ -317,7 +318,11 @@ class Database_Result implements Iterator
 		}
 		else
 		{
-			if ($result == TRUE) // Its an Insert
+			if ($result == FALSE)
+			{
+				throw new Kohana_Exception('database.error', mysql_error());
+			}
+			else if ($result == TRUE) // Its an Insert
 			{
 				$this->insert_id = mysql_insert_id($link);
 			}
