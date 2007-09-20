@@ -21,9 +21,9 @@ class Loader_Core {
 		}
 	}
 
-	function library($name)
+	function library($name, $config = array())
 	{
-		Kohana::instance()->$name = Kohana::load_class(ucfirst($name));
+		Kohana::instance()->$name = Kohana::load_class(ucfirst($name), $config);
 	}
 
 	function helper($name)
