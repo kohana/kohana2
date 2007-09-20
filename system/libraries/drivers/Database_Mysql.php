@@ -183,6 +183,11 @@ class Database_Mysql implements Database_Driver {
 		return $likes;
 	}
 	
+	function insert($table, $keys, $values)
+	{
+		return 'INSERT INTO '.$this->escape_table($table).' ('.implode(', ', $keys).') VALUES ('.implode(', ', $values).')';
+	}
+	
 	/**
 	 * Compile the SELECT statement
 	 *
