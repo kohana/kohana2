@@ -304,8 +304,7 @@ class Database_Result implements Iterator
 	
 	public function __construct($result, $link, $object = TRUE)
 	{
-	   	$this->link = $link;
-	    $this->object = (bool) $object;
+	   	$this->object = (bool) $object;
 	    
 		// If the query is a resource, it was a SELECT, SHOW, DESCRIBE, EXPLAIN query
 		if (is_resource($result))
