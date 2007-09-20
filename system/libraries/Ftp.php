@@ -33,13 +33,13 @@
  */
 class FTP_Core {
 
-	private $hostname	= '';
-	private $username	= '';
-	private $password	= '';
-	private $port		= 21;
-	private $passive	= TRUE;
-	private $debug		= FALSE;
-	private $conn_id	= FALSE;
+	protected $hostname	= '';
+	protected $username	= '';
+	protected $password	= '';
+	protected $port		= 21;
+	protected $passive	= TRUE;
+	protected $debug		= FALSE;
+	protected $conn_id	= FALSE;
 
 	/**
 	 * Constructor - Sets Preferences
@@ -76,7 +76,7 @@ class FTP_Core {
 		}
 
 		// Prep the hostname
-		$this->hostname = preg_replace('|.+?://|', '', $this->hostname);
+		$this->hostname = preg_replace('|^[^:]++://|', '', $this->hostname); 
 	}
 
 	// --------------------------------------------------------------------
@@ -127,10 +127,10 @@ class FTP_Core {
 	/**
 	 * FTP Login
 	 *
-	 * @access	private
+	 * @access	protected
 	 * @return	bool
 	 */
-	private function login()
+	protected function login()
 	{
 		return @ftp_login($this->conn_id, $this->username, $this->password);
 	}
@@ -140,10 +140,10 @@ class FTP_Core {
 	/**
 	 * Validates the connection ID
 	 *
-	 * @access	private
+	 * @access	protected
 	 * @return	bool
 	 */
-	private function is_conn()
+	protected function is_conn()
 	{
 		if ( ! is_resource($this->conn_id))
 		{
@@ -533,11 +533,11 @@ class FTP_Core {
 	/**
 	 * Extract the file extension
 	 *
-	 * @access	private
+	 * @access	protected
 	 * @param	string
 	 * @return	string
 	 */
-	private function get_extension($filename)
+	protected function get_extension($filename)
 	{
 		if (strpos($filename, '.') === FALSE)
 		{
@@ -554,11 +554,11 @@ class FTP_Core {
 	/**
 	 * Set the upload type
 	 *
-	 * @access	private
+	 * @access	protected
 	 * @param	string
 	 * @return	string
 	 */
-	private function set_type($ext)
+	protected function set_type($ext)
 	{
 		$text_types = array(
 							'txt',
@@ -606,11 +606,11 @@ class FTP_Core {
 	/**
 	 * Display error message
 	 *
-	 * @access	private
+	 * @access	protected
 	 * @param	string
 	 * @return	bool
 	 */
-	private function error($msg)
+	protected function error($msg)
 	{
 		throw new Kohana_Exception('ftp.'.$msg);
 	}
