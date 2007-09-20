@@ -178,7 +178,7 @@ class Database_Mysql implements Database_Driver {
 
 			$v = (substr($v, 0, 1) == '%' OR substr($v, (strlen($v)-1), 1) == '%') ? $this->escape_str($v) : '%'.$this->escape_str($v).'%';
 
-			$likes[] = $prefix." ".$k." LIKE ".$v . "";
+			$likes[] = $prefix." ".$k." LIKE '".$v . "'";
 		}
 		return $likes;
 	}
@@ -304,11 +304,7 @@ class Database_Result implements Iterator
 	
 	public function __construct($result, $link, $object = TRUE)
 	{
-	   	//if (empty($result))
-	   	//{
-	   	//	trigger_error(mysql_error());
-	   	//}
-		$this->link = $link;
+	   	$this->link = $link;
 	    $this->object = (bool) $object;
 	    
 		// If the query is a resource, it was a SELECT query
@@ -333,7 +329,7 @@ class Database_Result implements Iterator
 		}
 		
 	}
-	
+    
 	public function result()
 	{
 		$fetch = ($this->object == TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
@@ -342,7 +338,6 @@ class Database_Result implements Iterator
         {
             $this->rows[] = $row;
         }
-	    return $this->rows;
 	}
 	
 	public function num_rows()
@@ -357,27 +352,27 @@ class Database_Result implements Iterator
 	
 	public function current()
 	{
-		
+		return current($this->rows);
 	}
 	
 	public function next()
 	{
-		
+		return next($this->rows);
 	}
 	
 	public function key()
 	{
-		
+		return key($this->rows);
 	}
 	
 	public function valid()
 	{
-		
+		return ($this->current() !== FALSE);
 	}
 	
 	public function rewind()
 	{
-		
+		reset($this->rows);
 	}
 }
 ?>

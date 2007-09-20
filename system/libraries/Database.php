@@ -61,7 +61,7 @@ class Database_Core {
 
 	public function __construct($config = array())
 	{
-		if ($config == FALSE OR count($config) == 0)
+		if (empty($config))
 		{
 			// Load the default group
 			$config = Config::item('database.default');
@@ -70,6 +70,10 @@ class Database_Core {
 		{
 			// This checks to see if the config is DSN string, or a config group name
 			$config = (strpos($config, '://') == FALSE) ? Config::item('database.'.$config) : array('connection' => $config);
+		}
+		elseif (is_array($config))
+		{
+			$config = $config['default'];
 		}
 
 		// Merge the default config with the passed config
