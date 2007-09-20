@@ -51,7 +51,7 @@ class Input_Core {
 	 */
 	public function __construct()
 	{
-		$this->use_xss_clean    = (Config::item('core.global_xss_filtering') === TRUE) ? TRUE : FALSE;
+		$this->use_xss_clean = (Config::item('core.global_xss_filtering') === TRUE) ? TRUE : FALSE;
 		$this->_sanitize_globals();
 
 		Log::add('debug', 'Input Class Initialized');
@@ -176,7 +176,7 @@ class Input_Core {
 	 */
 	private function _clean_input_keys($str)
 	{
-		if ( ! preg_match('#^[a-z0-9:_/-]+$#i', $str))
+		if ( ! preg_match('#^[a-z0-9:_/-]+$#iD', $str))
 		{
 			exit('Disallowed Key Characters.');
 		}

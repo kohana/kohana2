@@ -76,7 +76,7 @@ class Core_FTP {
 		}
 
 		// Prep the hostname
-		$this->hostname = preg_replace('|.+?://|', '', $this->hostname);
+		$this->hostname = preg_replace('|^[^:]++://|', '', $this->hostname);
 	}
 
 	// --------------------------------------------------------------------

@@ -19,7 +19,7 @@ $config['site_domain'] = $_SERVER['SERVER_NAME'].'/kohana/';
 | 
 | Protocol part of the URL to your Kohana installation.
 | 
-| Note: This is almost always be "http" or "https"
+| Note: This will almost always be "http" or "https"
 |
 */
 $config['site_protocol'] = 'http';
