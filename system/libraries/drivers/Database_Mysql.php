@@ -307,7 +307,7 @@ class Database_Result implements Iterator
 	   	$this->link = $link;
 	    $this->object = (bool) $object;
 	    
-		// If the query is a resource, it was a SELECT query
+		// If the query is a resource, it was a SELECT, SHOW, DESCRIBE, EXPLAIN query
 		if (is_resource($result))
 		{
 			$this->result = $result;
@@ -318,13 +318,10 @@ class Database_Result implements Iterator
 			{
 				throw new Kohana_Exception('database.error', mysql_error());
 			}
-			else if ($result == TRUE) // Its an Insert
+			else if ($result == TRUE) // Its an DELETE, INSERT, REPLACE, or UPDATE query
 			{
 				$this->insert_id = mysql_insert_id($link);
-			}
-			else
-			{
-				$this->num_rows = $result;	
+				$this->num_rows = mysql_affected_rows($link);
 			}
 		}
 		
@@ -338,6 +335,7 @@ class Database_Result implements Iterator
         {
             $this->rows[] = $row;
         }
+        $this->num_rows = mysql_num_rows($this->result);
 	}
 	
 	public function num_rows()

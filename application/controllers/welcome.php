@@ -60,14 +60,17 @@ class Welcome_Controller extends Controller {
 	{
 		$this->load->library('database');
 
-		$this->database->query('SELECT * FROM pages');
-        echo '<p>'.$this->database->last_query().'</p>';
+		$query = $this->database->from('pages')->get();
+        echo '<pre>' . print_r($query, true) . '</pre>';
+        $query->result();
         
-        $this->database->from('pages')->where('id', 51)->orlike('title', 'home%')->get();
-        echo '<p>'.$this->database->last_query().'</p>';
-        
-        $this->database->from('pages')->where('id', 51)->get();
-        echo '<p>'.$this->database->last_query().'</p>';
+        echo 'Current: ' . $query->current()->title . '<br />';
+        echo 'Next: ' . $query->next()->title . '<br />';
+        echo 'Next: ' . $query->next()->title . '<br />';
+        /*foreach ($query as $row)
+        {
+        	echo print_r($row);
+        }*/
         
         print "<br/><br/>\n";
 		print "done in {execution_time} seconds";
