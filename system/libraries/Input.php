@@ -16,7 +16,7 @@
  * @orig_package     CodeIgniter
  * @orig_author      Rick Ellis
  * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
- * @orig_license     http://www.codeignitor.com/user_guide/license.html
+ * @orig_license     http://www.codeigniter.com/user_guide/license.html
  * @filesource
  * $Id$
  */
