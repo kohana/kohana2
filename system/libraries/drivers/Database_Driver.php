@@ -36,40 +36,42 @@ interface Database_Driver {
 	public function connect($config);
 	
 	/**
-	 * Perform a select query
+	 * perform a query
 	 *
 	 * @access  public
-	 * @param   string  config array
+	 * @param   string  sql statement
 	 * @return  mixed
 	 */
 	public function query($sql);
 	
 	/**
-	 * Perform a delete statement
+	 * Return a delete statement
 	 *
 	 * @access  public
-	 * @param   string  config array
+	 * @param   string  table name
+	 * @param   string  where command
 	 * @return  string
 	 */
 	public function delete($table, $where);
 	
 	/**
-	 * Perform an update statement
+	 * Return an update statement
 	 *
 	 * @access  public
-	 * @param   string  config array
+	 * @param   string  table name
+	 * @param   string  where command
 	 * @return  string
 	 */
 	public function update($table, $where);
 	
 	/**
-	 * Compile the select syntax for a query
+	 * Return an update statement
 	 *
 	 * @access  public
-	 * @param   string  config array
-	 * @return  bool
+	 * @param   string  character set
+	 * @return  string
 	 */
-	public function compile_select($database);
+	public function set_charset($charset);
 	
 	/**
 	 * Escape the table name for safe queries
@@ -89,4 +91,87 @@ interface Database_Driver {
 	 */
 	public function escape_column($column);
 	
+	/**
+	 * Return a where statement
+	 *
+	 * @access  public
+	 * @param   string  key name
+	 * @param   string  value
+	 * @param   string  where type
+	 * @param   int     previous number of wheres
+	 * @param   string  quote (?)
+	 * @return  string
+	 */
+	public function where($key, $value, $type, $num_wheres, $quote);
+	
+	/**
+	 * Return a like statement
+	 *
+	 * @access  public
+	 * @param   string  field name
+	 * @param   string  match value
+	 * @param   string  like type
+	 * @param   int     previous number of likes
+	 * @return  string
+	 */
+	public function like($field, $match, $type, $num_likes);
+	
+	/**
+	 * Return an insert statement
+	 *
+	 * @access  public
+	 * @param   string  table name
+	 * @param   array   key names
+	 * @param   array   values
+	 * @return  string
+	 */
+	public function insert($table, $keys, $values);
+	
+	/**
+	 * Determines if a string has an operator in it
+	 *
+	 * @access  public
+	 * @param   string  string to test
+	 * @return  string
+	 */
+	private function has_operator($str);
+	
+	/**
+	 * Escape a arbitrary value
+	 *
+	 * @access  public
+	 * @param   mixed  value
+	 * @return  string
+	 */
+	private function escape($str);
+	
+	/**
+	 * Escape a string for a query
+	 *
+	 * @access  public
+	 * @param   string  string
+	 * @return  string
+	 */
+	public function escape_str($str);
+	
+	/**
+	 * Compile the select syntax for a query
+	 *
+	 * @access  public
+	 * @param   array    current database values
+	 * @return  string
+	 */
+	public function compile_select($database);
+	
+	
+	
 } // End Database Driver Class
+
+interface Database_Result_Interface {
+	
+	public function result();
+	
+	public function num_rows();
+	
+	public function insert_id();
+}

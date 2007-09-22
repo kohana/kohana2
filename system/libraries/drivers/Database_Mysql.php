@@ -298,7 +298,7 @@ class Database_Mysql implements Database_Driver {
 	}
 } // End Database MySQL Driver
 
-class Database_Result implements Iterator
+class Database_Result implements Database_Result_Interface, Iterator
 {
 	private $rows = array();
 	private $num_rows = 0;
