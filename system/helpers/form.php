@@ -112,6 +112,8 @@ class form {
 			}
 		}
 
+		$sorted = array_merge($sorted, $attr);
+
 		return html::attributes($sorted);
 	}
 
