@@ -115,10 +115,7 @@ class Database_Core {
 
 		if ( ! in_array('Database_Driver', class_implements($this->driver)))
 		{
-			/**
-			 * @todo This should be an exception
-			 */
-			trigger_error('Database drivers must use the Database_Driver interface.');
+			throw new Kohana_Exception('database.driver_not_supported', 'Database drivers must use the Database_Driver interface.');
 		}
 
 		Log::add('debug', 'Database Class Initialized');
@@ -135,14 +132,12 @@ class Database_Core {
 	 */
 	public function connect()
 	{
-		if ( ! $this->driver->connect($this->config))
-		{
-			/**
-			 * @todo This should be an i18n error
-			 */
-			trigger_error('Database connection failed.');
+		$this->connected = $this->driver->connect($this->config);
+		
+		if ($this->connected != TRUE)
+		{	
+			throw new Kohana_Exception('database.connection', mysql_error());
 		}
-		$this->connected = TRUE;
 	}
 
 	public function query($sql = '', $object = FALSE)

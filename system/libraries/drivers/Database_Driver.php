@@ -169,9 +169,26 @@ interface Database_Driver {
 
 interface Database_Result_Interface {
 	
+	/**
+	 * Assign the result set
+	 *
+	 * @access  public
+	 */
 	public function result();
 	
+	/**
+	 * Get the number of rows in a SELECT query or the number of affected rows in UPDATE
+	 *
+	 * @access  public
+	 * @return  int
+	 */
 	public function num_rows();
 	
+	/**
+	 * Get the insert id from an INSERT statement
+	 *
+	 * @access  public
+	 * @return  int
+	 */
 	public function insert_id();
 }

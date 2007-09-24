@@ -64,9 +64,6 @@ class Database_Mysql implements Database_Driver {
 			return TRUE;
 		}
 
-		/**
-		 * @todo this should use $config['show_errors'] and throw exceptions accordingly
-		 */
 		return FALSE;
 	}
 
