@@ -2,7 +2,7 @@
 
 class Loader_Core {
 
-	function __construct()
+	public function __construct()
 	{
 		foreach(Config::item('core.autoload') as $type => $load)
 		{
@@ -21,12 +21,24 @@ class Loader_Core {
 		}
 	}
 
-	function library($name, $config = array())
+	public function library($name, $config = array())
 	{
 		Kohana::instance()->$name = Kohana::load_class(ucfirst($name), $config);
 	}
 
-	function helper($name)
+	public function database($group = 'default', $return = FALSE)
+	{
+		if ($return == TRUE)
+		{
+			return new Database($group);
+		}
+		else
+		{
+			Kohana::instance()->db = new Database($group);
+		}
+	}
+
+	public function helper($name)
 	{
 		if (is_array($name))
 		{
@@ -43,13 +55,14 @@ class Loader_Core {
 		}
 	}
 
-	function model($name)
+	public function model($name, $alias = FALSE)
 	{
-		Kohana::instance()->$name = Kohana::load_class(ucfirst($name).'_Model');
+		$alias = ($alias == FALSE) ? $name : $alias;
+		Kohana::instance()->$alias = Kohana::load_class(ucfirst($name).'_Model');
+		Kohana::instance()->$alias->db = (isset(Kohana::instance()->db)) ? Kohana::instance()->db : new Database('default');
 	}
 
-	// Weird prefixes to prevent collisions
-	function view($name, $data = array())
+	public function view($name, $data = array())
 	{
 		return new View($name, $data);
 	}
