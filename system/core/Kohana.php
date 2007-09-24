@@ -295,6 +295,8 @@ class Kohana {
 	 */
 	public static function auto_load($class)
 	{
+		if (class_exists($class)) return true;
+
 		preg_match('/_(.+)$/', $class, $type);
 
 		$type = isset($type[1]) ? $type[1] : FALSE;
