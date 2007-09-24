@@ -101,18 +101,22 @@ class Database_Core {
 
 		$driver = 'Database_'.ucfirst($this->config['connection']['type']);
 
-		try
+		if (!class_exists($driver)) 
 		{
-			require Kohana::find_file('libraries', 'drivers/'.$driver, TRUE);
+			try
+			{
+				require Kohana::find_file('libraries', 'drivers/'.$driver, TRUE);
+			}
+			catch (Kohana_Exception $exception)
+			{
+				throw new Kohana_Exception('database.driver_not_supported', $this->config['type']);
+			}
 		}
-		catch (Kohana_Exception $exception)
-		{
-			throw new Kohana_Exception('database.driver_not_supported', $this->config['type']);
-		}
-
+		
 		// Initialize the driver
 		$this->driver = new $driver($this->config);
-
+		
+		
 		if ( ! in_array('Database_Driver', class_implements($this->driver)))
 		{
 			throw new Kohana_Exception('database.driver_not_supported', 'Database drivers must use the Database_Driver interface.');

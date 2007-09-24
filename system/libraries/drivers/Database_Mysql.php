@@ -180,7 +180,7 @@ class Database_Mysql implements Database_Driver {
 		return $likes;
 	}
 	
-	function insert($table, $keys, $values)
+	public function insert($table, $keys, $values)
 	{
 		return 'INSERT INTO '.$this->escape_table($table).' ('.implode(', ', $keys).') VALUES ('.implode(', ', $values).')';
 	}
@@ -254,12 +254,12 @@ class Database_Mysql implements Database_Driver {
 		return $sql;
 	}
 	
-	private function has_operator($str)
+	public function has_operator($str)
 	{
 		return (bool) preg_match('/[\s=<>!]|is /i', trim($str));
 	}
 	
-	private function escape($str)
+	public function escape($str)
 	{
 		switch (gettype($str))
 		{
@@ -284,7 +284,7 @@ class Database_Mysql implements Database_Driver {
 	* @param       string
 	* @return      string
 	*/
-	function escape_str($str)
+	public function escape_str($str)
 	{
 	   if ( ! is_resource($this->link))
 	   {

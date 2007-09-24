@@ -33,7 +33,7 @@ interface Database_Driver {
 	 * @param   string  config array
 	 * @return  bool
 	 */
-	public function connect($config);
+	function connect($config);
 	
 	/**
 	 * perform a query
@@ -42,7 +42,7 @@ interface Database_Driver {
 	 * @param   string  sql statement
 	 * @return  mixed
 	 */
-	public function query($sql);
+	function query($sql);
 	
 	/**
 	 * Return a delete statement
@@ -52,7 +52,7 @@ interface Database_Driver {
 	 * @param   string  where command
 	 * @return  string
 	 */
-	public function delete($table, $where);
+	function delete($table, $where);
 	
 	/**
 	 * Return an update statement
@@ -62,7 +62,7 @@ interface Database_Driver {
 	 * @param   string  where command
 	 * @return  string
 	 */
-	public function update($table, $where);
+	function update($table, $where);
 	
 	/**
 	 * Return an update statement
@@ -71,7 +71,7 @@ interface Database_Driver {
 	 * @param   string  character set
 	 * @return  string
 	 */
-	public function set_charset($charset);
+	function set_charset($charset);
 	
 	/**
 	 * Escape the table name for safe queries
@@ -80,7 +80,7 @@ interface Database_Driver {
 	 * @param   string  table name
 	 * @return  string
 	 */
-	public function escape_table($table);
+	function escape_table($table);
 	
 	/**
 	 * Escape the column name for safe queries
@@ -89,7 +89,7 @@ interface Database_Driver {
 	 * @param   string  column name
 	 * @return  string
 	 */
-	public function escape_column($column);
+	function escape_column($column);
 	
 	/**
 	 * Return a where statement
@@ -102,7 +102,7 @@ interface Database_Driver {
 	 * @param   string  quote (?)
 	 * @return  string
 	 */
-	public function where($key, $value, $type, $num_wheres, $quote);
+	function where($key, $value, $type, $num_wheres, $quote);
 	
 	/**
 	 * Return a like statement
@@ -114,7 +114,7 @@ interface Database_Driver {
 	 * @param   int     previous number of likes
 	 * @return  string
 	 */
-	public function like($field, $match, $type, $num_likes);
+	function like($field, $match, $type, $num_likes);
 	
 	/**
 	 * Return an insert statement
@@ -125,7 +125,7 @@ interface Database_Driver {
 	 * @param   array   values
 	 * @return  string
 	 */
-	public function insert($table, $keys, $values);
+	function insert($table, $keys, $values);
 	
 	/**
 	 * Determines if a string has an operator in it
@@ -134,7 +134,7 @@ interface Database_Driver {
 	 * @param   string  string to test
 	 * @return  string
 	 */
-	private function has_operator($str);
+	public function has_operator($str);
 	
 	/**
 	 * Escape a arbitrary value
@@ -143,7 +143,7 @@ interface Database_Driver {
 	 * @param   mixed  value
 	 * @return  string
 	 */
-	private function escape($str);
+	function escape($str);
 	
 	/**
 	 * Escape a string for a query
@@ -152,7 +152,7 @@ interface Database_Driver {
 	 * @param   string  string
 	 * @return  string
 	 */
-	public function escape_str($str);
+	function escape_str($str);
 	
 	/**
 	 * Compile the select syntax for a query
@@ -161,7 +161,7 @@ interface Database_Driver {
 	 * @param   array    current database values
 	 * @return  string
 	 */
-	public function compile_select($database);
+	function compile_select($database);
 	
 	
 	
@@ -174,7 +174,7 @@ interface Database_Result_Interface {
 	 *
 	 * @access  public
 	 */
-	public function result();
+	function result();
 	
 	/**
 	 * Get the number of rows in a SELECT query or the number of affected rows in UPDATE
@@ -182,7 +182,7 @@ interface Database_Result_Interface {
 	 * @access  public
 	 * @return  int
 	 */
-	public function num_rows();
+	function num_rows();
 	
 	/**
 	 * Get the insert id from an INSERT statement
@@ -190,5 +190,5 @@ interface Database_Result_Interface {
 	 * @access  public
 	 * @return  int
 	 */
-	public function insert_id();
+	function insert_id();
 }
