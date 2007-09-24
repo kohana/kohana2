@@ -14,8 +14,19 @@ class Loader_Core {
 
 				switch($type)
 				{
-					case 'libraries': $this->library($name); break;
-					case 'models':    $this->model($name);   break;
+					case 'libraries':
+						if ($name == 'database')
+						{
+							$this->database();
+						}
+						else
+						{
+							$this->library($name);
+						}
+					break;
+					case 'models':
+						$this->model($name);
+					break;
 				}
 			}
 		}
