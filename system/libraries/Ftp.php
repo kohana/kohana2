@@ -459,16 +459,23 @@ class FTP_Core {
 	 * FTP List files in the specified directory
 	 *
 	 * @access	public
+	 * @param	string path to the directory that will be listed
+	 * @param	string	mode in which the results will be returned (raw or nice)
 	 * @return	array
+	 * 
 	 */
-	public function list_files($path = '.')
+	public function list_files($path = '.', $mode = "nice")
 	{
 		if ( ! $this->is_conn())
 		{
 			return FALSE;
 		}
+		if ($mode != "nice" AND $mode != "raw")
+		{
+			return FALSE;
+		}	
 
-		return ftp_nlist($this->conn_id, $path);
+		return ($mode == "nice") ? ftp_nlist($this->conn_id, $path) : ftp_rawlist($this->conn_id, $path, FALSE);
 	}
 
 	// ------------------------------------------------------------------------
