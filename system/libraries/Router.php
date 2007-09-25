@@ -81,10 +81,16 @@ class Router_Core {
 			self::$segments = trim(self::$segments, '/');
 		}
 
+
 		// Use the default route when no segments exist
 		if (self::$segments == '' OR self::$segments == '/')
 		{
 			self::$segments = self::$routes['_default'];
+			$default_route = TRUE;
+		}
+		else
+		{
+			$default_route = FALSE;
 		}
 
 		// Remove the URL suffix
@@ -103,7 +109,7 @@ class Router_Core {
 		(self::$segments === 'L0LEAST3R') and include SYSPATH.'views/kohana_holiday.php';
 
 		// Custom routing
-		if (count(self::$routes) > 1);
+		if ($default_route == FALSE AND count(self::$routes) > 1)
 		{
 			if (isset(self::$routes[self::$current_uri]))
 			{
@@ -141,6 +147,11 @@ class Router_Core {
 			}
 		}
 
+		if ($default_route == TRUE)
+		{
+			self::$segments = '';
+		}
+
 		/**
 		 * Explode the segments by slashes
 		 */
@@ -150,17 +161,23 @@ class Router_Core {
 		/**
 		 * Validate segments to prevent malicious characters
 		 */
-		foreach(self::$segments as $key => $segment)
+		if ( ! empty(self::$segments))
 		{
-			self::$segments[$key] = self::filter_uri($segment);
+			foreach(self::$segments as $key => $segment)
+			{
+				self::$segments[$key] = self::filter_uri($segment);
+			}
 		}
 
 		/**
 		 * Yah, routed segments too, even though it should never happen
 		 */
-		foreach(self::$rsegments as $key => $segment)
+		if ( ! empty(self::$rsegments))
 		{
-			self::$rsegments[$key] = self::filter_uri($segment);
+			foreach(self::$rsegments as $key => $segment)
+			{
+				self::$rsegments[$key] = self::filter_uri($segment);
+			}
 		}
 
 		/**
@@ -211,6 +228,9 @@ class Router_Core {
 			}
 		}
 
+		/**
+		 * @todo Exception, plz
+		 */
 		(self::$controller == TRUE) or trigger_error
 		(
 			'Kohana was not able to determine a controller to process this request.',
@@ -222,9 +242,9 @@ class Router_Core {
 	{
 		$str = trim($str);
 
-		if (($allowed = Config::item('core.permitted_uri_chars')) != '')
+		if ($str != '' AND ($allowed = Config::item('core.permitted_uri_chars')) != '')
 		{
-			if (! preg_match('|^['.preg_quote($allowed).']+$|iu', $str))
+			if ( ! preg_match('|^['.preg_quote($allowed).']+$|iu', $str))
 			{
 				header('HTTP/1.1 400 Bad Request');
 				exit('The URI you submitted has disallowed characters.');
