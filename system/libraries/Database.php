@@ -50,6 +50,7 @@ class Database_Core {
 	protected $where     = array();
 	protected $like      = array();
 	protected $orderby   = array();
+	protected $order     = array();
 	protected $groupby   = array();
 	protected $having    = array();
 	protected $distinct  = FALSE;
@@ -422,6 +423,10 @@ class Database_Core {
 		{
 			$this->offset = $offset;
 		}
+		else
+		{
+			$this->offset = 0;
+		}
 
 		return $this;
 	}
@@ -496,6 +501,7 @@ class Database_Core {
 		$result = $this->query($sql);
 		$this->reset_select();
 		$this->last_query = $sql;
+		
 		return $result;
 	}
 

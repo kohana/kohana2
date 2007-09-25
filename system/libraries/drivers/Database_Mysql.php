@@ -141,10 +141,10 @@ class Database_Mysql implements Database_Driver {
 
 					$v = ($v == TRUE) ? ' 1' : ' 0';
 				}
-				elseif ($this->has_operator($v))
-				{
-				    $k = '';
-				}
+				//elseif ($this->has_operator($v))
+				//{
+				//    $k = '';
+				//}
 				else
 				{
 					if ( ! $this->has_operator($k))
@@ -155,7 +155,6 @@ class Database_Mysql implements Database_Driver {
 					$v = ' '.(($quote == TRUE) ? $this->escape($v) : $v);
 				}
 			}
-
 			$wheres[] = $prefix.$k.$v;
 		}
 
@@ -186,6 +185,11 @@ class Database_Mysql implements Database_Driver {
 		return 'INSERT INTO '.$this->escape_table($table).' ('.implode(', ', $keys).') VALUES ('.implode(', ', $values).')';
 	}
 
+	public function limit($limit, $offset = 0)
+	{
+		return 'LIMIT '.$offset.', '.$limit;
+	}
+	
 	/**
 	 * Compile the SELECT statement
 	 *
@@ -249,7 +253,7 @@ class Database_Mysql implements Database_Driver {
 		if (is_numeric($database['limit']))
 		{
 			$sql .= "\n";
-			$sql = $database->limit($sql, $database['limit'], $database['offset']);
+			$sql .= $this->limit($database['limit'], $database['offset']);
 		}
 
 		return $sql;
