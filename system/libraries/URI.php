@@ -18,6 +18,21 @@ class URI_Core extends Router {
 	}
 
 	/**
+	 * Retrieve a specific routed URI segment
+	 *
+	 * @access	public
+	 * @param	int
+	 * @param	mixed
+	 * @return	mixed
+	 */
+	public function rsegment($index = 1, $default = FALSE)
+	{
+		$index = (int) $index - 1;
+
+		return isset(self::$rsegments[$index]) ? self::$rsegments[$index] : $default;
+	}
+
+	/**
 	 * Returns an array containing all the URI segments
 	 *
 	 * @access	public

@@ -147,20 +147,19 @@ class Router_Core {
 			}
 		}
 
-		if ($default_route == TRUE)
+		// Explode the segments by slashes
+		if ($default_route == TRUE OR self::$segments == '')
 		{
-			self::$segments = '';
+			self::$segments = array();
 		}
-
-		/**
-		 * Explode the segments by slashes
-		 */
-		self::$segments  = explode('/', self::$segments);
+		else
+		{
+			self::$segments = explode('/', self::$segments);
+		}
+		// Routed segments will never be blank
 		self::$rsegments = explode('/', self::$rsegments);
 
-		/**
-		 * Validate segments to prevent malicious characters
-		 */
+		// Validate segments to prevent malicious characters
 		if ( ! empty(self::$segments))
 		{
 			foreach(self::$segments as $key => $segment)
@@ -169,9 +168,7 @@ class Router_Core {
 			}
 		}
 
-		/**
-		 * Yah, routed segments too, even though it should never happen
-		 */
+		// Yah, routed segments too, even though it should never happen
 		if ( ! empty(self::$rsegments))
 		{
 			foreach(self::$rsegments as $key => $segment)
@@ -180,9 +177,7 @@ class Router_Core {
 			}
 		}
 
-		/**
-		 * Prepare for Controller search
-		 */
+		// Prepare for Controller search
 		self::$directory  = '';
 		self::$controller = '';
 
