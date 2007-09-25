@@ -31,11 +31,12 @@ class Database_Mysql implements Database_Driver {
 	// Database connection link
 	private $link;
     private $db_config;
-    
+
 	public function __construct($config)
 	{
-	   $this->db_config = $config;
-	   Log::add('debug', 'MySQL Database Driver Initialized');
+		$this->db_config = $config;
+
+		Log::add('debug', 'MySQL Database Driver Initialized');
 	}
 
 	/**
@@ -60,7 +61,7 @@ class Database_Mysql implements Database_Driver {
 			{
 				echo $this->set_charset($charset);
 			}
-			
+
 			return TRUE;
 		}
 
@@ -76,7 +77,7 @@ class Database_Mysql implements Database_Driver {
 	 */
 	public function query($sql, $object = TRUE)
 	{
-		return new Database_Result(mysql_query($sql, $this->link), $this->link, $object);
+		return new Mysql_Result(mysql_query($sql, $this->link), $this->link, $object);
 	}
 
 	public function delete($table, $where)
@@ -98,12 +99,12 @@ class Database_Mysql implements Database_Driver {
 	{
 		return str_replace('.', '`.`', $table);
 	}
-	
+
 	public function escape_column($column)
 	{
 		return '`'.$column.'`';
 	}
-	
+
 	public function where($key, $value, $type, $num_wheres, $quote)
 	{
 		if ( ! is_array($key))
@@ -157,10 +158,10 @@ class Database_Mysql implements Database_Driver {
 
 			$wheres[] = $prefix.$k.$v;
 		}
-		
+
 		return $wheres;
 	}
-	
+
 	public function like($field, $match = '', $type = 'AND ', $num_likes)
 	{
 		if ( ! is_array($field))
@@ -179,12 +180,12 @@ class Database_Mysql implements Database_Driver {
 		}
 		return $likes;
 	}
-	
+
 	public function insert($table, $keys, $values)
 	{
 		return 'INSERT INTO '.$this->escape_table($table).' ('.implode(', ', $keys).') VALUES ('.implode(', ', $values).')';
 	}
-	
+
 	/**
 	 * Compile the SELECT statement
 	 *
@@ -250,15 +251,15 @@ class Database_Mysql implements Database_Driver {
 			$sql .= "\n";
 			$sql = $database->limit($sql, $database['limit'], $database['offset']);
 		}
-		
+
 		return $sql;
 	}
-	
+
 	public function has_operator($str)
 	{
 		return (bool) preg_match('/[\s=<>!]|is /i', trim($str));
 	}
-	
+
 	public function escape($str)
 	{
 		switch (gettype($str))
@@ -275,8 +276,8 @@ class Database_Mysql implements Database_Driver {
 		}
 
 		return (string) $str;
-	} 
-	
+	}
+
 	/**
 	* Escape String
 	*
@@ -286,28 +287,28 @@ class Database_Mysql implements Database_Driver {
 	*/
 	public function escape_str($str)
 	{
-	   if ( ! is_resource($this->link))
-	   {
-	       $this->connect($this->db_config);
-	   }
-	   
-	   return mysql_real_escape_string($str, $this->link);
+	if ( ! is_resource($this->link))
+	{
+		$this->connect($this->db_config);
+	}
+
+	return mysql_real_escape_string($str, $this->link);
 	}
 } // End Database MySQL Driver
 
-class Database_Result implements Database_Result_Interface, Iterator
+class Mysql_Result implements Database_Result, Iterator
 {
-	private $rows = array();
-	private $num_rows = 0;
+	private $link      = FALSE;
+	private $result    = FALSE;
 	private $insert_id = NULL;
-	private $link;
-	private $result;
-	private $object = TRUE;
-	
+	private $num_rows  = 0;
+	private $rows      = array();
+	private $object    = TRUE;
+
 	public function __construct($result, $link, $object = TRUE)
 	{
-	   	$this->object = (bool) $object;
-	    
+		$this->object = (bool) $object;
+
 		// If the query is a resource, it was a SELECT, SHOW, DESCRIBE, EXPLAIN query
 		if (is_resource($result))
 		{
@@ -322,53 +323,53 @@ class Database_Result implements Database_Result_Interface, Iterator
 			else if ($result == TRUE) // Its an DELETE, INSERT, REPLACE, or UPDATE query
 			{
 				$this->insert_id = mysql_insert_id($link);
-				$this->num_rows = mysql_affected_rows($link);
+				$this->num_rows  = mysql_affected_rows($link);
 			}
 		}
-		
 	}
-    
+
 	public function result()
 	{
 		$fetch = ($this->object == TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
 
-        while ($row = $fetch($this->result))
-        {
-            $this->rows[] = $row;
-        }
-        $this->num_rows = mysql_num_rows($this->result);
+		while ($row = $fetch($this->result))
+		{
+			$this->rows[] = $row;
+		}
+
+		$this->num_rows = mysql_num_rows($this->result);
 	}
-	
+
 	public function num_rows()
 	{
 		return $this->num_rows;
-	} 
-	
+	}
+
 	public function insert_id()
 	{
 		return $this->insert_id;
 	}
-	
+
 	public function current()
 	{
 		return current($this->rows);
 	}
-	
+
 	public function next()
 	{
 		return next($this->rows);
 	}
-	
+
 	public function key()
 	{
 		return key($this->rows);
 	}
-	
+
 	public function valid()
 	{
 		return ($this->current() !== FALSE);
 	}
-	
+
 	public function rewind()
 	{
 		reset($this->rows);

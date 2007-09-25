@@ -7,7 +7,7 @@ class Welcome_Controller extends Controller {
 		foreach(get_class_methods(__CLASS__) as $method)
 		{
 			if ( ! preg_match('/_example$/', $method)) continue;
-			
+
 			echo html::anchor('welcome/'.$method, $method)."<br/>\n";
 		}
 	}
@@ -59,20 +59,23 @@ class Welcome_Controller extends Controller {
 	function database_example()
 	{
 		$this->load->library('database');
+		$this->load->database();
 
 		$query = $this->database->from('pages')->get();
-        echo '<pre>' . print_r($query, true) . '</pre>';
-        $query->result();
-        
-        echo 'Current: ' . $query->current()->title . '<br />';
-        echo 'Next: ' . $query->next()->title . '<br />';
-        echo 'Next: ' . $query->next()->title . '<br />';
-        /*foreach ($query as $row)
-        {
-        	echo print_r($row);
-        }*/
-        
-        print "<br/><br/>\n";
+
+		echo '<pre>' . print_r($query, true) . '</pre>';
+		$query->result();
+
+		echo 'Current: ' . $query->current()->title . '<br />';
+		echo 'Next: ' . $query->next()->title . '<br />';
+		echo 'Next: ' . $query->next()->title . '<br />';
+
+		foreach ($query as $row)
+		{
+			echo print_r($row);
+		}
+
+		print "<br/><br/>\n";
 		print "done in {execution_time} seconds";
 	}
 

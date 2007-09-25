@@ -101,22 +101,17 @@ class Database_Core {
 
 		$driver = 'Database_'.ucfirst($this->config['connection']['type']);
 
-		if (!class_exists($driver)) 
+		try
 		{
-			try
-			{
-				require Kohana::find_file('libraries', 'drivers/'.$driver, TRUE);
-			}
-			catch (Kohana_Exception $exception)
-			{
-				throw new Kohana_Exception('database.driver_not_supported', $this->config['type']);
-			}
+			require_once Kohana::find_file('libraries', 'drivers/'.$driver, TRUE);
+			// Initialize the driver
+			$this->driver = new $driver($this->config);
 		}
-		
-		// Initialize the driver
-		$this->driver = new $driver($this->config);
-		
-		
+		catch (Kohana_Exception $exception)
+		{
+			throw new Kohana_Exception('database.driver_not_supported', $this->config['type']);
+		}
+
 		if ( ! in_array('Database_Driver', class_implements($this->driver)))
 		{
 			throw new Kohana_Exception('database.driver_not_supported', 'Database drivers must use the Database_Driver interface.');
@@ -137,9 +132,9 @@ class Database_Core {
 	public function connect()
 	{
 		$this->connected = $this->driver->connect($this->config);
-		
+
 		if ($this->connected != TRUE)
-		{	
+		{
 			throw new Kohana_Exception('database.connection', mysql_error());
 		}
 	}
@@ -365,7 +360,7 @@ class Database_Core {
 	public function having($key, $value = '')
 	{
 	    $this->like = array_merge($this->like, $this->driver->having($key, $value, 'AND'));
-        return $this;	
+        return $this;
 	}
 
 	// --------------------------------------------------------------------
@@ -383,7 +378,7 @@ class Database_Core {
 	public function orhaving($key, $value = '')
 	{
 		$this->like = array_merge($this->like, $this->driver->having($key, $value, 'OR'));
-        return $this;   
+        return $this;
 	}
 
 	// --------------------------------------------------------------------
@@ -671,7 +666,7 @@ class Database_Core {
 	{
 	   return $this->last_query;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
