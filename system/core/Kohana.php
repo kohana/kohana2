@@ -436,7 +436,7 @@ class Kohana {
 		}
 	}
 
-	public static function lang($type)
+	public static function lang($type, $args = array())
 	{
 		static $found = array();
 
@@ -485,7 +485,15 @@ class Kohana {
 		}
 		else
 		{
-			return $found[$type][$name];
+			if ( ! is_array($args) OR empty($args))
+			{
+				$args = func_get_args();
+				$args = array_slice($args, 1);
+			}
+
+			$line = $found[$type][$name];
+
+			return (empty($args) ? $line : vsprintf($line, $args));
 		}
 	}
 
@@ -546,8 +554,11 @@ class Kohana_Exception extends Exception {
 
 	function __construct($error)
 	{
+		$args = func_get_args();
+		$args = array_slice($args, 1);
+
 		// Fetch the error message
-		$message = Kohana::lang($error);
+		$message = Kohana::lang($error, $args);
 
 		// Handle error messages that are not set
 		if ($message == '')
@@ -556,15 +567,7 @@ class Kohana_Exception extends Exception {
 		}
 		else
 		{
-			// Add in the args if necessary, removing the $error arg
-			if (count($args = array_slice(func_get_args(), 1)) > 0)
-			{
-				$this->message = vsprintf($message, $args);
-			}
-			else
-			{
-				$this->message = $message;
-			}
+			$this->message = $message;
 		}
 	}
 
