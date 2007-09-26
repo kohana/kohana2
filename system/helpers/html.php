@@ -95,7 +95,7 @@ class html {
 			$site_url = $uri;
 		}
 
-		$title = ($title == FALSE) ? $site_url : str_replace(' ', '&nbsp;', $title);
+		$title = ($title == FALSE) ? $site_url : $title;
 
 		$attributes = ($attributes == TRUE) ? self::attributes($attributes) : '';
 
