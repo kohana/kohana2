@@ -132,7 +132,7 @@ class Database_Mysql implements Database_Driver {
 
 					$v = ' NULL';
 				}
-				elseif ($v === FALSE OR $v === TRUE)
+				elseif (is_bool($v))
 				{
 					if ( ! $this->has_operator($k))
 					{
@@ -141,10 +141,6 @@ class Database_Mysql implements Database_Driver {
 
 					$v = ($v == TRUE) ? ' 1' : ' 0';
 				}
-				//elseif ($this->has_operator($v))
-				//{
-				//    $k = '';
-				//}
 				else
 				{
 					if ( ! $this->has_operator($k))
@@ -261,7 +257,7 @@ class Database_Mysql implements Database_Driver {
 
 	public function has_operator($str)
 	{
-		return (bool) preg_match('/[\s=<>!]|is /i', trim($str));
+		return (bool) preg_match('/!?[=<>]|\sIS\s/i', trim($str));
 	}
 
 	public function escape($str)
