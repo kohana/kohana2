@@ -367,7 +367,7 @@ class form {
 	 * @param   string
 	 * @return  string
 	 */
-	public static function form_radio($data = '', $value = '', $checked = FALSE, $extra = '')
+	public static function radio($data = '', $value = '', $checked = FALSE, $extra = '')
 	{
 		if ( ! is_array($data))
 		{
@@ -399,7 +399,7 @@ class form {
 	 * @param	string
 	 * @return	string
 	 */
-	public static function form_submit($data = '', $value = '', $extra = '')
+	public static function submit($data = '', $value = '', $extra = '')
 	{
 		if ( ! is_array($data))
 		{
