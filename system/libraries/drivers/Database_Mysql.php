@@ -331,11 +331,11 @@ class Mysql_Result implements Database_Result, Iterator
 		}
 	}
 
-	public function result()
+	public function result($object = TRUE, $array_type = MYSQL_ASSOC)
 	{
-		$fetch = ($this->object == TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
+		$fetch = ($this->object == TRUE and $object == TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
 
-		while ($row = $fetch($this->result))
+		while ($row = $fetch($this->result, ($this->object == TRUE and $object == TRUE) ? 'stdClass' : $array_type))
 		{
 			$this->rows[] = $row;
 		}
