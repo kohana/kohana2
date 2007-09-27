@@ -541,6 +541,27 @@ class Kohana {
 			}
 		}
 	}
+	
+	public static function show_404()
+	{
+		$message = Kohana::lang('core.page_not_found', array('/'.URI::string().Config::item('core.url_suffix')));
+		
+		// Log the error
+		Log::add('file_not_found', $message);
+
+		// Flush the entire buffer here, to ensure the error is displayed
+		while(ob_get_level()) ob_end_clean();
+
+		// Re-start the buffer
+		ob_start(array('Kohana', 'output'));
+
+		// Load the error page
+		include self::find_file('views', 'kohana_404');
+
+		// Display the buffer and exit
+		ob_end_flush();
+		exit;
+	}
 
 } // End Kohana class
 
