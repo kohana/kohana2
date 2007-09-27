@@ -62,7 +62,7 @@ interface Database_Driver {
 	 * @param   string  where command
 	 * @return  string
 	 */
-	public function update($table, $where);
+	public function update($table, $val, $where);
 
 	/**
 	 * Return an update statement

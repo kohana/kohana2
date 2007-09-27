@@ -465,7 +465,7 @@ class Database_Core {
 
 		foreach ($key as $k => $v)
 		{
-			$this->set[$k] = $this->escape($v);
+			$this->set[$k] = $this->driver->escape($v);
 		}
 
 		return $this;
@@ -616,12 +616,7 @@ class Database_Core {
 
 			$table = $this->from[0];
 		}
-
-		if ($where != NULL)
-		{
-			$this->where($where);
-		}
-
+		$this->where = $where;
 		$sql = $this->driver->update($this->config['table_prefix'].$table, $this->set, $this->where);
 
 		$this->reset_write();

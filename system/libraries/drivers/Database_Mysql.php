@@ -85,9 +85,13 @@ class Database_Mysql implements Database_Driver {
     	return 'DELETE FROM '.$this->escape_table($table).' WHERE '.implode(' ', $where);
 	}
 
-	public function update($table, $where)
+	public function update($table, $values, $where)
 	{
-		return 'UPDATE '.$this->escape_table($table).' WHERE '.implode(' ',$where);
+		foreach($values as $key => $val)
+		{
+			$valstr[] = $this->escape_column($key)." = ".$this->escape_str($val);
+		}
+		return 'UPDATE '.$this->escape_table($table).' SET '.implode(', ', $valstr).' WHERE '.implode(' AND ',$this->where($where, NULL, 'AND', 0, TRUE));
 	}
 
 	public function set_charset($charset)
@@ -153,7 +157,6 @@ class Database_Mysql implements Database_Driver {
 			}
 			$wheres[] = $prefix.$k.$v;
 		}
-
 		return $wheres;
 	}
 
