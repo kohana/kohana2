@@ -43,7 +43,7 @@ class Kohana {
 
 	// The final output that will displayed by Kohana
 	// This variable is protected, so that the controller can overload it
-	protected static $output = '';
+	public static $output = '';
 
 	/**
 	 * Constructor
