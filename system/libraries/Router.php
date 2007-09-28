@@ -227,14 +227,10 @@ class Router_Core {
 			}
 		}
 
-		/**
-		 * @todo Exception, plz
-		 */
-		(self::$controller == TRUE) or trigger_error
-		(
-			'Kohana was not able to determine a controller to process this request.',
-			E_USER_ERROR
-		);
+		if (self::$controller != TRUE)
+		{
+			throw new Kohana_Exception('core.no_controller', $controller);
+		}
 	}
 
 	public static function filter_uri($str)
