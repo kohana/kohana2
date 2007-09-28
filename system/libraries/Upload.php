@@ -132,25 +132,52 @@ class Upload_Core {
 	}
 
 	// --------------------------------------------------------------------
-
+	
+	/**
+	 * Perform a multple file upload
+	 *
+	 * @access public
+	 * @param array
+	 * @return bool
+	 */
+	
+	
+	public function do_mupload($field_set) {
+		if( ! is_array($field_set)) {
+			$this->set_error("upload_field_set_not_array");
+			return FALSE;
+		}
+		if(empty($field_set)) {
+			$this->set_error("upload_filed_set_empty");
+		}
+		foreach($field_set as $nice_name => $userfile) {
+			if( ! $this->do_upload($userfile, $nice_name)) {
+				$return = FALSE;
+			}
+		}
+		return $return;
+		
+	}
+	
 	/**
 	 * Perform the file upload
 	 *
 	 * @access	public
 	 * @return	bool
 	 */
-	public function do_upload($field = 'userfile')
+	public function do_upload($field = 'userfile', $nice_name = 'userfile')
 	{
 		// Is $_FILES[$field] set? If not, no reason to continue.
 		if ( ! isset($_FILES[$field]))
 		{
-			$this->set_error('upload_userfile_not_set');
+			$this->set_error('upload_userfile_not_set', $nice_name, $field);
 			return FALSE;
 		}
 
 		// Is the upload path valid?
 		if ( ! $this->validate_upload_path())
 		{
+			$this->set_error('upload_invalid_path');
 			return FALSE;
 		}
 
@@ -161,13 +188,13 @@ class Upload_Core {
 
 			switch($error)
 			{
-				case 1  :   $this->set_error('upload_file_exceeds_limit');
+				case 1  :   $this->set_error('upload_file_exceeds_limit', $nice_name);
 					break;
-				case 3  :   $this->set_error('upload_file_partial');
+				case 3  :   $this->set_error('upload_file_partial', $nice_name);
 					break;
-				case 4  :   $this->set_error('upload_no_file_selected');
+				case 4  :   $this->set_error('upload_no_file_selected', $nice_name);
 					break;
-				default :   $this->set_error('upload_no_file_selected');
+				default :   $this->set_error('upload_no_file_selected', $nice_name);
 					break;
 			}
 
@@ -190,14 +217,14 @@ class Upload_Core {
 		// Is the file type allowed to be uploaded?
 		if ( ! $this->is_allowed_filetype())
 		{
-			$this->set_error('upload_invalid_filetype');
+			$this->set_error('upload_invalid_filetype', $nice_name);
 			return FALSE;
 		}
 
 		// Is the file size within the allowed maximum?
 		if ( ! $this->is_allowed_filesize())
 		{	
-			$this->set_error('upload_invalid_filesize', $this->max_size.'KBytes');
+			$this->set_error('upload_invalid_filesize', $nice_name, $this->max_size.'KBytes');
 			return FALSE;
 		}
 
@@ -205,7 +232,7 @@ class Upload_Core {
 		// Note: This can fail if the server has an open_basdir restriction.
 		if ( ! $this->is_allowed_dimensions())
 		{
-			$this->set_error('upload_invalid_dimensions', $this->max_width.'x'.$this->max_height);
+			$this->set_error('upload_invalid_dimensions', $nice_name, $this->max_width.'x'.$this->max_height);
 			return FALSE;
 		}
 
@@ -247,7 +274,7 @@ class Upload_Core {
 		{
 			if ( ! @move_uploaded_file($this->file_temp, $this->upload_path.$this->file_name))
 			{
-				 $this->set_error('upload_destination_error');
+				 $this->set_error('upload_destination_error', $nice_name);
 				 return FALSE;
 			}
 		}
@@ -734,8 +761,11 @@ class Upload_Core {
 	 * @param	string
 	 * @return	void
 	 */
-	public function set_error($msg, $extra = null)
+	public function set_error($msg, $nice_name = null, $extra = null)
 	{
+		if ($nice_name !== null) {
+			$this->error_msg[] = Kohana::lang('upload.error_on_file', $nice_name);
+		}
 		if (is_array($msg))
 		{
 			foreach ($msg as $msg)

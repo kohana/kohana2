@@ -2,7 +2,7 @@
 
 $lang = array
 (
-	'upload_userfile_not_set' => 'Unable to find a post variable called userfile.',
+	'upload_userfile_not_set' => 'Unable to find a post variable called %s.',
 	'upload_file_exceeds_limit' => 'The uploaded file exceeds the maximum allowed size in your PHP configuration file',
 	'upload_file_partial' => 'The file was only partially uploaded',
 	'upload_no_file_selected' => 'You did not select a file to upload',
@@ -14,4 +14,5 @@ $lang = array
 	'upload_no_file_types' => 'You have not specified any allowed file types.',
 	'upload_bad_filename' => 'The file name you submitted already exists on the server.',
 	'upload_not_writable' => 'The upload destination folder does not appear to be writable.',
+	'error_on_file' => 'Error uploading %s:'
 );
