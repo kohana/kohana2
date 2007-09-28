@@ -45,17 +45,17 @@ class URI_Core extends Router {
 		$segment_array = self::$segments;
 		array_unshift($segment_array, 0);
 		$segment_array = array_slice($segment_array, $offset + 1, $this->total_segments(), TRUE);
-		
+
 		if ( ! $associative)
 			return $segment_array;
-		
+
 		$segment_array_assoc = array();
-		
+
 		foreach (array_chunk($segment_array, 2) as $pair)
 		{
 			$segment_array_assoc[$pair[0]] = isset($pair[1]) ? $pair[1] : '';
 		}
-		
+
 		return $segment_array_assoc;
 	}
 
@@ -69,7 +69,7 @@ class URI_Core extends Router {
 	{
 		return self::$current_uri;
 	}
-	
+
 	/**
 	 * Returns the total number of URI segments
 	 *
@@ -80,7 +80,7 @@ class URI_Core extends Router {
 	{
 		return count(self::$segments);
 	}
-	
+
 	/**
 	 * Returns the last URI segment
 	 *

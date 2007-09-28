@@ -258,6 +258,9 @@ class Kohana {
 		// Re-start the buffer
 		ob_start(array('Kohana', 'output'));
 
+		// Send the 500 header
+		header('HTTP/1.1 500 Internal Server Error');
+
 		// Load the error page
 		include self::find_file('views', 'kohana_php_error');
 
@@ -541,11 +544,11 @@ class Kohana {
 			}
 		}
 	}
-	
+
 	public static function show_404()
 	{
-		$message = Kohana::lang('core.page_not_found', array('/'.URI::string().Config::item('core.url_suffix')));
-		
+		$message = Kohana::lang('core.page_not_found', '/'.Router::$current_uri);
+
 		// Log the error
 		Log::add('file_not_found', $message);
 
@@ -554,6 +557,9 @@ class Kohana {
 
 		// Re-start the buffer
 		ob_start(array('Kohana', 'output'));
+
+		// Send the 404 header
+		header('HTTP/1.1 404 File Not Found');
 
 		// Load the error page
 		include self::find_file('views', 'kohana_404');
