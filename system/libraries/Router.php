@@ -9,6 +9,8 @@ class Router_Core {
 	public static $segments    = array();
 	public static $rsegments   = array();
 
+	public static $query_string = '';
+
 	public static $directory  = FALSE;
 	public static $controller = FALSE;
 	public static $method     = FALSE;
@@ -56,6 +58,9 @@ class Router_Core {
 			{
 				self::$segments = substr(self::$segments, 0, -(strlen($suffix)));
 			}
+
+			// Destroy GET
+			$_GET = array();
 		}
 		elseif (isset($_SERVER['PATH_INFO']) AND $_SERVER['PATH_INFO'])
 		{
@@ -227,7 +232,7 @@ class Router_Core {
 			}
 		}
 
-		if (self::$controller != TRUE)
+		if (empty(self::$controller))
 		{
 			Kohana::show_404();
 		}

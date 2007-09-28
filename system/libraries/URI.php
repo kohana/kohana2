@@ -2,6 +2,18 @@
 
 class URI_Core extends Router {
 
+	public function __construct()
+	{
+		if ( ! empty($_GET))
+		{
+			self::$query_string = '?';
+			foreach($_GET as $key => $val)
+			{
+				self::$query_string .= $key.'='.rawurlencode($val);
+			}
+		}
+	}
+
 	/**
 	 * Retrieve a specific URI segment
 	 *
