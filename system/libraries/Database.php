@@ -498,7 +498,13 @@ class Database_Core {
 
 		$sql = $this->driver->compile_select(get_object_vars($this));
 
+		$start_time = microtime();
 		$result = $this->query($sql);
+		
+		// benchmark the query
+		$end_time = microtime();
+		$this->benchmark[] = array('query' => $sql, 'time' => ($end_time - $start_time));
+		
 		$this->reset_select();
 		$this->last_query = $sql;
 		
