@@ -20,12 +20,13 @@ class date {
 		return self::seconds((int) $step);
 	}
 
-	public static function hours($step = 1)
+	public static function hours($step = 1, $long = FALSE)
 	{
 		$step = (int) $step;
+		$size = ($long == TRUE) ? 25 : 13;
 
 		$vals = array();
-		for ($i = $step; $i < 13; $i += $step)
+		for ($i = $step; $i < $size; $i += $step)
 		{
 			$vals[$i] = $i;
 		}
