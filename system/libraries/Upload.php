@@ -33,29 +33,29 @@
  */
 class Upload_Core {
 
-	private $max_size		= 0;
- 	private $max_width		= 0;
-	private $max_height		= 0;
-	private $allowed_types	= "";
-	private $file_temp		= "";
-	private $file_name		= "";
-	private $orig_name		= "";
-	private $file_type		= "";
-	private $file_size		= "";
-	private $file_ext		= "";
-	private $upload_path	= "";
-	private $overwrite		= FALSE;
-	private $encrypt_name	= FALSE;
-	private $is_image		= FALSE;
-	private $image_width	= '';
-	private $image_height	= '';
-	private $image_type		= '';
-	private $image_size_str	= '';
-	private $error_msg		= array();
-	private $mimes			= array();
-	private $remove_spaces	= TRUE;
-	private $xss_clean		= FALSE;
-	private $temp_prefix	= "temp_file_";
+	protected $max_size		= 0;
+ 	protected $max_width		= 0;
+	protected $max_height		= 0;
+	protected $allowed_types	= "";
+	protected $file_temp		= "";
+	protected $file_name		= "";
+	protected $orig_name		= "";
+	protected $file_type		= "";
+	protected $file_size		= "";
+	protected $file_ext		= "";
+	protected $upload_path	= "";
+	protected $overwrite		= FALSE;
+	protected $encrypt_name	= FALSE;
+	protected $is_image		= FALSE;
+	protected $image_width	= '';
+	protected $image_height	= '';
+	protected $image_type		= '';
+	protected $image_size_str	= '';
+	protected $error_msg		= array();
+	protected $mimes			= array();
+	protected $remove_spaces	= TRUE;
+	protected $xss_clean		= FALSE;
+	protected $temp_prefix	= "temp_file_";
 
 	/**
 	 * Constructor
@@ -110,7 +110,7 @@ class Upload_Core {
 						);
 
 
-		foreach ($defaults as $key => $val)
+		foreach ($defaults as $key => $msg)
 		{
 			if (isset($config[$key]))
 			{
@@ -126,7 +126,7 @@ class Upload_Core {
 			}
 			else
 			{
-				$this->$key = $val;
+				$this->$key = $msg;
 			}
 		}
 	}
@@ -196,8 +196,8 @@ class Upload_Core {
 
 		// Is the file size within the allowed maximum?
 		if ( ! $this->is_allowed_filesize())
-		{
-			$this->set_error('upload_invalid_filesize');
+		{	
+			$this->set_error('upload_invalid_filesize', $this->max_size.'KBytes');
 			return FALSE;
 		}
 
@@ -205,7 +205,7 @@ class Upload_Core {
 		// Note: This can fail if the server has an open_basdir restriction.
 		if ( ! $this->is_allowed_dimensions())
 		{
-			$this->set_error('upload_invalid_dimensions');
+			$this->set_error('upload_invalid_dimensions', $this->max_width.'x'.$this->max_height);
 			return FALSE;
 		}
 
@@ -513,9 +513,9 @@ class Upload_Core {
 			return FALSE;
 		}
 
-		foreach ($this->allowed_types as $val)
+		foreach ($this->allowed_types as $msg)
 		{
-			$mime = $this->mimes_types(strtolower($val));
+			$mime = $this->mimes_types(strtolower($msg));
 
 			if (is_array($mime))
 			{
@@ -546,14 +546,7 @@ class Upload_Core {
 	 */
 	public function is_allowed_filesize()
 	{
-		if ($this->max_size != 0  AND  $this->file_size > $this->max_size)
-		{
-			return FALSE;
-		}
-		else
-		{
-			return TRUE;
-		}
+		return ($this->max_size == 0  OR  $this->file_size <= $this->max_size);
 	}
 
 	// --------------------------------------------------------------------
@@ -686,9 +679,9 @@ class Upload_Core {
 						"%3d"		// =
 					);
 
-		foreach ($bad as $val)
+		foreach ($bad as $msg)
 		{
-			$filename = str_replace($val, '', $filename);
+			$filename = str_replace($msg, '', $filename);
 		}
 
 		return $filename;
@@ -738,24 +731,23 @@ class Upload_Core {
 	 *
 	 * @access	public
 	 * @param	string
+	 * @param	string
 	 * @return	void
 	 */
-	public function set_error($msg)
+	public function set_error($msg, $extra = null)
 	{
-		Kohana::lang('upload');
-
 		if (is_array($msg))
 		{
-			foreach ($msg as $val)
+			foreach ($msg as $msg)
 			{
-				$msg = Kohana::lang('upload'.$val);
+				$msg = ($extra === null) ? Kohana::lang('upload.'.$msg) : Kohana::lang('upload.'.$msg, $extra);
 				$this->error_msg[] = $msg;
 				Log::add('error', $msg);
 			}
 		}
 		else
 		{
-			$msg = Kohana::lang('upload'.$msg);
+			$msg = ($extra === null) ? Kohana::lang('upload.'.$msg) : Kohana::lang('upload.'.$msg, $extra);
 			$this->error_msg[] = $msg;
 			Log::add('error', $msg);
 		}
@@ -774,9 +766,9 @@ class Upload_Core {
 	public function display_errors($open = '<p>', $close = '</p>')
 	{
 		$str = '';
-		foreach ($this->error_msg as $val)
+		foreach ($this->error_msg as $msg)
 		{
-			$str .= $open.$val.$close;
+			$str .= $open.$msg.$close;
 		}
 
 		return $str;
@@ -798,12 +790,7 @@ class Upload_Core {
 	{
 		if (count($this->mimes) == 0)
 		{
-			if (($abs_resource_path = find_resource('mimes'.EXT,'config')) !== FALSE)
-			{
-				include($abs_resource_path);
-				$this->mimes = $mimes;
-				unset($mimes);
-			}
+			$this->mimes = Config::item('mimes');
 		}
 
 		return ( ! isset($this->mimes[$mime])) ? FALSE : $this->mimes[$mime];

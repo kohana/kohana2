@@ -462,7 +462,6 @@ class FTP_Core {
 	 * @param	string path to the directory that will be listed
 	 * @param	string	mode in which the results will be returned (raw or nice)
 	 * @return	array
-	 * 
 	 */
 	public function list_files($path = '.', $mode = "nice")
 	{
