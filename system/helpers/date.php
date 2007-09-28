@@ -34,6 +34,13 @@ class date {
 		return $vals;
 	}
 
+	public static function ampm($hour)
+	{
+		$hour = (int) $hour;
+
+		return ($hour > 11) : 'PM' : 'AM';
+	}
+
 	public static function days($month, $year = FALSE)
 	{
 		$month = (int) $month;
