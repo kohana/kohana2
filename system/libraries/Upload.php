@@ -152,6 +152,7 @@ class Upload_Core {
 		{
 			$this->set_error("upload_filed_set_empty");
 		}
+		$return = TRUE;
 		foreach($field_set as $nice_name => $userfile) 
 		{
 			if( ! $this->do_upload($userfile, $nice_name)) 
