@@ -80,15 +80,11 @@ class Database_Core {
 		// Merge the default config with the passed config
 		$this->config = array_merge($this->config, $config);
 
-		/**
-		 * @todo make this an exception
-		 */
 		// Parse the DSN into an array and validate it's length
-		(count($connection = @parse_url($this->config['connection'])) === 5) or trigger_error
-		(
-			'Invalid DSN used for database connection: <strong>'.$this->config['connection'].'</strong>',
-			E_USER_ERROR
-		);
+		if (count($connection = @parse_url($this->config['connection'])) !== 5) 
+		{
+			throw new Kohana_Exception('database.invalid_dsn', $this->config['connection']);
+		}
 
 		// Turn the DSN into local variables
 		// NOTE: This step has to be done, because the order is defined by parse_url
