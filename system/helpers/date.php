@@ -38,7 +38,7 @@ class date {
 	{
 		$hour = (int) $hour;
 
-		return ($hour > 11) : 'PM' : 'AM';
+		return ($hour > 11) ? 'PM' : 'AM';
 	}
 
 	public static function days($month, $year = FALSE)
