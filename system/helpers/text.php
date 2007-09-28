@@ -175,4 +175,4 @@ class text {
 		return preg_replace($regex, $replacement, $str);
 	}
 
-} // End text class
+} // End text Class

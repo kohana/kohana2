@@ -33,29 +33,29 @@
  */
 class Upload_Core {
 
-	protected $max_size		= 0;
- 	protected $max_width		= 0;
-	protected $max_height		= 0;
-	protected $allowed_types	= "";
-	protected $file_temp		= "";
-	protected $file_name		= "";
-	protected $orig_name		= "";
-	protected $file_type		= "";
-	protected $file_size		= "";
-	protected $file_ext		= "";
-	protected $upload_path	= "";
-	protected $overwrite		= FALSE;
-	protected $encrypt_name	= FALSE;
-	protected $is_image		= FALSE;
-	protected $image_width	= '';
-	protected $image_height	= '';
-	protected $image_type		= '';
-	protected $image_size_str	= '';
-	protected $error_msg		= array();
-	protected $mimes			= array();
-	protected $remove_spaces	= TRUE;
-	protected $xss_clean		= FALSE;
-	protected $temp_prefix	= "temp_file_";
+	protected $max_size         = 0;
+ 	protected $max_width        = 0;
+	protected $max_height       = 0;
+	protected $allowed_types    = '';
+	protected $file_temp        = '';
+	protected $file_name        = '';
+	protected $orig_name        = '';
+	protected $file_type        = '';
+	protected $file_size        = '';
+	protected $file_ext         = '';
+	protected $upload_path      = '';
+	protected $overwrite        = FALSE;
+	protected $encrypt_name     = FALSE;
+	protected $is_image         = FALSE;
+	protected $image_width      = '';
+	protected $image_height     = '';
+	protected $image_type       = '';
+	protected $image_size_str   = '';
+	protected $error_msg        = array();
+	protected $mimes            = array();
+	protected $remove_spaces    = TRUE;
+	protected $xss_clean        = FALSE;
+	protected $temp_prefix      = 'tmp_upload_';
 
 	/**
 	 * Constructor
@@ -83,32 +83,32 @@ class Upload_Core {
 	 */
 	public function initialize($config = array())
 	{
-		$defaults = array(
-							'max_size'			=> 0,
-							'max_width'			=> 0,
-							'max_height'		=> 0,
-							'allowed_types'		=> "",
-							'file_temp'			=> "",
-							'file_name'			=> "",
-							'orig_name'			=> "",
-							'file_type'			=> "",
-							'file_size'			=> "",
-							'file_ext'			=> "",
-							'upload_path'		=> "",
-							'overwrite'			=> FALSE,
-							'encrypt_name'		=> FALSE,
-							'is_image'			=> FALSE,
-							'image_width'		=> '',
-							'image_height'		=> '',
-							'image_type'		=> '',
-							'image_size_str'	=> '',
-							'error_msg'			=> array(),
-							'mimes'				=> array(),
-							'remove_spaces'		=> TRUE,
-							'xss_clean'			=> FALSE,
-							'temp_prefix'		=> "temp_file_"
-						);
-
+		$defaults = array
+		(
+			'max_size'			=> 0,
+			'max_width'			=> 0,
+			'max_height'		=> 0,
+			'allowed_types'		=> '',
+			'file_temp'			=> '',
+			'file_name'			=> '',
+			'orig_name'			=> '',
+			'file_type'			=> '',
+			'file_size'			=> '',
+			'file_ext'			=> '',
+			'upload_path'		=> '',
+			'overwrite'			=> FALSE,
+			'encrypt_name'		=> FALSE,
+			'is_image'			=> FALSE,
+			'image_width'		=> '',
+			'image_height'		=> '',
+			'image_type'		=> '',
+			'image_size_str'	=> '',
+			'error_msg'			=> array(),
+			'mimes'				=> array(),
+			'remove_spaces'		=> TRUE,
+			'xss_clean'			=> FALSE,
+			'temp_prefix'		=> 'tmp_upload_'
+		);
 
 		foreach ($defaults as $key => $msg)
 		{
@@ -132,7 +132,7 @@ class Upload_Core {
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Perform a multple file upload
 	 *
@@ -140,30 +140,27 @@ class Upload_Core {
 	 * @param array
 	 * @return bool
 	 */
-	
-	
-	public function do_mupload($field_set) {
-		if( ! is_array($field_set)) 
+
+
+	public function do_mupload($field_set)
+	{
+		if ( ! is_array($field_set) OR empty($field_set))
 		{
-			$this->set_error('field_set_not_array');
-			return FALSE;
+			throw new Kohana_Exception('field_set_empty');
 		}
-		if(empty($field_set)) 
-		{
-			$this->set_error('field_set_empty');
-		}
+
 		$return = TRUE;
-		foreach($field_set as $nice_name => $userfile) 
+		foreach($field_set as $nice_name => $userfile)
 		{
-			if( ! $this->do_upload($userfile, $nice_name)) 
+			if( ! $this->do_upload($userfile, $nice_name))
 			{
 				$return = FALSE;
 			}
 		}
+
 		return $return;
-		
 	}
-	
+
 	/**
 	 * Perform the file upload
 	 *
@@ -228,7 +225,7 @@ class Upload_Core {
 
 		// Is the file size within the allowed maximum?
 		if ( ! $this->is_allowed_filesize())
-		{	
+		{
 			$this->set_error('invalid_filesize', $nice_name, $this->max_size.'KBytes');
 			return FALSE;
 		}
@@ -629,27 +626,19 @@ class Upload_Core {
 	 */
 	public function validate_upload_path()
 	{
-		if ($this->upload_path == '')
-		{
-			$this->set_error('no_filepath');
-			return FALSE;
-		}
-
 		if (function_exists('realpath') AND @realpath($this->upload_path) !== FALSE)
 		{
 			$this->upload_path = str_replace("\\", "/", realpath($this->upload_path));
 		}
 
-		if ( ! @is_dir($this->upload_path))
+		if ($this->upload_path == '' OR ! @is_dir($this->upload_path))
 		{
-			$this->set_error('no_filepath');
-			return FALSE;
+			throw new Kohana_Exception('upload.no_filepath');
 		}
 
 		if ( ! is_writable($this->upload_path))
 		{
-			$this->set_error('not_writable');
-			return FALSE;
+			throw new Kohana_Exception('upload.not_writable', $this->upload_path);
 		}
 
 		$this->upload_path = rtrim($this->upload_path, '/').'/';

@@ -432,7 +432,7 @@ class Input_Core {
 	 * @param	string
 	 * @return	string
 	 */
-	public function xss_clean($str, $charset = 'ISO-8859-1')
+	public function xss_clean($str, $charset = 'UTF-8')
 	{
 		/*
 		 * Remove Null Characters
@@ -619,7 +619,6 @@ class Input_Core {
 		{
 			$str = preg_replace('#'.$key.'#i', $val, $str);
 		}
-
 
 		Log::add('debug', 'XSS Filtering completed');
 		return $str;
