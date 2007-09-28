@@ -4,7 +4,7 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>Application Runtime Error</title>
+<title>Page Not Found</title>
 
 <style type="text/css">
 /* <![CDATA[ */
