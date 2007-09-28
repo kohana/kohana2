@@ -99,7 +99,7 @@ class FTP_Core {
 		{
 			if ($this->debug == TRUE)
 			{
-				$this->error('ftp_unable_to_connect');
+				$this->error('unable_to_connect');
 			}
 			return FALSE;
 		}
@@ -108,7 +108,7 @@ class FTP_Core {
 		{
 			if ($this->debug == TRUE)
 			{
-				$this->error('ftp_unable_to_login');
+				$this->error('unable_to_login');
 			}
 			return FALSE;
 		}
@@ -149,7 +149,7 @@ class FTP_Core {
 		{
 			if ($this->debug == TRUE)
 			{
-				$this->error('ftp_no_connection');
+				$this->error('no_connection');
 			}
 			return FALSE;
 		}
@@ -186,7 +186,7 @@ class FTP_Core {
 		{
 			if ($this->debug == TRUE AND $supress_debug == FALSE)
 			{
-				$this->error('ftp_unable_to_changedir');
+				$this->error('unable_to_changedir');
 			}
 			return FALSE;
 		}
@@ -216,7 +216,7 @@ class FTP_Core {
 		{
 			if ($this->debug == TRUE)
 			{
-				$this->error('ftp_unable_to_makdir');
+				$this->error('unable_to_makdir');
 			}
 			return FALSE;
 		}
@@ -250,7 +250,7 @@ class FTP_Core {
 
 		if ( ! file_exists($locpath))
 		{
-			$this->error('ftp_no_source_file');
+			$this->error('no_source_file');
 			return FALSE;
 		}
 
@@ -270,7 +270,7 @@ class FTP_Core {
 		{
 			if ($this->debug == TRUE)
 			{
-				$this->error('ftp_unable_to_upload');
+				$this->error('unable_to_upload');
 			}
 			return FALSE;
 		}
@@ -308,7 +308,7 @@ class FTP_Core {
 		{
 			if ($this->debug == TRUE)
 			{
-				$msg = ($move == FALSE) ? 'ftp_unable_to_remame' : 'ftp_unable_to_move';
+				$msg = ($move == FALSE) ? 'unable_to_remame' : 'unable_to_move';
 
 				$this->error($msg);
 			}
@@ -355,7 +355,7 @@ class FTP_Core {
 		{
 			if ($this->debug == TRUE)
 			{
-				$this->error('ftp_unable_to_delete');
+				$this->error('unable_to_delete');
 			}
 			return FALSE;
 		}
@@ -404,7 +404,7 @@ class FTP_Core {
 		{
 			if ($this->debug == TRUE)
 			{
-				$this->error('ftp_unable_to_delete');
+				$this->error('unable_to_delete');
 			}
 			return FALSE;
 		}
@@ -430,11 +430,11 @@ class FTP_Core {
 		}
 
 		// Permissions can only be set when running PHP 5
-		if ( ! function_exists('ftp_chmod'))
+		if ( ! function_exists('chmod'))
 		{
 			if ($this->debug == TRUE)
 			{
-				$this->error('ftp_unable_to_chmod');
+				$this->error('unable_to_chmod');
 			}
 			return FALSE;
 		}
@@ -445,7 +445,7 @@ class FTP_Core {
 		{
 			if ($this->debug == TRUE)
 			{
-				$this->error('ftp_unable_to_chmod');
+				$this->error('unable_to_chmod');
 			}
 			return FALSE;
 		}
