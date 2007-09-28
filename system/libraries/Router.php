@@ -229,7 +229,7 @@ class Router_Core {
 
 		if (self::$controller != TRUE)
 		{
-			throw new Kohana_Exception('core.no_controller', $controller);
+			Kohana::show_404();
 		}
 	}
 
