@@ -106,10 +106,7 @@ try
 	}
 	else
 	{
-		/**
-		 * @todo This needs to have an i18n error
-		 */
-		trigger_error('404: Page not found');
+		$controller->show_404();
 	}
 	if (count(Router::$arguments) > 0)
 	{
