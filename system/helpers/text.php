@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
 class text {
-	
+
 	/**
 	 * Word limiter
 	 *
@@ -14,7 +14,7 @@ class text {
 	public static function limit_words($str, $limit = 100, $end_char = '&#8230;')
 	{
 		$limit = (int) $limit;
-		
+
 		if (trim($str) == '')
 			return $str;
 
@@ -30,7 +30,7 @@ class text {
 
 		return rtrim($matches[0]).$end_char;
 	}
-	
+
 	/**
 	 * Character limiter
 	 *
@@ -48,13 +48,13 @@ class text {
 
 		if (trim($str) == '' OR utf8::strlen($str) <= $limit)
 			return $str;
-		
+
 		if ($limit <= 0)
 			return $end_char;
-		
+
 		if ( ! $preserve_words)
 			return rtrim(utf8::substr($str, 0, $limit)).$end_char;
-		
+
 		preg_match('/^.{'.($limit - 1).'}\S*/us', $str, $matches);
 
 		if (strlen($matches[0]) == strlen($str))
@@ -64,28 +64,28 @@ class text {
 
 		return rtrim($matches[0]).$end_char;
 	}
-	
+
 	/**
 	 * Alternator
 	 *
 	 * @access	public
 	 * @param	string (as many parameters as needed)
 	 * @return	string
-	 */		
+	 */
 	public static function alternate()
 	{
-		static $i;	
+		static $i;
 
 		if (func_num_args() == 0)
 		{
 			$i = 0;
 			return '';
 		}
-		
+
 		$args = func_get_args();
 		return $args[($i++ % count($args))];
 	}
-	
+
 	/**
 	 * Random string generator
 	 *
@@ -128,7 +128,12 @@ class text {
 
 		return $str;
 	}
-	
+
+	public static function reduce_slashes($str)
+	{
+		return preg_replace('#(?<!:)//+#', '/', $str);
+	}
+
 	/**
 	 * Word censor
 	 *
