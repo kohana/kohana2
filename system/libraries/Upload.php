@@ -145,12 +145,12 @@ class Upload_Core {
 	public function do_mupload($field_set) {
 		if( ! is_array($field_set)) 
 		{
-			$this->set_error("upload_field_set_not_array");
+			$this->set_error('upload_field_set_not_array');
 			return FALSE;
 		}
 		if(empty($field_set)) 
 		{
-			$this->set_error("upload_filed_set_empty");
+			$this->set_error('upload_field_set_empty');
 		}
 		$return = TRUE;
 		foreach($field_set as $nice_name => $userfile) 
