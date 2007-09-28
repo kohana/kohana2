@@ -33,7 +33,7 @@
  * @author		Rick Ellis
  * @link		http://kohanaphp.com/user_guide/libraries/user_agent.html
  */
-class Core_User_agent {
+class User_Agent_Core {
 
 	var $agent		= NULL;
 
@@ -91,39 +91,39 @@ class Core_User_agent {
 	 */
 	private function _load_agent_file()
 	{
-		if (($abs_resource_path = find_resource('user_agents'.EXT,'config')) !== FALSE)
-			include($abs_resource_path);
-		else
+		$config = Config::item('user_agents');
+		
+		if (empty($config))
 			return FALSE;
 
 
 		$return = FALSE;
 
-		if (isset($platforms))
+		if (isset($config['platforms']))
 		{
-			$this->platforms = $platforms;
-			unset($platforms);
+			$this->platforms = $config['platforms'];
+			unset($config['platforms']);
 			$return = TRUE;
 		}
 
-		if (isset($browsers))
+		if (isset($config['browsers']))
 		{
-			$this->browsers = $browsers;
-			unset($browsers);
+			$this->browsers = $config['browsers'];
+			unset($config['browsers']);
 			$return = TRUE;
 		}
 
-		if (isset($mobiles))
+		if (isset($config['browsers']))
 		{
-			$this->mobiles = $mobiles;
-			unset($mobiles);
+			$this->mobiles = $config['mobiles'];
+			unset($config['mobiles']);
 			$return = TRUE;
 		}
 
-		if (isset($robots))
+		if (isset($config['robots']))
 		{
-			$this->robots = $robots;
-			unset($robots);
+			$this->robots = $config['robots'];
+			unset($config['robots']);
 			$return = TRUE;
 		}
 
