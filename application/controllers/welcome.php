@@ -4,14 +4,12 @@ class Welcome_Controller extends Controller {
 
 	function index()
 	{
-		print_r(date::hours(1, TRUE)); die;
-		
+		//print_r(date::hours(1, TRUE)); die
 		
 		foreach(get_class_methods(__CLASS__) as $method)
 		{
 			if ( ! preg_match('/_example$/', $method)) continue;
-
-			echo html::anchor('welcome/'.$method, $method)."<br/>\n";
+				echo html::anchor('welcome/'.$method, $method)."<br/>\n";
 		}
 	}
 
@@ -103,6 +101,10 @@ class Welcome_Controller extends Controller {
 		echo '<hr />Extended style: '.$this->pagination->create_links('extended');
 		echo '<hr />PunBB style:    '.$this->pagination->create_links('punbb');
 		echo "done in {execution_time} seconds";
+	}
+	function user_agent_example() {
+		$this->load->library('user_agent');
+		echo $this->user_agent;		
 	}
 
 }

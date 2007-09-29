@@ -33,13 +33,13 @@
  */
 class FTP_Core {
 
-	protected $hostname	= '';
-	protected $username	= '';
-	protected $password	= '';
-	protected $port		= 21;
-	protected $passive	= TRUE;
-	protected $debug		= FALSE;
-	protected $conn_id	= FALSE;
+	private $hostname	= '';
+	private $username	= '';
+	private $password	= '';
+	private $port		= 21;
+	private $passive	= TRUE;
+	private $debug		= FALSE;
+	private $conn_id	= FALSE;
 
 	/**
 	 * Constructor - Sets Preferences
@@ -127,10 +127,10 @@ class FTP_Core {
 	/**
 	 * FTP Login
 	 *
-	 * @access	protected
+	 * @access	private
 	 * @return	bool
 	 */
-	protected function login()
+	private function login()
 	{
 		return @ftp_login($this->conn_id, $this->username, $this->password);
 	}
@@ -140,10 +140,10 @@ class FTP_Core {
 	/**
 	 * Validates the connection ID
 	 *
-	 * @access	protected
+	 * @access	private
 	 * @return	bool
 	 */
-	protected function is_conn()
+	private function is_conn()
 	{
 		if ( ! is_resource($this->conn_id))
 		{
@@ -539,11 +539,11 @@ class FTP_Core {
 	/**
 	 * Extract the file extension
 	 *
-	 * @access	protected
+	 * @access	private
 	 * @param	string
 	 * @return	string
 	 */
-	protected function get_extension($filename)
+	private function get_extension($filename)
 	{
 		if (strpos($filename, '.') === FALSE)
 		{
@@ -560,11 +560,11 @@ class FTP_Core {
 	/**
 	 * Set the upload type
 	 *
-	 * @access	protected
+	 * @access	private
 	 * @param	string
 	 * @return	string
 	 */
-	protected function set_type($ext)
+	private function set_type($ext)
 	{
 		$text_types = array(
 							'txt',
@@ -612,16 +612,14 @@ class FTP_Core {
 	/**
 	 * Display error message
 	 *
-	 * @access	protected
+	 * @access	private
 	 * @param	string
 	 * @return	bool
 	 */
-	protected function error($msg)
+	private function error($msg)
 	{
 		throw new Kohana_Exception('ftp.'.$msg);
 	}
 
 
-}
-// END FTP Class
-?>
+} // End FTP Class
