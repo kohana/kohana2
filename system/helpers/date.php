@@ -75,4 +75,55 @@ class date {
 		return $vals;
 	}
 
+	/**
+	 * Returns time difference between two timestamps
+	 *
+	 * @access	public
+	 * @param	integer
+	 * @param	integer
+	 * @return	array
+	 */
+	public static function timespan($time1, $time2 = FALSE)
+	{
+		// Calculate timespan (in seconds)
+		$time1 = (int) max(0, $time1);
+		$time2 = (int) ($time2 === FALSE) ? time() : max(0, $time2);
+		$timespan = abs($time1 - $time2);
+		
+		// Years ago
+		$year = 60 * 60 * 24 * 365;
+		$timediff['years'] = (int) floor($timespan / $year);
+		$timespan -= $timediff['years'] * $year;
+		
+		// Months ago
+		$month = 60 * 60 * 24 * 30;
+		$timediff['months'] = (int) floor($timespan / $month);
+		$timespan -= $timediff['months'] * $month;
+		
+		// Weeks ago
+		$week = 60 * 60 * 24 * 7;
+		$timediff['weeks'] = (int) floor($timespan / $week);
+		$timespan -= $timediff['weeks'] * $week;
+		
+		// Days ago
+		$day = 60 * 60 * 24;
+		$timediff['days'] = (int) floor($timespan / $day);
+		$timespan -= $timediff['days'] * $day;
+		
+		// Hours ago
+		$hour = 60 * 60;
+		$timediff['hours'] = (int) floor($timespan / $hour);
+		$timespan -= $timediff['hours'] * $hour;
+		
+		// Minutes ago
+		$minute = 60;
+		$timediff['minutes'] = (int) floor($timespan / $minute);
+		$timespan -= $timediff['minutes'] * $minute;
+		
+		// Seconds ago
+		$timediff['seconds'] = $timespan;
+		
+		return $timediff;
+	}
+
 } // End date Class
