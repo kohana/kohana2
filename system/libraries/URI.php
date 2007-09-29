@@ -97,10 +97,14 @@ class URI_Core extends Router {
 	 * Returns the last URI segment
 	 *
 	 * @access	public
+	 * @param	mixed
 	 * @return	string
 	 */
-	public function last_segment()
+	public function last_segment($default = FALSE)
 	{
+		if ($this->total_segments() < 1)
+			return $default;
+		
 		return self::$segments[$this->total_segments() - 1];
 	}
 
