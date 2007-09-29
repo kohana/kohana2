@@ -81,48 +81,82 @@ class date {
 	 * @access	public
 	 * @param	integer
 	 * @param	integer
-	 * @return	array
+	 * @param	string
+	 * @return	mixed
 	 */
-	public static function timespan($time1, $time2 = FALSE)
+	public static function timespan($time1, $time2 = FALSE, $output = 'years,months,weeks,days,hours,minutes,seconds')
 	{
 		// Calculate timespan (in seconds)
 		$time1 = (int) max(0, $time1);
 		$time2 = (int) ($time2 === FALSE) ? time() : max(0, $time2);
 		$timespan = abs($time1 - $time2);
 		
+		// Array with the output formats
+		$output = preg_split('/[\s,]+/', strtolower($output));
+		
 		// Years ago
-		$year = 60 * 60 * 24 * 365;
-		$timediff['years'] = (int) floor($timespan / $year);
-		$timespan -= $timediff['years'] * $year;
+		if (in_array('years', $output))
+		{
+			$year = 60 * 60 * 24 * 365;
+			$timediff['years'] = (int) floor($timespan / $year);
+			$timespan -= $timediff['years'] * $year;
+		}
 		
 		// Months ago
-		$month = 60 * 60 * 24 * 30;
-		$timediff['months'] = (int) floor($timespan / $month);
-		$timespan -= $timediff['months'] * $month;
-		
+		if (in_array('months', $output))
+		{
+			$month = 60 * 60 * 24 * 30;
+			$timediff['months'] = (int) floor($timespan / $month);
+			$timespan -= $timediff['months'] * $month;
+		}
+			
 		// Weeks ago
-		$week = 60 * 60 * 24 * 7;
-		$timediff['weeks'] = (int) floor($timespan / $week);
-		$timespan -= $timediff['weeks'] * $week;
-		
+		if (in_array('weeks', $output))
+		{
+			$week = 60 * 60 * 24 * 7;
+			$timediff['weeks'] = (int) floor($timespan / $week);
+			$timespan -= $timediff['weeks'] * $week;
+		}
+			
 		// Days ago
-		$day = 60 * 60 * 24;
-		$timediff['days'] = (int) floor($timespan / $day);
-		$timespan -= $timediff['days'] * $day;
-		
+		if (in_array('days', $output))
+		{
+			$day = 60 * 60 * 24;
+			$timediff['days'] = (int) floor($timespan / $day);
+			$timespan -= $timediff['days'] * $day;
+		}
+			
 		// Hours ago
-		$hour = 60 * 60;
-		$timediff['hours'] = (int) floor($timespan / $hour);
-		$timespan -= $timediff['hours'] * $hour;
-		
+		if (in_array('hours', $output))
+		{
+			$hour = 60 * 60;
+			$timediff['hours'] = (int) floor($timespan / $hour);
+			$timespan -= $timediff['hours'] * $hour;
+		}
+			
 		// Minutes ago
-		$minute = 60;
-		$timediff['minutes'] = (int) floor($timespan / $minute);
-		$timespan -= $timediff['minutes'] * $minute;
+		if (in_array('minutes', $output))
+		{
+			$minute = 60;
+			$timediff['minutes'] = (int) floor($timespan / $minute);
+			$timespan -= $timediff['minutes'] * $minute;
+		}
 		
 		// Seconds ago
-		$timediff['seconds'] = $timespan;
+		if (in_array('seconds', $output))
+		{
+			$timediff['seconds'] = $timespan;
+		}
 		
+		// Invalid output formats string
+		if ( ! isset($timediff))
+			return FALSE;
+		
+		// If only one output format was asked, don't put it in an array
+		if (count($timediff) == 1)
+			return current($timediff);
+		
+		// Return array
 		return $timediff;
 	}
 
