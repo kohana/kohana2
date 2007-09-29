@@ -97,7 +97,6 @@ class User_Agent_Core {
 		if (empty($config))
 			return FALSE;
 
-
 		$return = FALSE;
 
 		if (isset($config['platforms']))
@@ -166,7 +165,7 @@ class User_Agent_Core {
 		{
 			foreach ($this->platforms as $key => $val)
 			{
-				if (preg_match('|'.preg_quote($key).'|i', $this->agent))
+				if (stristr($this->agent, $key) !== FALSE)
 				{
 					$this->platform = $val;
 					return TRUE;
@@ -190,7 +189,7 @@ class User_Agent_Core {
 		{
 			foreach ($this->browsers as $key => $val)
 			{
-				if (preg_match('|'.preg_quote($key).'.*?([0-9.]+)|i', $this->agent, $match))
+				if (preg_match('|'.preg_quote($key).'[^0-9.]*([0-9.]+)|i', $this->agent, $match))
 				{
 					$this->is_browser = TRUE;
 					$this->version = $match[1];
@@ -217,7 +216,7 @@ class User_Agent_Core {
 		{
 			foreach ($this->robots as $key => $val)
 			{
-				if (preg_match('|'.preg_quote($key).'|i', $this->agent))
+				if (stristr($this->agent, $key) !== FALSE)
 				{
 					$this->is_robot = TRUE;
 					$this->robot = $val;
@@ -265,7 +264,7 @@ class User_Agent_Core {
 	{
 		if ((count($this->languages) == 0) AND isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) AND $_SERVER['HTTP_ACCEPT_LANGUAGE'] != '')
 		{
-			$languages = preg_replace('/(;q=.+)/i', '', trim($_SERVER['HTTP_ACCEPT_LANGUAGE']));
+			$languages = preg_replace('/;q=.+/i', '', trim($_SERVER['HTTP_ACCEPT_LANGUAGE']));
 
 			$this->languages = explode(',', $languages);
 		}
@@ -288,7 +287,7 @@ class User_Agent_Core {
 	{
 		if ((count($this->charsets) == 0) AND isset($_SERVER['HTTP_ACCEPT_CHARSET']) AND $_SERVER['HTTP_ACCEPT_CHARSET'] != '')
 		{
-			$charsets = preg_replace('/(;q=.+)/i', '', trim($_SERVER['HTTP_ACCEPT_CHARSET']));
+			$charsets = preg_replace('/;q=.+/i', '', trim($_SERVER['HTTP_ACCEPT_CHARSET']));
 
 			$this->charsets = explode(',', $charsets);
 		}
@@ -515,4 +514,4 @@ class User_Agent_Core {
 		return $this->agent;
 	}
 	
-} //End User_agent class
+} // End User_agent class
