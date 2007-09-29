@@ -102,9 +102,16 @@ class Welcome_Controller extends Controller {
 		echo '<hr />PunBB style:    '.$this->pagination->create_links('punbb');
 		echo "done in {execution_time} seconds";
 	}
-	function user_agent_example() {
+	function user_agent_example()
+	{
 		$this->load->library('user_agent');
-		echo $this->user_agent;		
+		echo $this->user_agent;
 	}
+	function calendar_example()
+	{
+		$this->load->library('calendar');
+		echo $this->calendar->generate();
+	}
+	
 
 }
