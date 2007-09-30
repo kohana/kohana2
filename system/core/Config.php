@@ -40,6 +40,7 @@ final class Config {
 	 * @access  public
 	 * @param   string
 	 * @param   boolean
+	 * @param   boolean
 	 * @return  mixed
 	 */
 	public static function item($key, $slash = FALSE, $required = TRUE)
@@ -74,7 +75,7 @@ final class Config {
 		}
 
 		// Find the requested key
-		$key  = explode('.', strtolower($key));
+		$key  = explode('.', strtolower($key), 2);
 		// Find type and reset the key
 		$type = $key[0];
 		$key  = isset($key[1]) ? $key[1] : FALSE;
@@ -128,7 +129,6 @@ final class Config {
 	 */
 	public static function load($name, $required = TRUE)
 	{
-		$required = (bool) $required;
 		$configuration = array();
 
 		foreach(Kohana::find_file('config', $name, $required) as $filename)
