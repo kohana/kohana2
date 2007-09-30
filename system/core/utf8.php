@@ -860,12 +860,10 @@ final class utf8 {
 			$str = self::substr($str, $offset, $length);
 		}
 
-		/**
-		 * Escape these characters:  - . : / \ [ ] ^
-		 * The . and : are escaped to prevent possible warnings about POSIX regex elements
-		 */
-		$mask = preg_replace('/([-.:\/\\\[\]^])/', '\\\$1', $mask);
-		preg_match('/^['.$mask.']+/u', $str, $matches);
+		// Escape these characters:  - [ ] . : \ ^ /
+		// The . and : are escaped to prevent possible warnings about POSIX regex elements
+		$mask = preg_replace('#[-[\].:\\\\^/]#', '\\\\$0', $mask);
+		preg_match('/^[^'.$mask.']+/u', $str, $matches);
 
 		return (isset($matches[0])) ? self::strlen($matches[0]) : 0;
 	}
@@ -900,9 +898,9 @@ final class utf8 {
 			$str = self::substr($str, $offset, $length);
 		}
 
-		// Escape these characters:  - . : / \ [ ] ^
+		// Escape these characters:  - [ ] . : \ ^ /
 		// The . and : are escaped to prevent possible warnings about POSIX regex elements
-		$mask = preg_replace('/([-.:\/\\\[\]^])/', '\\\$1', $mask);
+		$mask = preg_replace('#[-[\].:\\\\^/]#', '\\\\$0', $mask);
 		preg_match('/^[^'.$mask.']+/u', $str, $matches);
 
 		return (isset($matches[0])) ? self::strlen($matches[0]) : 0;
