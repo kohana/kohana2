@@ -28,11 +28,10 @@ class Router_Core {
 		// Supported methods: CLI, GET, PATH_INFO, ORIG_PATH_INFO, PHP_SELF
 		if (PHP_SAPI === 'cli')
 		{
-			global $argv;
 			// Command line requires a bit of hacking
-			if (isset($argv[1]))
+			if (isset($_SERVER['argv'][1]))
 			{
-				self::$segments = $argv[1];
+				self::$segments = $_SERVER['argv'][1];
 
 				// Remove GET string from segments
 				if (($query = strrpos(self::$segments, '?')) !== FALSE)
@@ -105,7 +104,7 @@ class Router_Core {
 		}
 
 		// Remove extra slashes from the segments that could cause fucked up routing
-		self::$segments = preg_replace('!//+!u', '/', self::$segments);
+		self::$segments = preg_replace('!//+!', '/', self::$segments);
 
 		// At this point, set the segments, rsegments, and current URI
 		// In many cases, all of these variables will match

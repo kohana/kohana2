@@ -72,8 +72,6 @@ class Upload_Core {
 		Log::add('debug', 'Upload Class Initialized');
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Initialize preferences
 	 *
@@ -131,17 +129,13 @@ class Upload_Core {
 		}
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Perform a multple file upload
 	 *
 	 * @access public
 	 * @param array
-	 * @return bool
+	 * @return boolean
 	 */
-
-
 	public function do_mupload($field_set)
 	{
 		if ( ! is_array($field_set) OR empty($field_set))
@@ -165,7 +159,7 @@ class Upload_Core {
 	 * Perform the file upload
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function do_upload($field = 'userfile', $nice_name = 'userfile')
 	{
@@ -190,14 +184,18 @@ class Upload_Core {
 
 			switch($error)
 			{
-				case 1  :   $this->set_error('file_exceeds_limit', $nice_name);
-					break;
-				case 3  :   $this->set_error('file_partial', $nice_name);
-					break;
-				case 4  :   $this->set_error('no_file_selected', $nice_name);
-					break;
-				default :   $this->set_error('no_file_selected', $nice_name);
-					break;
+				case 1:
+					$this->set_error('file_exceeds_limit', $nice_name);
+				break;
+				case 3:
+					$this->set_error('file_partial', $nice_name);
+				break;
+				case 4:
+					$this->set_error('no_file_selected', $nice_name);
+				break;
+				default:
+					$this->set_error('no_file_selected', $nice_name);
+				break;
 			}
 
 			return FALSE;
@@ -207,13 +205,13 @@ class Upload_Core {
 		$this->file_temp = $_FILES[$field]['tmp_name'];
 		$this->file_name = $_FILES[$field]['name'];
 		$this->file_size = $_FILES[$field]['size'];
-		$this->file_type = strtolower(preg_replace('/^(.+?);.*$/', '$1', $_FILES[$field]['type']));
+		$this->file_type = strtolower(preg_replace('/;.*$/', '', $_FILES[$field]['type']));
 		$this->file_ext	 = $this->get_extension($_FILES[$field]['name']);
 
 		// Convert the file size to kilobytes
 		if ($this->file_size > 0)
 		{
-			$this->file_size = round($this->file_size/1024, 2);
+			$this->file_size = round($this->file_size / 1024, 2);
 		}
 
 		// Is the file type allowed to be uploaded?
@@ -296,14 +294,12 @@ class Upload_Core {
 		 * Set the finalized image dimensions
 		 * This sets the image width/height (assuming the
 		 * file was an image).  We use this information
-		 * in the "data" function.
+		 * in the 'data' function.
 		 */
 		$this->set_image_properties($this->upload_path.$this->file_name);
 
 		return TRUE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Finalized Data Array
@@ -333,8 +329,6 @@ class Upload_Core {
 					);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Set Upload Path
 	 *
@@ -346,8 +340,6 @@ class Upload_Core {
 	{
 		$this->upload_path = $path;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Set the file name
@@ -397,8 +389,6 @@ class Upload_Core {
 		}
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Set Maximum File Size
 	 *
@@ -410,8 +400,6 @@ class Upload_Core {
 	{
 		$this->max_size = abs((int) $n);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Set Maximum Image Width
@@ -425,8 +413,6 @@ class Upload_Core {
 		$this->max_width = abs((int) $n);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Set Maximum Image Height
 	 *
@@ -439,8 +425,6 @@ class Upload_Core {
 		$this->max_height = abs((int) $n);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Set Allowed File Types
 	 *
@@ -450,10 +434,8 @@ class Upload_Core {
 	 */
 	protected function set_allowed_types($types)
 	{
-		$this->allowed_types = explode('|', $types);
+		$this->allowed_types = preg_split('/[|,]+/', $types);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Set Image Properties
@@ -467,9 +449,7 @@ class Upload_Core {
 	protected function set_image_properties($path = '')
 	{
 		if ( ! $this->is_image())
-		{
 			return;
-		}
 
 		if (function_exists('getimagesize'))
 		{
@@ -477,15 +457,13 @@ class Upload_Core {
 			{
 				$types = array(1 => 'gif', 2 => 'jpeg', 3 => 'png');
 
-				$this->image_width		= $D['0'];
-				$this->image_height		= $D['1'];
-				$this->image_type		= ( ! isset($types[$D['2']])) ? 'unknown' : $types[$D['2']];
-				$this->image_size_str	= $D['3'];  // string containing height and width
+				$this->image_width		= $D[0];
+				$this->image_height		= $D[1];
+				$this->image_type		= ( ! isset($types[$D[2]])) ? 'unknown' : $types[$D[2]];
+				$this->image_size_str	= $D[3];  // string containing height and width
 			}
 		}
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Set XSS Clean
@@ -494,45 +472,40 @@ class Upload_Core {
 	 * will be run through the XSS filter.
 	 *
 	 * @access	public
-	 * @param	bool
+	 * @param	boolean
 	 * @return	void
 	 */
 	protected function set_xss_clean($flag = FALSE)
 	{
-		$this->xss_clean = ($flag == TRUE) ? TRUE : FALSE;
+		$this->xss_clean = (bool) $flag;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Validate the image
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	protected function is_image()
 	{
 		$img_mimes = array(
-							'image/gif',
-							'image/jpg',
-							'image/jpe',
-							'image/jpeg',
-							'image/pjpeg',
-							'image/png',
-							'image/x-png'
-						   );
+			'image/gif',
+			'image/jpg',
+			'image/jpe',
+			'image/jpeg',
+			'image/pjpeg',
+			'image/png',
+			'image/x-png'
+		);
 
-
-		return (in_array($this->file_type, $img_mimes, TRUE)) ? TRUE : FALSE;
+		return (in_array($this->file_type, $img_mimes, TRUE));
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Verify that the filetype is allowed
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function is_allowed_filetype()
 	{
@@ -549,71 +522,50 @@ class Upload_Core {
 			if (is_array($mime))
 			{
 				if (in_array($this->file_type, $mime, TRUE))
-				{
 					return TRUE;
-				}
 			}
-			else
-			{
-				if ($mime == $this->file_type)
-				{
-					return TRUE;
-				}
-			}
+			elseif ($mime == $this->file_type)
+				return TRUE;
 		}
 
 		return FALSE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Verify that the file is within the allowed size
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function is_allowed_filesize()
 	{
 		return ($this->max_size == 0  OR  $this->file_size <= $this->max_size);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Verify that the image is within the allowed width/height
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function is_allowed_dimensions()
 	{
 		if ( ! $this->is_image())
-		{
 			return TRUE;
-		}
 
 		if (function_exists('getimagesize'))
 		{
 			$D = @getimagesize($this->file_temp);
 
-			if ($this->max_width > 0 AND $D['0'] > $this->max_width)
-			{
+			if ($this->max_width > 0 AND $D[0] > $this->max_width)
 				return FALSE;
-			}
 
-			if ($this->max_height > 0 AND $D['1'] > $this->max_height)
-			{
+			if ($this->max_height > 0 AND $D[1] > $this->max_height)
 				return FALSE;
-			}
-
-			return TRUE;
 		}
 
 		return TRUE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Validate Upload Path
@@ -622,13 +574,13 @@ class Upload_Core {
 	 *
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function validate_upload_path()
 	{
 		if (function_exists('realpath') AND @realpath($this->upload_path) !== FALSE)
 		{
-			$this->upload_path = str_replace("\\", "/", realpath($this->upload_path));
+			$this->upload_path = str_replace('\\', '/', realpath($this->upload_path));
 		}
 
 		if ($this->upload_path == '' OR ! @is_dir($this->upload_path))
@@ -645,8 +597,6 @@ class Upload_Core {
 		return TRUE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Extract the file extension
 	 *
@@ -660,8 +610,6 @@ class Upload_Core {
 		return '.'.end($x);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Clean the file name for security
 	 *
@@ -672,43 +620,38 @@ class Upload_Core {
 	public function clean_file_name($filename)
 	{
 		$bad = array(
-						"<!--",
-						"-->",
-						"'",
-						"<",
-						">",
-						'"',
-						'&',
-						'$',
-						'=',
-						';',
-						'?',
-						'/',
-						"%20",
-						"%22",
-						"%3c",		// <
-						"%253c", 	// <
-						"%3e", 		// >
-						"%0e", 		// >
-						"%28", 		// (
-						"%29", 		// )
-						"%2528", 	// (
-						"%26", 		// &
-						"%24", 		// $
-						"%3f", 		// ?
-						"%3b", 		// ;
-						"%3d"		// =
-					);
+			'<!--',
+			'-->',
+			'\'',
+			'<',
+			'>',
+			'"',
+			'&',
+			'$',
+			'=',
+			';',
+			'?',
+			'/',
+			'%20',
+			'%22',
+			'%3c',		// <
+			'%253c', 	// <
+			'%3e', 		// >
+			'%0e', 		// >
+			'%28', 		// (
+			'%29', 		// )
+			'%2528', 	// (
+			'%26', 		// &
+			'%24', 		// $
+			'%3f', 		// ?
+			'%3b', 		// ;
+			'%3d'		// =
+		);
 
-		foreach ($bad as $msg)
-		{
-			$filename = str_replace($msg, '', $filename);
-		}
+		$filename = str_replace($bad, '', $filename);
 
 		return $filename;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Runs the file through the XSS clean function
@@ -745,8 +688,6 @@ class Upload_Core {
 		fclose($fp);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Set an error message
 	 *
@@ -755,29 +696,29 @@ class Upload_Core {
 	 * @param	string
 	 * @return	void
 	 */
-	public function set_error($msg, $nice_name = null, $extra = null)
+	public function set_error($msg, $nice_name = NULL, $extra = NULL)
 	{
-		if ($nice_name !== null) {
+		if ($nice_name !== NULL)
+		{
 			$this->error_msg[] = Kohana::lang('upload.error_on_file', $nice_name);
 		}
+		
 		if (is_array($msg))
 		{
 			foreach ($msg as $msg)
 			{
-				$msg = ($extra === null) ? Kohana::lang('upload.'.$msg) : Kohana::lang('upload.'.$msg, $extra);
+				$msg = ($extra === NULL) ? Kohana::lang('upload.'.$msg) : Kohana::lang('upload.'.$msg, $extra);
 				$this->error_msg[] = $msg;
 				Log::add('error', $msg);
 			}
 		}
 		else
 		{
-			$msg = ($extra === null) ? Kohana::lang('upload.'.$msg) : Kohana::lang('upload.'.$msg, $extra);
+			$msg = ($extra === NULL) ? Kohana::lang('upload.'.$msg) : Kohana::lang('upload.'.$msg, $extra);
 			$this->error_msg[] = $msg;
 			Log::add('error', $msg);
 		}
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Display the error message
@@ -798,13 +739,11 @@ class Upload_Core {
 		return $str;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * List of Mime Types
 	 *
 	 * This is a list of mime types.  We use it to validate
-	 * the "allowed types" set by the developer
+	 * the 'allowed types' set by the developer
 	 *
 	 * @access	public
 	 * @param	string
@@ -820,6 +759,4 @@ class Upload_Core {
 		return ( ! isset($this->mimes[$mime])) ? FALSE : $this->mimes[$mime];
 	}
 
-}
-// END Upload Class
-?>
+} // End Upload Class

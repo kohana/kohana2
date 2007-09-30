@@ -38,11 +38,10 @@ class Kohana {
 	// Library registery, to prevent multiple loads of libraries
 	private static $libraries = array();
 
-	// Ouput buffering level
+	// Output buffering level
 	private static $buffer_level = 0;
 
 	// The final output that will displayed by Kohana
-	// This variable is protected, so that the controller can overload it
 	public static $output = '';
 
 	/**
@@ -130,7 +129,7 @@ class Kohana {
 		// Enable log writing if the log threshold is enabled
 		(Config::item('log.threshold') > 0) and Event::add('system.shutdown', array('Log', 'write'));
 
-		// Set shutdown handler to run the "system.shutdown" event
+		// Set shutdown handler to run the 'system.shutdown' event
 		register_shutdown_function(array('Event', 'run'), 'system.shutdown');
 
 		if (function_exists('date_default_timezone_set'))
@@ -160,7 +159,6 @@ class Kohana {
 	{
 		if (self::$instance == FALSE)
 		{
-			//
 			require (Router::$directory.Router::$controller.EXT);
 
 			// Set controller class name
@@ -244,7 +242,7 @@ class Kohana {
 
 		// Remove the DOCROOT from the path, as a security precaution
 		$file = str_replace('\\', '/', realpath($file));
-		$file = preg_replace('#^'.preg_quote(DOCROOT).'#', '', $file);
+		$file = preg_replace('|^'.preg_quote(DOCROOT).'|', '', $file);
 
 		// Log the error
 		if (Config::item('log.threshold') >= $level)
@@ -300,9 +298,9 @@ class Kohana {
 	{
 		if (class_exists($class)) return true;
 
-		preg_match('/_(.+)$/', $class, $type);
+		preg_match('/(?<=_).+$/', $class, $type);
 
-		$type = isset($type[1]) ? $type[1] : FALSE;
+		$type = isset($type[0]) ? $type[0] : FALSE;
 
 		switch($type)
 		{
@@ -358,6 +356,7 @@ class Kohana {
 	 *
 	 * @access public
 	 * @param  string
+	 * @param  array
 	 * @return object
 	 */
 	public static function load_class($class, $configuration = array())
@@ -388,6 +387,7 @@ class Kohana {
 	 * @access public
 	 * @param  string
 	 * @param  string
+	 * @param  boolean
 	 * @param  boolean
 	 * @return mixed
 	 */
@@ -422,7 +422,7 @@ class Kohana {
 			// Users can define their own extensions, .css, etc
 			$ext = ($ext == FALSE) ? EXT : '';
 
-			// Find the file and return it's filename
+			// Find the file and return its filename
 			foreach (Config::include_paths() as $path)
 			{
 				if (is_file($path.$search.$ext))

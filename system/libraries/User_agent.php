@@ -55,7 +55,6 @@ class User_Agent_Core {
 	private $mobile		= '';
 	private $robot		= '';
 
-
 	/**
 	 * Constructor
 	 *
@@ -82,13 +81,11 @@ class User_Agent_Core {
 		Log::add('debug', 'Table Class Initialized');
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Compile the User Agent Data
 	 *
 	 * @access	private
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function load_agent_file()
 	{
@@ -130,13 +127,11 @@ class User_Agent_Core {
 		return $return;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Compile the User Agent Data
 	 *
 	 * @access	private
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function compile_data()
 	{
@@ -145,13 +140,9 @@ class User_Agent_Core {
 		foreach (array('set_browser', 'set_robot', 'set_mobile') as $function)
 		{
 			if ($this->$function() === TRUE)
-			{
 				break;
-			}
 		}
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Set the Platform
@@ -172,16 +163,15 @@ class User_Agent_Core {
 				}
 			}
 		}
+		
 		$this->platform = 'Unknown Platform';
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Set the Browser
 	 *
 	 * @access	private
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function set_browser()
 	{
@@ -199,16 +189,15 @@ class User_Agent_Core {
 				}
 			}
 		}
+		
 		return FALSE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Set the Robot
 	 *
 	 * @access	private
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function set_robot()
 	{
@@ -224,16 +213,15 @@ class User_Agent_Core {
 				}
 			}
 		}
+		
 		return FALSE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Set the Mobile Device
 	 *
 	 * @access	private
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function set_mobile()
 	{
@@ -251,8 +239,6 @@ class User_Agent_Core {
 		}
 		return FALSE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Set the accepted languages
@@ -275,8 +261,6 @@ class User_Agent_Core {
 		}
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Set the accepted character sets
 	 *
@@ -298,59 +282,49 @@ class User_Agent_Core {
 		}
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Is Browser
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function is_browser()
 	{
 		return $this->is_browser;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Is Robot
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function is_robot()
 	{
 		return $this->is_robot;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Is Mobile
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function is_mobile()
 	{
 		return $this->is_mobile;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Is this a referral from another site?
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function is_referral()
 	{
-		return ( ! isset($_SERVER['HTTP_REFERER']) OR $_SERVER['HTTP_REFERER'] == '') ? FALSE : TRUE;
+		return (isset($_SERVER['HTTP_REFERER']) OR $_SERVER['HTTP_REFERER'] == '');
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Agent String
@@ -363,8 +337,6 @@ class User_Agent_Core {
 		return $this->agent;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Get Platform
 	 *
@@ -375,8 +347,6 @@ class User_Agent_Core {
 	{
 		return $this->platform;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Get Browser Name
@@ -389,8 +359,6 @@ class User_Agent_Core {
 		return $this->browser;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Get the Browser Version
 	 *
@@ -402,8 +370,6 @@ class User_Agent_Core {
 		return $this->version;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Get The Robot Name
 	 *
@@ -414,7 +380,6 @@ class User_Agent_Core {
 	{
 		return $this->robot;
 	}
-	// --------------------------------------------------------------------
 
 	/**
 	 * Get the Mobile Device
@@ -427,20 +392,16 @@ class User_Agent_Core {
 		return $this->mobile;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Get the referrer
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	function referrer()
 	{
 		return ( ! isset($_SERVER['HTTP_REFERER']) OR $_SERVER['HTTP_REFERER'] == '') ? '' : trim($_SERVER['HTTP_REFERER']);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Get the accepted languages
@@ -458,8 +419,6 @@ class User_Agent_Core {
 		return $this->languages;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Get the accepted Character Sets
 	 *
@@ -476,33 +435,27 @@ class User_Agent_Core {
 		return $this->charsets;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Test for a particular language
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function accept_lang($lang = 'en')
 	{
-		return (in_array(strtolower($lang), $this->languages(), TRUE)) ? TRUE : FALSE;
+		return (in_array(strtolower($lang), $this->languages(), TRUE));
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Test for a particular character set
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function accept_charset($charset = 'utf-8')
 	{
-		return (in_array(strtolower($charset), $this->charsets(), TRUE)) ? TRUE : FALSE;
+		return (in_array(strtolower($charset), $this->charsets(), TRUE));
 	}
-	
-	// --------------------------------------------------------------------
 	
 	/**
 	 * Returns the full user agent string when the object is turned into a string.
@@ -514,4 +467,4 @@ class User_Agent_Core {
 		return $this->agent;
 	}
 	
-} // End User_agent class
+} // End User_agent Class

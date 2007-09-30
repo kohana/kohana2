@@ -262,10 +262,8 @@ class Session_Core {
 			$this->flash[$key] = 'new';
 			return TRUE;
 		}
-		else
-		{
-			return FALSE;
-		}
+
+		return FALSE;
 	}
 
 	// --------------------------------------------------------------------

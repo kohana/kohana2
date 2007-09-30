@@ -63,8 +63,6 @@ class Calendar_Core {
 		Log::add('debug', 'Calendar Class Initialized');
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Initialize the user preferences
 	 *
@@ -85,8 +83,6 @@ class Calendar_Core {
 		}
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Generate the calendar
 	 *
@@ -100,10 +96,10 @@ class Calendar_Core {
 	{
 		// Set and validate the supplied month/year
 		if ($year == '')
-			$year  = date("Y", $this->local_time);
+			$year  = date('Y', $this->local_time);
 
 		if ($month == '')
-			$month = date("m", $this->local_time);
+			$month = date('m', $this->local_time);
 
  		if (strlen($year) == 1)
 			$year = '200'.$year;
@@ -129,7 +125,7 @@ class Calendar_Core {
 		// Set the starting day number
 		$local_date = mktime(12, 0, 0, $month, 1, $year);
 		$date = getdate($local_date);
-		$day  = $start_day + 1 - $date["wday"];
+		$day  = $start_day + 1 - $date['wday'];
 
 		while ($day > 1)
 		{
@@ -138,9 +134,9 @@ class Calendar_Core {
 
 		// Set the current month/year/day
 		// We use this to determine the "today" date
-		$cur_year	= date("Y", $this->local_time);
-		$cur_month	= date("m", $this->local_time);
-		$cur_day	= date("j", $this->local_time);
+		$cur_year	= date('Y', $this->local_time);
+		$cur_month	= date('m', $this->local_time);
+		$cur_day	= date('j', $this->local_time);
 
 		$is_current_month = ($cur_year == $year AND $cur_month == $month) ? TRUE : FALSE;
 
@@ -155,7 +151,7 @@ class Calendar_Core {
 		$out .= $this->temp['heading_row_start'];
 		$out .= "\n";
 
-		// "previous" month link
+		// 'Previous' month link
 		if ($this->show_next_prev == TRUE)
 		{
 			// Add a trailing slash to the  URL
@@ -175,7 +171,7 @@ class Calendar_Core {
 		$out .= $this->temp['heading_title_cell'];
 		$out .= "\n";
 
-		// "next" month link
+		// 'Next' month link
 		if ($this->show_next_prev == TRUE)
 		{
 			$adjusted_date = $this->adjust_date($month + 1, $year);
@@ -193,9 +189,9 @@ class Calendar_Core {
 
 		$day_names = $this->get_day_names();
 
-		for ($i = 0; $i < 7; $i ++)
+		for ($i = 0; $i < 7; $i++)
 		{
-			$out .= str_replace('{week_day}', $day_names[($start_day + $i) %7], $this->temp['week_day_cell']);
+			$out .= str_replace('{week_day}', $day_names[($start_day + $i) % 7], $this->temp['week_day_cell']);
 		}
 
 		$out .= "\n";
@@ -249,8 +245,6 @@ class Calendar_Core {
 		return $out;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Get Month Name
 	 *
@@ -281,8 +275,6 @@ class Calendar_Core {
 
 		return $return;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Get Day Names
@@ -320,8 +312,6 @@ class Calendar_Core {
 
 		return $days;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Adjust Date
@@ -362,8 +352,6 @@ class Calendar_Core {
 		return $date;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Total days in a given month
 	 *
@@ -392,8 +380,6 @@ class Calendar_Core {
 
 		return $days_in_month[$month - 1];
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Set Default Template Data
@@ -430,8 +416,6 @@ class Calendar_Core {
 					);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Parse Template
 	 *
@@ -446,17 +430,15 @@ class Calendar_Core {
 		$this->temp = $this->default_template();
 
  		if ($this->template == '')
- 		{
  			return;
- 		}
 
 		$today = array('cal_cell_start_today', 'cal_cell_content_today', 'cal_cell_no_content_today', 'cal_cell_end_today');
 
 		foreach (array('table_open', 'table_close', 'heading_row_start', 'heading_previous_cell', 'heading_title_cell', 'heading_next_cell', 'heading_row_end', 'week_row_start', 'week_day_cell', 'week_row_end', 'cal_row_start', 'cal_cell_start', 'cal_cell_content', 'cal_cell_no_content',  'cal_cell_blank', 'cal_cell_end', 'cal_row_end', 'cal_cell_start_today', 'cal_cell_content_today', 'cal_cell_no_content_today', 'cal_cell_end_today') as $val)
 		{
-			if (preg_match('/\{'.$val.'\}(.*?)\{\/'.$val.'\}/si', $this->template, $match))
+			if (preg_match('#\{'.$val.'\}(.*?)\{/'.$val.'\}#si', $this->template, $match))
 			{
-				$this->temp[$val] = $match['1'];
+				$this->temp[$val] = $match[1];
 			}
 			else
 			{
@@ -468,4 +450,4 @@ class Calendar_Core {
 		}
  	}
 
-} // End Calendar class
+} // End Calendar Class
