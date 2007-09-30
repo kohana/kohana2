@@ -1063,7 +1063,7 @@ final class utf8 {
 			return ($charlist === NULL) ? ltrim($str) : ltrim($str, $charlist);
 		}
 
-		$charlist = preg_replace('/([-.:\/\\\[\]^])/', '\\\$1', $charlist);
+		$charlist = preg_replace('#[-[\].:\\\\^/]#', '\\\\$0', $charlist);
 
 		// Try to support .. character ranges, if they cause errors drop its support
 		$charlist_ranged = str_replace('\.\.', '-', $charlist);
@@ -1092,7 +1092,7 @@ final class utf8 {
 			return ($charlist === NULL) ? rtrim($str) : rtrim($str, $charlist);
 		}
 
-		$charlist = preg_replace('/([-.:\/\\\[\]^])/', '\\\$1', $charlist);
+		$charlist = preg_replace('#[-[\].:\\\\^/]#', '\\\\$0', $charlist);
 
 		$charlist_ranged = str_replace('\.\.', '-', $charlist);
 		$str_ranged = @preg_replace('/['.$charlist_ranged.']+$/u', '', $str);
