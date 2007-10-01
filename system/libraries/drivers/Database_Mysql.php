@@ -290,14 +290,15 @@ class Database_Mysql implements Database_Driver {
 	*/
 	public function escape_str($str)
 	{
-	if ( ! is_resource($this->link))
-	{
-		$this->connect($this->db_config);
+		if ( ! is_resource($this->link))
+		{
+			$this->connect($this->db_config);
+		}
+
+		return mysql_real_escape_string($str, $this->link);
 	}
 
-	return mysql_real_escape_string($str, $this->link);
-	}
-} // End Database MySQL Driver
+} // End Database_Mysql Class
 
 class Mysql_Result implements Database_Result, Iterator
 {
@@ -315,7 +316,8 @@ class Mysql_Result implements Database_Result, Iterator
 		// If the query is a resource, it was a SELECT, SHOW, DESCRIBE, EXPLAIN query
 		if (is_resource($result))
 		{
-			$this->result = $result;
+			$this->result   = $result;
+			$this->num_rows = mysql_num_rows($this->result);
 		}
 		else
 		{
@@ -339,8 +341,6 @@ class Mysql_Result implements Database_Result, Iterator
 		{
 			$this->rows[] = $row;
 		}
-
-		$this->num_rows = mysql_num_rows($this->result);
 	}
 
 	public function num_rows()
@@ -377,5 +377,4 @@ class Mysql_Result implements Database_Result, Iterator
 	{
 		reset($this->rows);
 	}
-}
-?>
+} // End Mysql_Result Class

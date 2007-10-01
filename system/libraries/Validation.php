@@ -51,7 +51,6 @@ class Validation_Core {
 	protected $rules  = array();
 	protected $errors = array();
 
-
 	// Data to validate
 	protected $data = array();
 
@@ -140,7 +139,7 @@ class Validation_Core {
 			if ($rules == '') return FALSE;
 
 			// Make data into an array
-			$data = array($data => array($rules, $field));
+			$data = array($data => array($field, $rules));
 		}
 
 		// Set the field information
@@ -258,8 +257,27 @@ class Validation_Core {
 			// Set the current field, for other functions to use
 			$this->current_field = $field;
 
+			// Insert uploads into the data
+			if (strpos($rules, 'upload') !== FALSE AND isset($_FILES[$field]))
+			{
+				if (is_array($_FILES[$field]['error']))
+				{
+					foreach($_FILES[$field]['error'] as $error)
+					{
+						if ($error !== UPLOAD_ERR_NO_FILE)
+						{
+							$this->data[$field] = $_FILES[$field];
+							break;
+						}
+					}
+				}
+				elseif ($_FILES[$field]['error'] !== UPLOAD_ERR_NO_FILE)
+				{
+					$this->data[$field] = $_FILES[$field];
+				}
+			}
+
 			// Process empty fields
-			$required = FALSE;
 			if ( ! isset($this->data[$field]))
 			{
 				// This field is required
@@ -267,7 +285,6 @@ class Validation_Core {
 				{
 					$this->add_error('required', $field);
 				}
-
 				continue;
 			}
 
@@ -333,6 +350,175 @@ class Validation_Core {
 	}
 
 	// --------------------------------------------------------------------
+
+	public function upload($data, $params = FLASE)
+	{
+		$allowed = FALSE;
+		$maxsize = array
+		(
+			'file'   => FALSE,
+			'human'  => FALSE,
+			'width'  => FALSE,
+			'height' => FALSE
+		);
+
+		if ( ! isset($data['name']) OR ! is_uploaded_file($data['tmp_name']))
+		{
+			return FALSE;
+		}
+		elseif (is_array($data['name']))
+		{
+			$files = $data;
+			$total = count($files['name']);
+
+			for ($i = 0; $i < ($total + 1); $i++)
+			{
+				$data = array
+				(
+					'name'     => $files['name'][$i],
+					'type'     => $files['type'][$i],
+					'size'     => $files['size'][$i],
+					'tmp_name' => $files['tmp_name'][$i],
+					'error'    => $files['error'][$i]
+				);
+
+				if ( ! $this->upload($data, $params))
+					return FALSE;
+			}
+			return TRUE;
+		}
+
+		if (is_array($params) AND ! empty($params))
+		{
+			// Creates a mirrored array: foo=foo,bar=bar
+			$params = array_combine($params, $params);
+
+			foreach($params as $param)
+			{
+				if (preg_match('/[0-9]+x[0-9]+/', $param))
+				{
+					list($maxsize['width'], $maxsize['height']) = explode('x', $param);
+				}
+				elseif (preg_match('/[0-9].+[BKMG]/i', $param))
+				{
+					$maxsize['human'] = strtoupper($param);
+
+					switch(strtoupper(substr($param, -1)))
+					{
+						case 'G': $param = intval($param) * pow(1024, 3); break;
+						case 'M': $param = intval($param) * pow(1024, 2); break;
+						case 'K': $param = intval($param) * pow(1024, 1); break;
+						default:  $param = intval($param);                break;
+					}
+
+					$maxsize['file'] = $param;
+				}
+				else
+				{
+					$allowed[strtolower($param)] = strtolower($param);
+				}
+			}
+		}
+
+		if (empty($allowed))
+			throw new Kohana_Exception('upload.set_allowed');
+
+		switch($data['error'])
+		{
+			case UPLOAD_ERR_OK:
+			break;
+			case UPLOAD_ERR_INI_SIZE:
+				if ($maxsize['human'] == FALSE)
+				{
+					$maxsize['human'] = ini_get('upload_max_filesize');
+				}
+				$this->add_error('max_size', $this->current_field, $maxsize['human']);
+				return FALSE;
+			break;
+			case UPLOAD_ERR_FORM_SIZE:
+				throw new Kohana_Exception('upload.max_file_size');
+			break;
+			case UPLOAD_ERR_PARTIAL:
+				$this->add_error('user_aborted', $this->current_field);
+				return FALSE;
+			break;
+			case UPLOAD_ERR_NO_FILE:
+			case UPLOAD_ERR_EXTENSION:
+				return FALSE;
+			break;
+			case UPLOAD_ERR_NO_TMP_DIR:
+				throw new Kohana_Exception('upload.no_tmp_dir');
+			break;
+			case UPLOAD_ERR_CANT_WRITE:
+				throw new Kohana_Exception('upload.tmp_unwritable');
+			break;
+		}
+
+		if ($maxsize['file'] AND $data['size'] > $maxsize['file'])
+		{
+			$this->add_error('max_size', $this->current_field, $maxsize['file']);
+			return FALSE;
+		}
+
+		// Use getimagesize() to find the mime type on images
+		if (preg_match('/jpe?g|png|[gt]if/', implode(' ', $allowed)))
+		{
+			$mime = @getimagesize($data['tmp_name']);
+
+			// Validate height and width
+			if ($maxsize['width'] AND $mime[0] > $maxsize['width'])
+			{
+				$this->add_error('max_width', $this->current_field, $maxsize['width']);
+				return FALSE;
+			}
+			elseif ($maxsize['height'] AND $mime[1] > $maxsize['height'])
+			{
+				$this->add_error('max_height', $this->current_field, $maxsize['height']);
+				return FALSE;
+			}
+
+			// Set mime type
+			$mime = isset($mime['mime']) ? $mime['mime'] : FALSE;
+		}
+		// Try using the fileinfo extension
+		elseif (function_exists('finfo_open'))
+		{
+			$finfo = finfo_open(FILEINFO_MIME);
+			$mime  = finfo_file($finfo, $data['tmp_name']);
+			finfo_close($finfo);
+		}
+		// Use mime_content_type() (depreceated)
+		elseif (ini_get('mime_magic.magicfile') AND function_exists('mime_content_type'))
+		{
+			$mime = mime_content_type($data['tmp_name']);
+		}
+		// Use the UNIX command 'file'
+		elseif (file_exists($cmd = trim(exec('which file'))))
+		{
+			$mime = escapeshellarg($data['tmp_name']);
+			$mime = trim(exec($cmd.' -bi '.$mime));
+		}
+		// Trust the browser
+		else
+		{
+			$mime = $data['type'];
+		}
+
+		$ext = strtolower(substr($data['name'], strrpos($data['name'], '.', 2) + 1));
+		$ext = Config::item('mimes.'.$ext);
+
+		if ($ext == FALSE OR array_search($mime, $ext) === FALSE)
+		{
+			$this->add_error('invalid_type', $this->current_field);
+			return FALSE;
+		}
+
+		$filename = Config::item('upload.remove_spaces') ? preg_replace('/\s+/', '_', $data['name']) : $data['name'];
+		$filename = realpath(Config::item('upload.upload_directory')).'/'.$filename;
+
+		move_uploaded_file($data['tmp_name'], $filename);
+		chmod($filename, 0644);
+	}
 
 	/**
 	 * Required

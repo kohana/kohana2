@@ -4,8 +4,6 @@ class Welcome_Controller extends Controller {
 
 	function index()
 	{
-		//print_r(date::hours(1, TRUE)); die
-		
 		foreach(get_class_methods(__CLASS__) as $method)
 		{
 			if ( ! preg_match('/_example$/', $method)) continue;
@@ -15,11 +13,25 @@ class Welcome_Controller extends Controller {
 
 	function form_example()
 	{
-		print form::open();
+		$this->load->library('validation');
+		
+		print form::open('', array('enctype' => 'multipart/form-data'));
 
-		print form::label('test', 'this is a test').form::checkbox('test', '1');
+		print form::label('imageup', 'Image Uploads').':<br/>';
+		print form::upload('imageup').'<br/>';
+		// print form::upload('imageup[]').'<br/>';
+		// print form::upload('imageup[]').'<br/>';
+		print form::submit('upload', 'Upload!');
 
 		print form::close();
+		
+		if ( ! empty($_POST))
+		{
+			$this->validation->set_rules('imageup', 'required|upload[gif,png,jpg,500K]', 'Image Upload');
+			print '<p>validation result: '.var_export($this->validation->run(), TRUE).'</p>';
+		}
+
+		print $this->validation->debug();
 	}
 
 	function validation_example()
@@ -62,19 +74,14 @@ class Welcome_Controller extends Controller {
 		$this->load->library('database');
 		$this->load->database();
 
-		$query = $this->database->from('pages')->get();
 
-		echo '<pre>' . print_r($query, true) . '</pre>';
-		$query->result();
+		$query = $this->database->select('title')->from('pages')->get();
+		print "Numrows: ".$query->num_rows()."<br/>";
+		print "<pre>".print_r($this->database, TRUE)."</pre><br/>";
 
-		echo 'Current: ' . $query->current()->title . '<br />';
-		echo 'Next: ' . $query->next()->title . '<br />';
-		echo 'Next: ' . $query->next()->title . '<br />';
-
-		foreach ($query as $row)
-		{
-			echo print_r($row);
-		}
+		$query = $this->database->select('title')->from('pages')->get();
+		print "Numrows: ".$query->num_rows()."<br/>";
+		print "<pre>".print_r($this->database, TRUE)."</pre><br/>";
 
 		print "<br/><br/>\n";
 		print "done in {execution_time} seconds";
