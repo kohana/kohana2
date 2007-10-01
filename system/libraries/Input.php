@@ -375,25 +375,25 @@ class Input_Core {
 	}
 
 	/**
-	 * XSS Clean
+	 * XSS Clean implemented by HTML Purifier
 	 * 
-	 * 
-	 * 
-	 * 
-	 * @todo    Replace by HTML Purifier
-	 * 
-	 * 
-	 * 
+	 * Note: This function should only be used to deal with data upon submission.
+	 * It's not something that should be used for general runtime processing
+	 * since it requires a fair amount of processing overhead.
 	 * 
 	 * @access	public
 	 * @param	string
 	 * @return	string
 	 */
-	public function xss_clean($str, $charset = 'ISO-8859-1')
+	public function xss_clean($str)
 	{
-		// Temporarily placeholder just return the original string in order not to break
-		// other code that relies on this function.
-		return $str;
+		require SYSPATH.'vendor/htmlpurifier/HTMLPurifier.auto.php';
+		require 'HTMLPurifier.func.php';
+		
+		$config = HTMLPurifier_Config::createDefault();
+		$config->set('HTML', 'TidyLevel', 'none'); // Only XSS cleaning now
+		
+		return HTMLPurifier($str, $config);
 	}
 
 } // End Input Class
