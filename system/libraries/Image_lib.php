@@ -40,7 +40,7 @@ class Image_lib_Core {
 	private $new_image			= '';
 	private $width				= '';
 	private $height				= '';
-	private $quality			= '90';
+	private $quality			= 90;
 	private $create_thumb		= FALSE;
 	private $thumb_marker		= '_thumb';
 	private $maintain_ratio		= TRUE;  	// Whether to maintain aspect ratio when resizing or use hard values
@@ -100,8 +100,6 @@ class Image_lib_Core {
 		Log::add('debug', 'Image Lib Class Initialized');
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Initialize image properties
 	 *
@@ -120,8 +118,6 @@ class Image_lib_Core {
 		}
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * initialize image preferences
 	 *
@@ -131,9 +127,7 @@ class Image_lib_Core {
 	 */
 	public function initialize($props = array())
 	{
-		/*
-		 * Convert array elements into class variables
-		 */
+		// Convert array elements into class variables
 		if (count($props) > 0)
 		{
 			foreach ($props as $key => $val)
@@ -182,7 +176,7 @@ class Image_lib_Core {
 		 */
 		if (function_exists('realpath') AND @realpath($this->source_image) !== FALSE)
 		{
-			$full_source_path = str_replace("\\", "/", realpath($this->source_image));
+			$full_source_path = str_replace('\\', '/', realpath($this->source_image));
 		}
 		else
 		{
@@ -195,9 +189,7 @@ class Image_lib_Core {
 
 		// Set the Image Properties
 		if ( ! $this->get_image_properties($this->source_folder.$this->source_image))
-		{
 			return FALSE;
-		}
 
 		/*
 		 * Assign the "new" image name/path
@@ -224,7 +216,7 @@ class Image_lib_Core {
 			{
 				if (function_exists('realpath') AND @realpath($this->new_image) !== FALSE)
 				{
-					$full_dest_path = str_replace("\\", "/", realpath($this->new_image));
+					$full_dest_path = str_replace('\\', '/', realpath($this->new_image));
 				}
 				else
 				{
@@ -232,7 +224,7 @@ class Image_lib_Core {
 				}
 
 				// Is there a file name?
-				if ( ! preg_match('#\.(jpe?g|gif|png)$#i', $full_dest_path))
+				if ( ! preg_match('#\.(?:jpe?g|gif|png)$#i', $full_dest_path))
 				{
 					$this->dest_folder = $full_dest_path.'/';
 					$this->dest_image = $this->source_image;
@@ -297,7 +289,7 @@ class Image_lib_Core {
 			$this->height = $this->orig_height;
 
 		// Set the quality
-		$this->quality = trim(str_replace("%", "", $this->quality));
+		$this->quality = trim(str_replace('%', '', $this->quality));
 
 		if ($this->quality == '' OR $this->quality == 0 OR ! is_numeric($this->quality))
 			$this->quality = 90;
@@ -325,7 +317,7 @@ class Image_lib_Core {
 
 		if ($this->wm_overlay_path != '')
 		{
-			$this->wm_overlay_path = str_replace("\\", "/", realpath($this->wm_overlay_path));
+			$this->wm_overlay_path = str_replace('\\', '/', realpath($this->wm_overlay_path));
 		}
 
 		if ($this->wm_shadow_color != '')
@@ -341,8 +333,6 @@ class Image_lib_Core {
 		return TRUE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Image Resize
 	 *
@@ -350,21 +340,19 @@ class Image_lib_Core {
 	 * resize function based on the protocol specified
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function resize()
 	{
 		$protocol = 'image_process_'.$this->image_library;
 
-		if (preg_match('/gd2$/iD', $protocol))
+		if (strtolower(substr($protocol, -3)) == 'gd2')
 		{
 			$protocol = 'image_process_gd';
 		}
 
 		return $this->$protocol('resize');
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Image Crop
@@ -373,21 +361,19 @@ class Image_lib_Core {
 	 * cropping function based on the protocol specified
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function crop()
 	{
 		$protocol = 'image_process_'.$this->image_library;
 
-		if (preg_match('/gd2$/iD', $protocol))
+		if (strtolower(substr($protocol, -3)) == 'gd2')
 		{
 			$protocol = 'image_process_gd';
 		}
 
 		return $this->$protocol('crop');
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Image Rotate
@@ -396,7 +382,7 @@ class Image_lib_Core {
 	 * rotation function based on the protocol specified
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function rotate()
 	{
@@ -412,15 +398,14 @@ class Image_lib_Core {
 		// Reassign the width and height
 		if ($this->rotation_angle == 90 OR $this->rotation_angle == 270)
 		{
-			$this->width	= $this->orig_height;
-			$this->height	= $this->orig_width;
+			$this->width  = $this->orig_height;
+			$this->height = $this->orig_width;
 		}
 		else
 		{
-			$this->width	= $this->orig_width;
-			$this->height	= $this->orig_height;
+			$this->width  = $this->orig_width;
+			$this->height = $this->orig_height;
 		}
-
 
 		// Choose resizing function
 		if ($this->image_library == 'imagemagick' OR $this->image_library == 'netpbm')
@@ -431,16 +416,10 @@ class Image_lib_Core {
 		}
 
 		if ($this->rotation_angle == 'hor' OR $this->rotation_angle == 'vrt')
-		{
 			return $this->image_mirror_gd();
-		}
 		else
-		{
 			return $this->image_rotate_gd();
-		}
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Image Process Using GD/GD2
@@ -449,7 +428,7 @@ class Image_lib_Core {
 	 *
 	 * @access	private
 	 * @param	string
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function image_process_gd($action = 'resize')
 	{
@@ -459,14 +438,9 @@ class Image_lib_Core {
 		{
 			// If the target width/height match the source then it's pointless to crop, right?
 			if ($this->width >= $this->orig_width AND $this->height >= $this->orig_height)
-			{
-				// We'll return true so the user thinks the process succeeded.
-				// It'll be our little secret...
-
 				return TRUE;
-			}
 
-			//  Reassign the source width/height if cropping
+			// Reassign the source width/height if cropping
 			$this->orig_width  = $this->width;
 			$this->orig_height = $this->height;
 
@@ -499,13 +473,11 @@ class Image_lib_Core {
 			$this->y_axis = 0;
 		}
 
-		//  Create the image handle
+		// Create the image handle
 		if ( ! ($src_img = $this->image_create_gd()))
-		{
 			return FALSE;
-		}
 
-		//  Create The Image
+		// Create The Image
 		if ($this->image_library == 'gd2' AND function_exists('imagecreatetruecolor') AND $v2_override == FALSE)
 		{
 			$create	= 'imagecreatetruecolor';
@@ -520,21 +492,16 @@ class Image_lib_Core {
 		$dst_img = $create($this->width, $this->height);
 		$copy($dst_img, $src_img, 0, 0, $this->x_axis, $this->y_axis, $this->width, $this->height, $this->orig_width, $this->orig_height);
 
-		//  Show the image
+		// Show the image
 		if ($this->dynamic_output == TRUE)
 		{
 			$this->image_display_gd($dst_img);
 		}
-		else
-		{
-			// Or save it
-			if ( ! $this->image_save_gd($dst_img))
-			{
-				return FALSE;
-			}
-		}
+		// Or save it
+		elseif ( ! $this->image_save_gd($dst_img))
+			return FALSE;
 
-		//  Kill the file handles
+		// Kill the file handles
 		imagedestroy($dst_img);
 		imagedestroy($src_img);
 
@@ -544,8 +511,6 @@ class Image_lib_Core {
 		return TRUE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Image Process Using ImageMagick
 	 *
@@ -553,18 +518,18 @@ class Image_lib_Core {
 	 *
 	 * @access	private
 	 * @param	string
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function image_process_imagemagick($action = 'resize')
 	{
-		//  Do we have a vaild library path?
+		// Do we have a vaild library path?
 		if ($this->library_path == '')
 		{
 			$this->set_error('libpath_invalid');
 			return FALSE;
 		}
 
-		if ( ! preg_match('|/convert$|', $this->library_path))
+		if (substr($this->library_path, -8) != '/convert')
 		{
 			$this->library_path = rtrim($this->library_path, '/').'/convert';
 		}
@@ -580,12 +545,15 @@ class Image_lib_Core {
 		{
 			switch ($this->rotation_angle)
 			{
-				case 'hor' 	: $angle = '-flop';
-					break;
-				case 'vrt' 	: $angle = '-flip';
-					break;
-				default		: $angle = '-rotate '.$this->rotation_angle;
-					break;
+				case 'hor':
+					$angle = '-flop';
+				break;
+				case 'vrt':
+					$angle = '-flip';
+				break;
+				default:
+					$angle = '-rotate '.$this->rotation_angle;
+				break;
 			}
 
 			$cmd .= ' '.$angle.' "'.$this->full_src_path.'" "'.$this->full_dst_path.'" 2>&1';
@@ -612,8 +580,6 @@ class Image_lib_Core {
 		return TRUE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Image Process Using NetPBM
 	 *
@@ -621,7 +587,7 @@ class Image_lib_Core {
 	 *
 	 * @access	private
 	 * @param	string
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function image_process_netpbm($action = 'resize')
 	{
@@ -631,21 +597,21 @@ class Image_lib_Core {
 			return FALSE;
 		}
 
-		//  Build the resizing command
+		// Build the resizing command
 		switch ($this->image_type)
 		{
-			case 1 :
-						$cmd_in		= 'giftopnm';
-						$cmd_out	= 'ppmtogif';
-				break;
-			case 2 :
-						$cmd_in		= 'jpegtopnm';
-						$cmd_out	= 'ppmtojpeg';
-				break;
-			case 3 :
-						$cmd_in		= 'pngtopnm';
-						$cmd_out	= 'ppmtopng';
-				break;
+			case 1:
+				$cmd_in  = 'giftopnm';
+				$cmd_out = 'ppmtogif';
+			break;
+			case 2:
+				$cmd_in  = 'jpegtopnm';
+				$cmd_out = 'ppmtojpeg';
+			break;
+			case 3:
+				$cmd_in  = 'pngtopnm';
+				$cmd_out = 'ppmtopng';
+			break;
 		}
 
 		if ($action == 'crop')
@@ -656,16 +622,21 @@ class Image_lib_Core {
 		{
 			switch ($this->rotation_angle)
 			{
-				case 90		:	$angle = 'r270';
-					break;
-				case 180	:	$angle = 'r180';
-					break;
-				case 270 	:	$angle = 'r90';
-					break;
-				case 'vrt'	:	$angle = 'tb';
-					break;
-				case 'hor'	:	$angle = 'lr';
-					break;
+				case 90:
+					$angle = 'r270';
+				break;
+				case 180:
+					$angle = 'r180';
+				break;
+				case 270:
+					$angle = 'r90';
+				break;
+				case 'vrt':
+					$angle = 'tb';
+				break;
+				case 'hor':
+					$angle = 'lr';
+				break;
 			}
 
 			$cmd_inner = 'pnmflip -'.$angle.' ';
@@ -681,7 +652,7 @@ class Image_lib_Core {
 
 		@exec($cmd, $output, $retval);
 
-		//  Did it work?
+		// Did it work?
 		if ($retval > 0)
 		{
 			$this->set_error('image_process_failed');
@@ -698,13 +669,11 @@ class Image_lib_Core {
 		return TRUE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Image Rotate Using GD
 	 *
 	 * @access	private
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function image_rotate_gd()
 	{
@@ -716,48 +685,37 @@ class Image_lib_Core {
 			return FALSE;
 		}
 
-		//  Create the image handle
+		// Create the image handle
 		if ( ! ($src_img = $this->image_create_gd()))
-		{
 			return FALSE;
-		}
 
 		// Set the background color
 		// This won't work with transparent PNG files so we are
 		// going to have to figure out how to determine the color
 		// of the alpha channel in a future release.
-
 		$white	= imagecolorallocate($src_img, 255, 255, 255);
 
-		//  Rotate it!
+		// Rotate it!
 		$dst_img = imagerotate($src_img, $this->rotation_angle, $white);
 
-		//  Save the Image
+		// Show the image
 		if ($this->dynamic_output == TRUE)
 		{
 			$this->image_display_gd($dst_img);
 		}
-		else
-		{
-			// Or save it
-			if ( ! $this->image_save_gd($dst_img))
-			{
-				return FALSE;
-			}
-		}
+		// Or save it
+		elseif ( ! $this->image_save_gd($dst_img))
+			return FALSE;
 
-		//  Kill the file handles
+		// Kill the file handles
 		imagedestroy($dst_img);
 		imagedestroy($src_img);
 
 		// Set the file to 777
-
 		@chmod($this->full_dst_path, 0777);
 
-		return true;
+		return TRUE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Create Mirror Image using GD
@@ -765,14 +723,12 @@ class Image_lib_Core {
 	 * This function will flip horizontal or vertical
 	 *
 	 * @access	private
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function image_mirror_gd()
 	{
 		if ( ! $src_img = $this->image_create_gd())
-		{
 			return FALSE;
-		}
 
 		$width  = $this->orig_width;
 		$height = $this->orig_height;
@@ -782,7 +738,7 @@ class Image_lib_Core {
 			for ($i = 0; $i < $height; $i++)
 			{
 				$left  = 0;
-				$right = $width-1;
+				$right = $width - 1;
 
 				while ($left < $right)
 				{
@@ -802,7 +758,7 @@ class Image_lib_Core {
 			for ($i = 0; $i < $width; $i++)
 			{
 				$top = 0;
-				$bot = $height-1;
+				$bot = $height - 1;
 
 				while ($top < $bot)
 				{
@@ -818,21 +774,16 @@ class Image_lib_Core {
 			}
 		}
 
-		//  Show the image
+		// Show the image
 		if ($this->dynamic_output == TRUE)
 		{
 			$this->image_display_gd($src_img);
 		}
-		else
-		{
-			// Or save it
-			if ( ! $this->image_save_gd($src_img))
-			{
+		// Or save it
+		elseif ( ! $this->image_save_gd($src_img))
 				return FALSE;
-			}
-		}
 
-		//  Kill the file handles
+		// Kill the file handles
 		imagedestroy($src_img);
 
 		// Set the file to 777
@@ -840,8 +791,6 @@ class Image_lib_Core {
 
 		return TRUE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Image Watermark
@@ -851,27 +800,21 @@ class Image_lib_Core {
 	 *
 	 * @access	public
 	 * @param	string
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function watermark()
 	{
 		if ($this->wm_type == 'overlay')
-		{
 			return $this->overlay_watermark();
-		}
 		else
-		{
 			return $this->text_watermark();
-		}
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Watermark - Graphic Version
 	 *
 	 * @access	private
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function overlay_watermark()
 	{
@@ -881,16 +824,16 @@ class Image_lib_Core {
 			return FALSE;
 		}
 
-		//  Fetch source image properties
+		// Fetch source image properties
 		$this->get_image_properties();
 
-		//  Fetch watermark image properties
+		// Fetch watermark image properties
 		$props 			= $this->get_image_properties($this->wm_overlay_path, TRUE);
 		$wm_img_type	= $props['image_type'];
 		$wm_width		= $props['width'];
 		$wm_height		= $props['height'];
 
-		//  Create two image resources
+		// Create two image resources
 		$wm_img  = $this->image_create_gd($this->wm_overlay_path, $wm_img_type);
 		$src_img = $this->image_create_gd($this->full_src_path);
 
@@ -900,7 +843,6 @@ class Image_lib_Core {
 		// further down.  We want the reverse, so we'll
 		// invert the offset.  Same with the horizontal
 		// offset when the image is at the right
-
 		$this->wm_vrt_alignment = strtoupper(substr($this->wm_vrt_alignment, 0, 1));
 		$this->wm_hor_alignment = strtoupper(substr($this->wm_hor_alignment, 0, 1));
 
@@ -910,33 +852,33 @@ class Image_lib_Core {
 		if ($this->wm_hor_alignment == 'R')
 			$this->wm_hor_offset = $this->wm_hor_offset * -1;
 
-		//  Set the base x and y axis values
+		// Set the base x and y axis values
 		$x_axis = $this->wm_hor_offset + $this->wm_padding;
 		$y_axis = $this->wm_vrt_offset + $this->wm_padding;
 
-		//  Set the vertical position
+		// Set the vertical position
 		switch ($this->wm_vrt_alignment)
 		{
-			case 'T':
-				break;
-			case 'M':	$y_axis += ($this->orig_height / 2) - ($wm_height / 2);
-				break;
-			case 'B':	$y_axis += $this->orig_height - $wm_height;
-				break;
+			case 'M':
+				$y_axis += ($this->orig_height / 2) - ($wm_height / 2);
+			break;
+			case 'B':
+				$y_axis += $this->orig_height - $wm_height;
+			break;
 		}
 
-		//  Set the horizontal position
+		// Set the horizontal position
 		switch ($this->wm_hor_alignment)
 		{
-			case 'L':
-				break;
-			case 'C':	$x_axis += ($this->orig_width / 2) - ($wm_width / 2);
-				break;
-			case 'R':	$x_axis += $this->orig_width - $wm_width;
-				break;
+			case 'C':
+				$x_axis += ($this->orig_width / 2) - ($wm_width / 2);
+			break;
+			case 'R':
+				$x_axis += $this->orig_width - $wm_width;
+			break;
 		}
 
-		//  Build the finalized image
+		// Build the finalized image
 		if ($wm_img_type == 3 AND function_exists('imagealphablending'))
 		{
 			@imagealphablending($src_img, TRUE);
@@ -946,18 +888,13 @@ class Image_lib_Core {
 		imagecolortransparent($wm_img, imagecolorat($wm_img, $this->wm_x_transp, $this->wm_y_transp));
 		imagecopymerge($src_img, $wm_img, $x_axis, $y_axis, 0, 0, $wm_width, $wm_height, $this->wm_opacity);
 
-		//  Output the image
+		// Output the image
 		if ($this->dynamic_output == TRUE)
 		{
 			$this->image_display_gd($src_img);
 		}
-		else
-		{
-			if ( ! $this->image_save_gd($src_img))
-			{
-				return FALSE;
-			}
-		}
+		elseif ( ! $this->image_save_gd($src_img))
+			return FALSE;
 
 		imagedestroy($src_img);
 		imagedestroy($wm_img);
@@ -965,20 +902,16 @@ class Image_lib_Core {
 		return TRUE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Watermark - Text Version
 	 *
 	 * @access	private
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function text_watermark()
 	{
 		if ( ! ($src_img = $this->image_create_gd()))
-		{
 			return FALSE;
-		}
 
 		if ($this->wm_use_truetype == TRUE AND ! file_exists($this->wm_font_path))
 		{
@@ -986,7 +919,7 @@ class Image_lib_Core {
 			return FALSE;
 		}
 
-		//  Fetch source image properties
+		// Fetch source image properties
 		$this->get_image_properties();
 
 		// Set RGB values for text and shadow
@@ -1010,7 +943,6 @@ class Image_lib_Core {
 		// further down.  We want the reverse, so we'll
 		// invert the offset.  Note: The horizontal
 		// offset flips itself automatically
-
 		if ($this->wm_vrt_alignment == 'B')
 			$this->wm_vrt_offset = $this->wm_vrt_offset * -1;
 
@@ -1023,9 +955,9 @@ class Image_lib_Core {
 		if ($this->wm_use_truetype == TRUE)
 		{
 			if ($this->wm_font_size == '')
-				$this->wm_font_size = '17';
+				$this->wm_font_size = 17;
 
-			$fontwidth  = $this->wm_font_size-($this->wm_font_size/4);
+			$fontwidth  = $this->wm_font_size - ($this->wm_font_size / 4);
 			$fontheight = $this->wm_font_size;
 			$this->wm_vrt_offset += $this->wm_font_size;
 		}
@@ -1048,12 +980,12 @@ class Image_lib_Core {
 
 		switch ($this->wm_vrt_alignment)
 		{
-			case	 "T" :
-				break;
-			case "M":	$y_axis += ($this->orig_height/2)+($fontheight/2);
-				break;
-			case "B":	$y_axis += ($this->orig_height - $fontheight - $this->wm_shadow_distance - ($fontheight/2));
-				break;
+			case 'M':
+				$y_axis += ($this->orig_height / 2) + ($fontheight / 2);
+			break;
+			case 'B':
+				$y_axis += ($this->orig_height - $fontheight - $this->wm_shadow_distance - ($fontheight / 2));
+			break;
 		}
 
 		$x_shad = $x_axis + $this->wm_shadow_distance;
@@ -1062,35 +994,42 @@ class Image_lib_Core {
 		// Set horizontal alignment
 		switch ($this->wm_hor_alignment)
 		{
-			case "L":
-				break;
-			case "R":
-						if ($this->wm_use_drop_shadow)
-							$x_shad += ($this->orig_width - $fontwidth*strlen($this->wm_text));
-							$x_axis += ($this->orig_width - $fontwidth*strlen($this->wm_text));
-				break;
-			case "C":
-						if ($this->wm_use_drop_shadow)
-							$x_shad += floor(($this->orig_width - $fontwidth*strlen($this->wm_text))/2);
-							$x_axis += floor(($this->orig_width  -$fontwidth*strlen($this->wm_text))/2);
-				break;
+			case 'R':
+				if ($this->wm_use_drop_shadow)
+				{
+					$x_shad += ($this->orig_width - $fontwidth * strlen($this->wm_text));
+				}
+				$x_axis += ($this->orig_width - $fontwidth * strlen($this->wm_text));
+			break;
+			
+			case 'C':
+			if ($this->wm_use_drop_shadow)
+			{
+				$x_shad += floor(($this->orig_width - $fontwidth * strlen($this->wm_text)) / 2);
+			}
+			$x_axis += floor(($this->orig_width - $fontwidth * strlen($this->wm_text)) / 2);
+			break;
 		}
 
-		//  Add the text to the source image
+		// Add the text to the source image
 		if ($this->wm_use_truetype)
 		{
 			if ($this->wm_use_drop_shadow)
+			{
 				imagettftext($src_img, $this->wm_font_size, 0, $x_shad, $y_shad, $drp_color, $this->wm_font_path, $this->wm_text);
-				imagettftext($src_img, $this->wm_font_size, 0, $x_axis, $y_axis, $txt_color, $this->wm_font_path, $this->wm_text);
+			}
+			imagettftext($src_img, $this->wm_font_size, 0, $x_axis, $y_axis, $txt_color, $this->wm_font_path, $this->wm_text);
 		}
 		else
 		{
 			if ($this->wm_use_drop_shadow)
+			{
 				imagestring($src_img, $this->wm_font_size, $x_shad, $y_shad, $this->wm_text, $drp_color);
-				imagestring($src_img, $this->wm_font_size, $x_axis, $y_axis, $this->wm_text, $txt_color);
+			}
+			imagestring($src_img, $this->wm_font_size, $x_axis, $y_axis, $this->wm_text, $txt_color);
 		}
 
-		//  Output the final image
+		// Output the final image
 		if ($this->dynamic_output == TRUE)
 		{
 			$this->image_display_gd($src_img);
@@ -1104,8 +1043,6 @@ class Image_lib_Core {
 
 		return TRUE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Create Image - GD
@@ -1125,44 +1062,42 @@ class Image_lib_Core {
 		if ($image_type == '')
 			$image_type = $this->image_type;
 
-
 		switch ($image_type)
 		{
-			case	 1 :
-						if ( ! function_exists('imagecreatefromgif'))
-						{
-							$this->set_error(array('unsupported_imagecreate', 'gif_not_supported'));
-							return FALSE;
-						}
-
-						return imagecreatefromgif($path);
-				break;
-			case 2 :
-						if ( ! function_exists('imagecreatefromjpeg'))
-						{
-							$this->set_error(array('unsupported_imagecreate', 'jpg_not_supported'));
-							return FALSE;
-						}
-
-						return imagecreatefromjpeg($path);
-				break;
-			case 3 :
-						if ( ! function_exists('imagecreatefrompng'))
-						{
-							$this->set_error(array('unsupported_imagecreate', 'png_not_supported'));
-							return FALSE;
-						}
-
-						return imagecreatefrompng($path);
-				break;
-
+			case 1:
+				if ( ! function_exists('imagecreatefromgif'))
+				{
+					$this->set_error(array('unsupported_imagecreate', 'gif_not_supported'));
+					return FALSE;
+				}
+				
+				return imagecreatefromgif($path);
+			break;
+			
+			case 2:
+				if ( ! function_exists('imagecreatefromjpeg'))
+				{
+					$this->set_error(array('unsupported_imagecreate', 'jpg_not_supported'));
+					return FALSE;
+				}
+				
+				return imagecreatefromjpeg($path);
+			break;
+			
+			case 3:
+				if ( ! function_exists('imagecreatefrompng'))
+				{
+					$this->set_error(array('unsupported_imagecreate', 'png_not_supported'));
+					return FALSE;
+				}
+				
+				return imagecreatefrompng($path);
+			break;
 		}
 
 		$this->set_error(array('unsupported_imagecreate'));
 		return FALSE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Write image file to disk - GD
@@ -1172,54 +1107,50 @@ class Image_lib_Core {
 	 *
 	 * @access	private
 	 * @param	resource
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function image_save_gd($resource)
 	{
 		switch ($this->image_type)
 		{
-			case 1 :
-						if ( ! function_exists('imagegif'))
-						{
-							$this->set_error(array('unsupported_imagecreate', 'gif_not_supported'));
-							return FALSE;
-						}
+			case 1:
+				if ( ! function_exists('imagegif'))
+				{
+					$this->set_error(array('unsupported_imagecreate', 'gif_not_supported'));
+					return FALSE;
+				}
 
-						@imagegif($resource, $this->full_dst_path);
-				break;
-			case 2	:
-						if ( ! function_exists('imagejpeg'))
-						{
-							$this->set_error(array('unsupported_imagecreate', 'jpg_not_supported'));
-							return FALSE;
-						}
-
-						if (PHP_VERSION == '4.4.1')
-						{
-							@touch($this->full_dst_path); // PHP 4.4.1 bug #35060 - workaround
-						}
-
-						@imagejpeg($resource, $this->full_dst_path, $this->quality);
-				break;
-			case 3	:
-						if ( ! function_exists('imagepng'))
-						{
-							$this->set_error(array('unsupported_imagecreate', 'png_not_supported'));
-							return FALSE;
-						}
-
-						@imagepng($resource, $this->full_dst_path);
-				break;
-			default		:
-							$this->set_error(array('unsupported_imagecreate'));
-							return FALSE;
-				break;
+				@imagegif($resource, $this->full_dst_path);
+			break;
+			
+			case 2:
+				if ( ! function_exists('imagejpeg'))
+				{
+					$this->set_error(array('unsupported_imagecreate', 'jpg_not_supported'));
+					return FALSE;
+				}
+            
+				@imagejpeg($resource, $this->full_dst_path, $this->quality);
+			break;
+			
+			case 3:
+				if ( ! function_exists('imagepng'))
+				{
+					$this->set_error(array('unsupported_imagecreate', 'png_not_supported'));
+					return FALSE;
+				}
+            
+				@imagepng($resource, $this->full_dst_path);
+			break;
+			
+			default:
+				$this->set_error(array('unsupported_imagecreate'));
+				return FALSE;
+			break;
 		}
 
 		return TRUE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Dynamically outputs an image
@@ -1230,25 +1161,27 @@ class Image_lib_Core {
 	 */
 	private function image_display_gd($resource)
 	{
-		header("Content-Disposition: filename={$this->source_image};");
-		header("Content-Type: {$this->mime_type}");
+		header('Content-Disposition: filename='.$this->source_image.';');
+		header('Content-Type: '.$this->mime_type);
 		header('Content-Transfer-Encoding: binary');
 		header('Last-Modified: '.gmdate('D, d M Y H:i:s', time()).' GMT');
 
 		switch ($this->image_type)
 		{
-			case 1 		:	imagegif($resource);
-				break;
-			case 2		:	imagejpeg($resource, '', $this->quality);
-				break;
-			case 3		:	imagepng($resource);
-				break;
-			default		:	echo 'Unable to display the image';
-				break;
+			case 1:
+				imagegif($resource);
+			break;
+			case 2:
+				imagejpeg($resource, '', $this->quality);
+			break;
+			case 3:
+				imagepng($resource);
+			break;
+			default:
+				echo 'Unable to display the image';
+			break;
 		}
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Re-proportion Image Width/Height
@@ -1271,10 +1204,10 @@ class Image_lib_Core {
 		if ( ! is_numeric($this->orig_width) OR ! is_numeric($this->orig_height) OR $this->orig_width == 0 OR $this->orig_height == 0)
 			return;
 
-		$new_width	= ceil($this->orig_width*$this->height/$this->orig_height);
-		$new_height	= ceil($this->width*$this->orig_height/$this->orig_width);
+		$new_width	= ceil($this->orig_width * $this->height / $this->orig_height);
+		$new_height	= ceil($this->width * $this->orig_height / $this->orig_width);
 
-		$ratio = (($this->orig_height/$this->orig_width) - ($this->height/$this->width));
+		$ratio = (($this->orig_height / $this->orig_width) - ($this->height / $this->width));
 
 		if ($this->master_dim != 'width' AND $this->master_dim != 'height')
 		{
@@ -1293,8 +1226,6 @@ class Image_lib_Core {
 			}
 		}
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Get image properties
@@ -1323,29 +1254,27 @@ class Image_lib_Core {
 
 		$types = array(1 => 'gif', 2 => 'jpeg', 3 => 'png');
 
-		$mime = (isset($types[$vals['2']])) ? 'image/'.$types[$vals['2']] : 'image/jpg';
+		$mime = (isset($types[$vals[2]])) ? 'image/'.$types[$vals[2]] : 'image/jpg';
 
 		if ($return == TRUE)
 		{
-			$v['width']			= $vals['0'];
-			$v['height']		= $vals['1'];
-			$v['image_type']	= $vals['2'];
-			$v['size_str']		= $vals['3'];
+			$v['width']			= $vals[0];
+			$v['height']		= $vals[1];
+			$v['image_type']	= $vals[2];
+			$v['size_str']		= $vals[3];
 			$v['mime_type']		= $mime;
 
 			return $v;
 		}
 
-		$this->orig_width	= $vals['0'];
-		$this->orig_height	= $vals['1'];
-		$this->image_type	= $vals['2'];
-		$this->size_str		= $vals['3'];
+		$this->orig_width	= $vals[0];
+		$this->orig_height	= $vals[1];
+		$this->image_type	= $vals[2];
+		$this->size_str		= $vals[3];
 		$this->mime_type	= $mime;
 
 		return TRUE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Size calculator
@@ -1379,23 +1308,19 @@ class Image_lib_Core {
 		}
 
 		if ($vals['width'] == 0 OR $vals['height'] == 0)
-		{
 			return $vals;
-		}
 
 		if ($vals['new_width'] == 0)
 		{
-			$vals['new_width'] = ceil($vals['width']*$vals['new_height']/$vals['height']);
+			$vals['new_width'] = ceil($vals['width'] * $vals['new_height'] / $vals['height']);
 		}
 		elseif ($vals['new_height'] == 0)
 		{
-			$vals['new_height'] = ceil($vals['new_width']*$vals['height']/$vals['width']);
+			$vals['new_height'] = ceil($vals['new_width'] * $vals['height'] / $vals['width']);
 		}
 
 		return $vals;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Explode source_image
@@ -1414,49 +1339,26 @@ class Image_lib_Core {
 	private function explode_name($source_image)
 	{
 		$x = explode('.', $source_image);
-		$ret['ext'] = '.'.end($x);
+		
+		$image['ext'] = '.'.array_pop($x);
+		$image['name'] = implode('.', $x);
 
-		$name = '';
-
-		$ct = count($x)-1;
-
-		for ($i = 0; $i < $ct; $i++)
-		{
-			$name .= $x[$i];
-
-			if ($i < ($ct - 1))
-			{
-				$name .= '.';
-			}
-		}
-
-		$ret['name'] = $name;
-
-		return $ret;
+		return $image;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Is GD Installed?
 	 *
 	 * @access	private
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function gd_loaded()
 	{
-		if ( ! extension_loaded('gd'))
-		{
-			if ( ! dl('gd.so'))
-			{
-				return FALSE;
-			}
-		}
+		if ( ! extension_loaded('gd') AND ! dl('gd.so'))
+			return FALSE;
 
 		return TRUE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Get GD version
@@ -1476,8 +1378,6 @@ class Image_lib_Core {
 
 		return FALSE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Set error message
@@ -1506,8 +1406,6 @@ class Image_lib_Core {
 		}
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Show error messages
 	 *
@@ -1520,7 +1418,7 @@ class Image_lib_Core {
 		$str = '';
 		foreach ($this->error_msg as $val)
 		{
-			$str .= $open.$val.$close;
+			$str .= $open.$val.$close."\n";
 		}
 
 		return $str;
