@@ -70,7 +70,7 @@ class Database_Core {
 		elseif (is_string($config))
 		{
 			// This checks to see if the config is DSN string, or a config group name
-			$config = (strpos($config, '://') == FALSE) ? Config::item('database.'.$config) : array('connection' => $config);
+			$config = (strpos($config, '://') === FALSE) ? Config::item('database.'.$config) : array('connection' => $config);
 		}
 		elseif (is_array($config))
 		{
@@ -110,9 +110,7 @@ class Database_Core {
 		}
 
 		if ( ! in_array('Database_Driver', class_implements($this->driver)))
-		{
 			throw new Kohana_Exception('database.driver_not_supported', 'Database drivers must use the Database_Driver interface.');
-		}
 
 		Log::add('debug', 'Database Class Initialized');
 	}
@@ -131,11 +129,17 @@ class Database_Core {
 		$this->connected = $this->driver->connect($this->config);
 
 		if ($this->connected != TRUE)
-		{
 			throw new Kohana_Exception('database.connection', mysql_error());
-		}
 	}
 
+	/**
+	 * Query
+	 *
+	 * @access  public
+	 * @param   string
+	 * @param   boolean
+	 * @return  mixed
+	 */
 	public function query($sql = '', $object = FALSE)
 	{
 		if ($sql == '') return FALSE;
@@ -146,7 +150,6 @@ class Database_Core {
 		$this->last_query = $sql;
 		return $this->driver->query($sql, $object);
 	}
-
 
 	/**
 	 * Select
@@ -187,8 +190,6 @@ class Database_Core {
 		return $this;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * DISTINCT
 	 *
@@ -204,8 +205,6 @@ class Database_Core {
 
 		return $this;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * From
@@ -228,9 +227,6 @@ class Database_Core {
 		return $this;
 	}
 
-
-	// --------------------------------------------------------------------
-
 	/**
 	 * Where
 	 *
@@ -252,8 +248,6 @@ class Database_Core {
 		$this->where = array_merge($this->where, $this->driver->where($key, $value, 'AND ', count($this->where), $quote));
 		return $this;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * OR Where
@@ -278,8 +272,6 @@ class Database_Core {
 		return $this;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Like
 	 *
@@ -297,8 +289,6 @@ class Database_Core {
 		return $this;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * OR Like
 	 *
@@ -315,8 +305,6 @@ class Database_Core {
 		$this->like = array_merge($this->like, $this->driver->like($field, $match, 'OR ', count($this->like)));
 		return $this;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * GROUP BY
@@ -342,8 +330,6 @@ class Database_Core {
 		return $this;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Sets the HAVING value
 	 *
@@ -360,8 +346,6 @@ class Database_Core {
         return $this;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Sets the OR HAVING value
 	 *
@@ -377,8 +361,6 @@ class Database_Core {
 		$this->like = array_merge($this->like, $this->driver->having($key, $value, 'OR'));
         return $this;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Sets the ORDER BY value
@@ -401,8 +383,6 @@ class Database_Core {
 		return $this;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Sets the LIMIT value
 	 *
@@ -411,23 +391,13 @@ class Database_Core {
 	 * @param	integer	the offset value
 	 * @return	object
 	 */
-	public function limit($value, $offset = '')
+	public function limit($value, $offset = FALSE)
 	{
-		$this->limit = $value;
-
-		if ($offset != '')
-		{
-			$this->offset = $offset;
-		}
-		else
-		{
-			$this->offset = 0;
-		}
+		$this->limit  = (int) $value;
+		$this->offset = (int) $offset;
 
 		return $this;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Sets the OFFSET value
@@ -438,14 +408,12 @@ class Database_Core {
 	 */
 	public function offset($value)
 	{
-		$this->offset = $value;
+		$this->offset = (int) $value;
 		return $this;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
-	 * The "set" function.  Allows key/value pairs to be set for inserting or updating
+	 * The 'set' function. Allows key/value pairs to be set for inserting or updating
 	 *
 	 * @access	public
 	 * @param	mixed
@@ -466,8 +434,6 @@ class Database_Core {
 
 		return $this;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Get
@@ -494,20 +460,18 @@ class Database_Core {
 
 		$sql = $this->driver->compile_select(get_object_vars($this));
 
-		Benchmark::start(SYSTEM_BENCHMARK.'_query');
+		$start = microtime(TRUE);
 		$result = $this->query($sql);
-		Benchmark::stop(SYSTEM_BENCHMARK.'_query');
+		$stop = microtime(TRUE);
 
 		// benchmark the query
-		$this->benchmark[] = array('query' => $sql, 'time' => Benchmark::get(SYSTEM_BENCHMARK.'_query'));
+		$this->benchmark[] = array('query' => $sql, 'time' => $stop - $start);
 
 		$this->reset_select();
 		$this->last_query = $sql;
 
 		return $result;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * GetWhere
@@ -544,8 +508,6 @@ class Database_Core {
 		return $result;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Insert
 	 *
@@ -564,16 +526,12 @@ class Database_Core {
 		}
 
 		if ($this->set == FALSE)
-		{
 			return ($this->db_debug ? $this->display_error('db_must_use_set') : FALSE);
-		}
 
 		if ($table == '')
 		{
 			if ( ! isset($this->from[0]))
-			{
 				return ($this->db_debug ? $this->display_error('db_must_set_table') : FALSE);
-			}
 
 			$table = $this->from[0];
 		}
@@ -583,8 +541,6 @@ class Database_Core {
 		$this->reset_write();
 		return $this->query($sql);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Update
@@ -605,16 +561,12 @@ class Database_Core {
 		}
 
 		if ($this->set == FALSE)
-		{
 			return ($this->db_debug ? $this->display_error('db_must_use_set') : FALSE);
-		}
 
 		if ($table == '')
 		{
 			if ( ! isset($this->from[0]))
-			{
 				return ($this->db_debug ? $this->display_error('db_must_set_table') : FALSE);
-			}
 
 			$table = $this->from[0];
 		}
@@ -624,8 +576,6 @@ class Database_Core {
 		$this->reset_write();
 		return $this->query($sql);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Delete
@@ -642,9 +592,7 @@ class Database_Core {
 		if ($table == '')
 		{
 			if ( ! isset($this->from[0]))
-			{
 				return ($this->db_debug ? $this->display_error('db_must_set_table') : FALSE);
-			}
 
 			$table = $this->from[0];
 		}
@@ -655,9 +603,7 @@ class Database_Core {
 		}
 
 		if (count($this->where) < 1)
-		{
 			return (($this->db_debug) ? $this->display_error('db_del_must_use_where') : FALSE);
-		}
 
 		$sql = $this->driver->delete($this->config['table_prefix'].$table, $this->where);
 
@@ -665,12 +611,16 @@ class Database_Core {
 		return $this->query($sql);
 	}
 
+	/**
+	 * Last query
+	 *
+	 * @access	public
+	 * @return	string
+	 */
 	public function last_query()
 	{
 	   return $this->last_query;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Count Records
@@ -686,13 +636,9 @@ class Database_Core {
 		if (count($this->from) < 1)
 		{
 			if ($table == FALSE)
-			{
 				return FALSE;
-			}
-			else
-			{
-				$this->from($table);
-			}
+
+			$this->from($table);
 		}
 
 		$this->select('COUNT(*)');
@@ -703,8 +649,6 @@ class Database_Core {
 
 		return $result;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Resets the SQL values, called by get()
@@ -727,10 +671,8 @@ class Database_Core {
 		$this->offset   = FALSE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
-	 * Resets the SQL "write" values, called by insert() and update()
+	 * Resets the SQL 'write' values, called by insert() and update()
 	 *
 	 * @access  private
 	 * @return  void
