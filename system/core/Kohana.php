@@ -547,7 +547,7 @@ class Kohana {
 
 	public static function show_404()
 	{
-		$message = Kohana::lang('core.page_not_found', '/'.Router::$current_uri);
+		$message = Kohana::lang('core.page_not_found', '/'.Router::$current_uri.Config::item('core.url_suffix').Router::$query_string);
 
 		// Log the error
 		Log::add('file_not_found', $message);
