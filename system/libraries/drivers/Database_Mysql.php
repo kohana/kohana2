@@ -350,6 +350,11 @@ class Mysql_Result implements Database_Result, Iterator
 		return $this->num_rows;
 	}
 
+	public function get_rows()
+	{
+		return $this->rows;
+	}
+	
 	public function insert_id()
 	{
 		return $this->insert_id;
