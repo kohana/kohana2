@@ -107,6 +107,42 @@ class html {
 		return self::anchor($uri, $title, $attributes, $protocol);
 	}
 
+	public static function mailto($email, $title = FALSE, $attributes = FALSE)
+	{
+		// Remove the subject or other parameters that do not need to be encoded
+		$subject = FALSE;
+		if (strpos($email, '?') !== FALSE)
+		{
+			list ($email, $subject) = explode('?', $email);
+		}
+
+		$safe = '';
+		foreach(str_split($email) as $i => $letter)
+		{
+			switch (($letter == '@') ? rand(1,2) : rand(1,3))
+			{
+				// HTML entity code
+				case 1: $safe .= '&#'.ord($letter).';'; break;
+				// Hex character code
+				case 2: $safe .= '&#x'.dechex(ord($letter)).';';  break;
+				// Raw (no) encoding
+				case 3: $safe .= $letter;
+			}
+		}
+
+		// Title defaults to the encoded email address
+		$title = ($title == FALSE) ? $safe : $title;
+
+		// URL encode the subject line
+		$subject = ($subject == TRUE) ? '?'.rawurlencode($subject) : '';
+
+		// Parse attributes
+		$attributes = ($attributes == TRUE) ? self::attributes($attributes) : '';
+
+		// Encoded start of the href="" is a static encoded version of 'mailto:'
+		return '<a href="&#109;&#097;&#105;&#108;&#116;&#111;&#058;'.$safe.$subject.'"'.$attributes.'>'.$title.'</a>';
+	}
+
 	public static function stylesheet($style, $index = FALSE, $media = FALSE)
 	{
 		$compiled = '';
