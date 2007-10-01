@@ -117,9 +117,11 @@ class Database_Mysql implements Database_Driver {
 		}
 
 		$wheres = array();
+		$count = 1;
 		foreach ($key as $k => $v)
 		{
-			$prefix = ($num_wheres == 0) ? '' : $type;
+			
+			$prefix = (($num_wheres > 0) or ($count++ > 1)) ? $type : '';
 
 			if ($quote === -1)
 			{
