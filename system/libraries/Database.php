@@ -43,23 +43,30 @@ class Database_Core {
 	protected $driver;
 
 	// Un-compiled parts of the SQL query
-	protected $select    = array();
-	protected $set       = array();
-	protected $from      = array();
-	protected $join      = array();
-	protected $where     = array();
-	protected $like      = array();
-	protected $orderby   = array();
-	protected $order     = array();
-	protected $groupby   = array();
-	protected $having    = array();
-	protected $distinct  = FALSE;
-	protected $limit     = FALSE;
-	protected $offset    = FALSE;
-	protected $connected = FALSE;
-	protected $benchmark = array();
+	protected $select     = array();
+	protected $set        = array();
+	protected $from       = array();
+	protected $join       = array();
+	protected $where      = array();
+	protected $like       = array();
+	protected $orderby    = array();
+	protected $order      = array();
+	protected $groupby    = array();
+	protected $having     = array();
+	protected $distinct   = FALSE;
+	protected $limit      = FALSE;
+	protected $offset     = FALSE;
+	protected $connected  = FALSE;
+	protected $benchmark  = array();
 	protected $last_query = '';
 
+	/**
+	 * Constructor
+	 *
+	 * @access  public
+	 * @param   array
+	 * @return  void
+	 */
 	public function __construct($config = array())
 	{
 		if (empty($config))
@@ -82,9 +89,7 @@ class Database_Core {
 
 		// Parse the DSN into an array and validate it's length
 		if (count($connection = @parse_url($this->config['connection'])) !== 5)
-		{
 			throw new Kohana_Exception('database.invalid_dsn', $this->config['connection']);
-		}
 
 		// Turn the DSN into local variables
 		// NOTE: This step has to be done, because the order is defined by parse_url
@@ -236,7 +241,7 @@ class Database_Core {
 	 * @access public
 	 * @param  mixed
 	 * @param  mixed
-	 * @param  bool
+	 * @param  boolean
 	 * @return object
 	 */
 	public function where($key, $value = NULL, $quote = TRUE)
@@ -245,6 +250,7 @@ class Database_Core {
 		{
 			$quote = -1;
 		}
+		
 		$this->where = array_merge($this->where, $this->driver->where($key, $value, 'AND ', count($this->where), $quote));
 		return $this;
 	}
@@ -258,7 +264,7 @@ class Database_Core {
 	 * @access public
 	 * @param  mixed
 	 * @param  mixed
-	 * @param  bool
+	 * @param  boolean
 	 * @return object
 	 */
 	public function orwhere($key, $value = NULL, $quote = TRUE)
@@ -325,8 +331,11 @@ class Database_Core {
 			$val = trim($val);
 
 			if ($val != '')
+			{
 				$this->groupby[] = $val;
+			}
 		}
+		
 		return $this;
 	}
 
