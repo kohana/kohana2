@@ -9,8 +9,7 @@ class security {
 
 	public static function image_tags($str)
 	{
-		$str = preg_replace('#<img.*?(?:src\s*=\s*["\'](.*?)["\'].*?)?>#is', '$1', $str);
-		$str = preg_replace('#<img.*?(?:src\s*=\s*(.*?).*?)?>#is', '$1', $str);
+		$str = preg_replace('#<img\b.*?(?:src\s*=\s*["\']?([^"\'<>\s]*)["\']?[^>]*)?>#is', '$1', $str);
 
 		return trim($str);
 	}
