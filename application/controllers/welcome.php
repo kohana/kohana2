@@ -112,6 +112,19 @@ class Welcome_Controller extends Controller {
 		$this->load->library('calendar');
 		echo $this->calendar->generate();
 	}
+	function image_example() 
+	{
+		$config['source_image'] = '/var/www/dev/kohana/uploads/haha.JPG';
+		$config['create_thumb'] = TRUE;
+		$config['maintain_ratio'] = TRUE;
+		$config['width'] = 75;
+		$config['height'] = 50;
+		$this->load->library('image_lib', $config);
+		if ( ! $this->image_lib->resize())
+		{
+		    echo $this->image_lib->display_errors();
+		}
+	}
 	
 
 }

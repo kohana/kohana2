@@ -30,7 +30,7 @@
  * @package		Kohana
  * @subpackage	Libraries
  * @category	Libraries
- * @author		Rick Ellis
+ * @author		Rick Ellis, Kohana Team
  * @link		http://kohanaphp.com/user_guide/libraries/calendar.html
  */
 class Calendar_Core {
