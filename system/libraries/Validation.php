@@ -78,47 +78,25 @@ class Validation_Core {
 		Log::add('debug', 'Validation Library Initialized, instance '.self::$instances);
 	}
 
-	public function __isset($key)
-	{
-		if (isset($this->$key))
-		{
-			return TRUE;
-		}
-		elseif (substr($key, -6) === '_error')
-		{
-			// Get the field name
-			$field = substr($key, 0, -6);
-
-			// Check if any error exists
-			return (isset($this->errors[$field]) AND ! empty($this->errors[$field]));
-		}
-		elseif (isset($this->data[$key]))
-		{
-			return TRUE;
-		}
-
-		// All options have been exhausted
-		return FALSE;
-	}
-
 	public function __get($key)
 	{
 		if ( ! isset($this->$key))
 		{
 			if (substr($key, -6) === '_error')
 			{
-				$messages = '';
+				// Get the field name
+				$field = substr($key, 0, -6);
 
 				// Return the error messages for this field
-				if ($this->__isset($key))
+				$messages = FALSE;
+				if (isset($this->errors[$field]) AND ! empty($this->errors[$field]))
 				{
-					foreach($this->errors[substr($key, 0, -6)] as $error)
+					foreach($this->errors[$field] as $error)
 					{
 						// Replace the message with the error in the html error string
 						$messages .= str_replace('{message}', $error, $this->error_format).$this->newline_char;
 					}
 				}
-
 				return $messages;
 			}
 			elseif (isset($this->data[$key]))
