@@ -119,12 +119,12 @@ class html {
 		$safe = '';
 		foreach(str_split($email) as $i => $letter)
 		{
-			switch (($letter == '@') ? rand(1,2) : rand(1,3))
+			switch (($letter == '@') ? rand(1, 2) : rand(1, 3))
 			{
 				// HTML entity code
 				case 1: $safe .= '&#'.ord($letter).';'; break;
 				// Hex character code
-				case 2: $safe .= '&#x'.dechex(ord($letter)).';';  break;
+				case 2: $safe .= '&#x'.dechex(ord($letter)).';'; break;
 				// Raw (no) encoding
 				case 3: $safe .= $letter;
 			}
@@ -201,20 +201,16 @@ class html {
 	public static function attributes($attrs)
 	{
 		if (is_string($attrs))
-		{
 			return ($attrs == FALSE) ? '' : ' '.$attrs;
-		}
-		else
+
+		$compiled = '';
+
+		foreach($attrs as $key => $val)
 		{
-			$compiled = '';
-
-			foreach($attrs as $key => $val)
-			{
-				$compiled .= ' '.$key.'="'.$val.'"';
-			}
-
-			return $compiled;
+			$compiled .= ' '.$key.'="'.$val.'"';
 		}
+
+		return $compiled;
 	}
 
 } // End html class

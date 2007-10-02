@@ -32,8 +32,8 @@
  * @link        http://www.codeigniter.com/user_guide/helpers/download_helper.html
  */
 
-
 class download {
+	
 	/**
 	 * Force Download
 	 *
@@ -47,16 +47,12 @@ class download {
 	public static function force($filename = '', $data = '')
 	{
 		if ($filename == '' OR $data == '')
-		{
 			return FALSE;
-		}
 
 		// Try to determine if the filename includes a file extension.
 		// We need it in order to set the MIME type
 		if (strpos($filename, '.') === FALSE)
-		{
 			return FALSE;
-		}
 
 		// Grab the file extension
 		$x = explode('.', $filename);
@@ -73,27 +69,25 @@ class download {
 		}
 
 		// Generate the server headers
-		if (strstr($_SERVER['HTTP_USER_AGENT'], 'MSIE'))
+		header('Content-Type: "'.$mime.'"');
+		header('Content-Disposition: attachment; filename="'.$filename.'"');
+		header('Content-Transfer-Encoding: binary');
+		header('Expires: 0');
+		header('Content-Length: '.strlen($data));
+		
+		// IE headers
+		if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== FALSE)
 		{
-			header('Content-Type: "'.$mime.'"');
-			header('Content-Disposition: attachment; filename="'.$filename.'"');
-			header('Expires: 0');
 			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-			header('Content-Transfer-Encoding: binary');
 			header('Pragma: public');
-			header('Content-Length: '.strlen($data));
 		}
 		else
 		{
-			header('Content-Type: "'.$mime.'"');
-			header('Content-Disposition: attachment; filename="'.$filename.'"');
-			header('Content-Transfer-Encoding: binary');
-			header('Expires: 0');
 			header('Pragma: no-cache');
-			header('Content-Length: '.strlen($data));
 		}
 
 		echo $data;
 		return TRUE;
-	}	
+	}
+
 } // End download class
