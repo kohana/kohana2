@@ -80,21 +80,28 @@ class Validation_Core {
 
 	public function __get($key)
 	{
-		if ( ! isset($this->$key) AND substr($key, -6) === '_error')
+		if ( ! isset($this->$key))
 		{
-			// Get the field name
-			$field = substr($key, 0, -6);
-
-			// Return the error messages for this field
-			if (isset($this->errors[$field]) AND count($this->errors[$field]) > 0)
+			if (substr($key, -6) === '_error')
 			{
-				$messages = '';
-				foreach($this->errors[$field] as $error)
+				// Get the field name
+				$field = substr($key, 0, -6);
+
+				// Return the error messages for this field
+				if (isset($this->errors[$field]) AND count($this->errors[$field]) > 0)
 				{
-					// Replace the message with the error in the html error string
-					$messages .= str_replace('{message}', $error, $this->error_format).$this->newline_char;
+					$messages = '';
+					foreach($this->errors[$field] as $error)
+					{
+						// Replace the message with the error in the html error string
+						$messages .= str_replace('{message}', $error, $this->error_format).$this->newline_char;
+					}
+					return $messages;
 				}
-				return $messages;
+			}
+			elseif (isset($this->data[$key]))
+			{
+				return $this->data[$key];
 			}
 		}
 	}
