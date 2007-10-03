@@ -344,7 +344,7 @@ class Mysql_Result implements Database_Result, Iterator
 			$this->rows[] = $row;
 		}
 
-		return $this->rows();
+		return $this->rows;
 	}
 
 	public function num_rows()
