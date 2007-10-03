@@ -84,7 +84,7 @@ class Session_Database implements Session_Driver {
 		
 		if (! $this->sdb->table_exists($this->name))
 		{
-			show_error(get_class($this).'::The configured session table name was not found');
+			throw new Kohana_Exception('session.no_table', $this->name);
 		}
 		
 		if ($this->sdb)
@@ -123,14 +123,11 @@ class Session_Database implements Session_Driver {
 	 */
 	public function read($id)
 	{
-		$sql = "SELECT data 
-				FROM $this->name 
-				WHERE session_id = ?";
-		$query = $this->sdb->query($sql, array($id));
-		
+		$query = $this->sdb->from($this->name)->where('session_id', $id)->get();
+		$query->result();
 		if ($query->num_rows() > 0)
 		{
-			$row = $query->row();
+			$row = $query->current();
 			return $row->data;
 		}
 		else
@@ -155,10 +152,8 @@ class Session_Database implements Session_Driver {
 		$total_hits = 1;
 
 		// Does session exist?
-		$sql = "SELECT session_id, last_activity, total_hits, data 
-				FROM $this->name 
-				WHERE session_id = ?";
-		$query = $this->sdb->query($sql, array($id));
+		$query = $this->sdb->select('session_id, last_activity, total_hits, data')->from($this->name)->where('session_id', $id)->get();
+		$query->result();
 		
 		// Yes? Do update
 		if ($query->num_rows() > 0)
@@ -168,11 +163,10 @@ class Session_Database implements Session_Driver {
 			
 			$db_data = array('last_activity' => $last_activity, 'total_hits' => $total_hits, 'data' => $data);
 			$where = "session_id = '$id'";
-			$sql = $this->sdb->update_string($this->name, $db_data, $where);
+			$query = $this->sdb->update($this->name, $db_data, $where);
 
-			$this->sdb->query($sql);
 			// Did we succeed?
-			if ($this->sdb->affected_rows())
+			if ($query->num_rows())
 			{
 				return TRUE;
 			}
@@ -180,11 +174,10 @@ class Session_Database implements Session_Driver {
 		else // No? Add the session
 		{
 			$db_data = array('session_id'=> $id, 'last_activity' => $last_activity, 'total_hits' => $total_hits, 'data' => $data);
-			$sql = $this->sdb->insert_string($this->name, $db_data);
+			$query = $this->sdb->insert($this->name, $db_data);
 
-			$this->sdb->query($sql);
 			// Did we succeed?
-			if ($this->sdb->affected_rows())
+			if ($query->num_rows())
 			{
 				return TRUE;
 			}
@@ -205,11 +198,9 @@ class Session_Database implements Session_Driver {
 	{
 		$id = session_id();
 
-		$sql = "DELETE FROM $this->name 
-				WHERE session_id = '$id'";
-		$this->sdb->query($sql);
+		$query = $this->sdb->delete($this->name, array('session_id' => $id));
 		// Did we succeed?
-		if ($this->sdb->affected_rows())
+		if ($query->num_rows() > 0)
 		{
 			return TRUE;
 		}
@@ -231,12 +222,9 @@ class Session_Database implements Session_Driver {
 		// Get session data, using the old session id
 		$id = session_id();
 
-		$sql = "SELECT total_hits, data 
-				FROM $this->name 
-				WHERE session_id = ?";
-		$query = $this->sdb->query($sql, array($id));
-		
-		$row = $query->row();
+		$query = $this->sdb->select('total_hits, data')->from($this->name)->where('session_id', $id)->get();
+		$query->result();
+		$row = $query->current();
 		// Session exists? Then store the data
 		if ($query->num_rows() > 0)
 		{
@@ -260,7 +248,7 @@ class Session_Database implements Session_Driver {
 		$id = session_id();
 
 		$db_data = array('session_id'=> $id, 'last_activity' => $last_activity, 'total_hits' => $total_hits, 'data' => $data);
-		$sql = $this->sdb->insert_string($this->name, $db_data);
+		$sql = $this->sdb->insert($this->name, $db_data);
  
 		$this->sdb->query($sql);
 	}
@@ -284,11 +272,8 @@ class Session_Database implements Session_Driver {
 			$lifetime = ini_get('session.gc_maxlifetime');
 			$expiry = ($lifetime > 0) ? (time() - $lifetime) : (time() - 1440);
 
-			$sql = "DELETE FROM $this->name WHERE last_activity < $expiry";
-			$this->sdb->query($sql);
-		
-			return $this->sdb->affected_rows();
-			return 0;
+			$query = $this->sdb->delete($this->name, array('last_activity' => $expiry));
+			return $query->num_rows();
 		}
 		
 		return 0;
