@@ -120,7 +120,7 @@ class Database_Mysql implements Database_Driver {
 		$count = 1;
 		foreach ($key as $k => $v)
 		{
-			
+
 			$prefix = (($num_wheres > 0) or ($count++ > 1)) ? $type : '';
 
 			if ($quote === -1)
@@ -190,7 +190,7 @@ class Database_Mysql implements Database_Driver {
 	{
 		return 'LIMIT '.$offset.', '.$limit;
 	}
-	
+
 	/**
 	 * Compile the SELECT statement
 	 *
@@ -343,6 +343,8 @@ class Mysql_Result implements Database_Result, Iterator
 		{
 			$this->rows[] = $row;
 		}
+
+		return $this->rows();
 	}
 
 	public function num_rows()
@@ -354,7 +356,7 @@ class Mysql_Result implements Database_Result, Iterator
 	{
 		return $this->rows;
 	}
-	
+
 	public function insert_id()
 	{
 		return $this->insert_id;
