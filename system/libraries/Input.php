@@ -90,7 +90,7 @@ class Input_Core {
 			}
 		}
 
-		// Is $_GET data allowed? If not we'll set the $_GET to an empty array
+		// Clean $_GET data
 		if (is_array($_GET) AND count($_GET) > 0)
 		{
 			foreach($_GET as $key => $val)
@@ -99,7 +99,7 @@ class Input_Core {
 			}
 		}
 
-		// Clean $_POST Data
+		// Clean $_POST data
 		if (is_array($_POST) AND count($_POST) > 0)
 		{
 			foreach($_POST as $key => $val)
@@ -108,7 +108,7 @@ class Input_Core {
 			}
 		}
 
-		// Clean $_COOKIE Data
+		// Clean $_COOKIE data
 		if (is_array($_COOKIE) AND count($_COOKIE) > 0)
 		{
 			foreach($_COOKIE as $key => $val)
@@ -171,7 +171,7 @@ class Input_Core {
 	{
 		if ( ! preg_match('#^[a-z0-9:_/-]+$#iD', $str))
 		{
-			exit('Disallowed Key Characters.');
+			exit('Disallowed key characters in global data.');
 		}
 
 		return $str;
