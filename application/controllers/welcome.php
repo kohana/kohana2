@@ -14,7 +14,7 @@ class Welcome_Controller extends Controller {
 	function form_example()
 	{
 		$this->load->library('validation');
-		
+
 		print form::open('', array('enctype' => 'multipart/form-data'));
 
 		print form::label('imageup', 'Image Uploads').':<br/>';
@@ -24,7 +24,7 @@ class Welcome_Controller extends Controller {
 		print form::submit('upload', 'Upload!');
 
 		print form::close();
-		
+
 		if ( ! empty($_POST))
 		{
 			$this->validation->set_rules('imageup', 'required|upload[gif,png,jpg,500K]', 'Image Upload');
@@ -74,8 +74,17 @@ class Welcome_Controller extends Controller {
 		$this->load->library('database');
 		$this->load->database();
 
-
 		$query = $this->database->select('title')->from('pages')->get();
+
+		$query->result();
+
+		foreach($query as $item)
+		{
+			print_r($item);
+		}
+
+		die;
+
 		print "Numrows: ".$query->num_rows()."<br/>";
 		print "<pre>".print_r($this->database, TRUE)."</pre><br/>";
 
@@ -119,7 +128,7 @@ class Welcome_Controller extends Controller {
 		$this->load->library('calendar');
 		echo $this->calendar->generate();
 	}
-	function image_example() 
+	function image_example()
 	{
 		$config['source_image'] = '/var/www/dev/kohana/uploads/haha.JPG';
 		$config['create_thumb'] = TRUE;
@@ -132,6 +141,6 @@ class Welcome_Controller extends Controller {
 		    echo $this->image_lib->display_errors();
 		}
 	}
-	
+
 
 }

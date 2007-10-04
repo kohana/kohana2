@@ -20,7 +20,7 @@
 /**
  * Validation Class
  *
- * $Id: Encrypt.php 475 2007-09-03 02:28:49Z Shadowhand $
+ * $Id$
  *
  * @package        Kohana
  * @subpackage     Libraries
