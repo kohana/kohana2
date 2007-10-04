@@ -88,11 +88,11 @@ class Kohana {
 		// This function can only be run once
 		if ($run === TRUE) return;
 
-		// Save buffering level
-		self::$buffer_level = ob_get_level();
-
 		// Start output buffering
 		ob_start(array('Kohana', 'output'));
+
+		// Save buffering level
+		self::$buffer_level = ob_get_level();
 
 		// Set autoloader
 		spl_autoload_register(array('Kohana', 'auto_load'));
@@ -250,11 +250,14 @@ class Kohana {
 			Log::add($error, $message.' in file: '.$file.' on line '.$line);
 		}
 
-		// Flush the entire buffer here, to ensure the error is displayed
-		while(ob_get_level()) ob_end_clean();
+		if (ob_get_level() > self::$buffer_level)
+		{
+			// Flush the entire buffer here, to ensure the error is displayed
+			while(ob_get_level() > self::$buffer_level) ob_end_clean();
+		}
 
-		// Re-start the buffer
-		ob_start(array('Kohana', 'output'));
+		// Clear out the output buffer
+		ob_clean();
 
 		// Send the 500 header
 		header('HTTP/1.1 500 Internal Server Error');
