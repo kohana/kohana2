@@ -41,7 +41,7 @@ class View_Core {
 
 	public function __construct($name, $data = NULL)
 	{
-		if (preg_match('/\.(gif|jpg|png|swf|js|css)$/Di', $name, $type))
+		if (preg_match('/\.([g|t]if|jpe?g|png|swf|js|css)$/Di', $name, $type))
 		{
 			$type = $type[1];
 

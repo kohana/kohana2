@@ -1,4 +1,4 @@
-<?php  if (!defined('SYSPATH')) exit('No direct script access allowed');
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Kohana
  *

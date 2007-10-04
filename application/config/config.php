@@ -60,6 +60,17 @@ $config['permitted_uri_chars'] = 'a-z 0-9~%.:_-';
 
 /*
 | -----------------------------------------------------------------------------
+| Global XSS Filtering
+| -----------------------------------------------------------------------------
+|
+| Enable or disable global XSS (Cross-Site-Scripting) attack filtering on all
+| user input, include POST, GET, and FILES.
+|
+*/
+$config['global_xss_filtering'] = TRUE;
+
+/*
+| -----------------------------------------------------------------------------
 | Locale
 | -----------------------------------------------------------------------------
 |
