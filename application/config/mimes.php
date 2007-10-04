@@ -1,12 +1,10 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
-/*
-| -------------------------------------------------------------------
-| MIME TYPES
-| -------------------------------------------------------------------
-| This file contains an array of mime types.  It is used by the
-| Upload class to help identify allowed file types.
-*/
-
+/**
+ * Mime Types
+ * -------------------------------------------------------------------
+ * This file contains an array of mime types. Our list is generally
+ * more complete and robust than "mime.magic"
+ */
 $config = array
 (
 	'ai'    => array('application/postscript'),

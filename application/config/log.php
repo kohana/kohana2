@@ -1,44 +1,27 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
-|--------------------------------------------------------------------------
-| Error Logging Threshold
-|--------------------------------------------------------------------------
-|
-| If you have enabled error logging, you can set an error threshold to 
-| determine what gets logged. Threshold options are:
-| You can enable error logging by setting a threshold over zero. The
-| threshold determines what gets logged. Threshold options are:
-|
-|	0 = Disables logging, Error logging TURNED OFF
-|	1 = Error Messages (including PHP errors)
-|	2 = Debug Messages
-|	3 = Informational Messages
-|	4 = All Messages
-|
-| For a live site you'll usually only enable Errors (1) to be logged otherwise
-| your log files will fill up very fast.
-|
-*/
-$config['threshold'] = 4;
-
-/*
-|--------------------------------------------------------------------------
-| Error Logging Directory Path
-|--------------------------------------------------------------------------
-|
-| Leave this BLANK unless you would like to set something other than the default
-| application/logs/ folder.  Use a full server path with trailing slash.
-|
-*/
-$config['directory'] = 'logs';
-
-/*
-|--------------------------------------------------------------------------
-| Date Format for Logs
-|--------------------------------------------------------------------------
-|
-| Each item that is logged has an associated date. You can use PHP date
-| codes to set your own date formatting
-|
-*/
-$config['format'] = 'Y-m-d H:i:s';
+/**
+ * Message Logging
+ * ----------------------------------------------------------------------------
+ * If you have enabled message logging, you can set a threshold to determine
+ * what gets logged. Setting the threshold to 0 will disable logging completely.
+ *
+ *   0 = Disables logging completely
+ *   1 = Error Messages (including PHP errors)
+ *   2 = Debug Messages
+ *   3 = Informational Messages
+ *   4 = All Messages
+ *
+ * In production, you will want to disable "display_errors" in your index file,
+ * and set the threshold to enable only errors (1).
+ *
+ * @param integer threshold  - Message threshold
+ * @param string  directory  - Log file directory, relative to application/, or absolute
+ * @param string  format     - PHP date format for timestamps, see: http://php.net/date
+ *
+ */
+$config = array
+(
+	'threshold' => 4,
+	'directory' => 'logs',
+	'format'    => 'Y-m-d H:i:s'
+);

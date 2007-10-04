@@ -1,15 +1,13 @@
 <?php  if (!defined('SYSPATH')) exit('No direct script access allowed');
-/*
-| -------------------------------------------------------------------
-| USER AGENT TYPES
-| -------------------------------------------------------------------
-| This file contains four arrays of user agent data.  It is used by the
-| User Agent Class to help identify browser, platform, robot, and
-| mobile device data.  The array keys are used to identify the device
-| and the array values are used to set the actual name of the item.
-|
-*/
-$config['platforms'] = array
+/**
+ * User Agents
+ * -------------------------------------------------------------------
+ * This file contains four arrays of user agent data.  It is used by the
+ * User Agent library to help identify browser, platform, robot, and
+ * mobile device data. The array keys are used to identify the device
+ * and the array values are used to set the actual name of the item.
+ */
+$config['platform'] = array
 (
 	'windows nt 6.0' => 'Windows Longhorn',
 	'windows nt 5.2' => 'Windows 2003',
@@ -46,7 +44,7 @@ $config['platforms'] = array
 
 // The order of this array should NOT be changed. Many browsers return
 // multiple browser types so we want to identify the sub-type first.
-$config['browsers'] = array
+$config['browser'] = array
 (
 	'Opera'             => 'Opera',
 	'MSIE'              => 'Internet Explorer',
@@ -59,18 +57,18 @@ $config['browsers'] = array
 	'Camino'            => 'Camino',
 	'Netscape'          => 'Netscape',
 	'OmniWeb'           => 'OmniWeb',
-	'Mozilla'           => 'Mozilla',
 	'Safari'            => 'Safari',
+	'Mozilla'           => 'Mozilla',
 	'Konqueror'         => 'Konqueror',
 	'icab'              => 'iCab',
-	'Lynx'              => 'Lynx',
-	'Links'             => 'Links',
+	'lynx'              => 'Lynx',
+	'links'             => 'Links',
 	'hotjava'           => 'HotJava',
 	'amaya'             => 'Amaya',
 	'IBrowse'           => 'IBrowse'
 );
 
-$config['mobiles'] = array
+$config['mobile'] = array
 (
 	'mobileexplorer' => 'Mobile Explorer',
 	'openwave'       => 'Open Wave',

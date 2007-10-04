@@ -4,6 +4,8 @@ class Welcome_Controller extends Controller {
 
 	function index()
 	{
+		$this->load->library('user_agent');
+
 		foreach(get_class_methods(__CLASS__) as $method)
 		{
 			if ( ! preg_match('/_example$/', $method)) continue;
@@ -118,16 +120,26 @@ class Welcome_Controller extends Controller {
 		echo '<hr />PunBB style:    '.$this->pagination->create_links('punbb');
 		echo "done in {execution_time} seconds";
 	}
+
 	function user_agent_example()
 	{
 		$this->load->library('user_agent');
-		echo $this->user_agent;
+
+		foreach(array('agent', 'browser', 'version') as $key)
+		{
+			print $key.': '.$this->user_agent->$key.'<br/>'."\n";
+		}
+
+		print "<br/><br/>\n";
+		print "done in {execution_time} seconds";
 	}
+
 	function calendar_example()
 	{
 		$this->load->library('calendar');
 		echo $this->calendar->generate();
 	}
+
 	function image_example()
 	{
 		$config['source_image'] = '/var/www/dev/kohana/uploads/haha.JPG';

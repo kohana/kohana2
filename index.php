@@ -7,50 +7,68 @@
 | understand the configuration parameters below, please consult the Kohana
 | User Guide for more information.
 | -----------------------------------------------------------------------------
-| User Guide: http://kohanaphp.com/user_guide/kohana/installation.html
+| User Guide: http://kohanaphp.com/user_guide/en/kohana/installation.html
+| -----------------------------------------------------------------------------
+| License:    http://kohanaphp.com/user_guide/en/license.html
 | -----------------------------------------------------------------------------
 */
 
-// Set the error reporting level
-@error_reporting(E_ALL);
+/**
+ * Set the error reporting level. E_ALL is a good default.
+ * NOTE: Kohana will always ignore E_NOTICE errors
+ */
+error_reporting(E_ALL);
 
-// Enable or disable error reporting
-@ini_set('display_errors', TRUE);
+/**
+ * Enable or disable error reporting. You should always disable this in production.
+ */
+ini_set('display_errors', TRUE);
 
-// Kohana application directory
+/**
+ * Kohana application directory. This directory must contain a config/ directory.
+ */
 $kohana_application = 'application';
 
-// Kohana system directory
+/**
+ * Kohana system directory. This directory must contain the core/ directory.
+ */
 $kohana_system = 'system';
+
+/**
+ * If you have to rename all of the .php files distributed with Kohana to a
+ * different filename, you set the new extension here. Most people will never
+ * use this option.
+ */
+define('EXT', '.php');
 
 /*
 | -----------------------------------------------------------------------------
 | PLEASE DO NOT EDIT BELOW THIS LINE, unless you understand the repercussions!
 | -----------------------------------------------------------------------------
-| User Guide: http://kohanaphp.com/user_guide/general/bootstrapping.html
+| User Guide: http://kohanaphp.com/user_guide/en/general/bootstrapping.html
 | -----------------------------------------------------------------------------
 | $Id$
 */
-// Absolute path names for include purposes
-define('APPPATH', str_replace('\\', '/', realpath($kohana_application)).'/'); unset($kohana_application);
-define('SYSPATH', str_replace('\\', '/', realpath($kohana_system)).'/'); unset($kohana_system);
-// Information about the front controller
-$docroot = str_replace('\\', '/', realpath(__FILE__));
-define('KOHANA',  pathinfo($docroot, PATHINFO_BASENAME));
-define('DOCROOT', pathinfo($docroot, PATHINFO_DIRNAME).'/');
-define('EXT', '.'.pathinfo($docroot, PATHINFO_EXTENSION));
-unset($docroot);
-// Validate APPPATH
+$docroot = pathinfo(str_replace('\\', '/', realpath(__FILE__)));
+
+define('KOHANA',  $docroot['basename']);
+define('DOCROOT', $docroot['dirname'].'/');
+
+define('APPPATH', str_replace('\\', '/', realpath($kohana_application)).'/');
+define('SYSPATH', str_replace('\\', '/', realpath($kohana_system)).'/');
+
+unset($docroot, $kohana_application, $kohana_system);
+
 (is_dir(APPPATH) AND is_dir(APPPATH.'/config')) or die
 (
 	'Your <code>$application_path</code> does not exist. '.
 	'Set a valid <code>$application_path</code> in <kbd>index.php</kbd> and refresh the page.'
 );
-// Validate SYSPATH
+
 (is_dir(SYSPATH) AND file_exists(SYSPATH.'/core/'.'Bootstrap'.EXT)) or die
 (
 	'Your <code>$kohana_system</code> does not exist. '.
 	'Set a valid <code>$kohana_system</code> in <kbd>index.php</kbd> and refresh the page.'
 );
-// Buckle those bootstraps!
+
 require_once SYSPATH.'core/Bootstrap'.EXT;

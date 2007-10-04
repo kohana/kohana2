@@ -27,444 +27,173 @@
  *
  * Identifies the platform, browser, robot, or mobile devise of the browsing agent
  *
- * @package		Kohana
- * @subpackage	Libraries
- * @category	User Agent
- * @author		Rick Ellis, Kohana Team
- * @link		http://kohanaphp.com/user_guide/libraries/user_agent.html
+ * @package     Kohana
+ * @subpackage  Libraries
+ * @category    User Agent
+ * @author      Rick Ellis, Kohana Team
+ * @link        http://kohanaphp.com/user_guide/en/libraries/user_agent.html
  */
 class User_Agent_Core {
 
-	private $agent		= NULL;
+	public static $agent = NULL;
 
-	private $is_browser	= FALSE;
-	private $is_robot	= FALSE;
-	private $is_mobile	= FALSE;
+	protected static $referrer  = '';
+	protected static $languages = array();
+	protected static $charsets  = array();
 
-	private $languages	= array();
-	private $charsets	= array();
-
-	private $platforms	= array();
-	private $browsers	= array();
-	private $mobiles	= array();
-	private $robots		= array();
-
-	private $platform	= '';
-	private $browser	= '';
-	private $version	= '';
-	private $mobile		= '';
-	private $robot		= '';
+	protected $platform = '';
+	protected $browser  = '';
+	protected $version  = '';
+	protected $mobile   = '';
+	protected $robot    = '';
 
 	/**
 	 * Constructor
 	 *
-	 * Sets the User Agent and runs the compilation routine
+	 * Loads user agent data
 	 *
-	 * @access	public
-	 * @return	void
+	 * @access  public
+	 * @return  void
 	 */
 	public function __construct()
 	{
-		if (isset($_SERVER['HTTP_USER_AGENT']))
+		if (is_null(self::$agent) AND isset($_SERVER['HTTP_USER_AGENT']))
 		{
-			$this->agent = trim($_SERVER['HTTP_USER_AGENT']);
+			self::$agent = trim($_SERVER['HTTP_USER_AGENT']);
 		}
 
-		if ( ! is_null($this->agent))
+		if (self::$agent == '')
 		{
-			if ($this->load_agent_file())
-			{
-				$this->compile_data();
-			}
-		}
-
-		Log::add('debug', 'Table Class Initialized');
-	}
-
-	/**
-	 * Compile the User Agent Data
-	 *
-	 * @access	private
-	 * @return	boolean
-	 */
-	private function load_agent_file()
-	{
-		$config = Config::item('user_agents');
-		
-		if (empty($config))
+			Log::add('debug', 'Could not determine user agent type.');
 			return FALSE;
-
-		$return = FALSE;
-
-		if (isset($config['platforms']))
-		{
-			$this->platforms = $config['platforms'];
-			unset($config['platforms']);
-			$return = TRUE;
 		}
 
-		if (isset($config['browsers']))
+		// Set the user agent data
+		foreach(Config::item('user_agents') as $type => $data)
 		{
-			$this->browsers = $config['browsers'];
-			unset($config['browsers']);
-			$return = TRUE;
-		}
-
-		if (isset($config['browsers']))
-		{
-			$this->mobiles = $config['mobiles'];
-			unset($config['mobiles']);
-			$return = TRUE;
-		}
-
-		if (isset($config['robots']))
-		{
-			$this->robots = $config['robots'];
-			unset($config['robots']);
-			$return = TRUE;
-		}
-
-		return $return;
-	}
-
-	/**
-	 * Compile the User Agent Data
-	 *
-	 * @access	private
-	 * @return	boolean
-	 */
-	private function compile_data()
-	{
-		$this->set_platform();
-
-		foreach (array('set_browser', 'set_robot', 'set_mobile') as $function)
-		{
-			if ($this->$function() === TRUE)
-				break;
-		}
-	}
-
-	/**
-	 * Set the Platform
-	 *
-	 * @access	private
-	 * @return	mixed
-	 */
-	private function set_platform()
-	{
-		if (is_array($this->platforms) AND count($this->platforms) > 0)
-		{
-			foreach ($this->platforms as $key => $val)
+			if (isset($this->$type))
 			{
-				if (stristr($this->agent, $key) !== FALSE)
+				foreach($data as $agent => $name)
 				{
-					$this->platform = $val;
-					return TRUE;
+					if (stripos(self::$agent, $agent) !== FALSE)
+					{
+						if ($type == 'browser' AND preg_match('|'.preg_quote($agent).'[^0-9.]*([0-9.]+)|i', self::$agent, $match))
+						{
+							$this->version = $match[1];
+							unset($match);
+						}
+						$this->$type = $name;
+						break;
+					}
 				}
 			}
 		}
-		
-		$this->platform = 'Unknown Platform';
+
+		// Set the accepted languages
+		if (empty(self::$languages) AND ! empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
+		{
+			self::$languages = explode(',', preg_replace('/;q=.+/i', '', trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])));
+			array_map('trim', self::$languages);
+		}
+
+		// Set the accepted charsets
+		if (empty(self::$charsets) AND ! empty($_SERVER['HTTP_ACCEPT_CHARSET']))
+		{
+			self::$charsets = explode(',', preg_replace('/;q=.+/i', '', trim($_SERVER['HTTP_ACCEPT_CHARSET'])));
+			array_map('trim', self::$languages);
+		}
+
+		// Set the referrer
+		if (empty(self::$referrer) AND ! empty($_SERVER['HTTP_REFERER']))
+		{
+			self::$referrer = trim($_SERVER['HTTP_REFERER']);
+		}
+
+		Log::add('debug', 'User Agent Class Initialized');
 	}
 
 	/**
-	 * Set the Browser
+	 * Fetch information about the user agent, examples:
 	 *
-	 * @access	private
-	 * @return	boolean
-	 */
-	private function set_browser()
-	{
-		if (is_array($this->browsers) AND count($this->browsers) > 0)
-		{
-			foreach ($this->browsers as $key => $val)
-			{
-				if (preg_match('|'.preg_quote($key).'[^0-9.]*([0-9.]+)|i', $this->agent, $match))
-				{
-					$this->is_browser = TRUE;
-					$this->version = $match[1];
-					$this->browser = $val;
-					$this->set_mobile();
-					return TRUE;
-				}
-			}
-		}
-		
-		return FALSE;
-	}
-
-	/**
-	 * Set the Robot
+	 *   is_browser, is_mobile, is_robot
+	 *   agent, browser, mobile, version, referrer
 	 *
-	 * @access	private
-	 * @return	boolean
+	 * @access  public
+	 * @return  mixed
 	 */
-	private function set_robot()
+	public function __get($key)
 	{
-		if (is_array($this->robots) AND count($this->robots) > 0)
+		if (empty($key))
 		{
-			foreach ($this->robots as $key => $val)
-			{
-				if (stristr($this->agent, $key) !== FALSE)
-				{
-					$this->is_robot = TRUE;
-					$this->robot = $val;
-					return TRUE;
-				}
-			}
+			return;
 		}
-		
-		return FALSE;
-	}
-
-	/**
-	 * Set the Mobile Device
-	 *
-	 * @access	private
-	 * @return	boolean
-	 */
-	private function set_mobile()
-	{
-		if (is_array($this->mobiles) AND count($this->mobiles) > 0)
+		elseif (strpos('is_', $key) === 0)
 		{
-			foreach ($this->mobiles as $key => $val)
-			{
-				if ((strpos(strtolower($this->agent), $key)) !== FALSE)
-				{
-					$this->is_mobile = TRUE;
-					$this->mobile = $val;
-					return TRUE;
-				}
-			}
+			$key = substr($key, 3);
+			return isset($this->$key) ? (bool) $this->$key : FALSE;
 		}
-		return FALSE;
-	}
-
-	/**
-	 * Set the accepted languages
-	 *
-	 * @access	private
-	 * @return	void
-	 */
-	private function set_languages()
-	{
-		if ((count($this->languages) == 0) AND isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) AND $_SERVER['HTTP_ACCEPT_LANGUAGE'] != '')
+		elseif (isset($this->$key))
 		{
-			$languages = preg_replace('/;q=.+/i', '', trim($_SERVER['HTTP_ACCEPT_LANGUAGE']));
-
-			$this->languages = explode(',', $languages);
+			return $this->$key;
 		}
-
-		if (count($this->languages) == 0)
+		elseif (isset(self::$$key))
 		{
-			$this->languages = array('Undefined');
+			return self::$$key;
+		}
+		else
+		{
+			return FALSE;
 		}
 	}
 
 	/**
-	 * Set the accepted character sets
+	 * So that users can use $user_agent->is_robot() or $user_agent->is_robot
 	 *
-	 * @access	private
-	 * @return	void
+	 * @access  public
+	 * @return  mixed
 	 */
-	private function set_charsets()
+	public function __call($func, $args = FALSE)
 	{
-		if ((count($this->charsets) == 0) AND isset($_SERVER['HTTP_ACCEPT_CHARSET']) AND $_SERVER['HTTP_ACCEPT_CHARSET'] != '')
-		{
-			$charsets = preg_replace('/;q=.+/i', '', trim($_SERVER['HTTP_ACCEPT_CHARSET']));
-
-			$this->charsets = explode(',', $charsets);
-		}
-
-		if (count($this->charsets) == 0)
-		{
-			$this->charsets = array('Undefined');
-		}
+		return $this->__get($func);
 	}
 
 	/**
-	 * Is Browser
+	 * Returns the full user agent string when the object is turned into a string.
 	 *
-	 * @access	public
-	 * @return	boolean
+	 * @access  public
+	 * @return  string
 	 */
-	public function is_browser()
-	{
-		return $this->is_browser;
-	}
-
-	/**
-	 * Is Robot
-	 *
-	 * @access	public
-	 * @return	boolean
-	 */
-	public function is_robot()
-	{
-		return $this->is_robot;
-	}
-
-	/**
-	 * Is Mobile
-	 *
-	 * @access	public
-	 * @return	boolean
-	 */
-	public function is_mobile()
-	{
-		return $this->is_mobile;
-	}
-
-	/**
-	 * Is this a referral from another site?
-	 *
-	 * @access	public
-	 * @return	boolean
-	 */
-	public function is_referral()
-	{
-		return (isset($_SERVER['HTTP_REFERER']) OR $_SERVER['HTTP_REFERER'] == '');
-	}
-
-	/**
-	 * Agent String
-	 *
-	 * @access	public
-	 * @return	string
-	 */
-	public function agent_string()
-	{
-		return $this->agent;
-	}
-
-	/**
-	 * Get Platform
-	 *
-	 * @access	public
-	 * @return	string
-	 */
-	public function platform()
-	{
-		return $this->platform;
-	}
-
-	/**
-	 * Get Browser Name
-	 *
-	 * @access	public
-	 * @return	string
-	 */
-	public function browser()
+	public function __toString()
 	{
 		return $this->browser;
 	}
 
 	/**
-	 * Get the Browser Version
-	 *
-	 * @access	public
-	 * @return	string
-	 */
-	public function version()
-	{
-		return $this->version;
-	}
-
-	/**
-	 * Get The Robot Name
-	 *
-	 * @access	public
-	 * @return	string
-	 */
-	public function robot()
-	{
-		return $this->robot;
-	}
-
-	/**
-	 * Get the Mobile Device
-	 *
-	 * @access	public
-	 * @return	string
-	 */
-	public function mobile()
-	{
-		return $this->mobile;
-	}
-
-	/**
-	 * Get the referrer
-	 *
-	 * @access	public
-	 * @return	boolean
-	 */
-	function referrer()
-	{
-		return ( ! isset($_SERVER['HTTP_REFERER']) OR $_SERVER['HTTP_REFERER'] == '') ? '' : trim($_SERVER['HTTP_REFERER']);
-	}
-
-	/**
-	 * Get the accepted languages
-	 *
-	 * @access	public
-	 * @return	array
-	 */
-	public function languages()
-	{
-		if (count($this->languages) == 0)
-		{
-			$this->set_languages();
-		}
-
-		return $this->languages;
-	}
-
-	/**
-	 * Get the accepted Character Sets
-	 *
-	 * @access	public
-	 * @return	array
-	 */
-	public function charsets()
-	{
-		if (count($this->charsets) == 0)
-		{
-			$this->set_charsets();
-		}
-
-		return $this->charsets;
-	}
-
-	/**
 	 * Test for a particular language
 	 *
-	 * @access	public
-	 * @return	boolean
+	 * @access  public
+	 * @return  boolean
 	 */
 	public function accept_lang($lang = 'en')
 	{
-		return (in_array(strtolower($lang), $this->languages(), TRUE));
+		if (empty($lang) OR ! is_string($lang))
+			return FLASE;
+
+		return (in_array(strtolower($lang), self::$languages));
 	}
 
 	/**
 	 * Test for a particular character set
 	 *
-	 * @access	public
-	 * @return	boolean
+	 * @access  public
+	 * @return  boolean
 	 */
 	public function accept_charset($charset = 'utf-8')
 	{
-		return (in_array(strtolower($charset), $this->charsets(), TRUE));
+		if (empty($charset) OR ! is_string($charset))
+			return FALSE;
+
+		return (in_array(strtolower($charset), $this->charsets()));
 	}
-	
-	/**
-	 * Returns the full user agent string when the object is turned into a string.
-	 *
-	 * @access public
-	 * @return string
-	 */
-	public function __toString() {
-		return $this->agent;
-	}
-	
-} // End User_agent Class
+
+} // End User_Agent Class

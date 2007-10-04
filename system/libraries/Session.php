@@ -91,6 +91,7 @@ class Session_Core {
 		// Create or load a session
 		$this->create();
 
+		// Close the session just before flushing the output buffer
 		Event::add('system.pre_output', 'session_write_close');
 
 		Log::add('debug', 'Session Class Initialized');
