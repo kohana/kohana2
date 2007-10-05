@@ -63,14 +63,15 @@ final class Benchmark {
 	 * Get the elapsed time for all benchmark points
 	 *
 	 * @access  public
+	 * @param   integer
 	 * @return  array
 	 */
-	public static function get_all()
+	public static function get_all($decimals = 4)
 	{
 		$benchmarks = array();
-		foreach (self::$marks as $name => $times)
+		foreach (self::$marks as $name)
 		{
-			$benchmarks[$name] = self::get($name);
+			$benchmarks[$name] = self::get($name, $decimals);
 		}
 
 		return $benchmarks;

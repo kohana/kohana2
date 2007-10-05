@@ -310,7 +310,7 @@ class Database_Mysql implements Database_Driver {
  	*/   
 	public function list_tables()
 	{
-		$sql = "SHOW TABLES FROM `".$this->db_config['connection']['database']."`";
+		$sql = 'SHOW TABLES FROM `'.$this->db_config['connection']['database'].'`';
 		$query = $this->query($sql);
 		$query = $query->result();
 		
