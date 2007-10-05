@@ -69,7 +69,7 @@ final class Benchmark {
 	public static function get_all($decimals = 4)
 	{
 		$benchmarks = array();
-		foreach (self::$marks as $name)
+		foreach (self::$marks as $name => $times)
 		{
 			$benchmarks[$name] = self::get($name, $decimals);
 		}
