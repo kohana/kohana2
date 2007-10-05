@@ -410,6 +410,7 @@ class Input_Core {
 		// * Increased regex readability:
 		//   * Used delimeters that aren't found in the pattern
 		//   * Removed all unneeded escapes
+		//   * Deleted U modifiers and swapped greediness where needed
 		// * Increased regex speed:
 		//   * Made capturing parentheses non-capturing where possible
 		//   * Removed parentheses where possible
@@ -426,16 +427,16 @@ class Input_Core {
 		$string = html_entity_decode($string, ENT_COMPAT, 'UTF-8');
 
 		// remove any attribute starting with "on" or xmlns
-		$string = preg_replace('#(<[^>]+[\x00-\x20"\'])(?:on|xmlns)[^>]*>#iUu', '$1>', $string);
+		$string = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*>#iu', '$1>', $string);
 		// remove javascript: and vbscript: protocol
-		$string = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iUu', '$1=$2nojavascript...', $string);
-		$string = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iUu', '$1=$2novbscript...', $string);
-		$string = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#Uu', '$1=$2nomozbinding...', $string);
+		$string = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $string);
+		$string = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2novbscript...', $string);
+		$string = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u', '$1=$2nomozbinding...', $string);
 		//<span style="width: expression(alert('Ping!'));"></span> 
 		// only works in ie...
-		$string = preg_replace('#(<[^>]+)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*expression[\x00-\x20]*\([^>]*>#iU', '$1>', $string);
-		$string = preg_replace('#(<[^>]+)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*behaviour[\x00-\x20]*\([^>]*>#iU', '$1>', $string);
-		$string = preg_replace('#(<[^>]+)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*>#iUu', '$1>', $string);
+		$string = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*>#i', '$1>', $string);
+		$string = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*>#i', '$1>', $string);
+		$string = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*>#iu', '$1>', $string);
 		//remove namespaced elements (we do not need them...)
 		$string = preg_replace('#</*\w+:\w[^>]*>#i', '',$string);
 		//remove really unwanted tags
