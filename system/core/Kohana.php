@@ -169,7 +169,7 @@ class Kohana {
 		// Enable routing
 		Event::add('system.routing', array('Router', 'setup'));
 
-		// Enabel loading a Kohana instance
+		// Enable loading a Kohana instance
 		Event::add('system.execute', array('Kohana', 'instance'));
 
 		// Enable log writing if the log threshold is enabled
