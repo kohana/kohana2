@@ -24,7 +24,7 @@
  */
 final class Event {
 
-	public static $events = array();
+	private static $events = array();
 
 	/**
 	 * Add an event
@@ -39,7 +39,55 @@ final class Event {
 		if ($name == FALSE OR $callback == FALSE)
 			return FALSE;
 
+		if (empty(self::$events[$name]))
+			self::$events[$name] = array();
+
+		if (in_array($callback, self::$events))
+			return FALSE;
+
 		self::$events[$name][] = $callback;
+	}
+
+
+	/**
+	 * Fetch events
+	 *
+	 * @access public
+	 * @param  string
+	 * @return mixed
+	 */
+	public static function get($name)
+	{
+		return empty(self::$events[$name]) ? array() : self::$events[$name];
+	}
+
+	/**
+	 * Clear an event
+	 *
+	 * @access public
+	 * @param  string
+	 * @param  callback
+	 * @return void
+	 */
+	public static function clear($name, $callback = FALSE)
+	{
+		if ($callback == FALSE)
+		{
+			self::$events[$name] = array();
+		}
+		else
+		{
+			if (isset(self::$events[$name]))
+			{
+				foreach(self::$events[$name] as $i => $event_callback)
+				{
+					if ($callback == $event_callback)
+					{
+						unset(self::$events[$name][$i]);
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -50,24 +98,17 @@ final class Event {
 	 * @param   array
 	 * @return  mixed
 	 */
-	public static function run($name, $args = array())
+	public static function run($name)
 	{
 		if ($name == FALSE)
 			return FALSE;
 
-		if (isset(self::$events[$name]) AND count(self::$events[$name]))
+		$args = func_get_args();
+		$args = (empty($args) OR count($args) == 1) ? array() : array_slice($args, 1);
+
+		foreach(self::get($name) as $callback)
 		{
-			foreach(array_reverse(self::$events[$name]) as $event)
-			{
-				if ($args == TRUE)
-				{
-					call_user_func_array($event, (array) $args);
-				}
-				else
-				{
-					call_user_func($event);
-				}
-			}
+			call_user_func_array($callback, $args);
 		}
 	}
 

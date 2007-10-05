@@ -15,7 +15,12 @@
  * @filesource
  */
 
-// ----------------------------------------------------------------------------
+require SYSPATH.'core/utf8'.EXT;
+require SYSPATH.'core/Event'.EXT;
+require SYSPATH.'core/Config'.EXT;
+require SYSPATH.'core/Log'.EXT;
+
+Event::add('system.setup', array('Kohana', 'setup'));
 
 /**
  * Kohana class
@@ -126,9 +131,6 @@ class Kohana {
 		// Set execption handler
 		set_exception_handler(array('Kohana', 'exception_handler'));
 
-		// Enable log writing if the log threshold is enabled
-		(Config::item('log.threshold') > 0) and Event::add('system.shutdown', array('Log', 'write'));
-
 		// Set shutdown handler to run the 'system.shutdown' event
 		register_shutdown_function(array('Event', 'run'), 'system.shutdown');
 
@@ -141,6 +143,43 @@ class Kohana {
 
 			date_default_timezone_set($timezone);
 		}
+
+		if ($hooks = Config::item('hooks.enable'))
+		{
+			// All hooks are enabled, we must build an array of filenames
+			if ( ! is_array($hooks))
+			{
+				$hooks = array();
+				foreach(Config::include_paths() as $path)
+				{
+					$files = glob($path.'hooks/*'.EXT);
+
+					if ( ! empty($files))
+					{
+						$hooks = array_merge($hooks, $files);
+					}
+				}
+			}
+
+			// Loop through all the hooks and load them
+			foreach($hooks as $file)
+			{
+				Log::add('debug', 'Loading hook'.$file);
+				include $file;
+			}
+		}
+
+		// Enable log writing if the log threshold is enabled
+		if(Config::item('log.threshold') > 0)
+		{
+			Event::add('system.shutdown', array('Log', 'write'));
+		}
+
+		// Enable routing
+		Event::add('system.routing', array('Router', 'setup'));
+
+		// Enabel loading a Kohana instance
+		Event::add('system.execute', array('Kohana', 'instance'));
 
 		// Setup is complete
 		$run = TRUE;
@@ -159,13 +198,65 @@ class Kohana {
 	{
 		if (self::$instance == FALSE)
 		{
-			require (Router::$directory.Router::$controller.EXT);
+			// Run system.pre_controller
+			Event::run('system.pre_controller');
+
+			// Include the Controller file
+			require Router::$directory.Router::$controller.EXT;
 
 			// Set controller class name
 			$controller = ucfirst(Router::$controller).'_Controller';
 
-			// Load the controller
-			$controller = new $controller();
+			try
+			{
+				// Load the controller
+				$controller = new $controller();
+			}
+			catch (Kohana_Exception $exception)
+			{
+				Kohana::show_404();
+				return;
+			}
+
+			if (method_exists($controller, '_remap'))
+			{
+				// Change arguments to be $method, $arguments.
+				// This makes _remap capable of being a much more effecient dispatcher
+				Router::$arguments = array(Router::$method, Router::$arguments);
+				// Set the method to _remap
+				Router::$method = '_remap';
+			}
+			elseif (method_exists($controller, Router::$method))
+			{
+				(Router::$method !== 'kohana_include_view') or trigger_error
+				(
+					'This method cannot be accessed directly.',
+					E_USER_ERROR
+				);
+			}
+			elseif (method_exists($controller, '_default'))
+			{
+				// Change arguments to be $method, $arguments.
+				// This makes _default a much more effecient 404 handler
+				Router::$arguments = array(Router::$method, Router::$arguments);
+				// Set the method to _default
+				Router::$method = '_default';
+			}
+			else
+			{
+				$controller->show_404();
+			}
+			if (count(Router::$arguments) > 0)
+			{
+				call_user_func_array(array(Kohana::instance(), Router::$method), Router::$arguments);
+			}
+			else
+			{
+				call_user_func(array(Kohana::instance(), Router::$method));
+			}
+
+			// Run system.pre_controller
+			Event::run('system.post_controller');
 		}
 
 		return self::$instance;
@@ -183,19 +274,8 @@ class Kohana {
 		// Fetch memory usage in MB
 		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
 
-		// Bind the output to this output
-		self::$output =& $output;
-
-		// Run the pre_output event
-		// --------------------------------------------------------------------
-		// This can be used for functions that require completion before headers
-		// are sent. One example is cookies, which are sent with the headers,
-		// and will trigger errors if you try to set them after headers.
-		// --------------------------------------------------------------------
-		Event::run('system.pre_output');
-
 		// Replace the global template variables
-		self::$output = str_replace(
+		$output = str_replace(
 			array
 			(
 				'{kohana_version}',
@@ -208,11 +288,29 @@ class Kohana {
 				Benchmark::get(SYSTEM_BENCHMARK.'_total_execution_time'),
 				number_format($memory, 2)
 			),
-			self::$output
+			$output
 		);
 
+		self::$output = $output;
+
 		// Return the final output
-		return self::$output;
+		return $output;
+	}
+
+	public static function display()
+	{
+		// This will flush the Kohana buffer, which sets self::$output
+		ob_end_clean();
+
+		// Run the output event
+		// --------------------------------------------------------------------
+		// This can be used for functions that require completion before headers
+		// are sent. One example is cookies, which are sent with the headers,
+		// and will trigger errors if you try to set them after headers.
+		// --------------------------------------------------------------------
+		Event::run('system.output');
+
+		print self::$output;
 	}
 
 	/**
@@ -288,6 +386,33 @@ class Kohana {
 			$exception->getFile(),
 			$exception->getLine()
 		);
+	}
+
+	public static function show_404()
+	{
+		$message = Kohana::lang('core.page_not_found', '/'.Router::$current_uri.Config::item('core.url_suffix').Router::$query_string);
+
+		// Log the error
+		Log::add('file_not_found', $message);
+
+		if (ob_get_level() > self::$buffer_level)
+		{
+			// Flush the entire buffer here, to ensure the error is displayed
+			while(ob_get_level() > self::$buffer_level) ob_end_clean();
+		}
+
+		// Clear out the output buffer
+		ob_clean();
+
+		// Send the 404 header
+		header('HTTP/1.1 404 File Not Found');
+
+		// Load the error page
+		include self::find_file('views', 'kohana_404');
+
+		// Display the buffer and exit
+		ob_end_flush();
+		exit;
 	}
 
 	/**
@@ -501,75 +626,6 @@ class Kohana {
 
 			return (empty($args) ? $line : vsprintf($line, $args));
 		}
-	}
-
-	/**
-	 * Hook Loader
-	 *
-	 * @access public
-	 * @param  string
-	 * @return void
-	 */
-	public static function load_hook($name)
-	{
-		if (Config::item('core.enable_hooks') AND $hook = self::find_file('hooks', $name))
-		{
-			require $hook;
-		}
-	}
-
-	public static function callback($callback, $params = FALSE)
-	{
-		if (is_string($callback))
-		{
-			if ($params == FALSE)
-			{
-				return $callback();
-			}
-			elseif (is_array($params))
-			{
-				return call_user_func_array($callback, $params);
-			}
-			else
-			{
-				return $callback($params);
-			}
-		}
-		else
-		{
-			if (is_array($params) AND $params != FALSE)
-			{
-				return call_user_func_array($callback, $params);
-			}
-			else
-			{
-				return call_user_func($callback);
-			}
-		}
-	}
-
-	public static function show_404()
-	{
-		$message = Kohana::lang('core.page_not_found', '/'.Router::$current_uri.Config::item('core.url_suffix').Router::$query_string);
-
-		// Log the error
-		Log::add('file_not_found', $message);
-
-		// Flush the entire buffer here, to ensure the error is displayed
-		while(ob_get_level()) ob_end_clean();
-
-		// Re-start the buffer
-		ob_start(array('Kohana', 'output'));
-
-		// Send the 404 header
-		header('HTTP/1.1 404 File Not Found');
-
-		// Load the error page
-		include self::find_file('views', 'kohana_404');
-
-		// Display the buffer and exit
-		ob_end_flush();
-		exit;
 	}
 
 } // End Kohana class
