@@ -9,6 +9,7 @@
  * User Guide: http://kohanaphp.com/user_guide/en/libraries/database.html
  *
  * @param boolean show_errors   - Enable or disable database exceptions
+ * @param boolean benchmark     - Enable or disable database benchmarking
  * @param boolean persistent    - Enable or disable a persistent connection
  * @param string  connection    - DSN identifier: driver://user:password@server/database
  * @param string  character_set - Connection character set
@@ -19,6 +20,7 @@
 $config['default'] = array
 (
 	'show_errors'   => TRUE,
+	'benchmark'     => TRUE,
 	'persistent'    => FALSE,
 	'connection'    => 'mysql://dbuser:secret@localhost/kohana',
 	'character_set' => 'utf8',

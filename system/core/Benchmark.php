@@ -48,6 +48,8 @@ final class Benchmark {
 	 */
 	public static function get($name, $decimals = 4)
 	{
+		$total = FALSE;
+
 		if (isset(self::$marks[$name]))
 		{
 			if (self::$marks[$name]['stop'] === FALSE)
@@ -55,8 +57,10 @@ final class Benchmark {
 				self::stop($name);
 			}
 
-			return number_format(self::$marks[$name]['stop'] - self::$marks[$name]['start'], $decimals);
+			$total = number_format(self::$marks[$name]['stop'] - self::$marks[$name]['start'], $decimals);
 		}
+
+		return $total;
 	}
 
 	/**
@@ -69,7 +73,8 @@ final class Benchmark {
 	public static function get_all($decimals = 4)
 	{
 		$benchmarks = array();
-		foreach (self::$marks as $name => $times)
+
+		foreach (array_keys(self::$marks) as $name)
 		{
 			$benchmarks[$name] = self::get($name, $decimals);
 		}

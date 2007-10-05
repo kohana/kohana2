@@ -29,14 +29,19 @@
  */
 class Database_Core {
 
+	// Global benchmark
+	public static $benchmarks = array();
+
 	// Configuration
-	protected $config  = array
+	protected $config = array
 	(
-		'connection'    => '',
-		'persistent'    => FALSE,
 		'show_errors'   => TRUE,
+		'benchmark'     => TRUE,
+		'persistent'    => FALSE,
+		'connection'    => '',
 		'character_set' => 'utf8',
-		'table_prefix'  => ''
+		'table_prefix'  => '',
+		'object'        => TRUE
 	);
 
 	// Database driver object
@@ -58,7 +63,6 @@ class Database_Core {
 	protected $offset     = FALSE;
 	protected $connected  = FALSE;
 	protected $last_query = '';
-	public $benchmark  = array();
 
 	/**
 	 * Constructor
@@ -473,8 +477,11 @@ class Database_Core {
 		$result = $this->query($sql);
 		$stop = microtime(TRUE);
 
-		// benchmark the query
-		$this->benchmark[] = array('query' => $sql, 'time' => $stop - $start);
+		if ($this->config['benchmark'] == TRUE)
+		{
+			// Benchmark the query
+			self::$benchmarks[] = array('query' => $sql, 'time' => $stop - $start);
+		}
 
 		$this->reset_select();
 		$this->last_query = $sql;

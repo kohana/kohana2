@@ -11,6 +11,8 @@
  * @license          http://kohanaphp.com/license.html
  * @since            Version 2.0
  * @filesource
+ *
+ * $Id$
  */
 
 // ----------------------------------------------------------------------------
@@ -25,21 +27,15 @@
  * @author      Kohana Team
  * @link        http://kohanaphp.com/user_guide/general/profiling.html
  */
+class Profiler_Core {
 
-class Profiler_Core
-{
+	public function __construct()
+	{
+		// Add profiler to page output automatically
+		Event::add('system.output', array($this, 'render'));
 
-	private $core;
-
- 	public function __construct()
- 	{
- 		// Add profiler to page output automatically
- 		Event::add('system.output', array($this, 'render'));
-
- 		$this->core = Kohana::instance();
- 		
- 		Log::add('debug', 'Profiler initialized');
- 	}
+		Log::add('debug', 'Profiler Library initialized');
+	}
 
 	/**
 	 * Run the Profiler and add to the bottom of the page
@@ -49,49 +45,38 @@ class Profiler_Core
 	 */
 	public function render()
 	{
-		// Get list of benchmarks
-		$benchmarks = Benchmark::get_all();
+		$data = array
+		(
+			'benchmarks' => array(),
+			'queries'    => FALSE
+		);
 
 		// Clean unique id from system benchmark names
-		$renamed_bm = array();
-		foreach ($benchmarks as $name => $time)
+		foreach (Benchmark::get_all() as $name => $time)
 		{
-			$name              = str_replace(SYSTEM_BENCHMARK.'_', '', $name);
-			$renamed_bm[$name] = $time;
+			$data['benchmarks'][str_replace(SYSTEM_BENCHMARK.'_', '', $name)] = $time;
 		}
-
-		$data['benchmarks'] = $renamed_bm;
 
 		// Get database queries
-		$data['db_exists'] = FALSE;
-		$data['queries']   = array();
-		if (isset($this->core->db))
+		if (isset(Kohana::instance()->db))
 		{
-			$data['db_exists'] = TRUE;
-			$data['queries']   = $this->core->db->benchmark;
+			$data['queries'] = Database::$benchmarks;
 		}
 
-		// Get profiler view ready to add to output
+		// Load the profiler view
 		$view = new View('kohana_profiler', $data);
 
-		// Get page output
-		$output = Kohana::$output;
-
-		if (preg_match("|</body>.*?</html>|is", $output))
+		// Add profiler data to the output
+		if (strpos('</body>', Kohana::$output) !== FALSE)
 		{
-			// Output has closing body and html tags, put profiler before them
-			$output  = preg_replace("|</body>.*?</html>|is", '', $output);
-			$output .= $view;
-			$output .= '</body></html>';
+			// Closing body tag was found, insert the profiler data before it
+			Kohana::$output = str_replace('</body>', $view.'</body>', Kohana::$output);
 		}
 		else
 		{
-			// No closing tags, just add profiler to the end
-			$output .= $view;
+			// Append the profiler data to the output
+			Kohana::$output .= $view;
 		}
-
-		// Set new page output
-		Kohana::$output = $output;
 	}
 
 } // End Profiler Class
