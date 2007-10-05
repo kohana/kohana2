@@ -414,6 +414,7 @@ class Input_Core {
 		// * Increased regex speed:
 		//   * Made capturing parentheses non-capturing where possible
 		//   * Removed parentheses where possible
+		//   * Split up alternation alternatives
 		//
 		if (get_magic_quotes_gpc())
 		{
@@ -443,7 +444,7 @@ class Input_Core {
 
 		do {
 			$oldstring = $string;
-			$string = preg_replace('#</*(?:applet|meta|xml|blink|link|style|script|embed|object|iframe|frame|frameset|ilayer|layer|bgsound|title|base)[^>]*>#i', '', $string);
+			$string = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*>#i', '', $string);
 		} while ($oldstring != $string);
 
 		return $string;
