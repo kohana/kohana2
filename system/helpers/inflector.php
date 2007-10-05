@@ -96,4 +96,4 @@ class inflector {
 		return ucwords(preg_replace('/_+/', ' ', $str));
 	}
 
-} // End inflect Class
+} // End inflector Class
