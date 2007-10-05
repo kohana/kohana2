@@ -2,9 +2,9 @@
 
 class security {
 
-	public static function xss_clean($str, $charset = 'UTF-8')
+	public static function xss_clean($str)
 	{
-		return Kohana::instance()->input->xss_clean($str, $charset);
+		return Kohana::instance()->input->xss_clean($str);
 	}
 
 	public static function image_tags($str)
