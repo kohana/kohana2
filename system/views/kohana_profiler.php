@@ -1,7 +1,7 @@
 <style type="text/css">
 #kohana-profiler
 {
-	font-family: 'Courier New';
+	font-family: Monaco, 'Courier New';
 	background-color: #F8FFF8;
 	margin-top: 20px;
 	clear: both;
@@ -71,13 +71,12 @@
 		</tr>
 <?php
 
-$count = 0;
 foreach ($benchmarks as $name => $time):
 
 	$name = ucwords(str_replace(array('_', '-'), ' ', $name));
 
 ?>
-			<tr<?php if ($count++ % 2): ?> class="kp-altrow"<?php endif; ?>>
+			<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
 				<td><?php echo $name ?></td>
 				<td class="kp-time"><?php echo $time ?></td>
 			</tr>
@@ -109,11 +108,10 @@ else:
 <?php
 
 	else:
-		$count = 0;
 		foreach($queries as $query):
 
 ?>
-		<tr<?php if ($count++ % 2): ?> class="kp-altrow"<?php endif; ?>>
+		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
 			<td><?php echo htmlspecialchars($query['query']) ?></td>
 			<td class="kp-time"><?php echo number_format($query['time'], 4) ?></td>
 		</tr>
@@ -139,11 +137,10 @@ if (count($_POST) == 0):
 <?php
 
 else:
-	$count = 0;
 	foreach($_POST as $name => $value):
 
 ?>
-		<tr<?php if ($count++ % 2): ?> class="kp-altrow" <?php endif; ?>>
+		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
 			<td class="kp-postname"><?php echo $name ?></td>
 			<td>
 				<pre><?php echo htmlspecialchars(is_array($value) ? print_r($value, TRUE) : $value) ?></pre>
