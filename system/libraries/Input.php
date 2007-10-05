@@ -390,9 +390,9 @@ class Input_Core {
 	 * @param	string
 	 * @return	string
 	 */
-	public function xss_clean($string, $tool)
+	public function xss_clean($string, $tool = '')
 	{
-		$tool = (isset($tool)) ? $tool : $this->xss_clean_tool;
+		$tool = ($tool != '') ? $tool : $this->xss_clean_tool;
 		
 		switch ($tool)
 		{
