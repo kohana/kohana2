@@ -80,11 +80,11 @@ class Welcome_Controller extends Controller {
 
 		foreach($query as $item)
 		{
-			print_r($item);
+			//echo '<pre>'.print_r($item, true).'</pre>';
 		}
 
-		die;
-
+		echo '<pre>'.print_r($this->db->list_tables(), true).'</pre>';
+		echo $this->db->table_exists('pages');
 		print "Numrows: ".$query->num_rows()."<br/>";
 		print "<pre>".print_r($this->database, TRUE)."</pre><br/>";
 

@@ -299,6 +299,30 @@ class Database_Mysql implements Database_Driver {
 
 		return mysql_real_escape_string($str, $this->link);
 	}
+	
+	/**
+ 	* List table query
+ 	*
+ 	* Generates a platform-specific query string so that the table names can be fetched
+ 	*
+ 	* @access      private
+	* @return      string
+ 	*/   
+	public function list_tables()
+	{
+		$sql = "SHOW TABLES FROM `".$this->db_config['connection']['database']."`";
+		$query = $this->query($sql);
+		$query = $query->result();
+		
+		$retval = array();
+		foreach($query as $row)
+		{
+			$column = 'Tables_in_'.$this->db_config['connection']['database'];
+			$retval[] = $row->$column;
+		}
+		
+		return $retval;
+	}
 
 } // End Database_Mysql Class
 

@@ -692,5 +692,29 @@ class Database_Core {
 		$this->from  = array();
 		$this->where = array();
 	}
+	
+	/**
+	* Returns an array of table names
+	*
+	* @access      public
+	* @return      array
+	*/
+	public function list_tables()
+	{
+		if (!$this->connected) $this->driver->connect($this->config);
+		
+		return $this->driver->list_tables();
+	}
+	
+	/**
+	* Determine if a particular table exists
+	* @access      public
+	* @return      boolean
+	*/
+	public function table_exists($table_name)
+	{
+		return ( ! in_array($table_name, $this->list_tables())) ? FALSE : TRUE;
+	}
+	
 
 } // End Database Class
