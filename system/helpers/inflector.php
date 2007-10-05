@@ -2,19 +2,25 @@
 
 class inflector {
 
-	protected static $uncountables = array();
+	public static function uncountable($str)
+	{
+		static $uncountables = NULL;
+
+		if ($uncountables === NULL)
+		{
+			// Makes a mirrored array, eg: foo => foo
+			$uncountables = array_combine(Kohana::lang('inflector'), Kohana::lang('inflector'));
+		}
+
+		return isset($uncountables[$str]);
+	}
 
 	public static function singular($str)
 	{
 		$str = trim($str);
 
-		if (empty(self::$uncountables))
-		{
-			self::$uncountables = Kohana::lang('inflector');
-		}
-
 		// We can just return uncountable words
-		if (in_array(strtolower($str), self::$uncountables))
+		if (self::uncountable($str))
 			return $str;
 
 		$end = substr($str, -3);
@@ -42,13 +48,8 @@ class inflector {
 	{
 		$str = trim($str);
 
-		if (empty(self::$uncountables))
-		{
-			self::$uncountables = Kohana::lang('inflector');
-		}
-
 		// We can just return uncountable words
-		if (in_array(strtolower($str), self::$uncountables))
+		if (self::uncountable($str))
 			return $str;
 
 		$end = substr($str, -1);

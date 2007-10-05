@@ -132,6 +132,6 @@ $config['timezone'] = '';
 */
 $config['autoload'] = array
 (
-	'libraries' => 'profiler',
+	'libraries' => '',
 	'models'    => ''
 );
