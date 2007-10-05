@@ -178,14 +178,14 @@ final class utf8 {
 	/**
 	 * Replaces accented UTF-8 characters by unaccented ASCII-7 'equivalents'.
 	 *
-	 * Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
+	 * Original function (accents_to_ascii) written by Andreas Gohr <andi@splitbrain.org> for phputf8
 	 *
 	 * @access public
 	 * @param  string
 	 * @param  integer (optional) -1 lowercase only, +1 uppercase only, 0 both cases
 	 * @return string  accented chars replaced with ASCII equivalents
 	 */
-	public static function accents_to_ascii($str, $case = 0)
+	public static function transliterate_to_ascii($str, $case = 0)
 	{
 		static $UTF8_LOWER_ACCENTS = NULL;
 		static $UTF8_UPPER_ACCENTS = NULL;
