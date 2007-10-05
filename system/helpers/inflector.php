@@ -2,9 +2,21 @@
 
 class inflector {
 
+	protected static $uncountables = array();
+
 	public static function singular($str)
 	{
 		$str = trim($str);
+
+		if (empty(self::$uncountables))
+		{
+			self::$uncountables = Kohana::lang('inflector');
+		}
+
+		// We can just return uncountable words
+		if (in_array(strtolower($str), self::$uncountables))
+			return $str;
+
 		$end = substr($str, -3);
 
 		if ($end == 'ies')
@@ -29,6 +41,16 @@ class inflector {
 	public static function plural($str)
 	{
 		$str = trim($str);
+
+		if (empty(self::$uncountables))
+		{
+			self::$uncountables = Kohana::lang('inflector');
+		}
+
+		// We can just return uncountable words
+		if (in_array(strtolower($str), self::$uncountables))
+			return $str;
+
 		$end = substr($str, -1);
 		$low = (strcmp($end, strtolower($end)) === 0) ? TRUE : FALSE;
 
@@ -69,9 +91,9 @@ class inflector {
 
 	public static function humanize($str)
 	{
-		$str = strtolower(trim($str)));
+		$str = strtolower(trim($str));
 
-		return ucwords(preg_replace('/_+/', ' ', $str);
+		return ucwords(preg_replace('/_+/', ' ', $str));
 	}
 
 } // End inflect Class
