@@ -2,8 +2,6 @@
 /**
  * Kohana: The small, swift, and secure PHP5 framework
  *
- * $Id$
- *
  * @package          Kohana
  * @author           Kohana Team
  * @copyright        Copyright (c) 2007 Kohana Team
