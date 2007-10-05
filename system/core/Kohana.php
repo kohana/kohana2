@@ -425,6 +425,7 @@ class Kohana {
 	{
 		if (class_exists($class)) return true;
 
+
 		preg_match('/(?<=_).+$/', $class, $type);
 
 		$type = isset($type[0]) ? $type[0] : FALSE;
@@ -442,6 +443,8 @@ class Kohana {
 			case 'Model':
 				$type = 'models';
 				$file = substr($class, 0, -6);
+				// Models are always lowercase
+				$file = strtolower($file);
 			break;
 			case 'Driver':
 				$type = 'libraries/drivers';

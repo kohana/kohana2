@@ -4,7 +4,7 @@ class Users_Controller extends Controller {
 
 	public function __construct()
 	{
-		die('hi');
+		die('controller in a subdir!');
 	}
 
 	public function index()
