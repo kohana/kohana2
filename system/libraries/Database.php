@@ -146,16 +146,23 @@ class Database_Core {
 	 *
 	 * @access  public
 	 * @param   string
+	 * @param   array
 	 * @param   boolean
 	 * @return  mixed
 	 */
-	public function query($sql = '', $object = FALSE)
+	public function query($sql = '', $binds = FALSE, $object = FALSE)
 	{
 		if ($sql == '') return FALSE;
 
 		if ( ! $this->connected) $this->connect();
 		$object = (bool) ($object == FALSE) ? $this->config['object'] : $object;
 
+		// Compile binds if needed
+		if ($binds !== FALSE)
+		{
+			$sql = $this->compile_binds($sql, $binds);
+		}
+		
 		$this->last_query = $sql;
 		return $this->driver->query($sql, $object);
 	}
@@ -723,5 +730,33 @@ class Database_Core {
 		return ( ! in_array($table_name, $this->list_tables())) ? FALSE : TRUE;
 	}
 	
+	/**
+	 * Compile Bindings
+	 *
+	 * @access	public
+	 * @param	string	the sql statement
+	 * @param	array	an array of bind data
+	 * @return	string		
+	 */	
+	public function compile_binds($sql, $binds)
+	{	
+		if (strpos($sql, '?') === FALSE)
+		{
+			return $sql;
+		}
+		
+		$binds = (array) $binds;
+		
+		foreach ($binds as $val)
+		{
+			$val = $this->driver->escape($val);
+					
+			// Just in case the replacement string contains the bind
+			// character we'll temporarily replace it with a marker
+			$val = str_replace('?', '{%bind_marker%}', $val);
+			$sql = preg_replace("#".preg_quote('?', '#')."#", str_replace('$', '\$', $val), $sql, 1);
+		}
 
+		return str_replace('{%bind_marker%}', '?', $sql);		
+	}
 } // End Database Class
