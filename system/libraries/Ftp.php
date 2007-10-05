@@ -53,7 +53,7 @@ class FTP_Core {
 			$this->initialize($config);
 		}
 
-		Log::add('debug', 'FTP Class Initialized');
+		Log::add('debug', 'FTP Library initialized');
 	}
 
 	// --------------------------------------------------------------------

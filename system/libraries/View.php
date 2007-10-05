@@ -62,6 +62,8 @@ class View_Core {
 				$this->data[$key] = $val;
 			}
 		}
+
+		Log::add('debug', 'View Class Initialized ['.str_replace(DOCROOT, '', $this->kohana_filename).']');
 	}
 
 	public function set($name, $value)

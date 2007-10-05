@@ -61,4 +61,4 @@ Event::run('system.execute');
 Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
 
 // Manually flush the output buffer to allow loading views in the system.output event
-Kohana::display();
+Event::run('system.shutdown');

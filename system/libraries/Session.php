@@ -94,7 +94,7 @@ class Session_Core {
 		// Close the session just before flushing the output buffer
 		Event::add('system.output', 'session_write_close');
 
-		Log::add('debug', 'Session Class Initialized');
+		Log::add('debug', 'Session Library initialized');
 	}
 
 	// --------------------------------------------------------------------

@@ -45,7 +45,7 @@ class Encrypt_Core {
 	{
 		$this->mcrypt_exists = function_exists('mcrypt_encrypt');
 
-		Log::add('debug', 'Encrypt Class Initialized');
+		Log::add('debug', 'Encrypt Library initialized');
 	}
 
 	// --------------------------------------------------------------------

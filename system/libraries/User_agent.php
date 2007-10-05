@@ -109,7 +109,7 @@ class User_Agent_Core {
 			self::$referrer = trim($_SERVER['HTTP_REFERER']);
 		}
 
-		Log::add('debug', 'User Agent Class Initialized');
+		Log::add('debug', 'User Agent Library initialized');
 	}
 
 	/**

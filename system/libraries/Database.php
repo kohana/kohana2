@@ -117,7 +117,7 @@ class Database_Core {
 		if ( ! in_array('Database_Driver', class_implements($this->driver)))
 			throw new Kohana_Exception('database.driver_not_supported', 'Database drivers must use the Database_Driver interface.');
 
-		Log::add('debug', 'Database Class Initialized');
+		Log::add('debug', 'Database Library initialized');
 	}
 
 	/**

@@ -60,7 +60,7 @@ class Calendar_Core {
 			$this->initialize($config);
 		}
 
-		Log::add('debug', 'Calendar Class Initialized');
+		Log::add('debug', 'Calendar Library initialized');
 	}
 
 	/**

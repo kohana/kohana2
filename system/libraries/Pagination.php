@@ -75,7 +75,7 @@ class Pagination_Core {
 		$this->next_page          = ($this->current_page < $this->total_pages) ? $this->current_page + 1 : FALSE;
 		
 		// Initialization done
-		Log::add('debug', 'Pagination Class Initialized');
+		Log::add('debug', 'Pagination Library initialized');
 	}
 	
 	/**

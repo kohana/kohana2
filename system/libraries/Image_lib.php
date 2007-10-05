@@ -97,7 +97,7 @@ class Image_lib_Core {
 			$this->initialize($props);
 		}
 
-		Log::add('debug', 'Image Lib Class Initialized');
+		Log::add('debug', 'Image Lib Library initialized');
 	}
 
 	/**

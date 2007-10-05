@@ -56,7 +56,7 @@ class Input_Core {
 		$this->use_xss_clean = (bool) Config::item('core.global_xss_filtering');
 		$this->_sanitize_globals();
 
-		Log::add('debug', 'Input Class Initialized');
+		Log::add('debug', 'Input Library initialized');
 	}
 
 	/**

@@ -131,9 +131,6 @@ class Kohana {
 		// Set execption handler
 		set_exception_handler(array('Kohana', 'exception_handler'));
 
-		// Set shutdown handler to run the 'system.shutdown' event
-		register_shutdown_function(array('Event', 'run'), 'system.shutdown');
-
 		if (function_exists('date_default_timezone_set'))
 		{
 			// Set default timezone, due to increased validation of date settings
@@ -169,17 +166,19 @@ class Kohana {
 			}
 		}
 
+		// Enable routing
+		Event::add('system.routing', array('Router', 'setup'));
+
+		// Enabel loading a Kohana instance
+		Event::add('system.execute', array('Kohana', 'instance'));
+
 		// Enable log writing if the log threshold is enabled
 		if(Config::item('log.threshold') > 0)
 		{
 			Event::add('system.shutdown', array('Log', 'write'));
 		}
 
-		// Enable routing
-		Event::add('system.routing', array('Router', 'setup'));
-
-		// Enabel loading a Kohana instance
-		Event::add('system.execute', array('Kohana', 'instance'));
+		Event::add('system.shutdown', array('Kohana', 'display'));
 
 		// Setup is complete
 		$run = TRUE;

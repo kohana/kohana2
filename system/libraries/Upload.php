@@ -69,7 +69,7 @@ class Upload_Core {
 			$this->initialize($props);
 		}
 
-		Log::add('debug', 'Upload Class Initialized');
+		Log::add('debug', 'Upload Library initialized');
 	}
 
 	/**
