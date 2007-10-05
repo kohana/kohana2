@@ -57,8 +57,8 @@ class Database_Core {
 	protected $limit      = FALSE;
 	protected $offset     = FALSE;
 	protected $connected  = FALSE;
-	protected $benchmark  = array();
 	protected $last_query = '';
+	public $benchmark  = array();
 
 	/**
 	 * Constructor

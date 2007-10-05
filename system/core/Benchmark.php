@@ -59,4 +59,21 @@ final class Benchmark {
 		}
 	}
 
+	/**
+	 * Get the elapsed time for all benchmark points
+	 *
+	 * @access  public
+	 * @return  array
+	 */
+	public static function get_all()
+	{
+		$benchmarks = array();
+		foreach (self::$marks as $name => $times)
+		{
+			$benchmarks[$name] = self::get($name);
+		}
+
+		return $benchmarks;
+	}
+
 } // End Benchmark Class
