@@ -26,6 +26,8 @@ final class Event {
 
 	private static $events = array();
 
+	public static $data;
+
 	/**
 	 * Add an event
 	 *
@@ -98,18 +100,22 @@ final class Event {
 	 * @param   array
 	 * @return  mixed
 	 */
-	public static function run($name)
+	public static function run($name, & $data = NULL)
 	{
 		if ($name == FALSE)
 			return FALSE;
 
-		$args = func_get_args();
-		$args = (empty($args) OR count($args) == 1) ? array() : array_slice($args, 1);
+		// So callbacks can access Event::$data
+		self::$data =& $data;
 
 		foreach(self::get($name) as $callback)
 		{
-			call_user_func_array($callback, $args);
+			call_user_func($callback);
 		}
+
+		// Do this to prevent data from getting "stuck"
+		$clear_data = '';
+		self::$data =& $clear_data;
 	}
 
 } // End Event Class

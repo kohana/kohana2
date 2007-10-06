@@ -425,7 +425,6 @@ class Kohana {
 	{
 		if (class_exists($class)) return true;
 
-
 		preg_match('/(?<=_).+$/', $class, $type);
 
 		$type = isset($type[0]) ? $type[0] : FALSE;

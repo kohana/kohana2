@@ -355,12 +355,12 @@ class Validation_Core {
 		// Run validation finished Event and return
 		if (count($this->errors) == 0)
 		{
-			Event::run('validation.success');
+			Event::run('validation.success', $this->data);
 			return TRUE;
 		}
 		else
 		{
-			Event::run('validation.failure');
+			Event::run('validation.failure', $this->data);
 			return FALSE;
 		}
 	}

@@ -17,7 +17,7 @@
  * $Id$
  */
 
-define('KOHANA_VERSION', '2.0');
+define('KOHANA_VERSION', '2.0a1');
 
 // Kohana benchmarks are prefixed by a random string to prevent collisions
 define('SYSTEM_BENCHMARK', uniqid(rand(1,100)));
