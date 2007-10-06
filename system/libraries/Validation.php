@@ -352,8 +352,17 @@ class Validation_Core {
 			}
 		}
 
-		// i haz error?
-		return (count($this->errors) == 0);
+		// Run validation finished Event and return
+		if (count($this->errors) == 0)
+		{
+			Event::run('validation.success');
+			return TRUE;
+		}
+		else
+		{
+			Event::run('validation.failure');
+			return FALSE;
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -524,7 +533,10 @@ class Validation_Core {
 		$filename = realpath(Config::item('upload.upload_directory')).'/'.$filename;
 
 		move_uploaded_file($data['tmp_name'], $filename);
-		chmod($filename, 0644);
+
+		$this->data[$this->current_field] = $filename;
+
+		return TRUE;
 	}
 
 	/**
