@@ -61,6 +61,7 @@
 	width: 200px;
 	background-color: #FAFAFB !important;
 	border-right: 1px solid #E5EFF8;
+	vertical-align: top;
 }
 </style>
 <div id="kohana-profiler">
@@ -71,6 +72,7 @@
 		</tr>
 <?php
 
+text::alternate();
 foreach ($benchmarks as $name => $time):
 
 	$name = ucwords(str_replace(array('_', '-'), ' ', $name));
@@ -108,6 +110,7 @@ else:
 <?php
 
 	else:
+		text::alternate();
 		foreach($queries as $query):
 
 ?>
@@ -137,13 +140,14 @@ if (count($_POST) == 0):
 <?php
 
 else:
+	text::alternate();
 	foreach($_POST as $name => $value):
 
 ?>
 		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
 			<td class="kp-postname"><?php echo $name ?></td>
 			<td>
-				<pre><?php echo htmlspecialchars(is_array($value) ? print_r($value, TRUE) : $value) ?></pre>
+				<?php echo is_array($value) ? '<pre>'.htmlspecialchars(print_r($value, TRUE)).'</pre>' : htmlspecialchars($value) ?>
 			</td>
 		</tr>
 <?php
