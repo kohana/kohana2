@@ -15,7 +15,8 @@
  */
 $config = array
 (
-	'_default'   => 'main',
-	'media(.*)'  => 'main/media$1',
-	'(.*)'       => 'main/$1',
+	'_default'       => 'main',
+	'user_guide(.*)' => 'user_guide$1',
+	'media(.*)'      => 'main/media$1',
+	'(.*)'           => 'main/$1',
 );
