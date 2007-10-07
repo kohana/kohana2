@@ -277,7 +277,7 @@ class Session_Database implements Session_Driver {
 	{
 		if (parent::gc())
 		{
-			$lifetime = Config::item('session.gc_maxlifetime');
+			$lifetime = ini_get('session.gc_maxlifetime');
 			$expiry = ($lifetime > 0) ? (time() - $lifetime) : (time() - 1440);
 
 			$query = $this->sdb->delete($this->name, array('last_activity' => $expiry));
