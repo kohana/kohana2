@@ -30,7 +30,7 @@ class Database_Mysql implements Database_Driver {
 
 	// Database connection link
 	private $link;
-    private $db_config;
+	private $db_config;
 
 	public function __construct($config)
 	{
