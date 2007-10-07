@@ -36,6 +36,18 @@ class Profiler_Core {
 	}
 
 	/**
+	 * Disables the profiler for this page only, best used when profiler is autoloaded
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function disable()
+	{
+		// Removes itself from the event queue
+		Event::clear('system.output', array($this, 'render'));
+	}
+
+	/**
 	 * Run the Profiler and add to the bottom of the page
 	 *
 	 * @access public
