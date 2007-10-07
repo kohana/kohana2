@@ -51,14 +51,8 @@ class Controller_Core extends Kohana {
 		// the controller, which gives the easiest access to libraries in views
 		include $kohana_view_filename;
 
-		// Fetch the HTML output
-		$kohana_view_output = ob_get_contents();
-
-		// Flush the buffer
-		ob_end_clean();
-
-		// Return the view, yay!
-		return $kohana_view_output;
+		// Fetch the output and close the buffer
+		return ob_get_clean();
 	}
 
 } // End Controller Class

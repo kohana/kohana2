@@ -272,12 +272,14 @@ class Kohana {
 			array
 			(
 				'{kohana_version}',
+				'{kohana_codename}',
 				'{execution_time}',
 				'{memory_usage}'
 			),
 			array
 			(
 				KOHANA_VERSION,
+				KOHANA_CODENAME,
 				Benchmark::get(SYSTEM_BENCHMARK.'_total_execution_time'),
 				number_format($memory, 2)
 			),
