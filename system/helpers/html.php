@@ -180,7 +180,7 @@ class html {
 		{
 			foreach($script as $name)
 			{
-				$compiled .= self::script($name, $index)."\n";
+				$compiled .= self::script($name)."\n";
 			}
 		}
 		else
