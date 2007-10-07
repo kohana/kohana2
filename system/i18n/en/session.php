@@ -2,6 +2,6 @@
 
 $lang = array
 (
-	'no_table'							=> 'The configured session table, %s was not found',
-	'driver_must_implement_interface'	=> 'Session drivers must implement the Session_Driver interface.'
+	'no_table'								=> 'The configured session table, %s was not found',
+	'driver_must_implement_interface'		=> 'Session drivers must implement the Session_Driver interface.'
 );
