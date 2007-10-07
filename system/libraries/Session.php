@@ -63,10 +63,7 @@ class Session_Core {
 
 			if ( ! isset($implements['Session_Driver']))
 			{
-				/**
-				 * @todo This should be an i18n error
-				 */
-				trigger_error('Session drivers must be use the Session_Driver interface.');
+				throw new Kohana_Exception('session.driver_must_implement_interface');
 			}
 
 			// Destroy any auto created sessions
