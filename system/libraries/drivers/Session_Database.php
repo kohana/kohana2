@@ -22,6 +22,14 @@
 
 // ------------------------------------------------------------------------
 
+/*
+	Table layout:
+		session_id: varchar(20)
+		last_activity: int (11)
+		total_hits: int (10)
+		data: text
+*/
+
 /**
  * Session Database Driver
  *
@@ -177,7 +185,7 @@ class Session_Database implements Session_Driver {
 			$query = $this->sdb->insert($this->name, $db_data);
 
 			// Did we succeed?
-			if ($query->num_rows())
+			if ($query->num_rows() > 0)
 			{
 				return TRUE;
 			}
@@ -269,7 +277,7 @@ class Session_Database implements Session_Driver {
 	{
 		if (parent::gc())
 		{
-			$lifetime = ini_get('session.gc_maxlifetime');
+			$lifetime = Config::item('session.gc_maxlifetime');
 			$expiry = ($lifetime > 0) ? (time() - $lifetime) : (time() - 1440);
 
 			$query = $this->sdb->delete($this->name, array('last_activity' => $expiry));
