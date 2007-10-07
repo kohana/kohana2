@@ -20,6 +20,9 @@ class Main_Controller extends Controller {
 			'forums'     => 'Forums',
 			'user_guide' => 'User Guide'
 		);
+
+		// Sidebar
+		$this->layout->sidebar = new View('sidebar');
 	}
 
 	public function _default($page = 'index')

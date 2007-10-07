@@ -6,11 +6,11 @@
 <h2>Technology</h2>
 <ul>
 	<li>Strict PHP5 <abbr title="Object Oriented Programming">OOP</abbr></li>
-	<li><abbr title="PHP Data Objects">PDO</abbr> database abstraction</li>
+	<li>Simple database abstraction using SQL helpers</li>
 	<li>Multiple session drivers (native, database, and cookie)</li>
 	<li>Advanced cache system with drivers (file, database, memcached, shmop)</li>
-	<li>Uses <a href="http://htmlpurifier.org/">HTML Purifier</a> to prevent XSS attacks</li>
-	<li>Based on <a href="http://www.codeigniter.com">CodeIgniter</a></li>
+	<li>Powerful event handler allows small modifications dynamically</li>
+	<li>Originally based on <?php echo html::anchor('http://www.codeigniter.com', 'CodeIgniter') ?></li>
 </ul>
 
 <h2>Features</h2>
@@ -19,8 +19,7 @@
 	<li>Extremely lightweight</li>
 	<li>Short learning curve</li>
 	<li>Uses the <abbr title="Model View Controller">MVC</abbr> pattern</li>
-	<li>Advanced caching mechanism</li>
 	<li>100% UTF-8 compatible</li>
 	<li>Loosely coupled architecture</li>
-	<li><abbr title="eXtensible HyperText Markup Language">XHTML</abbr> output</li>
+	<li>Extremely easy to extend</li>
 </ul>

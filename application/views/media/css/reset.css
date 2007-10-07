@@ -39,3 +39,12 @@ body {
 	-moz-opacity:.9999;
 	text-shadow:0 0 0 #000;
 }
+
+/* Clear floats without extra markup */
+.clearfix:after {
+	content:'.';
+	display:block;
+	height:0;
+	clear:both;
+	visibility:hidden;
+}

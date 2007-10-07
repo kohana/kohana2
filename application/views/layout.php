@@ -19,7 +19,7 @@ echo html::stylesheet(array
 <div id="container">
 
 <!-- Start Header -->
-<div id="header">
+<div id="header" class="clearfix">
 
 <!-- Start Developer Menu -->
 <div id="developer">
@@ -34,25 +34,12 @@ echo html::stylesheet(array
 </div>
 <!-- End Developer Menu -->
 
-<!-- Start Banner -->
-<div id="banner">
-
-<div id="logo">
-<h1>Kohana</h1>
-</div>
-
-<div id="download">
-<?php echo html::anchor(
-	'download', 
-	'<strong>Download</strong> the latest version'
-) ?>
-</div>
-
-</div>
-<!-- End Banner -->
+<!-- Start Logo -->
+<h1 id="logo">Kohana</h1>
+<!-- End Logo -->
 
 <!-- Start Main Menu -->
-<div id="menu">
+<div id="menu" class="clearfix">
 <ul>
 <?php foreach($menu as $link => $title): ?>
 <li<?php if ($link == $page): ?> class="active"<?php endif; ?>><?php echo html::anchor($link, $title) ?></li>
@@ -67,8 +54,29 @@ echo html::stylesheet(array
 <!-- Start Body -->
 <div id="body">
 <?php echo $content ?>
+
+<!-- Start Sidebar -->
+<div id="sidebar">
+
+<!-- Start Download -->
+<div id="download">
+<?php echo html::anchor('download', '<strong>Download</strong> Latest Version') ?>
+</div>
+<!-- End Download -->
+
+<!-- Start Sidebar Body -->
+<div id="sidebody">
+<?php echo $sidebar ?>
+</div>
+<!-- End Sidebar Body -->
+
+</div>
+<!-- End Sidebar -->
+
 </div>
 <!-- End Body -->
+
+<div id="footer" class="clearfix"><strong>&copy;2007 Kohana Team. All rights reserved.</strong> Powered by Kohana v{kohana_version}. Rendered in {execution_time} seconds.</div>
 
 </div>
 </body>
