@@ -197,25 +197,17 @@ class Kohana {
 	{
 		if (self::$instance == FALSE)
 		{
-			// Run system.pre_controller
-			Event::run('system.pre_controller');
-
 			// Include the Controller file
 			require Router::$directory.Router::$controller.EXT;
+
+			// Run system.pre_controller
+			Event::run('system.pre_controller');
 
 			// Set controller class name
 			$controller = ucfirst(Router::$controller).'_Controller';
 
-			try
-			{
-				// Load the controller
-				$controller = new $controller();
-			}
-			catch (Kohana_Exception $exception)
-			{
-				Kohana::show_404();
-				return;
-			}
+			// Load the controller
+			$controller = new $controller();
 
 			if (method_exists($controller, '_remap'))
 			{
@@ -243,9 +235,10 @@ class Kohana {
 			}
 			else
 			{
-				$controller->show_404();
+				Kohana::show_404();
 			}
-			if (count(Router::$arguments) > 0)
+
+			if (is_array(Router::$arguments) AND ! empty(Router::$arguments))
 			{
 				call_user_func_array(array(Kohana::instance(), Router::$method), Router::$arguments);
 			}
@@ -253,6 +246,7 @@ class Kohana {
 			{
 				call_user_func(array(Kohana::instance(), Router::$method));
 			}
+
 
 			// Run system.pre_controller
 			Event::run('system.post_controller');

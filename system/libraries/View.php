@@ -89,12 +89,9 @@ class View_Core {
 		}
 	}
 
-	public function & __get($name)
+	public function __get($name)
 	{
-		if (isset($this->data))
-			return $this->data;
-
-		return FALSE;
+		return empty($this->data[$name]) ? NULL : $this->data[$name];
 	}
 
 	public function __toString()

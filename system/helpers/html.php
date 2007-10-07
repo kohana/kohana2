@@ -143,7 +143,7 @@ class html {
 		return '<a href="&#109;&#097;&#105;&#108;&#116;&#111;&#058;'.$safe.$subject.'"'.$attributes.'>'.$title.'</a>';
 	}
 
-	public static function stylesheet($style, $index = FALSE, $media = FALSE)
+	public static function stylesheet($style, $media = FALSE)
 	{
 		$compiled = '';
 
@@ -151,14 +151,14 @@ class html {
 		{
 			foreach($style as $name)
 			{
-				$compiled .= self::stylesheet($name, $index, $media)."\n";
+				$compiled .= self::stylesheet($name, $media)."\n";
 			}
 		}
 		else
 		{
 			$media = ($media == FALSE) ? '' : ' media="'.$media.'"';
 
-			$compiled = '<link rel="stylesheet" href="'.url::base($index).$style.'.css"'.$media.' />';
+			$compiled = '<link rel="stylesheet" href="'.url::base(TRUE).$style.'.css"'.$media.' />';
 		}
 
 		return $compiled;
@@ -172,7 +172,7 @@ class html {
 	 * @param  boolean  Add index to the URL
 	 * @return string
 	 */
-	public static function script($script, $index = FALSE)
+	public static function script($script)
 	{
 		$compiled = '';
 
@@ -185,7 +185,7 @@ class html {
 		}
 		else
 		{
-			$compiled = '<script type="text/javascript" src="'.url::base($index).$script.'.js"></script>';
+			$compiled = '<script type="text/javascript" src="'.url::base(TRUE).$script.'.js"></script>';
 		}
 
 		return $compiled;
