@@ -56,7 +56,7 @@ class Input_Core {
 	{
 		$this->use_xss_clean  = (bool)   Config::item('core.global_xss_filtering');
 		$this->xss_clean_tool = (string) Config::item('core.global_xss_filtering');
-		
+
 		$this->_sanitize_globals();
 
 		Log::add('debug', 'Input Library initialized');
@@ -393,20 +393,23 @@ class Input_Core {
 	public function xss_clean($string, $tool = '')
 	{
 		$tool = ($tool != '') ? $tool : $this->xss_clean_tool;
-		
+
 		switch ($tool)
 		{
 			case 'htmlpurifier':
-				// http://htmlpurifier.org/
-				require SYSPATH.'vendor/htmlpurifier/HTMLPurifier.auto.php';
-				require 'HTMLPurifier.func.php';
-				
+				/**
+				 * @todo License should go here, http://htmlpurifier.org/
+				 */
+				require_once Kohana::find_file('vendor', 'htmlpurifier/HTMLPurifier.auto');
+				require_once 'HTMLPurifier.func.php';
+
+				// Set configuration
 				$config = HTMLPurifier_Config::createDefault();
 				$config->set('HTML', 'TidyLevel', 'none'); // Only XSS cleaning now
-				
+
 				$string = HTMLPurifier($string, $config);
 			break;
-			
+
 			default:
 				// http://svn.bitflux.ch/repos/public/popoon/trunk/classes/externalinput.php
 				// +----------------------------------------------------------------------+
@@ -436,21 +439,21 @@ class Input_Core {
 				//   * Made capturing parentheses non-capturing where possible
 				//   * Removed parentheses where possible
 				//   * Split up alternation alternatives
-				//
+
 				$string = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $string);
 				// fix &entitiy\n;
-        		
+
 				$string = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $string);
 				$string = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $string);
 				$string = html_entity_decode($string, ENT_COMPAT, 'UTF-8');
-        		
+
 				// remove any attribute starting with "on" or xmlns
 				$string = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*>#iu', '$1>', $string);
 				// remove javascript: and vbscript: protocol
 				$string = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $string);
 				$string = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2novbscript...', $string);
 				$string = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u', '$1=$2nomozbinding...', $string);
-				//<span style="width: expression(alert('Ping!'));"></span> 
+				//<span style="width: expression(alert('Ping!'));"></span>
 				// only works in ie...
 				$string = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*>#i', '$1>', $string);
 				$string = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*>#i', '$1>', $string);
@@ -458,7 +461,7 @@ class Input_Core {
 				//remove namespaced elements (we do not need them...)
 				$string = preg_replace('#</*\w+:\w[^>]*>#i', '',$string);
 				//remove really unwanted tags
-        		
+
 				do {
 					$oldstring = $string;
 					$string = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*>#i', '', $string);
