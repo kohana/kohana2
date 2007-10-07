@@ -11,7 +11,7 @@ echo html::stylesheet(array
 (
 	'user_guide/css/layout',
 	'user_guide/css/prettify'
-), TRUE)
+))
 
 ?>
 
@@ -23,7 +23,7 @@ echo html::script(array
 	'user_guide/js/plugins',
 	'user_guide/js/prettify',
 	'user_guide/js/effects'
-), TRUE)
+))
 
 ?>
 
