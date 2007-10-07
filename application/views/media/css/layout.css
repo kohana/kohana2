@@ -1,0 +1,50 @@
+/* Defaults */
+html { background: #f7fbf1 url(../img/body-background.png) repeat-x 50% 0; }
+body { font-family: Arial, Verdana, sans-serif; font-size: 76%; color: #313230; line-height: 1; }
+a { color: #006; text-decoration: none; }
+a:hover { color: #009; }
+h1 { font-size: 4em; }
+h2 { font-size: 2em; }
+
+h2, h3, h4, h5, h6 { margin-bottom: 0.6em; }
+
+/* Container */
+#container { position: relative; width: 960px; margin: 0 auto; padding: 2em; padding-top: 90px; }
+
+/* Developer Menu */
+#developer { position: absolute; top: 11px; left: 35px; text-transform: uppercase; font-size: 0.9em; color: #2d4565; }
+#developer span { font-weight: bold; }
+#developer ul { display: inline; }
+#developer li { display: inline; padding-left: 0.5em; }
+#developer a { border-bottom: solid 2px #21364d; color: #436a99; }
+#developer a:hover { border-color: #345072; color: #6593cc; }
+#developer a:active { border-color: #114; }
+
+/* Logo and Download */
+#banner { height: 125px; margin-left: 35px; }
+#logo { float: left; width: 550px; height: 100px; text-indent: -3000em; background: transparent url(../img/kohana.png) center no-repeat; }
+#download { float: right; min-width: 230px; border: solid 3px #76b714; text-align: center; }
+#download a { display: block; padding: 2em 1em; padding-left: 70px; background: #93c924;  border: solid 1px #63a80d; text-transform: uppercase; font-size: 0.8em; color: #efefef; }
+#download a:hover { background-color: #a2d135; }
+#download a strong,
+#download a span { display: block; font-size: 2em; font-weight: bold; }
+#download a span { font-size: 1.8em; text-transform: none; }
+
+/* Main Menu */
+#menu { clear: both; padding-left: 35px; }
+#menu a { display: block; padding: 1.2em 2em; text-transform: uppercase; font-weight: bold; color: #3f5c0b; }
+#menu a:hover { color: #2C360B; }
+#menu li { display: block; float: left; padding-bottom: 0.5em; }
+#menu li.active { background: url(../img/mainnav-tab-right.png) no-repeat 100% 0; }
+#menu li.active a { background: url(../img/mainnav-tab-left.png) no-repeat 0 0; color: #222; }
+#menu li.active a:hover { color: #000; }
+
+/* Content Body */
+#body { clear: both; padding: 1.4em 0; margin-left: 35px; padding-right: 250px; }
+#body p { margin-bottom: 1em; }
+#body ul { padding-left: 1.5em; margin-bottom: 1em; list-style: square; line-height: 180%; }
+#body .intro { width: 22em; margin-bottom: 1em; margin-left: -35px; padding: 1.5em 4em; padding-left: 35px; background: #eaeee5; font-size: 1.6em; line-height: 1.4em; color: #8C9393; }
+#body .intro p { margin-bottom: 0.5em; }
+#body .intro strong { text-transform: uppercase; font-weight: bold; font-size: 0.76em; color: #7b7d78; letter-spacing: -0.02em; white-space: nowrap; }
+
+/* Classes */
