@@ -39,8 +39,8 @@ class Input_Core {
 
 	protected $use_xss_clean   = FALSE;
 
-	public $ip_address      = FALSE;
-	public $user_agent      = FALSE;
+	public $ip_address = FALSE;
+	public $user_agent = FALSE;
 
 	/**
 	 * Constructor
