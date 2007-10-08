@@ -48,8 +48,8 @@ class Input_Core {
 	 * Sets whether to globally enable the XSS processing
 	 * and whether to allow the $_GET array
 	 *
-	 * @access	public
-	 * @return	void
+	 * @access  public
+	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -76,7 +76,7 @@ class Input_Core {
 		{
 			foreach($_GET as $key => $val)
 			{
-				$_GET[$this->_clean_input_keys($key)] = $this->_clean_input_data($val);
+				$_GET[$this->clean_input_keys($key)] = $this->clean_input_data($val);
 			}
 		}
 
@@ -85,7 +85,7 @@ class Input_Core {
 		{
 			foreach($_POST as $key => $val)
 			{
-				$_POST[$this->_clean_input_keys($key)] = $this->_clean_input_data($val);
+				$_POST[$this->clean_input_keys($key)] = $this->clean_input_data($val);
 			}
 		}
 
@@ -94,7 +94,7 @@ class Input_Core {
 		{
 			foreach($_COOKIE as $key => $val)
 			{
-				$_COOKIE[$this->_clean_input_keys($key)] = $this->_clean_input_data($val);
+				$_COOKIE[$this->clean_input_keys($key)] = $this->clean_input_data($val);
 			}
 		}
 
@@ -107,23 +107,77 @@ class Input_Core {
 	}
 
 	/**
+	 * Fetch an item from a global array
+	 *
+	 * @access  protected
+	 * @param   string
+	 * @param   array
+	 * @return  string
+	 */
+	public function __call($global, $args = array())
+	{
+		// Array to be searched, assigned by reference later
+		$array = array();
+
+		// Use XSS cleaning?
+		$xss_clean = isset($args[1]) ? (bool) $args[1] : FALSE;
+
+		// Array key and value
+		$key = isset($args[0]) ? $args[0] : FALSE;
+		$val = FALSE;
+
+		if ($key === FALSE)
+			return FALSE;
+
+		// Set the $array
+		switch(strtolower($global))
+		{
+			case 'get':    $array =& $_GET;    break;
+			case 'post':   $array =& $_POST;   break;
+			case 'cookie': $array =& $_COOKIE; break;
+			case 'server': $array =& $_SERVER; break;
+			default:
+				throw new Kohana_Exception('core.invalid_method', $global, 'Input');
+		}
+
+		// XSS clean if requested
+		if ( ! empty($array[$key]) AND $xss_clean === TRUE)
+		{
+			if (is_array($array[$key]))
+			{
+				foreach($array[$key] as $sub_key => $sub_val)
+				{
+					$array[$key][$sub_key] = $this->xss_clean($sub_val);
+				}
+			}
+			else
+			{
+				$array[$key] = $this->xss_clean($array[$key]);
+			}
+		}
+
+		// Return the global value
+		return isset($array[$key]) ? $array[$key] : FALSE;
+	}
+
+	/**
 	 * Clean Input Data
 	 *
 	 * This is a helper function. It escapes data and
 	 * standardizes newline characters to \n
 	 *
-	 * @access	private
-	 * @param	string
-	 * @return	string
+	 * @access  protected
+	 * @param   string
+	 * @return  string
 	 */
-	protected function _clean_input_data($str)
+	protected function clean_input_data($str)
 	{
 		if (is_array($str))
 		{
 			$new_array = array();
 			foreach ($str as $key => $val)
 			{
-				$new_array[$this->_clean_input_keys($key)] = $this->_clean_input_data($val);
+				$new_array[$this->clean_input_keys($key)] = $this->clean_input_data($val);
 			}
 			return $new_array;
 		}
@@ -149,11 +203,11 @@ class Input_Core {
 	 * from trying to exploit keys we make sure that keys are
 	 * only named with alpha-numeric text and a few other items.
 	 *
-	 * @access	private
-	 * @param	string
-	 * @return	string
+	 * @access  protected
+	 * @param   string
+	 * @return  string
 	 */
-	protected function _clean_input_keys($str)
+	protected function clean_input_keys($str)
 	{
 		if ( ! preg_match('#^[\pL0-9:_/-]+$#uiD', $str))
 		{
@@ -164,105 +218,10 @@ class Input_Core {
 	}
 
 	/**
-	 * Fetch an item from a global array
-	 *
-	 * @access	private
-	 * @param	string
-	 * @param	string
-	 * @param	boolean
-	 * @return	string
-	 */
-	protected function _get_global($global, $index = FALSE, $xss_clean = FALSE)
-	{
-		$global = '_'.strtoupper(trim($global, '_'));
-
-		global $$global; // For some reason, we have to do this :(
-		if ( ! isset($$global))
-			return FALSE;
-
-		$array = $$global;
-
-		if ($index === FALSE)
-			return $array;
-
-		if ( ! isset($array[$index]))
-			return FALSE;
-
-		if ($xss_clean === TRUE)
-		{
-			if (is_array($array[$index]))
-			{
-				foreach($array[$index] as $key => $val)
-				{
-					$array[$index][$key] = $this->xss_clean($val);
-				}
-			}
-			else
-			{
-				return $this->xss_clean($array[$index]);
-			}
-		}
-
-		return $array[$index];
-	}
-
-	/**
-	 * Fetch an item from the GET array
-	 *
-	 * @access	public
-	 * @param	string
-	 * @param	boolean
-	 * @return	string
-	 */
-	public function get($index = FALSE, $xss_clean = FALSE)
-	{
-		return $this->_get_global('GET', $index, $xss_clean);
-	}
-
-	/**
-	 * Fetch an item from the POST array
-	 *
-	 * @access	public
-	 * @param	string
-	 * @param	boolean
-	 * @return	string
-	 */
-	public function post($index = FALSE, $xss_clean = FALSE)
-	{
-		return $this->_get_global('POST', $index, $xss_clean);
-	}
-
-	/**
-	 * Fetch an item from the COOKIE array
-	 *
-	 * @access	public
-	 * @param	string
-	 * @param	boolean
-	 * @return	string
-	 */
-	public function cookie($index = FALSE, $xss_clean = FALSE)
-	{
-		return $this->_get_global('COOKIE', $index, $xss_clean);
-	}
-
-	/**
-	 * Fetch an item from the SERVER array
-	 *
-	 * @access	public
-	 * @param	string
-	 * @param	boolean
-	 * @return	string
-	 */
-	public function server($index = FALSE, $xss_clean = FALSE)
-	{
-		return $this->_get_global('SERVER', $index, $xss_clean);
-	}
-
-	/**
 	 * Fetch the IP Address
 	 *
-	 * @access	public
-	 * @return	string
+	 * @access  public
+	 * @return  string
 	 */
 	public function ip_address()
 	{
@@ -311,9 +270,9 @@ class Input_Core {
 	 *
 	 * Validates an IPv4 address based on RFC specifications
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	string
+	 * @access  public
+	 * @param   string
+	 * @return  string
 	 */
 	public function valid_ip($ip)
 	{
@@ -348,8 +307,8 @@ class Input_Core {
 	/**
 	 * User Agent
 	 *
-	 * @access	public
-	 * @return	string
+	 * @access  public
+	 * @return  string
 	 */
 	public function user_agent()
 	{
@@ -368,10 +327,10 @@ class Input_Core {
 	 * It's not something that should be used for general runtime processing
 	 * since it requires a fair amount of processing overhead.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string
-	 * @return	string
+	 * @access  public
+	 * @param   string
+	 * @param   string
+	 * @return  string
 	 */
 	public function xss_clean($string, $tool = '')
 	{
