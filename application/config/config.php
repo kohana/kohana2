@@ -67,7 +67,7 @@ $config['permitted_uri_chars'] = 'a-z 0-9~%.:_-';
 | user input, include POST, GET, and FILES.
 |
 */
-$config['global_xss_filtering'] = TRUE;
+$config['global_xss_filtering'] = FALSE;
 
 /*
 | -----------------------------------------------------------------------------
