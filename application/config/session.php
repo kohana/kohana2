@@ -15,10 +15,10 @@
  */
 $config = array
 (
-	'driver'     = 'cookie';
-	'name'       = 'kohana_session';
-	'validate'   = array('user_agent');
-	'encryption' = FALSE;
-	'expiration' = 7200;
-	'regenerate' = 3;
+	'driver'     => 'cookie',
+	'name'       => 'kohana_session',
+	'validate'   => array('user_agent'),
+	'encryption' => FALSE,
+	'expiration' => 7200,
+	'regenerate' => 3
 );
