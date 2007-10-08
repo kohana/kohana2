@@ -162,7 +162,7 @@ class Database_Core {
 		{
 			$sql = $this->compile_binds($sql, $binds);
 		}
-		
+
 		$this->last_query = $sql;
 		return $this->driver->query($sql, $object);
 	}
@@ -261,7 +261,7 @@ class Database_Core {
 		{
 			$quote = -1;
 		}
-		
+
 		$this->where = array_merge($this->where, $this->driver->where($key, $value, 'AND ', count($this->where), $quote));
 		return $this;
 	}
@@ -346,7 +346,7 @@ class Database_Core {
 				$this->groupby[] = $val;
 			}
 		}
-		
+
 		return $this;
 	}
 
@@ -706,7 +706,7 @@ class Database_Core {
 		$this->from  = array();
 		$this->where = array();
 	}
-	
+
 	/**
 	* Returns an array of table names
 	*
@@ -716,10 +716,10 @@ class Database_Core {
 	public function list_tables()
 	{
 		if (!$this->connected) $this->driver->connect($this->config);
-		
+
 		return $this->driver->list_tables();
 	}
-	
+
 	/**
 	* Determine if a particular table exists
 	* @access      public
@@ -729,34 +729,34 @@ class Database_Core {
 	{
 		return ( ! in_array($table_name, $this->list_tables())) ? FALSE : TRUE;
 	}
-	
+
 	/**
 	 * Compile Bindings
 	 *
 	 * @access	public
 	 * @param	string	the sql statement
 	 * @param	array	an array of bind data
-	 * @return	string		
-	 */	
+	 * @return	string
+	 */
 	public function compile_binds($sql, $binds)
-	{	
+	{
 		if (strpos($sql, '?') === FALSE)
 		{
 			return $sql;
 		}
-		
+
 		$binds = (array) $binds;
-		
+
 		foreach ($binds as $val)
 		{
 			$val = $this->driver->escape($val);
-					
+
 			// Just in case the replacement string contains the bind
 			// character we'll temporarily replace it with a marker
 			$val = str_replace('?', '{%bind_marker%}', $val);
 			$sql = preg_replace("#".preg_quote('?', '#')."#", str_replace('$', '\$', $val), $sql, 1);
 		}
 
-		return str_replace('{%bind_marker%}', '?', $sql);		
+		return str_replace('{%bind_marker%}', '?', $sql);
 	}
 } // End Database Class
