@@ -28,6 +28,14 @@
 		last_activity: int (11)
 		total_hits: int (10)
 		data: text
+
+	CREATE TABLE `kohana_session` (
+	`session_id` VARCHAR( 26 ) NOT NULL ,
+	`last_activity` INT( 11 ) NOT NULL ,
+	`total_hits` INT( 10 ) NOT NULL ,
+	`data` TEXT NOT NULL ,
+	PRIMARY KEY ( `session_id` )
+	) ;
 */
 
 /**
@@ -42,18 +50,16 @@
 class Session_Database implements Session_Driver {
 
 	var $sdb;  // session db connection
-	var $CORE;
 
 	/**
 	 * Constructor
 	 */
-	public function __construct($config)
+	public function __construct()
 	{
-		foreach(((array) $config) as $key => $val)
-		{
-			$this->$key = $val;
-		}
-
+		$this->expiration	= Config::item('session.expiration');
+		$this->encryption	= Config::item('session.encryption');
+		$this->name  		= Config::item('session.name');
+		
 		// Load necessary classes
 		$this->input = new Input();
 		if ($this->encryption == TRUE)
@@ -83,12 +89,11 @@ class Session_Database implements Session_Driver {
 	 * @access	public
 	 * @return	bool
 	 */
-	public function open()
+	public function open($path, $name)
 	{
-		$this->CORE = Kohana::$instance;
 		// $this->name contains the configured 'session_name'. A db group
 		// AND an actual database table must exist of the SAME name.
-		$this->sdb = $this->CORE->load->database($this->name, TRUE);
+		$this->sdb = new Database($this->name);
 		
 		if (! $this->sdb->table_exists($this->name))
 		{
@@ -117,7 +122,7 @@ class Session_Database implements Session_Driver {
 	{
 		// Garbage collect
 		$this->gc();
-		return $this->sdb->close();
+		//return $this->sdb->close();
 	}
 
 	// --------------------------------------------------------------------
@@ -161,17 +166,18 @@ class Session_Database implements Session_Driver {
 
 		// Does session exist?
 		$query = $this->sdb->select('session_id, last_activity, total_hits, data')->from($this->name)->where('session_id', $id)->get();
+
 		$query->result();
 		
 		// Yes? Do update
 		if ($query->num_rows() > 0)
 		{
-			$row = $query->row();
+			$row = $query->current();
 			$total_hits += $row->total_hits;
-			
+			//echo $id;die;
 			$db_data = array('last_activity' => $last_activity, 'total_hits' => $total_hits, 'data' => $data);
-			$where = "session_id = '$id'";
-			$query = $this->sdb->update($this->name, $db_data, $where);
+			
+			$query = $this->sdb->update($this->name, $db_data, array('session_id' => $id));
 
 			// Did we succeed?
 			if ($query->num_rows())
@@ -202,7 +208,7 @@ class Session_Database implements Session_Driver {
 	 * @access	public
 	 * @return	bool
 	 */
-	public function destroy()
+	public function destroy($id)
 	{
 		$id = session_id();
 
@@ -231,6 +237,7 @@ class Session_Database implements Session_Driver {
 		$id = session_id();
 
 		$query = $this->sdb->select('total_hits, data')->from($this->name)->where('session_id', $id)->get();
+		echo $this->sdb->last_query();
 		$query->result();
 		$row = $query->current();
 		// Session exists? Then store the data
@@ -249,16 +256,19 @@ class Session_Database implements Session_Driver {
 		$last_activity = time();
 		
 		// Regenerate the session
-		session_id(parent::regenerate());
-		session_regenerate_id();
-		
-		// Add the new session to the db
-		$id = session_id();
+		// We use 13 characters of a hash of the user's IP address for
+		// an id prefix to prevent collisions. This should be very safe.
+		$sessid = sha1($this->input->ip_address());
+		$_start = rand(0, strlen($sessid)-13);
+		$sessid = substr($sessid, $_start, 13);
+		$sessid = uniqid($sessid);
 
-		$db_data = array('session_id'=> $id, 'last_activity' => $last_activity, 'total_hits' => $total_hits, 'data' => $data);
+		// Set the new session id
+		session_id($sessid);
+
+		$db_data = array('session_id'=> $sessid, 'last_activity' => $last_activity, 'total_hits' => $total_hits, 'data' => $data);
 		$sql = $this->sdb->insert($this->name, $db_data);
- 
-		$this->sdb->query($sql);
+
 	}
 	
 	// --------------------------------------------------------------------
@@ -275,14 +285,14 @@ class Session_Database implements Session_Driver {
 	 */
 	public function gc()
 	{
-		if (parent::gc())
-		{
+		//if (parent::gc())
+		//{
 			$lifetime = ini_get('session.gc_maxlifetime');
 			$expiry = ($lifetime > 0) ? (time() - $lifetime) : (time() - 1440);
 
 			$query = $this->sdb->delete($this->name, array('last_activity' => $expiry));
 			return $query->num_rows();
-		}
+		//}
 		
 		return 0;
 		

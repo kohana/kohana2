@@ -77,7 +77,7 @@ class Database_Mysql implements Database_Driver {
 	 */
 	public function query($sql, $object = TRUE)
 	{
-		return new Mysql_Result(mysql_query($sql, $this->link), $this->link, $object);
+		return new Mysql_Result(mysql_query($sql, $this->link), $this->link, $object, $sql);
 	}
 
 	public function delete($table, $where)
@@ -335,7 +335,7 @@ class Mysql_Result implements Database_Result, Iterator
 	private $rows      = array();
 	private $object    = TRUE;
 
-	public function __construct($result, $link, $object = TRUE)
+	public function __construct($result, $link, $object = TRUE, $sql)
 	{
 		$this->object = (bool) $object;
 
@@ -349,7 +349,7 @@ class Mysql_Result implements Database_Result, Iterator
 		{
 			if ($result == FALSE)
 			{
-				throw new Kohana_Exception('database.error', mysql_error());
+				throw new Kohana_Exception('database.error', mysql_error().' - '.$sql);
 			}
 			else if ($result == TRUE) // Its an DELETE, INSERT, REPLACE, or UPDATE query
 			{
