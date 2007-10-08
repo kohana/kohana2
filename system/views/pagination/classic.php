@@ -8,32 +8,32 @@
 
 <p class="pagination">
 	
-	<?php if ($first_page) { ?>
+	<?php if ($first_page): ?>
 		<a href="<?php echo $this->pagination->url(1) ?>">&lsaquo;&nbsp;First</a>
-	<?php } ?>
+	<?php endif; ?>
 
-	<?php if ($previous_page) { ?>
+	<?php if ($previous_page): ?>
 		<a href="<?php echo $this->pagination->url($previous_page) ?>">&lt;</a>
-	<?php } ?>
+	<?php endif; ?>
 	
 
-	<?php for ($i = 1; $i <= $total_pages; $i++) { ?>
+	<?php for ($i = 1; $i <= $total_pages; $i++): ?>
 		
-		<?php if ($i == $current_page) { ?>
+		<?php if ($i == $current_page): ?>
 			<strong><?php echo $i ?></strong>
-		<?php } else { ?>
+		<?php else: ?>
 			<a href="<?php echo $this->pagination->url($i) ?>"><?php echo $i ?></a>
-		<?php } ?>
+		<?php endif; ?>
 		
-	<?php } ?>
+	<?php endfor; ?>
 
 
-	<?php if ($next_page) { ?>
+	<?php if ($next_page): ?>
 		<a href="<?php echo $this->pagination->url($next_page) ?>">&gt;</a>
-	<?php } ?>
+	<?php endif; ?>
 
-	<?php if ($last_page) { ?>
+	<?php if ($last_page): ?>
 		<a href="<?php echo $this->pagination->url($last_page) ?>">Last&nbsp;&rsaquo;</a>
-	<?php } ?>
+	<?php endif; ?>
 
 </p>

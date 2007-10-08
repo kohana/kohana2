@@ -10,28 +10,28 @@
 	
 	Pages:
 
-	<?php if ($current_page > 3) { ?>
+	<?php if ($current_page > 3): ?>
 		<a href="<?php echo $this->pagination->url(1) ?>">1</a>
 		<?php if ($current_page != 4) echo '&hellip;' ?>
-	<?php } ?>
+	<?php endif; ?>
 	
 
-	<?php for ($i = $current_page - 2, $stop = $current_page + 3; $i < $stop; ++$i) { ?>
+	<?php for ($i = $current_page - 2, $stop = $current_page + 3; $i < $stop; ++$i): ?>
 		
 		<?php if ($i < 1 OR $i > $total_pages) continue ?>
 		
-		<?php if ($current_page == $i) { ?>
+		<?php if ($current_page == $i): ?>
 			<strong><?php echo $i ?></strong>
-		<?php } else { ?>
+		<?php else: ?>
 			<a href="<?php echo $this->pagination->url($i) ?>"><?php echo $i ?></a>
-		<?php } ?>
+		<?php endif; ?>
 		
-	<?php } ?>
+	<?php endfor; ?>
 	
 
-	<?php if ($current_page <= $total_pages - 3) { ?>
+	<?php if ($current_page <= $total_pages - 3): ?>
 		<?php if ($current_page != $total_pages - 3) echo '&hellip;' ?>
 		<a href="<?php echo $this->pagination->url($total_pages) ?>"><?php echo $total_pages ?></a>
-	<?php } ?>
+	<?php endif; ?>
 
 </p>

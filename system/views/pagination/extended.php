@@ -8,20 +8,20 @@
 
 <p class="pagination">
 	
-	<?php if ($previous_page) { ?>
+	<?php if ($previous_page): ?>
 		<a href="<?php echo $this->pagination->url($previous_page) ?>">&laquo;&nbsp;Previous</a>
-	<?php } else { ?>
+	<?php else: ?>
 		&laquo;&nbsp;Previous
-	<?php } ?>
+	<?php endif; ?>
 	
 	| Page <?php echo $current_page ?> of <?php echo $total_pages ?>
 	
 	| Showing items <?php echo $current_first_item ?>-<?php echo $current_last_item ?> of <?php echo $total_items ?>
 	
-	| <?php if ($next_page) { ?>
+	| <?php if ($next_page): ?>
 		<a href="<?php echo $this->pagination->url($next_page) ?>">Next&nbsp;&raquo;</a>
-	<?php } else { ?>
+	<?php else: ?>
 		Next&nbsp;&raquo;
-	<?php } ?>
+	<?php endif; ?>
 	
 </p>
