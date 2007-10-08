@@ -115,7 +115,7 @@ class Validation_Core {
 		foreach(array('data', 'fields', 'rules', 'errors', 'messages') as $var)
 		{
 			print strtoupper($var);
-			print "<pre>".print_r($this->$var, TRUE)."</pre>\n\n";
+			print '<pre>'.print_r($this->$var, TRUE)."</pre>\n\n";
 		}
 
 		// Fetch the buffer
@@ -133,6 +133,7 @@ class Validation_Core {
 	 *
 	 * @access  public
 	 * @param   mixed
+	 * @param   string
 	 * @param   string
 	 * @return  void
 	 */
@@ -234,7 +235,7 @@ class Validation_Core {
 	 * This function does all the work.
 	 *
 	 * @access  public
-	 * @return  bool
+	 * @return  boolean
 	 */
 	public function run()
 	{
@@ -280,7 +281,7 @@ class Validation_Core {
 			if ( ! isset($this->data[$field]))
 			{
 				// This field is required
-				if (preg_match('/required|callback|matches/', $rules, $required))
+				if (preg_match('/required|callback|matches/', $rules))
 				{
 					$this->add_error('required', $field);
 				}
@@ -569,7 +570,8 @@ class Validation_Core {
 	 *
 	 * @access  public
 	 * @param   string
-	 * @return  bool
+	 * @param   integer
+	 * @return  boolean
 	 */
 	public function required($str, $length = FALSE)
 	{
@@ -619,16 +621,15 @@ class Validation_Core {
 	 *
 	 * @access	public
 	 * @param	string
-	 * @return	bool
+	 * @param	string
+	 * @return	boolean
 	 */
 	public function matches($str, $field)
 	{
 		if ( ! isset($this->data[$field]))
-		{
 			return FALSE;
-		}
 
-		return ($str !== $this->data[$field]) ? FALSE : TRUE;
+		return (bool) ($str === $this->data[$field]);
 	}
 
 	/**
@@ -636,14 +637,13 @@ class Validation_Core {
 	 *
 	 * @access	public
 	 * @param	string
-	 * @return	bool
+	 * @param	integer
+	 * @return	boolean
 	 */
 	public function min_length($str, $val)
 	{
 		if ( ! is_numeric($val))
-		{
 			return FALSE;
-		}
 
 		return (bool) (strlen($str) > $val);
 	}
@@ -653,14 +653,13 @@ class Validation_Core {
 	 *
 	 * @access	public
 	 * @param	string
-	 * @return	bool
+	 * @param	integer
+	 * @return	boolean
 	 */
 	public function max_length($str, $val)
 	{
 		if ( ! is_numeric($val))
-		{
 			return FALSE;
-		}
 
 		return (bool) (strlen($str) < $val);
 	}
@@ -670,14 +669,13 @@ class Validation_Core {
 	 *
 	 * @access	public
 	 * @param	string
-	 * @return	bool
+	 * @param	integer
+	 * @return	boolean
 	 */
 	public function exact_length($str, $val)
 	{
 		if ( ! is_numeric($val))
-		{
 			return FALSE;
-		}
 
 		return (bool) (strlen($str) == $val);
 	}
@@ -707,7 +705,7 @@ class Validation_Core {
 	 *
 	 * @access  public
 	 * @param   string
-	 * @return  bool
+	 * @return  boolean
 	 */
 	public function valid_email_rfc($str)
 	{
@@ -732,7 +730,7 @@ class Validation_Core {
 	 *
 	 * @access	public
 	 * @param	string
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function valid_ip($ip)
 	{
@@ -744,7 +742,7 @@ class Validation_Core {
 	 *
 	 * @access	public
 	 * @param	string
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function alpha($str)
 	{
@@ -756,7 +754,7 @@ class Validation_Core {
 	 *
 	 * @access  public
 	 * @param   string
-	 * @return  bool
+	 * @return  boolean
 	 */
 	public function alpha_numeric($str)
 	{
@@ -768,7 +766,7 @@ class Validation_Core {
 	 *
 	 * @access	public
 	 * @param	string
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function alpha_dash($str)
 	{
@@ -779,8 +777,8 @@ class Validation_Core {
 	 * Digits: 0-9, no dots or dashes
 	 *
 	 * @access  public
-	 * @param   int
-	 * @return  bool
+	 * @param   integer
+	 * @return  boolean
 	 */
 	public function digit($str)
 	{
@@ -791,8 +789,8 @@ class Validation_Core {
 	 * Numeric
 	 *
 	 * @access  public
-	 * @param   int
-	 * @return  bool
+	 * @param   integer
+	 * @return  boolean
 	 */
 	public function numeric($str)
 	{
@@ -819,14 +817,10 @@ class Validation_Core {
 	public function set_select($field = '', $value = '')
 	{
 		if ($field == '' OR $value == '' OR  ! isset($this->data[$field]))
-		{
 			return '';
-		}
 
 		if ($this->data[$field] == $value)
-		{
 			return ' selected="selected"';
-		}
 	}
 
 	/**
@@ -843,14 +837,10 @@ class Validation_Core {
 	public function set_radio($field = '', $value = '')
 	{
 		if ($field == '' OR $value == '' OR  ! isset($this->data[$field]))
-		{
 			return '';
-		}
 
 		if ($this->data[$field] == $value)
-		{
 			return ' checked="checked"';
-		}
 	}
 
 	/**
@@ -867,14 +857,10 @@ class Validation_Core {
 	public function set_checkbox($field = '', $value = '')
 	{
 		if ($field == '' OR $value == '' OR  ! isset($this->data[$field]))
-		{
 			return '';
-		}
 
 		if ($this->data[$field] == $value)
-		{
 			return ' checked="checked"';
-		}
 	}
 
 	/**
@@ -890,9 +876,7 @@ class Validation_Core {
 	public function prep_for_form($str = '')
 	{
 		if ($this->form_safe == FALSE OR $str == '')
-		{
 			return $str;
-		}
 
 		return html::specialchars($str);
 	}
