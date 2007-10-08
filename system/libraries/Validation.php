@@ -369,7 +369,10 @@ class Validation_Core {
 
 	public function upload($data, $params = FLASE)
 	{
+		// By default, nothing is allowed
 		$allowed = FALSE;
+
+		// Maximum sizes of various attributes
 		$maxsize = array
 		(
 			'file'   => FALSE,
@@ -378,17 +381,20 @@ class Validation_Core {
 			'height' => FALSE
 		);
 
-		if ( ! isset($data['name']) OR ! is_uploaded_file($data['tmp_name']))
+		// Validate the uploaded file
+		if ( ! isset($data['tmp_name']) OR ! is_uploaded_file($data['tmp_name']))
 		{
 			return FALSE;
 		}
 		elseif (is_array($data['name']))
 		{
+			// Handle an array of inputs
 			$files = $data;
-			$total = count($files['name']);
+			$total = count($files['name']) + 1;
 
-			for ($i = 0; $i < ($total + 1); $i++)
+			for ($i = 0; $i < $total; $i++)
 			{
+				// Fake a single upload input
 				$data = array
 				(
 					'name'     => $files['name'][$i],
@@ -398,12 +404,16 @@ class Validation_Core {
 					'error'    => $files['error'][$i]
 				);
 
+				// Recursion
 				if ( ! $this->upload($data, $params))
 					return FALSE;
 			}
+
+			// All files uploaded successfully
 			return TRUE;
 		}
 
+		// Parse addition parameters
 		if (is_array($params) AND ! empty($params))
 		{
 			// Creates a mirrored array: foo=foo,bar=bar
@@ -413,10 +423,12 @@ class Validation_Core {
 			{
 				if (preg_match('/[0-9]+x[0-9]+/', $param))
 				{
+					// Maximum image size, eg: 200x100
 					list($maxsize['width'], $maxsize['height']) = explode('x', $param);
 				}
 				elseif (preg_match('/[0-9].+[BKMG]/i', $param))
 				{
+					// Maximum file size, eg: 1M
 					$maxsize['human'] = strtoupper($param);
 
 					switch(strtoupper(substr($param, -1)))
@@ -436,13 +448,18 @@ class Validation_Core {
 			}
 		}
 
+		// Uploads must use a white-list of allowed file types
 		if (empty($allowed))
 			throw new Kohana_Exception('upload.set_allowed');
 
+		// Error code definitions available at:
+		// http://us.php.net/manual/en/features.file-upload.errors.php
 		switch($data['error'])
 		{
+			// Valid upload
 			case UPLOAD_ERR_OK:
 			break;
+			// Upload to large, based on php.ini settings
 			case UPLOAD_ERR_INI_SIZE:
 				if ($maxsize['human'] == FALSE)
 				{
@@ -451,20 +468,25 @@ class Validation_Core {
 				$this->add_error('max_size', $this->current_field, $maxsize['human']);
 				return FALSE;
 			break;
+			// Kohana does not allow the MAX_FILE_SIZE input to control filesize
 			case UPLOAD_ERR_FORM_SIZE:
 				throw new Kohana_Exception('upload.max_file_size');
 			break;
+			// User aborted the upload, or a connection error occurred
 			case UPLOAD_ERR_PARTIAL:
 				$this->add_error('user_aborted', $this->current_field);
 				return FALSE;
 			break;
+			// No file was uploaded, or an extension blocked the upload
 			case UPLOAD_ERR_NO_FILE:
 			case UPLOAD_ERR_EXTENSION:
 				return FALSE;
 			break;
+			// No temporary directory set in php.ini
 			case UPLOAD_ERR_NO_TMP_DIR:
 				throw new Kohana_Exception('upload.no_tmp_dir');
 			break;
+			// Could not write to the temporary directory
 			case UPLOAD_ERR_CANT_WRITE:
 				throw new Kohana_Exception('upload.tmp_unwritable');
 			break;
@@ -476,9 +498,13 @@ class Validation_Core {
 			return FALSE;
 		}
 
-		// Use getimagesize() to find the mime type on images
+		// Find the MIME type of the file. Although the mime type is available
+		// in the upload data, it can easily be faked. Instead, we use the
+		// server filesystem functions (if possible) to determine the MIME type.
+
 		if (preg_match('/jpe?g|png|[gt]if/', implode(' ', $allowed)))
 		{
+			// Use getimagesize() to find the mime type on images
 			$mime = @getimagesize($data['tmp_name']);
 
 			// Validate height and width
@@ -496,44 +522,53 @@ class Validation_Core {
 			// Set mime type
 			$mime = isset($mime['mime']) ? $mime['mime'] : FALSE;
 		}
-		// Try using the fileinfo extension
 		elseif (function_exists('finfo_open'))
 		{
+			// Try using the fileinfo extension
 			$finfo = finfo_open(FILEINFO_MIME);
 			$mime  = finfo_file($finfo, $data['tmp_name']);
 			finfo_close($finfo);
 		}
-		// Use mime_content_type() (depreceated)
 		elseif (ini_get('mime_magic.magicfile') AND function_exists('mime_content_type'))
 		{
+			// Use mime_content_type(), deprecated by PHP
 			$mime = mime_content_type($data['tmp_name']);
 		}
-		// Use the UNIX command 'file'
 		elseif (file_exists($cmd = trim(exec('which file'))))
 		{
+			// Use the UNIX 'file' command
 			$mime = escapeshellarg($data['tmp_name']);
 			$mime = trim(exec($cmd.' -bi '.$mime));
 		}
-		// Trust the browser
 		else
 		{
+			// Trust the browser, as a last resort
 			$mime = $data['type'];
 		}
 
-		$ext = strtolower(substr($data['name'], strrpos($data['name'], '.', 2) + 1));
-		$ext = Config::item('mimes.'.$ext);
+		// Find the list of valid mime types by the extension of the file
+		$ext = strtolower(end(explode('.', $data['name'])));
 
-		if ($ext == FALSE OR array_search($mime, $ext) === FALSE)
+		// Validate file mime type based on the extension. Because the mime type
+		// is trusted (validated by the server), we check if the mime is in the
+		// list of known mime types for the current extension.
+
+		if ($ext == FALSE OR array_search($mime, Config::item('mimes.'.$ext)) === FALSE)
 		{
 			$this->add_error('invalid_type', $this->current_field);
 			return FALSE;
 		}
 
+		// Removes spaces from the filename if configured to do so
 		$filename = Config::item('upload.remove_spaces') ? preg_replace('/\s+/', '_', $data['name']) : $data['name'];
+
+		// Fetch the real path of the upload directory, add the filename
 		$filename = realpath(Config::item('upload.upload_directory')).'/'.$filename;
 
+		// Move the upload file to the new location
 		move_uploaded_file($data['tmp_name'], $filename);
 
+		// Set the data to the current field name
 		$this->data[$this->current_field] = $filename;
 
 		return TRUE;
