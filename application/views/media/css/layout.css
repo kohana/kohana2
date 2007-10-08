@@ -24,10 +24,10 @@ h2, h3, h4, h5, h6 { margin-bottom: 0.6em; }
 			#developer a:active { border-color: #114; }
 
 /* Header */
-#header { position: relative; }
+#header { position: relative; top: 0; height: 229px; background: url(../img/kohana.png) 35px center no-repeat; }
 
 /* Logo */
-#logo { width: 600px; height: 230px; text-indent: -3000em; background: transparent url(../img/kohana.png) center no-repeat; }
+#logo { display: none;  }
 
 /* Main Menu */
 #menu { position: absolute; bottom: 0; margin-left: 35px; }
