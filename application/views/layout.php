@@ -18,8 +18,6 @@ echo html::stylesheet(array
 <body>
 <div id="container">
 
-<!-- Start Header -->
-<div id="header" class="clearfix">
 
 <!-- Start Developer Menu -->
 <div id="developer">
@@ -33,6 +31,9 @@ echo html::stylesheet(array
 </ul>
 </div>
 <!-- End Developer Menu -->
+
+<!-- Start Header -->
+<div id="header" class="clearfix">
 
 <!-- Start Logo -->
 <h1 id="logo">Kohana</h1>

@@ -23,17 +23,20 @@ h2, h3, h4, h5, h6 { margin-bottom: 0.6em; }
 			#developer a:hover { border-color: #345072; color: #6593cc; }
 			#developer a:active { border-color: #114; }
 
+/* Header */
+#header { position: relative; }
+
 /* Logo */
 #logo { width: 600px; height: 230px; text-indent: -3000em; background: transparent url(../img/kohana.png) center no-repeat; }
 
 /* Main Menu */
-#menu { position: absolute; top: 215px; margin-left: 35px; overflow: visible; }
-	#menu li { display: block; float: left; padding-bottom: 0.5em; }
-	#menu li.active { background: url(../img/mainnav-tab-right.png) no-repeat 100% 0; }
-		#menu a { display: block; padding: 1.2em 2em; text-transform: uppercase; font-weight: bold; color: #3f5c0b; }
-		#menu a:hover { color: #2C360B; }
-		#menu li.active a { background: url(../img/mainnav-tab-left.png) no-repeat 0 0; color: #222; }
-		#menu li.active a:hover { color: #000; }
+#menu { position: absolute; bottom: 0; margin-left: 35px; }
+	#menu li { display: block; float: left; padding: 3px 3px 0; }
+	#menu li.active { margin-right: 8px; background: #f7fbf1; }
+		#menu a { display: block; padding: 10px 20px 15px; text-transform: uppercase; font-weight: bold; color: #3f5c0b; }
+		#menu a:hover { background: #76b714; color: #2c360b; }
+		#menu li.active a { margin-bottom: -1px; padding: 10px 24px 20px; background: #f7fbf1; border: solid 1px #d4e9af; border-width: 1px 1px 0; color: #222; }
+		#menu li.active a:hover { background: #f7fbf1; color: #000; }
 
 /* Content Body */
 #body { clear: both; position: relative; min-width: 40em; min-height: 280px; padding: 1.4em 0; margin-left: 35px; padding-right: 20em; }
