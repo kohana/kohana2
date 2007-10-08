@@ -44,21 +44,15 @@ class Session_Cookie implements Session_Driver {
 		Log::add('debug', 'Session Cookie Driver Initialized');
 	}
 
-	// --------------------------------------------------------------------
-
 	public function open($path, $name)
 	{
 		return TRUE;
 	}
 
-	// --------------------------------------------------------------------
-
 	public function close()
 	{
 		return TRUE;
 	}
-
-	// --------------------------------------------------------------------
 
 	public function read($id)
 	{
@@ -71,8 +65,6 @@ class Session_Cookie implements Session_Driver {
 
 		return $data;
 	}
-
-	// --------------------------------------------------------------------
 
 	public function write($id, $data)
 	{
@@ -90,8 +82,6 @@ class Session_Cookie implements Session_Driver {
 		return $this->setcookie($data, (time() + $this->expiration));
 	}
 
-	// --------------------------------------------------------------------
-
 	public function destroy($id)
 	{
 		unset($_COOKIE[$this->cookie_name]);
@@ -99,29 +89,11 @@ class Session_Cookie implements Session_Driver {
 		return $this->setcookie(session_id(), (time() - 86400));
 	}
 
-	// --------------------------------------------------------------------
-
-	public function regenerate()
-	{
-		// We use 13 characters of a hash of the user's IP address for
-		// an id prefix to prevent collisions. This should be very safe.
-		$sessid = sha1($this->input->ip_address());
-		$_start = rand(0, strlen($sessid)-13);
-		$sessid = substr($sessid, $_start, 13);
-		$sessid = uniqid($sessid);
-
-		// Set the new session id
-		session_id($sessid);
-	}
-
-	// --------------------------------------------------------------------
 
 	public function gc()
 	{
 		return TRUE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Proxy for setcookie()
@@ -133,12 +105,7 @@ class Session_Cookie implements Session_Driver {
 	 */
 	private function setcookie($data, $expiration)
 	{
-		static $sets;
-
-		if (headers_sent())
-			die(''.$sets);
-
-		return setcookie
+		return headers_sent() ? FALSE : setcookie
 		(
 			$this->cookie_name,
 			$data,
