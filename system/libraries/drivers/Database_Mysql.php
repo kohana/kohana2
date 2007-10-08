@@ -273,7 +273,7 @@ class Database_Mysql implements Database_Driver {
 				$str = "'".$this->escape_str($str)."'";
  			break;
 			case 'boolean':
-				$str = ($str === FALSE) ? 0 : 1;
+				$str = (int) $str;
 			break;
 			default:
 				$str = ($str === NULL) ? 'NULL' : $str;

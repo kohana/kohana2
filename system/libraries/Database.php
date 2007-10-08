@@ -722,12 +722,13 @@ class Database_Core {
 
 	/**
 	* Determine if a particular table exists
+	* 
 	* @access      public
 	* @return      boolean
 	*/
 	public function table_exists($table_name)
 	{
-		return ( ! in_array($table_name, $this->list_tables())) ? FALSE : TRUE;
+		return (in_array($table_name, $this->list_tables()));
 	}
 
 	/**
@@ -741,22 +742,22 @@ class Database_Core {
 	public function compile_binds($sql, $binds)
 	{
 		if (strpos($sql, '?') === FALSE)
-		{
 			return $sql;
-		}
 
-		$binds = (array) $binds;
-
-		foreach ($binds as $val)
+		foreach ((array) $binds as $val)
 		{
 			$val = $this->driver->escape($val);
 
 			// Just in case the replacement string contains the bind
 			// character we'll temporarily replace it with a marker
 			$val = str_replace('?', '{%bind_marker%}', $val);
-			$sql = preg_replace("#".preg_quote('?', '#')."#", str_replace('$', '\$', $val), $sql, 1);
+			// Replace possible regex vars like $0, $1 etc
+			$val = str_replace('$', '\$', $val);
+			
+			$sql = preg_replace('/\?/', $val, $sql, 1);
 		}
 
 		return str_replace('{%bind_marker%}', '?', $sql);
 	}
+
 } // End Database Class
