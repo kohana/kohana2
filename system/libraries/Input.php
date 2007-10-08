@@ -37,11 +37,10 @@
  */
 class Input_Core {
 
-	public $use_xss_clean   = FALSE;
-	public $xss_clean_tool  = FALSE;
+	protected $use_xss_clean   = FALSE;
+
 	public $ip_address      = FALSE;
 	public $user_agent      = FALSE;
-	public $allow_get_array = FALSE;
 
 	/**
 	 * Constructor
@@ -53,27 +52,6 @@ class Input_Core {
 	 * @return	void
 	 */
 	public function __construct()
-	{
-		$this->use_xss_clean  = (bool)   Config::item('core.global_xss_filtering');
-		$this->xss_clean_tool = (string) Config::item('core.global_xss_filtering');
-
-		$this->_sanitize_globals();
-
-		Log::add('debug', 'Input Library initialized');
-	}
-
-	/**
-	 * Sanitize Globals
-	 *
-	 * This function does the following:
-	 * Unsets $_GET data (if query strings are not enabled)
-	 * Unsets all globals if register_globals is enabled
-	 * Standardizes newline characters to \n
-	 *
-	 * @access	private
-	 * @return	void
-	 */
-	private function _sanitize_globals()
 	{
 		// Unset globals. This is effectively the same as register_globals = off
 		foreach (array($_GET, $_POST, $_COOKIE) as $global)
@@ -121,6 +99,11 @@ class Input_Core {
 		}
 
 		Log::add('debug', 'Global POST and COOKIE data sanitized');
+
+		// Use XSS clean?
+		$this->use_xss_clean = (bool) Config::item('core.global_xss_filtering');
+
+		Log::add('debug', 'Input Library initialized');
 	}
 
 	/**
@@ -133,7 +116,7 @@ class Input_Core {
 	 * @param	string
 	 * @return	string
 	 */
-	private function _clean_input_data($str)
+	protected function _clean_input_data($str)
 	{
 		if (is_array($str))
 		{
@@ -170,7 +153,7 @@ class Input_Core {
 	 * @param	string
 	 * @return	string
 	 */
-	private function _clean_input_keys($str)
+	protected function _clean_input_keys($str)
 	{
 		if ( ! preg_match('#^[\pL0-9:_/-]+$#uiD', $str))
 		{
@@ -189,7 +172,7 @@ class Input_Core {
 	 * @param	boolean
 	 * @return	string
 	 */
-	private function _get_global($global, $index = FALSE, $xss_clean = FALSE)
+	protected function _get_global($global, $index = FALSE, $xss_clean = FALSE)
 	{
 		$global = '_'.strtoupper(trim($global, '_'));
 
@@ -373,7 +356,7 @@ class Input_Core {
 		if ($this->user_agent !== FALSE)
 			return $this->user_agent;
 
-		$this->user_agent = ( ! isset($_SERVER['HTTP_USER_AGENT'])) ? FALSE : $_SERVER['HTTP_USER_AGENT'];
+		$this->user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : FALSE;
 
 		return $this->user_agent;
 	}
@@ -392,7 +375,7 @@ class Input_Core {
 	 */
 	public function xss_clean($string, $tool = '')
 	{
-		$tool = ($tool != '') ? $tool : $this->xss_clean_tool;
+		$tool = ($tool != '') ? $tool : Config::item('core.global_xss_filtering');
 
 		switch ($tool)
 		{
@@ -407,9 +390,9 @@ class Input_Core {
 				$config = HTMLPurifier_Config::createDefault();
 				$config->set('HTML', 'TidyLevel', 'none'); // Only XSS cleaning now
 
+				// Run HTMLPurifier
 				$string = HTMLPurifier($string, $config);
 			break;
-
 			default:
 				// http://svn.bitflux.ch/repos/public/popoon/trunk/classes/externalinput.php
 				// +----------------------------------------------------------------------+
