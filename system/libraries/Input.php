@@ -137,11 +137,11 @@ class Input_Core {
 			case 'cookie': $array =& $_COOKIE; break;
 			case 'server': $array =& $_SERVER; break;
 			default:
-				throw new Kohana_Exception('core.invalid_method', $global, 'Input');
+				throw new Kohana_Exception('core.invalid_method', $global, get_class($this));
 		}
 
-		// XSS clean if requested
-		if ( ! empty($array[$key]) AND $xss_clean === TRUE)
+		// XSS clean if the data has not already been cleaned.
+		if ($this->use_xss_clean == FALSE AND $xss_clean == TRUE AND ! empty($array[$key]))
 		{
 			if (is_array($array[$key]))
 			{
