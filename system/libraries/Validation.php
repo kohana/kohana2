@@ -125,8 +125,6 @@ class Validation_Core {
 		return $output;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Set Field Information
 	 *
@@ -171,8 +169,6 @@ class Validation_Core {
 		}
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Set Error Message
 	 *
@@ -197,8 +193,6 @@ class Validation_Core {
 		}
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Error Message Format
 	 *
@@ -216,8 +210,6 @@ class Validation_Core {
 
 		$this->error_format = $string;
 	}
-
-	// --------------------------------------------------------------------
 
 	public function add_error($func, $field)
 	{
@@ -364,8 +356,6 @@ class Validation_Core {
 			return FALSE;
 		}
 	}
-
-	// --------------------------------------------------------------------
 
 	public function upload($data, $params = FLASE)
 	{
@@ -624,8 +614,6 @@ class Validation_Core {
 		}
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Match one field to another
 	 *
@@ -642,8 +630,6 @@ class Validation_Core {
 
 		return ($str !== $this->data[$field]) ? FALSE : TRUE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Minimum Length
@@ -662,8 +648,6 @@ class Validation_Core {
 		return (bool) (strlen($str) > $val);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Max Length
 	 *
@@ -680,8 +664,6 @@ class Validation_Core {
 
 		return (bool) (strlen($str) < $val);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Exact Length
@@ -700,8 +682,6 @@ class Validation_Core {
 		return (bool) (strlen($str) == $val);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Valid Email, Commonly used characters only
 	 *
@@ -713,8 +693,6 @@ class Validation_Core {
 	{
 		return (bool) preg_match('/^(?!\.)[-+_a-z0-9.]++(?<!\.)@(?![-.])[-a-z0-9.]+(?<!\.)\.[a-z]{2,6}$/iD', $email);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Valid Email, RFC compliant version
@@ -749,8 +727,6 @@ class Validation_Core {
 		return (bool) preg_match('/^'.$addr_spec.'$/', $str);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Validate IP Address
 	 *
@@ -762,8 +738,6 @@ class Validation_Core {
 	{
 		return Kohana::instance()->input->valid_ip($ip);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Alpha
@@ -777,8 +751,6 @@ class Validation_Core {
 		return ctype_alpha($str);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Alpha-numeric
 	 *
@@ -790,8 +762,6 @@ class Validation_Core {
 	{
 		return ctype_alnum($str);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Alpha-numeric with underscores and dashes
@@ -805,8 +775,6 @@ class Validation_Core {
 		return (bool) preg_match('/^[-a-z0-9_]+$/iD', $str);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Digits: 0-9, no dots or dashes
 	 *
@@ -818,8 +786,6 @@ class Validation_Core {
 	{
 		return ctype_digit($str);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Numeric
@@ -838,8 +804,6 @@ class Validation_Core {
 
 		return TRUE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Set Select
@@ -865,8 +829,6 @@ class Validation_Core {
 		}
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Set Radio
 	 *
@@ -890,8 +852,6 @@ class Validation_Core {
 			return ' checked="checked"';
 		}
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Set Checkbox
@@ -917,8 +877,6 @@ class Validation_Core {
 		}
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Prep data for form
 	 *
@@ -938,8 +896,6 @@ class Validation_Core {
 
 		return html::specialchars($str);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Prep URL
@@ -964,8 +920,6 @@ class Validation_Core {
 		$this->data[$this->current_field] = $str;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Strip Image Tags
 	 *
@@ -975,10 +929,8 @@ class Validation_Core {
 	 */
 	public function strip_image_tags($str)
 	{
-		$this->data[$this->current_field] = Kohana::instance()->input->strip_image_tags($str);
+		$this->data[$this->current_field] = security::strip_image_tags($str);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * XSS Clean
@@ -992,8 +944,6 @@ class Validation_Core {
 		$this->data[$this->current_field] = Kohana::instance()->input->xss_clean($str);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Convert PHP tags to entities
 	 *
@@ -1003,9 +953,7 @@ class Validation_Core {
 	 */
 	public function encode_php_tags($str)
 	{
-		$this->data[$this->current_field] = str_replace(array('<?', '?>'),  array('&lt;?php', '?&gt;'), $str);
+		$this->data[$this->current_field] = security::encode_php_tags($str);
 	}
-
-
 
 } // End Validation Class

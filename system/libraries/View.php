@@ -41,7 +41,7 @@ class View_Core {
 
 	public function __construct($name, $data = NULL)
 	{
-		if (preg_match('/\.([gt]if|jpe?g|png|js|css|swf)$/Di', $name, $type))
+		if (preg_match('/\.(gif|jpe?g|png|tiff?|js|css|swf)$/Di', $name, $type))
 		{
 			$type = $type[1];
 
@@ -79,7 +79,7 @@ class View_Core {
 	{
 		$protected = array('kohana_filename', 'kohana_renderer', 'kohana_filetype');
 
-		if (in_array($name,  $protected) AND $this->$name === FALSE)
+		if (in_array($name, $protected) AND $this->$name === FALSE)
 		{
 			$this->$name = $value;
 		}
