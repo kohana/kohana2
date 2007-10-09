@@ -41,22 +41,15 @@ final class Event {
 		if ($name == FALSE OR $callback == FALSE)
 			return FALSE;
 
-		if (empty(self::$events[$name]))
-			self::$events[$name] = array();
-
-		if (in_array($callback, self::$events))
-			return FALSE;
-
 		self::$events[$name][] = $callback;
 	}
 
-
 	/**
-	 * Fetch events
+	 * Fetch an event
 	 *
-	 * @access public
-	 * @param  string
-	 * @return mixed
+	 * @access  public
+	 * @param   string
+	 * @return  array
 	 */
 	public static function get($name)
 	{
@@ -66,10 +59,10 @@ final class Event {
 	/**
 	 * Clear an event
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  callback
-	 * @return void
+	 * @access  public
+	 * @param   string
+	 * @param   callback
+	 * @return  void
 	 */
 	public static function clear($name, $callback = FALSE)
 	{
@@ -77,16 +70,13 @@ final class Event {
 		{
 			self::$events[$name] = array();
 		}
-		else
+		elseif (isset(self::$events[$name]))
 		{
-			if (isset(self::$events[$name]))
+			foreach(self::$events[$name] as $i => $event_callback)
 			{
-				foreach(self::$events[$name] as $i => $event_callback)
+				if ($callback == $event_callback)
 				{
-					if ($callback == $event_callback)
-					{
-						unset(self::$events[$name][$i]);
-					}
+					unset(self::$events[$name][$i]);
 				}
 			}
 		}
@@ -98,7 +88,7 @@ final class Event {
 	 * @access  public
 	 * @param   string
 	 * @param   array
-	 * @return  mixed
+	 * @return  void
 	 */
 	public static function run($name, & $data = NULL)
 	{
@@ -113,7 +103,7 @@ final class Event {
 			call_user_func($callback);
 		}
 
-		// Do this to prevent data from getting "stuck"
+		// Do this to prevent data from getting 'stuck'
 		$clear_data = '';
 		self::$data =& $clear_data;
 	}

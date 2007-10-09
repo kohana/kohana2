@@ -71,8 +71,8 @@ header('Content-type: text/html; charset=UTF-8');
 
 /**
  * Set SERVER_UTF8 boolean:
- * - TRUE  (use mb_* replacement functions)
- * - FALSE (to use non-native replacement functions)
+ * - TRUE  (use mb_* replacement functions where possible)
+ * - FALSE (use non-native replacement functions)
  */
 if (extension_loaded('mbstring'))
 {

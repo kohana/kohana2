@@ -13,15 +13,13 @@
  * @license          http://kohanaphp.com/license.html
  * @since            Version 2.0
  * @filesource
- *
- * $Id$
  */
 
 define('KOHANA_VERSION',  '2.0a1');
 define('KOHANA_CODENAME', 'Superlime');
 
 // Kohana benchmarks are prefixed by a random string to prevent collisions
-define('SYSTEM_BENCHMARK', uniqid(rand(1,100)));
+define('SYSTEM_BENCHMARK', uniqid(rand(1, 100)));
 
 // Load the benchmarking class
 require SYSPATH.'core/Benchmark'.EXT;
@@ -33,7 +31,7 @@ Benchmark::start(SYSTEM_BENCHMARK.'_base_classes_loading');
 // Load core classes
 require SYSPATH.'core/Kohana'.EXT;
 
-// Run system.prepare event
+// Run system.setup event
 // This sets up Kohana's PHP hooks, output buffering, error handling, etc
 Event::run('system.setup');
 
