@@ -23,12 +23,6 @@
 // ------------------------------------------------------------------------
 
 /*
-	Table layout:
-		session_id: varchar(20)
-		last_activity: int (11)
-		total_hits: int (10)
-		data: text
-
 	CREATE TABLE `kohana_session` (
 	`session_id` VARCHAR( 26 ) NOT NULL ,
 	`last_activity` INT( 11 ) NOT NULL ,
@@ -50,15 +44,16 @@
 class Session_Database implements Session_Driver {
 
 	var $sdb;  // session db connection
-
+	
 	/**
 	 * Constructor
 	 */
 	public function __construct()
 	{
-		$this->expiration	= Config::item('session.expiration');
-		$this->encryption	= Config::item('session.encryption');
-		$this->name  		= Config::item('session.name');
+		$this->expiration		= Config::item('session.expiration');
+		$this->encryption		= Config::item('session.encryption');
+		$this->name  			= Config::item('session.name');
+		$this->gc_probability  	= Config::item('session.gc_probability');
 		
 		// Load necessary classes
 		$this->input = new Input();
@@ -253,14 +248,14 @@ class Session_Database implements Session_Driver {
 	 */
 	public function gc()
 	{
-		//if (parent::gc())
-		//{
+		if ((rand() % 100) < $this->gc_probability)
+		{
 			$lifetime = ini_get('session.gc_maxlifetime');
 			$expiry = ($lifetime > 0) ? (time() - $lifetime) : (time() - 1440);
 
 			$query = $this->sdb->delete($this->name, array('last_activity' => $expiry));
 			return $query->num_rows();
-		//}
+		}
 		
 		return 0;
 	}
