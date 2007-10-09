@@ -138,7 +138,7 @@ class Database_Core {
 		$this->connected = $this->driver->connect($this->config);
 
 		if ($this->connected != TRUE)
-			throw new Kohana_Exception('database.connection', mysql_error());
+			throw new Kohana_Exception('database.connection', $this->driver->show_error());
 	}
 
 	/**

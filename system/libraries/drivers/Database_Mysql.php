@@ -324,6 +324,10 @@ class Database_Mysql implements Database_Driver {
 		return $retval;
 	}
 
+	function show_error()
+	{
+		return mysql_error();
+	}
 } // End Database_Mysql Class
 
 class Mysql_Result implements Database_Result, Iterator
