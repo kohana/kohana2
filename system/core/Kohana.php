@@ -206,9 +206,6 @@ class Kohana {
 			// Set controller class name
 			$controller = ucfirst(Router::$controller).'_Controller';
 
-			// Load the controller
-			$controller = new $controller();
-
 			if (method_exists($controller, '_remap'))
 			{
 				// Change arguments to be $method, $arguments.
@@ -238,15 +235,17 @@ class Kohana {
 				Kohana::show_404();
 			}
 
+			// Load the controller
+			$controller = new $controller();
+
 			if (is_array(Router::$arguments) AND ! empty(Router::$arguments))
 			{
-				call_user_func_array(array(Kohana::instance(), Router::$method), Router::$arguments);
+				call_user_func_array(array($controller, Router::$method), Router::$arguments);
 			}
 			else
 			{
-				call_user_func(array(Kohana::instance(), Router::$method));
+				call_user_func(array($controller, Router::$method));
 			}
-
 
 			// Run system.pre_controller
 			Event::run('system.post_controller');
