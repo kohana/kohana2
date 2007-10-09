@@ -264,6 +264,9 @@ class Kohana {
 	 */
 	final public static function output($output)
 	{
+		// Run the send_headers event, specifically for cookies being set
+		Event::run('system.send_headers');
+
 		// Fetch memory usage in MB
 		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
 

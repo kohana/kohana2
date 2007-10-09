@@ -109,7 +109,7 @@ class Session_Core {
 			$this->create();
 
 			// Close the session just before flushing the output buffer
-			Event::add('system.output', 'session_write_close');
+			Event::add('system.send_headers', 'session_write_close');
 		}
 
 		// Regenerate session ID
