@@ -16,8 +16,8 @@
  */
 $config = array
 (
-	'driver'     => 'database',
-	'storage'    => 'kohana_session',
+	'driver'     => 'cookie',
+	'storage'    => '',
 	'name'       => 'kohana_session',
 	'validate'   => array('user_agent'),
 	'encryption' => FALSE,

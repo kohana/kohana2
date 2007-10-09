@@ -108,7 +108,8 @@ class Session_Core {
 			// Create a new session
 			$this->create();
 
-			// Close the session just before flushing the output buffer
+			// Close the session just before sending the headers, so that
+			// the session cookie can be written
 			Event::add('system.send_headers', 'session_write_close');
 		}
 
