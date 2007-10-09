@@ -24,7 +24,7 @@
 
 /*
 	CREATE TABLE `kohana_session` (
-		`session_id` VARCHAR( 26 ) NOT NULL ,
+		`session_id` VARCHAR( 40 ) NOT NULL ,
 		`last_activity` INT( 11 ) NOT NULL ,
 		`total_hits` INT( 10 ) NOT NULL ,
 		`data` TEXT NOT NULL ,
@@ -158,6 +158,7 @@ class Session_Database implements Session_Driver {
 	 */
 	public function write($id, $session_string)
 	{
+		//ob_start();
 		$data = array
 		(
 			'session_id'    => $id,
@@ -167,7 +168,7 @@ class Session_Database implements Session_Driver {
 
 		// Fetch current session data
 		$query = $this->db->select('session_id')->from($this->group_name)->where('session_id', $id)->get();
-
+//echo $this->db->last_query().'<pre>'.print_r($query->result(), true).'</pre>';die;
 		// Yes? Do update
 		if ($query->result()->num_rows() > 0)
 		{
