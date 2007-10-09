@@ -15,7 +15,7 @@
 
 /**
  * Set the error reporting level. E_ALL is a good default.
- * NOTE: Kohana will always ignore E_NOTICE errors
+ * NOTE: Kohana will always ignore E_STRICT errors
  */
 error_reporting(E_ALL);
 
@@ -62,13 +62,13 @@ unset($docroot, $kohana_application, $kohana_system);
 (is_dir(APPPATH) AND is_dir(APPPATH.'/config')) or die
 (
 	'Your <code>$application_path</code> does not exist. '.
-	'Set a valid <code>$application_path</code> in <kbd>index.php</kbd> and refresh the page.'
+	'Set a valid <code>$application_path</code> in <tt>index.php</tt> and refresh the page.'
 );
 
 (is_dir(SYSPATH) AND file_exists(SYSPATH.'/core/'.'Bootstrap'.EXT)) or die
 (
 	'Your <code>$kohana_system</code> does not exist. '.
-	'Set a valid <code>$kohana_system</code> in <kbd>index.php</kbd> and refresh the page.'
+	'Set a valid <code>$kohana_system</code> in <tt>index.php</tt> and refresh the page.'
 );
 
 require_once SYSPATH.'core/Bootstrap'.EXT;
