@@ -94,8 +94,6 @@ class Session_Core {
 		Log::add('debug', 'Session Library initialized');
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Return the session id
 	 *
@@ -106,8 +104,6 @@ class Session_Core {
 	{
 		return $_SESSION['session_id'];
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Create a new session
@@ -150,20 +146,16 @@ class Session_Core {
 		$this->set($vars);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Destroy the current session
 	 *
 	 * @access public
-	 * @return bool
+	 * @return boolean
 	 */
 	public function destroy()
 	{
 		return session_destroy();
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Regenerate the session id
@@ -184,8 +176,6 @@ class Session_Core {
 
 		$_SESSION['session_id'] = session_id();
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Set a session variable
@@ -213,8 +203,6 @@ class Session_Core {
 			$_SESSION[$key] = $val;
 		}
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Set a flash variable
@@ -244,14 +232,12 @@ class Session_Core {
 		}
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Freshen a flash variable
 	 *
 	 * @access public
 	 * @param  string  variable key
-	 * @return bool
+	 * @return boolean
 	 */
 	public function keep_flash($key)
 	{
@@ -264,8 +250,6 @@ class Session_Core {
 		return FALSE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Get a flash variable
 	 *
@@ -276,14 +260,10 @@ class Session_Core {
 	public function get($key = FALSE)
 	{
 		if ($key == FALSE)
-		{
 			return $_SESSION;
-		}
 
 		return (isset($_SESSION[$key]) ? $_SESSION[$key] : FALSE);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Get a variable, and delete it
@@ -299,8 +279,6 @@ class Session_Core {
 
 		return $return;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Delete a variable
@@ -324,13 +302,11 @@ class Session_Core {
 		}
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Validate the session
 	 *
 	 * @access  private
-	 * @return  bool
+	 * @return  boolean
 	 */
 	private function validate()
 	{

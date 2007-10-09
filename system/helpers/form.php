@@ -74,8 +74,6 @@ class form {
 		return $form;
 	}
 
-	// ------------------------------------------------------------------------
-
 	public static function attributes($attr)
 	{
 		$order = array
@@ -117,8 +115,6 @@ class form {
 		return html::attributes($sorted);
 	}
 
-	// ------------------------------------------------------------------------
-
 	/**
 	 * Form Declaration - Multipart type
 	 *
@@ -137,8 +133,6 @@ class form {
 
 		return self::open($action, $attr, $hidden);
 	}
-
-	// ------------------------------------------------------------------------
 
 	/**
 	 * Hidden Input Field
@@ -177,8 +171,6 @@ class form {
 		return $input;
 	}
 
-	// ------------------------------------------------------------------------
-
 	/**
 	 * Text Input Field
 	 *
@@ -214,8 +206,6 @@ class form {
 		return '<input'.self::attributes($data).$extra.' />';
 	}
 
-	// ------------------------------------------------------------------------
-
 	/**
 	 * Password Field
 	 *
@@ -239,8 +229,6 @@ class form {
 		return self::input($data, $value, $extra);
 	}
 
-	// ------------------------------------------------------------------------
-
 	/**
 	 * Upload Field
 	 *
@@ -263,8 +251,6 @@ class form {
 
 		return self::input($data, $value, $extra);
 	}
-
-	// ------------------------------------------------------------------------
 
 	/**
 	 * Textarea field
@@ -290,8 +276,6 @@ class form {
 
 		return '<textarea'.self::attributes($data).'>'.html::specialchars($value).'</textarea>';
 	}
-
-	// ------------------------------------------------------------------------
 
 	/**
 	 * Drop-down Menu
@@ -321,8 +305,6 @@ class form {
 
 		return $input;
 	}
-
-	// ------------------------------------------------------------------------
 
 	/**
 	 * Checkbox Field
@@ -355,8 +337,6 @@ class form {
 		return self::input($data, $value, $extra);
 	}
 
-	// ------------------------------------------------------------------------
-
 	/**
 	 * Radio Button
 	 *
@@ -388,8 +368,6 @@ class form {
 		return self::input($data, $value, $extra);
 	}
 
-	// ------------------------------------------------------------------------
-
 	/**
 	 * Submit Button
 	 *
@@ -410,8 +388,6 @@ class form {
 
 		return self::input($data, $value, $extra);
 	}
-
-	// ------------------------------------------------------------------------
 
 	/**
 	 * Button Input
@@ -443,12 +419,11 @@ class form {
 		return '<button'.self::attributes($data).$extra.'>'.html::specialchars($value).'</button>';
 	}
 
-	// ------------------------------------------------------------------------
-
 	/**
 	 * Form Close Tag
 	 *
 	 * @access  public
+	 * @param   string
 	 * @return  string
 	 */
 	public static function close($extra = '')
@@ -456,12 +431,12 @@ class form {
 		return '</form>'."\n".$extra;
 	}
 
-	// ------------------------------------------------------------------------
-
 	/**
 	 * Form Label
 	 *
 	 * @access  public
+	 * @param   string
+	 * @param   string
 	 * @param   string
 	 * @return  string
 	 */

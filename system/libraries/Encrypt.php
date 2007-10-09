@@ -48,8 +48,6 @@ class Encrypt_Core {
 		Log::add('debug', 'Encrypt Library initialized');
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Fetch the encryption key
 	 *
@@ -65,20 +63,14 @@ class Encrypt_Core {
 		if ($key == '')
 		{
 			if ($this->encryption_key != '')
-			{
 				return $this->encryption_key;
-			}
 
 			if (($key = Config::item('encryption.key')) === FALSE)
-			{
 				throw new Kohana_Exception('encrypt.no_encryption_key');
-			}
 		}
 
 		return md5($key);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Set the encryption key
@@ -91,8 +83,6 @@ class Encrypt_Core {
 	{
 		$this->encryption_key = $key;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Encode
@@ -123,8 +113,6 @@ class Encrypt_Core {
 		return base64_encode($enc);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Decode
 	 *
@@ -150,8 +138,6 @@ class Encrypt_Core {
 
 		return $this->xor_decode($dec, $key);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * XOR Encode
@@ -184,8 +170,6 @@ class Encrypt_Core {
 		return $this->xor_merge($enc, $key);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * XOR Decode
 	 *
@@ -210,8 +194,6 @@ class Encrypt_Core {
 		return $dec;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * XOR key + string Combiner
 	 *
@@ -235,8 +217,6 @@ class Encrypt_Core {
 		return $str;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Encrypt using mcrypt
 	 *
@@ -252,8 +232,6 @@ class Encrypt_Core {
 
 		return mcrypt_encrypt($this->get_cipher(), $key, $data, $this->get_mode(), $init_vect);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Decrypt using mcrypt
@@ -271,8 +249,6 @@ class Encrypt_Core {
 		return rtrim(mcrypt_decrypt($this->get_cipher(), $key, $data, $this->get_mode(), $init_vect), "\0");
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Set the mcrypt Cipher
 	 *
@@ -285,8 +261,6 @@ class Encrypt_Core {
 		$this->mcrypt_cipher = $cipher;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Set the mcrypt Mode
 	 *
@@ -298,8 +272,6 @@ class Encrypt_Core {
 	{
 		$this->mcrypt_mode = $mode;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Get mcrypt cipher Value
@@ -317,8 +289,6 @@ class Encrypt_Core {
 		return $this->mcrypt_cipher;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Get mcrypt Mode Value
 	 *
@@ -335,8 +305,6 @@ class Encrypt_Core {
 		return $this->mcrypt_mode;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Set the Hash type
 	 *
@@ -348,8 +316,6 @@ class Encrypt_Core {
 	{
 		$this->hash_type = ($type == 'md5') ? 'md5' : 'sha1';
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Hash encode a string

@@ -56,8 +56,6 @@ class FTP_Core {
 		Log::add('debug', 'FTP Library initialized');
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Initialize preferences
 	 *
@@ -79,14 +77,12 @@ class FTP_Core {
 		$this->hostname = preg_replace('|^[^:]++://|', '', $this->hostname); 
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * FTP Connect
 	 *
 	 * @access	public
 	 * @param	array	 the connection values
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function connect($config = array())
 	{
@@ -122,26 +118,22 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * FTP Login
 	 *
 	 * @access	private
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function login()
 	{
 		return @ftp_login($this->conn_id, $this->username, $this->password);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Validates the connection ID
 	 *
 	 * @access	private
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function is_conn()
 	{
@@ -153,11 +145,9 @@ class FTP_Core {
 			}
 			return FALSE;
 		}
+		
 		return TRUE;
 	}
-
-	// --------------------------------------------------------------------
-
 
 	/**
 	 * Change direcotry
@@ -170,8 +160,8 @@ class FTP_Core {
 	 *
 	 * @access	public
 	 * @param	string
-	 * @param	bool
-	 * @return	bool
+	 * @param	boolean
+	 * @return	boolean
 	 */
 	public function changedir($path = '', $supress_debug = FALSE)
 	{
@@ -194,21 +184,17 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Create a directory
 	 *
 	 * @access	public
 	 * @param	string
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function mkdir($path = '', $permissions = NULL)
 	{
 		if (empty($path) OR ! $this->is_conn())
-		{
 			return FALSE;
-		}
 
 		$result = @ftp_mkdir($this->conn_id, $path);
 
@@ -230,8 +216,6 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Upload a file to the server
 	 *
@@ -239,14 +223,12 @@ class FTP_Core {
 	 * @param	string
 	 * @param	string
 	 * @param	string
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function upload($locpath, $rempath, $mode = 'auto', $permissions = NULL)
 	{
 		if ( ! $this->is_conn())
-		{
 			return FALSE;
-		}
 
 		if ( ! file_exists($locpath))
 		{
@@ -284,23 +266,19 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Rename (or move) a file
 	 *
 	 * @access	public
 	 * @param	string
 	 * @param	string
-	 * @param	bool
-	 * @return	bool
+	 * @param	boolean
+	 * @return	boolean
 	 */
 	public function rename($old_file, $new_file, $move = FALSE)
 	{
 		if ( ! $this->is_conn())
-		{
 			return FALSE;
-		}
 
 		$result = @ftp_rename($this->conn_id, $old_file, $new_file);
 
@@ -318,36 +296,30 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Move a file
 	 *
 	 * @access	public
 	 * @param	string
 	 * @param	string
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function move($old_file, $new_file)
 	{
 		return $this->rename($old_file, $new_file, TRUE);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Rename (or move) a file
 	 *
 	 * @access	public
 	 * @param	string
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function delete_file($filepath)
 	{
 		if ( ! $this->is_conn())
-		{
 			return FALSE;
-		}
 
 		$result = @ftp_delete($this->conn_id, $filepath);
 
@@ -363,22 +335,18 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Delete a folder and recursively delete everything (including sub-folders)
 	 * containted within it.
 	 *
 	 * @access	public
 	 * @param	string
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function delete_dir($filepath)
 	{
 		if ( ! $this->is_conn())
-		{
 			return FALSE;
-		}
 
 		// Add a trailing slash to the file path
 		$filepath = rtrim($filepath, '/').'/';
@@ -412,22 +380,18 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Set file permissions
 	 *
 	 * @access	public
 	 * @param	string 	the file path
 	 * @param	string	the permissions
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function chmod($path, $perm)
 	{
 		if ( ! $this->is_conn())
-		{
 			return FALSE;
-		}
 
 		// Permissions can only be set when running PHP 5
 		if ( ! function_exists('chmod'))
@@ -453,8 +417,6 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * FTP List files in the specified directory
 	 *
@@ -466,18 +428,13 @@ class FTP_Core {
 	public function list_files($path = '.', $mode = "nice")
 	{
 		if ( ! $this->is_conn())
-		{
 			return FALSE;
-		}
+
 		if ($mode != "nice" AND $mode != "raw")
-		{
 			return FALSE;
-		}	
 
 		return ($mode == "nice") ? ftp_nlist($this->conn_id, $path) : ftp_rawlist($this->conn_id, $path, FALSE);
 	}
-
-	// ------------------------------------------------------------------------
 
 	/**
 	 * Read a directory and recreate it remotely
@@ -489,14 +446,12 @@ class FTP_Core {
 	 * @access	public
 	 * @param	string	path to source with trailing slash
 	 * @param	string	path to destination - include the base folder with trailing slash
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function mirror($locpath, $rempath)
 	{
 		if ( ! $this->is_conn())
-		{
 			return FALSE;
-		}
 
 		// Open the local file path
 		if ($fp = @opendir($locpath))
@@ -506,9 +461,7 @@ class FTP_Core {
 			{
 				// If it doesn't exist we'll attempt to create the direcotory
 				if ( ! $this->mkdir($rempath) OR ! $this->changedir($rempath))
-				{
 					return FALSE;
-				}
 			}
 
 			// Recursively read the local directory
@@ -533,9 +486,6 @@ class FTP_Core {
 		return FALSE;
 	}
 
-
-	// --------------------------------------------------------------------
-
 	/**
 	 * Extract the file extension
 	 *
@@ -554,9 +504,6 @@ class FTP_Core {
 		return end($x);
 	}
 
-
-	// --------------------------------------------------------------------
-
 	/**
 	 * Set the upload type
 	 *
@@ -567,27 +514,24 @@ class FTP_Core {
 	private function set_type($ext)
 	{
 		$text_types = array(
-							'txt',
-							'text',
-							'php',
-							'phps',
-							'php4',
-							'js',
-							'css',
-							'htm',
-							'html',
-							'phtml',
-							'shtml',
-							'log',
-							'xml',
-							'php3'
-							);
-
+			'txt',
+			'text',
+			'php',
+			'phps',
+			'php4',
+			'js',
+			'css',
+			'htm',
+			'html',
+			'phtml',
+			'shtml',
+			'log',
+			'xml',
+			'php3'
+		);
 
 		return (in_array($ext, $text_types)) ? 'ascii' : 'binary';
 	}
-
-	// ------------------------------------------------------------------------
 
 	/**
 	 * Close the connection
@@ -595,31 +539,26 @@ class FTP_Core {
 	 * @access	public
 	 * @param	string	path to source
 	 * @param	string	path to destination
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function close()
 	{
 		if ( ! $this->is_conn())
-		{
 			return FALSE;
-		}
 
 		@ftp_close($this->conn_id);
 	}
-
-	// ------------------------------------------------------------------------
 
 	/**
 	 * Display error message
 	 *
 	 * @access	private
 	 * @param	string
-	 * @return	bool
+	 * @return	boolean
 	 */
 	private function error($msg)
 	{
 		throw new Kohana_Exception('ftp.'.$msg);
 	}
-
 
 } // End FTP Class

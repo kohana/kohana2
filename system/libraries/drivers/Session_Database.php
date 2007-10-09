@@ -76,8 +76,6 @@ class Session_Database implements Session_Driver {
 		Log::add('debug', 'Session Database Driver Initialized');
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Open the session
 	 * Session opens a dedicated database connection.
@@ -87,7 +85,7 @@ class Session_Database implements Session_Driver {
 	 * 3. To keep the session db connection available in the shutdown handler.
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function open($path, $name)
 	{
@@ -100,23 +98,14 @@ class Session_Database implements Session_Driver {
 			throw new Kohana_Exception('session.no_table', $this->name);
 		}
 		
-		if ($this->sdb)
-		{
-			return TRUE;
-		}
-		else
-		{
-			return FALSE;
-		}
+		return ($this->sdb) ? TRUE : FALSE;
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Close the session
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function close()
 	{
@@ -124,8 +113,6 @@ class Session_Database implements Session_Driver {
 		$this->gc();
 		//return $this->sdb->close();
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Read a session
@@ -138,18 +125,15 @@ class Session_Database implements Session_Driver {
 	{
 		$query = $this->sdb->from($this->name)->where('session_id', $id)->get();
 		$query->result();
+		
 		if ($query->num_rows() > 0)
 		{
 			$row = $query->current();
 			return $row->data;
 		}
-		else
-		{
-			return ''; // must return empty string on failure, not a boolean!
-		}
-	}
 
-	// --------------------------------------------------------------------
+		return ''; // must return empty string on failure, not a boolean!
+	}
 
 	/**
 	 * Write session data
@@ -157,7 +141,7 @@ class Session_Database implements Session_Driver {
 	 * @access	public
 	 * @param	string	session id
 	 * @param	string	session data
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function write($id, $data)
 	{
@@ -181,9 +165,7 @@ class Session_Database implements Session_Driver {
 
 			// Did we succeed?
 			if ($query->num_rows())
-			{
 				return TRUE;
-			}
 		}
 		else // No? Add the session
 		{
@@ -192,21 +174,17 @@ class Session_Database implements Session_Driver {
 
 			// Did we succeed?
 			if ($query->num_rows() > 0)
-			{
 				return TRUE;
-			}
 		}
 
 		return FALSE;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
 	 * Destroy the session
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function destroy($id)
 	{
@@ -214,16 +192,8 @@ class Session_Database implements Session_Driver {
 
 		$query = $this->sdb->delete($this->name, array('session_id' => $id));
 		// Did we succeed?
-		if ($query->num_rows() > 0)
-		{
-			return TRUE;
-		}
-
-		return FALSE;
-
+		return (bool) ($query->num_rows() > 0);
 	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Regenerate the session, keeping existing data
@@ -271,8 +241,6 @@ class Session_Database implements Session_Driver {
 
 	}
 	
-	// --------------------------------------------------------------------
-	
 	/**
 	 * Collect garbage
 	 *
@@ -295,7 +263,6 @@ class Session_Database implements Session_Driver {
 		//}
 		
 		return 0;
-		
 	}
 
 } // End Session Database Driver
