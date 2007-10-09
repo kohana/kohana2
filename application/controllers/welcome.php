@@ -11,6 +11,18 @@ class Welcome_Controller extends Controller {
 		}
 	}
 
+	function session_example()
+	{
+		$this->load->database();
+		$s = new Session();
+
+		print "SESSID: <pre>".session_id()."</pre>\n";
+
+		print "<pre>".print_r($_SESSION, TRUE)."</pre>\n";
+
+		print "<br/>{execution_time} seconds";
+	}
+
 	function form_example()
 	{
 		$this->load->library('validation');
