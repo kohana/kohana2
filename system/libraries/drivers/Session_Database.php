@@ -153,7 +153,7 @@ class Session_Database implements Session_Driver {
 		{
 			$row = $query->current();
 			$total_hits += $row->total_hits;
-			//echo $id;die;
+			
 			$db_data = array('last_activity' => $last_activity, 'total_hits' => $total_hits, 'data' => $data);
 			
 			$query = $this->sdb->update($this->name, $db_data, array('session_id' => $id));
