@@ -46,6 +46,9 @@ class Session_Core {
 	// Flash variables
 	protected static $flash;
 
+	// Input library
+	protected $input;
+
 	/**
 	 * Generate a secure session id based on the user IP address
 	 *
@@ -54,9 +57,11 @@ class Session_Core {
 	 */
 	public static function secure_id()
 	{
+		$input = new Input();
+
 		// We use 13 characters of a hash of the user's IP address for
 		// an id prefix to prevent collisions. This should be very safe.
-		$sessid = sha1(Kohana::instance()->input->ip_address());
+		$sessid = sha1($input->ip_address());
 
 		// Use 13 characters starting from a random point in the string, within
 		// 13 places of the end, to prevent short strings
@@ -71,6 +76,8 @@ class Session_Core {
 	 */
 	public function __construct()
 	{
+		$this->input = new Input();
+
 		// This part only needs to be run once
 		if (self::$instances === 0)
 		{
@@ -175,8 +182,8 @@ class Session_Core {
 		// Set defaults
 		if ( ! isset($_SESSION['_kf_flash_']))
 		{
-			$_SESSION['user_agent'] = Kohana::instance()->input->user_agent();
-			$_SESSION['ip_address'] = Kohana::instance()->input->ip_address();
+			$_SESSION['user_agent'] = $this->input->user_agent();
+			$_SESSION['ip_address'] = $this->input->ip_address();
 			$_SESSION['_kf_flash_'] = array();
 			$_SESSION['total_hits'] = 0;
 		}
@@ -198,7 +205,7 @@ class Session_Core {
 				{
 					case 'user_agent':
 					case 'ip_address':
-						if ($_SESSION[$valid] !== Kohana::instance()->input->$valid())
+						if ($_SESSION[$valid] !== $this->input->$valid())
 						{
 							session_unset();
 							return $this->create();
