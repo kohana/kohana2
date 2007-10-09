@@ -14,7 +14,7 @@ $lang = array
 	'equipment',
 	'fish',
 	'food',
-	'heat'
+	'heat',
 	'information',
 	'money',
 	'music',
