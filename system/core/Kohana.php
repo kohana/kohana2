@@ -343,20 +343,23 @@ class Kohana {
 			Log::add($error, $message.' in file: '.$file.' on line '.$line);
 		}
 
-		// Flush the entire buffer here, to ensure the error is displayed
-		while(ob_get_level() > self::$buffer_level) ob_end_clean();
+		if (ob_get_level() > self::$buffer_level)
+		{
+			// Flush the entire buffer here, to ensure the error is displayed
+			while(ob_get_level() > self::$buffer_level) ob_end_clean();
 
-		// Clear out the output buffer
-		ob_clean();
+			// Clear out the output buffer
+			ob_clean();
+		}
 
-		// Send the 500 header
-		header('HTTP/1.1 500 Internal Server Error');
+		if ( ! headers_sent())
+		{
+			// Send the 500 header
+			header('HTTP/1.1 500 Internal Server Error');
+		}
 
 		// Load the error page
 		include self::find_file('views', 'kohana_php_error');
-
-		// Display the buffer and exit
-		ob_end_flush();
 		exit;
 	}
 

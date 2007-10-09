@@ -164,14 +164,8 @@ class Session_Core {
 			);
 		}
 
-		// We hash the name for anything driver other than 'cookie' or 'native',
-		// for better security. Many session drivers will the 'name' config
-		// option for data other than the session name. Only cookies require
-		// a human readable name.
-		$name = (self::$driver == 'cookie' OR self::$driver == 'native') ? self::$config['name'] : md5(self::$config['name']);
-
 		// Set the session name
-		session_name($name);
+		session_name(self::$config['name']);
 
 		// Start the session!
 		session_start();

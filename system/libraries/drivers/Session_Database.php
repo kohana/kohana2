@@ -54,7 +54,7 @@ class Session_Database implements Session_Driver {
 		// Set config options
 		$this->expiration = Config::item('session.expiration');
 		$this->encryption = Config::item('session.encryption');
-		$this->group_name = Config::item('session.name');
+		$this->group_name = Config::item('session.storage');
 
 		// Load Input
 		$this->input = new Input();
