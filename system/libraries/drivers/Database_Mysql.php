@@ -363,16 +363,17 @@ class Mysql_Result implements Database_Result, Iterator
 		}
 	}
 
-	public function result($object = TRUE, $array_type = MYSQL_ASSOC)
+	public function result($object = TRUE, $type = MYSQL_ASSOC)
 	{
-		$fetch = ($this->object == TRUE and $object == TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
+		$fetch = ($object == TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
+		$type  = ($object == TRUE) ? 'stdClass' : $type;
 
-		while ($row = $fetch($this->result, ($this->object == TRUE and $object == TRUE) ? 'stdClass' : $array_type))
+		while ($row = $fetch($this->result, $type))
 		{
 			$this->rows[] = $row;
 		}
 
-		return $this->rows;
+		return $this;
 	}
 
 	public function num_rows()

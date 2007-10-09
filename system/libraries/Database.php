@@ -80,12 +80,24 @@ class Database_Core {
 		}
 		elseif (is_string($config))
 		{
+			// Group namd
+			$name = $config;
+
 			// This checks to see if the config is DSN string, or a config group name
-			$config = (strpos($config, '://') === FALSE) ? Config::item('database.'.$config) : array('connection' => $config);
-		}
-		elseif (is_array($config))
-		{
-			$config = $config['default'];
+			if (strpos($config, '://') === FALSE)
+			{
+				$name = $config;
+
+				// Test the config group name
+				if (($config = Config::item('database.'.$config)) === FALSE)
+				{
+					throw new Kohana_Exception('database.undefined_group', $name);
+				}
+			}
+			else
+			{
+				$config = array('connection' => $config);
+			}
 		}
 
 		// Merge the default config with the passed config
@@ -548,7 +560,7 @@ class Database_Core {
 			$this->set($set);
 		}
 
-		if ($this->set == FALSE)
+		if ($this->set == NULL)
 			return ($this->db_debug ? $this->display_error('db_must_use_set') : FALSE);
 
 		if ($table == '')

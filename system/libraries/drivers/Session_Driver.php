@@ -32,7 +32,7 @@ interface Session_Driver {
 	 * @access  public
 	 * @param   string  file path
 	 * @param   string  session name
-	 * @return  boolean
+	 * @return  bool
 	 */
 	public function open($path, $name);
 
@@ -59,7 +59,7 @@ interface Session_Driver {
 	 * @access  public
 	 * @param   string
 	 * @param   string
-	 * @return  boolean
+	 * @return  bool
 	 */
 	public function write($id, $data);
 
@@ -68,23 +68,15 @@ interface Session_Driver {
 	 *
 	 * @access  public
 	 * @param   string
-	 * @return  boolean
+	 * @return  bool
 	 */
 	public function destroy($id);
-
-	/**
-	 * Regenerate a session
-	 *
-	 * @access  public
-	 * @return  boolean
-	 */
-	public function regenerate();
 
 	/**
 	 * Garbage collection, called by close()
 	 *
 	 * @access  public
-	 * @return  boolean
+	 * @return  bool
 	 */
 	public function gc();
 

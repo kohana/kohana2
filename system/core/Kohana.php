@@ -172,13 +172,13 @@ class Kohana {
 		// Enable loading a Kohana instance
 		Event::add('system.execute', array('Kohana', 'instance'));
 
+		Event::add('system.shutdown', array('Kohana', 'display'));
+
 		// Enable log writing if the log threshold is enabled
 		if(Config::item('log.threshold') > 0)
 		{
 			Event::add('system.shutdown', array('Log', 'write'));
 		}
-
-		Event::add('system.shutdown', array('Kohana', 'display'));
 
 		// Setup is complete
 		$run = TRUE;
@@ -343,11 +343,8 @@ class Kohana {
 			Log::add($error, $message.' in file: '.$file.' on line '.$line);
 		}
 
-		if (ob_get_level() > self::$buffer_level)
-		{
-			// Flush the entire buffer here, to ensure the error is displayed
-			while(ob_get_level() > self::$buffer_level) ob_end_clean();
-		}
+		// Flush the entire buffer here, to ensure the error is displayed
+		while(ob_get_level() > self::$buffer_level) ob_end_clean();
 
 		// Clear out the output buffer
 		ob_clean();

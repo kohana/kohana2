@@ -26,11 +26,11 @@
  */
 class Session_Cookie implements Session_Driver {
 
-	private $cookie_name = '';
+	protected $cookie_name = '';
 
 	// Libraries
-	private $input;
-	private $encrypt;
+	protected $input;
+	protected $encrypt;
 
 	public function __construct()
 	{
@@ -95,6 +95,24 @@ class Session_Cookie implements Session_Driver {
 		return TRUE;
 	}
 
+	public function regenerate($new_id)
+	{
+		// Save the session data for re-insertion
+		$save_data = $_SESSION;
+
+		// Remove the session_id
+		unset($save_data['session_id']);
+
+		// Set the new session ID
+		session_id($new_id);
+
+		// Create a new session
+		Session::create();
+
+		// Merge in the old data, overwriting everything but the session_id
+		$_SESSION = array_merge($_SESSION, $save_data);
+	}
+
 	/**
 	 * Proxy for setcookie()
 	 *
@@ -103,7 +121,7 @@ class Session_Cookie implements Session_Driver {
 	 * @param	integer	session expiration
 	 * @return	void
 	 */
-	private function setcookie($data, $expiration)
+	protected function setcookie($data, $expiration)
 	{
 		return headers_sent() ? FALSE : setcookie
 		(

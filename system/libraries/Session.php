@@ -33,66 +33,90 @@
  */
 class Session_Core {
 
-	protected $config;
-	protected $driver;
-	protected $protect;
+	// Number of instances of Session object
+	private static $instances = 0;
+
+	// Protected key names (cannot be set by the user)
+	protected static $protect = array('session_id', 'user_agent', 'last_activity', 'ip_address', 'total_hits', '_kf_flash_');
+
+	// Configuration and driver
+	protected static $config;
+	protected static $driver;
+
+	// Flash variables
+	protected static $flash;
+
+	/**
+	 * Generate a secure session id based on the user IP address
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public static function secure_id()
+	{
+		// We use 13 characters of a hash of the user's IP address for
+		// an id prefix to prevent collisions. This should be very safe.
+		$sessid = sha1(Kohana::instance()->input->ip_address());
+
+		// Use 13 characters starting from a random point in the string, within
+		// 13 places of the end, to prevent short strings
+		$sessid = substr($sessid, rand(0, strlen($sessid)-13), 13);
+
+		// Return the unique id
+		return uniqid($sessid);
+	}
 
 	/**
 	 * Session Constructor
 	 */
 	public function __construct()
 	{
-		$this->config = Config::item('session');
-
-		// Set protected keys
-		$this->protect = array_combine
-		(
-			array('session_id', 'user_agent', 'last_activity', 'ip_address', 'total_hits', '_kf_flash_'),
-			array_fill(0, 6, TRUE)
-		);
-		// Native backend does not require a driver
-		if ($this->config['driver'] != 'native')
+		// This part only needs to be run once
+		if (self::$instances === 0)
 		{
-			$driver = 'Session_'.ucfirst(strtolower($this->config['driver']));
+			// Load config
+			self::$config = Config::item('session');
 
-			require Kohana::find_file('libraries', 'drivers/'.$driver, TRUE);
+			// Makes a mirrored array, eg: foo=foo
+			self::$protect = array_combine(self::$protect, self::$protect);
 
-			$this->driver = new $driver();
-
-			$implements = class_implements($this->driver);
-
-			if ( ! isset($implements['Session_Driver']))
+			if (self::$config['driver'] != 'native')
 			{
-				throw new Kohana_Exception('session.driver_must_implement_interface');
+				// Set the driver name
+				$driver = 'Session_'.ucfirst(strtolower(self::$config['driver']));
+
+				// Include the driver
+				require Kohana::find_file('libraries', 'drivers/'.$driver, TRUE);
+
+				// Initialize the driver
+				self::$driver = new $driver();
+
+				// Validate the driver
+				if ( ! in_array('Session_Driver', class_implements(self::$driver)))
+				{
+					throw new Kohana_Exception('session.driver_must_implement_interface');
+				}
 			}
 
-			// Destroy any auto created sessions
-			if (@ini_get('session.auto_start') == TRUE)
-			{
-				unset($_COOKIE[session_name()]);
-				session_destroy();
-			}
+			// Create a new session
+			$this->create();
 
-			// Register driver as the session handler
-			session_set_save_handler
-			(
-				array($this->driver, 'open'),
-				array($this->driver, 'close'),
-				array($this->driver, 'read'),
-				array($this->driver, 'write'),
-				array($this->driver, 'destroy'),
-				array($this->driver, 'gc')
-			);
+			// Close the session just before flushing the output buffer
+			Event::add('system.output', 'session_write_close');
 		}
 
-		// Create or load a session
-		$this->create();
+		// Regenerate session ID
+		if (($_SESSION['total_hits'] % self::$config['regenerate']) === 0)
+		{
+			$this->regenerate();
+		}
 
-		// Close the session just before flushing the output buffer
-		Event::add('system.output', 'session_write_close');
+		// New instance
+		self::$instances += 1;
 
 		Log::add('debug', 'Session Library initialized');
 	}
+
 
 	/**
 	 * Return the session id
@@ -113,68 +137,129 @@ class Session_Core {
 	 */
 	public function create($vars = NULL)
 	{
-		if (isset($_SESSION) AND isset($_SESSION['session_id']))
+		// Destroy the session
+		if (isset($_SESSION))
 		{
-			session_unset();
+			$this->destroy();
 		}
-		else
+
+		if (self::$config['driver'] != 'native')
 		{
-			session_name($this->config['name']);
-			session_start();
+			// Register driver as the session handler
+			session_set_save_handler
+			(
+				array(self::$driver, 'open'),
+				array(self::$driver, 'close'),
+				array(self::$driver, 'read'),
+				array(self::$driver, 'write'),
+				array(self::$driver, 'destroy'),
+				array(self::$driver, 'gc')
+			);
+		}
+
+		// We hash the name for anything driver other than 'cookie' or 'native',
+		// for better security. Many session drivers will the 'name' config
+		// option for data other than the session name. Only cookies require
+		// a human readable name.
+		$name = (self::$driver == 'cookie' OR self::$driver == 'native') ? self::$config['name'] : md5(self::$config['name']);
+
+		// Set the session name
+		session_name($name);
+
+		// Start the session!
+		session_start();
+
+		// Put session_id in the session variable
+		$_SESSION['session_id'] = session_id();
+
+		// Set defaults
+		if ( ! isset($_SESSION['_kf_flash_']))
+		{
+			$_SESSION['user_agent'] = Kohana::instance()->input->user_agent();
+			$_SESSION['ip_address'] = Kohana::instance()->input->ip_address();
+			$_SESSION['_kf_flash_'] = array();
+			$_SESSION['total_hits'] = 0;
 		}
 
 		// Set up flash variables
-		$this->flash = $_SESSION['_kf_flash_'] = array();
+		self::$flash =& $_SESSION['_kf_flash_'];
 
-		if (count($this->flash) > 0)
+		// Update constant session variables
+		$_SESSION['last_activity'] = time();
+		$_SESSION['total_hits']   += 1;
+
+		// Validate data only on hits after one
+		if ($_SESSION['total_hits'] === 1)
 		{
-			foreach($this->flash as $key => $state)
+			// Validate the session
+			foreach(self::$config['validate'] as $valid)
 			{
-				if ($state == 'old')
+				switch($valid)
 				{
-					$this->del($key);
-					unset($this->flash[$key]);
+					case 'user_agent':
+					case 'ip_address':
+						if ($_SESSION[$valid] !== Kohana::instance()->input->$valid())
+						{
+							session_unset();
+							return $this->create();
+						}
+					break;
 				}
-				else
+			}
+
+			// Remove old flash data
+			if ( ! empty(self::$flash))
+			{
+				foreach(self::$flash as $key => $state)
 				{
-					$this->flash[$key] = 'old';
+					if ($state == 'old')
+					{
+						self::del($key);
+						unset(self::$flash[$key]);
+					}
+					else
+					{
+						self::$flash[$key] = 'old';
+					}
 				}
 			}
 		}
 
-		$this->validate();
-		$this->set($vars);
+		// Set the new data
+		self::set($vars);
 	}
 
 	/**
-	 * Destroy the current session
-	 *
-	 * @access public
-	 * @return boolean
-	 */
-	public function destroy()
-	{
-		return session_destroy();
-	}
-
-	/**
-	 * Regenerate the session id
+	 * Regenerates the global session id
 	 *
 	 * @access public
 	 * @return void
 	 */
 	public function regenerate()
 	{
-		if ($this->config['driver'] == 'native')
-		{
-			session_regenerate_id(TRUE);
-		}
-		else
-		{
-			$this->driver->regenerate();
-		}
+		// Thank god for small gifts
+		session_regenerate_id(TRUE);
 
+		// Update session with new id
 		$_SESSION['session_id'] = session_id();
+	}
+
+	/**
+	 * Destroy the current session
+	 *
+	 * @access public
+	 * @return bool
+	 */
+	public function destroy()
+	{
+		if (isset($_SESSION))
+		{
+			// Remove all session data
+			session_unset();
+
+			// Write the session
+			return session_destroy();
+		}
 	}
 
 	/**
@@ -197,7 +282,7 @@ class Session_Core {
 
 		foreach($keys as $key => $val)
 		{
-			if (isset($this->safe_keys[$key]))
+			if (isset(self::$protect[$key]))
 				continue;
 
 			$_SESSION[$key] = $val;
@@ -227,8 +312,8 @@ class Session_Core {
 			if ($key == FALSE)
 				continue;
 
-			$this->flash[$key] = 'new';
-			$this->set($key, $val);
+			self::$flash[$key] = 'new';
+			self::set($key, $val);
 		}
 	}
 
@@ -237,13 +322,13 @@ class Session_Core {
 	 *
 	 * @access public
 	 * @param  string  variable key
-	 * @return boolean
+	 * @return bool
 	 */
 	public function keep_flash($key)
 	{
-		if (isset($this->flash[$key]))
+		if (isset(self::$flash[$key]))
 		{
-			$this->flash[$key] = 'new';
+			self::$flash[$key] = 'new';
 			return TRUE;
 		}
 
@@ -260,7 +345,9 @@ class Session_Core {
 	public function get($key = FALSE)
 	{
 		if ($key == FALSE)
+		{
 			return $_SESSION;
+		}
 
 		return (isset($_SESSION[$key]) ? $_SESSION[$key] : FALSE);
 	}
@@ -274,8 +361,8 @@ class Session_Core {
 	 */
 	public function get_once($key)
 	{
-		$return = $this->get($key);
-		$this->del($key);
+		$return = self::get($key);
+		self::del($key);
 
 		return $return;
 	}
@@ -300,60 +387,6 @@ class Session_Core {
 		{
 			unset($_SESSION[$key]);
 		}
-	}
-
-	/**
-	 * Validate the session
-	 *
-	 * @access  private
-	 * @return  boolean
-	 */
-	private function validate()
-	{
-		$input = new Input();
-
-		// Set defaults
-		if ( ! isset($_SESSION['last_activity']))
-		{
-			session_unset();
-			$this->regenerate();
-			// Set default session values
-			$_SESSION['user_agent']    = $input->user_agent();
-			$_SESSION['ip_address']    = $input->ip_address();
-			$_SESSION['last_activity'] = time();
-			$_SESSION['total_hits']    = 1;
-			$_SESSION['_kf_flash_']    = array();
-
-			return TRUE;
-		}
-
-		// Process config defined checks
-		foreach($this->config['validate'] as $var)
-		{
-			switch($var)
-			{
-				case 'user_agent':
-				case 'ip_address':
-					if ($_SESSION[$var] != $input->$var())
-					{
-						session_unset();
-						return $this->validate();
-					}
-				break;
-			}
-		}
-
-		// Regenerate session ID
-		if (($_SESSION['total_hits'] % $this->config['regenerate']) === 0)
-		{
-			$this->regenerate();
-		}
-
-		// Update the last activity and add another hit
-		$_SESSION['last_activity'] = time();
-		$_SESSION['total_hits']   += 1;
-
-		return TRUE;
 	}
 
 } // End Session Class

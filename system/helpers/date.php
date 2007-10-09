@@ -2,6 +2,17 @@
 
 class date {
 
+	public static function offset($one, $two = TRUE)
+	{
+		// Create timezone objects
+		$one = new DateTimeZone($one);
+		$two = new DateTimeZone(($two === TRUE) ? 'now' : $two);
+		
+		// Create datetime objects from timezones
+		$one = new DateTime();
+		
+	}
+
 	public static function seconds($step = 1)
 	{
 		$step = (int) $step;
