@@ -41,7 +41,17 @@ final class Event {
 		if ($name == FALSE OR $callback == FALSE)
 			return FALSE;
 
-		self::$events[$name][] = $callback;
+		// Make sure that the event name is defined
+		if ( ! isset(self::$events[$name]))
+		{
+			self::$events[$name] = array();
+		}
+
+		// Make sure the event is not already in the queue
+		if ( ! in_array($callback, self::$events[$name]))
+		{
+			self::$events[$name][] = $callback;
+		}
 	}
 
 	/**
