@@ -24,10 +24,10 @@
 
 /*
 	CREATE TABLE `kohana_session` (
-	`session_id` VARCHAR( 26 ) NOT NULL ,
-	`last_activity` INT( 11 ) NOT NULL ,
-	`total_hits` INT( 10 ) NOT NULL ,
-	`data` TEXT NOT NULL ,
+		`session_id` VARCHAR( 26 ) NOT NULL ,
+		`last_activity` INT( 11 ) NOT NULL ,
+		`total_hits` INT( 10 ) NOT NULL ,
+		`data` TEXT NOT NULL ,
 	PRIMARY KEY ( `session_id` )
 	) ;
 */
@@ -43,26 +43,29 @@
  */
 class Session_Database implements Session_Driver {
 
-	var $sdb;  // session db connection
-	
+	protected $db;  // session db connection
+
 	/**
 	 * Constructor
+	 * @return void
 	 */
 	public function __construct()
 	{
-		$this->expiration		= Config::item('session.expiration');
-		$this->encryption		= Config::item('session.encryption');
-		$this->name  			= Config::item('session.name');
-		$this->gc_probability  	= Config::item('session.gc_probability');
-		
-		// Load necessary classes
+		// Set config options
+		$this->expiration = Config::item('session.expiration');
+		$this->encryption = Config::item('session.encryption');
+		$this->group_name = Config::item('session.name');
+
+		// Load Input
 		$this->input = new Input();
+
+		// Load Encryption
 		if ($this->encryption == TRUE)
 		{
 			$this->encrypt = new Encryption();
 		}
 
-		// Set "no expiration" to two years
+		// Set 'no expiration' to two years
 		if ($this->expiration == 0)
 		{
 			$this->expiration = 60*60*24*365*2;
@@ -80,33 +83,47 @@ class Session_Database implements Session_Driver {
 	 * 3. To keep the session db connection available in the shutdown handler.
 	 *
 	 * @access	public
-	 * @return	boolean
+	 * @return	bool
 	 */
 	public function open($path, $name)
 	{
-		// $this->name contains the configured 'session_name'. A db group
-		// AND an actual database table must exist of the SAME name.
-		$this->sdb = new Database($this->name);
-		
-		if (! $this->sdb->table_exists($this->name))
+		try
 		{
-			throw new Kohana_Exception('session.no_table', $this->name);
+			// Try connecting to the database using a database group, defined
+			// by the 'session.name' config item. This is optional, but preferred.
+			$this->db = new Database($this->group_name);
 		}
-		
-		return ($this->sdb) ? TRUE : FALSE;
+		catch (Kohana_Exception $e)
+		{
+			// If there's no default group, we use the default database
+			$this->db = new Database();
+		}
+
+		if ( ! $this->db->table_exists($this->group_name))
+		{
+			throw new Kohana_Exception('session.no_table', $this->group_name);
+		}
+
+		if ($this->db)
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
 	}
 
 	/**
 	 * Close the session
 	 *
 	 * @access	public
-	 * @return	boolean
+	 * @return	bool
 	 */
 	public function close()
 	{
 		// Garbage collect
 		$this->gc();
-		//return $this->sdb->close();
 	}
 
 	/**
@@ -118,16 +135,17 @@ class Session_Database implements Session_Driver {
 	 */
 	public function read($id)
 	{
-		$query = $this->sdb->from($this->name)->where('session_id', $id)->get();
-		$query->result();
-		
-		if ($query->num_rows() > 0)
-		{
-			$row = $query->current();
-			return $row->data;
-		}
+		$query = $this->db->from($this->group_name)->where('session_id', $id)->get();
 
-		return ''; // must return empty string on failure, not a boolean!
+		if ($query->result()->num_rows() > 0)
+		{
+			return $query->current()->data;
+		}
+		else
+		{
+			// Return value must be string, NOT a boolean
+			return '';
+		}
 	}
 
 	/**
@@ -136,58 +154,45 @@ class Session_Database implements Session_Driver {
 	 * @access	public
 	 * @param	string	session id
 	 * @param	string	session data
-	 * @return	boolean
+	 * @return	bool
 	 */
-	public function write($id, $data)
+	public function write($id, $session_string)
 	{
-		$last_activity = time();
-		$total_hits = 1;
+		$data = array
+		(
+			'session_id'    => $id,
+			'last_activity' => time(),
+			'data'          => $session_string
+		);
 
-		// Does session exist?
-		$query = $this->sdb->select('session_id, last_activity, total_hits, data')->from($this->name)->where('session_id', $id)->get();
+		// Fetch current session data
+		$query = $this->db->select('session_id')->from($this->group_name)->where('session_id', $id)->get();
 
-		$query->result();
-		
 		// Yes? Do update
-		if ($query->num_rows() > 0)
+		if ($query->result()->num_rows() > 0)
 		{
-			$row = $query->current();
-			$total_hits += $row->total_hits;
-			
-			$db_data = array('last_activity' => $last_activity, 'total_hits' => $total_hits, 'data' => $data);
-			
-			$query = $this->sdb->update($this->name, $db_data, array('session_id' => $id));
+			// Remove session ID from the update
+			unset($data['session_id']);
 
-			// Did we succeed?
-			if ($query->num_rows())
-				return TRUE;
+			$query = $this->db->update($this->group_name, $data, array('session_id' => $id));
 		}
 		else // No? Add the session
 		{
-			$db_data = array('session_id'=> $id, 'last_activity' => $last_activity, 'total_hits' => $total_hits, 'data' => $data);
-			$query = $this->sdb->insert($this->name, $db_data);
-
-			// Did we succeed?
-			if ($query->num_rows() > 0)
-				return TRUE;
+			$query = $this->db->insert($this->group_name, $data);
 		}
 
-		return FALSE;
+		return (bool) $query->num_rows();
 	}
 
 	/**
 	 * Destroy the session
 	 *
 	 * @access	public
-	 * @return	boolean
+	 * @return	bool
 	 */
 	public function destroy($id)
 	{
-		$id = session_id();
-
-		$query = $this->sdb->delete($this->name, array('session_id' => $id));
-		// Did we succeed?
-		return (bool) ($query->num_rows() > 0);
+		return (bool) $this->db->delete($this->group_name, array('session_id' => $id))->num_rows();
 	}
 
 	/**
@@ -196,46 +201,10 @@ class Session_Database implements Session_Driver {
 	 * @access	public
 	 * @return	void
 	 */
-	public function regenerate()
+	public function regenerate($new_id)
 	{
-		// Get session data, using the old session id
-		$id = session_id();
-
-		$query = $this->sdb->select('total_hits, data')->from($this->name)->where('session_id', $id)->get();
-		echo $this->sdb->last_query();
-		$query->result();
-		$row = $query->current();
-		// Session exists? Then store the data
-		if ($query->num_rows() > 0)
-		{
-			$total_hits = $row->total_hits;
-			$data = $row->data;
-		}
-		else
-		{
-			$total_hits = 0;
-			$data = '';
-		}
-		
-		// Reset session control items
-		$last_activity = time();
-		
-		// Regenerate the session
-		// We use 13 characters of a hash of the user's IP address for
-		// an id prefix to prevent collisions. This should be very safe.
-		$sessid = sha1($this->input->ip_address());
-		$_start = rand(0, strlen($sessid)-13);
-		$sessid = substr($sessid, $_start, 13);
-		$sessid = uniqid($sessid);
-
-		// Set the new session id
-		session_id($sessid);
-
-		$db_data = array('session_id'=> $sessid, 'last_activity' => $last_activity, 'total_hits' => $total_hits, 'data' => $data);
-		$sql = $this->sdb->insert($this->name, $db_data);
-
 	}
-	
+
 	/**
 	 * Collect garbage
 	 *
@@ -248,16 +217,17 @@ class Session_Database implements Session_Driver {
 	 */
 	public function gc()
 	{
-		if ((rand() % 100) < $this->gc_probability)
+		if (rand(0, 100) % 3 === 0)
 		{
-			$lifetime = ini_get('session.gc_maxlifetime');
-			$expiry = ($lifetime > 0) ? (time() - $lifetime) : (time() - 1440);
+			$expiry = time() - $this->expiration;
+			$result = $this->db->delete($this->group_name, array('last_activity <' => $expiry))->num_rows();
 
-			$query = $this->sdb->delete($this->name, array('last_activity' => $expiry));
-			return $query->num_rows();
+			Log::add('debug', 'Session garbage was collected, '.var_export($result, TRUE).' row(s) deleted');
+
+			return (bool) $result;
 		}
-		
-		return 0;
+
+		return TRUE;
 	}
 
 } // End Session Database Driver
