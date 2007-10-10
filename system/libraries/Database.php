@@ -123,7 +123,8 @@ class Database_Core {
 		{
 			$connection['host'] .= ':'.$connection['port'];
 			unset($connection['port']);
-		} elseif ($modified === TRUE)
+		} 
+		elseif ($modified === TRUE)
 		{
 			$path_temp = explode(')', $connection['path'], 2);
 			$connection['host'] .= $path_temp[0];
