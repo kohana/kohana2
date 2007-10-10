@@ -4,6 +4,8 @@ class Welcome_Controller extends Controller {
 
 	function index()
 	{
+		if (0 === FALSE)
+			echo 'yea';
 		foreach(get_class_methods(__CLASS__) as $method)
 		{
 			if ( ! preg_match('/_example$/', $method)) continue;
@@ -83,27 +85,33 @@ class Welcome_Controller extends Controller {
 
 	function database_example()
 	{
-		$this->load->library('database');
 		$this->load->database();
 
-		$query = $this->database->select('title')->from('pages')->get();
+		$query = $this->db->select('title')->from('pages')->get();
 
 		$query->result();
 
 		foreach($query as $item)
 		{
-			//echo '<pre>'.print_r($item, true).'</pre>';
+			echo '<pre>'.print_r($item, true).'</pre>';
 		}
+		print "Numrows: ".$query->num_rows()."<br/>";
 
-		echo '<pre>'.print_r($this->db->list_tables(), true).'</pre>';
+		echo '<pre>'.print_r($this->db->list_tables(), TRUE).'</pre>';
 		echo $this->db->table_exists('pages');
-		print "Numrows: ".$query->num_rows()."<br/>";
-		print "<pre>".print_r($this->database, TRUE)."</pre><br/>";
 
-		$query = $this->database->select('title')->from('pages')->get();
-		print "Numrows: ".$query->num_rows()."<br/>";
-		print "<pre>".print_r($this->database, TRUE)."</pre><br/>";
+		$query = $this->db->select('title')->from('pages')->get();
+		print "<br />Numrows: ".$query->num_rows()."<br/>";
 
+		$sql = 'SELECT * FROM pages WHERE id = ?';
+		$query = $this->db->query($sql, array(49));
+		echo 'OBJECT:<pre>'.print_r($query->result(TRUE), TRUE).'</pre>';
+		echo $this->db->last_query();
+		
+		$sql = 'SELECT * FROM pages WHERE id = ?';
+		$query = $this->db->query($sql, array(49));
+		echo '<br />ARRAY:<pre>'.print_r($query->result(FALSE), TRUE).'</pre>';
+		echo $this->db->last_query();
 		print "<br/><br/>\n";
 		print "done in {execution_time} seconds";
 	}
