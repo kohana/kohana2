@@ -206,7 +206,7 @@ class Session_Database implements Session_Driver {
 	 */
 	public function gc()
 	{
-		if (rand(1, 100) < 3)
+		if (rand(1, 100) < 4)
 		{
 			$expiry = time() - $this->expiration;
 			$result = (int) $this->db->delete($this->group_name, array('last_activity <' => $expiry))->num_rows();
