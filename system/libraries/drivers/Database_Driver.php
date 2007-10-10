@@ -31,7 +31,7 @@ interface Database_Driver {
 	 *
 	 * @access  public
 	 * @param   string  config array
-	 * @return  bool
+	 * @return  boolean
 	 */
 	public function connect($config);
 
@@ -98,7 +98,7 @@ interface Database_Driver {
 	 * @param   string  key name
 	 * @param   string  value
 	 * @param   string  where type
-	 * @param   int     previous number of wheres
+	 * @param   integer previous number of wheres
 	 * @param   string  quote (?)
 	 * @return  string
 	 */
@@ -111,7 +111,7 @@ interface Database_Driver {
 	 * @param   string  field name
 	 * @param   string  match value
 	 * @param   string  like type
-	 * @param   int     previous number of likes
+	 * @param   integer previous number of likes
 	 * @return  string
 	 */
 	public function like($field, $match, $type, $num_likes);
@@ -178,7 +178,7 @@ interface Database_Result {
 	 * Get the number of rows in a SELECT query or the number of affected rows in UPDATE
 	 *
 	 * @access  public
-	 * @return  int
+	 * @return  integer
 	 */
 	public function num_rows();
 
@@ -186,7 +186,7 @@ interface Database_Result {
 	 * Get the insert id from an INSERT statement
 	 *
 	 * @access  public
-	 * @return  int
+	 * @return  integer
 	 */
 	public function insert_id();
 

@@ -47,7 +47,8 @@ class Session_Database implements Session_Driver {
 
 	/**
 	 * Constructor
-	 * @return void
+	 * 
+	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -68,7 +69,7 @@ class Session_Database implements Session_Driver {
 		// Set 'no expiration' to two years
 		if ($this->expiration == 0)
 		{
-			$this->expiration = 60*60*24*365*2;
+			$this->expiration = 60 * 60 * 24 * 365 * 2;
 		}
 
 		Log::add('debug', 'Session Database Driver Initialized');
@@ -83,7 +84,7 @@ class Session_Database implements Session_Driver {
 	 * 3. To keep the session db connection available in the shutdown handler.
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function open($path, $name)
 	{
@@ -100,25 +101,16 @@ class Session_Database implements Session_Driver {
 		}
 
 		if ( ! $this->db->table_exists($this->group_name))
-		{
 			throw new Kohana_Exception('session.no_table', $this->group_name);
-		}
 
-		if ($this->db)
-		{
-			return TRUE;
-		}
-		else
-		{
-			return FALSE;
-		}
+		return ($this->db) ? TRUE : FALSE;
 	}
 
 	/**
 	 * Close the session
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function close()
 	{
@@ -138,14 +130,10 @@ class Session_Database implements Session_Driver {
 		$query = $this->db->from($this->group_name)->where('session_id', $id)->get();
 
 		if ($query->result()->num_rows() > 0)
-		{
 			return $query->current()->data;
-		}
-		else
-		{
-			// Return value must be string, NOT a boolean
-			return '';
-		}
+
+		// Return value must be string, NOT a boolean
+		return '';
 	}
 
 	/**
@@ -154,7 +142,7 @@ class Session_Database implements Session_Driver {
 	 * @access	public
 	 * @param	string	session id
 	 * @param	string	session data
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function write($id, $session_string)
 	{
@@ -189,7 +177,7 @@ class Session_Database implements Session_Driver {
 	 * Destroy the session
 	 *
 	 * @access	public
-	 * @return	bool
+	 * @return	boolean
 	 */
 	public function destroy($id)
 	{
@@ -208,24 +196,24 @@ class Session_Database implements Session_Driver {
 
 	/**
 	 * Collect garbage
-	 *
-	 * For the randomly challenged, the parent::gc() function will return
-	 * true with a probability of 0.03 This means there is a three % chance
-	 * of deleting sessions older than session.gc.maxlifetime for each gc().
+	 * 
+	 * Upon each call there is a 3% chance that this function will delete all
+	 * sessions older than session.gc.maxlifetime. If it does so, the number
+	 * of deleted rows will be returned. Otherwise TRUE will be returned.
 	 *
 	 * @access	public
-	 * @return	int	Number of rows deleted
+	 * @return	mixed
 	 */
 	public function gc()
 	{
-		if (rand(0, 100) < 3)
+		if (rand(1, 100) < 3)
 		{
 			$expiry = time() - $this->expiration;
-			$result = $this->db->delete($this->group_name, array('last_activity <' => $expiry))->num_rows();
+			$result = (int) $this->db->delete($this->group_name, array('last_activity <' => $expiry))->num_rows();
 
-			Log::add('debug', 'Session garbage was collected, '.var_export($result, TRUE).' row(s) deleted');
+			Log::add('debug', 'Session garbage was collected, '.$result.' row(s) deleted');
 
-			return (bool) $result;
+			return $result;
 		}
 
 		return TRUE;

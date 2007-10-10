@@ -33,12 +33,9 @@ class inflector {
 		{
 			$str = substr($str, 0, strlen($str) - 2);
 		}
-		else
+		elseif (substr($str, -1) == 's')
 		{
-			if (substr($str, -1) == 's')
-			{
-				$str = substr($str, 0, strlen($str) - 1);
-			}
+			$str = substr($str, 0, strlen($str) - 1);
 		}
 
 		return $str;
