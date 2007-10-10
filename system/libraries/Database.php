@@ -162,19 +162,17 @@ class Database_Core {
 	 */
 	public function query($sql = '')
 	{
-		$binds = FALSE;
-				
 		if ($sql == '') return FALSE;
 		
 		if ( ! $this->connected) $this->connect();
 		
-		if(func_num_args() > 1) //if we have more than one argument ($sql)
+		if (func_num_args() > 1) //if we have more than one argument ($sql)
 		{
 			$argv = func_get_args();
 			$binds = (is_array(next($argv))) ? current($argv) : $argv;
 		}
 		// Compile binds if needed
-		if ($binds !== FALSE)
+		if (isset($binds))
 		{
 			$sql = $this->compile_binds($sql, $binds);
 		}
