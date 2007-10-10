@@ -36,8 +36,14 @@ class Loader_Core {
 	{
 		if (isset(Kohana::instance()->$name))
 			return FALSE;
-
-		Kohana::instance()->$name = Kohana::load_class(ucfirst($name), $config);
+		if ($name == 'database')
+		{
+			$this->database($config);
+		}
+		else
+		{
+			Kohana::instance()->$name = Kohana::load_class(ucfirst($name), $config);
+		}
 	}
 
 	public function database($group = 'default', $return = FALSE)
