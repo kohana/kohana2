@@ -158,22 +158,26 @@ class Database_Core {
 	 *
 	 * @access  public
 	 * @param   string
-	 * @param   array
-	 * @param   boolean
 	 * @return  mixed
 	 */
-	public function query($sql = '', $binds = FALSE)
+	public function query($sql = '')
 	{
+		$binds = FALSE;
+				
 		if ($sql == '') return FALSE;
-
+		
 		if ( ! $this->connected) $this->connect();
-
+		
+		if(func_num_args() > 1) //if we have more than one argument ($sql)
+		{
+			$argv = func_get_args();
+			$binds = (is_array(next($argv))) ? current($argv) : $argv;
+		}
 		// Compile binds if needed
 		if ($binds !== FALSE)
 		{
 			$sql = $this->compile_binds($sql, $binds);
 		}
-
 		$this->last_query = $sql;
 		return $this->driver->query($sql);
 	}
