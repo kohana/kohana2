@@ -4,8 +4,6 @@ class Welcome_Controller extends Controller {
 
 	function index()
 	{
-		if (0 === FALSE)
-			echo 'yea';
 		foreach(get_class_methods(__CLASS__) as $method)
 		{
 			if ( ! preg_match('/_example$/', $method)) continue;
