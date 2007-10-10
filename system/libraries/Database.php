@@ -175,7 +175,7 @@ class Database_Core {
 		}
 
 		$this->last_query = $sql;
-		return $this->driver->query($sql, $object);
+		return $this->driver->query($sql);
 	}
 
 	/**
