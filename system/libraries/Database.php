@@ -113,7 +113,8 @@ class Database_Core {
 		{
 			$connection['host'] = str_ireplace('host(', '', $connection['host']);
 			$modified = TRUE;
-		} elseif (stripos($connection['host'], 'unix(') !== FALSE)
+		}
+		elseif (stripos($connection['host'], 'unix(') !== FALSE)
 		{
 			$connection['host'] = str_ireplace('unix(', '', $connection['host']);
 			$modified = TRUE;
@@ -123,7 +124,7 @@ class Database_Core {
 		{
 			$connection['host'] .= ':'.$connection['port'];
 			unset($connection['port']);
-		} 
+		}
 		elseif ($modified === TRUE)
 		{
 			$path_temp = explode(')', $connection['path'], 2);
