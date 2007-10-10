@@ -102,11 +102,30 @@ class Database_Core {
 
 		// Merge the default config with the passed config
 		$this->config = array_merge($this->config, $config);
-
+		
 		// Parse the DSN into an array and validate it's length
 		if (count($connection = @parse_url($this->config['connection'])) !== 5)
 			throw new Kohana_Exception('database.invalid_dsn', $this->config['connection']);
+		
+		//checks for host() or unix(), if doesn't find any proceeds
+		$modified = FALSE;
+		if (stripos($connection['host'], 'host(') !== FALSE)
+		{
+			$host = str_ireplace('host(', '', $connection['host']);
+			$modified = TRUE;
+		} elseif (stripos($connection['host'], 'unix(') !== FALSE)
+		{
+			$host = str_ireplace('unix(', '', $connection['host']);
+			$modified = TRUE;
+		}
 
+		if ($modified === TRUE)
+		{
+			$path_temp = explode(')', $connection['path'], 2);
+			$connection['host'] = $host.$path_temp[0];
+			$connection['path'] = $path_temp[1];			
+		}		
+		
 		// Turn the DSN into local variables
 		// NOTE: This step has to be done, because the order is defined by parse_url
 		list($db['type'], $db['host'], $db['user'], $db['pass'], $db['database']) = array_values($connection);
