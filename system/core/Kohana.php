@@ -421,11 +421,12 @@ class Kohana {
 	 */
 	public static function auto_load($class)
 	{
-		if (class_exists($class)) return true;
+		if (class_exists($class))
+			return TRUE;
 
-		preg_match('/(?<=_).[^_]+$/', $class, $type);
+		preg_match('/_([^_]+)$/', $class, $type);
 
-		$type = isset($type[0]) ? $type[0] : FALSE;
+		$type = isset($type[1]) ? $type[1] : FALSE;
 
 		switch($type)
 		{
@@ -489,9 +490,7 @@ class Kohana {
 	public static function load_class($class, $configuration = array())
 	{
 		if (isset(self::$libraries[$class]))
-		{
 			return self::$libraries[$class];
-		}
 
 		if ($class == 'Controller')
 		{
@@ -553,9 +552,7 @@ class Kohana {
 			foreach (Config::include_paths() as $path)
 			{
 				if (is_file($path.$search.$ext))
-				{
 					return $found[$hash] = $path.$search.$ext;
-				}
 			}
 
 			// If the file is required, throw an exception
