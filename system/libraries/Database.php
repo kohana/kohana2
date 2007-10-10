@@ -111,20 +111,25 @@ class Database_Core {
 		$modified = FALSE;
 		if (stripos($connection['host'], 'host(') !== FALSE)
 		{
-			$host = str_ireplace('host(', '', $connection['host']);
+			$connection['host'] = str_ireplace('host(', '', $connection['host']);
 			$modified = TRUE;
 		} elseif (stripos($connection['host'], 'unix(') !== FALSE)
 		{
-			$host = str_ireplace('unix(', '', $connection['host']);
+			$connection['host'] = str_ireplace('unix(', '', $connection['host']);
 			$modified = TRUE;
 		}
 
-		if ($modified === TRUE)
+		if (isset($connection['port']))
+		{
+			$connection['host'] .= ':'.$connection['port'];
+			unset($connection['port']);
+		} elseif ($modified === TRUE)
 		{
 			$path_temp = explode(')', $connection['path'], 2);
-			$connection['host'] = $host.$path_temp[0];
-			$connection['path'] = $path_temp[1];			
-		}		
+			$connection['host'] .= $path_temp[0];
+			$connection['path'] = $path_temp[1];		
+
+		}
 		
 		// Turn the DSN into local variables
 		// NOTE: This step has to be done, because the order is defined by parse_url
