@@ -129,8 +129,7 @@ class Database_Core {
 		{
 			$path_temp = explode(')', $connection['path'], 2);
 			$connection['host'] .= $path_temp[0];
-			$connection['path'] = $path_temp[1];		
-
+			$connection['path'] = $path_temp[1];
 		}
 		
 		// Turn the DSN into local variables
