@@ -104,7 +104,7 @@ class Database_Core {
 		$this->config = array_merge($this->config, $config);
 		
 		// Parse the DSN into an array and validate it's length
-		if (count($connection = @parse_url($this->config['connection'])) !== 5)
+		if (count($connection = @parse_url($this->config['connection'])) < 5)
 			throw new Kohana_Exception('database.invalid_dsn', $this->config['connection']);
 		
 		//checks for host() or unix(), if doesn't find any proceeds
