@@ -75,9 +75,9 @@ class Database_Mysql implements Database_Driver {
 	 * @param   string  SQL statement
 	 * @return  int
 	 */
-	public function query($sql, $object = TRUE)
+	public function query($sql)
 	{
-		return new Mysql_Result(mysql_query($sql, $this->link), $this->link, $object, $sql);
+		return new Mysql_Result(mysql_query($sql, $this->link), $this->link, $this->db_config['object'], $sql);
 	}
 
 	public function delete($table, $where)

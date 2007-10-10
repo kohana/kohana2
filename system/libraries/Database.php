@@ -162,12 +162,11 @@ class Database_Core {
 	 * @param   boolean
 	 * @return  mixed
 	 */
-	public function query($sql = '', $binds = FALSE, $object = FALSE)
+	public function query($sql = '', $binds = FALSE)
 	{
 		if ($sql == '') return FALSE;
 
 		if ( ! $this->connected) $this->connect();
-		$object = (bool) ($object == FALSE) ? $this->config['object'] : $object;
 
 		// Compile binds if needed
 		if ($binds !== FALSE)
