@@ -43,12 +43,7 @@ class Loader_Core {
 		}
 		else
 		{
-			if (is_array(Config::item($name)))
-			{
-				$config = array_merge(Config::item($name), $config);
-			}
-
-			$class  = ucfirst($name);
+			$class = ucfirst($name);
 
 			Kohana::instance()->$name = new $class($config);
 		}
