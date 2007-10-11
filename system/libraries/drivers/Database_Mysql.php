@@ -315,13 +315,22 @@ class Database_Mysql implements Database_Driver {
 	public function list_tables()
 	{
 		$sql    = 'SHOW TABLES FROM `'.$this->db_config['connection']['database'].'`';
-		$result = $this->query($sql)->process(FALSE);
+		$result = $this->query($sql)->result(FALSE, MYSQL_ASSOC);
+
+		foreach($result as $row)
+		{
+			print_r($row);
+		}
+		die;
 
 		$retval = array();
 		foreach($result as $row)
 		{
-			$retval[] = current($row);
+			print_r($row); die;
+			$retval[] = current((array) $row);
 		}
+
+		print_r($retval); die;
 
 		return $retval;
 	}
@@ -349,43 +358,60 @@ class Database_Mysql implements Database_Driver {
 
 // Iterator behavior taken from:
 // http://www.php.net/~helly/php/ext/spl/interfaceIterator.html#20bbada11975a50f67f09c89b701b62a
-class Mysql_Result implements Database_Result, Iterator, Countable
-{
-	protected $link        = FALSE;
-	protected $result      = FALSE;
-	protected $insert_id   = NULL;
-	protected $num_rows    = 0;
-	protected $current_row = 0;
-	protected $return_type = MYSQL_ASSOC;
-	protected $rows        = array();
-	protected $fetch_type  = 'mysql_fetch_object';
+class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable {
 
+	// Result resource
+	protected $result = NULL;
+
+	// Total rows and current row
+	protected $total_rows  = FALSE;
+	protected $current_row = FALSE;
+
+	// Insert id
+	protected $insert_id = FALSE;
+
+	// Data fetching types
+	protected $fetch_type  = 'mysql_fetch_object';
+	protected $return_type = MYSQL_ASSOC;
+
+	/**
+	 * Constructor
+	 *
+	 * @access public
+	 * @param  resource
+	 * @param  resource
+	 * @param  boolean
+	 * @param  string
+	 * @return void
+	 */
 	public function __construct($result, $link, $object = TRUE, $sql)
 	{
+		$this->result = $result;
+
 		// If the query is a resource, it was a SELECT, SHOW, DESCRIBE, EXPLAIN query
 		if (is_resource($result))
 		{
-			$this->result   = $result;
-			$this->num_rows = mysql_num_rows($this->result);
+			$this->current_row = 0;
+			$this->total_rows  = mysql_num_rows($this->result);
 		}
-		else
+		elseif (is_bool($result))
 		{
 			if ($result == FALSE)
 			{
-				throw new Kohana_Exception('database.error', mysql_error().' - '.$sql);
+				throw new Kohana_Database_Exception('database.error', mysql_error().' - '.$sql);
 			}
-			else if ($result == TRUE) // Its an DELETE, INSERT, REPLACE, or UPDATE query
+			else // Its an DELETE, INSERT, REPLACE, or UPDATE query
 			{
 				$this->insert_id = mysql_insert_id($link);
 				$this->num_rows  = mysql_affected_rows($link);
 			}
 		}
 
-		// Load the fetch and return type
-		$this->process($object);
+		// Set result type
+		$this->result($object);
 	}
 
-	public function process($object = TRUE, $type = MYSQL_ASSOC)
+	public function result($object = TRUE, $type = MYSQL_ASSOC)
 	{
 		$this->fetch_type = (bool) $object ? 'mysql_fetch_object' : 'mysql_fetch_array';
 
@@ -400,115 +426,34 @@ class Mysql_Result implements Database_Result, Iterator, Countable
 
 		return $this;
 	}
+	// End Interface
 
-	public function result($object = NULL, $type = MYSQL_ASSOC)
-	{
-		switch($object)
-		{
-			case NULL:  $fetch = $this->fetch_type;    break;
-			case TRUE:  $fetch = 'mysql_fetch_object'; break;
-			default:    $fetch = 'mysql_fetch_array';  break;
-		}
-
-		// This check has to be outside the previous switch(), because we do not
-		// know the state of $fetch when $object = NULL
-		// NOTE: The class set by $type must be defined before fetching the result,
-		// autoloading is disabled to save a lot of stupid overhead.
-		if ($fetch == 'mysql_fetch_object')
-		{
-			$type = class_exists($type, FALSE) ? $type : 'stdClass';
-		}
-
-		while ($row = $fetch($this->result, $type))
-		{
-			$this->rows[] = $row;
-		}
-
-		return $this;
-	}
-
-	public function num_rows()
-	{
-		Log::add('error', 'Using the num_rows() database result method is deprecated, please use count($result).');
-
-		return $this->count();
-	}
-
-	public function count()
-	{
-		return $this->num_rows;
-	}
-
-	public function get_rows()
-	{
-		return $this->rows;
-	}
-
-	/**
-	*	Return the insert id of the query.
-	*/
+	// Interface: Database_Result
 	public function insert_id()
 	{
 		return $this->insert_id;
 	}
+	// End Interface
 
-	/**
-	*	Return the current element.
-	*/
-	public function current()
+	// Interface: Countable
+	public function count()
 	{
-		echo 'current...<br />';
-		$fetch  = $this->fetch_type;
-		$return = ($this->fetch_type == 'mysql_fetch_array') ? MYSQL_ASSOC : $this->return_type;
-
-		return $fetch($this->result, $return);
+		return $this->total_rows;
 	}
 
-	/**
-	*	Move forward to next element.
-	*/
-	public function next()
+	public function num_rows()
 	{
-		echo 'next...<br />';
-		if ($this->seekable(1))
-			return mysql_data_seek($this->result, ++$this->current_row);
-		else
-			return FALSE;
+		exit(__CLASS__.' implements Countable, so that you can use <tt>count($result_object)</tt>.');
 	}
+	// End Interface
 
-	public function prev()
+	// Interface: ArrayAccess
+	public function offsetExists($offset)
 	{
-		if ($this->seekable(-1))
-			return mysql_data_seek($this->result, --$this->current_row);
-		else
-			return FALSE;
-	}
-
-	/**
-	*	Return the key of the current element.
-	*/
-	public function key()
-	{
-		return $this->current_row;
-	}
-
-	/**
-	*	Check if there is a current element after calls to rewind() or next().
-	*/
-	public function valid()
-	{
-		echo 'valid...<br />';
-		return mysql_data_seek($this->result, ($this->current_row+1));
-	}
-
-	public function seekable($offset = 0)
-	{
-		if ($this->num_rows > 0)
+		if ($this->total_rows > 0)
 		{
 			$min = 0;
-			$max = $this->num_rows - 1;
-
-			$offset = $this->current_row + $offset;
+			$max = $this->total_rows - 1;
 
 			return ($offset < $min OR $offset > $max) ? FALSE : TRUE;
 		}
@@ -516,13 +461,60 @@ class Mysql_Result implements Database_Result, Iterator, Countable
 		return FALSE;
 	}
 
-	/**
-	*	Rewind the Iterator to the first element.
-	*/
+	public function offsetGet($offset)
+	{
+		// Go to the offset
+		mysql_data_seek($this->result, $offset);
+
+		// Return the row
+		$fetch = $this->fetch_type;
+		return $fetch($this->result, $this->return_type);
+	}
+
+	public function offsetSet($offset, $value)
+	{
+		throw new Kohana_Database_Exception('database.result_read_only');
+	}
+
+	public function offsetUnset($offset)
+	{
+		throw new Kohana_Database_Exception('database.result_read_only');
+	}
+	// End Interface
+	
+	// Interface: Iterator
+	public function current()
+	{
+		return $this->offsetGet($this->current_row);
+	}
+
+	public function key()
+	{
+		return $this->current_row;
+	}
+
+	public function next()
+	{
+		return ++$this->current_row;
+	}
+
+	public function prev()
+	{
+		return --$this->current_row;
+	}
+
 	public function rewind()
 	{
-		echo 'rewind...<br />';
-		return mysql_data_seek($this->result, ($this->current_row = 0));
+		return $this->current_row = 0;
 	}
+
+	public function valid()
+	{
+		$ret = $this->offsetExists($this->current_row);
+		print "looking for $this->current_row: $ret<br/>\n";
+		return $ret;
+		return $this->offsetExists($this->current_row);
+	}
+	// End Interface
 
 } // End Mysql_Result Class

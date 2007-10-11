@@ -13,8 +13,6 @@
  * @filesource
  */
 
-// ------------------------------------------------------------------------
-
 /**
  * Database API Driver
  *
@@ -166,13 +164,6 @@ interface Database_Driver {
 } // End Database Driver Interface
 
 interface Database_Result {
-
-	/**
-	 * Choose result set
-	 *
-	 * @access  public
-	 */
-	public function process($object = TRUE, $type = FALSE);
 
 	/**
 	 * Assign the result set
