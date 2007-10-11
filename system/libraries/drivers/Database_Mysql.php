@@ -353,18 +353,19 @@ class Database_Mysql implements Database_Driver {
 // http://www.php.net/~helly/php/ext/spl/interfaceIterator.html#20bbada11975a50f67f09c89b701b62a
 class Mysql_Result implements Database_Result, Iterator
 {
-	private $link		= FALSE;
-	private $result		= FALSE;
-	private $insert_id	= NULL;
-	private $num_rows	= 0;
+	private $link        = FALSE;
+	private $result      = FALSE;
+	private $insert_id   = NULL;
+	private $num_rows    = 0;
 	private $current_row = 0;
 	private $return_type = MYSQL_ASSOC;
-	private $rows      	= array();
-	private $fetch_type	= 'mysql_fetch_object';
+	private $rows        = array();
+	private $fetch_type  = 'mysql_fetch_object';
 
 	public function __construct($result, $link, $object = TRUE, $sql)
 	{
 		$this->fetch_type =  ((bool) $object) ? 'mysql_fetch_object' : 'mysql_fetch_array';
+
 		// If the query is a resource, it was a SELECT, SHOW, DESCRIBE, EXPLAIN query
 		if (is_resource($result))
 		{
@@ -385,10 +386,10 @@ class Mysql_Result implements Database_Result, Iterator
 		}
 	}
 
-	public function process($object, $type)
+	public function process($object = TRUE, $type = MYSQL_ASSOC)
 	{
-		$this->fetch_type = (isset($object)) ? $object : $this->fetch_type;
-		$this->return_type = (isset($type)) ? $type : $this->return_type;
+		$this->fetch_type  = isset($object) ? $object : $this->fetch_type;
+		$this->return_type = isset($type)   ? $type : $this->return_type;
 	}
 
 	public function result($object = NULL, $type = MYSQL_ASSOC)
@@ -440,7 +441,7 @@ class Mysql_Result implements Database_Result, Iterator
 	*/
 	public function current()
 	{
-		$result = $this->fetch_type($this->link, $this->type);
+		$result = $this->fetch_type($this->link, $this->return_type);
 		mysql_data_seek($this->link, $this->current_row);
 		return $result;
 	}
@@ -451,6 +452,11 @@ class Mysql_Result implements Database_Result, Iterator
 	public function next()
 	{
 		return mysql_data_seek($this->link, ++$this->current_row);
+	}
+
+	public function prev()
+	{
+		return mysql_data_seek($this->link, --$this->current_row);
 	}
 
 	/**
@@ -474,8 +480,7 @@ class Mysql_Result implements Database_Result, Iterator
 	*/
 	public function rewind()
 	{
-		$this->current_row = 0;
-		return mysql_data_seek($this->link, 0);
+		return mysql_data_seek($this->link, ($this->current_row = 0));
 	}
 
 } // End Mysql_Result Class

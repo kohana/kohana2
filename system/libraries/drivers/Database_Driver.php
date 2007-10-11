@@ -167,7 +167,13 @@ interface Database_Driver {
 
 interface Database_Result {
 
-	public function process($object, $type);
+	/**
+	 * Choose result set
+	 *
+	 * @access  public
+	 */
+	public function process($object = TRUE, $type = FALSE);
+
 	/**
 	 * Assign the result set
 	 *
