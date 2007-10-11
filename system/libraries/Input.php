@@ -126,9 +126,6 @@ class Input_Core {
 		$key = isset($args[0]) ? $args[0] : FALSE;
 		$val = FALSE;
 
-		if ($key === FALSE)
-			return FALSE;
-
 		// Set the $array
 		switch(strtolower($global))
 		{
@@ -139,6 +136,9 @@ class Input_Core {
 			default:
 				throw new Kohana_Exception('core.invalid_method', $global, get_class($this));
 		}
+
+		if ($key == FALSE)
+			return $array;
 
 		// XSS clean if the data has not already been cleaned.
 		if ($this->use_xss_clean == FALSE AND $xss_clean == TRUE AND ! empty($array[$key]))
