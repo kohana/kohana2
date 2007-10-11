@@ -84,32 +84,56 @@ class Welcome_Controller extends Controller {
 	function database_example()
 	{
 		$this->load->database();
-
-		$query = $this->db->select('title')->from('pages')->get();
-
-		$query->result();
-
-		foreach($query as $item)
+		$table = 'pages';
+		echo 'Does the '.$table.' table exist? ';
+		if ($this->db->table_exists($table))
 		{
-			echo '<pre>'.print_r($item, true).'</pre>';
+			echo '<p>YES! Lets do some work =)</p>';
+			
+			$query = $this->db->select('title')->from($table)->get();
+			echo '<h3>Iterate through the result:</h3>';
+			foreach($query as $item)
+			{
+				echo '<p>'.$item->title.'</p>';
+			}
+			print "<h3>Numrows: ".count($query)."</h3>";
+			echo 'Table Listing:<pre>'.print_r($this->db->list_tables(), TRUE).'</pre>';
+
+			echo '<h3>Try Query Binding with objects:</h3>';
+			$sql = 'SELECT * FROM '.$table.' WHERE id = ?';
+			$query = $this->db->query($sql, array(1));
+			echo '<p>'.$this->db->last_query().'</p>';
+			$query->result(TRUE);
+			foreach($query as $item)
+			{
+				echo '<pre>'.print_r($item, true).'</pre>';
+			}
+			
+			echo '<h3>Try Query Binding with arrays (returns both associative and numeric because I pass MYSQL_BOTH to result():</h3>';
+			$sql = 'SELECT * FROM '.$table.' WHERE id = ?';
+			$query = $this->db->query($sql, array(1));
+			echo '<p>'.$this->db->last_query().'</p>';
+			$query->result(FALSE, MYSQL_BOTH);
+			foreach($query as $item)
+			{
+				echo '<pre>'.print_r($item, true).'</pre>';
+			}
+			
+			echo '<h3>Look, we can also manually advance the result pointer!</h3>';
+			$query = $this->db->select('title')->from($table)->get();
+			echo 'First:<pre>'.print_r($query->current(), true).'</pre><br />';
+			$query->next();
+			echo 'Second:<pre>'.print_r($query->current(), true).'</pre><br />';
+			$query->next();
+			echo 'Third:<pre>'.print_r($query->current(), true).'</pre>';
+			echo '<h3>And we can reset it to the beginning:</h3>';
+			$query->rewind();
+			echo 'Rewound:<pre>'.print_r($query->current(), true).'</pre>';
 		}
-		print "Numrows: ".$query->num_rows()."<br/>";
-
-		echo '<pre>'.print_r($this->db->list_tables(), TRUE).'</pre>';
-		echo $this->db->table_exists('pages');
-
-		$query = $this->db->select('title')->from('pages')->get();
-		print "<br />Numrows: ".$query->num_rows()."<br/>";
-
-		$sql = 'SELECT * FROM pages WHERE id = ?';
-		$query = $this->db->query($sql, array(49));
-		echo 'OBJECT:<pre>'.print_r($query->result(TRUE), TRUE).'</pre>';
-		echo $this->db->last_query();
-		
-		$sql = 'SELECT * FROM pages WHERE id = ?';
-		$query = $this->db->query($sql, array(49));
-		echo '<br />ARRAY:<pre>'.print_r($query->result(FALSE), TRUE).'</pre>';
-		echo $this->db->last_query();
+		else
+		{
+			echo 'NO! The '.$table.' table doesn\'t exist, so we can\'t continue =( ';
+		}
 		print "<br/><br/>\n";
 		print "done in {execution_time} seconds";
 	}
