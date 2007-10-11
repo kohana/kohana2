@@ -108,33 +108,44 @@ class Database_Core {
 			throw new Kohana_Exception('database.invalid_dsn', $this->config['connection']);
 		
 		//checks for host() or unix(), if doesn't find any proceeds
-		$modified = FALSE;
 		if (stripos($connection['host'], 'host(') !== FALSE)
 		{
 			$connection['host'] = str_ireplace('host(', '', $connection['host']);
-			$modified = TRUE;
+			if (stripos($connection['host'], ')') !== FALSE) 
+			{
+				$connection['host'] = str_ireplace(')', '', $connection['host']);
+			}
+			elseif (stripos($connection['path'], ')') !== FALSE)
+			{
+				$path_temp = explode(')', $connection['path'], 2);
+				$connection['host'] .= $path_temp[0];
+				$connection['path'] = $path_temp[1];		
+			}
 		}
 		elseif (stripos($connection['host'], 'unix(') !== FALSE)
 		{
-			$connection['host'] = str_ireplace('unix(', '', $connection['host']);
-			$modified = TRUE;
-		}
-
-		if (isset($connection['port']))
-		{
-			$connection['host'] .= ':'.$connection['port'];
-			unset($connection['port']);
-		}
-		elseif ($modified === TRUE)
-		{
-			$path_temp = explode(')', $connection['path'], 2);
-			$connection['host'] .= $path_temp[0];
-			$connection['path'] = $path_temp[1];
+			$connection['socket'] = str_ireplace('unix(', '', $connection['host']);
+			if (stripos($connection['socket'], ')') !== FALSE) 
+			{
+				$connection['socket'] = str_ireplace(')', '', $connection['socket']);
+			}
+			elseif (stripos($connection['path'], ')') !== FALSE)
+			{
+				$path_temp = explode(')', $connection['path'], 2);
+				$connection['socket'] .= $path_temp[0];
+				$connection['path'] = $path_temp[1];		
+			}
+			unset($connection['host']);
+			unset($connection['port']); //it's a socket!
 		}
 		
 		// Turn the DSN into local variables
-		// NOTE: This step has to be done, because the order is defined by parse_url
-		list($db['type'], $db['host'], $db['user'], $db['pass'], $db['database']) = array_values($connection);
+		$db = $connection;
+		$db['type'] = $db['scheme'];
+		unset($db['scheme']);
+		$db['database'] = $db['path'];
+		unset($db['path']);
+		
 
 		// Reset the connection array to the database config
 		$this->config['connection'] = $db;
