@@ -182,14 +182,6 @@ interface Database_Result {
 	public function result($object = TRUE, $type = FALSE);
 
 	/**
-	 * Get the number of rows in a SELECT query or the number of affected rows in UPDATE
-	 *
-	 * @access  public
-	 * @return  integer
-	 */
-	public function num_rows();
-
-	/**
 	 * Get the insert id from an INSERT statement
 	 *
 	 * @access  public

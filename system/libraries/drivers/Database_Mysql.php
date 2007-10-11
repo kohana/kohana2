@@ -317,6 +317,7 @@ class Database_Mysql implements Database_Driver {
 		$sql    = 'SHOW TABLES FROM `'.$this->db_config['connection']['database'].'`';
 		$result = $this->query($sql)->process(FALSE);
 
+		$retval = array();
 		foreach($result as $row)
 		{
 			$retval[] = current($row);
@@ -348,7 +349,7 @@ class Database_Mysql implements Database_Driver {
 
 // Iterator behavior taken from:
 // http://www.php.net/~helly/php/ext/spl/interfaceIterator.html#20bbada11975a50f67f09c89b701b62a
-class Mysql_Result implements Database_Result, Iterator
+class Mysql_Result implements Database_Result, Iterator, Countable
 {
 	protected $link        = FALSE;
 	protected $result      = FALSE;
@@ -426,7 +427,7 @@ class Mysql_Result implements Database_Result, Iterator
 		return $this;
 	}
 
-	public function num_rows()
+	public function count()
 	{
 		return $this->num_rows;
 	}
@@ -449,17 +450,10 @@ class Mysql_Result implements Database_Result, Iterator
 	*/
 	public function current()
 	{
-		if ($this->valid(0))
-		{
-			$fetch  = $this->fetch_type;
-			$return = ($this->fetch_type == 'mysql_fetch_array') ? MYSQL_ASSOC : $this->return_type;
+		$fetch  = $this->fetch_type;
+		$return = ($this->fetch_type == 'mysql_fetch_array') ? MYSQL_ASSOC : $this->return_type;
 
-			return $fetch($this->result, $return);
-		}
-		else
-		{
-			return FALSE;
-		}
+		return $fetch($this->result, $return);
 	}
 
 	/**
@@ -467,22 +461,18 @@ class Mysql_Result implements Database_Result, Iterator
 	*/
 	public function next()
 	{
-		if ($this->valid(1))
+		if ($this->seekable(1))
 		{
 			mysql_data_seek($this->result, ++$this->current_row);
 		}
-
-		return $this->current();
 	}
 
 	public function prev()
 	{
-		if ($this->valid(-1))
+		if ($this->seekable(-1))
 		{
 			mysql_data_seek($this->result, --$this->current_row);
 		}
-
-		return $this->current();
 	}
 
 	/**
@@ -496,9 +486,14 @@ class Mysql_Result implements Database_Result, Iterator
 	/**
 	*	Check if there is a current element after calls to rewind() or next().
 	*/
-	public function valid($offset = 0)
+	public function valid()
 	{
-		if (is_resource($this->result) AND $this->num_rows > 0)
+		return (($this->current_row + 1) > ($this->num_rows - 1));
+	}
+
+	public function seekable($offset = 0)
+	{
+		if ($this->num_rows > 0)
 		{
 			$min = 0;
 			$max = $this->num_rows - 1;
@@ -516,14 +511,7 @@ class Mysql_Result implements Database_Result, Iterator
 	*/
 	public function rewind()
 	{
-		$this->current_row = 0;
-
-		if ($this->valid(0))
-		{
-			return mysql_data_seek($this->result, $this->current_row);
-		}
-
-		return TRUE;
+		return mysql_data_seek($this->result, ($this->current_row = 0));
 	}
 
 } // End Mysql_Result Class
