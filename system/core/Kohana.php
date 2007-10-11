@@ -306,15 +306,12 @@ final class Log {
 		// Make sure there is an ending slash
 		$filename = rtrim($filename, '/').'/';
 
-		/**
-		 * @todo i18n error
-		 */
-		is_writable($filename) or trigger_error
-		(
-			'Your log.directory config setting does not point to a writable directory. '.
-			'Please correct the permissions and refresh the page.',
-			E_USER_ERROR
-		);
+		// Make sure the log directory is writable
+		if ( ! is_writable($filename))
+		{
+			ob_get_level() AND ob_clean();
+			exit(Kohana::lang('core.cannot_write_log'));
+		}
 
 		// Attach the filename to the directory
 		$filename .= date('Y-m-d').'.log'.EXT;
@@ -435,7 +432,7 @@ class Kohana {
 		self::$error_codes = self::lang('error_codes');
 
 		// Set error handler
-		set_error_handler(array('Kohana', 'error_handler'));
+		set_error_handler(array('Kohana', 'exception_handler'));
 
 		// Set execption handler
 		set_exception_handler(array('Kohana', 'exception_handler'));
@@ -628,19 +625,33 @@ class Kohana {
 	}
 
 	/**
-	 * Exception Handler
+	 * Exception and Error Handler
 	 *
 	 * @access public
-	 * @param  object
+	 * @param  string
+	 * @param  string
+	 * @param  string
+	 * @param  integer
 	 * @return void
 	 */
-	public static function exception_handler($exception)
+	public static function exception_handler($exception, $message = FALSE, $file = FALSE, $line = FALSE)
 	{
-		// Error message, filename, and line number
-		$code    = $exception->getCode();
-		$message = $exception->getMessage();
-		$file    = $exception->getFile();
-		$line    = $exception->getLine();
+		if (func_num_args() === 5)
+		{
+			$is_exception = FALSE;
+
+			$code = $exception;
+		}
+		else
+		{
+			$is_exception = TRUE;
+
+			// Error message, filename, and line number
+			$code    = $exception->getCode();
+			$message = $exception->getMessage();
+			$file    = $exception->getFile();
+			$line    = $exception->getLine();
+		}
 
 		// Do not display E_STRICT notices, they are garbage
 		if ($code == E_STRICT) return FALSE;
@@ -668,15 +679,6 @@ class Kohana {
 		$file = str_replace('\\', '/', realpath($file));
 		$file = preg_replace('|^'.preg_quote(DOCROOT).'|', '', $file);
 
-		// Exception class
-		$type = get_class($exception);
-
-		// Log the error
-		if (Config::item('log.threshold') >= $level)
-		{
-			Log::add('error', Kohana::lang('core.uncaught_exception', $type, strip_tags($message), $file, $line));
-		}
-
 		if (ob_get_level() > self::$buffer_level)
 		{
 			// Flush the entire buffer here, to ensure the error is displayed
@@ -686,29 +688,31 @@ class Kohana {
 			ob_clean();
 		}
 
-		if ( ! headers_sent() AND method_exists('sendHeaders', $exception))
+		// Send headers, etc
+		if ($is_exception)
 		{
-			$exception->sendHeaders();
+			// Exception class
+			$type = get_class($exception);
+
+			if ( ! headers_sent() AND method_exists('sendHeaders', $exception))
+			{
+				$exception->sendHeaders();
+			}
+		}
+		else
+		{
+			$type = 'Kohana_PHP_Error';
+		}
+
+		// Log the error
+		if (Config::item('log.threshold') >= $level)
+		{
+			Log::add('error', Kohana::lang('core.uncaught_exception', $type, strip_tags($message), $file, $line));
 		}
 
 		// Load the error page
 		include self::find_file('views', 'kohana_error_page');
 		exit;
-	}
-
-	/**
-	 * Error Handler
-	 *
-	 * @access public
-	 * @param  string
-	 * @param  string
-	 * @param  string
-	 * @param  integer
-	 * @return void
-	 */
-	public static function error_handler($code, $message, $file, $line)
-	{
-		// throw new Kohana_PHP_Exception($code, $message, $file, $line);
 	}
 
 	/**

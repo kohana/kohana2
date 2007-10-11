@@ -5,6 +5,7 @@ $lang = array
 	'there_can_be_only_one' => 'There can be only one instance of Kohana per page request.',
 	'uncaught_exception'    => 'Uncaught %s: %s in file %s on line %s',
 	'invalid_method'        => 'Invalid method <tt>%s</tt> called in <tt>%s</tt>.',
+	'cannot_write_log'      => 'Your log.directory config setting does not point to a writable directory.',
 
 	'resource_not_found'    => 'The requested %s, <tt>%s</tt>, could not be found.',
 
