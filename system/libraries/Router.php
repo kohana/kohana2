@@ -219,13 +219,10 @@ class Router_Core {
 						self::$method     = isset(self::$rsegments[$key + 1]) ? self::$rsegments[$key + 1] : 'index';
 						self::$arguments  = isset(self::$rsegments[$key + 2]) ? array_slice(self::$rsegments, $key + 2) : array();
 
-						// Stop searching
-						break;
+						// Stop searching, two levels for foreach
+						break 2;
 					}
 				}
-
-				// Stop searching
-				if (self::$controller !== FALSE) break;
 
 				// Add the segment to the search
 				$search .= '/'.$segment;
