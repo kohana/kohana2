@@ -428,9 +428,6 @@ class Kohana {
 		// Set autoloader
 		spl_autoload_register(array('Kohana', 'auto_load'));
 
-		// Set error types
-		self::$error_codes = self::lang('error_codes');
-
 		// Set error handler
 		set_error_handler(array('Kohana', 'exception_handler'));
 
@@ -638,19 +635,17 @@ class Kohana {
 	{
 		if (func_num_args() === 5)
 		{
-			$is_exception = FALSE;
-
-			$code = $exception;
+			$code     = $exception;
+			$template = 'kohana_error_page';
 		}
 		else
 		{
-			$is_exception = TRUE;
-
 			// Error message, filename, and line number
-			$code    = $exception->getCode();
-			$message = $exception->getMessage();
-			$file    = $exception->getFile();
-			$line    = $exception->getLine();
+			$code     = $exception->getCode();
+			$message  = $exception->getMessage();
+			$file     = $exception->getFile();
+			$line     = $exception->getLine();
+			$template = $exception->getTemplate();
 		}
 
 		// Do not display E_STRICT notices, they are garbage
@@ -658,9 +653,11 @@ class Kohana {
 
 		if (is_numeric($code))
 		{
-			if (isset(self::$error_codes[$code]))
+			$codes = Kohana::lang('errors');
+
+			if ( ! empty($codes[$code]))
 			{
-				list($level, $error) = self::$error_codes[$code];
+				list($level, $error, $description) = $codes[$code];
 			}
 			else
 			{
@@ -673,6 +670,7 @@ class Kohana {
 			// Custom error message, this will never be logged
 			$level = 5;
 			$error = $code;
+			$description = '';
 		}
 
 		// Remove the DOCROOT from the path, as a security precaution
@@ -688,8 +686,14 @@ class Kohana {
 			ob_clean();
 		}
 
-		// Send headers, etc
-		if ($is_exception)
+		if (func_num_args() === 5)
+		{
+			$type = 'Kohana_PHP_Error';
+
+			$description = Kohana::lang('errors.'.E_RECOVERABLE_ERROR);
+			$description = $description[2];
+		}
+		else
 		{
 			// Exception class
 			$type = get_class($exception);
@@ -699,10 +703,6 @@ class Kohana {
 				$exception->sendHeaders();
 			}
 		}
-		else
-		{
-			$type = 'Kohana_PHP_Error';
-		}
 
 		// Log the error
 		if (Config::item('log.threshold') >= $level)
@@ -711,7 +711,7 @@ class Kohana {
 		}
 
 		// Load the error page
-		include self::find_file('views', 'kohana_error_page');
+		include self::find_file('views', empty($template) ? 'kohana_error_page' : $template);
 		exit;
 	}
 
@@ -721,9 +721,9 @@ class Kohana {
 	 * @access public
 	 * @return void
 	 */
-	public static function show_404()
+	public static function show_404($page = FALSE, $template = FALSE)
 	{
-		throw new Kohana_404_Exception(Router::$current_uri.Config::item('core.url_suffix').Router::$query_string);
+		throw new Kohana_404_Exception($page, $template);
 	}
 
 	/**
@@ -734,9 +734,9 @@ class Kohana {
 	 * @param  string
 	 * @return void
 	 */
-	public static function show_error($title, $message)
+	public static function show_error($title, $message, $template = FALSE)
 	{
-		throw new Kohana_PHP_Exception($title, $message, FALSE, FALSE);
+		throw new Kohana_User_Exception($title, $message, $template);
 	}
 
 	/**
@@ -940,6 +940,9 @@ class Kohana {
  */
 class Kohana_Exception extends Exception {
 
+	// Template file
+	protected $template = 'kohana_php_error';
+
 	// Message
 	protected $message = 'Unknown Exception: ';
 
@@ -987,6 +990,11 @@ class Kohana_Exception extends Exception {
 		return $this->message;
 	}
 
+	public function getTemplate()
+	{
+		return $this->template;
+	}
+
 	public function sendHeaders()
 	{
 		// Send the 500 header
@@ -1002,14 +1010,13 @@ class Kohana_Exception extends Exception {
  * @author    Kohana Team
  * @link      http://kohanaphp.com/user_guide/en/general/exceptions.html
  */
-class Kohana_PHP_Exception extends Kohana_Exception {
+class Kohana_User_Exception extends Kohana_Exception {
 
-	public function __construct($code, $message, $file, $line)
+	public function __construct($title, $message, $template)
 	{
-		$this->code    = $code;
-		$this->message = $message;
-		$this->file    = $file;
-		$this->line    = $line;
+		$this->code     = $title;
+		$this->message  = $message;
+		$this->template = $template;
 	}
 
 } // End Kohana PHP Exception Class
@@ -1025,11 +1032,18 @@ class Kohana_404_Exception extends Kohana_Exception {
 
 	protected $code = E_PAGE_NOT_FOUND;
 
-	public function __construct($uri)
+	public function __construct($uri = FALSE, $template = FALSE)
 	{
+		if ($uri === FALSE)
+		{
+			$uri = Router::$current_uri.Config::item('core.url_suffix').Router::$query_string;
+		}
+
 		$this->message = Kohana::lang('core.page_not_found', $uri);
 		$this->file    = FALSE;
 		$this->line    = FALSE;
+
+		$this->template = $template;
 	}
 
 	public function sendHeaders()
