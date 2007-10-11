@@ -427,6 +427,13 @@ class Mysql_Result implements Database_Result, Iterator, Countable
 		return $this;
 	}
 
+	public function num_rows()
+	{
+		Log::add('error', 'Using the num_rows() database result method is deprecated, please use count($result).');
+
+		return $this->count();
+	}
+
 	public function count()
 	{
 		return $this->num_rows;
