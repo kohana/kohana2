@@ -182,6 +182,7 @@ class Database_Mysql implements Database_Driver {
 
 			$likes[] = $prefix." ".$k." LIKE '".$v . "'";
 		}
+		//echo '<pre>'.print_r($likes, true);die;
 		return $likes;
 	}
 
@@ -385,13 +386,13 @@ class Mysql_Result implements Database_Result, Iterator
 		}
 	}
 
-	public function process($object, $type)
+	public function process($object = TRUE, $type = MYSQL_ASSOC)
 	{
 		$this->fetch_type = (isset($object)) ? $object : $this->fetch_type;
 		$this->return_type = (isset($type)) ? $type : $this->return_type;
 	}
 	
-	public function result($object, $type)
+	public function result($object = TRUE, $type = MYSQL_ASSOC)
 	{
 		$this->object = $object;
 		
