@@ -50,10 +50,11 @@ class Database_Mysql implements Database_Driver {
 	{
 		// Import the connect variables
 		extract($config['connection']);
-//echo '<pre>'.print_r($this, true);die;
+
 		// Persistent connections enabled?
 		$connect = ($config['persistent'] == TRUE) ? 'mysql_pconnect' : 'mysql_connect';
 
+		// Build the connection info
 		$host = (isset($host)) ? $host : $socket;
 		$port = (isset($port)) ? ':'.$port : '';
 		
@@ -99,7 +100,7 @@ class Database_Mysql implements Database_Driver {
 
 	public function set_charset($charset)
 	{
-		$this->query('SET NAMES '.mysql_real_escape_string($charset));
+		$this->query('SET NAMES '.$this->escape_str($charset));
 	}
 
 	public function escape_table($table)
@@ -333,19 +334,22 @@ class Database_Mysql implements Database_Driver {
 	}
 } // End Database_Mysql Class
 
+// Iterator behavior taken from:
+// http://www.php.net/~helly/php/ext/spl/interfaceIterator.html#20bbada11975a50f67f09c89b701b62a
 class Mysql_Result implements Database_Result, Iterator
 {
-	private $link      = FALSE;
-	private $result    = FALSE;
-	private $insert_id = NULL;
-	private $num_rows  = 0;
-	private $rows      = array();
-	private $object    = TRUE;
+	private $link		= FALSE;
+	private $result		= FALSE;
+	private $insert_id	= NULL;
+	private $num_rows	= 0;
+	private $current_row = 0;
+	private $return_type = MYSQL_ASSOC;
+	private $rows      	= array();
+	private $fetch_type	= 'mysql_fetch_object';
 
 	public function __construct($result, $link, $object = TRUE, $sql)
 	{
-		$this->object = (bool) $object;
-
+		$this->fetch_type =  ((bool) $object) ? 'mysql_fetch_object' : 'mysql_fetch_array';
 		// If the query is a resource, it was a SELECT, SHOW, DESCRIBE, EXPLAIN query
 		if (is_resource($result))
 		{
@@ -366,8 +370,16 @@ class Mysql_Result implements Database_Result, Iterator
 		}
 	}
 
-	public function result($object = TRUE, $type = MYSQL_ASSOC)
+	public function process($object, $type)
 	{
+		$this->fetch_type = (isset($object)) ? $object : $this->fetch_type;
+		$this->return_type = (isset($type)) ? $type : $this->return_type;
+	}
+	
+	public function result($object, $type)
+	{
+		$this->object = $object;
+		
 		$fetch = ($object == TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
 		$type  = ($object == TRUE) ? 'stdClass' : $type;
 
@@ -389,33 +401,54 @@ class Mysql_Result implements Database_Result, Iterator
 		return $this->rows;
 	}
 
+	/**
+	*	Return the insert id of the query.
+	*/
 	public function insert_id()
 	{
 		return $this->insert_id;
 	}
 
+	/**
+	*	Return the current element.
+	*/
 	public function current()
 	{
-		return current($this->rows);
+		$result = $this->fetch_type($this->link, $this->type);
+		mysql_data_seek($this->link, $this->current_row);
+		return $result;
 	}
 
+	/**
+	*	Move forward to next element.
+	*/
 	public function next()
 	{
-		return next($this->rows);
+		mysql_data_seek($this->link, ++$this->current_row);
 	}
 
+	/**
+	*	Return the key of the current element.
+	*/
 	public function key()
 	{
-		return key($this->rows);
+		return $this->current_row;
 	}
 
+	/**
+	*	Check if there is a current element after calls to rewind() or next().
+	*/
 	public function valid()
 	{
-		return ($this->current() !== FALSE);
+		return ($this->current_row == ($this->num_rows-1));
 	}
 
+	/**
+	*	Rewind the Iterator to the first element.
+	*/
 	public function rewind()
 	{
-		reset($this->rows);
+		$this->current_row = 0;
+		mysql_data_seek($this->link, 0);
 	}
 } // End Mysql_Result Class
