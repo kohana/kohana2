@@ -441,8 +441,11 @@ class Mysql_Result implements Database_Result, Iterator
 	*/
 	public function current()
 	{
-		$result = $this->fetch_type($this->link, $this->return_type);
+		$fetch  = $this->fetch_type;
+		$result = $fetch($this->link, $this->return_type);
+
 		mysql_data_seek($this->link, $this->current_row);
+
 		return $result;
 	}
 
