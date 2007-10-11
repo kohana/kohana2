@@ -58,7 +58,7 @@ class Database_Mysql implements Database_Driver {
 		$port = (isset($port)) ? ':'.$port : '';
 		
 		// Make the connection and select the database
-		if (($this->link = $connect($host, $user, $pass)) AND mysql_select_db($database, $this->link))
+		if (($this->link = $connect($host.$port, $user, $pass)) AND mysql_select_db($database, $this->link))
 		{
 			if ($charset = $config['character_set'])
 			{
