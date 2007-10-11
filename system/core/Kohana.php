@@ -686,7 +686,7 @@ class Kohana {
 			ob_clean();
 		}
 
-		if ( ! headers_sent())
+		if ( ! headers_sent() AND method_exists('sendHeaders', $exception))
 		{
 			$exception->sendHeaders();
 		}
@@ -708,7 +708,7 @@ class Kohana {
 	 */
 	public static function error_handler($code, $message, $file, $line)
 	{
-		throw new Kohana_PHP_Exception($code, $message, $file, $line);
+		// throw new Kohana_PHP_Exception($code, $message, $file, $line);
 	}
 
 	/**
@@ -845,7 +845,9 @@ class Kohana {
 
 			// If the file is required, throw an exception
 			if ($required == TRUE)
+			{
 				throw new Kohana_Exception('core.resource_not_found', $directory, $filename);
+			}
 
 			return $found[$hash] = FALSE;
 		}
