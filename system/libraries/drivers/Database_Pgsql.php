@@ -30,7 +30,7 @@ class Database_Pgsql implements Database_Driver {
 
 	// Database connection link
 	private $link;
-    private $db_config;
+	private $db_config;
 
 	public function __construct($config)
 	{
@@ -52,10 +52,15 @@ class Database_Pgsql implements Database_Driver {
 		extract($config['connection']);
 
 		// Persistent connections enabled?
-		$connect = ($config['persistent'] == TRUE) ? 'mysql_pconnect' : 'mysql_connect';
+		$connect = ($config['persistent'] == TRUE) ? 'pg_pconnect' : 'pg_connect';
 
+		// Build the connection info
+		$port = (isset($port)) ? 'port=\''.$port.'\'' : '';
+		$host = (isset($host)) ? 'host=\''.$host.'\' '.$port : ''; // if no host, connect with the socket
+		
+		$connection_string = $host.' dbname=\''.$database.'\' user=\''.$user.'\' pass=\''.$pass.'\'';
 		// Make the connection and select the database
-		if (($this->link = $connect($host, $user, $pass)) AND mysql_select_db($database, $this->link))
+		if ($this->link = $connect($connection_string))
 		{
 			if ($charset = $config['character_set'])
 			{
@@ -75,9 +80,9 @@ class Database_Pgsql implements Database_Driver {
 	 * @param   string  SQL statement
 	 * @return  int
 	 */
-	public function query($sql, $object = TRUE)
+	public function query($sql)
 	{
-		return new Pgsql_Result(mysql_query($sql, $this->link), $this->link, $object);
+		return new Pgsql_Result(pg_query($this->link, $sql), $this->link, $this->db_config['object'], $sql);
 	}
 
 	public function delete($table, $where)
@@ -96,7 +101,7 @@ class Database_Pgsql implements Database_Driver {
 
 	public function set_charset($charset)
 	{
-		$this->query('SET NAMES '.mysql_real_escape_string($charset));
+		$this->query('SET client_encoding TO '.pg_escape_string($this->link, $charset));
 	}
 
 	public function escape_table($table)
@@ -106,7 +111,7 @@ class Database_Pgsql implements Database_Driver {
 
 	public function escape_column($column)
 	{
-		return '`'.$column.'`';
+		return '\''.$column.'\'';
 	}
 
 	public function where($key, $value, $type, $num_wheres, $quote)
@@ -120,7 +125,7 @@ class Database_Pgsql implements Database_Driver {
 		$count = 1;
 		foreach ($key as $k => $v)
 		{
-			
+
 			$prefix = (($num_wheres > 0) or ($count++ > 1)) ? $type : '';
 
 			if ($quote === -1)
@@ -188,9 +193,9 @@ class Database_Pgsql implements Database_Driver {
 
 	public function limit($limit, $offset = 0)
 	{
-		return 'LIMIT '.$offset.', '.$limit;
+		return 'LIMIT '.$limit.' OFFSET '.$offset;
 	}
-	
+
 	/**
 	 * Compile the SELECT statement
 	 *
@@ -299,7 +304,35 @@ class Database_Pgsql implements Database_Driver {
 
 		return mysql_real_escape_string($str, $this->link);
 	}
+	
+	/**
+ 	* List table query
+ 	*
+ 	* Generates a platform-specific query string so that the table names can be fetched
+ 	*
+ 	* @access      private
+	* @return      string
+ 	*/   
+	public function list_tables()
+	{
+		$sql = 'SHOW TABLES FROM `'.$this->db_config['connection']['database'].'`';
+		$query = $this->query($sql);
+		$query = $query->result();
+		
+		$retval = array();
+		foreach($query as $row)
+		{
+			$column = 'Tables_in_'.$this->db_config['connection']['database'];
+			$retval[] = $row->$column;
+		}
+		
+		return $retval;
+	}
 
+	function show_error()
+	{
+		return pg_last_error($this->link);
+	}
 } // End Database_Pgsql Class
 
 class Pgsql_Result implements Database_Result, Iterator
@@ -311,7 +344,7 @@ class Pgsql_Result implements Database_Result, Iterator
 	private $rows      = array();
 	private $object    = TRUE;
 
-	public function __construct($result, $link, $object = TRUE)
+	public function __construct($result, $link, $object = TRUE, $sql)
 	{
 		$this->object = (bool) $object;
 
@@ -319,30 +352,33 @@ class Pgsql_Result implements Database_Result, Iterator
 		if (is_resource($result))
 		{
 			$this->result   = $result;
-			$this->num_rows = mysql_num_rows($this->result);
+			$this->num_rows = pg_num_rows($this->result);
 		}
 		else
 		{
 			if ($result == FALSE)
 			{
-				throw new Kohana_Exception('database.error', mysql_error());
+				throw new Kohana_Exception('database.error', pg_last_error($this->link).' - '.$sql);
 			}
 			else if ($result == TRUE) // Its an DELETE, INSERT, REPLACE, or UPDATE query
 			{
-				$this->insert_id = mysql_insert_id($link);
-				$this->num_rows  = mysql_affected_rows($link);
+				//$this->insert_id = mysql_insert_id($link);
+				$this->num_rows  = pg_affected_rows($link);
 			}
 		}
 	}
 
-	public function result($object = TRUE, $array_type = MYSQL_ASSOC)
+	public function result($object = TRUE, $type = PGSQL_ASSOC)
 	{
-		$fetch = ($this->object == TRUE and $object == TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
+		$fetch = ($object == TRUE) ? 'pg_fetch_object' : 'pg_fetch_array';
+		$type  = ($object == TRUE) ? 'stdClass' : $type;
 
-		while ($row = $fetch($this->result, ($this->object == TRUE and $object == TRUE) ? 'stdClass' : $array_type))
+		while ($row = $fetch($this->result, $type))
 		{
 			$this->rows[] = $row;
 		}
+
+		return $this;
 	}
 
 	public function num_rows()
@@ -354,7 +390,7 @@ class Pgsql_Result implements Database_Result, Iterator
 	{
 		return $this->rows;
 	}
-	
+
 	public function insert_id()
 	{
 		return $this->insert_id;
