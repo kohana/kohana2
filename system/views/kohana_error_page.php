@@ -4,7 +4,7 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>Application Runtime Error</title>
+<title><?php echo $error ?></title>
 
 <style type="text/css">
 /* <![CDATA[ */
