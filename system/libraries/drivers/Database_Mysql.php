@@ -29,8 +29,8 @@
 class Database_Mysql implements Database_Driver {
 
 	// Database connection link
-	private $link;
-	private $db_config;
+	protected $link;
+	protected $db_config;
 
 	public function __construct($config)
 	{
@@ -314,15 +314,12 @@ class Database_Mysql implements Database_Driver {
  	*/
 	public function list_tables()
 	{
-		$sql = 'SHOW TABLES FROM `'.$this->db_config['connection']['database'].'`';
-		$query = $this->query($sql);
-		$query = $query->result();
+		$sql    = 'SHOW TABLES FROM `'.$this->db_config['connection']['database'].'`';
+		$result = $this->query($sql)->process(FALSE);
 
-		$retval = array();
-		foreach($query as $row)
+		foreach($result as $row)
 		{
-			$column = 'Tables_in_'.$this->db_config['connection']['database'];
-			$retval[] = $row->$column;
+			$retval[] = current($row);
 		}
 
 		return $retval;
@@ -353,19 +350,17 @@ class Database_Mysql implements Database_Driver {
 // http://www.php.net/~helly/php/ext/spl/interfaceIterator.html#20bbada11975a50f67f09c89b701b62a
 class Mysql_Result implements Database_Result, Iterator
 {
-	private $link        = FALSE;
-	private $result      = FALSE;
-	private $insert_id   = NULL;
-	private $num_rows    = 0;
-	private $current_row = 0;
-	private $return_type = MYSQL_ASSOC;
-	private $rows        = array();
-	private $fetch_type  = 'mysql_fetch_object';
+	protected $link        = FALSE;
+	protected $result      = FALSE;
+	protected $insert_id   = NULL;
+	protected $num_rows    = 0;
+	protected $current_row = 0;
+	protected $return_type = MYSQL_ASSOC;
+	protected $rows        = array();
+	protected $fetch_type  = 'mysql_fetch_object';
 
 	public function __construct($result, $link, $object = TRUE, $sql)
 	{
-		$this->fetch_type =  ((bool) $object) ? 'mysql_fetch_object' : 'mysql_fetch_array';
-
 		// If the query is a resource, it was a SELECT, SHOW, DESCRIBE, EXPLAIN query
 		if (is_resource($result))
 		{
@@ -384,12 +379,25 @@ class Mysql_Result implements Database_Result, Iterator
 				$this->num_rows  = mysql_affected_rows($link);
 			}
 		}
+
+		// Load the fetch and return type
+		$this->process($object);
 	}
 
 	public function process($object = TRUE, $type = MYSQL_ASSOC)
 	{
-		$this->fetch_type  = isset($object) ? $object : $this->fetch_type;
-		$this->return_type = isset($type)   ? $type : $this->return_type;
+		$this->fetch_type = (bool) $object ? 'mysql_fetch_object' : 'mysql_fetch_array';
+
+		// This check has to be outside the previous switch(), because we do not
+		// know the state of $fetch when $object = NULL
+		// NOTE: The class set by $type must be defined before fetching the result,
+		// autoloading is disabled to save a lot of stupid overhead.
+		if ($this->fetch_type == 'mysql_fetch_object')
+		{
+			$this->return_type = class_exists($type, FALSE) ? $type : 'stdClass';
+		}
+
+		return $this;
 	}
 
 	public function result($object = NULL, $type = MYSQL_ASSOC)
@@ -441,12 +449,17 @@ class Mysql_Result implements Database_Result, Iterator
 	*/
 	public function current()
 	{
-		$fetch  = $this->fetch_type;
-		$result = $fetch($this->link, $this->return_type);
+		if ($this->valid(0))
+		{
+			$fetch  = $this->fetch_type;
+			$return = ($this->fetch_type == 'mysql_fetch_array') ? MYSQL_ASSOC : $this->return_type;
 
-		mysql_data_seek($this->link, $this->current_row);
-
-		return $result;
+			return $fetch($this->result, $return);
+		}
+		else
+		{
+			return FALSE;
+		}
 	}
 
 	/**
@@ -454,12 +467,22 @@ class Mysql_Result implements Database_Result, Iterator
 	*/
 	public function next()
 	{
-		return mysql_data_seek($this->link, ++$this->current_row);
+		if ($this->valid(1))
+		{
+			mysql_data_seek($this->result, ++$this->current_row);
+		}
+
+		return $this->current();
 	}
 
 	public function prev()
 	{
-		return mysql_data_seek($this->link, --$this->current_row);
+		if ($this->valid(-1))
+		{
+			mysql_data_seek($this->result, --$this->current_row);
+		}
+
+		return $this->current();
 	}
 
 	/**
@@ -473,9 +496,19 @@ class Mysql_Result implements Database_Result, Iterator
 	/**
 	*	Check if there is a current element after calls to rewind() or next().
 	*/
-	public function valid()
+	public function valid($offset = 0)
 	{
-		return ($this->current_row == ($this->num_rows-1));
+		if (is_resource($this->result) AND $this->num_rows > 0)
+		{
+			$min = 0;
+			$max = $this->num_rows - 1;
+
+			$offset = $this->current_row + $offset;
+
+			return ($offset < $min OR $offset > $max) ? FALSE : TRUE;
+		}
+
+		return FALSE;
 	}
 
 	/**
@@ -483,7 +516,14 @@ class Mysql_Result implements Database_Result, Iterator
 	*/
 	public function rewind()
 	{
-		return mysql_data_seek($this->link, ($this->current_row = 0));
+		$this->current_row = 0;
+
+		if ($this->valid(0))
+		{
+			return mysql_data_seek($this->result, $this->current_row);
+		}
+
+		return TRUE;
 	}
 
 } // End Mysql_Result Class

@@ -764,7 +764,9 @@ class Database_Core {
 	*/
 	public function list_tables()
 	{
-		if (!$this->connected) $this->driver->connect($this->config);
+		$this->connected OR $this->driver->connect($this->config);
+
+		$this->reset_select();
 
 		return $this->driver->list_tables();
 	}
@@ -777,7 +779,7 @@ class Database_Core {
 	*/
 	public function table_exists($table_name)
 	{
-		return (in_array($table_name, $this->list_tables()));
+		return in_array($table_name, $this->list_tables());
 	}
 
 	/**
