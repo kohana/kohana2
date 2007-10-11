@@ -167,12 +167,13 @@ interface Database_Driver {
 
 interface Database_Result {
 
+	public function process($object, $type);
 	/**
 	 * Assign the result set
 	 *
 	 * @access  public
 	 */
-	public function result();
+	public function result($object, $type);
 
 	/**
 	 * Get the number of rows in a SELECT query or the number of affected rows in UPDATE
