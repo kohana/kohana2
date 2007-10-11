@@ -858,6 +858,39 @@ class Kohana {
 	}
 
 	/**
+	 * List all files in a resource path
+	 *
+	 * @access public
+	 * @param  string
+	 * @return array
+	 */
+	public static function list_files($directory, $recursive = FALSE)
+	{
+		$files = array();
+		foreach(Config::include_paths() as $path)
+		{
+			$dir = glob($path.$directory.'/*');
+
+			if ($recursive == TRUE)
+			{
+				foreach($dir as $k => $file)
+				{
+					if (is_dir($file))
+					{
+						$file = pathinfo($file, PATHINFO_BASENAME);
+						$dir[$file] = self::list_files($directory.'/'.$file, TRUE);
+						unset($dir[$k]);
+					}
+				}
+			}
+
+			$files = array_merge($dir, $files);
+		}
+
+		return $files;
+	}
+
+	/**
 	 * Fetch a i18n language item
 	 *
 	 * @access public
