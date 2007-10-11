@@ -94,7 +94,7 @@ class Session_Database implements Session_Driver {
 			// by the 'session.name' config item. This is optional, but preferred.
 			$this->db = new Database($this->group_name);
 		}
-		catch (Kohana_Exception $e)
+		catch (Kohana_Database_Exception $e)
 		{
 			// If there's no default group, we use the default database
 			$this->db = new Database();

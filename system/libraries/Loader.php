@@ -32,7 +32,7 @@ class Loader_Core {
 		}
 	}
 
-	public function library($name, $config = array())
+	public function library($name, $config = array(), $return = FALSE)
 	{
 		if (isset(Kohana::instance()->$name))
 			return FALSE;
@@ -44,22 +44,31 @@ class Loader_Core {
 		else
 		{
 			$class = ucfirst($name);
+			$class = new $class($config);
 
-			Kohana::instance()->$name = new $class($config);
+			if ($return == TRUE)
+			{
+				return $class;
+			}
+			else
+			{
+				Kohana::instance()->$name = $class;
+			}
 		}
 	}
 
 	public function database($group = 'default', $return = FALSE)
 	{
+		$db = new Database($group);
+
 		// Return the new database object
 		if ($return == TRUE)
 		{
-			return new Database($group);
+			return $db;
 		}
 		else
 		{
-			// Set the database object to Controller->db
-			Kohana::instance()->db = new Database($group);
+			Kohana::instance()->db = $db;
 		}
 	}
 
