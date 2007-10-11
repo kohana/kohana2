@@ -694,7 +694,7 @@ class Kohana {
 			// Exception class
 			$type = get_class($exception);
 
-			if ( ! headers_sent() AND method_exists('sendHeaders', $exception))
+			if ( ! headers_sent() AND method_exists($exception, 'sendHeaders'))
 			{
 				$exception->sendHeaders();
 			}
