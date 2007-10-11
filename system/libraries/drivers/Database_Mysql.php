@@ -317,20 +317,11 @@ class Database_Mysql implements Database_Driver {
 		$sql    = 'SHOW TABLES FROM `'.$this->db_config['connection']['database'].'`';
 		$result = $this->query($sql)->result(FALSE, MYSQL_ASSOC);
 
-		foreach($result as $row)
-		{
-			print_r($row);
-		}
-		die;
-
 		$retval = array();
 		foreach($result as $row)
 		{
-			print_r($row); die;
-			$retval[] = current((array) $row);
+			$retval[] = current($row);
 		}
-
-		print_r($retval); die;
 
 		return $retval;
 	}
@@ -510,9 +501,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 	public function valid()
 	{
-		$ret = $this->offsetExists($this->current_row);
-		print "looking for $this->current_row: $ret<br/>\n";
-		return $ret;
 		return $this->offsetExists($this->current_row);
 	}
 	// End Interface
