@@ -457,6 +457,7 @@ class Mysql_Result implements Database_Result, Iterator, Countable
 	*/
 	public function current()
 	{
+		echo 'current...<br />';
 		$fetch  = $this->fetch_type;
 		$return = ($this->fetch_type == 'mysql_fetch_array') ? MYSQL_ASSOC : $this->return_type;
 
@@ -468,18 +469,19 @@ class Mysql_Result implements Database_Result, Iterator, Countable
 	*/
 	public function next()
 	{
+		echo 'next...<br />';
 		if ($this->seekable(1))
-		{
-			mysql_data_seek($this->result, ++$this->current_row);
-		}
+			return mysql_data_seek($this->result, ++$this->current_row);
+		else
+			return FALSE;
 	}
 
 	public function prev()
 	{
 		if ($this->seekable(-1))
-		{
-			mysql_data_seek($this->result, --$this->current_row);
-		}
+			return mysql_data_seek($this->result, --$this->current_row);
+		else
+			return FALSE;
 	}
 
 	/**
@@ -495,7 +497,8 @@ class Mysql_Result implements Database_Result, Iterator, Countable
 	*/
 	public function valid()
 	{
-		return (($this->current_row + 1) > ($this->num_rows - 1));
+		echo 'valid...<br />';
+		return mysql_data_seek($this->result, ($this->current_row+1));
 	}
 
 	public function seekable($offset = 0)
@@ -518,6 +521,7 @@ class Mysql_Result implements Database_Result, Iterator, Countable
 	*/
 	public function rewind()
 	{
+		echo 'rewind...<br />';
 		return mysql_data_seek($this->result, ($this->current_row = 0));
 	}
 
