@@ -2,23 +2,23 @@
 /**
  * Kohana: The small, swift, and secure PHP5 framework
  *
- * @package          Kohana
- * @author           Kohana Team
- * @copyright        Copyright (c) 2007 Kohana Team
- * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/user_guide/kohana/license.html
- * @since            Version 1.0
- * @orig_package     CodeIgniter
- * @orig_author      Rick Ellis
- * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
- * @orig_license     http://www.codeigniter.com/user_guide/license.html
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
  * @filesource
+ * $Id$
  */
 
-// ------------------------------------------------------------------------
-
-/* $Id$ */
-
+/**
+ * Controller Class
+ *
+ * @category  Libraries
+ * @author    Kohana Team
+ * @link      http://kohanaphp.com/user_guide/en/general/controllers.html
+ */
 class Controller_Core extends Kohana {
 
 	public function __construct()
@@ -43,7 +43,7 @@ class Controller_Core extends Kohana {
 		// Buffering on
 		ob_start();
 
-		// Import the input variables to local namespace
+		// Import the view variables to local namespace
 		extract($kohana_input_data, EXTR_SKIP);
 
 		// Views are straight HTML pages with embedded PHP, so importing them

@@ -810,3 +810,12 @@ class Database_Core {
 	}
 
 } // End Database Class
+
+/**
+ * Kohana Database Exception
+ *
+ * @category  Exceptions
+ * @author    Kohana Team
+ * @link      http://kohanaphp.com/user_guide/en/general/exceptions.html
+ */
+class Kohana_Database_Exception extends Kohana_Exception {}

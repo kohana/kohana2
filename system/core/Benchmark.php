@@ -1,7 +1,27 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.');
+/**
+ * Kohana: The swift, small, and secure PHP5 framework
+ *
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
+ * @filesource
+ * $Id$
+ */
 
+/**
+ * Benchmark Class
+ *
+ * @category    Libraries
+ * @author      Kohana Team
+ * @link        http://kohanaphp.com/user_guide/en/general/benchmarks.html
+ */
 final class Benchmark {
 
+	// Benchmark timestamps
 	private static $marks;
 
 	/**
@@ -44,7 +64,7 @@ final class Benchmark {
 	 * @access  public
 	 * @param   string
 	 * @param   integer
-	 * @return  string
+	 * @return  flaot
 	 */
 	public static function get($name, $decimals = 4)
 	{
@@ -57,6 +77,7 @@ final class Benchmark {
 				self::stop($name);
 			}
 
+			// Properly reading a float requires using number_format or sprintf
 			$total = number_format(self::$marks[$name]['stop'] - self::$marks[$name]['start'], $decimals);
 		}
 
