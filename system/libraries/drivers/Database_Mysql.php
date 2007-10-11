@@ -328,9 +328,24 @@ class Database_Mysql implements Database_Driver {
 		return $retval;
 	}
 
-	function show_error()
+	public function show_error()
 	{
 		return mysql_error();
+	}
+	
+	public function field_data($table)
+	{
+		$query = mysql_query('SELECT * FROM ' . $this->escape_table($table));
+		$fields = mysql_num_fields($query);
+		$table = array();
+		for ($i=0; $i < $fields; $i++) 
+		{
+		    $table[$i]['type']  = mysql_field_type($query, $i);
+		    $table[$i]['name']  = mysql_field_name($query, $i);
+		    $table[$i]['len']   = mysql_field_len($query, $i);
+		    $table[$i]['flags'] = mysql_field_flags($query, $i);
+		}
+		return $table;
 	}
 } // End Database_Mysql Class
 

@@ -808,6 +808,11 @@ class Database_Core {
 
 		return str_replace('{%bind_marker%}', '?', $sql);
 	}
+	
+	public function field_data($table ='')
+	{
+		return $this->driver->field_data($table);
+	}
 
 } // End Database Class
 
