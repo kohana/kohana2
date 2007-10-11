@@ -424,7 +424,7 @@ class Mysql_Result implements Database_Result, Iterator
 	*/
 	public function next()
 	{
-		mysql_data_seek($this->link, ++$this->current_row);
+		return mysql_data_seek($this->link, ++$this->current_row);
 	}
 
 	/**
@@ -449,6 +449,6 @@ class Mysql_Result implements Database_Result, Iterator
 	public function rewind()
 	{
 		$this->current_row = 0;
-		mysql_data_seek($this->link, 0);
+		return mysql_data_seek($this->link, 0);
 	}
 } // End Mysql_Result Class
