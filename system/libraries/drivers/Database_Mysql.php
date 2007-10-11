@@ -434,7 +434,9 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 	public function num_rows()
 	{
-		exit(__CLASS__.' implements Countable, so that you can use <tt>count($result_object)</tt>.');
+		Log::add('debug', 'You should really be using "count($result)" instead of "$result->num_rows()". Fix your code!');
+
+		return $this->total_rows;
 	}
 	// End Interface
 
