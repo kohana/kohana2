@@ -358,7 +358,7 @@ class Validation_Core {
 		}
 	}
 
-	public function upload($data, $params = FLASE)
+	public function upload($data, $params = FALSE)
 	{
 		// By default, nothing is allowed
 		$allowed = FALSE;

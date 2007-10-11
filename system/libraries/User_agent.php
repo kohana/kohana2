@@ -177,7 +177,7 @@ class User_Agent_Core {
 	public function accept_lang($lang = 'en')
 	{
 		if (empty($lang) OR ! is_string($lang))
-			return FLASE;
+			return FALSE;
 
 		return (in_array(strtolower($lang), self::$languages));
 	}
