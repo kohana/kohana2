@@ -100,7 +100,3 @@ final class Benchmark {
 	}
 
 } // End Benchmark Class
-
-Benchmark::start('test');
-var_dump(Benchmark::get('test'));
-
