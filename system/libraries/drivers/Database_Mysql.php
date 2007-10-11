@@ -414,6 +414,10 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		{
 			$this->return_type = class_exists($type, FALSE) ? $type : 'stdClass';
 		}
+		else
+		{
+			$this->return_type = $type;
+		}
 
 		return $this;
 	}
@@ -434,7 +438,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 	public function num_rows()
 	{
-		Log::add('debug', 'You should really be using "count($result)" instead of "$result->num_rows()". Fix your code!');
+		Log::add('error', 'You should really be using "count($result)" instead of "$result->num_rows()". Fix your code!');
 
 		return $this->total_rows;
 	}
