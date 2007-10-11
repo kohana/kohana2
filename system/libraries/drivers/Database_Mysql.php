@@ -121,11 +121,10 @@ class Database_Mysql implements Database_Driver {
 		}
 
 		$wheres = array();
-		$count = 1;
 		foreach ($key as $k => $v)
 		{
 
-			$prefix = (($num_wheres > 0) or ($count++ > 1)) ? $type : '';
+			$prefix = ($num_wheres++ == 0) ? '' : $type;
 
 			if ($quote === -1)
 			{
@@ -176,7 +175,7 @@ class Database_Mysql implements Database_Driver {
 		$likes = array();
 		foreach ($field as $k => $v)
 		{
-			$prefix = (count($num_likes) == 0) ? '' : $type;
+			$prefix = ($num_likes++ == 0) ? '' : $type;
 
 			$v = (substr($v, 0, 1) == '%' OR substr($v, (strlen($v)-1), 1) == '%') ? $this->escape_str($v) : '%'.$this->escape_str($v).'%';
 
