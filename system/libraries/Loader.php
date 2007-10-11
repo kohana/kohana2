@@ -96,10 +96,16 @@ class Loader_Core {
 			return FALSE;
 
 		// Load the model
-		Kohana::instance()->$alias = new $class();
+		$model = new $class();
 
-		// Load Database into the DB
-		Kohana::instance()->$alias->db = (isset(Kohana::instance()->db)) ? Kohana::instance()->db : new Database('default');
+		if ($alias === TRUE)
+		{
+			return $model;
+		}
+		else
+		{
+			Kohana::instance()->$alias = $model;
+		}
 	}
 
 	public function view($name, $data = array())
