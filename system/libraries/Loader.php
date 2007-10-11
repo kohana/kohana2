@@ -36,13 +36,21 @@ class Loader_Core {
 	{
 		if (isset(Kohana::instance()->$name))
 			return FALSE;
+
 		if ($name == 'database')
 		{
 			$this->database($config);
 		}
 		else
 		{
-			Kohana::instance()->$name = Kohana::load_class(ucfirst($name), $config);
+			if (is_array(Config::item($name)))
+			{
+				$config = array_merge(Config::item($name), $config);
+			}
+
+			$class  = ucfirst($name);
+
+			Kohana::instance()->$name = new $class($config);
 		}
 	}
 
@@ -82,12 +90,13 @@ class Loader_Core {
 	{
 		// The alias is used for Controller->alias
 		$alias = ($alias == FALSE) ? $name : $alias;
+		$class = ucfirst($name).'_Model';
 
 		if (isset(Kohana::instance()->$alias))
 			return FALSE;
 
 		// Load the model
-		Kohana::instance()->$alias = Kohana::load_class(ucfirst($name).'_Model');
+		Kohana::instance()->$alias = new $class();
 
 		// Load Database into the DB
 		Kohana::instance()->$alias->db = (isset(Kohana::instance()->db)) ? Kohana::instance()->db : new Database('default');
