@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php //defined('SYSPATH') or die('No direct script access.');
 /**
  * Kohana: The swift, small, and secure PHP5 framework
  *
@@ -68,20 +68,16 @@ final class Benchmark {
 	 */
 	public static function get($name, $decimals = 4)
 	{
-		$total = FALSE;
+		if ( ! isset(self::$marks[$name]))
+			return FALSE;
 
-		if (isset(self::$marks[$name]))
+		if (self::$marks[$name]['stop'] === FALSE)
 		{
-			if (self::$marks[$name]['stop'] === FALSE)
-			{
-				self::stop($name);
-			}
-
-			// Properly reading a float requires using number_format or sprintf
-			$total = number_format(self::$marks[$name]['stop'] - self::$marks[$name]['start'], $decimals);
+			self::stop($name);
 		}
 
-		return $total;
+		// Properly reading a float requires using number_format or sprintf
+		return (float) number_format(self::$marks[$name]['stop'] - self::$marks[$name]['start'], $decimals);
 	}
 
 	/**
@@ -104,3 +100,7 @@ final class Benchmark {
 	}
 
 } // End Benchmark Class
+
+Benchmark::start('test');
+var_dump(Benchmark::get('test'));
+
