@@ -57,7 +57,7 @@ class Database_Mysql implements Database_Driver {
 		// Build the connection info
 		$host = (isset($host)) ? $host : $socket;
 		$port = (isset($port)) ? ':'.$port : '';
-		
+
 		// Make the connection and select the database
 		if (($this->link = $connect($host.$port, $user, $pass)) AND mysql_select_db($database, $this->link))
 		{
@@ -182,7 +182,6 @@ class Database_Mysql implements Database_Driver {
 
 			$likes[] = $prefix." ".$k." LIKE '".$v . "'";
 		}
-		//echo '<pre>'.print_r($likes, true);die;
 		return $likes;
 	}
 
@@ -304,7 +303,7 @@ class Database_Mysql implements Database_Driver {
 
 		return mysql_real_escape_string($str, $this->link);
 	}
-	
+
 	/**
  	* List table query
  	*
@@ -312,20 +311,20 @@ class Database_Mysql implements Database_Driver {
  	*
  	* @access      private
 	* @return      string
- 	*/   
+ 	*/
 	public function list_tables()
 	{
 		$sql = 'SHOW TABLES FROM `'.$this->db_config['connection']['database'].'`';
 		$query = $this->query($sql);
 		$query = $query->result();
-		
+
 		$retval = array();
 		foreach($query as $row)
 		{
 			$column = 'Tables_in_'.$this->db_config['connection']['database'];
 			$retval[] = $row->$column;
 		}
-		
+
 		return $retval;
 	}
 
@@ -333,13 +332,13 @@ class Database_Mysql implements Database_Driver {
 	{
 		return mysql_error();
 	}
-	
+
 	public function field_data($table)
 	{
 		$query = mysql_query('SELECT * FROM ' . $this->escape_table($table));
 		$fields = mysql_num_fields($query);
 		$table = array();
-		for ($i=0; $i < $fields; $i++) 
+		for ($i=0; $i < $fields; $i++)
 		{
 		    $table[$i]['type']  = mysql_field_type($query, $i);
 		    $table[$i]['name']  = mysql_field_name($query, $i);
@@ -386,18 +385,29 @@ class Mysql_Result implements Database_Result, Iterator
 		}
 	}
 
-	public function process($object = TRUE, $type = MYSQL_ASSOC)
+	public function process($object, $type)
 	{
 		$this->fetch_type = (isset($object)) ? $object : $this->fetch_type;
 		$this->return_type = (isset($type)) ? $type : $this->return_type;
 	}
-	
-	public function result($object = TRUE, $type = MYSQL_ASSOC)
+
+	public function result($object = NULL, $type = MYSQL_ASSOC)
 	{
-		$this->object = $object;
-		
-		$fetch = ($object == TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
-		$type  = ($object == TRUE) ? 'stdClass' : $type;
+		switch($object)
+		{
+			case NULL:  $fetch = $this->fetch_type;    break;
+			case TRUE:  $fetch = 'mysql_fetch_object'; break;
+			default:    $fetch = 'mysql_fetch_array';  break;
+		}
+
+		// This check has to be outside the previous switch(), because we do not
+		// know the state of $fetch when $object = NULL
+		// NOTE: The class set by $type must be defined before fetching the result,
+		// autoloading is disabled to save a lot of stupid overhead.
+		if ($fetch == 'mysql_fetch_object')
+		{
+			$type = class_exists($type, FALSE) ? $type : 'stdClass';
+		}
 
 		while ($row = $fetch($this->result, $type))
 		{
@@ -467,4 +477,5 @@ class Mysql_Result implements Database_Result, Iterator
 		$this->current_row = 0;
 		return mysql_data_seek($this->link, 0);
 	}
+
 } // End Mysql_Result Class

@@ -173,7 +173,7 @@ interface Database_Result {
 	 *
 	 * @access  public
 	 */
-	public function result($object, $type);
+	public function result($object = TRUE, $type = FALSE);
 
 	/**
 	 * Get the number of rows in a SELECT query or the number of affected rows in UPDATE
