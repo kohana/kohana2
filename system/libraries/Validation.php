@@ -388,10 +388,9 @@ class Validation_Core {
 
 		// Validate the uploaded file
 		if ( ! isset($data['tmp_name']) OR ! is_uploaded_file($data['tmp_name']))
-		{
 			return FALSE;
-		}
-		elseif (is_array($data['name']))
+
+		if (is_array($data['name']))
 		{
 			// Handle an array of inputs
 			$files = $data;
@@ -431,7 +430,7 @@ class Validation_Core {
 					// Maximum image size, eg: 200x100
 					list($maxsize['width'], $maxsize['height']) = explode('x', $param);
 				}
-				elseif (preg_match('/[0-9].+[BKMG]/i', $param))
+				elseif (preg_match('/[0-9]+[BKMG]/i', $param))
 				{
 					// Maximum file size, eg: 1M
 					$maxsize['human'] = strtoupper($param);
@@ -668,10 +667,8 @@ class Validation_Core {
 
 		if (ctype_digit($val))
 		{
-			if (strlen($str) >= $val)
-			{
+			if (utf8::strlen($str) >= $val)
 				return TRUE;
-			}
 		}
 
 		$this->add_error('min_length', $this->current_field, (int) $val);
@@ -692,10 +689,8 @@ class Validation_Core {
 
 		if (ctype_digit($val))
 		{
-			if (strlen($str) <= $val)
-			{
+			if (utf8::strlen($str) <= $val)
 				return TRUE;
-			}
 		}
 
 		$this->add_error('max_length', $this->current_field, (int) $val);
@@ -716,7 +711,7 @@ class Validation_Core {
 
 		if (ctype_digit($val))
 		{
-			if (strlen($str) == $val)
+			if (utf8::strlen($str) == $val)
 				return TRUE;
 		}
 
@@ -808,6 +803,22 @@ class Validation_Core {
 		$this->add_error('valid_type', $this->current_field, 'alphabetical');
 		return FALSE;
 	}
+	
+	/**
+	 * Alpha (UTF-8 compatible)
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	boolean
+	 */
+	public function utf8_alpha($str)
+	{
+		if (preg_match('/^\pL+$/uD', (string) $str))
+			return TRUE;
+
+		$this->add_error('valid_type', $this->current_field, 'alphabetical');
+		return FALSE;
+	}
 
 	/**
 	 * Alpha-numeric
@@ -835,7 +846,7 @@ class Validation_Core {
 	public function alpha_dash($str)
 	{
 		/**
-		 * @todo Make this accept UTF-8 characters, or make a utf8_alpha function
+		 * @todo Create utf8_alpha_numeric, utf8_alpha_dash, utf8_digit?
 		 */
 		if (preg_match('/^[-a-z0-9_]+$/iD', $str))
 			return TRUE;
