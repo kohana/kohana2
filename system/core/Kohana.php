@@ -20,6 +20,9 @@ defined('E_KOHANA') or define('E_KOHANA', 33042);
 // Define 404 error constant
 defined('E_PAGE_NOT_FOUND') or define('E_PAGE_NOT_FOUND', 33043);
 
+// Define database error constant
+defined('E_DATABASE_ERROR') or define('E_DATABASE_ERROR', 33044);
+
 // Define extra E_RECOVERABLE_ERROR for PHP < 5.2
 defined('E_RECOVERABLE_ERROR') or define('E_RECOVERABLE_ERROR', 4096);
 
@@ -982,7 +985,7 @@ class Kohana {
 class Kohana_Exception extends Exception {
 
 	// Template file
-	protected $template = 'kohana_php_error';
+	protected $template = 'kohana_error_page';
 
 	// Message
 	protected $message = 'Unknown Exception: ';

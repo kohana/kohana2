@@ -102,16 +102,16 @@ class Database_Core {
 
 		// Merge the default config with the passed config
 		$this->config = array_merge($this->config, $config);
-		
+
 		// Parse the DSN into an array and validate it's length
 		if (count($connection = @parse_url($this->config['connection'])) < 5)
 			throw new Kohana_Exception('database.invalid_dsn', $this->config['connection']);
-		
+
 		//checks for host() or unix(), if doesn't find any proceeds
 		if (stripos($connection['host'], 'host(') !== FALSE)
 		{
 			$connection['host'] = str_ireplace('host(', '', $connection['host']);
-			if (stripos($connection['host'], ')') !== FALSE) 
+			if (stripos($connection['host'], ')') !== FALSE)
 			{
 				$connection['host'] = str_ireplace(')', '', $connection['host']);
 			}
@@ -119,13 +119,13 @@ class Database_Core {
 			{
 				$path_temp = explode(')', $connection['path'], 2);
 				$connection['host'] .= $path_temp[0];
-				$connection['path'] = $path_temp[1];		
+				$connection['path'] = $path_temp[1];
 			}
 		}
 		elseif (stripos($connection['host'], 'unix(') !== FALSE)
 		{
 			$connection['socket'] = str_ireplace('unix(', '', $connection['host']);
-			if (stripos($connection['socket'], ')') !== FALSE) 
+			if (stripos($connection['socket'], ')') !== FALSE)
 			{
 				$connection['socket'] = str_ireplace(')', '', $connection['socket']);
 			}
@@ -133,19 +133,19 @@ class Database_Core {
 			{
 				$path_temp = explode(')', $connection['path'], 2);
 				$connection['socket'] .= $path_temp[0];
-				$connection['path'] = $path_temp[1];		
+				$connection['path'] = $path_temp[1];
 			}
 			unset($connection['host']);
 			unset($connection['port']); //it's a socket!
 		}
-		
+
 		// Turn the DSN into local variables
 		$db = $connection;
 		$db['type'] = $db['scheme'];
 		unset($db['scheme']);
 		$db['database'] = $db['path'];
 		unset($db['path']);
-		
+
 
 		// Reset the connection array to the database config
 		$this->config['connection'] = $db;
@@ -199,9 +199,9 @@ class Database_Core {
 	public function query($sql = '')
 	{
 		if ($sql == '') return FALSE;
-		
+
 		if ( ! $this->connected) $this->connect();
-		
+
 		if (func_num_args() > 1) //if we have more than one argument ($sql)
 		{
 			$argv = func_get_args();
@@ -773,7 +773,7 @@ class Database_Core {
 
 	/**
 	* Determine if a particular table exists
-	* 
+	*
 	* @access      public
 	* @return      boolean
 	*/
@@ -804,13 +804,13 @@ class Database_Core {
 			$val = str_replace('?', '{%bind_marker%}', $val);
 			// Replace possible regex vars like $0, $1 etc
 			$val = str_replace('$', '\$', $val);
-			
+
 			$sql = preg_replace('/\?/', $val, $sql, 1);
 		}
 
 		return str_replace('{%bind_marker%}', '?', $sql);
 	}
-	
+
 	public function field_data($table ='')
 	{
 		return $this->driver->field_data($table);
@@ -825,4 +825,8 @@ class Database_Core {
  * @author    Kohana Team
  * @link      http://kohanaphp.com/user_guide/en/general/exceptions.html
  */
-class Kohana_Database_Exception extends Kohana_Exception {}
+class Kohana_Database_Exception extends Kohana_Exception {
+
+	protected $code = E_DATABASE_ERROR;
+
+}
