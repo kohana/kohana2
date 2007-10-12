@@ -110,7 +110,29 @@ class Database_Mysql implements Database_Driver {
 
 	public function escape_column($column)
 	{
-		return '`'.$column.'`';
+		/* This matches any modifiers we support to SELECT. */
+		if (preg_match('/all|distinct|distinctrow|high_priority|sql_calc_found_rows/', strtolower($column)))
+		{
+			$parts = explode(' ', $column);
+			$column = '';
+			for ($i = 0; $i < count($parts); $i++)
+			{
+				// The column is always last
+				if ($i == (count($parts)-1))
+				{
+					$column .= '`'.$parts[$i].'`';
+				}
+				else // otherwise, it's a modifier
+				{
+					$column .= $parts[$i].' ';
+				}
+			}
+			return $column;
+		}
+		else
+		{
+			return '`'.$column.'`';
+		}		
 	}
 
 	public function where($key, $value, $type, $num_wheres, $quote)
