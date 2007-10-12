@@ -992,8 +992,8 @@ class Kohana_Exception extends Exception {
 
 	// Error code, filename, line number
 	protected $code = E_KOHANA;
-	protected $file = '';
-	protected $line = 0;
+	protected $file = FALSE;
+	protected $line = FALSE;
 
 	/**
 	 * Constructor
