@@ -864,14 +864,25 @@ class Kohana {
 	 * @param  string
 	 * @return array
 	 */
-	public static function list_files($directory, $recursive = FALSE)
+	public static function list_files($directory, $recursive = FALSE, $path = FALSE)
 	{
 		$files = array();
 
-		foreach(Config::include_paths() as $path)
+		if ($path === FALSE)
 		{
-			foreach(glob($path.$directory.'/*') as $index => $item)
+			foreach(Config::include_paths() as $path)
 			{
+				$files = array_merge($files, self::list_files($directory, $recursive, $path.$directory));
+			}
+		}
+		else
+		{
+			$path = rtrim($path, '/').'/';
+
+			foreach(glob($path.'*') as $index => $item)
+			{
+				$files[] = $item;
+
 				// Handle recursion
 				if (is_dir($item) AND $recursive == TRUE)
 				{
@@ -879,11 +890,7 @@ class Kohana {
 					$item = pathinfo($item, PATHINFO_BASENAME);
 
 					// Append sub-directory search
-					$files += self::list_files($directory.'/'.$item, TRUE);
-				}
-				else
-				{
-					$files[] = $item;
+					$files = array_merge($files, self::list_files($directory, TRUE, $path.$item));
 				}
 			}
 		}
