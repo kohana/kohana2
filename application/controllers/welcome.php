@@ -11,6 +11,28 @@ class Welcome_Controller extends Controller {
 		}
 	}
 
+	function rss_example()
+	{
+		include Kohana::find_file('vendor', 'Markdown');
+
+		$feed = new DOMDocument();
+		$feed->load(APPPATH.'cache/rss.xml');
+
+		foreach($feed->getElementsByTagName('item') as $index => $node)
+		{
+			if ($index > 4) break;
+
+			$title = $node->getElementsByTagName('title')->item(0)->nodeValue;
+			$desc  = $node->getElementsByTagName('description')->item(0)->nodeValue;
+			$link  = $node->getElementsByTagName('link')->item(0)->nodeValue;
+			$date  = $node->getElementsByTagName('pubDate')->item(0)->nodeValue;
+
+			print Markdown("### [{$title}]({$link})\n$desc\n");
+		}
+
+		print Kohana::lang('core.stats_footer');
+	}
+
 	function session_example()
 	{
 		$this->load->database();
@@ -89,7 +111,7 @@ class Welcome_Controller extends Controller {
 		if ($this->db->table_exists($table))
 		{
 			echo '<p>YES! Lets do some work =)</p>';
-			
+
 			$query = $this->db->select('title')->from($table)->get();
 			echo '<h3>Iterate through the result:</h3>';
 			foreach($query as $item)
@@ -108,7 +130,7 @@ class Welcome_Controller extends Controller {
 			{
 				echo '<pre>'.print_r($item, true).'</pre>';
 			}
-			
+
 			echo '<h3>Try Query Binding with arrays (returns both associative and numeric because I pass MYSQL_BOTH to result():</h3>';
 			$sql = 'SELECT * FROM '.$table.' WHERE id = ?';
 			$query = $this->db->query($sql, array(1));
@@ -118,7 +140,7 @@ class Welcome_Controller extends Controller {
 			{
 				echo '<pre>'.print_r($item, true).'</pre>';
 			}
-			
+
 			echo '<h3>Look, we can also manually advance the result pointer!</h3>';
 			$query = $this->db->select('title')->from($table)->get();
 			echo 'First:<pre>'.print_r($query->current(), true).'</pre><br />';
