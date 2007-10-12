@@ -82,7 +82,17 @@ class Validation_Core {
 	{
 		if ( ! isset($this->$key))
 		{
-			if (substr($key, -6) === '_error')
+			if ($key === 'error_string')
+			{
+				// Complete error message string
+				$messages = FALSE;
+				foreach(array_keys($this->errors) as $field)
+				{
+					$messages .= $this->__get($field.'_error');
+				}
+				return $messages;
+			}
+			elseif (substr($key, -6) === '_error')
 			{
 				// Get the field name
 				$field = substr($key, 0, -6);
@@ -321,6 +331,10 @@ class Validation_Core {
 						throw new Kohana_Exception('validation.invalid_rule', $callback);
 
 					$result = Kohana::instance()->$callback($this->data[$field], $params);
+				}
+				elseif ($rule == 'matches')
+				{
+					$result = $this->$rule($field, $params);
 				}
 				elseif (method_exists($this, $rule))
 				{
@@ -624,12 +638,20 @@ class Validation_Core {
 	 * @param	string
 	 * @return	boolean
 	 */
-	public function matches($str, $field)
+	public function matches($field, $match)
 	{
-		if ( ! isset($this->data[$field]))
-			return FALSE;
+		$match = trim(current($match));
 
-		return (bool) ($str === $this->data[$field]);
+		if ((isset($this->data[$field]) AND $this->data[$field] === $this->data[$match])
+		OR ( ! isset($this->data[$field]) AND ! isset($this->data[$match])))
+		{
+			return TRUE;
+		}
+		else
+		{
+			$this->add_error('matches', $field, $match);
+			return FALSE;
+		}
 	}
 
 	/**
@@ -642,10 +664,18 @@ class Validation_Core {
 	 */
 	public function min_length($str, $val)
 	{
-		if ( ! is_numeric($val))
-			return FALSE;
+		$val = is_array($val) ? (string) current($val) : FALSE;
 
-		return (bool) (strlen($str) > $val);
+		if (ctype_digit($val))
+		{
+			if (strlen($str) >= $val)
+			{
+				return TRUE;
+			}
+		}
+
+		$this->add_error('min_length', $this->current_field, (int) $val);
+		return FALSE;
 	}
 
 	/**
@@ -658,10 +688,18 @@ class Validation_Core {
 	 */
 	public function max_length($str, $val)
 	{
-		if ( ! is_numeric($val))
-			return FALSE;
+		$val = is_array($val) ? (string) current($val) : FALSE;
 
-		return (bool) (strlen($str) < $val);
+		if (ctype_digit($val))
+		{
+			if (strlen($str) <= $val)
+			{
+				return TRUE;
+			}
+		}
+
+		$this->add_error('max_length', $this->current_field, (int) $val);
+		return FALSE;
 	}
 
 	/**
@@ -674,10 +712,16 @@ class Validation_Core {
 	 */
 	public function exact_length($str, $val)
 	{
-		if ( ! is_numeric($val))
-			return FALSE;
+		$val = is_array($val) ? (string) current($val) : FALSE;
 
-		return (bool) (strlen($str) == $val);
+		if (ctype_digit($val))
+		{
+			if (strlen($str) == $val)
+				return TRUE;
+		}
+
+		$this->add_error('exact_length', $this->current_field, (int) $val);
+		return FALSE;
 	}
 
 	/**
@@ -689,7 +733,11 @@ class Validation_Core {
 	 */
 	public function valid_email($email)
 	{
-		return (bool) preg_match('/^(?!\.)[-+_a-z0-9.]++(?<!\.)@(?![-.])[-a-z0-9.]+(?<!\.)\.[a-z]{2,6}$/iD', $email);
+		if (preg_match('/^(?!\.)[-+_a-z0-9.]++(?<!\.)@(?![-.])[-a-z0-9.]+(?<!\.)\.[a-z]{2,6}$/iD', $email))
+			return TRUE;
+
+		$this->add_error('valid_email', $this->current_field);
+		return FALSE;
 	}
 
 	/**
@@ -722,7 +770,11 @@ class Validation_Core {
 		$local_part     = "$word(\\x2e$word)*";
 		$addr_spec      = "$local_part\\x40$domain";
 
-		return (bool) preg_match('/^'.$addr_spec.'$/', $str);
+		if (preg_match('/^'.$addr_spec.'$/', $str))
+			return TRUE;
+
+		$this->add_error('valid_email', $this->current_field);
+		return FALSE;
 	}
 
 	/**
@@ -734,7 +786,11 @@ class Validation_Core {
 	 */
 	public function valid_ip($ip)
 	{
-		return Kohana::instance()->input->valid_ip($ip);
+		if (Kohana::instance()->input->valid_ip($ip))
+			return TRUE;
+
+		$this->add_error('valid_ip', $this->current_field);
+		return FALSE;
 	}
 
 	/**
@@ -746,7 +802,11 @@ class Validation_Core {
 	 */
 	public function alpha($str)
 	{
-		return ctype_alpha($str);
+		if (ctype_alpha((string) $str))
+			return TRUE;
+
+		$this->add_error('valid_type', $this->current_field, 'alphabetical');
+		return FALSE;
 	}
 
 	/**
@@ -758,7 +818,11 @@ class Validation_Core {
 	 */
 	public function alpha_numeric($str)
 	{
-		return ctype_alnum($str);
+		if (ctype_alnum((string) $str))
+			return TRUE;
+
+		$this->add_error('valid_type', $this->current_field, 'alphabetical');
+		return FALSE;
 	}
 
 	/**
@@ -770,7 +834,14 @@ class Validation_Core {
 	 */
 	public function alpha_dash($str)
 	{
-		return (bool) preg_match('/^[-a-z0-9_]+$/iD', $str);
+		/**
+		 * @todo Make this accept UTF-8 characters, or make a utf8_alpha function
+		 */
+		if (preg_match('/^[-a-z0-9_]+$/iD', $str))
+			return TRUE;
+
+		$this->add_error('valid_type', $this->current_field, 'alphabetical, dash, and underscore');
+		return FALSE;
 	}
 
 	/**
@@ -782,7 +853,11 @@ class Validation_Core {
 	 */
 	public function digit($str)
 	{
-		return ctype_digit($str);
+		if (ctype_digit((string) $str))
+			return TRUE;
+
+		$this->add_error('valid_type', $this->current_field, 'digit');
+		return FALSE;
 	}
 
 	/**
@@ -794,73 +869,11 @@ class Validation_Core {
 	 */
 	public function numeric($str)
 	{
-		if ( ! is_numeric($str))
-		    return FALSE;
+		if (is_numeric($str) AND preg_match('/^[-0-9.]+$/', $str))
+		    return TRUE;
 
-		if ( ! preg_match('/^[-0-9.]+$/', $str))
-		    return FALSE;
-
-		return TRUE;
-	}
-
-	/**
-	 * Set Select
-	 *
-	 * Enables pull-down lists to be set to the value the user
-	 * selected in the event of an error
-	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string
-	 * @return	string
-	 */
-	public function set_select($field = '', $value = '')
-	{
-		if ($field == '' OR $value == '' OR  ! isset($this->data[$field]))
-			return '';
-
-		if ($this->data[$field] == $value)
-			return ' selected="selected"';
-	}
-
-	/**
-	 * Set Radio
-	 *
-	 * Enables radio buttons to be set to the value the user
-	 * selected in the event of an error
-	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string
-	 * @return	string
-	 */
-	public function set_radio($field = '', $value = '')
-	{
-		if ($field == '' OR $value == '' OR  ! isset($this->data[$field]))
-			return '';
-
-		if ($this->data[$field] == $value)
-			return ' checked="checked"';
-	}
-
-	/**
-	 * Set Checkbox
-	 *
-	 * Enables checkboxes to be set to the value the user
-	 * selected in the event of an error
-	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string
-	 * @return	string
-	 */
-	public function set_checkbox($field = '', $value = '')
-	{
-		if ($field == '' OR $value == '' OR  ! isset($this->data[$field]))
-			return '';
-
-		if ($this->data[$field] == $value)
-			return ' checked="checked"';
+		$this->add_error('valid_type', $this->current_field, 'numeric');
+		return FALSE;
 	}
 
 	/**
