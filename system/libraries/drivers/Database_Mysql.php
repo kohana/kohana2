@@ -383,7 +383,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		{
 			if ($result == FALSE)
 			{
-				die($sql);
 				throw new Kohana_Database_Exception('database.error', mysql_error().' - '.$sql);
 			}
 			else // Its an DELETE, INSERT, REPLACE, or UPDATE query
