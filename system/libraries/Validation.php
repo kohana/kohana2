@@ -506,7 +506,7 @@ class Validation_Core {
 		// in the upload data, it can easily be faked. Instead, we use the
 		// server filesystem functions (if possible) to determine the MIME type.
 
-		if (preg_match('/jpe?g|png|[gt]if/', implode(' ', $allowed)))
+		if (preg_match('/jpe?g|png|[gt]if|bmp/', implode(' ', $allowed)))
 		{
 			// Use getimagesize() to find the mime type on images
 			$mime = @getimagesize($data['tmp_name']);
