@@ -111,7 +111,7 @@ class Database_Mysql implements Database_Driver {
 	public function escape_column($column)
 	{
 		// This matches any modifiers we support to SELECT.
-		if ( ! preg_match('/\b(?:all|distinct(?:row)?|high_priority|sql_calc_found_rows)\s/', strtolower($column)))
+		if ( ! preg_match('/\b(?:all|distinct(?:row)?|high_priority|sql_calc_found_rows)\s/i', $column))
 			return '`'.$column.'`';
 		
 		$parts = explode(' ', $column);
