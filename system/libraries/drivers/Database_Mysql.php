@@ -405,8 +405,8 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	{
 		$this->fetch_type = (bool) $object ? 'mysql_fetch_object' : 'mysql_fetch_array';
 
-		// This check has to be outside the previous switch(), because we do not
-		// know the state of $fetch when $object = NULL
+		// This check has to be outside the previous statement, because we do not
+		// know the state of fetch_type when $object = NULL
 		// NOTE: The class set by $type must be defined before fetching the result,
 		// autoloading is disabled to save a lot of stupid overhead.
 		if ($this->fetch_type == 'mysql_fetch_object')
@@ -422,6 +422,33 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	}
 	// End Interface
 
+	public function result_array($object = TRUE, $type = MYSQL_ASSOC)
+	{
+		$rows = array();
+		
+		switch($object)
+		{
+			case NULL:  $fetch = $this->fetch_type;    break;
+			case TRUE:  $fetch = 'mysql_fetch_object'; break;
+			default:    $fetch = 'mysql_fetch_array';  break;
+		}
+
+		// This check has to be outside the previous switch(), because we do not
+		// know the state of $fetch when $object = NULL
+		// NOTE: The class set by $type must be defined before fetching the result,
+		// autoloading is disabled to save a lot of stupid overhead.
+		if ($fetch == 'mysql_fetch_object')
+		{
+			$type = class_exists($type, FALSE) ? $type : 'stdClass';
+		}
+		
+		while ($row = $fetch($this->result, $type))
+		{
+			$rows[] = $row;
+		}
+		return $rows;
+	}
+	
 	// Interface: Database_Result
 	public function insert_id()
 	{
