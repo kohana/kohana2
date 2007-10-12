@@ -247,11 +247,6 @@ class Database_Mysql implements Database_Driver {
 		{
 			$sql .= "\nORDER BY ";
 			$sql .= implode(', ', $database['orderby']);
-
-			if ($database['order'] !== FALSE)
-			{
-				$sql .= ($database['order'] == 'desc') ? ' DESC' : ' ASC';
-			}
 		}
 
 		if (is_numeric($database['limit']))
@@ -388,6 +383,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		{
 			if ($result == FALSE)
 			{
+				die($sql);
 				throw new Kohana_Database_Exception('database.error', mysql_error().' - '.$sql);
 			}
 			else // Its an DELETE, INSERT, REPLACE, or UPDATE query
