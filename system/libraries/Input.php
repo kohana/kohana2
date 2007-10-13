@@ -209,7 +209,7 @@ class Input_Core {
 	 */
 	protected function clean_input_keys($str)
 	{
-		if ( ! preg_match('#^[\pL0-9:_/-]+$#uiD', $str))
+		if ( ! preg_match('#^[\pL0-9:_/-]+$#uD', $str))
 		{
 			exit('Disallowed key characters in global data.');
 		}

@@ -58,17 +58,6 @@ if (extension_loaded('mbstring') AND (ini_get('mbstring.func_overload') & MB_OVE
 }
 
 /**
- * @todo  move this out of this file and into Kohana or Bootstrap so that this file is re-usable
- */
-setlocale(LC_ALL, Config::item('core.locale').'UTF-8');
-
-/**
- * Send default text/html UTF-8 header. Can be overwritten.
- * @todo  move this out of this file and into Kohana or Bootstrap so that this file is re-usable
- */
-header('Content-type: text/html; charset=UTF-8');
-
-/**
  * Set SERVER_UTF8 boolean:
  * - TRUE  (use mb_* replacement functions where possible)
  * - FALSE (use non-native replacement functions)

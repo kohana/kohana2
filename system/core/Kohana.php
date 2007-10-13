@@ -436,6 +436,15 @@ class Kohana {
 
 		// Set execption handler
 		set_exception_handler(array('Kohana', 'exception_handler'));
+		
+		// Kill magic_quotes_runtime. Input library takes care of magic_quotes_gpc.
+		set_magic_quotes_runtime(0);
+		
+		// Send default text/html UTF-8 header
+		header('Content-type: text/html; charset=UTF-8');
+		
+		// Set locale information
+		setlocale(LC_ALL, Config::item('core.locale').'UTF-8');
 
 		if (function_exists('date_default_timezone_set'))
 		{
