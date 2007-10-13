@@ -205,6 +205,11 @@ class Database_Mysql implements Database_Driver {
 
 	public function insert($table, $keys, $values)
 	{
+		// Escape the column names
+		foreach ($keys as $key => $value)
+		{
+			$keys[$key] = $this->escape_column($value);
+		}
 		return 'INSERT INTO '.$this->escape_table($table).' ('.implode(', ', $keys).') VALUES ('.implode(', ', $values).')';
 	}
 
