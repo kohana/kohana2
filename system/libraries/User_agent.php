@@ -179,7 +179,7 @@ class User_Agent_Core {
 		if (empty($lang) OR ! is_string($lang))
 			return FALSE;
 
-		return (in_array(strtolower($lang), self::$languages));
+		return in_array(strtolower($lang), self::$languages);
 	}
 
 	/**
@@ -193,7 +193,7 @@ class User_Agent_Core {
 		if (empty($charset) OR ! is_string($charset))
 			return FALSE;
 
-		return (in_array(strtolower($charset), $this->charsets()));
+		return in_array(strtolower($charset), $this->charsets());
 	}
 
 } // End User_Agent Class

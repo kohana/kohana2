@@ -12,6 +12,8 @@
  * @since      Version 2.0
  * @filesource
  */
+
+// Include a utf-8 layer
 require SYSPATH.'core/utf8'.EXT;
 
 // Define Kohana error constant

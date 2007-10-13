@@ -1,6 +1,6 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
- * PHP UTF-8 Support
+ * Kohana UTF-8 Support
  *
  * A port of phputf8 to a unified file/class. This single file will check PHP
  * to ensure that UTF-8 support is available and normalize global variables to
@@ -11,14 +11,11 @@
  * phputf8, this library is released under the LGPL to prevent license violations.
  *
  * @author           Kohana Team
- * @copyright        Copyright (c) 2007 Kohana Framework Team
+ * @copyright        Copyright (c) 2007 Kohana Team
  * @link             http://kohanaphp.com
  * @link             http://phputf8.sourceforge.net
- * @license          http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
  * @since            Version 1.2
  */
-
-// ------------------------------------------------------------------------
 
 /**
  * Check whether the server supports the UTF-8 encoding. Conditions:
@@ -26,6 +23,7 @@
  * - The iconv extension needs to be loaded.
  * - The mbstring extension is highly recommended but must not be overloading string functions.
  */
+
 if (preg_match('/^.$/u', 'ñ') !== 1)
 {
 	trigger_error
@@ -36,6 +34,7 @@ if (preg_match('/^.$/u', 'ñ') !== 1)
 		E_USER_ERROR
 	);
 }
+
 if ( ! extension_loaded('iconv'))
 {
 	trigger_error
@@ -46,6 +45,7 @@ if ( ! extension_loaded('iconv'))
 		E_USER_ERROR
 	);
 }
+
 if (extension_loaded('mbstring') AND (ini_get('mbstring.func_overload') & MB_OVERLOAD_STRING))
 {
 	trigger_error
@@ -72,16 +72,16 @@ else
 	define('SERVER_UTF8', FALSE);
 }
 
-/*
+/**
  * Convert all global variables to UTF-8.
  */
 $_GET    = utf8::clean($_GET);
 $_POST   = utf8::clean($_POST);
 $_COOKIE = utf8::clean($_COOKIE);
 $_SERVER = utf8::clean($_SERVER);
-// Convert command line arguments
 if (PHP_SAPI == 'cli')
 {
+	// Convert command line arguments
 	$_SERVER['argv'] = utf8::clean($_SERVER['argv']);
 }
 
@@ -114,8 +114,8 @@ final class utf8 {
 		}
 		elseif (is_string($str) AND $str != '')
 		{
-			// iconv is somewhat expensive, so don't do it unless we need to
-			if ( ! self::is_ascii($str))
+			// iconv is fairly expensive, so it is only used when needed
+			if ( ! self::is_ascii($str) AND function_exists('iconv'))
 			{
 				$str = @iconv('UTF-8', 'UTF-8//IGNORE', $str);
 			}
@@ -266,7 +266,7 @@ final class utf8 {
 
 	/**
 	 * UTF-8 version of strpos()
-	 * 
+	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/strpos
@@ -294,7 +294,7 @@ final class utf8 {
 			$array = explode($search, $str, 2);
 			return (isset($array[1])) ? self::strlen($array[0]) : FALSE;
 		}
-		
+
 		$str = self::substr($str, $offset);
 		$pos = self::strpos($str, $search);
 		return ($pos === FALSE) ? FALSE : $pos + $offset;
@@ -302,7 +302,7 @@ final class utf8 {
 
 	/**
 	 * UTF-8 version of strrpos()
-	 * 
+	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/strrpos
@@ -426,7 +426,7 @@ final class utf8 {
 
 	/**
 	 * UTF-8 version of substr_replace()
-	 * 
+	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/substr_replace
@@ -634,7 +634,7 @@ final class utf8 {
 
 	/**
 	 * UTF-8 version of ucfirst()
-	 * 
+	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/ucfirst
@@ -655,7 +655,7 @@ final class utf8 {
 
 	/**
 	 * UTF-8 version of ucwords()
-	 * 
+	 *
 	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
 	 * @see    http://php.net/ucwords
@@ -674,7 +674,7 @@ final class utf8 {
 			return ucwords($str);
 		}
 
-		// [\x0c\x09\x0b\x0a\x0d\x20] matches form feeds, horizontal tabs, vertical tabs, linefeeds and carriage returns. 
+		// [\x0c\x09\x0b\x0a\x0d\x20] matches form feeds, horizontal tabs, vertical tabs, linefeeds and carriage returns.
 		// This corresponds to the definition of a 'word' defined at http://php.net/ucwords
 		return preg_replace(
 			'/(?<=^|[\x0c\x09\x0b\x0a\x0d\x20])[^\x0c\x09\x0b\x0a\x0d\x20]/ue',
