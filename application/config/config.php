@@ -78,7 +78,7 @@ $config['global_xss_filtering'] = FALSE;
 | unavailable locale will break Kohana.
 |
 */
-$config['locale'] = 'en';
+$config['locale'] = 'en_US';
 
 /*
 | -----------------------------------------------------------------------------

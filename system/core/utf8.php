@@ -58,10 +58,9 @@ if (extension_loaded('mbstring') AND (ini_get('mbstring.func_overload') & MB_OVE
 }
 
 /**
- * @todo  this should really be detected from either config.php
  * @todo  move this out of this file and into Kohana or Bootstrap so that this file is re-usable
  */
-setlocale(LC_ALL, 'en_US.UTF-8');
+setlocale(LC_ALL, Config::item('core.locale').'UTF-8');
 
 /**
  * Send default text/html UTF-8 header. Can be overwritten.

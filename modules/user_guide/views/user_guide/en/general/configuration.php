@@ -21,7 +21,7 @@ permitted_uri_chars
 : List of characters that are allowed in URI strings. The default settings should work for almost every application. **If you change this option, the security of Kohana may diminish.**
 
 locale
-: Sets the system locale using any standard two-letter language abbreviation. By default, Kohana only ships with English (en) language files.
+: Sets the system locale using any standard language abbreviation. By default, Kohana only ships with English (en_US) language files.
 
 timezone
 : [optional] If you would like your application to be localized to a timezone that is different than the server's timezone, enter a <?php echo html::anchor('http://php.net/timezones', 'supported timezone') ?> here.
