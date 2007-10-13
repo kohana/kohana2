@@ -84,38 +84,20 @@ final class Config {
 			self::$conf['core'] = $config;
 		}
 
-		// Find the requested key
-		$key  = explode('.', strtolower($key), 2);
-		// Find type and reset the key
-		$type = $key[0];
-		$key  = isset($key[1]) ? $key[1] : FALSE;
+		// Requested group
+		$group = current(explode('.', $key));
 
-		// Load config arrays
-		if ( ! isset(self::$conf[$type]))
+		// Load the group if not already loaded
+		if ( ! isset(self::$conf[$group]))
 		{
-			self::$conf[$type] = self::load($type, $required);
+			self::$conf[$group] = self::load($group, $required);
 		}
 
-		$value = FALSE;
+		// Get the value
+		$value = Kohana::key_string($key, self::$conf);
 
-		// Fetch config groups
-		if ($key === FALSE)
-		{
-			$value = self::$conf[$type];
-		}
-		// Fetch config items
-		elseif (isset(self::$conf[$type][$key]))
-		{
-			$value = self::$conf[$type][$key];
-
-			// Add ending slashes
-			if ($slash == TRUE AND $value != '')
-			{
-				$value = rtrim($value, '/').'/';
-			}
-		}
-
-		return $value;
+		// Return the value
+		return is_array($value) ? $value : (($slash == TRUE AND $value != '') ? rtrim($value, '/').'/' : $value);
 	}
 
 	/**
@@ -446,13 +428,13 @@ class Kohana {
 
 		// Set execption handler
 		set_exception_handler(array('Kohana', 'exception_handler'));
-		
+
 		// Kill magic_quotes_runtime. Input library takes care of magic_quotes_gpc.
 		set_magic_quotes_runtime(0);
-		
+
 		// Send default text/html UTF-8 header
 		header('Content-type: text/html; charset=UTF-8');
-		
+
 		// Set locale information
 		setlocale(LC_ALL, Config::item('core.locale').'UTF-8');
 
@@ -921,18 +903,11 @@ class Kohana {
 	 */
 	public static function lang($type, $args = array())
 	{
-		static $found = array();
+		static $language = array();
 
-		if (strpos($type, '.') !== FALSE)
-		{
-			list ($type, $name) = explode('.', $type);
-		}
-		else
-		{
-			$name = TRUE;
-		}
+		$group = current(explode('.', $type));
 
-		if ( ! isset($found[$type]))
+		if ( ! isset($language[$group]))
 		{
 			// Messages from this file
 			$messages = array();
@@ -942,7 +917,7 @@ class Kohana {
 
 			// Loop through the files and include each one, so SYSPATH files
 			// can be overloaded by more localized files
-			foreach(array_reverse(self::find_file('i18n', $filename)) as $filename)
+			foreach(self::find_file('i18n', $filename) as $filename)
 			{
 				include $filename;
 
@@ -957,30 +932,62 @@ class Kohana {
 			}
 
 			// Cache the type
-			$found[$type] = $messages;
+			$language[$type] = $messages;
 		}
 
-		// Return something
-		if ($name === TRUE)
-		{
-			return $found[$type];
-		}
-		elseif ($found[$type] == FALSE OR ! isset($found[$type][$name]))
-		{
+		$line = self::key_string($type, $language);
+
+		if ($line === NULL)
 			return FALSE;
-		}
-		else
+
+		if (is_string($line) AND func_num_args() > 1)
 		{
-			if ( ! is_array($args) OR empty($args))
-			{
-				$args = func_get_args();
-				$args = array_slice($args, 1);
-			}
-
-			$line = $found[$type][$name];
-
-			return (empty($args) ? $line : vsprintf($line, $args));
+			$line = vsprintf($line, array_slice(func_get_args(), 1));
 		}
+
+		return $line;
+	}
+
+	public static function key_string($keys, $array)
+	{
+		// No array to search
+		if (empty($keys) OR empty($array))
+			return;
+
+		// Prepare for loop
+		$keys = explode('.', $keys);
+
+		// Loop down and find the key
+		do
+		{
+			// Get the current key
+			$key = array_shift($keys);
+
+			// Value is set, dig deeper or return
+			if (isset($array[$key]))
+			{
+				// If the key is an array, and we haven't hit bottom, prepare
+				// for the next loop by re-referencing to the next child
+				if (is_array($array[$key]) AND ! empty($keys))
+				{
+					$array =& $array[$key];
+				}
+				else
+				{
+					// Requested key was found
+					return $array[$key];
+				}
+			}
+			else
+			{
+				// Requested key is not set
+				break;
+			}
+		}
+		while ( ! empty($keys));
+
+		// We return NULL, because it's less common than FALSE
+		return;
 	}
 
 	/**
@@ -995,7 +1002,7 @@ class Kohana {
 			return;
 
 		$params = func_get_args();
-		$output = array(); 
+		$output = array();
 
 		foreach($params as $var)
 		{
