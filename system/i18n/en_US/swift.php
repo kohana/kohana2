@@ -2,5 +2,5 @@
 
 $lang = array
 (
-	'general_error' => 'An error occured sending the email. I don\'t know what is was.'
+	'general_error' => 'An error occurred while sending the email message.'
 );
