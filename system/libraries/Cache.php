@@ -9,7 +9,7 @@
  * @license    http://kohanaphp.com/license.html
  * @since      Version 2.0
  * @filesource
- * $Id: Benchmark.php 768 2007-10-11 16:14:16Z Geert $
+ * $Id$
  */
 
 /**
