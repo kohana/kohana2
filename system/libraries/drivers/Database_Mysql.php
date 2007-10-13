@@ -142,7 +142,7 @@ class Database_Mysql implements Database_Driver {
 		$wheres = array();
 		foreach ($key as $k => $v)
 		{
-
+			$k = $this->escape_column($k);
 			$prefix = ($num_wheres++ == 0) ? '' : $type;
 
 			if ($quote === -1)
