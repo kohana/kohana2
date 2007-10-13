@@ -211,6 +211,9 @@ class date {
 		$output = preg_split('/[\s,]+/', strtolower($output));
 		$output = array_combine($output, $output);
 
+		// Array of diff values
+		$timediff = array();
+
 		// Years ago
 		if (isset($output['years']))
 		{
@@ -272,7 +275,7 @@ class date {
 		}
 
 		// Invalid output formats string
-		if ( ! isset($timediff))
+		if (empty($timediff))
 			return FALSE;
 
 		// If only one output format was asked, don't put it in an array

@@ -1,32 +1,23 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana: The small, swift, and secure PHP5 framework
+ * Kohana: The swift, small, and secure PHP5 framework
  *
- * @package          Kohana
- * @author           Kohana Team
- * @copyright        Copyright (c) 2007 Kohana Team
- * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/user_guide/kohana/license.html
- * @since            Version 1.0
- * @orig_package     CodeIgniter
- * @orig_author      Rick Ellis
- * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
- * @orig_license     http://www.codeigniter.com/user_guide/license.html
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
  * @filesource
+ * $Id$
  */
 
-// ------------------------------------------------------------------------
-
 /**
- * HTML Generation Helper
+ * HTML Class
  *
- * $Id$
- *
- * @package     Kohana
- * @subpackage  Helpers
  * @category    Helpers
  * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/helpers/html.html
+ * @link        http://kohanaphp.com/user_guide/en/helpers/html.html
  */
 class html {
 

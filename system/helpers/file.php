@@ -1,5 +1,24 @@
 <?php defined('SYSPATH') or die('No direct script access.');
+/**
+ * Kohana: The swift, small, and secure PHP5 framework
+ *
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
+ * @filesource
+ * $Id$
+ */
 
+/**
+ * File Class
+ *
+ * @category    Helpers
+ * @author      Kohana Team
+ * @link        http://kohanaphp.com/user_guide/en/helpers/file.html
+ */
 class file {
 
 	public static function split($filename, $output_dir = FALSE, $piece_size = 10)
@@ -9,7 +28,7 @@ class file {
 		$output_dir = rtrim($output_dir, '/').'/';
 
 		// Open files for writing
-		$input_file = @fopen($filename, 'rb') or die($filename.' is not readable');
+		$input_file = fopen($filename, 'rb');
 
 		// Change the piece size to bytes
 		$piece_size = 1024 * 1024 * (int) $piece_size; // Size in bytes
@@ -32,14 +51,18 @@ class file {
 				fwrite($piece_open, $data) or die('Could not write to open piece '.$piece_name);
 				$read += $chunk;
 			}
+
 			// Close the current piece
 			fclose($piece_open);
+
 			// Prepare to open a new piece
 			$read = 0;
 			$piece++;
+
 			// Make sure that piece is valid
 			($piece < 999) or die('Maximum of 999 pieces exceeded, try a larger piece size');
 		}
+
 		// Close input file
 		fclose($input_file);
 
@@ -63,17 +86,21 @@ class file {
 		while ($piece_open = @fopen(($piece_name = $filename.'.'.str_pad($piece, 3, '0', STR_PAD_LEFT)), 'rb'))
 		{
 			// Write the piece into the output file
-			while( ! feof($piece_open))
+			while ( ! feof($piece_open))
 			{
 				fwrite($output_file, fread($piece_open, $chunk));
 			}
+
 			// Close the current piece
 			fclose($piece_open);
+
 			// Prepare for a new piece
 			$piece++;
+
 			// Make sure piece is valid
 			($piece < 999) or die('Maximum of 999 pieces exceeded');
 		}
+
 		// Close the output file
 		fclose($output_file);
 

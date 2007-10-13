@@ -1,63 +1,71 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana
+ * Kohana: The swift, small, and secure PHP5 framework
  *
- * An open source application development framework for PHP 4.3.2 or newer
- *
- * NOTE: This file has been modified from the original CodeIgniter version for
- * the Kohana framework by the Kohana Development Team.
- *
- * @package          Kohana
- * @author           Kohana Development Team
- * @copyright        Copyright (c) 2007, Kohana Framework Team
- * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/user_guide/license.html
- * @since            Version 1.0
- * @orig_package     CodeIgniter
- * @orig_author      Rick Ellis
- * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
- * @orig_license     http://www.codeigniter.com/user_guide/license.html
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
  * @filesource
+ * $Id$
  */
-
-// ------------------------------------------------------------------------
 
 /**
- * Kohana Download Helper
+ * Download Class
  *
- * @package     Kohana
- * @subpackage  Helpers
  * @category    Helpers
- * @author      Rick Ellis
- * @link        http://www.codeigniter.com/user_guide/helpers/download_helper.html
+ * @author      Kohana Team
+ * @link        http://kohanaphp.com/user_guide/en/helpers/download.html
  */
-
 class download {
-	
+
 	/**
 	 * Force Download
 	 *
 	 * Generates headers that force a download to happen
 	 *
-	 * @access	public
-	 * @param	string	filename
-	 * @param	mixed	the data to be downloaded
-	 * @return	boolean
-	 */	
+	 * @access  public
+	 * @param   string  filename
+	 * @param   mixed   the data to be downloaded
+	 * @return  void
+	 */
 	public static function force($filename = '', $data = '')
 	{
-		if ($filename == '' OR $data == '')
+		static $user_agent;
+
+		if ($filename == '')
 			return FALSE;
 
-		// Try to determine if the filename includes a file extension.
-		// We need it in order to set the MIME type
-		if (strpos($filename, '.') === FALSE)
-			return FALSE;
+		// Load the user agent
+		if ($user_agent === NULL)
+		{
+			$user_agent = new User_agent();
+		}
 
-		// Grab the file extension
-		$x = explode('.', $filename);
-		$extension = end($x);
-		
+		if (is_file($filename))
+		{
+			// Get the real path
+			$filepath = str_replace('\\', '/', realpath($filename));
+
+			// Get extension
+			$extension = pathinfo($filepath, PATHINFO_EXTENSION);
+
+			// Remove directory path from the filename
+			$filename = end(explode('/', $filepath));
+		}
+		else
+		{
+			// Grab the file extension
+			$extension = end(explode('.', $filename));
+
+			// Try to determine if the filename includes a file extension.
+			// We need it in order to set the MIME type
+			if ($data == '' OR $extension === $filename)
+				return FALSE;
+		}
+
 		// Set a default mime if we can't find it
 		if (($mime = Config::item('mimes.'.$extension)) === FALSE)
 		{
@@ -65,7 +73,7 @@ class download {
 		}
 		else
 		{
-			$mime = (is_array($mime)) ? $mime[0] : $mime;
+			$mime = current((array) $mime);
 		}
 
 		// Generate the server headers
@@ -74,9 +82,9 @@ class download {
 		header('Content-Transfer-Encoding: binary');
 		header('Expires: 0');
 		header('Content-Length: '.strlen($data));
-		
+
 		// IE headers
-		if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== FALSE)
+		if ($user_agent->browser === 'Internet Explorer')
 		{
 			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 			header('Pragma: public');
@@ -86,8 +94,22 @@ class download {
 			header('Pragma: no-cache');
 		}
 
-		echo $data;
-		return TRUE;
+		if (isset($filepath))
+		{
+			// Open the file
+			$handle = fopen($filepath, 'rb');
+
+			// Send the file data
+			fpassthru($handle);
+
+			// Close the file
+			fclose($handle);
+		}
+		else
+		{
+			// Send the file data
+			echo $data;
+		}
 	}
 
 } // End download class
