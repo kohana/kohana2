@@ -835,6 +835,22 @@ class Validation_Core {
 		$this->add_error('valid_type', $this->current_field, 'alphabetical');
 		return FALSE;
 	}
+	
+	/**
+	 * Alpha-numeric (UTF-8 compatible)
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	boolean
+	 */
+	public function utf8_alpha_numeric($str)
+	{
+		if (preg_match('/^[\pL\pN]+$/uD', (string) $str))
+			return TRUE;
+
+		$this->add_error('valid_type', $this->current_field, 'alphabetical');
+		return FALSE;
+	}
 
 	/**
 	 * Alpha-numeric with underscores and dashes
@@ -845,10 +861,23 @@ class Validation_Core {
 	 */
 	public function alpha_dash($str)
 	{
-		/**
-		 * @todo Create utf8_alpha_numeric, utf8_alpha_dash, utf8_digit?
-		 */
 		if (preg_match('/^[-a-z0-9_]+$/iD', $str))
+			return TRUE;
+
+		$this->add_error('valid_type', $this->current_field, 'alphabetical, dash, and underscore');
+		return FALSE;
+	}
+	
+	/**
+	 * Alpha-numeric with underscores and dashes (UTF-8 compatible)
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	boolean
+	 */
+	public function utf8_alpha_dash($str)
+	{
+		if (preg_match('/^[-\pL\pN_]+$/uD', (string) $str))
 			return TRUE;
 
 		$this->add_error('valid_type', $this->current_field, 'alphabetical, dash, and underscore');
@@ -865,6 +894,22 @@ class Validation_Core {
 	public function digit($str)
 	{
 		if (ctype_digit((string) $str))
+			return TRUE;
+
+		$this->add_error('valid_type', $this->current_field, 'digit');
+		return FALSE;
+	}
+	
+	/**
+	 * Digits: 0-9, no dots or dashes (UTF-8 compatible)
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	boolean
+	 */
+	public function utf8_digit($str)
+	{
+		if (preg_match('/^\pN+$/uD', (string) $str))
 			return TRUE;
 
 		$this->add_error('valid_type', $this->current_field, 'digit');
