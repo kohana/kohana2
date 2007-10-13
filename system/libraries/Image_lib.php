@@ -1400,7 +1400,7 @@ class Image_lib_Core {
 		}
 		else
 		{
-			$msg = (Kohana::lang('image.'.$val) == FALSE) ? $msg : Kohana::lang('image.'.$val);
+			$msg = (Kohana::lang('image.'.$msg) == FALSE) ? $msg : Kohana::lang('image.'.$msg);
 			$this->error_msg[] = $msg;
 			Log::add('error', $msg);
 		}
