@@ -422,6 +422,16 @@ class Kohana {
 		// This function can only be run once
 		if ($run === TRUE) return;
 
+		if (function_exists('date_default_timezone_set'))
+		{
+			// Set default timezone, due to increased validation of date settings
+			// which cause massive amounts of E_NOTICEs to be generated
+			$timezone = Config::item('core.timezone');
+			$timezone = ($timezone == FALSE) ? @date_default_timezone_get() : $timezone;
+
+			date_default_timezone_set($timezone);
+		}
+
 		// Start output buffering
 		ob_start(array('Kohana', 'output'));
 
@@ -445,16 +455,6 @@ class Kohana {
 		
 		// Set locale information
 		setlocale(LC_ALL, Config::item('core.locale').'UTF-8');
-
-		if (function_exists('date_default_timezone_set'))
-		{
-			// Set default timezone, due to increased validation of date settings
-			// which cause massive amounts of E_NOTICEs to be generated
-			$timezone = Config::item('core.timezone');
-			$timezone = ($timezone == FALSE) ? @date_default_timezone_get() : $timezone;
-
-			date_default_timezone_set($timezone);
-		}
 
 		if ($hooks = Config::item('hooks.enable'))
 		{
@@ -645,6 +645,7 @@ class Kohana {
 	 */
 	public static function exception_handler($exception, $message = FALSE, $file = FALSE, $line = FALSE)
 	{
+		// Error handling will use exactly 5 args, every time
 		if (func_num_args() === 5)
 		{
 			$code     = $exception;
@@ -980,6 +981,28 @@ class Kohana {
 
 			return (empty($args) ? $line : vsprintf($line, $args));
 		}
+	}
+
+	/**
+	 * Quick debugging of any variable
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public static function debug_output()
+	{
+		if (func_num_args() === 0)
+			return;
+
+		$params = func_get_args();
+		$output = array(); 
+
+		foreach($params as $var)
+		{
+			$output[] = '<pre>'.print_r($var, TRUE).'<pre>';
+		}
+
+		return implode("\n", $output);
 	}
 
 } // End Kohana class

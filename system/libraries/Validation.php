@@ -567,7 +567,7 @@ class Validation_Core {
 		$filename = Config::item('upload.remove_spaces') ? preg_replace('/\s+/', '_', $data['name']) : $data['name'];
 
 		// Fetch the real path of the upload directory, add the filename
-		$filename = realpath(Config::item('upload.upload_directory')).'/'.$filename;
+		$filename = str_replace('\\', '/', realpath(Config::item('upload.upload_directory'))).'/'.$filename;
 
 		// Move the upload file to the new location
 		move_uploaded_file($data['tmp_name'], $filename);
