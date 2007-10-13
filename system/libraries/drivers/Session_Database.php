@@ -1,54 +1,41 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana
+ * Kohana: The swift, small, and secure PHP5 framework
  *
- * An open source application development framework for PHP 4.3.2 or newer
- *
- * NOTE: This file has been modified from the original CodeIgniter version for
- * the Kohana framework by the Kohana Team.
- *
- * @package          Kohana
- * @author           Kohana Team
- * @copyright        Copyright (c) 2007 Kohana Team
- * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/user_guide/kohana/license.html
- * @since            Version 1.0
- * @orig_package     CodeIgniter
- * @orig_author      Rick Ellis
- * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
- * @orig_license     http://www.codeigniter.com/user_guide/license.html
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
  * @filesource
+ * $Id$
  */
 
-// ------------------------------------------------------------------------
+/**
+ * Session Database Driver
+ *
+ * @category    Session
+ * @author      Kohana Team
+ * @link        http://kohanaphp.com/user_guide/en/libraries/session.html
+ */
+class Session_Database implements Session_Driver {
 
-/*
+	/*
 	CREATE TABLE `kohana_session` (
 		`session_id` VARCHAR( 40 ) NOT NULL ,
 		`last_activity` INT( 11 ) NOT NULL ,
 		`total_hits` INT( 10 ) NOT NULL ,
 		`data` TEXT NOT NULL ,
-	PRIMARY KEY ( `session_id` )
-	) ;
-*/
+		PRIMARY KEY ( `session_id` )
+	);
+	*/
 
-/**
- * Session Database Driver
- *
- * @package     Kohana
- * @subpackage  Drivers
- * @category    Sessions
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/libraries/sessions.html
- */
-class Session_Database implements Session_Driver {
-
-	protected $db;  // session db connection
+	// Database connection
+	protected $db;
 
 	/**
 	 * Constructor
-	 * 
-	 * @return  void
 	 */
 	public function __construct()
 	{

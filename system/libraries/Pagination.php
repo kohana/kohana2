@@ -1,5 +1,24 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.');
+/**
+ * Kohana: The swift, small, and secure PHP5 framework
+ *
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
+ * @filesource
+ * $Id$
+ */
 
+/**
+ * Pagination Class
+ *
+ * @category    Libraries
+ * @author      Kohana Team
+ * @link        http://kohanaphp.com/user_guide/en/libraries/pagination.html
+ */
 class Pagination_Core {
 	
 	public $base_url           = '';

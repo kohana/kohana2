@@ -1,7 +1,29 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.');
+/**
+ * Kohana: The swift, small, and secure PHP5 framework
+ *
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
+ * @filesource
+ * $Id$
+ */
 
+/**
+ * Loader Class
+ *
+ * @category    Libraries
+ * @author      Kohana Team
+ * @link        http://kohanaphp.com/user_guide/en/libraries/loader.html
+ */
 class Loader_Core {
 
+	/**
+	 * Constructor
+	 */
 	public function __construct()
 	{
 		foreach(Config::item('core.autoload') as $type => $load)
@@ -32,6 +54,15 @@ class Loader_Core {
 		}
 	}
 
+	/**
+	 * Library
+	 *
+	 * @access public
+	 * @param  string
+	 * @param  array
+	 * @param  boolean
+	 * @return mixed
+	 */
 	public function library($name, $config = array(), $return = FALSE)
 	{
 		if (isset(Kohana::instance()->$name))
@@ -57,6 +88,14 @@ class Loader_Core {
 		}
 	}
 
+	/**
+	 * Database
+	 *
+	 * @access public
+	 * @param  string
+	 * @param  boolean
+	 * @return mixed
+	 */
 	public function database($group = 'default', $return = FALSE)
 	{
 		$db = new Database($group);
@@ -72,6 +111,13 @@ class Loader_Core {
 		}
 	}
 
+	/**
+	 * Helper
+	 *
+	 * @access public
+	 * @param  string
+	 * @return void
+	 */
 	public function helper($name)
 	{
 		// Allow recursive loading
@@ -90,6 +136,14 @@ class Loader_Core {
 		}
 	}
 
+	/**
+	 * Model
+	 *
+	 * @access public
+	 * @param  string
+	 * @param  mixed
+	 * @return mixed
+	 */
 	public function model($name, $alias = FALSE)
 	{
 		// The alias is used for Controller->alias
@@ -112,9 +166,16 @@ class Loader_Core {
 		}
 	}
 
+	/**
+	 * View
+	 *
+	 * @access public
+	 * @param  string
+	 * @param  array
+	 * @return object
+	 */
 	public function view($name, $data = array())
 	{
-		// Fancy! *wink*
 		return new View($name, $data);
 	}
 

@@ -1,5 +1,26 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.');
+/**
+ * Kohana: The swift, small, and secure PHP5 framework
+ *
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
+ * @filesource
+ * $Id$
+ */
 
+/**
+ * URI Class
+ *
+ * @category    Libraries
+ * @author      Rick Ellis, Kohana Team
+ * @copyright   Copyright (c) 2006, EllisLab, Inc.
+ * @license     http://www.codeigniter.com/user_guide/license.html
+ * @link        http://kohanaphp.com/user_guide/en/libraries/uri.html
+ */
 class URI_Core extends Router {
 
 	public function __construct()
@@ -7,6 +28,7 @@ class URI_Core extends Router {
 		if ( ! empty($_GET))
 		{
 			self::$query_string = '?';
+
 			foreach($_GET as $key => $val)
 			{
 				self::$query_string .= $key.'='.rawurlencode($val);
@@ -105,7 +127,7 @@ class URI_Core extends Router {
 		if ($this->total_segments() < 1)
 			return $default;
 		
-		return self::$segments[$this->total_segments() - 1];
+		return end(self::$segments);
 	}
 
 } // End URI Class

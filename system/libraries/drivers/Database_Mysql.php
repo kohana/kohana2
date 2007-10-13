@@ -1,30 +1,23 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana
+ * Kohana: The swift, small, and secure PHP5 framework
  *
- * An open source application development framework for PHP 4.3.2 or newer
- *
- * $Id$
- *
- * @package          Kohana
- * @author           Kohana Team
- * @copyright        Copyright (c) 2007 Kohana Team
- * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/user_guide/kohana/license.html
- * @since            Version 1.0
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
  * @filesource
+ * $Id$
  */
-
-// ------------------------------------------------------------------------
 
 /**
  * Database MySQL Driver
  *
- * @package     Kohana
- * @subpackage  Drivers
  * @category    Database
  * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/libraries/database.html
+ * @link        http://kohanaphp.com/user_guide/en/libraries/database.html
  */
 class Database_Mysql implements Database_Driver {
 
@@ -142,7 +135,7 @@ class Database_Mysql implements Database_Driver {
 		$wheres = array();
 		foreach ($key as $k => $v)
 		{
-			$k = $this->escape_column($k);
+
 			$prefix = ($num_wheres++ == 0) ? '' : $type;
 
 			if ($quote === -1)
@@ -205,11 +198,6 @@ class Database_Mysql implements Database_Driver {
 
 	public function insert($table, $keys, $values)
 	{
-		// Escape the column names
-		foreach ($keys as $key => $value)
-		{
-			$keys[$key] = $this->escape_column($value);
-		}
 		return 'INSERT INTO '.$this->escape_table($table).' ('.implode(', ', $keys).') VALUES ('.implode(', ', $values).')';
 	}
 

@@ -1,6 +1,24 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
-/* $Id$ */
+<?php defined('SYSPATH') or die('No direct script access.');
+/**
+ * Kohana: The swift, small, and secure PHP5 framework
+ *
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
+ * @filesource
+ * $Id$
+ */
 
+/**
+ * Router Class
+ *
+ * @category    Core
+ * @author      Kohana Team
+ * @link        http://kohanaphp.com/user_guide/en/general/routes.html
+ */
 class Router_Core {
 
 	protected static $routes = array();
@@ -16,6 +34,12 @@ class Router_Core {
 	public static $method     = FALSE;
 	public static $arguments  = FALSE;
 
+	/**
+	 * Router setup routine
+	 *
+	 * @access public
+	 * @return void
+	 */
 	public static function setup()
 	{
 		self::$routes = Config::item('routes');
@@ -235,6 +259,13 @@ class Router_Core {
 		}
 	}
 
+	/**
+	 * Filter a URI string
+	 *
+	 * @access public
+	 * @param  string
+	 * @return string
+	 */
 	public static function filter_uri($str)
 	{
 		$str = trim($str);

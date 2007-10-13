@@ -1,40 +1,33 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana: The small, swift, and secure PHP5 framework
+ * Kohana: The swift, small, and secure PHP5 framework
  *
- * @package          Kohana
- * @author           Kohana Team
- * @copyright        Copyright (c) 2007 Kohana Team
- * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/user_guide/kohana/license.html
- * @since            Version 1.0
- * @orig_package     CodeIgniter
- * @orig_author      Rick Ellis
- * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
- * @orig_license     http://www.codeigniter.com/user_guide/license.html
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
  * @filesource
+ * $Id$
  */
 
-// ------------------------------------------------------------------------
-
 /**
- * Encryption Class
+ * Encrypt Class
  *
- * $Id$
- *
- * @package        Kohana
- * @subpackage     Libraries
- * @category       Encryption
- * @author         Rick Ellis, Kohana Team
- * @link           http://kohanaphp.com/user_guide/libraries/encryption.html
+ * @category    Libraries
+ * @author      Rick Ellis, Kohana Team
+ * @copyright   Copyright (c) 2006, EllisLab, Inc.
+ * @license     http://www.codeigniter.com/user_guide/license.html
+ * @link        http://kohanaphp.com/user_guide/en/libraries/encrypt.html
  */
 class Encrypt_Core {
 
-	private $encryption_key = '';
-	private $hash_type      = 'sha1';
-	private $mcrypt_exists  = FALSE;
-	private $mcrypt_cipher  = '';
-	private $mcrypt_mode    = '';
+	protected $encryption_key = '';
+	protected $hash_type      = 'sha1';
+	protected $mcrypt_exists  = FALSE;
+	protected $mcrypt_cipher  = '';
+	protected $mcrypt_mode    = '';
 
 	/**
 	 * Constructor
@@ -145,12 +138,12 @@ class Encrypt_Core {
 	 * Takes a plain-text string and key as input and generates an
 	 * encoded bit-string using XOR
 	 *
-	 * @access  private
+	 * @access  protected
 	 * @param   string
 	 * @param   string
 	 * @return  string
 	 */
-	private function xor_encode($string, $key)
+	protected function xor_encode($string, $key)
 	{
 		$rand = '';
 
@@ -176,12 +169,12 @@ class Encrypt_Core {
 	 * Takes an encoded string and key as input and generates the
 	 * plain-text original message
 	 *
-	 * @access	private
-	 * @param	string
-	 * @param	string
-	 * @return	string
+	 * @access  protected
+	 * @param   string
+	 * @param   string
+	 * @return  string
 	 */
-	private function xor_decode($string, $key)
+	protected function xor_decode($string, $key)
 	{
 		$string = $this->xor_merge($string, $key);
 
@@ -199,12 +192,12 @@ class Encrypt_Core {
 	 *
 	 * Takes a string and key as input and computes the difference using XOR
 	 *
-	 * @access  private
+	 * @access  protected
 	 * @param   string
 	 * @param   string
 	 * @return  string
 	 */
-	private function xor_merge($string, $key)
+	protected function xor_merge($string, $key)
 	{
 		$hash = $this->hash($key);
 		$str = '';

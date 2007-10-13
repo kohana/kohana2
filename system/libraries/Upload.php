@@ -1,35 +1,25 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana
+ * Kohana: The swift, small, and secure PHP5 framework
  *
- * An open source application development framework for PHP 4.3.2 or newer
- *
- * NOTE: This file has been modified from the original CodeIgniter version for
- * the Kohana framework by the Kohana Development Team.
- *
- * @package          Kohana
- * @author           Kohana Development Team
- * @copyright        Copyright (c) 2007, Kohana Framework Team
- * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/user_guide/license.html
- * @since            Version 1.0
- * @orig_package     CodeIgniter
- * @orig_author      Rick Ellis
- * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
- * @orig_license     http://www.codeigniter.com/user_guide/license.html
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
  * @filesource
+ * $Id$
  */
 
-// ------------------------------------------------------------------------
-
 /**
- * File Uploading Class
+ * Upload Class
  *
- * @package		Kohana
- * @subpackage	Libraries
- * @category	Uploads
- * @author		Rick Ellis, Kohana Team
- * @link		http://kohanaphp.com/user_guide/libraries/file_uploading.html
+ * @category    Libraries
+ * @author      Rick Ellis, Kohana Team
+ * @copyright   Copyright (c) 2006, EllisLab, Inc.
+ * @license     http://www.codeigniter.com/user_guide/license.html
+ * @link        http://kohanaphp.com/user_guide/en/libraries/upload.html
  */
 class Upload_Core {
 
@@ -83,29 +73,29 @@ class Upload_Core {
 	{
 		$defaults = array
 		(
-			'max_size'			=> 0,
-			'max_width'			=> 0,
-			'max_height'		=> 0,
-			'allowed_types'		=> '',
-			'file_temp'			=> '',
-			'file_name'			=> '',
-			'orig_name'			=> '',
-			'file_type'			=> '',
-			'file_size'			=> '',
-			'file_ext'			=> '',
-			'upload_path'		=> '',
-			'overwrite'			=> FALSE,
-			'encrypt_name'		=> FALSE,
-			'is_image'			=> FALSE,
-			'image_width'		=> '',
-			'image_height'		=> '',
-			'image_type'		=> '',
-			'image_size_str'	=> '',
-			'error_msg'			=> array(),
-			'mimes'				=> array(),
-			'remove_spaces'		=> TRUE,
-			'xss_clean'			=> FALSE,
-			'temp_prefix'		=> 'tmp_upload_'
+			'max_size'          => 0,
+			'max_width'         => 0,
+			'max_height'        => 0,
+			'allowed_types'     => '',
+			'file_temp'         => '',
+			'file_name'         => '',
+			'orig_name'         => '',
+			'file_type'         => '',
+			'file_size'         => '',
+			'file_ext'          => '',
+			'upload_path'       => '',
+			'overwrite'         => FALSE,
+			'encrypt_name'      => FALSE,
+			'is_image'          => FALSE,
+			'image_width'       => '',
+			'image_height'      => '',
+			'image_type'        => '',
+			'image_size_str'    => '',
+			'error_msg'         => array(),
+			'mimes'             => array(),
+			'remove_spaces'     => TRUE,
+			'xss_clean'         => FALSE,
+			'temp_prefix'       => 'tmp_upload_'
 		);
 
 		foreach ($defaults as $key => $msg)

@@ -1,35 +1,24 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana
+ * Kohana: The swift, small, and secure PHP5 framework
  *
- * An open source application development framework for PHP 4.3.2 or newer
- *
- * NOTE: This file has been modified from the original CodeIgniter version for
- * the Kohana framework by the Kohana Team.
- *
- * @package          Kohana
- * @author           Kohana Team
- * @copyright        Copyright (c) 2007 Kohana Team
- * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/user_guide/kohana/license.html
- * @since            Version 1.0
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
  * @filesource
+ * $Id$
  */
-
-// ------------------------------------------------------------------------
 
 /**
  * View Class
  *
- * @package     Kohana
- * @subpackage  Libraries
- * @category    Views
+ * @category    Libraries
  * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/libraries/view.html
+ * @link        http://kohanaphp.com/user_guide/en/general/views.html
  */
-
-// View($kohana_name, $kohana_data, $kohana_return)
-
 class View_Core {
 
 	// The view file name and type
@@ -39,6 +28,9 @@ class View_Core {
 	// Set variables
 	private $data = array();
 
+	/**
+	 * Construct
+	 */
 	public function __construct($name, $data = NULL)
 	{
 		if (preg_match('/\.(gif|jpe?g|png|tiff?|js|css|swf)$/Di', $name, $type))
@@ -69,12 +61,28 @@ class View_Core {
 		Log::add('debug', 'View Class Initialized ['.str_replace(DOCROOT, '', $this->kohana_filename).']');
 	}
 
+	/**
+	 * Set a variable
+	 *
+	 * @access public
+	 * @param  string
+	 * @param  mixed
+	 * @return object
+	 */
 	public function set($name, $value)
 	{
 		$this->__set($name, $value);
 		return $this;
 	}
 
+	/**
+	 * Magic setting of a variable
+	 *
+	 * @access public
+	 * @param  string
+	 * @param  mixed
+	 * @return void
+	 */
 	public function __set($name, $value)
 	{
 		$protected = array('kohana_filename', 'kohana_renderer', 'kohana_filetype');
@@ -89,16 +97,39 @@ class View_Core {
 		}
 	}
 
+	/**
+	 * Magic getting of a variable
+	 *
+	 * @access public
+	 * @param  string
+	 * @return void
+	 */
 	public function __get($name)
 	{
 		return empty($this->data[$name]) ? NULL : $this->data[$name];
 	}
 
+	/**
+	 * Magic object to string
+	 *
+	 * @access public
+	 * @param  string
+	 * @param  mixed
+	 * @return void
+	 */
 	public function __toString()
 	{
 		return $this->render();
 	}
 
+	/**
+	 * Render a view
+	 *
+	 * @access public
+	 * @param  string
+	 * @param  callback
+	 * @return mixed
+	 */
 	public function render($print = FALSE, $renderer = FALSE)
 	{
 		if ($this->kohana_filetype === EXT)

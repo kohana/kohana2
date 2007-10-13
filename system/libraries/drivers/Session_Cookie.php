@@ -1,28 +1,23 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana
+ * Kohana: The swift, small, and secure PHP5 framework
  *
- * An open source application development framework for PHP 4.3.2 or newer
- *
- * @package          Kohana
- * @author           Kohana Team
- * @copyright        Copyright (c) 2007 Kohana Team
- * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/user_guide/kohana/license.html
- * @since            Version 1.0
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
  * @filesource
+ * $Id$
  */
-
-// ------------------------------------------------------------------------
 
 /**
  * Session Cookie Driver
  *
- * @package     Kohana
- * @subpackage  Drivers
- * @category    Sessions
+ * @category    Session
  * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/libraries/sessions.html
+ * @link        http://kohanaphp.com/user_guide/en/libraries/session.html
  */
 class Session_Cookie implements Session_Driver {
 

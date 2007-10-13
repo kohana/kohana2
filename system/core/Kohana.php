@@ -915,7 +915,7 @@ class Kohana {
 			$messages = array();
 
 			// The name of the file to search for
-			$filename = Config::item('core.locale').'/'.$type;
+			$filename = Config::item('core.locale').'/'.$group;
 
 			// Loop through the files and include each one, so SYSPATH files
 			// can be overloaded by more localized files
@@ -934,7 +934,7 @@ class Kohana {
 			}
 
 			// Cache the type
-			$language[$type] = $messages;
+			$language[$group] = $messages;
 		}
 
 		$line = self::key_string($type, $language);
@@ -944,7 +944,11 @@ class Kohana {
 
 		if (is_string($line) AND func_num_args() > 1)
 		{
-			$line = vsprintf($line, array_slice(func_get_args(), 1));
+			$args = func_get_args();
+			$args = array_slice($args, 1);
+
+			// Add the arguments into the line
+			$line = vsprintf($line, is_array($args[0]) ? $args[0] : $args);
 		}
 
 		return $line;

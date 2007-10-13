@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana: The small, swift, and secure PHP5 framework
+ * Kohana: The swift, small, and secure PHP5 framework
  *
  * @package    Kohana
  * @author     Kohana Team
@@ -15,12 +15,15 @@
 /**
  * Controller Class
  *
- * @category  Libraries
- * @author    Kohana Team
- * @link      http://kohanaphp.com/user_guide/en/general/controllers.html
+ * @category    Libraries
+ * @author      Kohana Team
+ * @link        http://kohanaphp.com/user_guide/en/general/controllers.html
  */
 class Controller_Core extends Kohana {
 
+	/**
+	 * Constructor
+	 */
 	public function __construct()
 	{
 		// This must always be called, it provides the singleton functionality
@@ -36,9 +39,18 @@ class Controller_Core extends Kohana {
 		$this->input = new Input();
 	}
 
+	/**
+	 * Includes a View within the controller scope
+	 *
+	 * @access public
+	 * @param  string
+	 * @param  array
+	 * @return string
+	 */
 	public function kohana_include_view($kohana_view_filename, $kohana_input_data)
 	{
-		if ($kohana_view_filename == '') return;
+		if ($kohana_view_filename == '')
+			return;
 
 		// Buffering on
 		ob_start();

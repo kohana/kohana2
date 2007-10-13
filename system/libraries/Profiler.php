@@ -1,29 +1,23 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana: The small, swift, and secure PHP5 framework
+ * Kohana: The swift, small, and secure PHP5 framework
  *
- * @package          Kohana
- * @author           Kohana Team
- * @copyright        Copyright (c) 2007 Kohana Team
- * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/license.html
- * @since            Version 2.0
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
  * @filesource
- *
  * $Id$
  */
 
-// ----------------------------------------------------------------------------
-
 /**
- * Kohana Profiler Class
- *
- * This class enables you to display benchmark, query, and other data
- * in order to help with debugging and optimization.
+ * Profiler Class
  *
  * @category    Libraries
  * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/general/profiling.html
+ * @link        http://kohanaphp.com/user_guide/en/libraries/profiler.html
  */
 class Profiler_Core {
 

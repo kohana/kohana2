@@ -1,43 +1,31 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana
+ * Kohana: The swift, small, and secure PHP5 framework
  *
- * An open source application development framework for PHP 4.3.2 or newer
- *
- * NOTE: This file has been modified from the original CodeIgniter version for
- * the Kohana framework by the Kohana Team.
- *
- * @package          Kohana
- * @author           Kohana Team
- * @copyright        Copyright (c) 2007 Kohana Team
- * @link             http://kohanaphp.com
- * @license          http://kohanaphp.com/user_guide/kohana/license.html
- * @since            Version 1.0
- * @orig_package     CodeIgniter
- * @orig_author      Rick Ellis
- * @orig_copyright   Copyright (c) 2006, EllisLab, Inc.
- * @orig_license     http://www.codeigniter.com/user_guide/license.html
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  Copyright (c) 2007 Kohana Team
+ * @link       http://kohanaphp.com
+ * @license    http://kohanaphp.com/license.html
+ * @since      Version 2.0
  * @filesource
- *
  * $Id$
  */
-
-// ------------------------------------------------------------------------
 
 /**
  * Input Class
  *
- * Pre-processes global input data for security
- *
- * @package     Kohana
- * @subpackage  Libraries
- * @category    Input
- * @author      Rick Ellis
- * @link        http://kohanaphp.com/user_guide/libraries/input.html
+ * @category    Libraries
+ * @author      Rick Ellis, Kohana Team
+ * @copyright   Copyright (c) 2006, EllisLab, Inc.
+ * @license     http://www.codeigniter.com/user_guide/license.html
+ * @link        http://kohanaphp.com/user_guide/en/libraries/input.html
  */
 class Input_Core {
 
-	protected $use_xss_clean   = FALSE;
+	protected static $instances = 0;
+
+	protected $use_xss_clean = FALSE;
 
 	public $ip_address = FALSE;
 	public $user_agent = FALSE;
@@ -53,52 +41,70 @@ class Input_Core {
 	 */
 	public function __construct()
 	{
-		// Unset globals. This is effectively the same as register_globals = off
-		foreach (array($_GET, $_POST, $_COOKIE) as $global)
+		if (self::$instances === 0)
 		{
-			if ( ! is_array($global))
+			// Clean $_GET data
+			if (is_array($_GET) AND count($_GET) > 0)
 			{
-				global $global;
-				$$global = NULL;
+				foreach($_GET as $key => $val)
+				{
+					// Unset the global string
+					if (isset($GLOBALS[$str]))
+					{
+						global $$key;
+						$$key = NULL;
+					}
+
+					$_GET[$this->clean_input_keys($key)] = $this->clean_input_data($val);
+				}
 			}
 			else
 			{
-				foreach ($global as $key => $val)
+				$_GET = array();
+			}
+
+			// Clean $_POST data
+			if (is_array($_POST) AND count($_POST) > 0)
+			{
+				foreach($_POST as $key => $val)
 				{
-					global $$key;
-					$$key = NULL;
+					if (isset($GLOBALS[$str]))
+					{
+						global $$key;
+						$$key = NULL;
+					}
+
+					$_POST[$this->clean_input_keys($key)] = $this->clean_input_data($val);
 				}
 			}
-		}
-
-		// Clean $_GET data
-		if (is_array($_GET) AND count($_GET) > 0)
-		{
-			foreach($_GET as $key => $val)
+			else
 			{
-				$_GET[$this->clean_input_keys($key)] = $this->clean_input_data($val);
+				$_POST = array();
 			}
-		}
 
-		// Clean $_POST data
-		if (is_array($_POST) AND count($_POST) > 0)
-		{
-			foreach($_POST as $key => $val)
+			// Clean $_COOKIE data
+			if (is_array($_COOKIE) AND count($_COOKIE) > 0)
 			{
-				$_POST[$this->clean_input_keys($key)] = $this->clean_input_data($val);
-			}
-		}
+				foreach($_COOKIE as $key => $val)
+				{
+					if (isset($GLOBALS[$str]))
+					{
+						global $$key;
+						$$key = NULL;
+					}
 
-		// Clean $_COOKIE data
-		if (is_array($_COOKIE) AND count($_COOKIE) > 0)
-		{
-			foreach($_COOKIE as $key => $val)
+					$_COOKIE[$this->clean_input_keys($key)] = $this->clean_input_data($val);
+				}
+			}
+			else
 			{
-				$_COOKIE[$this->clean_input_keys($key)] = $this->clean_input_data($val);
+				$_COOKIE = array();
 			}
+
+			Log::add('debug', 'Global POST and COOKIE data sanitized');
 		}
 
-		Log::add('debug', 'Global POST and COOKIE data sanitized');
+		self::$instances++;
 
 		// Use XSS clean?
 		$this->use_xss_clean = (bool) Config::item('core.global_xss_filtering');
