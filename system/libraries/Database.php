@@ -97,61 +97,82 @@ class Database_Core {
 		// Merge the default config with the passed config
 		$this->config = array_merge($this->config, $config);
 
-		// Parse the DSN into an array and validate its length
-		if (count($connection = @parse_url($this->config['connection'])) < 5)
+		// Make sure the connection is valid
+		if (strpos($this->config['connection'], '://') === FALSE)
+		{
 			throw new Kohana_Exception('database.invalid_dsn', $this->config['connection']);
-
-		// Checks for host() or unix(), if doesn't find any proceeds
-		if (stripos($connection['host'], 'host(') !== FALSE)
-		{
-			$connection['host'] = str_ireplace('host(', '', $connection['host']);
-			if (stripos($connection['host'], ')') !== FALSE)
-			{
-				$connection['host'] = str_ireplace(')', '', $connection['host']);
-			}
-			elseif (stripos($connection['path'], ')') !== FALSE)
-			{
-				$path_temp = explode(')', $connection['path'], 2);
-				$connection['host'] .= $path_temp[0];
-				$connection['path'] = $path_temp[1];
-			}
-		}
-		elseif (stripos($connection['host'], 'unix(') !== FALSE)
-		{
-			$connection['socket'] = str_ireplace('unix(', '', $connection['host']);
-			if (stripos($connection['socket'], ')') !== FALSE)
-			{
-				$connection['socket'] = str_ireplace(')', '', $connection['socket']);
-			}
-			elseif (stripos($connection['path'], ')') !== FALSE)
-			{
-				$path_temp = explode(')', $connection['path'], 2);
-				$connection['socket'] .= $path_temp[0];
-				$connection['path'] = $path_temp[1];
-			}
-			unset($connection['host']);
-			unset($connection['port']); // It's a socket!
 		}
 
-		// Turn the DSN into local variables
-		$db = $connection;
-		$db['type'] = $db['scheme'];
-		unset($db['scheme']);
-		$db['database'] = $db['path'];
-		unset($db['path']);
+		// Parse the DSN, creating an array to hold the connection parameters
+		$db = array
+		(
+			'type'     => FALSE,
+			'user'     => FALSE,
+			'pass'     => FALSE,
+			'host'     => FALSE,
+			'port'     => FALSE,
+			'socket'   => FALSE,
+			'database' => FALSE
+		);
 
+		// Get the protocol and arguments
+		list ($db['type'], $connection) = explode('://', $this->config['connection'], 2);
+
+		if (strpos($connection, '@') !== FALSE)
+		{
+			// Get the username and password
+			list ($db['pass'], $connection) = explode('@', $connection, 2);
+			list ($db['user'], $db['pass']) = explode(':', $db['pass'], 2);
+
+			// Prepare for finding the database
+			$connection = explode('/', $connection);
+
+			// Find the database name
+			$db['database'] = array_pop($connection);
+
+			// Reset connection string
+			$connection = implode('/', $connection);
+
+			// Find the socket
+			if (preg_match('/^unix\(.+\)/', $connection))
+			{
+				// This one is a little hairy: we explode based on the end of
+				// the socket, removing the 'unix(' from the connection string
+				list ($db['socket'], $connection) = explode(')', substr($connection, 5), 2);
+			}
+			elseif (strpos($connection, ':') !== FALSE)
+			{
+				// Fetch the host and port name
+				list ($db['host'], $db['port']) = explode(':', $connection, 2);
+			}
+			else
+			{
+				$db['host'] = $connection;
+			}
+		}
+		else
+		{
+			// File connection
+			$connection = explode('/', $connection);
+
+			// Find database file name
+			$db['database'] = array_pop($connection);
+
+			// Find database directory name
+			$db['socket'] = implode('/', $connection).'/';
+		}
 
 		// Reset the connection array to the database config
 		$this->config['connection'] = $db;
 
-		// The database may contain slash characters when read as a path
-		$this->config['connection']['database'] = trim($this->config['connection']['database'], '/');
-
-		$driver = 'Database_'.ucfirst($this->config['connection']['type']);
-
 		try
 		{
+			// Set driver name
+			$driver = 'Database_'.ucfirst($this->config['connection']['type']);
+
+			// Load the driver
 			require_once Kohana::find_file('libraries', 'drivers/'.$driver, TRUE);
+
 			// Initialize the driver
 			$this->driver = new $driver($this->config);
 		}
@@ -160,6 +181,7 @@ class Database_Core {
 			throw new Kohana_Exception('database.driver_not_supported', $this->config['type']);
 		}
 
+		// Validate the driver
 		if ( ! in_array('Database_Driver', class_implements($this->driver)))
 			throw new Kohana_Exception('database.driver_not_supported', 'Database drivers must use the Database_Driver interface.');
 
