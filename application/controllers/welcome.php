@@ -118,7 +118,7 @@ class Welcome_Controller extends Controller {
 			{
 				echo '<p>'.$item->title.'</p>';
 			}
-			print "<h3>Numrows: ".count($query)."</h3>";
+			print "<h3>Numrows using count(): ".count($query)."</h3>";
 			echo 'Table Listing:<pre>'.print_r($this->db->list_tables(), TRUE).'</pre>';
 
 			echo '<h3>Try Query Binding with objects:</h3>';
@@ -152,7 +152,7 @@ class Welcome_Controller extends Controller {
 			$query->rewind();
 			echo 'Rewound:<pre>'.print_r($query->current(), true).'</pre>';
 			
-			echo '<p>Number of rows: '.$this->db->count_records('pages').'</p>';
+			echo '<p>Number of rows using count_records(): '.$this->db->count_records('pages').'</p>';
 		}
 		else
 		{
