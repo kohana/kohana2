@@ -49,7 +49,7 @@ class Input_Core {
 				foreach($_GET as $key => $val)
 				{
 					// Unset the global string
-					if (isset($GLOBALS[$str]))
+					if (isset($GLOBALS[$key]))
 					{
 						global $$key;
 						$$key = NULL;
@@ -68,7 +68,7 @@ class Input_Core {
 			{
 				foreach($_POST as $key => $val)
 				{
-					if (isset($GLOBALS[$str]))
+					if (isset($GLOBALS[$key]))
 					{
 						global $$key;
 						$$key = NULL;
@@ -87,7 +87,7 @@ class Input_Core {
 			{
 				foreach($_COOKIE as $key => $val)
 				{
-					if (isset($GLOBALS[$str]))
+					if (isset($GLOBALS[$key]))
 					{
 						global $$key;
 						$$key = NULL;
