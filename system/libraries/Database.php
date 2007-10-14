@@ -97,11 +97,11 @@ class Database_Core {
 		// Merge the default config with the passed config
 		$this->config = array_merge($this->config, $config);
 
-		// Parse the DSN into an array and validate it's length
+		// Parse the DSN into an array and validate its length
 		if (count($connection = @parse_url($this->config['connection'])) < 5)
 			throw new Kohana_Exception('database.invalid_dsn', $this->config['connection']);
 
-		//checks for host() or unix(), if doesn't find any proceeds
+		// Checks for host() or unix(), if doesn't find any proceeds
 		if (stripos($connection['host'], 'host(') !== FALSE)
 		{
 			$connection['host'] = str_ireplace('host(', '', $connection['host']);
@@ -130,7 +130,7 @@ class Database_Core {
 				$connection['path'] = $path_temp[1];
 			}
 			unset($connection['host']);
-			unset($connection['port']); //it's a socket!
+			unset($connection['port']); // It's a socket!
 		}
 
 		// Turn the DSN into local variables
