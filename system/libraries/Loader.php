@@ -78,13 +78,9 @@ class Loader_Core {
 			$class = new $class($config);
 
 			if ($return == TRUE)
-			{
 				return $class;
-			}
-			else
-			{
-				Kohana::instance()->$name = $class;
-			}
+
+			Kohana::instance()->$name = $class;
 		}
 	}
 
@@ -102,13 +98,9 @@ class Loader_Core {
 
 		// Return the new database object
 		if ($return == TRUE)
-		{
 			return $db;
-		}
-		else
-		{
-			Kohana::instance()->db = $db;
-		}
+
+		Kohana::instance()->db = $db;
 	}
 
 	/**
@@ -157,13 +149,9 @@ class Loader_Core {
 		$model = new $class();
 
 		if ($alias === TRUE)
-		{
 			return $model;
-		}
-		else
-		{
-			Kohana::instance()->$alias = $model;
-		}
+
+		Kohana::instance()->$alias = $model;
 	}
 
 	/**

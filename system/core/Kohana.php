@@ -460,7 +460,7 @@ class Kohana {
 			// Loop through all the hooks and load them
 			foreach($hooks as $file)
 			{
-				Log::add('debug', 'Loading hook'.$file);
+				Log::add('debug', 'Loading hook '.$file);
 				include $file;
 			}
 		}
@@ -846,9 +846,7 @@ class Kohana {
 
 			// If the file is required, throw an exception
 			if ($required == TRUE)
-			{
 				throw new Kohana_Exception('core.resource_not_found', $directory, $filename);
-			}
 
 			return $found[$hash] = FALSE;
 		}

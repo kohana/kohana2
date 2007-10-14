@@ -40,7 +40,7 @@ class URI_Core extends Router {
 	 * Retrieve a specific URI segment
 	 *
 	 * @access	public
-	 * @param	int
+	 * @param	integer
 	 * @param	mixed
 	 * @return	mixed
 	 */
@@ -55,7 +55,7 @@ class URI_Core extends Router {
 	 * Retrieve a specific routed URI segment
 	 *
 	 * @access	public
-	 * @param	int
+	 * @param	integer
 	 * @param	mixed
 	 * @return	mixed
 	 */

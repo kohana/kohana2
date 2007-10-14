@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+î<?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Kohana: The swift, small, and secure PHP5 framework
  *
@@ -123,7 +123,7 @@ class Upload_Core {
 	 * Perform a multple file upload
 	 *
 	 * @access public
-	 * @param array
+	 * @param  array
 	 * @return boolean
 	 */
 	public function do_mupload($field_set)
@@ -574,14 +574,10 @@ class Upload_Core {
 		}
 
 		if ($this->upload_path == '' OR ! @is_dir($this->upload_path))
-		{
 			throw new Kohana_Exception('upload.no_filepath');
-		}
 
 		if ( ! is_writable($this->upload_path))
-		{
 			throw new Kohana_Exception('upload.not_writable', $this->upload_path);
-		}
 
 		$this->upload_path = rtrim($this->upload_path, '/').'/';
 		return TRUE;
