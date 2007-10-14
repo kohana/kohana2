@@ -115,7 +115,7 @@ final class utf8 {
 		elseif (is_string($str) AND $str != '')
 		{
 			// iconv is fairly expensive, so it is only used when needed
-			if ( ! self::is_ascii($str) AND function_exists('iconv'))
+			if ( ! self::is_ascii($str))
 			{
 				$str = @iconv('UTF-8', 'UTF-8//IGNORE', $str);
 			}
