@@ -103,6 +103,9 @@ class Database_Mysql implements Database_Driver {
 
 	public function escape_column($column)
 	{
+		if (strtolower($column) == 'count(*)')
+			return $column;
+
 		// This matches any modifiers we support to SELECT.
 		if ( ! preg_match('/\b(?:all|distinct(?:row)?|high_priority|sql_(?:small_result|b(?:ig_result|uffer_result)|no_cache|ca(?:che|lc_found_rows)))\s/i', $column))
 			return '`'.$column.'`';

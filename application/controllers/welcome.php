@@ -151,6 +151,8 @@ class Welcome_Controller extends Controller {
 			echo '<h3>And we can reset it to the beginning:</h3>';
 			$query->rewind();
 			echo 'Rewound:<pre>'.print_r($query->current(), true).'</pre>';
+			
+			echo '<p>Number of rows: '.$this->db->count_records('pages').'</p>';
 		}
 		else
 		{

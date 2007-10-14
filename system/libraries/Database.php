@@ -695,7 +695,7 @@ class Database_Core {
 	 *
 	 * @access	public
 	 * @param	string	name of table
-	 * @return	string
+	 * @return	integer
 	 */
 	public function count_records($table = FALSE)
 	{
@@ -709,11 +709,9 @@ class Database_Core {
 
 		$this->select('COUNT(*)');
 		$query  = $this->get();
-		$result = array_shift($query->row_array());
-		// No one likes a mess
-		$query->free_result();
 
-		return $result;
+		$column = 'COUNT(*)';
+		return $query->current()->$column;
 	}
 
 	/**
