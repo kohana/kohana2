@@ -781,18 +781,8 @@ class Kohana {
 			break;
 		}
 
-		$file = self::find_file($type, $file, TRUE);
+		require self::find_file($type, $file, TRUE);
 
-		if ($type == 'libraries/drivers')
-		{
-			die($file);
-		}
-		else
-		{
-			require $file;
-		}
-
-		
 		if ($type == 'libraries')
 		{
 			if ($extension = self::find_file('libraries', Config::item('core.extension_prefix').$class))
