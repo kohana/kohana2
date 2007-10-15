@@ -145,6 +145,15 @@ class Loader_Core {
 		if (isset(Kohana::instance()->$alias))
 			return FALSE;
 
+		if (strpos($name, '/') !== FALSE)
+		{
+			// Handle models in subdirectories
+			require_once Kohana::find_file('models', $name);
+
+			// Reset the class name
+			$class = end(explode('/', $class));
+		}
+
 		// Load the model
 		$model = new $class();
 

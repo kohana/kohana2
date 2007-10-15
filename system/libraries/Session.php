@@ -38,28 +38,6 @@ class Session_Core {
 	protected $input;
 
 	/**
-	 * Generate a secure session id based on the user IP address
-	 *
-	 * @access public
-	 * @return string
-	 */
-	public static function secure_id()
-	{
-		$input = new Input();
-
-		// We use 13 characters of a hash of the user's IP address for
-		// an id prefix to prevent collisions. This should be very safe.
-		$sessid = sha1($input->ip_address());
-
-		// Use 13 characters starting from a random point in the string, within
-		// 13 places of the end, to prevent short strings
-		$sessid = substr($sessid, rand(0, strlen($sessid)-13), 13);
-
-		// Return the unique id
-		return uniqid($sessid);
-	}
-
-	/**
 	 * Session Constructor
 	 */
 	public function __construct()
@@ -77,20 +55,25 @@ class Session_Core {
 
 			if (self::$config['driver'] != 'native')
 			{
-				// Set the driver name
-				$driver = 'Session_'.ucfirst(strtolower(self::$config['driver']));
+				try
+				{
+					// Set the driver name
+					$driver = 'Session_'.ucfirst(strtolower(self::$config['driver'])).'_Driver';
 
-				// Include the driver
-				require Kohana::find_file('libraries', 'drivers/'.$driver, TRUE);
+					// Manually call auto-loading, for proper exception handling
+					Kohana::auto_load($driver);
 
-				// Initialize the driver
-				self::$driver = new $driver();
+					// Initialize the driver
+					self::$driver = new $driver();
+				}
+				catch (Kohana_Exception $e)
+				{
+					throw new Kohana_Exception('session.driver_not_supported', self::$config['driver']);
+				}
 
 				// Validate the driver
 				if ( ! in_array('Session_Driver', class_implements(self::$driver)))
-				{
 					throw new Kohana_Exception('session.driver_must_implement_interface');
-				}
 			}
 
 			// Create a new session

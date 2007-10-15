@@ -19,7 +19,7 @@
  * @author      Kohana Team
  * @link        http://kohanaphp.com/user_guide/en/libraries/session.html
  */
-class Session_Database implements Session_Driver {
+class Session_Database_Driver implements Session_Driver {
 
 	/*
 	CREATE TABLE `kohana_session` (

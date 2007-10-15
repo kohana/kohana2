@@ -770,7 +770,7 @@ class Kohana {
 			break;
 			case 'Driver':
 				$type = 'libraries/drivers';
-				$file = $class;
+				$file = substr($class, 0, -7);
 			break;
 			default:
 				// This can mean either a library or a helper, but libraries must
@@ -781,8 +781,18 @@ class Kohana {
 			break;
 		}
 
-		require self::find_file($type, $file, TRUE);
+		$file = self::find_file($type, $file, TRUE);
 
+		if ($type == 'libraries/drivers')
+		{
+			die($file);
+		}
+		else
+		{
+			require $file;
+		}
+
+		
 		if ($type == 'libraries')
 		{
 			if ($extension = self::find_file('libraries', Config::item('core.extension_prefix').$class))

@@ -19,7 +19,7 @@
  * @author      Kohana Team
  * @link        http://kohanaphp.com/user_guide/en/libraries/database.html
  */
-class Database_Mysql implements Database_Driver {
+class Database_Mysql_Driver implements Database_Driver {
 
 	// Database connection link
 	protected $link;

@@ -19,7 +19,7 @@
  * @author      Kohana Team
  * @link        http://kohanaphp.com/user_guide/en/libraries/database.html
  */
-class Database_Pgsql implements Database_Driver {
+class Database_Pgsql_Driver implements Database_Driver {
 
 	// Database connection link
 	private $link;

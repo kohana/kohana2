@@ -19,7 +19,7 @@
  * @author      Kohana Team
  * @link        http://kohanaphp.com/user_guide/en/libraries/session.html
  */
-class Session_Cookie implements Session_Driver {
+class Session_Cookie_Driver implements Session_Driver {
 
 	protected $cookie_name = '';
 
