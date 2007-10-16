@@ -24,7 +24,7 @@ h2, h3, h4, h5, h6 { margin-bottom: 0.6em; }
 			#developer a:active { border-color: #114; }
 
 /* Header */
-#header { height: 16em; background: #83c018; border-bottom: solid 0.1em #96a67a; }
+#header { height: 16em; background: #83c018 url(../img/kohana.png) 2em 5em no-repeat; border-bottom: solid 0.1em #96a67a; }
 
 /* Logo */
 #logo { display: none;  }
