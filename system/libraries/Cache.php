@@ -39,7 +39,7 @@ class Cache_Core {
 
 	function set($name, $item)
 	{
-		return $this->driver->set($name, $item)
+		return $this->driver->set($name, $item);
 	}
 
 	function del($name)
