@@ -62,7 +62,7 @@ class Database_Core {
 	 * Constructor
 	 *
 	 * @access  public
-	 * @param   array
+	 * @param   mixed
 	 * @return  void
 	 */
 	public function __construct($config = array())
@@ -74,23 +74,19 @@ class Database_Core {
 		}
 		elseif (is_string($config))
 		{
-			// Group namd
-			$name = $config;
-
-			// This checks to see if the config is DSN string, or a config group name
-			if (strpos($config, '://') === FALSE)
-			{
-				$name = $config;
-
-				// Test the config group name
-				if (($config = Config::item('database.'.$config)) === FALSE)
-				{
-					throw new Kohana_Database_Exception('database.undefined_group', $name);
-				}
-			}
-			else
+			// The config is a DSN string
+			if (strpos($config, '://') !== FALSE)
 			{
 				$config = array('connection' => $config);
+			}
+			// The config is a group name
+			else
+			{
+				$name = $config;
+				
+				// Test the config group name
+				if (($config = Config::item('database.'.$config)) === FALSE)
+					throw new Kohana_Database_Exception('database.undefined_group', $name);
 			}
 		}
 
@@ -99,9 +95,7 @@ class Database_Core {
 
 		// Make sure the connection is valid
 		if (strpos($this->config['connection'], '://') === FALSE)
-		{
 			throw new Kohana_Exception('database.invalid_dsn', $this->config['connection']);
-		}
 
 		// Parse the DSN, creating an array to hold the connection parameters
 		$db = array
@@ -134,7 +128,7 @@ class Database_Core {
 			$connection = implode('/', $connection);
 
 			// Find the socket
-			if (preg_match('/^unix\(.+\)/', $connection))
+			if (preg_match('/^unix\([^)]++\)/', $connection))
 			{
 				// This one is a little hairy: we explode based on the end of
 				// the socket, removing the 'unix(' from the connection string
