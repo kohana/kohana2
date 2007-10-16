@@ -16,11 +16,8 @@ echo html::stylesheet(array
 
 </head>
 <body>
-<div id="container">
-
-
 <!-- Start Developer Menu -->
-<div id="developer">
+<div id="developer" class="container clearfix">
 <span>Developers:</span>
 <ul>
 <li><?php echo html::anchor('http://kohanaphp.com/trac', 'Trac') ?></li>
@@ -33,7 +30,7 @@ echo html::stylesheet(array
 <!-- End Developer Menu -->
 
 <!-- Start Header -->
-<div id="header" class="clearfix">
+<div id="header" class="container clearfix">
 
 <!-- Start Logo -->
 <h1 id="logo">Kohana</h1>
@@ -53,8 +50,13 @@ echo html::stylesheet(array
 <!-- End Header -->
 
 <!-- Start Body -->
-<div id="body">
+<div id="body" class="container">
+
+<!-- Start Content -->
+<div id="content-wrapper"><div id="content">
 <?php echo $content ?>
+</div></div>
+<!-- End Content -->
 
 <!-- Start Sidebar -->
 <div id="sidebar">
@@ -77,7 +79,7 @@ echo html::stylesheet(array
 </div>
 <!-- End Body -->
 
-<div id="footer" class="clearfix"><strong>&copy;2007 Kohana Team. All rights reserved.</strong> Powered by Kohana v{kohana_version}. Rendered in {execution_time} seconds.</div>
+<div id="footer" class="container"><strong>&copy;2007 Kohana Team. All rights reserved.</strong> Powered by Kohana v{kohana_version}. Rendered in {execution_time} seconds.</div>
 
 </div>
 </body>
