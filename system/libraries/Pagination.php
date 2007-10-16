@@ -48,7 +48,7 @@ class Pagination_Core {
 	public function __construct($setup = array())
 	{
 		// Load pagination setup values
-		$setup = array_merge(Config::item('pagination'), $setup);
+		$setup = array_merge(Config::load('pagination', FALSE), $setup);
 		
 		foreach ($setup as $key => $value)
 		{
