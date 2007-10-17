@@ -41,6 +41,9 @@ class User_Guide_Controller extends Controller {
 			url::redirect('user_guide/'.$language.'/kohana/about');
 		}
 
+		// Reset the language to non-localized language
+		$language = current(explode('_', $language));
+
 		// Set the view that will be loaded
 		$category = ($category == FALSE)  ? 'kohana' : $category;
 		$content  = 'user_guide/'.$language.'/'.$category.'/'.$section;
