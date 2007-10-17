@@ -50,7 +50,7 @@ echo html::stylesheet(array
 <!-- End Header -->
 
 <!-- Start Body -->
-<div id="body" class="container">
+<div id="body" class="container clearfix">
 
 <!-- Start Content -->
 <div id="content-wrapper"><div id="content">

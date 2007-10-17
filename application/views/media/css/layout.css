@@ -1,8 +1,6 @@
 /* Defaults */
-html { background: #f7fbf1; color: #313230; }
+html { background: #83c018; color: #313230; }
 body { font-family: Arial, Verdana, sans-serif; font-size: 76%; line-height: 1; }
-a { color: #006; text-decoration: none; }
-a:hover { color: #009; }
 h1 { font-size: 4em; }
 h2 { font-size: 2em; }
 h3 { font-size: 1.7em; }
@@ -10,12 +8,15 @@ h4 { font-size: 1.5em; }
 h5 { font-size: 1.3em; }
 h6 { font-size: 1.1em; }
 h2, h3, h4, h5, h6 { margin-bottom: 0.6em; }
+a { color: #006; text-decoration: none; }
+a:hover { color: #009; }
+abbr { border-bottom: solid 1px #ccc; cursor: help; }
 
 /* Container */
 .container { position: relative; clear: both; }
 
 /* Developer Menu */
-#developer { padding: 1em 2em; background: #1e2e42; text-transform: uppercase; font-size: 0.9em; color: #2d4565; text-align: right; }
+#developer { padding: 1em 4em; background: #1e2e42; text-transform: uppercase; font-size: 0.9em; color: #2d4565; text-align: left; }
 	#developer span { font-weight: bold; }
 	#developer ul { display: inline; }
 		#developer li { display: inline; padding-left: 0.5em; }
@@ -24,23 +25,23 @@ h2, h3, h4, h5, h6 { margin-bottom: 0.6em; }
 			#developer a:active { border-color: #114; }
 
 /* Header */
-#header { height: 16em; background: #83c018 url(../img/kohana.png) 2em 5em no-repeat; border-bottom: solid 0.1em #96a67a; }
+#header { height: 16em; background: #83c018 url(../img/kohana.png) 4em 5em no-repeat; border-bottom: solid 0.1em #96a67a; }
 
 /* Logo */
 #logo { display: none;  }
 
 /* Main Menu */
-#menu { position: absolute; bottom: 0; margin: 0 2em; margin-right: 22em; }
+#menu { position: absolute; bottom: 0; margin: 0 4em; margin-right: 22em; }
 	#menu li { display: block; float: left; margin-right: 0.4em; }
 	#menu li.active { border-right-color: #76b714; }
 		#menu a { display: block; padding: 1em 1.2em 0.6em; margin-bottom: -0.1em; border: solid 0.1em #83c018; border-bottom: 0; text-transform: uppercase; font-weight: bold; color: #3f5c0b; }
 		#menu a:hover { background: #76b714; color: #2c360b; }
 		#menu li.active a { background: #f7fbf1; border-color: #96a67a; }
-		#menu li.active a:hover { background: #f7fbf1; color: #000; }
+		#menu li.active a:hover { color: #000; }
 
 /* Main Body */
-#body { position: relative; padding: 1em 4em; }
-	#body p { margin-bottom: 1em; }
+#body { position: relative; padding: 1em 4em; background: #f7fbf1; }
+	#body p { padding-bottom: 1em; }
 	#body ul { padding-left: 1.5em; margin-bottom: 1em; list-style: square; line-height: 180%; }
 	#body .intro { margin: 1em; margin-left: -4em; padding: 1em 2em; padding-left: 4em; background: #eaeee5; font-size: 1.6em; line-height: 1.4em; color: #8C9393; }
 		#body .intro strong { text-transform: uppercase; font-weight: bold; font-size: 0.76em; color: #7b7d78; letter-spacing: -0.02em; white-space: nowrap; }
@@ -50,19 +51,18 @@ h2, h3, h4, h5, h6 { margin-bottom: 0.6em; }
 #content { float: left; width: 100%; margin-right: -21em; }
 
 /* Sidebar */
-#sidebar { float: right; width: 20em; margin-top: -14em; margin-bottom: 2em; }
-	#sidebody { padding: 5px; background: #c9e59d; }
-		#sidecontent { background: #f7fbf1; padding-bottom: 1px; }
-		#sidecontent h6 { margin-bottom: 1em; padding: 0.5em 0; background: #c9e59d; /*background: #dfeec4 url(../img/gradient1.png) right top repeat-y;*/ text-transform: uppercase;  text-indent: 0.6em; font-weight: bold; }
-		#sidecontent p { padding: 0 1em; }
+#sidebar { float: right; width: 20em; margin-top: -12em; margin-bottom: 2em; }
+	#sidebody { background: #a04807; color: #ddd; }
+		#sidecontent h6 { margin-bottom: 1em; padding: 0.5em 0; background: #b04f08; border-bottom: dotted 0.1em #ce6110; text-transform: uppercase; text-indent: 0.6em; font-weight: bold; }
+		#sidecontent p { padding: 0 1em 1em; }
 
-#download { margin-bottom: 2em; border: solid 3px #76b714; }
-	#download a { display: block; padding: 2em 1em; padding-left: 90px; background: #93c924;  border: solid 1px #63a80d; text-transform: uppercase; font-size: 0.8em; color: #efefef; }
-	#download a:hover { background-color: #a2d135; }
+#download { margin-bottom: 2em; border: solid 0.1em #96a67a; }
+	#download a { display: block; padding: 2em 1em; padding-right: 90px; background: #a04807;  text-transform: uppercase; font-size: 0.8em; color: #efefef; }
+	#download a:hover { background: #b04f08; }
 		#download a strong,
 		#download a span { display: block; font-size: 2em; font-weight: bold; }
 		#download a span { font-size: 1.8em; text-transform: none; }
 
 /* Footer */
-#footer { padding: 1em 2em; background: #83c018; text-transform: uppercase; text-align: right; color: #eee; font-size: 0.8em; }
+#footer { padding: 1em 4em; background: #83c018; text-transform: uppercase; text-align: right; color: #eee; font-size: 0.8em; }
 	#footer strong { float: left; font-weight: bold; }
