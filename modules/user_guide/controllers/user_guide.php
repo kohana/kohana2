@@ -22,7 +22,9 @@ class User_Guide_Controller extends Controller {
 		);
 		
 		if ($this->uri->segment(2) == FALSE)
-			url::redirect('user_guide/'.Config::item('core.locale').'/kohana/about');
+		{
+			url::redirect('user_guide/'.current(explode('_', Config::item('locale.language')).'/kohana/about');
+		}
 	}
 
 	public function _remap()

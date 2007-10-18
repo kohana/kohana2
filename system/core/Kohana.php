@@ -74,7 +74,8 @@ final class Config {
 			// Normalize all paths to be absolute and have a trailing slash
 			foreach($config['include_paths'] as $path)
 			{
-				if (($path = str_replace('\\', '/', realpath($path))) == '') continue;
+				if (($path = str_replace('\\', '/', realpath($path))) == '')
+					continue;
 
 				self::$include_paths[] = $path.'/';
 			}
@@ -410,7 +411,7 @@ class Kohana {
 		{
 			// Set default timezone, due to increased validation of date settings
 			// which cause massive amounts of E_NOTICEs to be generated
-			$timezone = Config::item('core.timezone');
+			$timezone = Config::item('locale.timezone');
 			$timezone = ($timezone == FALSE) ? @date_default_timezone_get() : $timezone;
 
 			date_default_timezone_set($timezone);
@@ -438,7 +439,7 @@ class Kohana {
 		header('Content-type: text/html; charset=UTF-8');
 
 		// Set locale information
-		setlocale(LC_ALL, Config::item('core.locale').'UTF-8');
+		setlocale(LC_ALL, Config::item('locale.language').'UTF-8');
 
 		if ($hooks = Config::item('hooks.enable'))
 		{
@@ -913,7 +914,7 @@ class Kohana {
 			$messages = array();
 
 			// The name of the file to search for
-			$filename = Config::item('core.locale').'/'.$group;
+			$filename = Config::item('locale.language').'/'.$group;
 
 			// Loop through the files and include each one, so SYSPATH files
 			// can be overloaded by more localized files

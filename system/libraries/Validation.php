@@ -449,6 +449,18 @@ class Validation_Core {
 		if (empty($allowed))
 			throw new Kohana_Exception('upload.set_allowed');
 
+		// Fetch the real upload path
+		if (($upload_path = str_replace('\\', '/', realpath(Config::item('upload.upload_directory')))) == FALSE)
+		{
+			$data['error'] = UPLOAD_ERR_NO_TMP_DIR;
+		}
+
+		// Validate the upload path
+		if ( ! is_dir($upload_path) OR ! is_writable($upload_path))
+		{
+			$data['error'] = UPLOAD_ERR_CANT_WRITE;
+		}
+
 		// Error code definitions available at:
 		// http://us.php.net/manual/en/features.file-upload.errors.php
 		switch($data['error'])
@@ -485,7 +497,7 @@ class Validation_Core {
 			break;
 			// Could not write to the temporary directory
 			case UPLOAD_ERR_CANT_WRITE:
-				throw new Kohana_Exception('upload.tmp_unwritable');
+				throw new Kohana_Exception('upload.tmp_unwritable', $upload_path);
 			break;
 		}
 
@@ -559,8 +571,8 @@ class Validation_Core {
 		// Removes spaces from the filename if configured to do so
 		$filename = Config::item('upload.remove_spaces') ? preg_replace('/\s+/', '_', $data['name']) : $data['name'];
 
-		// Fetch the real path of the upload directory, add the filename
-		$filename = str_replace('\\', '/', realpath(Config::item('upload.upload_directory'))).'/'.$filename;
+		// Change the filename to a full path name
+		$filename = $upload_path.'/'.$filename;
 
 		// Move the upload file to the new location
 		move_uploaded_file($data['tmp_name'], $filename);

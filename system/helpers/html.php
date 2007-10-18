@@ -62,21 +62,16 @@ class html {
 			$id = ''; // anchor#id
 			$qs = ''; // anchor?query=string
 
-			if (($start = strpos($uri, '?')) !== FALSE)
+			if (strpos($uri, '?') !== FALSE)
 			{
-				$qs  = substr($uri, $start);
-				$uri = substr($uri, 0, $start);
-
-				if (($start = strpos($qs, '#')) !== FALSE)
-				{
-					$id = substr($qs, $start);
-					$qs = substr($qs, 0, $start);
-				}
+				list ($uri, $qs) = explode('?', $uri, 2);
+				$qs = '?'.$qs;
 			}
-			elseif (($start = strpos($uri, '#')) !== FALSE)
+
+			if (strpos($uri, '#') !== FALSE)
 			{
-				$id  = substr($uri, $start);
-				$uri = substr($uri, 0, $start);
+				list ($uri, $id) = explode('#', $uri, 2);
+				$id = '#'.$id;
 			}
 
 			$site_url = url::site($uri, $protocol).$qs.$id;
@@ -86,11 +81,24 @@ class html {
 			$site_url = $uri;
 		}
 
-		$title = ($title == FALSE) ? $site_url : $title;
+		return
+		// Parsed URL
+		'<a href="'.$site_url.'"'
+		// Attributes empty? Use an empty string
+		.(empty($attributes) ? '' : self::attributes($attributes)).'>'
+		// Title empty? Use the parsed URL
+		.(empty($title) ? $site_url : $title).'</a>';
+	}
 
-		$attributes = ($attributes == TRUE) ? self::attributes($attributes) : '';
-
-		return '<a href="'.$site_url.'"'.$attributes.'>'.$title.'</a>';
+	public static function file_anchor($uri, $title = FALSE, $attributes = FALSE, $protocol = FALSE)
+	{
+		return
+		// Base URL + URI = full URL
+		'<a href="'.url::base(FALSE).$uri.'"'
+		// Attributes empty? Use an empty string
+		.(empty($attributes) ? '' : self::attributes($attributes)).'>'
+		// Title empty? Use the filename part of the URI
+		.(empty($title) ? end(explode('/', $uri)) : $title) .'</a>';
 	}
 
 	public static function panchor($protocol, $uri, $title = FALSE, $attributes = FALSE)
