@@ -103,6 +103,27 @@ class URI_Core extends Router {
 	{
 		return self::$current_uri;
 	}
+	
+	public function __toString()
+	{
+		return $this->string();
+	}
+
+	/**
+	 * Returns the URI segment that is preceded by a certain other segment (label)
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	mixed
+	 * @return	mixed
+	 */
+	public function label($label, $default = FALSE)
+	{
+		if (($key = array_search($label, self::$segments)) === FALSE)
+			return $default;
+
+		return $this->segment($key + 2, $default);
+	}
 
 	/**
 	 * Returns the total number of URI segments
