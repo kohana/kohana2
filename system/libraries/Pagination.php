@@ -24,7 +24,6 @@ class Pagination_Core {
 	public $base_url           = '';
 	public $style              = 'classic';
 	public $uri_segment        = 3;
-	public $uri_label;
 	public $items_per_page     = 10;
 	
 	public $current_page;
@@ -45,12 +44,13 @@ class Pagination_Core {
 	 * @param   array
 	 * @return  void
 	 */
-	public function __construct($setup = array())
+	public function __construct($config = array())
 	{
-		// Load pagination setup values
-		$setup = array_merge(Config::load('pagination', FALSE), $setup);
+		// Merge all pagination config values
+		$config = array_merge(Config::load('pagination', FALSE), (array) $config);
 		
-		foreach ($setup as $key => $value)
+		// Assign config values to the object
+		foreach ($config as $key => $value)
 		{
 			if (property_exists($this, $key))
 			{
@@ -58,24 +58,33 @@ class Pagination_Core {
 			}
 		}
 		
-		// Explode the base_url into segments
-		$this->base_url = explode('/', trim($this->base_url, '/'));
-
-		// If a uri_label is given, look for the corresponding uri_segment
-		if (isset($this->uri_label))
+		// Set a default base_url if none given via config
+		if ($this->base_url == '')
 		{
-			$uri_label_segment = array_search($this->uri_label, $this->base_url);
-			
-			if ($uri_label_segment !== FALSE)
-			{
-				$this->uri_segment = $uri_label_segment + 2;
-			}
+			$this->base_url = (string) Kohana::instance()->uri;
 		}
 		
+		// Explode base_url into segments
+		$this->base_url = explode('/', trim($this->base_url, '/'));
+
+		// Convert uri 'label' to corresponding integer if needed
+		if (is_string($this->uri_segment))
+		{
+			if (($key = array_search($this->uri_segment, $this->base_url)) === FALSE)
+			{
+				// If uri 'label' is not found, auto add it to base_url
+				$this->base_url[] = $this->uri_segment;
+				$this->uri_segment = count($this->base_url) + 1;
+			}
+			else
+			{
+				$this->uri_segment = $key + 2;
+			}
+		}
+
 		// Create a generic base_url with {page} placeholder
 		$this->base_url[$this->uri_segment - 1] = '{page}';
-		$this->base_url = implode('/', $this->base_url);
-		$this->base_url = url::site($this->base_url);
+		$this->base_url = url::site(implode('/', $this->base_url));
 		
 		// Core pagination values
 		$this->total_items        = (int) max(0, $this->total_items);

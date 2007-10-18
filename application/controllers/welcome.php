@@ -168,8 +168,8 @@ class Welcome_Controller extends Controller {
 		// This is because the pagination views call $this->pagination->url().
 		// Problem: what in case your page has multiple pagination areas? Hmm...
 		$this->pagination = new Pagination(array(
-			'base_url'       => 'welcome/pagination_example/page/', // page segment doesn't need to be the last one
-			'uri_segment'    => 4, // 'uri_label' => 'page' would have the same result
+			// 'base_url'    => 'welcome/pagination_example/page/', // base_url will default to current uri
+			'uri_segment'    => 'page', // pass a string as uri_segment to trigger former 'label' functionality
 			'total_items'    => 254, // use db count query here of course
 			'items_per_page' => 10, // it may be handy to set defaults for stuff like this in config/pagination.php
 			'style'          => 'classic' // pick one from: classic (default), digg, extended, punbb, or add your own!
