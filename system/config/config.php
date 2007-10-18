@@ -48,18 +48,6 @@ $config['url_suffix'] = '.html';
 
 /*
 | -----------------------------------------------------------------------------
-| Permitted URI Characters (EXPERT)
-| -----------------------------------------------------------------------------
-|
-| This is the list of characters that Kohana will accept in the URI. Note that
-| the default will accept urlencoded (eg: %20) characters to pass through. ID
-| anchors (eg: #header_id) are always allowed.
-|
-*/
-$config['permitted_uri_chars'] = 'a-z 0-9~%.:_-';
-
-/*
-| -----------------------------------------------------------------------------
 | Global XSS Filtering
 | -----------------------------------------------------------------------------
 |
@@ -68,17 +56,6 @@ $config['permitted_uri_chars'] = 'a-z 0-9~%.:_-';
 |
 */
 $config['global_xss_filtering'] = FALSE;
-
-/*
-| -----------------------------------------------------------------------------
-| Locale
-| -----------------------------------------------------------------------------
-|
-| Kohana supports full international locale support. Changing this option to an
-| unavailable locale will break Kohana.
-|
-*/
-$config['locale'] = 'en_US';
 
 /*
 | -----------------------------------------------------------------------------
@@ -103,17 +80,6 @@ $config['include_paths'] = array
 |
 */
 $config['extension_prefix'] = 'MY_';
-
-/*
-| -----------------------------------------------------------------------------
-| Time Zone
-| -----------------------------------------------------------------------------
-|
-| You can set any timezone supported by PHP here. A list of avaialable timezones
-| is located here: http://php.net/timezones
-|
-*/
-$config['timezone'] = '';
 
 /*
 | -----------------------------------------------------------------------------
