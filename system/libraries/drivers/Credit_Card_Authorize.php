@@ -24,40 +24,40 @@ class Credit_Card_Authorize_Driver
 
 	private $authnet_values = array
 	(
-		"x_login"			=> '',
-		"x_version"			=> "3.1",
-		"x_delim_char"		=> "|",
-		"x_delim_data"		=> "TRUE",
-		"x_url"				=> "FALSE",
-		"x_type"			=> "AUTH_CAPTURE",
-		"x_method"			=> "CC",
-		"x_tran_key"		=> '',
-		"x_relay_response"	=> "FALSE",
-		"x_card_num"		=> '',
-		"x_exp_date"		=> '',
-		"x_description"		=> '',
-		"x_amount"			=> '',
-		"x_first_name"		=> '',
-		"x_last_name"		=> '',
-		"x_company"			=> '',
-		"x_address"			=> '',
-		"x_city"			=> '',
-		"x_state"			=> '',
-		"x_zip" 			=> '',
-		"x_email"			=> '',
-		"x_phone"			=> '',
-		"x_fax"				=> '',
-		"x_cust_id"			=> '',
-		"x_ship_to_first_name"  => '',
-		"x_ship_to_last_name"   => '',
-		"x_ship_to_company"	=> '',
-		"x_ship_to_address"	=> '',
-		"x_ship_to_city"	=> '',
-		"x_ship_to_state"	=> '',
-		"x_ship_to_zip"		=> '',
-		"x_tax"				=> '',
-		"x_freight"			=> '',
-		"x_comments" 		=> '',
+		'x_login'			=> '',
+		'x_version'			=> '3.1',
+		'x_delim_char'		=> '|',
+		'x_delim_data'		=> 'TRUE',
+		'x_url'				=> 'FALSE',
+		'x_type'			=> 'AUTH_CAPTURE',
+		'x_method'			=> 'CC',
+		'x_tran_key'		=> '',
+		'x_relay_response'	=> 'FALSE',
+		'x_card_num'		=> '',
+		'x_exp_date'		=> '',
+		'x_description'		=> '',
+		'x_amount'			=> '',
+		'x_first_name'		=> '',
+		'x_last_name'		=> '',
+		'x_company'			=> '',
+		'x_address'			=> '',
+		'x_city'			=> '',
+		'x_state'			=> '',
+		'x_zip' 			=> '',
+		'x_email'			=> '',
+		'x_phone'			=> '',
+		'x_fax'				=> '',
+		'x_cust_id'			=> '',
+		'x_ship_to_first_name'  => '',
+		'x_ship_to_last_name'   => '',
+		'x_ship_to_company'	=> '',
+		'x_ship_to_address'	=> '',
+		'x_ship_to_city'	=> '',
+		'x_ship_to_state'	=> '',
+		'x_ship_to_zip'		=> '',
+		'x_tax'				=> '',
+		'x_freight'			=> '',
+		'x_comments' 		=> '',
 	);
 	
 	public function __construct($config)
@@ -113,13 +113,13 @@ class Credit_Card_Authorize_Driver
 				
 				if($pstr_trimmed=="")
 				{
-					$pstr_trimmed="NO VALUE RETURNED";
+					$pstr_trimmed='NO VALUE RETURNED';
 				}
 				
 				switch($j)
 				{
 					case 1:
-						if($pstr_trimmed=="1") // Approved
+						if($pstr_trimmed=='1') // Approved
 							return TRUE;
 						else
 							return FALSE;
