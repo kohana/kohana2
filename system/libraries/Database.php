@@ -782,7 +782,7 @@ class Database_Core {
 	*/
 	public function list_tables()
 	{
-		$this->connected OR $this->driver->connect($this->config);
+		$this->link OR $this->driver->connect($this->config);
 
 		$this->reset_select();
 
