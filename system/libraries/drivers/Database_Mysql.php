@@ -59,7 +59,7 @@ class Database_Mysql_Driver implements Database_Driver {
 				echo $this->set_charset($charset);
 			}
 
-			return TRUE;
+			return $this->link;
 		}
 
 		return FALSE;

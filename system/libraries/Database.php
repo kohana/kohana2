@@ -40,6 +40,7 @@ class Database_Core {
 
 	// Database driver object
 	protected $driver;
+	protected $link;
 
 	// Un-compiled parts of the SQL query
 	protected $select     = array();
@@ -55,7 +56,6 @@ class Database_Core {
 	protected $distinct   = FALSE;
 	protected $limit      = FALSE;
 	protected $offset     = FALSE;
-	protected $connected  = FALSE;
 	protected $last_query = '';
 
 	/**
@@ -83,7 +83,7 @@ class Database_Core {
 			else
 			{
 				$name = $config;
-				
+
 				// Test the config group name
 				if (($config = Config::item('database.'.$config)) === FALSE)
 					throw new Kohana_Database_Exception('database.undefined_group', $name);
@@ -193,10 +193,11 @@ class Database_Core {
 	 */
 	public function connect()
 	{
-		$this->connected = $this->driver->connect($this->config);
-
-		if ($this->connected != TRUE)
-			throw new Kohana_Exception('database.connection', $this->driver->show_error());
+		if ( ! is_resource($this->link))
+		{
+			if ( ! is_resource($this->link = $this->driver->connect($this->config)))
+				throw new Kohana_Exception('database.connection', $this->driver->show_error());
+		}
 	}
 
 	/**
@@ -210,20 +211,37 @@ class Database_Core {
 	{
 		if ($sql == '') return FALSE;
 
-		if ( ! $this->connected) $this->connect();
+		// No link? Connect!
+		$this->link or $this->connect();
+
+		// Start the benchmark
+		$start = microtime(TRUE);
 
 		if (func_num_args() > 1) //if we have more than one argument ($sql)
 		{
 			$argv = func_get_args();
 			$binds = (is_array(next($argv))) ? current($argv) : $argv;
 		}
+
 		// Compile binds if needed
 		if (isset($binds))
 		{
 			$sql = $this->compile_binds($sql, $binds);
 		}
-		$this->last_query = $sql;
-		return $this->driver->query($sql);
+
+		// Fetch the result
+		$result = $this->driver->query($this->last_query = $sql);
+
+		// Stop the benchmark
+		$stop = microtime(TRUE);
+
+		if ($this->config['benchmark'] == TRUE)
+		{
+			// Benchmark the query
+			self::$benchmarks[] = array('query' => $sql, 'time' => $stop - $start);
+		}
+
+		return $result;
 	}
 
 	/**
@@ -539,15 +557,7 @@ class Database_Core {
 
 		$sql = $this->driver->compile_select(get_object_vars($this));
 
-		$start = microtime(TRUE);
 		$result = $this->query($sql);
-		$stop = microtime(TRUE);
-
-		if ($this->config['benchmark'] == TRUE)
-		{
-			// Benchmark the query
-			self::$benchmarks[] = array('query' => $sql, 'time' => $stop - $start);
-		}
 
 		$this->reset_select();
 		$this->last_query = $sql;

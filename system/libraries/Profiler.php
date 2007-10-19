@@ -52,19 +52,13 @@ class Profiler_Core {
 		$data = array
 		(
 			'benchmarks' => array(),
-			'queries'    => FALSE
+			'queries'    => Database::$benchmarks
 		);
 
 		// Clean unique id from system benchmark names
 		foreach (Benchmark::get_all() as $name => $time)
 		{
 			$data['benchmarks'][str_replace(SYSTEM_BENCHMARK.'_', '', $name)] = $time;
-		}
-
-		// Get database queries
-		if (isset(Kohana::instance()->db))
-		{
-			$data['queries'] = Database::$benchmarks;
 		}
 
 		// Load the profiler view

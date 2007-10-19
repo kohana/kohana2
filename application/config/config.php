@@ -67,7 +67,8 @@ $config['global_xss_filtering'] = FALSE;
 */
 $config['include_paths'] = array
 (
-	'modules/user_guide'
+	'modules/user_guide',
+	'modules/orm'
 );
 
 /*

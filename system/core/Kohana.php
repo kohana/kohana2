@@ -1011,7 +1011,7 @@ class Kohana {
 
 		foreach($params as $var)
 		{
-			$output[] = '<pre>'.print_r($var, TRUE).'<pre>';
+			$output[] = '<pre>'.print_r($var, TRUE).'</pre>';
 		}
 
 		return implode("\n", $output);
