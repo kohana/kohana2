@@ -218,5 +218,11 @@ class Welcome_Controller extends Controller {
 		}
 	}
 
+	function credit_card_example()
+	{
+		$credit_card = new Creditcard();
+		
+		echo '<pre>'.print_r($credit_card, true).'</pre>';
+	}
 
 }

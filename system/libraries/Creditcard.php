@@ -21,13 +21,13 @@
  * @license     http://www.codeigniter.com/user_guide/license.html
  * @link        http://kohanaphp.com/user_guide/en/general/credit_card.html
  */
-class Credit_Card_Core {
+class Creditcard_Core {
 	
 	// Configuration
 	protected $config = array
 	(
 		'driver'		=> NULL,
-		'curl_settings'	=> array(	CURLOPT_HEADER => FALSE,
+		'curl_config'	=> array(	CURLOPT_HEADER => FALSE,
 									CURLOPT_RETURNTRANSFER => TRUE,
 									CURLOPT_SSL_VERIFYPEER => FALSE),
 		'test_mode'		=> TRUE,
@@ -79,7 +79,7 @@ class Credit_Card_Core {
 		if (empty($config))
 		{
 			// Load the default group
-			$config = Config::item('credit_card.default');
+			$config = Config::item('creditcard.default');
 		}
 		else if (is_string($config))
 		{
@@ -94,10 +94,10 @@ class Credit_Card_Core {
 			throw new Kohana_Exception();
 
 		// Get the driver specific settings
-		$this->config = array_merge($this->config, Config::item('credit_card.'.$this->config['driver']));
+		$this->config = array_merge($this->config, Config::item('creditcard.'.$this->config['driver']));
 
 		// Set driver name
-		$driver = 'Credit_Card_'.ucfirst($this->config['driver']).'_Driver';
+		$driver = 'Creditcard_'.ucfirst($this->config['driver']).'_Driver';
 
 		// Manually call auto-loading, for proper exception handling
 		Kohana::auto_load($driver);

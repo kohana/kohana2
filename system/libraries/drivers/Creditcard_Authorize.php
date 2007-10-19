@@ -19,7 +19,7 @@
  * @author      Kohana Team
  * @link        http://kohanaphp.com/user_guide/en/libraries/database.html
  */
-class Credit_Card_Authorize_Driver
+class Creditcard_Authorize_Driver
 {
 	/**
 	 * Fields required to do a transaction
