@@ -38,7 +38,7 @@ class Credit_Card_Core {
 	/*
 	 * The standard processor fields...every CC processor should use these terms, 
 	 * custom ones will be added by the programmer, 
-	 * and the driver will make sure they are set
+	 * and the driver will make sure they are set.
 	 * 
 	 * if some are similar, but not exact (maybe card_num should be cc_num), the driver will translate those as well
 	 */
@@ -89,9 +89,13 @@ class Credit_Card_Core {
 		// Merge the default config with the passed config
 		$this->config = array_merge($this->config, $config);
 		
+		// Woah! We can't continue like this!
 		if ($this->config['driver'] == NULL)
 			throw new Kohana_Exception();
-			
+
+		// Get the driver specific settings
+		$this->config = array_merge($this->config, Config::item('credit_card.'.$this->config['driver']));
+
 		// Set driver name
 		$driver = 'Credit_Card_'.ucfirst($this->config['driver']).'_Driver';
 
@@ -102,11 +106,22 @@ class Credit_Card_Core {
 		$this->driver = new $driver($this->config);
 	}
 	
+	/**
+	 * Sets the CC processor variables 
+	 *
+	 * @param string $name
+	 * @param mixed $val
+	 */
 	public function __set($name, $val)
 	{
 		$this->fields[$name] = $val;
 	}
 	
+	/**
+	 * Runs the transaction
+	 *
+	 * @return boolean
+	 */
 	public function process()
 	{
 		return $this->driver->process($this->fields);
