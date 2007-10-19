@@ -76,7 +76,7 @@ class Image_Core {
 	 *
 	 * @access	public
 	 * @param	mixed
-	 * @return	void
+	 * @return	object
 	 */
 	public function width($width)
 	{
@@ -84,10 +84,12 @@ class Image_Core {
 		$percentage = (bool) strpos($width, '%');
 		
 		// Clean width
-		$width = preg_replace('/\D+/', '', $width);
+		$width = (int) $width;
 		
-		// Store width command
+		// Store height command
 		$this->commands['width'] = (int) ($percentage) ? $this->properties['width'] / 100 * $percentage : $width;
+		
+		return $this;
 	}
 
 	/**
@@ -95,7 +97,7 @@ class Image_Core {
 	 *
 	 * @access	public
 	 * @param	mixed
-	 * @return	void
+	 * @return	object
 	 */
 	public function height($height)
 	{
@@ -103,10 +105,12 @@ class Image_Core {
 		$percentage = (bool) strpos($height, '%');
 		
 		// Clean height
-		$height = preg_replace('/\D+/', '', $height);
+		$height = (int) $height;
 		
-		// Store width command
+		// Store height command
 		$this->commands['height'] = (int) ($percentage) ? $this->properties['height'] / 100 * $percentage : $height;
+		
+		return $this;
 	}
 
 	/**
@@ -114,11 +118,13 @@ class Image_Core {
 	 *
 	 * @access	public
 	 * @param	boolean
-	 * @return	void
+	 * @return	object
 	 */
 	public function constrain_proportions($bool)
 	{
 		$this->commands['constrain_proportions'] = (bool) $bool;
+		
+		return $this;
 	}
 
 	/**
@@ -126,7 +132,7 @@ class Image_Core {
 	 *
 	 * @access	public
 	 * @param	integer
-	 * @return	void
+	 * @return	object
 	 */
 	public function rotate($degrees)
 	{
@@ -148,6 +154,8 @@ class Image_Core {
 		
 		// Store rotation command
 		$this->commands['rotate'] = $degrees;
+		
+		return $this;
 	}
 
 	/**
