@@ -80,6 +80,9 @@ class Credit_Card_Authorize_Driver
 	
 	function process()
 	{
+		// Check for required fields
+		
+		
 		$fields = "";
 		foreach( $authnet_values as $key => $value )
 		{
@@ -90,10 +93,14 @@ class Credit_Card_Authorize_Driver
 		$post_url = ($this->config['test_mode']) ? 'https://certification.authorize.net/gateway/transact.dll' : 'https://secure.authorize.net/gateway/transact.dll'; 
 		
 		$ch = curl_init($post_url); 
+		
+		// Set custom curl options
 		foreach ($this->curl_config as $key => $value)
 		{
 			curl_setopt($ch, $key, $value);
 		}
+		
+		// Set the curl POST fields
 		curl_setopt($ch, CURLOPT_POSTFIELDS, rtrim( $fields, "& " ));
 		
 		$resp = curl_exec($ch); //execute post and get results

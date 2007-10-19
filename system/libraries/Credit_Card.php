@@ -30,10 +30,43 @@ class Credit_Card_Core {
 		'curl_settings'	=> array(	CURLOPT_HEADER => FALSE,
 									CURLOPT_RETURNTRANSFER => TRUE,
 									CURLOPT_SSL_VERIFYPEER => FALSE),
-		'test_mode'		=> TRUE
+		'test_mode'		=> TRUE,
 	);
 	
 	protected $driver = NULL;
+	
+	/*
+	 * The standard processor fields...every CC processor should use these terms, 
+	 * custom ones will be added by the programmer, 
+	 * and the driver will make sure they are set
+	 * 
+	 * if some are similar, but not exact (maybe card_num should be cc_num), the driver will translate those as well
+	 */
+	protected $fields = array(	'card_num' 			=> '',
+								'exp_date'			=> '',
+								'description'		=> '',
+								'amount'			=> '',
+								'tax'				=> '',
+								'shipping'			=> '',
+								'first_name'		=> '',
+								'last_name'			=> '',
+								'company'			=> '',
+								'address'			=> '',
+								'city'				=> '',
+								'state'				=> '',
+								'zip'				=> '',
+								'email'				=> '',
+								'phone'				=> '',
+								'fax'				=> '',
+								'ship_to_first_name'=> '',
+								'ship_to_last_name'	=> '',
+								'ship_to_company'	=> '',
+								'ship_to_address'	=> '',
+								'ship_to_city'		=> '',
+								'ship_to_state'		=> '',
+								'ship_to_zip'		=> '',
+								);
+	
 	/**
 	 * Constructor
 	 *
@@ -69,15 +102,13 @@ class Credit_Card_Core {
 		$this->driver = new $driver($this->config);
 	}
 	
-	public function set_post_fields($data)
+	public function __set($name, $val)
 	{
-		$this->driver->set_fields($data);
-		
-		return $this;
+		$this->fields[$name] = $val;
 	}
 	
 	public function process()
 	{
-		return $this->driver->process();
+		return $this->driver->process($this->fields);
 	}
 }
