@@ -8,9 +8,7 @@ class Orm_Controller extends Controller {
 
 		$user = new User_Model(1);
 
-		$user->first_name = 'Woody';
-
-		print "user: ".Kohana::debug_output($user->save());
+		print "user: ".Kohana::debug_output($user->newsletters(1));
 
 		print Kohana::lang('core.stats_footer');
 	}

@@ -102,6 +102,85 @@ class ORM_Core {
 	}
 
 	/**
+	 * Magic __get function
+	 *
+	 * @access public
+	 * @param  string
+	 * @return void
+	 */
+	public function __get($key)
+	{
+		if ( ! isset($this->_data[$key]))
+		{
+			if (isset($this->_relationships['has_many']) AND isset($this->_relationships['has_many'][$key]))
+			{
+				die($this->_name.' has many '.$key);
+			}
+		}
+		else
+		{
+			return $this->_data[$key];
+		}
+	}
+
+	/**
+	 * Magic __set function
+	 *
+	 * @access public
+	 * @param  string
+	 * @param  mixed
+	 * @return void
+	 */
+	public function __set($key, $val)
+	{
+		if ($key[0] !== '_')
+		{
+			if (isset($this->_data[$key]) AND $this->_data[$key] != $val)
+			{
+				$this->_changed[$key] = $key;
+			}
+
+			$this->_data[$key] = $val;
+		}
+	}
+
+	public function __call($method, $arguments = array())
+	{
+		if ( ! empty($this->_relationships['has_many'][$method]))
+		{
+			$array = array();
+
+			// Set a limit
+			if (count($arguments) > 0)
+			{
+				self::$db->limit((int) current($arguments));
+			}
+
+			/**
+			 * @todo This should really be a big join, instead of looping through the ids and querying for data in each new object
+			 */
+			// Query for all of the ids
+			$result = self::$db
+			->select('id')
+			->from($this->_table)
+			->get();
+
+			// Loop through each object and return an array of the objects
+			if (count($result) > 0)
+			{
+				$class = get_class($this);
+
+				foreach($result as $row)
+				{
+					$array[] = new $class($row->id);
+				}
+			}
+
+			return $array;
+		}
+	}
+
+	/**
 	 * Re-load the object with a where clause, generally the id of the object to load
 	 *
 	 * @access public
@@ -146,7 +225,7 @@ class ORM_Core {
 				// Loop and load all child objects
 				foreach($this->_relationships['has_one'] as $object)
 				{
-					// Set WHERE
+					// Set where statement
 					$where = $object.'_id';
 					$where = isset($this->$where) ? array('id' => $this->$where) : FALSE;
 
@@ -171,6 +250,24 @@ class ORM_Core {
 		}
 
 		return FALSE;
+	}
+
+	/**
+	 * Return object data
+	 *
+	 * @access public
+	 * @return array
+	 */
+	public function data()
+	{
+		$array = array();
+
+		foreach(array_keys($this->_meta) as $key)
+		{
+			$array[$key] = $this->_data[$key];
+		}
+
+		return $array;
 	}
 
 	/**
@@ -213,67 +310,6 @@ class ORM_Core {
 		}
 
 		return FALSE;
-	}
-
-	/**
-	 * Return object data
-	 *
-	 * @access public
-	 * @return array
-	 */
-	public function data()
-	{
-		$array = array();
-
-		foreach(array_keys($this->_meta) as $key)
-		{
-			$array[$key] = $this->_data[$key];
-		}
-
-		return $array;
-	}
-
-	/**
-	 * Magic __get function
-	 *
-	 * @access public
-	 * @param  string
-	 * @return void
-	 */
-	public function __get($key)
-	{
-		if ( ! isset($this->_data[$key]))
-		{
-			if (isset($this->_relationships['has_many']) AND isset($this->_relationships['has_many'][$key]))
-			{
-				die($this->_name.' has many '.$key);
-			}
-		}
-		else
-		{
-			return $this->_data[$key];
-		}
-	}
-
-	/**
-	 * Magic __set function
-	 *
-	 * @access public
-	 * @param  string
-	 * @param  mixed
-	 * @return void
-	 */
-	public function __set($key, $val)
-	{
-		if ($key[0] !== '_')
-		{
-			if (isset($this->_data[$key]) AND $this->_data[$key] != $val)
-			{
-				$this->_changed[$key] = $key;
-			}
-
-			$this->_data[$key] = $val;
-		}
 	}
 
 } // End ORM class

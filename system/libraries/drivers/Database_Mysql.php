@@ -403,10 +403,12 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		{
 			if ($result == FALSE)
 			{
+				// SQL error
 				throw new Kohana_Database_Exception('database.error', mysql_error().' - '.$sql);
 			}
-			else // Its an DELETE, INSERT, REPLACE, or UPDATE query
+			else
 			{
+				// Its an DELETE, INSERT, REPLACE, or UPDATE query
 				$this->insert_id  = mysql_insert_id($link);
 				$this->total_rows = mysql_affected_rows($link);
 			}
