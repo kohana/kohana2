@@ -407,8 +407,8 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 			}
 			else // Its an DELETE, INSERT, REPLACE, or UPDATE query
 			{
-				$this->insert_id = mysql_insert_id($link);
-				$this->num_rows  = mysql_affected_rows($link);
+				$this->insert_id  = mysql_insert_id($link);
+				$this->total_rows = mysql_affected_rows($link);
 			}
 		}
 

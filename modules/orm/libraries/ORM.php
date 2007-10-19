@@ -138,6 +138,9 @@ class ORM_Core {
 				$this->$field = $value;
 			}
 
+			// Reset changed variables
+			$this->_changed = array();
+
 			if ( ! empty($this->_relationships['has_one']))
 			{
 				// Loop and load all child objects
@@ -165,6 +168,48 @@ class ORM_Core {
 
 			// Successful load
 			return TRUE;
+		}
+
+		return FALSE;
+	}
+
+	/**
+	 * Save an object
+	 *
+	 * @access public
+	 * @return boolean
+	 */
+	public function save()
+	{
+		if (empty($this->_where))
+		{
+			// Do an insert
+			if ($id = self::$db->insert($this->_table, $this->data())->insert_id())
+			{
+				$this->id = $id;
+				$this->_where = array('id' => $id);
+
+				return TRUE;
+			}
+		}
+		elseif (empty($this->_changed))
+		{
+			// No data has changed
+			return TRUE;
+		}
+		else
+		{
+			// Fetch data
+			$data = $this->data();
+
+			// Remove id, to prevent updates
+			unset($data['id']);
+
+			// Do an update
+			if (count(self::$db->update($this->_table, $data, $this->_where)) > 0)
+			{
+				return TRUE;
+			}
 		}
 
 		return FALSE;
