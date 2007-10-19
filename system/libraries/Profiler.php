@@ -52,8 +52,14 @@ class Profiler_Core {
 		$data = array
 		(
 			'benchmarks' => array(),
-			'queries'    => Database::$benchmarks
+			'queries'    => FALSE
 		);
+
+		// Load database benchmarks, if Database has been loaded
+		if (class_exists('Database', FALSE))
+		{
+			$data['queries'] = Database::$benchmarks;
+		}
 
 		// Clean unique id from system benchmark names
 		foreach (Benchmark::get_all() as $name => $time)
