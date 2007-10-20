@@ -56,7 +56,7 @@ class Database_Mysql_Driver implements Database_Driver {
 		{
 			if ($charset = $config['character_set'])
 			{
-				echo $this->set_charset($charset);
+				$this->set_charset($charset);
 			}
 
 			return $this->link;
@@ -109,10 +109,10 @@ class Database_Mysql_Driver implements Database_Driver {
 		// This matches any modifiers we support to SELECT.
 		if ( ! preg_match('/\b(?:all|distinct(?:row)?|high_priority|sql_(?:small_result|b(?:ig_result|uffer_result)|no_cache|ca(?:che|lc_found_rows)))\s/i', $column))
 			return '`'.$column.'`';
-		
+
 		$parts = explode(' ', $column);
 		$column = '';
-		
+
 		for ($i = 0, $c = count($parts); $i < $c; $i++)
 		{
 			// The column is always last
@@ -138,7 +138,7 @@ class Database_Mysql_Driver implements Database_Driver {
 		$wheres = array();
 		foreach ($key as $k => $v)
 		{
-			
+
 			$prefix = ($num_wheres++ == 0) ? '' : $type;
 
 			if ($quote === -1)
@@ -310,10 +310,7 @@ class Database_Mysql_Driver implements Database_Driver {
 	*/
 	public function escape_str($str)
 	{
-		if ( ! is_resource($this->link))
-		{
-			$this->connect($this->db_config);
-		}
+		is_resource($this->link) or $this->connect($this->db_config);
 
 		return mysql_real_escape_string($str, $this->link);
 	}
@@ -342,23 +339,26 @@ class Database_Mysql_Driver implements Database_Driver {
 
 	public function show_error()
 	{
-		return mysql_error();
+		return mysql_error($this->link);
 	}
 
 	public function field_data($table)
 	{
-		$query = mysql_query('SELECT * FROM ' . $this->escape_table($table));
+		$query  = mysql_query('SELECT * FROM '.$this->escape_table($table).' LIMIT 1', $this->link);
 		$fields = mysql_num_fields($query);
-		$table = array();
+		$table  = array();
+
 		for ($i=0; $i < $fields; $i++)
 		{
-		    $table[$i]['type']  = mysql_field_type($query, $i);
-		    $table[$i]['name']  = mysql_field_name($query, $i);
-		    $table[$i]['len']   = mysql_field_len($query, $i);
-		    $table[$i]['flags'] = mysql_field_flags($query, $i);
+			$table[$i]['type']  = mysql_field_type($query, $i);
+			$table[$i]['name']  = mysql_field_name($query, $i);
+			$table[$i]['len']   = mysql_field_len($query, $i);
+			$table[$i]['flags'] = mysql_field_flags($query, $i);
 		}
+
 		return $table;
 	}
+
 } // End Database_Mysql Class
 
 // Iterator behavior taken from:
@@ -418,6 +418,20 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		$this->result($object);
 	}
 
+	/**
+	 * Magic __destruct function, frees the result
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function __destruct()
+	{
+		if (is_resource($this->result))
+		{
+			mysql_free_result($this->result);
+		}
+	}
+
 	public function result($object = TRUE, $type = MYSQL_ASSOC)
 	{
 		$this->fetch_type = (bool) $object ? 'mysql_fetch_object' : 'mysql_fetch_array';
@@ -442,7 +456,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	public function result_array($object = TRUE, $type = MYSQL_ASSOC)
 	{
 		$rows = array();
-		
+
 		switch($object)
 		{
 			case NULL:  $fetch = $this->fetch_type;    break;
@@ -458,14 +472,14 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		{
 			$type = class_exists($type, FALSE) ? $type : 'stdClass';
 		}
-		
+
 		while ($row = $fetch($this->result, $type))
 		{
 			$rows[] = $row;
 		}
 		return $rows;
 	}
-	
+
 	// Interface: Database_Result
 	public function insert_id()
 	{
@@ -521,7 +535,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		throw new Kohana_Database_Exception('database.result_read_only');
 	}
 	// End Interface
-	
+
 	// Interface: Iterator
 	public function current()
 	{

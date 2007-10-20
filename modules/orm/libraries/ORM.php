@@ -164,27 +164,13 @@ class ORM_Core {
 				self::$db->limit((int) current($arguments));
 			}
 
-			/**
-			 * @todo This should really be a big join, instead of looping through the ids and querying for data in each new object
-			 */
-			// Query for all of the ids
-			$result = self::$db
-			->select('id')
-			->from($this->_table)
-			->get();
+			// Fetch result of all the 
+			$result = self::$db->where(array(inflector::singular($this->_table).'_id' => $this->id))->from($method)->get();
 
-			// Loop through each object and return an array of the objects
-			if (count($result) > 0)
-			{
-				$class = get_class($this);
+			// Set model class name
+			$class = ucfirst(inflector::singular($method)).$this->_class;
 
-				foreach($result as $row)
-				{
-					$array[] = new $class($row->id);
-				}
-			}
-
-			return $array;
+			return new ORM_Aggregate($class, $result);
 		}
 	}
 
@@ -332,3 +318,148 @@ class ORM_Core {
 	}
 
 } // End ORM class
+
+class ORM_Aggregate implements ArrayAccess, Iterator, Countable {
+
+	// Result object
+	protected $result = NULL;
+
+	// Total rows and current row
+	protected $total_rows  = FALSE;
+	protected $current_row = FALSE;
+
+	/**
+	 * Constructor
+	 *
+	 * @access public
+	 * @param  resource
+	 * @param  resource
+	 * @param  boolean
+	 * @param  string
+	 * @return void
+	 */
+	public function __construct($model, $result)
+	{
+		// Save the model name
+		$this->model = $model;
+
+		// Load the result into self
+		$this->result = $result;
+
+		// Find total rows
+		$this->total_rows = count($this->result);
+
+		// Set current row
+		$this->current_row = 0;
+	}
+
+	/**
+	 * Fetch an array of all the objects
+	 */
+	public function result_array()
+	{
+		$rows = array();
+
+		if (count($this->result) > 0)
+		{
+			for($i = 0; $i < $this->total_rows; $i++)
+			{
+				$rows[] = $this->offsetGet($i);
+			}
+		}
+
+		return $rows;
+	}
+
+	// Interface: Countable
+	public function count()
+	{
+		return $this->total_rows;
+	}
+	// End Interface
+
+	// Interface: ArrayAccess
+	public function offsetExists($offset)
+	{
+		if ($this->total_rows > 0)
+		{
+			$min = 0;
+			$max = $this->total_rows - 1;
+
+			return ($offset < $min OR $offset > $max) ? FALSE : TRUE;
+		}
+
+		return FALSE;
+	}
+
+	public function offsetGet($offset)
+	{
+		$data = array();
+
+		foreach($this->result[$offset] as $key => $value)
+		{
+			$data[$key] = $value;
+		}
+
+		// Get model name
+		$model = $this->model;
+
+		// Create new object
+		$model = new $model();
+
+		// Set data
+		$model->data($data);
+
+		return $model;
+	}
+
+	public function offsetSet($offset, $value)
+	{
+		/**
+		 * @todo Make this useful
+		 */
+		return FALSE;
+	}
+
+	public function offsetUnset($offset)
+	{
+		/**
+		 * @todo Make this useful
+		 */
+		return FALSE;
+	}
+	// End Interface
+
+	// Interface: Iterator
+	public function current()
+	{
+		return $this->offsetGet($this->current_row);
+	}
+
+	public function key()
+	{
+		return $this->current_row;
+	}
+
+	public function next()
+	{
+		return ++$this->current_row;
+	}
+
+	public function prev()
+	{
+		return --$this->current_row;
+	}
+
+	public function rewind()
+	{
+		return $this->current_row = 0;
+	}
+
+	public function valid()
+	{
+		return $this->offsetExists($this->current_row);
+	}
+	// End Interface
+
+} // End Mysql_Result Class
