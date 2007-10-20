@@ -144,6 +144,14 @@ class ORM_Core {
 		}
 	}
 
+	/**
+	 * Magic __call method
+	 *
+	 * @access public
+	 * @param  string
+	 * @param  mixed
+	 * @return mixed
+	 */
 	public function __call($method, $arguments = array())
 	{
 		if ( ! empty($this->_relationships['has_many'][$method]))
@@ -258,16 +266,27 @@ class ORM_Core {
 	 * @access public
 	 * @return array
 	 */
-	public function data()
+	public function data($data = FALSE)
 	{
-		$array = array();
-
-		foreach(array_keys($this->_meta) as $key)
+		if (empty($data))
 		{
-			$array[$key] = $this->_data[$key];
+			$array = array();
+
+			foreach(array_keys($this->_meta) as $key)
+			{
+				$array[$key] = isset($this->_data[$key]) ? $this->_data[$key] : NULL;
+			}
+
+			return $array;
 		}
 
-		return $array;
+		foreach($data as $key => $value)
+		{
+			if (isset($this->_meta[$key]))
+			{
+				$this->$key = $value;
+			}
+		}
 	}
 
 	/**

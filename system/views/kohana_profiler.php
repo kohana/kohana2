@@ -72,7 +72,9 @@
 		</tr>
 <?php
 
-text::alternate();
+// Moves the first benchmark (total execution time) to the end of the array
+$benchmarks = array_slice($benchmarks, 1) + array_slice($benchmarks, 0, 1);
+
 foreach ($benchmarks as $name => $time):
 
 	$name = ucwords(str_replace(array('_', '-'), ' ', $name));
