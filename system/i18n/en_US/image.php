@@ -2,6 +2,9 @@
 
 $lang = array
 (
+	'driver_not_supported' => 'The %s image driver does not exist.',
+	
+	// CI's Image_lib stuff below
 	'source_image_required' => 'You must specify a source image in your preferences.',
 	'gd_required' => 'The GD image library is required for this feature.',
 	'gd_required_for_props' => 'Your server must suppor the GD image library in order to determine the image properties',

@@ -165,12 +165,7 @@ class text {
 	 */
 	public static function censor($str, $badwords, $replacement = '#', $replace_partial_words = FALSE)
 	{
-		if ( ! is_array($badwords))
-		{
-			$badwords = (array) $badwords;
-		}
-
-		foreach ($badwords as $key => $badword)
+		foreach ((array) $badwords as $key => $badword)
 		{
 			$badwords[$key] = str_replace('\*', '\S*?', preg_quote((string) $badword));
 		}

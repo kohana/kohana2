@@ -14,10 +14,32 @@ class Image_Core {
 	 */
 	public function __construct($source_image, $driver = NULL)
 	{
-		$realpath     = str_replace('\\', '/', realpath($source_image));
-		$getimagesize = getimagesize($realpath);
+		// Load the driver
+		try
+		{
+			$driver = (empty($driver)) ? Config::item('image.driver') : $driver;
+			$driver_filename = 'Image_'.ucfirst($driver).'_Driver';
+
+			// Manually call auto-loading, for proper exception handling
+			Kohana::auto_load($driver_filename);
+
+			$this->driver = new $driver_filename();
+		}
+		catch (Kohana_Exception $exception)
+		{
+			throw new Kohana_Exception('image.driver_not_supported', $driver);
+		}
+
+		// Validate the driver
+		if ( ! in_array('Image_Driver', class_implements($this->driver)))
+			throw new Kohana_Exception('image.driver_not_supported', 'Image drivers must use the Image_Driver interface.');
 		
-		if ($getimagesize === FALSE)
+		// Take care of source image
+		$realpath  = str_replace('\\', '/', realpath($source_image));
+		$imagesize = getimagesize($realpath);
+		
+		if ($imagesize === FALSE)
+			// @todo convert to exception
 			trigger_error('Invalid source image', E_USER_ERROR);
 		
 		// Store the original image properties
@@ -26,16 +48,17 @@ class Image_Core {
 			'dirname'   => pathinfo($realpath, PATHINFO_DIRNAME).'/',
 			'filename'  => pathinfo($realpath, PATHINFO_FILENAME),
 			'extension' => '.'.pathinfo($realpath, PATHINFO_EXTENSION),
-			'mime'      => $getimagesize['mime'],
-			'width'     => $getimagesize[0],
-			'height'    => $getimagesize[1]
+			'mime'      => $imagesize['mime'],
+			'width'     => $imagesize[0],
+			'height'    => $imagesize[1]
 		);
 		
 		// Initialize the command list
 		$this->commands = array
 		(
-			'width'                 => $this->properties['width'],
-			'height'                => $this->properties['height'],
+			'destination'           => $realpath,
+			'width'                 => 0,
+			'height'                => 0,
 			'constrain_proportions' => TRUE,
 			'rotate'                => 0
 		);
@@ -69,6 +92,17 @@ class Image_Core {
 		}
 		
 		return $return;
+	}
+	
+	/**
+	 * Returns driver version
+	 *
+	 * @access	public
+	 * @return	string
+	 */
+	public function driver()
+	{
+		return $this->driver->version();
 	}
 
 	/**
@@ -136,17 +170,10 @@ class Image_Core {
 	 */
 	public function rotate($degrees)
 	{
-		// Clean degrees
-		$degrees = (int) $degrees;
-		
 		// Don't spin just because you like to, no more than 360°, baby!
-		$degrees = $degrees % 360;
+		$degrees = (int) $degrees % 360;
 		
-		// No rotation to be done
-		if ($degrees == 0)
-			return;
-		
-		// We only spin forward
+		// Only spin forward
 		if ($degrees < 0)
 		{
 			$degrees += 360;
