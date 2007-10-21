@@ -999,7 +999,7 @@ class Kohana {
 	 * Quick debugging of any variable
 	 *
 	 * @access public
-	 * @return void
+	 * @return string
 	 */
 	public static function debug_output()
 	{
@@ -1011,7 +1011,7 @@ class Kohana {
 
 		foreach($params as $var)
 		{
-			$output[] = '<pre>'.print_r($var, TRUE).'</pre>';
+			$output[] = '<pre>'.html::specialchars(print_r($var, TRUE)).'</pre>';
 		}
 
 		return implode("\n", $output);

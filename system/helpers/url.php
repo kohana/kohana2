@@ -51,7 +51,7 @@ class url {
 	 * @param  string
 	 * @return string
 	 */
-	public static function site($uri, $protocol = FALSE)
+	public static function site($uri = '', $protocol = FALSE)
 	{
 		$uri = trim($uri, '/');
 

@@ -82,7 +82,7 @@ foreach ($benchmarks as $name => $time):
 ?>
 			<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
 				<td><?php echo $name ?></td>
-				<td class="kp-time"><?php echo $time ?></td>
+				<td class="kp-time"><?php echo number_format($time, 4) ?></td>
 			</tr>
 <?php
 
