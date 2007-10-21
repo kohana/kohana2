@@ -309,20 +309,19 @@ class Session_Core {
 	}
 
 	/**
-	 * Get a flash variable
+	 * Get a variable
 	 *
 	 * @access public
 	 * @param  string  key (optional)
+	 * @param  mixed
 	 * @return mixed
 	 */
-	public function get($key = FALSE)
+	public function get($key = FALSE, $default = FALSE)
 	{
 		if ($key == FALSE)
-		{
 			return $_SESSION;
-		}
 
-		return (isset($_SESSION[$key]) ? $_SESSION[$key] : FALSE);
+		return isset($_SESSION[$key]) ? $_SESSION[$key] : $default;
 	}
 
 	/**
