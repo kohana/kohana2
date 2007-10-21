@@ -2,6 +2,7 @@
 
 $lang = array
 (
+	'access',
 	'art',
 	'equipment',
 	'fish',

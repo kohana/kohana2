@@ -321,6 +321,38 @@ class Database_Core {
 	}
 
 	/**
+	 * Join
+	 *
+	 * Generates the JOIN portion of the query
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	string	the join condition
+	 * @param	string	the type of join
+	 * @return	object
+	 */
+	public function join($table, $cond, $type = '')
+	{
+		if ($type != '')
+		{
+			$type = strtoupper(trim($type));
+
+			if ( ! in_array($type, array('LEFT', 'RIGHT', 'OUTER', 'INNER', 'LEFT OUTER', 'RIGHT OUTER'), TRUE))
+			{
+				$type = '';
+			}
+			else
+			{
+				$type .= ' ';
+			}
+		}
+
+		$this->join[] = $type.'JOIN '.$this->driver->escape_column($this->config['table_prefix'].$table).' ON '.$cond;
+
+		return $this;
+	}
+
+	/**
 	 * Where
 	 *
 	 * Generates the WHERE portion of the query. Separates

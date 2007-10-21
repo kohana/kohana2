@@ -92,13 +92,140 @@ class ORM_Core {
 					'maxlength' => ($row->character_maximum_length ? $row->character_maximum_length : $row->numeric_precision),
 					'default'   => $row->column_default
 				);
+
+				$this->_data[$row->column_name] = NULL;
 			}
 		}
 
+		// Clean up the result
+		unset($result);
+
+		// Add child objects
+		foreach($this->_data as $key => $val)
+		{
+			if (substr($key, -3) == '_id')
+			{
+				$name  = substr($key, 0, -3);
+				$model = ucfirst($name).$this->_class;
+
+				$this->_data[$name] = new $model();
+			}
+		}
+
+		/*
+		if ( ! empty($where))
+		{
+			// Primary key
+			$pk = inflector::singular($this->_table).'_id';
+
+			// SELECT
+			$select = $this->select_fields();
+
+			// FROM
+			$from = $this->_table;
+
+			// JOIN
+			$join = array();
+
+			if ( ! empty($this->_relationships['has_many']))
+			{
+				foreach($this->_relationships['has_many'] as $table)
+				{
+					$object = inflector::singular($table);
+
+					// Foreign key
+					$fk = "{$object}_id";
+
+					// Create a new object instance
+					$object = ucfirst($object).$this->_class;
+					$object = new $object();
+
+					// Add the child select fields
+					$select = array_merge($select, $object->select_fields());
+
+					// Remove the model, we no longer need it
+					unset($object);
+
+					if (isset($this->$fk))
+					{
+						$join[] = array($table, "{$this->_table}.{$fk} = {$table}.id");
+					}
+					else
+					{
+						// Joining table: {this}_{foreign}
+						$from = "{$this->_table}_{$table}";
+
+						// Join this table with the result
+						$join[] = array($this->_table, "{$from}.{$pk} = {$this->_table}.id");
+
+						// Join foreign table with result
+						$join[] = array($table, "{$from}.{$fk} = {$table}.id");
+					}
+				}
+			}
+
+			while (list($table, $on) = array_shift($join))
+			{
+				self::$db->join($table, $on);
+			}
+
+			// WHERE
+			$where = is_array($where) ? $where : array("{$this->_table}.id" => $where);
+
+			// Get the result
+			$result = self::$db->select($select)->from($from)->where($where)->get();
+
+			foreach($result as $row)
+			{
+				print Kohana::debug_output($row);
+			}
+		}
+		*/
+
 		// Load model data
-		$this->get($where);
+		// $this->get($where);
+
+		$select = $this->select_fields();
 
 		Log::add('debug', $name.' ORM Model loaded');
+	}
+
+	public function select_fields($prefix = '')
+	{
+		// Name is singular
+		$name = inflector::singular($this->_table);
+
+		// Set the prefix
+		$prefix .= (($prefix != '') ? ':' : '').$name;
+
+		// SELECT part of query
+		$select = array();
+
+		// Fetch keys
+		foreach(array_keys($this->_meta) as $field)
+		{
+			$select[] = "{$this->_table}.{$field} AS {$prefix}:{$field}";
+		}
+
+		if ( ! empty($this->_relationships['has_one']))
+		{
+			// Fetch child keys
+			foreach($this->_relationships['has_one'] as $object)
+			{
+				$select = array_merge($select, $this->_data[$object]->select_fields($prefix));
+			}
+		}
+
+		if ( ! empty($this->_relationships['belongs_to']))
+		{
+			// Fetch child keys
+			foreach($this->_relationships['belongs_to'] as $object)
+			{
+				$select = array_merge($select, $this->_data[$object]->select_fields($prefix));
+			}
+		}
+
+		return $select;
 	}
 
 	/**
@@ -164,14 +291,62 @@ class ORM_Core {
 				self::$db->limit((int) current($arguments));
 			}
 
-			// Fetch result of all the 
-			$result = self::$db->where(array(inflector::singular($this->_table).'_id' => $this->id))->from($method)->get();
+			// Primary and foreign models
+			$primary = inflector::singular($this->_table);
+			$foreign = inflector::singular($method);
+
+			// Primary and foreign keys
+			$pk = $primary.'_id';
+			$fk = $foreign.'_id';
 
 			// Set model class name
-			$class = ucfirst(inflector::singular($method)).$this->_class;
+			$class = ucfirst($foreign).$this->_class;
 
-			return new ORM_Aggregate($class, $result);
+			// Fetch result of all the models
+			if (isset($this->_meta[$foreign.'_id']))
+			{
+				self::$db->from($method)->where(array($fk => $this->id));
+			}
+			else
+			{
+				// Create a new model to fetch the keys
+				$model = new $class();
+
+				// Joining table
+				$joiner = $this->_table.'_'.$method;
+
+				// Add internal fields
+				foreach(array_keys($this->_meta) as $field)
+				{
+					$select[] = "{$this->_table}.{$field} AS {$this->_table}:{$field}";
+				}
+
+				// Join internal table
+				self::$db->join($this->_table, "{$joiner}.{$pk} = {$this->_table}.id");
+
+				// Add external fields
+				foreach(array_keys($model->data()) as $field)
+				{
+					$select[] = "{$method}.{$field} AS {$method}:{$field}";
+				}
+
+				// Join external table
+				self::$db->join($method, "{$joiner}.{$fk} = {$method}.id");
+
+				// Select internal and external fields using the joining table as the primary table
+				self::$db->select($select)->from($joiner);
+			}
+
+			die(Kohana::debug_output(self::$db->get()->result_array()));
+
+			// Return a result object
+			return new ORM_Aggregate($class, self::$db->get());
 		}
+	}
+
+	public function _table()
+	{
+		return $this->_table;
 	}
 
 	/**

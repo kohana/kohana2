@@ -108,7 +108,23 @@ class Database_Mysql_Driver implements Database_Driver {
 
 		// This matches any modifiers we support to SELECT.
 		if ( ! preg_match('/\b(?:all|distinct(?:row)?|high_priority|sql_(?:small_result|b(?:ig_result|uffer_result)|no_cache|ca(?:che|lc_found_rows)))\s/i', $column))
+		{
+			if (stripos($column, ' AS ') !== FALSE)
+			{
+				// Runs escape_column on both sides of an AS statement
+				$column = array_map(array($this, __FUNCTION__), explode(' AS ', $column));
+
+				// Re-create the AS statement
+				return implode(' AS ', $column);
+			}
+
+			if (strpos($column, '.') !== FALSE)
+			{
+				$column = str_replace('.', '`.`', $column);
+			}
+
 			return '`'.$column.'`';
+		}
 
 		$parts = explode(' ', $column);
 		$column = '';
@@ -232,6 +248,11 @@ class Database_Mysql_Driver implements Database_Driver {
 		{
 			$sql .= "\nFROM ";
 			$sql .= implode(', ', $database['from']);
+		}
+
+		if (count($database['join']) > 0)
+		{
+			$sql .= ' '.implode("\n", $database['join']);
 		}
 
 		if (count($database['where']) > 0 OR count($database['like']) > 0)
