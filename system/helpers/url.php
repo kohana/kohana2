@@ -69,9 +69,9 @@ class url {
 	 * @param  string
 	 * @return string
 	 */
-	public static function title($title, $separator = 'dash')
+	public static function title($title, $separator = '-')
 	{
-		$separator = ($separator == 'dash') ? '-' : '_';
+		$separator = ($separator == '-') ? '-' : '_';
 
 		// Replace all dashes, underscores and whitespace by the separator
 		$title = preg_replace('/[-_\s]+/', $separator, $title);
