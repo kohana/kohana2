@@ -1,5 +1,18 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
+/*
+	Has one?
+	  TRUE - Add fields via join()
+	Has many?
+	  TRUE - FOREIGN has THIS_id?
+	    TRUE  - Load by $this->id
+	    FALSE - Load by joining table THIS_FOREIGN
+	Belongs to many?
+	  TRUE - FOREIGN has THIS_id?
+	    TRUE  - Load by $this->id
+	    FALSE - Load by joining table FOREIGN_THIS
+*/
+
 class ORM_Core {
 
 	// Database object
@@ -177,7 +190,7 @@ class ORM_Core {
 
 			foreach($result as $row)
 			{
-				print Kohana::debug_output($row);
+				print Kohana::debug($row);
 			}
 		}
 		*/
@@ -337,7 +350,7 @@ class ORM_Core {
 				self::$db->select($select)->from($joiner);
 			}
 
-			die(Kohana::debug_output(self::$db->get()->result_array()));
+			die(Kohana::debug(self::$db->get()->result_array()));
 
 			// Return a result object
 			return new ORM_Aggregate($class, self::$db->get());

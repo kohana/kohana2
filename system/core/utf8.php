@@ -85,15 +85,17 @@ if (PHP_SAPI == 'cli')
 
 final class utf8 {
 
-	/**
-	 * UTF-8 Normalizer/Cleaner
+	/*
+	 * Method: clean
+	 *  Recursively cleans arrays, objects, and strings. Removes ASCII control
+	 *  codes and converts to UTF-8 while silently discarding incompatible
+	 *  UTF-8 characters.
 	 *
-	 * Recursively cleans arrays, objects, and strings. Removes ASCII control codes
-	 * and converts to UTF-8 while silently discarding incompatible UTF-8 characters.
+	 * Parameters:
+	 *  str - string to clean
 	 *
-	 * @access public
-	 * @param  mixed
-	 * @return mixed
+	 * Returns:
+	 *  Clean UTF-8 string.
 	 */
 	public static function clean($str)
 	{
@@ -118,13 +120,16 @@ final class utf8 {
 		return $str;
 	}
 
-	/**
-	 * Tests whether a string contains only 7bit ASCII bytes. This is used to
-	 * determine when to use native functions or UTF-8 functions.
+	/*
+	 * Method: is_ascii
+	 *  Tests whether a string contains only 7bit ASCII bytes. This is used to
+	 *  determine when to use native functions or UTF-8 functions.
 	 *
-	 * @access public
-	 * @param  string
-	 * @return boolean
+	 * Parameters:
+	 *  str - string to check
+	 *
+	 * Returns:
+	 *  TRUE or FALSE, whether the string is ASCII
 	 */
 	public static function is_ascii($str)
 	{

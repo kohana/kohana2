@@ -83,6 +83,52 @@ final class Config {
 	}
 
 	/*
+	 * Method: Set
+	 *  Sets a configuration item, if allowed.
+	 *
+	 * Parameters:
+	 *  key   - config key sting
+	 *  value - config value
+	 */
+	public static function set($key, $value)
+	{
+		// Config setting must be enabled
+		if (Config::item('core.allow_config_set') == FALSE)
+		{
+			Log::add('debug', 'Config::set was called, but your configuration file does not allow setting.');
+			return FALSE;
+		}
+
+		// Empty keys and core.allow_set cannot be set
+		if (empty($key) OR $key == 'core.allow_config_set')
+			return FALSE;
+
+		// Convert dot-noted key string to an array
+		$keys = explode('.', $key);
+
+		// Used for recursion
+		$conf =& self::$conf;
+		$last = count($keys) - 1;
+
+		foreach($keys as $i => $k)
+		{
+			if ( ! isset($conf[$k]))
+				return FALSE;
+
+			if ($i === $last)
+			{
+				$conf[$k] = $value;
+			}
+			else
+			{
+				$conf =& $conf[$k];
+			}
+		}
+
+		return TRUE;
+	}
+
+	/*
 	 * Method: include_paths
 	 *  Get all include paths.
 	 *
