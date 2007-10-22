@@ -1,25 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
- *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
 /*
  * Class: Database
  *  Provides database access in a platform agnostic way, using simple query building blocks.
  *
  * Kohana Source Code:
  *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ *  copyright - Copyright (c) 2006, EllisLab, Inc.
+ *  license   - <http://www.codeigniter.com/user_guide/license.html>
+ * 
+ * $Id$
  */
 class Database_Core {
 
