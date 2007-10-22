@@ -1,27 +1,30 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana UTF-8 Support
+/*
+ * Class: utf8
+ *  A port of phputf8 to a unified file/class. This single file will check PHP
+ *  to ensure that UTF-8 support is available and normalize global variables to
+ *  UTF-8. It also provides multi-byte aware replacement string functions. These
+ *  functions have been adapted from phputf8 to be optimized and fit our needs.
  *
- * A port of phputf8 to a unified file/class. This single file will check PHP
- * to ensure that UTF-8 support is available and normalize global variables to
- * UTF-8. It also provides multi-byte aware replacement string functions. These
- * functions have been adapted from phputf8 to be optimized and fit our needs.
+ * Server Requirements:
+ *  - PCRE needs to be compiled with UTF-8 support.
+ *    <http://php.net/manual/reference.pcre.pattern.modifiers.php>
+ *  - UTF-8 conversion will be much more reliable if the iconv extension is loaded.
+ *    <http://php.net/iconv>
+ *  - The mbstring extension is highly recommended but must not be overloading string functions.
+ *    <http://php.net/mbstring>
  *
- * NOTE: This file is licensed differently from the rest of Kohana. As a port of
- * phputf8, this library is released under the LGPL to prevent license violations.
+ * Note:
+ *  This file is licensed differently from the rest of Kohana. As a port of
+ *  phputf8, which is LGPL software, this file is released under the LGPL.
  *
- * @author           Kohana Team
- * @copyright        Copyright (c) 2007 Kohana Team
- * @link             http://kohanaphp.com
- * @link             http://phputf8.sourceforge.net
- * @since            Version 1.2
- */
-
-/**
- * Check whether the server supports the UTF-8 encoding. Conditions:
- * - PCRE needs to be compiled with UTF-8 support.
- * - The iconv extension needs to be loaded.
- * - The mbstring extension is highly recommended but must not be overloading string functions.
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt>
+ *
+ * Credits:
+ *  phputf8 - UTF-8 functions <http://phputf8.sourceforge.net> (c) 2005 Harry Fuecks
  */
 
 if (preg_match('/^.$/u', 'ñ') !== 1)
@@ -57,11 +60,7 @@ if (extension_loaded('mbstring') AND (ini_get('mbstring.func_overload') & MB_OVE
 	);
 }
 
-/**
- * Set SERVER_UTF8 boolean:
- * - TRUE  (use mb_* replacement functions where possible)
- * - FALSE (use non-native replacement functions)
- */
+// SERVER_UTF8 ? use mb_* functions : use non-native functions
 if (extension_loaded('mbstring'))
 {
 	mb_internal_encoding('UTF-8');
@@ -72,25 +71,18 @@ else
 	define('SERVER_UTF8', FALSE);
 }
 
-/**
- * Convert all global variables to UTF-8.
- */
+// Convert all global variables to UTF-8.
 $_GET    = utf8::clean($_GET);
 $_POST   = utf8::clean($_POST);
 $_COOKIE = utf8::clean($_COOKIE);
 $_SERVER = utf8::clean($_SERVER);
+
 if (PHP_SAPI == 'cli')
 {
 	// Convert command line arguments
 	$_SERVER['argv'] = utf8::clean($_SERVER['argv']);
 }
 
-/**
- * UTF-8 helper and replacement functions
- *
- * @package     Kohana
- * @subpackage  UTF-8
- */
 final class utf8 {
 
 	/**

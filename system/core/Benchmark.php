@@ -1,35 +1,24 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * File: Benchmark
+ *  Simple benchmarking.
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Benchmark Class
- *
- * @category    Libraries
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/general/benchmarks.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 final class Benchmark {
 
 	// Benchmark timestamps
 	private static $marks;
 
-	/**
-	 * Set a benchmark start point
+	/*
+	 * Method: start
+	 *  Set a benchmark start point.
 	 *
-	 * @access  public
-	 * @param   string
-	 * @return  void
+	 * Parameters:
+	 *  name - benchmark name
 	 */
 	public static function start($name)
 	{
@@ -43,12 +32,12 @@ final class Benchmark {
 		}
 	}
 
-	/**
-	 * Set a benchmark stop point
+	/*
+	 * Method: stop
+	 *  Set a benchmark stop point.
 	 *
-	 * @access  public
-	 * @param   string
-	 * @return  void
+	 * Parameters:
+	 *  name - benchmark name
 	 */
 	public static function stop($name)
 	{
@@ -58,45 +47,42 @@ final class Benchmark {
 		}
 	}
 
-	/**
-	 * Get the elapsed time for a benchmark point
+	/*
+	 * Method: get
+	 *  Get the elapsed time between a start and stop.
 	 *
-	 * @access  public
-	 * @param   string
-	 * @param   integer
-	 * @return  float
+	 * Parameters:
+	 *  name     - benchmark name, TRUE for all
+	 *  decimals - number of decimal places to count to
 	 */
 	public static function get($name, $decimals = 4)
 	{
+		if ($name === TRUE)
+		{
+			$times = array();
+
+			foreach(array_keys(self::$marks) as $name)
+			{
+				// Get each mark recursively
+				$times[$name] = self::get($name, $decimals);
+			}
+
+			// Return the array
+			return $times;
+		}
+
 		if ( ! isset(self::$marks[$name]))
 			return FALSE;
 
 		if (self::$marks[$name]['stop'] === FALSE)
 		{
+			// Stop the benchmark to prevent mis-matched results
 			self::stop($name);
 		}
 
+		// Return a string version of the time between the start and stop points
 		// Properly reading a float requires using number_format or sprintf
-		return (float) number_format(self::$marks[$name]['stop'] - self::$marks[$name]['start'], $decimals);
+		return number_format(self::$marks[$name]['stop'] - self::$marks[$name]['start'], $decimals);
 	}
 
-	/**
-	 * Get the elapsed time for all benchmark points
-	 *
-	 * @access  public
-	 * @param   integer
-	 * @return  array
-	 */
-	public static function get_all($decimals = 4)
-	{
-		$benchmarks = array();
-
-		foreach (array_keys(self::$marks) as $name)
-		{
-			$benchmarks[$name] = self::get($name, $decimals);
-		}
-
-		return $benchmarks;
-	}
-
-} // End Benchmark Class
+} // End Benchmark

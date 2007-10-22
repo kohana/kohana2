@@ -1,13 +1,11 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
-/**
- * Session Configuration
- * ----------------------------------------------------------------------------
+/*
+ * File: Upload
+ *  File uploading options.
  *
- * User Guide: http://kohanaphp.com/user_guide/en/libraries/validation.html
- *
- * @param  string  upload_directory - Relative to your index file
- * @param  string  remove_space     - Remove spaces from filenames
- *
+ * Options:
+ *  upload_directory - Relative to your index file
+ *  remove_space     - Remove spaces from filenames
  */
 $config = array
 (

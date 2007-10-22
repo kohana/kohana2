@@ -1,0 +1,1 @@
+NaturalDocs -i . -o HTML user_guide -p user_guide_compile

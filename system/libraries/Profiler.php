@@ -24,7 +24,7 @@ class Profiler_Core {
 	public function __construct()
 	{
 		// Add profiler to page output automatically
-		Event::add('system.output', array($this, 'render'));
+		Event::add('system.display', array($this, 'render'));
 
 		Log::add('debug', 'Profiler Library initialized');
 	}
@@ -38,7 +38,7 @@ class Profiler_Core {
 	public function disable()
 	{
 		// Removes itself from the event queue
-		Event::clear('system.output', array($this, 'render'));
+		Event::clear('system.display', array($this, 'render'));
 	}
 
 	/**
@@ -62,7 +62,7 @@ class Profiler_Core {
 		}
 
 		// Clean unique id from system benchmark names
-		foreach (Benchmark::get_all() as $name => $time)
+		foreach (Benchmark::get(TRUE) as $name => $time)
 		{
 			$data['benchmarks'][str_replace(SYSTEM_BENCHMARK.'_', '', $name)] = $time;
 		}

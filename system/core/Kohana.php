@@ -1,20 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: Kohana
+ *  Provides Kohana-specific helper functions. This is where the magic happens!
  *
- * $Id$
- *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
-
-// Include a utf-8 layer
-require SYSPATH.'core/utf8'.EXT;
 
 // Define Kohana error constant
 defined('E_KOHANA') or define('E_KOHANA', 33042);
@@ -31,321 +24,6 @@ defined('E_RECOVERABLE_ERROR') or define('E_RECOVERABLE_ERROR', 4096);
 // Insert Kohana setup
 Event::add('system.setup', array('Kohana', 'setup'));
 
-/**
- * Config Class
- *
- * @category  Core
- * @author    Kohana Team
- * @link      http://kohanaphp.com/user_guide/en/general/controllers.html
- */
-final class Config {
-
-	// Entire configuration
-	public static $conf;
-
-	// Include paths
-	private static $include_paths;
-
-	/**
-	 * Return a config item
-	 *
-	 * @access  public
-	 * @param   string
-	 * @param   boolean
-	 * @param   boolean
-	 * @return  mixed
-	 */
-	public static function item($key, $slash = FALSE, $required = TRUE)
-	{
-		// Configuration autoloading
-		if (self::$conf === NULL)
-		{
-			require APPPATH.'config/config'.EXT;
-
-			// Invalid config file
-			(isset($config) AND is_array($config)) or die
-			(
-				'Core configuration file is not valid.'
-			);
-
-			// Start setting include paths, APPPATH first
-			self::$include_paths = array(APPPATH);
-
-			// Normalize all paths to be absolute and have a trailing slash
-			foreach($config['include_paths'] as $path)
-			{
-				if (($path = str_replace('\\', '/', realpath($path))) == '')
-					continue;
-
-				self::$include_paths[] = $path.'/';
-			}
-
-			// Finish setting include paths by adding SYSPATH
-			self::$include_paths[] = SYSPATH;
-
-			// Load config into self
-			self::$conf['core'] = $config;
-		}
-
-		// Requested group
-		$group = current(explode('.', $key));
-
-		// Load the group if not already loaded
-		if ( ! isset(self::$conf[$group]))
-		{
-			self::$conf[$group] = self::load($group, $required);
-		}
-
-		// Get the value
-		$value = Kohana::key_string($key, self::$conf);
-
-		// Return the value
-		return is_array($value) ? $value : (($slash == TRUE AND $value != '') ? rtrim($value, '/').'/' : $value);
-	}
-
-	/**
-	 * Return the include paths
-	 *
-	 * @access  public
-	 * @return  array
-	 */
-	public static function include_paths()
-	{
-		return self::$include_paths;
-	}
-
-	/**
-	 * Load a config file
-	 *
-	 * @access  public
-	 * @param   string
-	 * @param   boolean
-	 * @return  array
-	 */
-	public static function load($name, $required = TRUE)
-	{
-		$configuration = array();
-
-		foreach(Kohana::find_file('config', $name, $required) as $filename)
-		{
-			include $filename;
-
-			// Merge in configuration
-			if (isset($config) AND is_array($config))
-			{
-				$configuration = array_merge($configuration, $config);
-			}
-		}
-
-		return $configuration;
-	}
-
-} // End Config class
-
-/**
- * Event Class
- *
- * @category  Core
- * @author    Kohana Team
- * @link      http://kohanaphp.com/user_guide/en/general/controllers.html
- */
-final class Event {
-
-	private static $events = array();
-
-	public static $data;
-
-	/**
-	 * Add an event
-	 *
-	 * @access  public
-	 * @param   string
-	 * @param   callback
-	 * @return  void
-	 */
-	public static function add($name, $callback)
-	{
-		if ($name == FALSE OR $callback == FALSE)
-			return FALSE;
-
-		// Make sure that the event name is defined
-		if ( ! isset(self::$events[$name]))
-		{
-			self::$events[$name] = array();
-		}
-
-		// Make sure the event is not already in the queue
-		if ( ! in_array($callback, self::$events[$name]))
-		{
-			self::$events[$name][] = $callback;
-		}
-	}
-
-	/**
-	 * Fetch an event
-	 *
-	 * @access  public
-	 * @param   string
-	 * @return  array
-	 */
-	public static function get($name)
-	{
-		return empty(self::$events[$name]) ? array() : self::$events[$name];
-	}
-
-	/**
-	 * Clear an event
-	 *
-	 * @access  public
-	 * @param   string
-	 * @param   callback
-	 * @return  void
-	 */
-	public static function clear($name, $callback = FALSE)
-	{
-		if ($callback == FALSE)
-		{
-			self::$events[$name] = array();
-		}
-		elseif (isset(self::$events[$name]))
-		{
-			foreach(self::$events[$name] as $i => $event_callback)
-			{
-				if ($callback == $event_callback)
-				{
-					unset(self::$events[$name][$i]);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Run an event
-	 *
-	 * @access  public
-	 * @param   string
-	 * @param   array
-	 * @return  void
-	 */
-	public static function run($name, & $data = NULL)
-	{
-		if ($name == FALSE)
-			return FALSE;
-
-		// So callbacks can access Event::$data
-		self::$data =& $data;
-
-		foreach(self::get($name) as $callback)
-		{
-			call_user_func($callback);
-		}
-
-		// Do this to prevent data from getting 'stuck'
-		$clear_data = '';
-		self::$data =& $clear_data;
-	}
-
-} // End Event Class
-
-/**
- * Log Class
- *
- * @category  Core
- * @author    Kohana Team
- * @link      http://kohanaphp.com/user_guide/en/general/controllers.html
- */
-final class Log {
-
-	public static $messages = array();
-
-	/**
-	 * Add a log message
-	 *
-	 * @access  public
-	 * @param   string
-	 * @param   string
-	 * @return  void
-	 */
-	public static function add($type, $message)
-	{
-		self::$messages[$type][] = array
-		(
-			date(Config::item('log.format')),
-			$message
-		);
-	}
-
-	/**
-	 * Write log messages to file
-	 *
-	 * @access  public
-	 * @return  void
-	 */
-	public static function write()
-	{
-		$filename = Config::item('log.directory');
-
-		// Don't log if there is nothing to log to
-		if (count(self::$messages) == 0 OR $filename == FALSE) return;
-
-		// Make sure that the log directory is absolute
-		$filename = (substr($filename, 0, 1) !== '/') ? APPPATH.$filename : $filename;
-
-		// Make sure there is an ending slash
-		$filename = rtrim($filename, '/').'/';
-
-		// Make sure the log directory is writable
-		if ( ! is_writable($filename))
-		{
-			ob_get_level() AND ob_clean();
-			exit(Kohana::lang('core.cannot_write_log'));
-		}
-
-		// Attach the filename to the directory
-		$filename .= date('Y-m-d').'.log'.EXT;
-
-		$messages = '';
-
-		// Get messages
-		foreach(self::$messages as $type => $data)
-		{
-			foreach($data as $date => $text)
-			{
-				list($date, $message) = $text;
-				$messages .= $date.' --- '.$type.': '.$message."\r\n";
-			}
-		}
-
-		// No point in logging nothing
-		if ($messages == '') return;
-
-		// Create the log file if it doesn't exist yet
-		if ( ! file_exists($filename))
-		{
-			touch($filename);
-			chmod($filename, 0644);
-
-			// Add our PHP header to the log file to prevent URL access
-			$messages = "<?php defined('SYSPATH') or die('No direct script access.'); ?>\r\n\r\n".$messages;
-		}
-
-		// Append the messages to the log
-		file_put_contents($filename, $messages, FILE_APPEND) or trigger_error
-		(
-			'The log file could not be written to. Please correct the permissions and refresh the page.',
-			E_USER_ERROR
-		);
-	}
-
-} // End Log Class
-
-/**
- * Kohana Class
- *
- * @category  Core
- * @author    Kohana Team
- * @link      http://kohanaphp.com/user_guide/en/general/controllers.html
- */
 class Kohana {
 
 	// The singleton instance of the controller
@@ -363,14 +41,13 @@ class Kohana {
 	// The final output that will displayed by Kohana
 	public static $output = '';
 
-	/**
-	 * Constructor
+	/*
+	 * Method: __construct
+	 *  Allows the controller to be a true singleton object. This method *must*
+	 *  be called by all controllers.
 	 *
-	 * Called by the controller constructor, this piece of magic allows the
-	 * controller to be a true singleton class
-	 *
-	 * @access  protected
-	 * @return  void
+	 * Throws:
+	 *  <Kohana_Exception> when a controller instance already exists.
 	 */
 	public function __construct()
 	{
@@ -380,37 +57,35 @@ class Kohana {
 		self::$instance = $this;
 	}
 
-	/**
-	 * Clone Protector
-	 *
-	 * @access public
-	 * @return error
+	/*
+	 * Method: __clone
+	 *  Protects the Kohana instance from being copied
 	 */
 	final public function __clone()
 	{
 		$this->__construct();
 	}
 
-	/**
-	 * PHP Preparation and Setup Routine
+	/*
+	 * Method: setup
+	 *  Sets up the PHP environment. Adds error/exception handling, output
+	 *  buffering, and adds an auto-loading method for loading classes.
 	 *
-	 * This function prepares PHP's error/exception handling, output buffering,
-	 * and adds an auto-loading method for loading classes
-	 *
-	 * @access  public
-	 * @return  void
+	 * Event:
+	 *  system.setup
 	 */
 	final public static function setup()
 	{
 		static $run;
 
 		// This function can only be run once
-		if ($run === TRUE) return;
+		if ($run === TRUE)
+			return;
 
 		if (function_exists('date_default_timezone_set'))
 		{
 			// Set default timezone, due to increased validation of date settings
-			// which cause massive amounts of E_NOTICEs to be generated
+			// which cause massive amounts of E_NOTICEs to be generated in PHP 5.2+
 			$timezone = Config::item('locale.timezone');
 			$timezone = ($timezone == FALSE) ? @date_default_timezone_get() : $timezone;
 
@@ -418,7 +93,7 @@ class Kohana {
 		}
 
 		// Start output buffering
-		ob_start(array('Kohana', 'output'));
+		ob_start(array('Kohana', 'output_buffer'));
 
 		// Save buffering level
 		self::$buffer_level = ob_get_level();
@@ -432,7 +107,8 @@ class Kohana {
 		// Set execption handler
 		set_exception_handler(array('Kohana', 'exception_handler'));
 
-		// Kill magic_quotes_runtime. Input library takes care of magic_quotes_gpc.
+		// Disable magic_quotes_runtime. The Input library takes care of
+		// magic_quotes_gpc later.
 		set_magic_quotes_runtime(0);
 
 		// Send default text/html UTF-8 header
@@ -449,49 +125,46 @@ class Kohana {
 				$hooks = array();
 				foreach(Config::include_paths() as $path)
 				{
-					$files = glob($path.'hooks/*'.EXT);
-
-					if ( ! empty($files))
+					// Find all the hooks in each path
+					if ($files = glob($path.'hooks/*'.EXT))
 					{
 						$hooks = array_merge($hooks, $files);
 					}
 				}
 			}
 
-			// Loop through all the hooks and load them
 			foreach($hooks as $file)
 			{
+				// Log before loading, to make the logs clearer
 				Log::add('debug', 'Loading hook '.$file);
-				include $file;
+
+				// Load the hook
+				include_once $file;
 			}
 		}
 
-		// Enable routing
+		// Enable Kohana routing
 		Event::add('system.routing', array('Router', 'setup'));
 
-		// Enable loading a Kohana instance
+		// Enable Kohana controller initialization
 		Event::add('system.execute', array('Kohana', 'instance'));
 
+		// Enable Kohana output handling
 		Event::add('system.shutdown', array('Kohana', 'display'));
 
-		// Enable log writing if the log threshold is enabled
 		if (Config::item('log.threshold') > 0)
 		{
+			// Enable log writing if the log threshold is above 0
 			register_shutdown_function(array('Log', 'write'));
 		}
 
-		// Setup is complete
+		// Setup is complete, prevent it from being run again
 		$run = TRUE;
 	}
 
-	/**
-	 * Controller Initialization
-	 *
-	 * Loads the controller and instantiates it. The controller object is
-	 * cached as Kohana::$instance
-	 *
-	 * @access public
-	 * @return void
+	/*
+	 * Method: instance
+	 *  Loads the controller and initializes it.
 	 */
 	final public static function & instance()
 	{
@@ -515,18 +188,23 @@ class Kohana {
 				// Change arguments to be $method, $arguments.
 				// This makes _remap capable of being a much more effecient dispatcher
 				Router::$arguments = array(Router::$method, Router::$arguments);
+
 				// Set the method to _remap
 				Router::$method = '_remap';
 			}
 			elseif (isset($methods[Router::$method]) AND Router::$method != 'kohana_include_view')
 			{
-				/* Do nothing. Exciting! */
+				/*
+				 * Do nothing. Exciting! Honestly, I am surprised having only
+				 * a comment here works.
+				 */
 			}
 			elseif (method_exists($controller, '_default'))
 			{
 				// Change arguments to be $method, $arguments.
 				// This makes _default a much more effecient 404 handler
 				Router::$arguments = array(Router::$method, Router::$arguments);
+
 				// Set the method to _default
 				Router::$method = '_default';
 			}
@@ -562,14 +240,17 @@ class Kohana {
 		return self::$instance;
 	}
 
-	/**
-	 * Output Handler
+	/*
+	 * Method: output_buffer
+	 *  Kohana output handler
 	 *
-	 * @access public
-	 * @param  string
-	 * @return string
+	 * Parameters:
+	 *  output - current output buffer string
+	 *
+	 * Returns:
+	 *  An empty string. Output is done in <Kohana.display>
 	 */
-	final public static function output($output)
+	final public static function output_buffer($output)
 	{
 		// Run the send_headers event, specifically for cookies being set
 		Event::run('system.send_headers');
@@ -596,37 +277,38 @@ class Kohana {
 			$output
 		);
 
+		// Set final output
 		self::$output = $output;
 
-		// Return the final output
+		// Set and return the final output
 		return $output;
 	}
 
+	/*
+	 * Method: display
+	 *  Displays the final rendered output
+	 */
 	public static function display()
 	{
 		// This will flush the Kohana buffer, which sets self::$output
 		ob_end_clean();
 
 		// Run the output event
-		// --------------------------------------------------------------------
-		// This can be used for functions that require completion before headers
-		// are sent. One example is cookies, which are sent with the headers,
-		// and will trigger errors if you try to set them after headers.
-		// --------------------------------------------------------------------
-		Event::run('system.output');
+		Event::run('system.display');
 
 		print self::$output;
 	}
 
-	/**
-	 * Exception and Error Handler
+	/*
+	 * Method: exception handler
+	 *  Dual-purpose PHP error and exception handler. Uses the kohana_error_page
+	 *  View to display the message.
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  string
-	 * @param  string
-	 * @param  integer
-	 * @return void
+	 * Parameters:
+	 *  execption - object or error code
+	 *  message   - error message
+	 *  file      - filename
+	 *  line      - line number
 	 */
 	public static function exception_handler($exception, $message = FALSE, $file = FALSE, $line = FALSE)
 	{
@@ -713,36 +395,48 @@ class Kohana {
 		exit;
 	}
 
-	/**
-	 * Show 404
+	/*
+	 * Method: show_404
+	 *  Displays a 404 page
 	 *
-	 * @access public
-	 * @return void
+	 * Parameters:
+	 *  page     - URI of page
+	 *  template - custom template
+	 *
+	 * Throws:
+	 *   <Kohana_404_Exception>
 	 */
 	public static function show_404($page = FALSE, $template = FALSE)
 	{
 		throw new Kohana_404_Exception($page, $template);
 	}
 
-	/**
-	 * Show Error
+	/*
+	 * Method: show_error
+	 *  Show a custom error message
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  string
-	 * @return void
+	 * Parameters:
+	 *  title    - error title
+	 *  message  - error message
+	 *  template - custom template
+	 *
+	 * Throws:
+	 *  <Kohana_User_Exception>
 	 */
 	public static function show_error($title, $message, $template = FALSE)
 	{
 		throw new Kohana_User_Exception($title, $message, $template);
 	}
 
-	/**
-	 * Autoloader
+	/*
+	 * Method: auto_load
+	 *  Provides class auto-loading
 	 *
-	 * @access public
-	 * @param  string
-	 * @return void
+	 * Parameters:
+	 *  class - name of class
+	 *
+	 * Throws:
+	 *  <Kohana_Exception> if the class is not found.
 	 */
 	public static function auto_load($class)
 	{
@@ -797,15 +491,22 @@ class Kohana {
 		}
 	}
 
-	/**
-	 * Find a Resource
+	/*
+	 * Method: find_file
+	 *  Find a resource file in a given directory
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  string
-	 * @param  boolean
-	 * @param  boolean
-	 * @return mixed
+	 * Parameters:
+	 *  directory - directory to search in
+	 *  filename  - filename to look for
+	 *  required  - is the file required?
+	 *  ext       - custom file extension
+	 *
+	 * Returns:
+	 *  An array of filenames for i18n/ or config/ files. Filename if the file
+	 *  was found, or FALSE.
+	 *
+	 * Throws:
+	 *  <Kohana_Exception> if the file is required and not found.
 	 */
 	public static function find_file($directory, $filename, $required = FALSE, $ext = FALSE)
 	{
@@ -853,12 +554,14 @@ class Kohana {
 		}
 	}
 
-	/**
-	 * List all files in a resource path
+	/*
+	 * Method: list_files
+	 *  Lists all files and directories in a resource path
 	 *
-	 * @access public
-	 * @param  string
-	 * @return array
+	 * Parameters:
+	 *  directory - directory to search
+	 *  recursive - list all files to the maximum depth?
+     *  path      - full path to search (used for recursion, *never* set this manually)
 	 */
 	public static function list_files($directory, $recursive = FALSE, $path = FALSE)
 	{
@@ -894,19 +597,19 @@ class Kohana {
 		return $files;
 	}
 
-	/**
-	 * Fetch a i18n language item
+	/*
+	 * Method: lang
+	 *  Fetch a i18n language item
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  array
-	 * @return mixed
+	 * Parameters:
+	 *  key  - language key to fetch
+	 *  args - additional information to insert into the line
 	 */
-	public static function lang($type, $args = array())
+	public static function lang($key, $args = array())
 	{
 		static $language = array();
 
-		$group = current(explode('.', $type));
+		$group = current(explode('.', $key));
 
 		if ( ! isset($language[$group]))
 		{
@@ -925,9 +628,9 @@ class Kohana {
 				// Merge in configuration
 				if ( ! empty($lang) AND is_array($lang))
 				{
-					foreach($lang as $key => $val)
+					foreach($lang as $k => $v)
 					{
-						$messages[$key] = $val;
+						$messages[$k] = $v;
 					}
 				}
 			}
@@ -936,7 +639,7 @@ class Kohana {
 			$language[$group] = $messages;
 		}
 
-		$line = self::key_string($type, $language);
+		$line = self::key_string($key, $language);
 
 		if ($line === NULL)
 			return FALSE;
@@ -953,6 +656,17 @@ class Kohana {
 		return $line;
 	}
 
+	/*
+	 * Method: key_string
+	 *  Returns the value of a key, defined by a "dot-noted" string, from an array.
+	 *
+	 * Parameters:
+	 *  keys  - dot-noted string, like "foo.bar.one"
+	 *  array - array to search
+	 *
+	 * Returns:
+	 *  Value from array, or NULL.
+	 */
 	public static function key_string($keys, $array)
 	{
 		// No array to search
@@ -995,17 +709,22 @@ class Kohana {
 		return;
 	}
 
-	/**
-	 * Quick debugging of any variable
+	/*
+	 * Method: debug
+	 *  Quick debugging of any variable.
 	 *
-	 * @access public
-	 * @return string
+	 * Parameters:
+	 *  Variables you want debugged.
+	 *
+	 * Returns:
+	 *  HTML output string.
 	 */
-	public static function debug_output()
+	public static function debug()
 	{
 		if (func_num_args() === 0)
 			return;
 
+		// Get params
 		$params = func_get_args();
 		$output = array();
 
@@ -1017,14 +736,11 @@ class Kohana {
 		return implode("\n", $output);
 	}
 
-} // End Kohana class
+} // End Kohana
 
-/**
- * Kohana Exception Class
- *
- * @category  Exceptions
- * @author    Kohana Team
- * @link      http://kohanaphp.com/user_guide/en/general/exceptions.html
+/*
+ * Class: Kohana_Exception
+ *  Creates a generic i18n exception.
  */
 class Kohana_Exception extends Exception {
 
@@ -1042,11 +758,12 @@ class Kohana_Exception extends Exception {
 	protected $file = FALSE;
 	protected $line = FALSE;
 
-	/**
-	 * Constructor
+	/*
+	 * Method: __construct
 	 *
-	 * @access  public
-	 * @return  void
+	 * Parameters:
+	 *  error - i18n language key for the message
+	 *  args  - addition line parameters
 	 */
 	function __construct($error)
 	{
@@ -1067,77 +784,106 @@ class Kohana_Exception extends Exception {
 		}
 	}
 
-	/**
-	 * Magic toString
+	/*
+	 * Method: __toString
+	 *  Magic method for converting an object to a string.
 	 *
-	 * @access  public
-	 * @return  string
+	 * Returns:
+	 *  Exception message string.
 	 */
 	public function __toString()
 	{
 		return $this->message;
 	}
 
+	/*
+	 * Method: getTemplate
+	 *  Fetch the template name.
+	 *
+	 * Returns:
+	 *  Template name string.
+	 */
 	public function getTemplate()
 	{
 		return $this->template;
 	}
 
+	/*
+	 * Method: sendHeaders()
+	 *  Sends a Internal Server Error header.
+	 */
 	public function sendHeaders()
 	{
 		// Send the 500 header
 		header('HTTP/1.1 500 Internal Server Error');
 	}
 
-} // End Kohana Exception Class
+} // End Kohana Exception
 
-/**
- * Kohana PHP Exception Class
- *
- * @category  Exceptions
- * @author    Kohana Team
- * @link      http://kohanaphp.com/user_guide/en/general/exceptions.html
+/*
+ * Class: Kohana_User_Exception
+ *  Creates a custom exception.
  */
 class Kohana_User_Exception extends Kohana_Exception {
 
-	public function __construct($title, $message, $template)
+	/*
+	 * Method: __construct
+	 *
+	 * Parameters:
+	 *  title    - exception title string
+	 *  message  - exception message string
+	 *  template - custom error template
+	 */
+	public function __construct($title, $message, $template = FALSE)
 	{
 		$this->code     = $title;
 		$this->message  = $message;
-		$this->template = $template;
+
+		if ($template != FALSE)
+		{
+			$this->template = $template;
+		}
 	}
 
-} // End Kohana PHP Exception Class
+} // End Kohana PHP Exception
 
-/**
- * Kohana 404 Exception Class
- *
- * @category  Exceptions
- * @author    Kohana Team
- * @link      http://kohanaphp.com/user_guide/en/general/exceptions.html
+/*
+ * Class: Kohana_404_Exception
+ *  Creates a Page Not Found exception.
  */
 class Kohana_404_Exception extends Kohana_Exception {
 
 	protected $code = E_PAGE_NOT_FOUND;
 
-	public function __construct($uri = FALSE, $template = FALSE)
+	/*
+	 * Method: __construct
+	 *
+	 * Parameters:
+	 *  page     - URL of page
+	 *  template - custom error template
+	 */
+	public function __construct($page = FALSE, $template = FALSE)
 	{
-		if ($uri === FALSE)
+		if ($page === FALSE)
 		{
-			$uri = Router::$current_uri.Config::item('core.url_suffix').Router::$query_string;
+			$page = Router::$current_uri.Config::item('core.url_suffix').Router::$query_string;
 		}
 
-		$this->message = Kohana::lang('core.page_not_found', $uri);
+		$this->message = Kohana::lang('core.page_not_found', $page);
 		$this->file    = FALSE;
 		$this->line    = FALSE;
 
 		$this->template = $template;
 	}
 
+	/*
+	 * Method: sendHeaders
+	 *  Sends a Page Not Found header.
+	 */
 	public function sendHeaders()
 	{
 		// Send the 404 header
 		header('HTTP/1.1 404 File Not Found');
 	}
 
-} // End Kohana 404 Exception Class
+} // End Kohana 404 Exception

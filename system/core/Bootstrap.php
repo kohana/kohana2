@@ -1,60 +1,39 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * File: Bootstrap
+ *  Kohana process control file, loaded by <index.php>. 
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
-
 define('KOHANA_VERSION',  '2.0a1');
 define('KOHANA_CODENAME', 'Superlime');
 
 // Kohana benchmarks are prefixed by a random string to prevent collisions
 define('SYSTEM_BENCHMARK', uniqid(rand(1, 100)));
 
-// Load the benchmarking class
 require SYSPATH.'core/Benchmark'.EXT;
-
-// Start the system benchmarks
 Benchmark::start(SYSTEM_BENCHMARK.'_total_execution_time');
-Benchmark::start(SYSTEM_BENCHMARK.'_base_classes_loading');
 
-// Load core classes
+Benchmark::start(SYSTEM_BENCHMARK.'_environment_setup');
+require SYSPATH.'core/utf8'.EXT;
+require SYSPATH.'core/Config'.EXT;
+require SYSPATH.'core/Log'.EXT;
+require SYSPATH.'core/Event'.EXT;
 require SYSPATH.'core/Kohana'.EXT;
 
-// Run system.setup event
-// This sets up Kohana's PHP hooks, output buffering, error handling, etc
 Event::run('system.setup');
+Benchmark::stop(SYSTEM_BENCHMARK.'_environment_setup');
 
-// Stop base class loading benchmark
-Benchmark::stop(SYSTEM_BENCHMARK.'_base_classes_loading');
-// Start system initialization benchmark
 Benchmark::start(SYSTEM_BENCHMARK.'_system_initialization');
-
-// Run system.ready event
 Event::run('system.ready');
-
-// Run system.routing
-// All routing is performed at this stage
 Event::run('system.routing');
-
-// Stop system initialization benchmark
 Benchmark::stop(SYSTEM_BENCHMARK.'_system_initialization');
-// Start the controller execution benchmark
+
 Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
-
-// Run system.execute
-// The controller is loaded and executed at this point
 Event::run('system.execute');
-
-// Stop the controller execution benchmark
 Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
 
-// Manually flush the output buffer to allow loading views in the system.output event
 Event::run('system.shutdown');

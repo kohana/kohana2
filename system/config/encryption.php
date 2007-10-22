@@ -1,14 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Encryption Configuration
- * -----------------------------------------------------------------------------
+/*
+ * File: Encryption
+ *  Settings for the Encryption Library
  *
- * User Guide: http://kohanaphp.com/user_guide/en/libraries/encryption.html
- *
- * @param string  secret  - The encryption key, choose something good!
- *
+ * Options:
+ *  secret  - Default encryption key. To provide a high level of security,
+ *            make sure your key is at least 16 characters and contains
+ *            letters, numbers, and symbols
  */
-
 $config = array
 (
 	'secret' => 'K0H@NA+PHP'

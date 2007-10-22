@@ -1,18 +1,15 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
-/**
- * Session Configuration
- * ----------------------------------------------------------------------------
+/*
+ * File: Session
  *
- * User Guide: http://kohanaphp.com/user_guide/en/libraries/session.html
- *
- * @param  string  driver     - Session driver name
- * @param  string  storage    - Session storage parameter, used by drivers
- * @param  string  name       - Default session name
- * @param  array   validate   - Session parameters to validate
- * @param  mixed   encryption - Encryption key, set to FALSE to disable session encryption
- * @param  integer expiration - Number of seconds that each session will last
- * @param  integer regenerate - Number of page loads before the session is regenerated
- *
+ * Options:
+ *  driver     - Session driver name
+ *  storage    - Session storage parameter, used by drivers
+ *  name       - Default session name
+ *  validate   - Session parameters to validate
+ *  encryption - Encryption key, set to FALSE to disable session encryption
+ *  expiration - Number of seconds that each session will last
+ *  regenerate - Number of page loads before the session is regenerated
  */
 $config = array
 (

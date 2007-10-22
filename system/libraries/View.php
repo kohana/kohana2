@@ -41,7 +41,7 @@ class View_Core {
 			$this->kohana_filetype = current(Config::item('mimes.'.$type));
 
 			// Clear output Events to be safe
-			Event::clear('system.output');
+			Event::clear('system.display');
 		}
 		else
 		{
