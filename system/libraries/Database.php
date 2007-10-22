@@ -182,14 +182,9 @@ class Database_Core {
 		Log::add('debug', 'Database Library initialized');
 	}
 
-	/**
-	 * Connect
-	 *
-	 * Performs a connection to the database
-	 *
-	 * @access  public
-	 * @param   mixed
-	 * @return  object
+	/*
+	 * Method: connect
+	 *  Simple connect method to get the database queries up and running
 	 */
 	public function connect()
 	{
@@ -200,12 +195,15 @@ class Database_Core {
 		}
 	}
 
-	/**
-	 * Query
+	/*
+	 * Method: query
+	 *  Runs a query into the driver and returns the result
 	 *
-	 * @access  public
-	 * @param   string
-	 * @return  mixed
+	 * Parameters:
+	 *  sql - the sql line to run
+	 * 
+	 * Returns:
+	 *  Database_Result object
 	 */
 	public function query($sql = '')
 	{
@@ -244,19 +242,15 @@ class Database_Core {
 		return $result;
 	}
 
-	/**
-	 * Select
+	/*
+	 * Method: select
+	 *  Selects the column names for a database query
 	 *
-	 * Generates the SELECT portion of the query
-	 *
-	 * Several syntax types are supported for calling this method:
-	 * - list of strings:        ('foo', 'bar', 'baz')
-	 * - comma separated string: ('foo, bar, baz')
-	 * - array of strings:       (array('foo', 'bar', 'baz'))
-	 *
-	 * @access  public
-	 * @param   mixed
-	 * @return  object
+	 * Parameters:
+	 *  sql - a string or array of column names to select
+	 * 
+	 * Returns:
+	 *  The Database object
 	 */
 	public function select($sql = '*')
 	{
@@ -283,14 +277,15 @@ class Database_Core {
 		return $this;
 	}
 
-	/**
-	 * DISTINCT
+	/*
+	 * Method: distinct
+	 *  Selects the column names for a database query
 	 *
-	 * Sets a flag which tells the query string compiler to add DISTINCT
-	 *
-	 * @access  public
-	 * @param   boolean
-	 * @return  object
+	 * Parameters:
+	 *  sql - a string or array of column names to select
+	 * 
+	 * Returns:
+	 *  The Database object
 	 */
 	public function distinct($sql = TRUE)
 	{
@@ -299,14 +294,15 @@ class Database_Core {
 		return $this;
 	}
 
-	/**
-	 * From
+	/*
+	 * Method: from
+	 *  Selects the from table(s) for a database query
 	 *
-	 * Generates the FROM portion of the query
-	 *
-	 * @access	public
-	 * @param	mixed	can be a string or array
-	 * @return	object
+	 * Parameters:
+	 *  sql - a string or array of tables to select
+	 * 
+	 * Returns:
+	 *  The Database object
 	 */
 	public function from($sql)
 	{
@@ -352,17 +348,17 @@ class Database_Core {
 		return $this;
 	}
 
-	/**
-	 * Where
+	/*
+	 * Method: where
+	 *  Selects the where(s) for a database query
 	 *
-	 * Generates the WHERE portion of the query. Separates
-	 * multiple calls with AND
-	 *
-	 * @access public
-	 * @param  mixed
-	 * @param  mixed
-	 * @param  boolean
-	 * @return object
+	 * Parameters:
+	 *  key - a key string or an array of key/value pairs to match
+	 *  value - a value to match with the key
+	 *  quote - don't know what this does...
+	 * 
+	 * Returns:
+	 *  The Database object
 	 */
 	public function where($key, $value = NULL, $quote = TRUE)
 	{
@@ -375,17 +371,17 @@ class Database_Core {
 		return $this;
 	}
 
-	/**
-	 * OR Where
+	/*
+	 * Method: orwhere
+	 *  Selects the or where(s) for a database query
 	 *
-	 * Generates the WHERE portion of the query. Separates
-	 * multiple calls with OR
-	 *
-	 * @access public
-	 * @param  mixed
-	 * @param  mixed
-	 * @param  boolean
-	 * @return object
+	 * Parameters:
+	 *  key - a key string or an array of key/value pairs to match
+	 *  value - a value to match with the key
+	 *  quote - don't know what this does...
+	 * 
+	 * Returns:
+	 *  The Database object
 	 */
 	public function orwhere($key, $value = NULL, $quote = TRUE)
 	{
@@ -398,16 +394,16 @@ class Database_Core {
 		return $this;
 	}
 
-	/**
-	 * Like
+	/*
+	 * Method: like
+	 *  Selects the like(s) for a database query
 	 *
-	 * Generates a %LIKE% portion of the query. Separates
-	 * multiple calls with AND
-	 *
-	 * @access	public
-	 * @param	mixed
-	 * @param	mixed
-	 * @return	object
+	 * Parameters:
+	 *  field - a key string or an array of key/value pairs to match
+	 *  match - a value to match with the key
+	 * 
+	 * Returns:
+	 *  The Database object
 	 */
 	public function like($field, $match = '')
 	{
@@ -415,16 +411,16 @@ class Database_Core {
 		return $this;
 	}
 
-	/**
-	 * OR Like
+	/*
+	 * Method: orlike
+	 *  Selects the or like(s) for a database query
 	 *
-	 * Generates a %LIKE% portion of the query. Separates
-	 * multiple calls with OR
-	 *
-	 * @access	public
-	 * @param	mixed
-	 * @param	mixed
-	 * @return	object
+	 * Parameters:
+	 *  field - a key string or an array of key/value pairs to match
+	 *  match - a value to match with the key
+	 * 
+	 * Returns:
+	 *  The Database object
 	 */
 	public function orlike($field, $match = '')
 	{
@@ -432,12 +428,15 @@ class Database_Core {
 		return $this;
 	}
 
-	/**
-	 * GROUP BY
+	/*
+	 * Method: groupby
+	 *  chooses the column to group by in a select query
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	object
+	 * Parameters:
+	 *  by - a column name to group by
+	 * 
+	 * Returns:
+	 *  The Database object
 	 */
 	public function groupby($by)
 	{
@@ -459,15 +458,16 @@ class Database_Core {
 		return $this;
 	}
 
-	/**
-	 * Sets the HAVING value
+	/*
+	 * Method: having
+	 *  Selects the having(s) for a database query
 	 *
-	 * Separates multiple calls with AND
-	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string
-	 * @return	object
+	 * Parameters:
+	 *  key - a key string or an array of key/value pairs to match
+	 *  value - a value to match with the key
+	 * 
+	 * Returns:
+	 *  The Database object
 	 */
 	public function having($key, $value = '')
 	{
@@ -475,15 +475,16 @@ class Database_Core {
         return $this;
 	}
 
-	/**
-	 * Sets the OR HAVING value
+	/*
+	 * Method: orhaving
+	 *  Selects the or having(s) for a database query
 	 *
-	 * Separates multiple calls with OR
-	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string
-	 * @return	object
+	 * Parameters:
+	 *  key - a key string or an array of key/value pairs to match
+	 *  value - a value to match with the key
+	 * 
+	 * Returns:
+	 *  The Database object
 	 */
 	public function orhaving($key, $value = '')
 	{
@@ -491,13 +492,16 @@ class Database_Core {
         return $this;
 	}
 
-	/**
-	 * Sets the ORDER BY value
+	/*
+	 * Method: orderby
+	 *  Chooses which column(s) to order the select query by
 	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string	direction: asc or desc
-	 * @return	object
+	 * Parameters:
+	 *  orderby - column(s) to order on
+	 *  direction - the direction of the order
+	 * 
+	 * Returns:
+	 *  The Database object
 	 */
 	public function orderby($orderby, $direction = '')
 	{
@@ -512,13 +516,16 @@ class Database_Core {
 		return $this;
 	}
 
-	/**
-	 * Sets the LIMIT value
+	/*
+	 * Method: limit
+	 *  Selects the limit section of a query
 	 *
-	 * @access	public
-	 * @param	integer	the limit value
-	 * @param	integer	the offset value
-	 * @return	object
+	 * Parameters:
+	 *  value - the limit
+	 *  offset - an offset to apply the limit to
+	 * 
+	 * Returns:
+	 *  The Database object
 	 */
 	public function limit($value, $offset = FALSE)
 	{
@@ -528,12 +535,15 @@ class Database_Core {
 		return $this;
 	}
 
-	/**
-	 * Sets the OFFSET value
+	/*
+	 * Method: offset
+	 *  Sets the offset portion of a query
 	 *
-	 * @access	public
-	 * @param	integer	the offset value
-	 * @return	object
+	 * Parameters:
+	 *  value - the offset value
+	 * 
+	 * Returns:
+	 *  The Database object
 	 */
 	public function offset($value)
 	{
