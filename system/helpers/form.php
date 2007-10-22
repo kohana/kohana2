@@ -48,9 +48,13 @@ class form {
 		{
 			$action = Router::$current_uri;
 		}
-
+		else if (strpos($action, '://') === FALSE)
+		{
+			$action = url::site($action);
+		}
+		
 		// Form opening tag
-		$form = '<form action="'.url::site($action).'"'.self::attributes($attr).'>'."\n";
+		$form = '<form action="'.$action.'"'.self::attributes($attr).'>'."\n";
 
 		// Add hidden fields
 		if (is_array($hidden) AND count($hidden > 0))
