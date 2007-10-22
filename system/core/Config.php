@@ -42,23 +42,11 @@ final class Config {
 				'Your Kohana application configuration file is not valid.'
 			);
 
-			// Start setting include paths, APPPATH first
-			self::$include_paths = array(APPPATH);
-
-			// Normalize all paths to be absolute and have a trailing slash
-			foreach($config['include_paths'] as $path)
-			{
-				if (($path = str_replace('\\', '/', realpath($path))) == '')
-					continue;
-
-				self::$include_paths[] = $path.'/';
-			}
-
-			// Finish setting include paths by adding SYSPATH
-			self::$include_paths[] = SYSPATH;
-
 			// Load config into self
 			self::$conf['core'] = $config;
+
+			// Re-parse the include paths
+			self::include_paths(TRUE);
 		}
 
 		// Requested group
@@ -125,6 +113,12 @@ final class Config {
 			}
 		}
 
+		if ($key == 'core.include_paths')
+		{
+			// Reprocess the include paths
+			self::include_paths(TRUE);
+		}
+
 		return TRUE;
 	}
 
@@ -132,11 +126,32 @@ final class Config {
 	 * Method: include_paths
 	 *  Get all include paths.
 	 *
+	 * Parameters:
+	 *  process - Re-process the include paths
+	 *
 	 * Returns:
 	 *  Include paths as an array, APPPATH first.
 	 */
-	public static function include_paths()
+	public static function include_paths($process = FALSE)
 	{
+		if ($process == TRUE)
+		{
+			// Start setting include paths, APPPATH first
+			self::$include_paths = array(APPPATH);
+
+			// Normalize all paths to be absolute and have a trailing slash
+			foreach(self::item('core.include_paths') as $path)
+			{
+				if (($path = str_replace('\\', '/', realpath($path))) == '')
+					continue;
+
+				self::$include_paths[] = $path.'/';
+			}
+
+			// Finish setting include paths by adding SYSPATH
+			self::$include_paths[] = SYSPATH;
+		}
+
 		return self::$include_paths;
 	}
 
