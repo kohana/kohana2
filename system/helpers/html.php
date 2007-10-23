@@ -1,33 +1,25 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: html
+ *  HTML helper class.
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * HTML Class
- *
- * @category    Helpers
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/helpers/html.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class html {
 
-	/**
-	 * Convert special characters to HTML entities
+	/*
+	 * Method: specialchars
+	 *  Convert special characters to HTML entities
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  boolean
-	 * @return string
+	 * Parameters:
+	 *  str           - string to convert
+	 *  double_encode - encode existing entities
+	 *
+	 * Returns:
+	 *  Entity-encoded string.
 	 */
 	public static function specialchars($str, $double_encode = TRUE)
 	{
@@ -46,14 +38,43 @@ class html {
 		return $str;
 	}
 
-	/**
-	 * HTML anchor generator
+	/*
+	 * Method: query_string
+	 *  Creates an HTTP query string from an array.
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  string
-	 * @param  mixed
-	 * @return string
+	 * Parameters:
+	 *  array - array of data to convert to string
+	 *
+	 * Returns:
+	 *  An HTTP query string.
+	 */
+	public static function query_string($array)
+	{
+		if (empty($array) OR ! is_array($array))
+			return '';
+
+		$string = array();
+
+		foreach($array as $key => $value)
+		{
+			$string[] = $key.'='.rawurlencode($value);
+		}
+
+		return implode('&', $string);
+	}
+
+	/*
+	 * Method: anchor
+	 *  Create HTML link anchors.
+	 *
+	 * Parameters:
+	 *  uri        - URL or URI string
+	 *  title      - link text
+	 *  attributes - HTML anchor attributes
+	 *  protocol   - non-default protocol, eg: https
+	 *
+	 * Returns:
+	 *  An HTML link anchor.
 	 */
 	public static function anchor($uri, $title = FALSE, $attributes = FALSE, $protocol = FALSE)
 	{
@@ -90,22 +111,60 @@ class html {
 		.(empty($title) ? $site_url : $title).'</a>';
 	}
 
-	public static function file_anchor($uri, $title = FALSE, $attributes = FALSE, $protocol = FALSE)
+	/*
+	 * Method: file_anchor
+	 *  Creates an HTML anchor to a file.
+	 *
+	 * Parameters:
+	 *  file       - name of file to link to
+	 *  title      - link text
+	 *  attributes - HTML anchor attributes
+	 *  protocol   - non-default protocol, eg: ftp
+	 *
+	 * Returns:
+	 *  An HTML link anchor.
+	 */
+	public static function file_anchor($file, $title = FALSE, $attributes = FALSE, $protocol = FALSE)
 	{
 		return
 		// Base URL + URI = full URL
-		'<a href="'.url::base(FALSE).$uri.'"'
+		'<a href="'.url::base(FALSE).$file.'"'
 		// Attributes empty? Use an empty string
 		.(empty($attributes) ? '' : self::attributes($attributes)).'>'
 		// Title empty? Use the filename part of the URI
-		.(empty($title) ? end(explode('/', $uri)) : $title) .'</a>';
+		.(empty($title) ? end(explode('/', $file)) : $title) .'</a>';
 	}
 
+	/*
+	 * Method: panchor
+	 *  Similar to anchor, but with the protocol parameter first.
+	 *
+	 * Parameters:
+	 *  protocol   - link protocol
+	 *  uri        - URI or URL to link to
+	 *  title      - link text
+	 *  attributes - HTML anchor attributes
+	 *
+	 * Returns:
+	 *  An HTML link anchor.
+	 */
 	public static function panchor($protocol, $uri, $title = FALSE, $attributes = FALSE)
 	{
 		return self::anchor($uri, $title, $attributes, $protocol);
 	}
 
+	/*
+	 * Method: mailto
+	 *  Creates a email anchor.
+	 *
+	 * Parameters:
+	 *  email      - email address to send to
+	 *  title      - link text
+	 *  attributes - HTML anchor attributes
+	 *
+	 * Returns:
+	 *  An HTML link anchor.
+	 */
 	public static function mailto($email, $title = FALSE, $attributes = FALSE)
 	{
 		// Remove the subject or other parameters that do not need to be encoded
@@ -142,6 +201,17 @@ class html {
 		return '<a href="&#109;&#097;&#105;&#108;&#116;&#111;&#058;'.$safe.$subject.'"'.$attributes.'>'.$title.'</a>';
 	}
 
+	/*
+	 * Method: stylesheet
+	 *  Creates a stylesheet link.
+	 *
+	 * Parameters:
+	 *  style - filename
+	 *  media - media type of stylesheet
+	 *
+	 * Returns:
+	 *  An HTML stylesheet link.
+	 */
 	public static function stylesheet($style, $media = FALSE)
 	{
 		$compiled = '';
@@ -163,13 +233,15 @@ class html {
 		return $compiled;
 	}
 
-	/**
-	 * Script generator
+	/*
+	 * Method: script
+	 *  Creates a script link.
 	 *
-	 * @access public
-	 * @param  mixed    String or array of script names
-	 * @param  boolean  Add index to the URL
-	 * @return string
+	 * Parameters:
+	 *  script - filename
+	 *
+	 * Returns:
+	 *  An HTML script link.
 	 */
 	public static function script($script)
 	{
@@ -190,12 +262,15 @@ class html {
 		return $compiled;
 	}
 
-	/**
-	 * HTML Attribute Parser
+	/*
+	 * Method: attributes
+	 *  Compiles an array of HTML attributes into an attribute string.
 	 *
-	 * @access public
-	 * @param  mixed
-	 * @return string
+	 * Parameters:
+	 *  attrs - array of attributes
+	 *
+	 * Returns:
+	 *  HTML attribute string.
 	 */
 	public static function attributes($attrs)
 	{
@@ -212,4 +287,4 @@ class html {
 		return $compiled;
 	}
 
-} // End html class
+} // End html
