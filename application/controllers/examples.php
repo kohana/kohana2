@@ -250,7 +250,16 @@ class Examples_Controller extends Controller {
 	{
 		$credit_card = new Creditcard();
 
+		$credit_card->login = 'this';
+		$credit_card->first_name = 'Jeremy';
+		$credit_card->last_name = 'Bush';
+		$credit_card->card_num = '1234567890';
+		$credit_card->exp_date = '0910';
+		$credit_card->amount = '478.41';
+		
 		echo '<pre>'.print_r($credit_card, true).'</pre>';
+		
+		echo 'Success? '.$credit_card->process();
 	}
 
 } // End Welcome

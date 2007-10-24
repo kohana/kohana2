@@ -71,13 +71,15 @@ class Creditcard_Authorize_Driver
 			// Do variable translation
 			switch($key)
 			{
-				
+				case 'exp_date':
+					$key = 'expiration_date';
+					break;
 				default:
 					break;
 			}
-			
+
 			$this->authnet_values['x_'.$key] = $value;
-			$this->required_fields['x_'.$key] = TRUE;
+			if (array_key_exists('x_'.$key, $this->required_fields) and $value != '') $this->required_fields['x_'.$key] = TRUE;
 		}
 	}
 	
@@ -85,7 +87,7 @@ class Creditcard_Authorize_Driver
 	{
 		// Check for required fields
 		if (in_array(FALSE, $this->required_fields))
-			return FALSE;
+			throw new Kohana_Exception('creditcard.required');
 		
 		$fields = "";
 		foreach( $this->authnet_values as $key => $value )

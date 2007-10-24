@@ -132,6 +132,8 @@ class Creditcard_Core {
 	 */
 	public function process()
 	{
-		return $this->driver->process($this->fields);
+		$this->set_fields($this->fields);
+		echo '<pre>'.print_r($this->driver, true).'</pre>';
+		return $this->driver->process();
 	}
 }
