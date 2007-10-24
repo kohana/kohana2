@@ -250,12 +250,21 @@ class Examples_Controller extends Controller {
 	{
 		$credit_card = new Creditcard();
 
+		// You can specify one parameter at a time:
 		$credit_card->login = 'this';
 		$credit_card->first_name = 'Jeremy';
 		$credit_card->last_name = 'Bush';
 		$credit_card->card_num = '1234567890';
 		$credit_card->exp_date = '0910';
 		$credit_card->amount = '478.41';
+		
+		// Or you can also set fields with an array and the <Creditcard.set_fields> method:
+		$credit_card->set_fields(array('login' => 'test', 
+                                       'first_name' => 'Jeremy', 
+                                       'last_name' => 'Bush', 
+                                       'card_num' => '1234567890', 
+                                       'exp_date' => '0910', 
+                                       'amount' => '487.41'));
 		
 		echo '<pre>'.print_r($credit_card, true).'</pre>';
 		
