@@ -143,10 +143,10 @@ class date {
 			$months[$year][$month] = array();
 
 			// Use date to find the number of days in the given month
-			$total = date('t', mktime(1, 0, 0, $month, 1, $year));
+			$total = date('t', mktime(1, 0, 0, $month, 1, $year)) + 1;
 
 			// Add the days
-			for ($i = 1; $i <= $total; $i++)
+			for ($i = 1; $i < $total; $i++)
 			{
 				$months[$year][$month][$i] = $i;
 			}
