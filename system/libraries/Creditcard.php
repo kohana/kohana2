@@ -27,9 +27,9 @@ class Creditcard_Core {
 	protected $config = array
 	(
 		'driver'		=> NULL,
-		'curl_config'	=> array(	CURLOPT_HEADER => FALSE,
-									CURLOPT_RETURNTRANSFER => TRUE,
-									CURLOPT_SSL_VERIFYPEER => FALSE),
+		'curl_config'	=> array(   CURLOPT_HEADER => FALSE,
+                                    CURLOPT_RETURNTRANSFER => TRUE,
+                                    CURLOPT_SSL_VERIFYPEER => FALSE),
 		'test_mode'		=> TRUE,
 	);
 	
@@ -42,29 +42,29 @@ class Creditcard_Core {
 	 * 
 	 * if some are similar, but not exact (maybe card_num should be cc_num), the driver will translate those as well
 	 */
-	protected $fields = array(	'card_num' 			=> '',
-								'exp_date'			=> '',
-								'description'		=> '',
-								'amount'			=> '',
-								'tax'				=> '',
-								'shipping'			=> '',
-								'first_name'		=> '',
-								'last_name'			=> '',
-								'company'			=> '',
-								'address'			=> '',
-								'city'				=> '',
-								'state'				=> '',
-								'zip'				=> '',
-								'email'				=> '',
-								'phone'				=> '',
-								'fax'				=> '',
+	protected $fields = array(	'card_num'          => '',
+								'exp_date'          => '',
+								'description'       => '',
+								'amount'            => '',
+								'tax'               => '',
+								'shipping'          => '',
+								'first_name'        => '',
+								'last_name'         => '',
+								'company'           => '',
+								'address'           => '',
+								'city'              => '',
+								'state'             => '',
+								'zip'               => '',
+								'email'             => '',
+								'phone'             => '',
+								'fax'               => '',
 								'ship_to_first_name'=> '',
-								'ship_to_last_name'	=> '',
-								'ship_to_company'	=> '',
-								'ship_to_address'	=> '',
-								'ship_to_city'		=> '',
-								'ship_to_state'		=> '',
-								'ship_to_zip'		=> '',
+								'ship_to_last_name' => '',
+								'ship_to_company'   => '',
+								'ship_to_address'   => '',
+								'ship_to_city'      => '',
+								'ship_to_state'     => '',
+								'ship_to_zip'       => '',
 								);
 	
 	/**
@@ -114,7 +114,15 @@ class Creditcard_Core {
 	 */
 	public function __set($name, $val)
 	{
+		
 		$this->fields[$name] = $val;
+	}
+	
+	public function set_fields($fields)
+	{
+		$this->driver->set_fields(array_merge($this->fields, (array) $fields));
+		
+		return $this;
 	}
 	
 	/**

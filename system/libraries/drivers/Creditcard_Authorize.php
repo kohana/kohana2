@@ -27,17 +27,17 @@ class Creditcard_Authorize_Driver
 	 * @var array
 	 */
 	private $required_fields = array(   'x_login' => FALSE,
-										'x_version' => TRUE,
-										'x_delim_char' => TRUE,
-										'x_url' => TRUE,
-										'x_type' => TRUE,
-										'x_method' => TRUE,
-										'x_tran_key' => FALSE,
-										'x_relay_response' => TRUE,
-										'x_card_num' => FALSE,
-										'x_expiration_date' => FALSE,
-										'x_amount' => FALSE,
-										);
+                                        'x_version' => TRUE,
+                                        'x_delim_char' => TRUE,
+                                        'x_url' => TRUE,
+                                        'x_type' => TRUE,
+                                        'x_method' => TRUE,
+                                        'x_tran_key' => FALSE,
+                                        'x_relay_response' => TRUE,
+                                        'x_card_num' => FALSE,
+                                        'x_expiration_date' => FALSE,
+                                        'x_amount' => FALSE,
+                                        );
 	/**
 	 * Default required values
 	 *
@@ -45,13 +45,13 @@ class Creditcard_Authorize_Driver
 	 */
 	private $authnet_values = array
 	(
-		'x_version'			=> '3.1',
-		'x_delim_char'		=> '|',
-		'x_delim_data'		=> 'TRUE',
-		'x_url'				=> 'FALSE',
-		'x_type'			=> 'AUTH_CAPTURE',
-		'x_method'			=> 'CC',
-		'x_relay_response'	=> 'FALSE',
+		'x_version'         => '3.1',
+		'x_delim_char'      => '|',
+		'x_delim_data'      => 'TRUE',
+		'x_url'             => 'FALSE',
+		'x_type'            => 'AUTH_CAPTURE',
+		'x_method'          => 'CC',
+		'x_relay_response'  => 'FALSE',
 	);
 	
 	public function __construct($config)
@@ -66,7 +66,7 @@ class Creditcard_Authorize_Driver
 	
 	public function set_fields($fields)
 	{
-		foreach ($fields as $key => $value)
+		foreach ((array) $fields as $key => $value)
 		{
 			// Do variable translation
 			switch($key)
