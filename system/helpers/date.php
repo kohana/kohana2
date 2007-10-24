@@ -1,77 +1,94 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: date
+ *  Date helper class.
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Date Class
- *
- * @category    Helpers
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/helpers/date.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class date {
 
-	/**
-	 * Returns the offset (in seconds) between two time zones
+	/*
+	 * Method: offset
+	 *  Returns the offset (in seconds) between two time zones. See
+	 *  <http://php.net/timezones> for a list of supported time zones.
 	 *
-	 * @access public
-	 * @see    http://php.net/timezones
-	 * @param  string  PHP supported time zone
-	 * @param  string  PHP supported time zone, or none, for the current time zone
-	 * @return integer
+	 * Parameters:
+	 *  remote - timezone that to find the offset of
+	 *  local  - timezone used as the baseline
+	 *
+	 * Returns:
+	 *  Number of seconds between the remote and local timezones.
 	 */
-	public static function offset($one, $two = TRUE)
+	public static function offset($remote, $local = TRUE)
 	{
-		// Create timezone objects
-		$one = new DateTimeZone((string) $one);
-		$two = new DateTimeZone(($two === TRUE) ? date_default_timezone_get() : (string) $two);
+		static $offsets;
 
-		// Create datetime objects from timezones
-		$date_one = new DateTime('now', $one);
-		$date_two = new DateTime('now', $two);
+		// Default values
+		$remote = (string) $remote;
+		$local  = ($local === TRUE) ? date_default_timezone_get() : (string) $local;
 
-		return ($one->getOffset($date_two) - $two->getOffset($date_two));
+		// Cache key name
+		$cache = $remote.$local;
+
+		if (empty($offsets[$cache]))
+		{
+			// Create timezone objects
+			$remote = new DateTimeZone($remote);
+			$local  = new DateTimeZone($local);
+
+			// Create date objects from timezones
+			$time_there = new DateTime('now', $remote);
+			$time_here  = new DateTime('now', $local);
+
+			// Find the offset
+			$offsets[$cache] = $remote->getOffset($time_there) - $local->getOffset($time_here);
+		}
+
+		return $offsets[$cache];
 	}
 
-	/**
-	 * Number of seconds in a minute
+	/*
+	 * Method: seconds
+	 *  Number of seconds in a minute, incrementing by a step.
 	 *
-	 * This function returns a mirrored, eg: foo=foo, array of each second in a
-	 * minute, jumping by $step. Any step from 1 to 30 can be used.
+	 * Parameters:
+	 *  step - amount to increment each step by, 1 to 30
 	 *
-	 * @access public
-	 * @param  integer
-	 * @return array
+	 * Returns:
+	 *  A mirrored (foo => foo) array from 1-60.
 	 */
 	public static function seconds($step = 1)
 	{
-		$step = (int) $step;
-		$vals = array();
+		static $seconds;
 
-		for ($i = $step; $i < 61; $i += $step)
+		// Always integer
+		$step = (int) $step;
+
+		if (empty($seconds[$step]))
 		{
-			$vals[$i] = $i;
+			$seconds[$step] = array();
+
+			for ($i = $step; $i < 61; $i += $step)
+			{
+				$seconds[$step][$i] = $i;
+			}
 		}
 
-		return $vals;
+		return $seconds[$step];
 	}
 
-	/**
-	 * Number of minutes in an hour
+	/*
+	 * Method: minutes
+	 *  Number of minutes in an hour, incrementing by a step.
 	 *
-	 * @access public
-	 * @param  integer
-	 * @return array
+	 * Parameters:
+	 *  step - amount to increment each step by, 1 to 30
+	 *
+	 * Returns:
+	 *  A mirrored (foo => foo) array from 1-60.
 	 */
 	public static function minutes($step = 5)
 	{
@@ -82,48 +99,72 @@ class date {
 		return self::seconds($step);
 	}
 
-	/**
-	 * Number of hours in a day
+	/*
+	 * Method: hours
+	 *  Number of hours in a day.
 	 *
-	 * @access public
-	 * @param  integer
-	 * @return array
+	 * Parameters:
+	 *  step - amount to increment each step by
+	 *  long - use 24-hour time
+	 *
+	 * Returns:
+	 *  A mirrored (foo => foo) array from 1-12 or 1-24.
 	 */
 	public static function hours($step = 1, $long = FALSE)
 	{
-		$step = (int) $step;
-		$size = ($long == TRUE) ? 25 : 13;
+		static $hours;
 
-		$vals = array();
-		for ($i = $step; $i < $size; $i += $step)
+		// Default values
+		$step = (int) $step;
+		$long = (bool) $long;
+
+		// Caching key
+		$cache = ($long == TRUE) ? '24hr' : '12hr';
+
+		if (empty($hours[$cache][$step]))
 		{
-			$vals[$i] = $i;
+			$hours[$cache][$step] = array();
+
+			// 24-hour time has 24 hours, instead of 12
+			$size = ($long == TRUE) ? 25 : 13;
+
+			for ($i = $step; $i < $size; $i += $step)
+			{
+				$hours[$cache][$step][$i] = $i;
+			}
 		}
 
-		return $vals;
+		return $hours[$cache][$step];
 	}
 
-	/**
-	 * Returns AM or PM, based on a given hour
+	/*
+	 * Method: ampm
+	 *  Returns AM or PM, based on a given hour.
 	 *
-	 * @access public
-	 * @param  integer The hour, between 00 and 24
-	 * @return string
+	 * Parameters:
+	 *  hour - number of the hour
+	 *
+	 * Returns:
+	 *  AM or PM.
 	 */
 	public static function ampm($hour)
 	{
-		return ((int) $hour > 11) ? 'PM' : 'AM';
+		// Always integer
+		$hour = (int) $hour;
+
+		return ($hour > 11) ? 'PM' : 'AM';
 	}
 
-	/**
-	 * Number of days in month
+	/*
+	 * Method: days
+	 *  Number of days in month.
 	 *
-	 * This function can optionally be passed a year as the second parameter
-	 * to use a year other than the current year.
+	 * Parameters:
+	 *  month - number of month
+	 *  year  - number of year to check month, defaults to the current year
 	 *
-	 * @access public
-	 * @param  integer
-	 * @return array
+	 * Returns:
+	 *  A mirrored (foo => foo) array of the days.
 	 */
 	public static function days($month, $year = FALSE)
 	{
@@ -139,13 +180,11 @@ class date {
 		// We use caching for months, because time functions are used
 		if (empty($months[$year][$month]))
 		{
-			// Initialize the days array
 			$months[$year][$month] = array();
 
 			// Use date to find the number of days in the given month
 			$total = date('t', mktime(1, 0, 0, $month, 1, $year)) + 1;
 
-			// Add the days
 			for ($i = 1; $i < $total; $i++)
 			{
 				$months[$year][$month][$i] = $i;
@@ -155,60 +194,80 @@ class date {
 		return $months[$year][$month];
 	}
 
-	/**
-	 * Number of months in a year
+	/*
+	 * Method: months
+	 *  Number of months in a year
 	 *
-	 * @access public
-	 * @param  integer
-	 * @return array
+	 * Returns:
+	 *  A mirrored (foo => foo) array from 1-12.
 	 */
 	public static function months()
 	{
 		return self::hours(1, FALSE);
 	}
 
-	/**
-	 * Returns an array of years between a starting and ending year
+	/*
+	 * Method: years
+	 *  Returns an array of years between a starting and ending year. Uses the
+	 *  current year +/- 5 as the max/min.
 	 *
-	 * By default, this will return the current year +/- 5 years
+	 * Parameters:
+	 *  start - starting year
+	 *  end   - ending year
 	 *
-	 * @access public
-	 * @param  integer starting year
-	 * @param  integer ending year
-	 * @return array
+	 * Returns:
+	 *  A mirrored array of years between start and end.
 	 */
 	public static function years($start = FALSE, $end = FALSE)
 	{
+		static $years;
+
+		// Default values
 		$start = ($start == FALSE) ? date('Y') - 5 : (int) $start;
 		$end   = ($end   == FALSE) ? date('Y') + 5 : (int) $end;
 
-		$vals = array();
-		for ($i = $start; $i < ($end + 1); $i++)
+		// Cache key
+		$cache = $start.$end;
+
+		if (empty($years[$cache]))
 		{
-			$vals[$i] = $i;
+			$years[$cache] = array();
+
+			// Add one, so that "less than" works
+			$end += 1;
+
+			for ($i = $start; $i < $end; $i++)
+			{
+				$years[$cache][$i] = $i;
+			}
 		}
 
-		return $vals;
+		return $years[$cache];
 	}
 
-	/**
-	 * Returns time difference between two timestamps
+	/*
+	 * Method:
+	 *  Returns time difference between two timestamps, in human readable format.
 	 *
-	 * @access public
-	 * @param  integer
-	 * @param  integer
-	 * @param  string
-	 * @return mixed
+	 * Parameters:
+	 *  time1  - timestamp
+	 *  time2  - timestamp, defaults to the current time
+	 *  output - formatting string
+	 *
+	 * Returns:
+	 *  A human-readable description of the time span.
 	 */
 	public static function timespan($time1, $time2 = FALSE, $output = 'years,months,weeks,days,hours,minutes,seconds')
 	{
-		// Calculate timespan (in seconds)
-		$time1 = (int) max(0, $time1);
-		$time2 = (int) ($time2 === FALSE) ? time() : max(0, $time2);
+		// Default values
+		$time1  = max(0, (int) $time);
+		$time2  = ($time2 === FALSE) ? time() : max(0, (int) $time2);
+
+		// Calculate timespan (seconds)
 		$timespan = abs($time1 - $time2);
 
 		// Array with the output formats
-		$output = preg_split('/[\s,]+/', strtolower($output));
+		$output = preg_split('/[\s,]+/', strtolower((string) $output));
 		$output = array_combine($output, $output);
 
 		// Array of diff values
@@ -286,4 +345,4 @@ class date {
 		return $timediff;
 	}
 
-} // End date Class
+} // End date
