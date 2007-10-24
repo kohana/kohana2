@@ -17,12 +17,11 @@ class feed {
 	 * Parameters:
 	 *  feed   - remote feed URL
 	 *  limit  - item limit to fetch
-	 *  format - feed format, RSS or Atom
 	 *
 	 * Returns:
 	 *  Array of feed items.
 	 */
-	public static function parse($feed, $limit = 0, $format = 'rss')
+	public static function parse($feed, $limit = 0)
 	{
 		// Make limit an integer
 		$limit = (int) $limit;
@@ -33,8 +32,9 @@ class feed {
 		// Reset the feed to an empty array
 		$feed = array();
 
-		// Name of entry element, "entry" in Atom, "item" in RSS
-		$entry = (strtolower($format) == 'atom') ? 'entry' : 'item';
+		// Choose the name of the entry (RSS or Atom). Atom feeds use <feed>
+		// as the XML container, RSS uses <rdf>.
+		$entry = ($parser->getElementsByTagName('feed')->length > 0) ? 'entry' : 'item';
 
 		// Parse each of the RSS items
 		foreach($parser->getElementsByTagName($entry) as $index => $node)
