@@ -58,7 +58,7 @@ class Encrypt_Core {
 			if ($this->encryption_key != '')
 				return $this->encryption_key;
 
-			if (($key = Config::item('encryption.key')) === FALSE)
+			if (($key = Config::item('encryption.key')) === NULL)
 				throw new Kohana_Exception('encrypt.no_encryption_key');
 		}
 

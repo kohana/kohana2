@@ -67,7 +67,7 @@ class download {
 		}
 
 		// Set a default mime if we can't find it
-		if (($mime = Config::item('mimes.'.$extension)) === FALSE)
+		if (($mime = Config::item('mimes.'.$extension)) === NULL)
 		{
 			$mime = 'application/octet-stream';
 		}

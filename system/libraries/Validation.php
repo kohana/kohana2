@@ -562,7 +562,7 @@ class Validation_Core {
 		// is trusted (validated by the server), we check if the mime is in the
 		// list of known mime types for the current extension.
 
-		if ($ext == FALSE OR array_search($mime, Config::item('mimes.'.$ext)) === FALSE)
+		if ($ext == FALSE OR array_search($mime, Config::item('mimes.'.$ext)) === NULL)
 		{
 			$this->add_error('invalid_type', $this->current_field);
 			return FALSE;

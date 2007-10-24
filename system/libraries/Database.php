@@ -76,7 +76,7 @@ class Database_Core {
 				$name = $config;
 
 				// Test the config group name
-				if (($config = Config::item('database.'.$config)) === FALSE)
+				if (($config = Config::item('database.'.$config)) === NULL)
 					throw new Kohana_Database_Exception('database.undefined_group', $name);
 			}
 		}
