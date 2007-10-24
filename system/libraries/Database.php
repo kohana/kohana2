@@ -486,7 +486,7 @@ class Database_Core {
 			$direction = (in_array($direction, array('ASC', 'DESC', 'RAND()'))) ? ' '.$direction : ' ASC';
 		}
 
-		$this->orderby[] = $orderby.$direction;
+		$this->orderby[] = $this->driver->escape_column($orderby).$direction;
 		return $this;
 	}
 
