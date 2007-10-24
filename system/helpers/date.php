@@ -146,7 +146,7 @@ class date {
 			$total = date('t', mktime(1, 0, 0, $month, 1, $year));
 
 			// Add the days
-			for ($i = 1; $i < $total; $i++)
+			for ($i = 1; $i <= $total; $i++)
 			{
 				$months[$year][$month][$i] = $i;
 			}
