@@ -10,28 +10,30 @@
  */
 class cookie {
 
-	/**
-	 * Set a cookie
+	/*
+	 * Method: set
+	 *  Sets a cookie with the given parameters.
 	 *
-	 * @access  public
-	 * @param   mixed    name or config
-	 * @param   string   value
-	 * @param   integer  expiration (timestamp)
-	 * @param   string   URL path
-	 * @param   string   domain
-	 * @param   boolean  HTTPS only
-	 * @param   boolean  HTTP only
-	 * @param   string   prefix (to prevent collisions)
-	 * @return  boolean
+	 * Parameters:
+	 * name     - cookie name or array of config options
+	 * value    - cookie value
+	 * expire   - number of seconds before the cookie expires
+	 * path     - URL path to allow
+	 * domain   - URL domain to allow
+	 * secure   - HTTPS only
+	 * httponly - HTTP only
+	 * prefix   - collision-prevention prefix
+	 *
+	 * Returns:
+	 *  TRUE or FALSE.
 	 */
 	public static function set($name, $value = '', $expire = 0, $path = '/', $domain = '', $secure = FALSE, $httponly = FALSE, $prefix = '')
 	{
-		$config = Config::item('cookie');
+		// If the name param is an array, we import it
+		is_array($name) and extract($name, EXTR_OVERWRITE);
 
-		if (is_array($name))
-		{
-			$config = array_merge($config, $name);
-		}
+		// Fetch default options
+		$config = Config::item('cookie');
 
 		foreach (array('name', 'value', 'expire', 'domain', 'path', 'prefix', 'secure', 'httponly') as $item)
 		{
@@ -47,14 +49,17 @@ class cookie {
 		return setcookie($prefix.$name, $value, $expire, $path, $domain, $secure, $httponly);
 	}
 
-	/**
-	 * Get a cookie
+	/*
+	 * Method: get
+	 *  Fetch a cookie value, using the Input library.
 	 *
-	 * @access  public
-	 * @param   string
-	 * @param   string
-	 * @param   boolean
-	 * @return  string
+	 * Parameters:
+	 *  name      - cookie name
+	 *  prefix    - collision-prevention prefix
+	 *  xss_clean - use XSS cleaning on the value
+	 *
+	 * Returns:
+	 *  Value of the requested cookie.
 	 */
 	public static function get($name, $prefix = '', $xss_clean = FALSE)
 	{
@@ -67,25 +72,29 @@ class cookie {
 
 		if ($prefix == '')
 		{
-			$prefix = (string) Config::item('cookie.prefix');
+			$prefix = Config::item('cookie.prefix');
 		}
 
 		return $input->cookie($prefix.$name, $xss_clean);
 	}
 
-	/**
-	 * Delete a cookie
+	/*
+	 * Method: delete
+	 *  Nullify and unset a cookie.
 	 *
-	 * @access  public
-	 * @param   string
-	 * @param   string
-	 * @param   string
-	 * @param   string
-	 * @return  boolean
+	 * Parameters:
+	 *  name   - cookie name
+	 *  path   - URL path
+	 *  domain - URL domain
+	 *  prefix - collision-prevention prefix
+	 *
+	 * Returns:
+	 *  TRUE or FALSE.
 	 */
 	public static function delete($name, $path = '/', $domain = '', $prefix = '')
 	{
-		return self::set($name, '', 1, $path, $domain, FALSE, FALSE, $prefix);
+		// Sets the cookie value to an empty string, and the expiration to 2 hours ago
+		return self::set($name, '', -7200, $path, $domain, FALSE, FALSE, $prefix);
 	}
 
-} // End cookie class
+} // End cookie
