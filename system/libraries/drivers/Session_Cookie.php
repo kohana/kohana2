@@ -29,7 +29,7 @@ class Session_Cookie_Driver implements Session_Driver {
 
 	public function __construct()
 	{
-		$this->cookie_name = Config::item('cookie.prefix').Config::item('session.name');
+		$this->cookie_name = Config::item('cookie.prefix').Config::item('session.name').'_data';
 		$this->expiration  = Config::item('session.expiration');
 		$this->encryption  = Config::item('session.encryption');
 

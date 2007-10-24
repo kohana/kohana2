@@ -84,9 +84,9 @@ class Session_Core {
 			Event::add('system.send_headers', 'session_write_close');
 		}
 
-		// Regenerate session ID
 		if (($_SESSION['total_hits'] % self::$config['regenerate']) === 0)
 		{
+			// Regenerate session ID
 			$this->regenerate();
 		}
 
@@ -117,10 +117,7 @@ class Session_Core {
 	public function create($vars = NULL)
 	{
 		// Destroy the session
-		if (isset($_SESSION))
-		{
-			$this->destroy();
-		}
+		$this->destroy();
 
 		if (self::$config['driver'] != 'native')
 		{

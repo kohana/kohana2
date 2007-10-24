@@ -5,9 +5,10 @@
  *
  * Kohana Source Code:
  *  author    - Kohana Team
- *  copyright - Copyright (c) 2006, EllisLab, Inc.
+ *  copyright - (c) 2007 Kohana Team
+ *  copyright - (c) 2006 EllisLab, Inc.
  *  license   - <http://www.codeigniter.com/user_guide/license.html>
- * 
+ *
  * $Id$
  */
 class Database_Core {
@@ -49,11 +50,11 @@ class Database_Core {
 
 	/*
 	 * Method: __construct
-	 *  Sets up the database configuration, loads the <Database_Driver>
+	 *  Sets up the database configuration, loads the <Database_Driver>.
 	 *
 	 * Throws:
 	 *  <Kohana_Database_Exception> if there is no database group, an invalid DSN is supplied,
-	 *  or the requested driver doesn't exist
+	 *  or the requested driver doesn't exist.
 	 */
 	public function __construct($config = array())
 	{
@@ -191,7 +192,7 @@ class Database_Core {
 	 *
 	 * Parameters:
 	 *  sql - the sql line to run
-	 * 
+	 *
 	 * Returns:
 	 *  <Database_Result> object
 	 */
@@ -238,7 +239,7 @@ class Database_Core {
 	 *
 	 * Parameters:
 	 *  sql - a string or array of column names to <Database.select>
-	 * 
+	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
@@ -273,7 +274,7 @@ class Database_Core {
 	 *
 	 * Parameters:
 	 *  sql - a string or array of tables to <Database.select>
-	 * 
+	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
@@ -329,7 +330,7 @@ class Database_Core {
 	 *  key - a key string or an array of key/value pairs to match
 	 *  value - a value to match with the key
 	 *  quote - don't know what this does...
-	 * 
+	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
@@ -352,7 +353,7 @@ class Database_Core {
 	 *  key - a key string or an array of key/value pairs to match
 	 *  value - a value to match with the key
 	 *  quote - don't know what this does...
-	 * 
+	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
@@ -374,7 +375,7 @@ class Database_Core {
 	 * Parameters:
 	 *  field - a key string or an array of key/value pairs to match
 	 *  match - a value to match with the key
-	 * 
+	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
@@ -391,7 +392,7 @@ class Database_Core {
 	 * Parameters:
 	 *  field - a key string or an array of key/value pairs to match
 	 *  match - a value to match with the key
-	 * 
+	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
@@ -407,7 +408,7 @@ class Database_Core {
 	 *
 	 * Parameters:
 	 *  by - a column name to group by
-	 * 
+	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
@@ -438,7 +439,7 @@ class Database_Core {
 	 * Parameters:
 	 *  key - a key string or an array of key/value pairs to match
 	 *  value - a value to match with the key
-	 * 
+	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
@@ -455,7 +456,7 @@ class Database_Core {
 	 * Parameters:
 	 *  key - a key string or an array of key/value pairs to match
 	 *  value - a value to match with the key
-	 * 
+	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
@@ -472,7 +473,7 @@ class Database_Core {
 	 * Parameters:
 	 *  orderby - column(s) to order on
 	 *  direction - the direction of the order
-	 * 
+	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
@@ -496,7 +497,7 @@ class Database_Core {
 	 * Parameters:
 	 *  value - the limit
 	 *  offset - an offset to apply the limit to
-	 * 
+	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
@@ -514,7 +515,7 @@ class Database_Core {
 	 *
 	 * Parameters:
 	 *  value - the offset value
-	 * 
+	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
@@ -530,7 +531,7 @@ class Database_Core {
 	 *
 	 * Parameters:
 	 *  key - a string or array of key/value pairs
-	 * 
+	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
@@ -558,7 +559,7 @@ class Database_Core {
 	 *  table - the table
 	 *  limit - the <Database.limit> clause
 	 *  offset - the <Database.offset> clause
-	 * 
+	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
@@ -594,7 +595,7 @@ class Database_Core {
 	 *  where - the <Database.where> clause
 	 *  limit - the <Database.limit) clause
 	 *  offset - the <Database.offset) clause
-	 * 
+	 *
 	 * Returns:
 	 *  <Database_Result> object
 	 */
@@ -629,7 +630,7 @@ class Database_Core {
 	 * Parameters:
 	 *  table - the table
 	 *  set - an array of key/value pairs to insert
-	 * 
+	 *
 	 * Returns:
 	 *  <Database_Result> object
 	 */
@@ -665,7 +666,7 @@ class Database_Core {
 	 *  table - the table
 	 *  set - an associative array of update values
 	 *  where - the where clause
-	 * 
+	 *
 	 * Returns:
 	 *  <Database_Result> object
 	 */
@@ -701,7 +702,7 @@ class Database_Core {
 	 *  table - the table
 	 *  set - an associative array of update values
 	 *  where - the where clause
-	 * 
+	 *
 	 * Returns:
 	 *  <Database_Result> object
 	 */
@@ -732,7 +733,7 @@ class Database_Core {
 	/*
 	 * Method: last_query
 	 *  returns the last <Database.query> run
-	 * 
+	 *
 	 * Returns:
 	 *  A string containing the lest SQL statement
 	 */
@@ -744,10 +745,10 @@ class Database_Core {
 	/*
 	 * Method: last_query
 	 *  Count table records
-	 * 
+	 *
 	 * Parameters:
 	 *  table - the table to count
-	 * 
+	 *
 	 * Returns:
 	 *  A number containing the records in the table
 	 */
@@ -801,7 +802,7 @@ class Database_Core {
 	/*
 	 * Method: list_tables
 	 *  Lists all the tables in the current database
-	 * 
+	 *
 	 * Returns:
 	 *  An array of table names
 	 */
@@ -817,10 +818,10 @@ class Database_Core {
 	/*
 	 * Method: table_exists
 	 *  See if a table exists in the database
-	 * 
+	 *
 	 * Parameters:
 	 *  table_name - the name of the table to check
-	 * 
+	 *
 	 * Returns:
 	 *  TRUE/FALSE
 	 */
@@ -832,11 +833,11 @@ class Database_Core {
 	/*
 	 * Method: compile_binds
 	 *  Combine a sql statement with the bind values. Used for safe queries!
-	 * 
+	 *
 	 * Parameters:
 	 *  sql - the query to bind to the values
 	 *  binds - an array of value to bind to the query
-	 * 
+	 *
 	 * Returns:
 	 *  string containing the final <Database.query> to run
 	 */
@@ -864,10 +865,10 @@ class Database_Core {
 	/*
 	 * Method: field_data
 	 *  Get the field data for a database table, along with the field's attributes
-	 * 
+	 *
 	 * Parameters:
 	 *  table - the table to process
-	 * 
+	 *
 	 * Returns:
 	 *  array containing the field data
 	 */

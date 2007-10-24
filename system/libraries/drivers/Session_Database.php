@@ -78,7 +78,7 @@ class Session_Database_Driver implements Session_Driver {
 		try
 		{
 			// Try connecting to the database using a database group, defined
-			// by the 'session.name' config item. This is optional, but preferred.
+			// by the 'session.storage' config item. This is optional, but preferred.
 			$this->db = new Database($this->group_name);
 		}
 		catch (Kohana_Database_Exception $e)
@@ -90,7 +90,7 @@ class Session_Database_Driver implements Session_Driver {
 		if ( ! $this->db->table_exists($this->group_name))
 			throw new Kohana_Exception('session.no_table', $this->group_name);
 
-		return ($this->db) ? TRUE : FALSE;
+		return is_object($this->db);
 	}
 
 	/**
