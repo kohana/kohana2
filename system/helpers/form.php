@@ -288,7 +288,7 @@ class form {
 		$input = '<select '.self::attributes($data).$extra.'>'."\n";
 		foreach ($options as $key => $val)
 		{
-			$sel = ($selected != $key) ? '' : ' selected="selected"';
+			$sel = ($selected == $key) ? ' selected="selected"' : '';
 
 			$input .= '<option value="'.$key.'"'.$sel.'>'.$val.'</option>'."\n";
 		}

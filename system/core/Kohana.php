@@ -253,7 +253,7 @@ class Kohana {
 	final public static function output_buffer($output)
 	{
 		// Run the send_headers event, specifically for cookies being set
-		Event::run('system.send_headers');
+		Event::has_run('system.send_headers') or Event::run('system.send_headers');
 
 		// Fetch memory usage in MB
 		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
@@ -389,6 +389,9 @@ class Kohana {
 		{
 			Log::add('error', Kohana::lang('core.uncaught_exception', $type, strip_tags($message), $file, $line));
 		}
+
+		// Run the system.shutdown event
+		Event::has_run('system.shutdown') or Event::run('system.shutdown');
 
 		// Load the error page
 		include self::find_file('views', empty($template) ? 'kohana_error_page' : $template);

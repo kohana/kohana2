@@ -53,6 +53,9 @@ final class Event {
 	// Event callbacks
 	private static $events = array();
 
+	// Cache of events that have been run
+	private static $has_run = array();
+
 	// Data that can be processed during events
 	public static $data;
 
@@ -150,6 +153,24 @@ final class Event {
 		// Do this to prevent data from getting 'stuck'
 		$clear_data = '';
 		self::$data =& $clear_data;
+
+		// The event has been run!
+		self::$has_run[$name] = $name;
+	}
+
+	/*
+	 * Method: has_run
+	 *  Check if a given event has been run.
+	 *
+	 * Parameters:
+	 *  name - event name
+	 *
+	 * Returns:
+	 *  TRUE or FALSE.
+	 */
+	public static function has_run($name)
+	{
+		return isset(self::$has_run[$name]);
 	}
 
 } // End Event

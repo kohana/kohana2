@@ -61,6 +61,11 @@ class url {
 		return self::base(FALSE, $protocol).$index_page.$uri.$url_suffix;
 	}
 
+	public static function current()
+	{
+		return Router::$current_uri;
+	}
+
 	/**
 	 * URL-safe Title
 	 *
