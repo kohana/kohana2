@@ -48,7 +48,7 @@ class form {
 		{
 			$action = Router::$current_uri;
 		}
-		else if (strpos($action, '://') === FALSE)
+		elseif (strpos($action, '://') === FALSE)
 		{
 			$action = url::site($action);
 		}
