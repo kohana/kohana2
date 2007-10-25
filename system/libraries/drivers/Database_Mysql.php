@@ -79,7 +79,7 @@ class Database_Mysql_Driver implements Database_Driver {
 
 	public function delete($table, $where)
 	{
-    	return 'DELETE FROM '.$this->escape_table($table).' WHERE '.implode(' ', $where);
+		return 'DELETE FROM '.$this->escape_table($table).' WHERE '.implode(' ', $where);
 	}
 
 	public function update($table, $values, $where)
@@ -185,7 +185,12 @@ class Database_Mysql_Driver implements Database_Driver {
 				{
 					if ( ! $this->has_operator($k))
 					{
-					   $k .= ' =';
+						$k = $this->escape_column($k).' =';
+					}
+					else
+					{
+						// This detect the position of the operator and escape the rest...
+						//$k = $this->escape_column($k);
 					}
 
 					$v = ' '.(($quote == TRUE) ? $this->escape($v) : $v);
@@ -241,7 +246,7 @@ class Database_Mysql_Driver implements Database_Driver {
 	 */
 	public function compile_select($database)
 	{
-		$sql  = ($database['distinct'] == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
+		$sql = ($database['distinct'] == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
 		$sql .= (count($database['select']) > 0) ? implode(', ', $database['select']) : '*';
 
 		if (count($database['from']) > 0)
@@ -310,7 +315,7 @@ class Database_Mysql_Driver implements Database_Driver {
 		{
 			case 'string':
 				$str = "'".$this->escape_str($str)."'";
- 			break;
+				break;
 			case 'boolean':
 				$str = (int) $str;
 			break;
