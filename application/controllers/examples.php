@@ -1,7 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /*
  * Class: Examples
- *  Contains examples of various Kohana library examples.
+ *  Contains examples of various Kohana library examples. You can access these
+ *  samples in your own installation of Kohana by going to ROOT_URL/examples.
+ *
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class Examples_Controller extends Controller {
 
@@ -18,13 +24,38 @@ class Examples_Controller extends Controller {
 			get_class_methods(get_parent_class($this))
 		);
 
+		echo "<strong>Examples:</strong>\n";
+		echo "<ul>\n";
+
 		foreach($examples as $method)
 		{
 			if ($method == __FUNCTION__)
 				continue;
 
-			echo html::anchor('examples/'.$method, $method)."<br/>\n";
+			echo "<li>".html::anchor('examples/'.$method, $method)."</li>\n";
 		}
+
+		echo "</ul>\n";
+		echo "<p>".Kohana::lang('core.stats_footer')."</p>\n";
+	}
+
+	/*
+	 * Method: template
+	 *  Demonstrates how to use views inside of views.
+	 */
+	function template()
+	{
+		$data = array
+		(
+			'title'   => 'View-in-View Example',
+			'content' => 'This is my view-in-view page content.',
+			'copyright' => '&copy; 2007 Kohana Team'
+		);
+
+		$view = $this->load->view('viewinview/container', $data);
+		$view->header = $this->load->view('viewinview/header', $data);
+
+		$view->render(TRUE);
 	}
 
 	/*
@@ -33,22 +64,11 @@ class Examples_Controller extends Controller {
 	 */
 	function rss()
 	{
-		include Kohana::find_file('vendor', 'Markdown');
+		// Parse an external atom feed
+		$feed = feed::parse('http://codeigniter.com/feeds/atom/news/');
 
-		$feed = new DOMDocument();
-		$feed->load(APPPATH.'cache/rss.xml');
-
-		foreach($feed->getElementsByTagName('item') as $index => $node)
-		{
-			if ($index > 4) break;
-
-			$title = $node->getElementsByTagName('title')->item(0)->nodeValue;
-			$desc  = $node->getElementsByTagName('description')->item(0)->nodeValue;
-			$link  = $node->getElementsByTagName('link')->item(0)->nodeValue;
-			$date  = $node->getElementsByTagName('pubDate')->item(0)->nodeValue;
-
-			print Markdown("### [{$title}]({$link})\n$desc\n");
-		}
+		// Show debug info
+		print Kohana::debug($feed);
 
 		print Kohana::lang('core.stats_footer');
 	}
@@ -257,17 +277,17 @@ class Examples_Controller extends Controller {
 		$credit_card->card_num = '1234567890';
 		$credit_card->exp_date = '0910';
 		$credit_card->amount = '478.41';
-		
+
 		// Or you can also set fields with an array and the <Creditcard.set_fields> method:
-		$credit_card->set_fields(array('login' => 'test', 
-                                       'first_name' => 'Jeremy', 
-                                       'last_name' => 'Bush', 
-                                       'card_num' => '1234567890', 
-                                       'exp_date' => '0910', 
+		$credit_card->set_fields(array('login' => 'test',
+                                       'first_name' => 'Jeremy',
+                                       'last_name' => 'Bush',
+                                       'card_num' => '1234567890',
+                                       'exp_date' => '0910',
                                        'amount' => '487.41'));
-		
+
 		echo '<pre>'.print_r($credit_card, true).'</pre>';
-		
+
 		echo 'Success? '.$credit_card->process();
 	}
 
