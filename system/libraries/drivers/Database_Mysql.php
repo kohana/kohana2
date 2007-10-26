@@ -189,8 +189,7 @@ class Database_Mysql_Driver implements Database_Driver {
 					else
 					{
 						preg_match('/^(.+?)([<>!=]+|\bIS(?:\s+NULL))\s*$/i', $k, $matches);
-						$v = trim($matches[0]); // column
-						$k = trim($matches[1]); // operator
+						$k = $this->escape_column(trim($matches[1])).' '.trim($matches[2]);
 					}
 
 					$v = ' '.(($quote == TRUE) ? $this->escape($v) : $v);
