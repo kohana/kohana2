@@ -1,26 +1,25 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: security
+ *  Security helper class.
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Security Class
- *
- * @category    Helpers
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/helpers/security.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class security {
 
+	/*
+	 * Method: xss_clean
+	 *  Sanitize a string with the xss_clean method.
+	 *
+	 * Parameters:
+	 *  str - string to sanitize
+	 *
+	 * Returns:
+	 *  Sanitized string.
+	 */
 	public static function xss_clean($str)
 	{
 		static $input;
@@ -33,6 +32,16 @@ class security {
 		return $input->xss_clean($str);
 	}
 
+	/*
+	 * Method: strip_image_tags
+	 *  Remove image tags from a string.
+	 *
+	 * Parameters:
+	 *  str - string to sanitize
+	 *
+	 * Returns:
+	 *  Sanitized string.
+	 */
 	public static function strip_image_tags($str)
 	{
 		$str = preg_replace('#<img\b.*?(?:src\s*=\s*["\']?([^"\'<>\s]*)["\']?[^>]*)?>#is', '$1', $str);
@@ -40,9 +49,19 @@ class security {
 		return trim($str);
 	}
 
+	/*
+	 * Method: encode_php_tags
+	 *  Remove PHP tags from a string.
+	 *
+	 * Parameters:
+	 *  str - string to sanitize
+	 *
+	 * Returns:
+	 *  Sanitized string.
+	 */
 	public static function encode_php_tags($str)
 	{
 		return str_replace(array('<?', '?>'),  array('&lt;?', '?&gt;'), $str);
 	}
 
-} // End security Class
+} // End security

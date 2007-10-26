@@ -1,33 +1,25 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: url
+ *  URL helper class.
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Cookie Class
- *
- * @category    Helpers
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/helpers/cookie.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class url {
 
-	/**
-	 * Base URL, with or without the index page
+	/*
+	 * Method: base
+	 *  Base URL, with or without the index page.
 	 *
-	 * @access public
-	 * @param  boolean
-	 * @param  string
-	 * @return string
+	 * Parameters:
+	 *  index    - include the index page
+	 *  protocol - non-default protocol
+	 *
+	 * Returns:
+	 *  The base URL string.
 	 */
 	public static function base($index = FALSE, $protocol = FALSE)
 	{
@@ -43,13 +35,16 @@ class url {
 		return $base_url;
 	}
 
-	/**
-	 * Site URL from a URI
+	/*
+	 * Method: site
+	 *  Fetches a site URL based on a URI segment.
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  string
-	 * @return string
+	 * Parameters:
+	 *  uri      - site URI to convert
+	 *  protocol - non-default protocol
+	 *
+	 * Returns:
+	 *  A URL string.
 	 */
 	public static function site($uri = '', $protocol = FALSE)
 	{
@@ -61,18 +56,28 @@ class url {
 		return self::base(FALSE, $protocol).$index_page.$uri.$url_suffix;
 	}
 
+	/*
+	 * Method: current
+	 *  Fetches the current URI.
+	 *
+	 * Returns:
+	 *  The current URI string.
+	 */
 	public static function current()
 	{
 		return Router::$current_uri;
 	}
 
-	/**
-	 * URL-safe Title
+	/*
+	 * Method: title
+	 *  Convert a phrase to a URL-safe title.
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  string
-	 * @return string
+	 * Parameters:
+	 *  title     - phrase to convert
+	 *  separator - word separator
+	 *
+	 * Returns:
+	 *  A URL-safe title string.
 	 */
 	public static function title($title, $separator = '-')
 	{
@@ -93,16 +98,23 @@ class url {
 		return $title;
 	}
 
-	/**
-	 * Send a redirect header
+	/*
+	 * Method: redirect
+	 *  Sends a page redirect header.
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  string
-	 * @return void
+	 * Parameters:
+	 *  uri    - site URI or URL to redirect to
+	 *  method - HTTP method of redirect
+	 *
+	 * Returns:
+	 *  A HTML anchor, but sends HTTP headers. The anchor should never be seen
+	 *  by the user, unless their browser does not understand the headers sent.
 	 */
 	public static function redirect($uri = '', $method = '302')
 	{
+		if (Event::has_run('system.send_headers'))
+			return;
+
 		if (strpos($uri, '://') === FALSE)
 		{
 			$uri = self::site($uri);
@@ -135,4 +147,4 @@ class url {
 		exit('<a href="'.$uri.'">'.$uri.'</a>.');
 	}
 
-} // End url class
+} // End url

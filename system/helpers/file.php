@@ -1,26 +1,27 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: file
+ *  File helper class.
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * File Class
- *
- * @category    Helpers
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/helpers/file.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class file {
 
+	/*
+	 * Method: split
+	 *  Split a file into pieces matching a specific size.
+	 *
+	 * Parameters:
+	 *  filename   - file to be split
+	 *  output_dir - directory to output to, defaults to the same directory as the file
+	 *  piece_size - size, in MB, for each chunk to be
+	 *
+	 * Returns:
+	 *  The number of pieces that were created.
+	 */
 	public static function split($filename, $output_dir = FALSE, $piece_size = 10)
 	{
 		// Find output dir
@@ -70,6 +71,17 @@ class file {
 		return ($piece - 1);
 	}
 
+	/*
+	 * Method: join
+	 *  Join a split file into a whole fike.
+	 *
+	 * Parameters:
+	 *  filename  - split filename, without .000 extension
+	 *  output    - output filename, if different then an the filename
+	 *
+	 * Returns:
+	 *  The number of pieces that were joined.
+	 */
 	public static function join($filename, $output = FALSE)
 	{
 		if ($output == FALSE)
@@ -108,4 +120,4 @@ class file {
 		return ($piece - 1);
 	}
 
-} // End file class
+} // End file

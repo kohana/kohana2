@@ -1,26 +1,25 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: inflector
+ *  Inflector helper class.
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Inflector Class
- *
- * @category    Helpers
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/helpers/inflector.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class inflector {
 
+	/*
+	 * Method: uncountable
+	 *  Checks if a word is defined as uncountable.
+	 *
+	 * Parameters:
+	 *  str - word to check
+	 *
+	 * Returns:
+	 *  TRUE or FALSE.
+	 */
 	public static function uncountable($str)
 	{
 		static $uncountables = NULL;
@@ -34,6 +33,16 @@ class inflector {
 		return isset($uncountables[$str]);
 	}
 
+	/*
+	 * Method: singular
+	 *  Makes a plural word singular.
+	 *
+	 * Parameters:
+	 *  str - word to singularize
+	 *
+	 * Returns:
+	 *  The singular version of the word.
+	 */
 	public static function singular($str)
 	{
 		$str = trim($str);
@@ -60,6 +69,16 @@ class inflector {
 		return $str;
 	}
 
+	/*
+	 * Method: plural
+	 *  Makes a singular word plural.
+	 *
+	 * Parameters:
+	 *  str - word to pluralize
+	 *
+	 * Returns:
+	 *  Plural version of the word.
+	 */
 	public static function plural($str)
 	{
 		$str = trim($str);
@@ -91,6 +110,16 @@ class inflector {
 		return $str;
 	}
 
+	/*
+	 * Method: camelize
+	 *  Makes a phrase camel case.
+	 *
+	 * Parameters:
+	 *  str - phrase to to camelize
+	 *
+	 * Returns:
+	 *  camelCase version of the phrase.
+	 */
 	public static function camelize($str)
 	{
 		$str = 'x'.strtolower(trim($str));
@@ -99,18 +128,34 @@ class inflector {
 		return substr(str_replace(' ', '', $str), 1);
 	}
 
+	/*
+	 * Method: underscore
+	 *  Makes a phrase underscored instead of spaced.
+	 *
+	 * Parameters:
+	 *  str - phrase to underscore
+	 *
+	 * Returns:
+	 *  Under_score version of the phrase.
+	 */
 	public static function underscore($str)
 	{
-		$str = strtolower(trim($str));
-
-		return preg_replace('/\s+/', '_', $str);
+		return preg_replace('/\s+/', '_', trim($str));
 	}
 
+	/*
+	 * Method:
+	 *  Makes an underscored or dashed phrase human-reable.
+	 *
+	 * Parameters:
+	 *  str - phrase to make human-reable
+	 *
+	 * Returns:
+	 *  Human readable version of the phrase.
+	 */
 	public static function humanize($str)
 	{
-		$str = strtolower(trim($str));
-
-		return ucwords(preg_replace('/_+/', ' ', $str));
+		return preg_replace('/[_-]+/', ' ', trim($str));
 	}
 
-} // End inflector Class
+} // End inflector

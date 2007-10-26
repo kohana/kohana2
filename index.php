@@ -86,4 +86,4 @@ unset($docroot, $kohana_application, $kohana_system);
 	'Set a valid <code>$kohana_system</code> in <tt>index.php</tt> and refresh the page.'
 );
 
-require_once SYSPATH.'core/Bootstrap'.EXT;
+require SYSPATH.'core/Bootstrap'.EXT;

@@ -1,34 +1,26 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: text
+ *  Text helper class.
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Text Class
- *
- * @category    Helpers
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/helpers/text.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class text {
 
-	/**
-	 * Word limiter
+	/*
+	 * Method: limit_words
+	 *  Limits a phrase to a given number of words.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @param	integer
-	 * @param	string
-	 * @return	string
+	 * Parameters:
+	 *  str      - phrase to limit words of
+	 *  limit    - number of words to limit to
+	 *  end_char - end character or entity
+	 *
+	 * Returns:
+	 *  A word-limited string with the end character attached.
 	 */
 	public static function limit_words($str, $limit = 100, $end_char = '&#8230;')
 	{
@@ -42,28 +34,27 @@ class text {
 
 		preg_match('/^\s*+(?:\S++\s*+){1,'.$limit.'}/u', $str, $matches);
 
-		if (strlen($matches[0]) == strlen($str))
-		{
-			$end_char = '';
-		}
-
-		return rtrim($matches[0]).$end_char;
+		// Only attach the end character if the matched string is shorter
+		// than the starting string.
+		return rtrim($matches[0]).(strlen($matches[0]) == strlen($str) ? '' : $end_char);
 	}
 
-	/**
-	 * Character limiter
+	/*
+	 * Method: limit_chars
+	 *  Limits a phrase to a given number of characters.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @param	integer
-	 * @param	string
-	 * @param   boolean
-	 * @return	string
+	 * Parameters:
+	 *  str            - phrase to limit characters of
+	 *  limit          - number of characters to limit to
+	 *  end_char       - end character or entity
+	 *  preserve_words - enable or disable the preservation of words while limiting
+	 *
+	 * Returns:
+	 *  A character-limited string with the end character attached.
 	 */
 	public static function limit_chars($str, $limit = 100, $end_char = '&#8230;', $preserve_words = FALSE)
 	{
 		$limit = (int) $limit;
-		$end_char = ($end_char === NULL) ? '&#8230;' : $end_char;
 
 		if (trim($str) == '' OR utf8::strlen($str) <= $limit)
 			return $str;
@@ -76,20 +67,18 @@ class text {
 
 		preg_match('/^.{'.($limit - 1).'}\S*/us', $str, $matches);
 
-		if (strlen($matches[0]) == strlen($str))
-		{
-			$end_char = '';
-		}
-
-		return rtrim($matches[0]).$end_char;
+		return rtrim($matches[0]).(strlen($matches[0]) == strlen($str) ? '' : $end_char);
 	}
 
-	/**
-	 * Alternator
+	/*
+	 * Method: alternate
+	 *  Alternates between two or more strings.
 	 *
-	 * @access	public
-	 * @param	string (as many parameters as needed)
-	 * @return	string
+	 * Parameters:
+	 *  Strings to alternate between.
+	 *
+	 * Returns:
+	 *  The next alternate item.
 	 */
 	public static function alternate()
 	{
@@ -105,13 +94,23 @@ class text {
 		return $args[($i++ % count($args))];
 	}
 
-	/**
-	 * Random string generator
+	/*
+	 * Method: random
+	 *  Generates a random string of a given type and length.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @param	integer
-	 * @return	string
+	 * Parameters:
+	 *  type   - a type of pool, or a string of characters to use as the pool
+	 *  length - length of string to return
+	 *
+	 * Default Types:
+	 *  unique  - a 32 character unique hash
+	 *  alnum   - alpha-numeric characters
+	 *  alpha   - alphabetical characters
+	 *  numeric - digit characters, 0-9
+	 *  nozero  - digit characters, 1-9
+	 *
+	 * Returns:
+	 *  A random string.
 	 */
 	public static function random($type = 'alnum', $length = 8)
 	{
@@ -148,20 +147,33 @@ class text {
 		return $str;
 	}
 
+	/*
+	 * Method: reduce_slashes
+	 *  Reduce multiple slashes in a string to single slashes.
+	 *
+	 * Parameters:
+	 *  str - string to reduce slashes of
+	 *
+	 * Returns:
+	 *  Sanitized string.
+	 */
 	public static function reduce_slashes($str)
 	{
 		return preg_replace('#(?<!:)//+#', '/', $str);
 	}
 
-	/**
-	 * Word censor
+	/*
+	 * Method: censor
+	 *  Replaces the given words with a string.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @param	mixed
-	 * @param	string
-	 * @param	boolean
-	 * @return	string
+	 * Parameters:
+	 *  str                   - phrase to replace words in
+	 *  badwords              - words to replace
+	 *  replacement           - replacement string
+	 *  replace_partial_words - replace words across word boundries (space, period, etc)
+	 *
+	 * Returns:
+	 *  The input string with the given words replaced.
 	 */
 	public static function censor($str, $badwords, $replacement = '#', $replace_partial_words = FALSE)
 	{
@@ -172,7 +184,7 @@ class text {
 
 		$regex = '('.implode('|', $badwords).')';
 
-		if ( ! $replace_partial_words)
+		if ($replace_partial_words == TRUE)
 		{
 			// Just using \b isn't sufficient when we need to replace a badword that already contains word boundaries itself
 			$regex = '(?<=\b|\s|^)'.$regex.'(?=\b|\s|$)';
@@ -189,4 +201,4 @@ class text {
 		return preg_replace($regex, $replacement, $str);
 	}
 
-} // End text Class
+} // End text

@@ -1,35 +1,23 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: download
+ *  Download helper class.
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Download Class
- *
- * @category    Helpers
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/helpers/download.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class download {
 
-	/**
-	 * Force Download
+	/*
+	 * Method: force
+	 *  Force a download of a file to the user's browser. This function is
+	 *  binary-safe and will work with any MIME type that Kohana is aware of.
 	 *
-	 * Generates headers that force a download to happen
-	 *
-	 * @access  public
-	 * @param   string  filename
-	 * @param   mixed   the data to be downloaded
-	 * @return  void
+	 * Parameters:
+	 *  filename - a file path or file name
+	 *  data     - data to be sent if the filename does not exist
 	 */
 	public static function force($filename = '', $data = '')
 	{
@@ -112,4 +100,4 @@ class download {
 		}
 	}
 
-} // End download class
+} // End download
