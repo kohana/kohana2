@@ -49,12 +49,15 @@
 {
 	background-color: #E0E0FF;
 }
-#kohana-profiler .kp-time
+#kohana-profiler .kp-column
 {
 	width: 100px;
-	background-color: #FAFAFB !important;
 	border-left: 1px solid #E5EFF8;
 	text-align: center;
+}
+#kohana-profiler .kp-data
+{
+	background-color: #FAFAFB !important;
 }
 #kohana-profiler .kp-postname
 {
@@ -68,7 +71,8 @@
 
 	<table id="kp-benchmarks">
 		<tr>
-			<th colspan="2"><?php echo Kohana::lang('profiler.benchmarks') ?></th>
+			<th><?php echo Kohana::lang('profiler.benchmarks') ?></th>
+			<th class="kp-column">Time</th>
 		</tr>
 <?php
 
@@ -82,7 +86,7 @@ foreach ($benchmarks as $name => $time):
 ?>
 			<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
 				<td><?php echo $name ?></td>
-				<td class="kp-time"><?php echo number_format($time, 4) ?></td>
+				<td class="kp-column kp-data"><?php echo number_format($time, 4) ?></td>
 			</tr>
 <?php
 
@@ -93,14 +97,16 @@ endforeach;
 
 	<table id="kp-queries">
 		<tr>
-			<th colspan="2"><?php echo Kohana::lang('profiler.queries') ?> (<?php echo ($queries == FALSE ? '0' : count($queries)) ?>)</th>
+			<th><?php echo Kohana::lang('profiler.queries') ?> (<?php echo ($queries == FALSE ? '0' : count($queries)) ?>)</th>
+			<th class="kp-column">Time</th>
+			<th class="kp-column">Rows</th>
 		</tr>
 <?php
 
 if ($queries === FALSE):
 
 ?>
-		<tr><td colspan="2"><?php echo Kohana::lang('profiler.no_database') ?></td></tr>
+		<tr><td colspan="3"><?php echo Kohana::lang('profiler.no_database') ?></td></tr>
 <?php
 
 else:
@@ -108,7 +114,7 @@ else:
 	if (count($queries) == 0):
 
 ?>
-		<tr><td colspan="2"><?php echo Kohana::lang('profiler.no_queries') ?></td></tr>
+		<tr><td colspan="3"><?php echo Kohana::lang('profiler.no_queries') ?></td></tr>
 <?php
 
 	else:
@@ -118,7 +124,8 @@ else:
 ?>
 		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
 			<td><?php echo htmlspecialchars($query['query']) ?></td>
-			<td class="kp-time"><?php echo number_format($query['time'], 4) ?></td>
+			<td class="kp-column kp-data"><?php echo number_format($query['time'], 4) ?></td>
+			<td class="kp-column kp-data"><?php echo $query['rows'] ?></td>
 		</tr>
 <?php
 
