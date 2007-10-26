@@ -53,7 +53,7 @@ class Creditcard_Authorize_Driver
 		'x_method'          => 'CC',
 		'x_relay_response'  => 'FALSE',
 	);
-	
+
 	public function __construct($config)
 	{
 		$this->authnet_values['x_login'] = $config['auth_net_login_id'];
@@ -63,7 +63,7 @@ class Creditcard_Authorize_Driver
 		
 		Log::add('debug', 'Authorize Credit Card Driver Initialized');
 	}
-	
+
 	public function set_fields($fields)
 	{
 		foreach ((array) $fields as $key => $value)
@@ -82,53 +82,54 @@ class Creditcard_Authorize_Driver
 			if (array_key_exists('x_'.$key, $this->required_fields) and $value != '') $this->required_fields['x_'.$key] = TRUE;
 		}
 	}
-	
+
 	function process()
 	{
 		// Check for required fields
 		if (in_array(FALSE, $this->required_fields))
 			throw new Kohana_Exception('creditcard.required');
-		
+
 		$fields = "";
 		foreach( $this->authnet_values as $key => $value )
 		{
 			$fields .= $key.'='.urlencode($value).'&';
 		}
-			
-		
-		$post_url = ($this->config['test_mode']) ? 'https://certification.authorize.net/gateway/transact.dll' : 'https://secure.authorize.net/gateway/transact.dll'; 
+
+		$post_url = ($this->config['test_mode']) ? 
+					'https://certification.authorize.net/gateway/transact.dll' : // Test mode URL
+					'https://secure.authorize.net/gateway/transact.dll'; // Live URL
 		
 		$ch = curl_init($post_url); 
 		
 		// Set custom curl options
-		foreach ($this->curl_config as $key => $value)
-		{
-			curl_setopt($ch, $key, $value);
-		}
-		
+		curl_setopt_array($ch, $this->curl_config);
+
 		// Set the curl POST fields
 		curl_setopt($ch, CURLOPT_POSTFIELDS, rtrim( $fields, "& " ));
-		
-		$resp = curl_exec($ch); //execute post and get results
+
+		//execute post and get results
+		$resp = curl_exec($ch);
 		curl_close ($ch);
-		
+
+		// This could probably be done better, but it's taken right from the Authorize.net manual
+		// Need testing to opimize probably
 		$h = substr_count($resp, "|");
 		
 		for($j=1; $j <= $h; $j++)
 		{
 			$p = strpos($resp, "|");
-			
+
 			if ($p !== FALSE)
 			{
 				$pstr = substr($text, 0, $p);
-				
+
 				$pstr_trimmed = substr($pstr, 0, -1); // removes "|" at the end
-				
+
 				if($pstr_trimmed=="")
 				{
 					$pstr_trimmed='NO VALUE RETURNED';
 				}
-				
+
 				switch($j)
 				{
 					case 1:
@@ -138,7 +139,6 @@ class Creditcard_Authorize_Driver
 							return FALSE;
 					default:
 						return FALSE;
-							
 				}
 			}
 		}

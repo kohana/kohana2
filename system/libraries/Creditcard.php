@@ -26,54 +26,53 @@ class Creditcard_Core {
 	// Configuration
 	protected $config = array
 	(
-		'driver'		=> NULL,
-		'curl_config'	=> array(   CURLOPT_HEADER => FALSE,
-                                    CURLOPT_RETURNTRANSFER => TRUE,
-                                    CURLOPT_SSL_VERIFYPEER => FALSE),
-		'test_mode'		=> TRUE,
+		// The driver string
+		'driver'      => NULL,
+		// Curl config, see http://us.php.net/manual/en/function.curl-setopt.php for details
+		'curl_config' => array(   CURLOPT_HEADER => FALSE,
+                                  CURLOPT_RETURNTRANSFER => TRUE,
+                                  CURLOPT_SSL_VERIFYPEER => FALSE
+                              ),
+		// Test mode is set to true by default
+		'test_mode'   => TRUE,
 	);
 	
 	protected $driver = NULL;
-	
+
 	/*
-	 * The standard processor fields...every CC processor should use these terms, 
-	 * custom ones will be added by the programmer, 
-	 * and the driver will make sure they are set.
-	 * 
-	 * if some are similar, but not exact (maybe card_num should be cc_num), the driver will translate those as well
-	 */
-	protected $fields = array(	'card_num'          => '',
-								'exp_date'          => '',
-								'description'       => '',
-								'amount'            => '',
-								'tax'               => '',
-								'shipping'          => '',
-								'first_name'        => '',
-								'last_name'         => '',
-								'company'           => '',
-								'address'           => '',
-								'city'              => '',
-								'state'             => '',
-								'zip'               => '',
-								'email'             => '',
-								'phone'             => '',
-								'fax'               => '',
-								'ship_to_first_name'=> '',
-								'ship_to_last_name' => '',
-								'ship_to_company'   => '',
-								'ship_to_address'   => '',
-								'ship_to_city'      => '',
-								'ship_to_state'     => '',
-								'ship_to_zip'       => '',
-								);
-	
-	/**
-	 * Constructor
+	 * Method: __construct
+	 *  Sets the credit card processing fields.
+	 *  The driver will translate these into the specific format for the provider.
+	 *  Standard fields are (Providers may have additional fields):
 	 *
-	 * @access  public
-	 * @param   mixed
-	 * @return  void
-	 */
+	 *  card_num
+	 *  exp_date
+	 *  description
+	 *  amount
+	 *  tax
+	 *  shipping
+	 *  first_name
+	 *  last_name
+	 *  company
+	 *  address
+	 *  city
+	 *  state
+	 *  zip
+	 *  email
+	 *  phone
+	 *  fax
+	 *  ship_to_first_name
+	 *  ship_to_last_name
+	 *  ship_to_company
+	 *  ship_to_address
+	 *  ship_to_city
+	 *  ship_to_state
+	 *  ship_to_zip
+	 *
+	 * Parameters:
+	 *  config - the driver string
+	 *
+	*/
 	public function __construct($config = array())
 	{
 		if (empty($config))
@@ -88,7 +87,7 @@ class Creditcard_Core {
 
 		// Merge the default config with the passed config
 		$this->config = array_merge($this->config, $config);
-		
+
 		// Woah! We can't continue like this!
 		if ($this->config['driver'] == NULL)
 			throw new Kohana_Exception();
@@ -105,35 +104,48 @@ class Creditcard_Core {
 		// Initialize the driver
 		$this->driver = new $driver($this->config);
 	}
-	
-	/**
-	 * Sets the CC processor variables 
+
+	/*
+	 * Method: __set
+	 *  Sets the credit card processing fields
 	 *
-	 * @param string $name
-	 * @param mixed $val
-	 */
+	 * Parameters:
+	 *  name - the field name
+	 *  val  - the value
+	 *
+	*/
 	public function __set($name, $val)
 	{
-		
-		$this->fields[$name] = $val;
+		$this->driver->set_fields(array($name => $val));
 	}
-	
+
+	/*
+	 * Method: set_fields
+	 *  Bulk setting of credit card processing fields
+	 *
+	 * Parameters:
+	 *  fields - an array of values to set
+	 *
+	 * Returns:
+	 *  <Creditcard> object
+	*/
 	public function set_fields($fields)
 	{
 		$this->driver->set_fields(array_merge($this->fields, (array) $fields));
 		
 		return $this;
 	}
-	
-	/**
-	 * Runs the transaction
+
+	/*
+	 * Method: process
+	 *  Runs the transaction and returns the status string on failure or TRUE on success
 	 *
-	 * @return boolean
+	 * Returns:
+	 *  Mixed
 	 */
 	public function process()
 	{
 		$this->set_fields($this->fields);
-		echo '<pre>'.print_r($this->driver, true).'</pre>';
 		return $this->driver->process();
 	}
 }

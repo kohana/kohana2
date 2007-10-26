@@ -8,7 +8,8 @@
  */
 $config['default'] = array
 (
-	'driver'        => 'Authorize'
+	'driver'        => 'Authorize',
+	'test_mode'     => TRUE
 );
 
 $config['Authorize'] = array
