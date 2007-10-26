@@ -136,39 +136,47 @@ final class utf8 {
 		return ! preg_match('/[^\x00-\x7F]/S', $str);
 	}
 
-	/**
-	 * Strips out device control codes in the ASCII range.
+	/*
+	 * Method: strip_ascii_ctrl
+	 *  Strips out device control codes in the ASCII range.
 	 *
-	 * @access public
-	 * @param  string
-	 * @return string
+	 * Parameters:
+	 *  str - string to clean
+	 *
+	 * Returns:
+	 *  Clean UTF-8 string.
 	 */
 	public static function strip_ascii_ctrl($str)
 	{
 		return preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+/S', '', $str);
 	}
 
-	/**
-	 * Strips out all non-7bit ASCII bytes.
+	/*
+	 * Method: strip_non_ascii
+	 *  Strips out all non-7bit ASCII bytes.
 	 *
-	 * @access public
-	 * @param  string
-	 * @return string
+	 * Parameters:
+	 *  str - string to clean
+	 *
+	 * Returns:
+	 *  Clean UTF-8 string.
 	 */
 	public static function strip_non_ascii($str)
 	{
 		return preg_replace('/[^\x00-\x7F]+/S', '', $str);
 	}
 
-	/**
-	 * Replaces accented UTF-8 characters by unaccented ASCII-7 'equivalents'.
+	/*
+	 * Method: transliterate_to_ascii
+	 *  Replaces special/accented UTF-8 characters by ASCII-7 'equivalents'.
+	 *  Original function (accents_to_ascii) written by Andreas Gohr <andi@splitbrain.org> for phputf8
 	 *
-	 * Original function (accents_to_ascii) written by Andreas Gohr <andi@splitbrain.org> for phputf8
+	 * Parameters:
+	 *  str - string to transliterate
+	 *  int - -1 lowercase only, +1 uppercase only, 0 both cases
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  integer (optional) -1 lowercase only, +1 uppercase only, 0 both cases
-	 * @return string  accented chars replaced with ASCII equivalents
+	 * Returns:
+	 *  String with only ASCII characters
 	 */
 	public static function transliterate_to_ascii($str, $case = 0)
 	{
@@ -238,13 +246,15 @@ final class utf8 {
 		return $str;
 	}
 
-	/**
-	 * UTF-8 version of strlen()
+	/*
+	 * Method: strlen
+	 *  Returns the length of the given string.
 	 *
-	 * @see    http://php.net/strlen
-	 * @access public
-	 * @param  string
-	 * @return integer
+	 * Parameters:
+	 *  str - string being measured for length
+	 *
+	 * Returns:
+	 *  Length of the given string.
 	 */
 	public static function strlen($str)
 	{
@@ -261,17 +271,18 @@ final class utf8 {
 		return strlen(utf8_decode($str));
 	}
 
-	/**
-	 * UTF-8 version of strpos()
+	/*
+	 * Method: strpos
+	 *  Find position of first occurrence of a UTF-8 string
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 * Parameters:
+	 *  str - haystack
+	 *  str - needle
+	 *  int - offset: allows you to specify which character in haystack to start searching
 	 *
-	 * @see    http://php.net/strpos
-	 * @access public
-	 * @param  string
-	 * @param  string  search string
-	 * @param  integer (optional) characters to offset
-	 * @return integer (FALSE on failure)
+	 * Returns:
+	 *  The position as an integer. If needle is not found, FALSE will be returned.
 	 */
 	public static function strpos($str, $search, $offset = 0)
 	{
