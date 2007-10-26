@@ -154,7 +154,6 @@ class Database_Mysql_Driver implements Database_Driver {
 		$wheres = array();
 		foreach ($key as $k => $v)
 		{
-
 			$prefix = ($num_wheres++ == 0) ? '' : $type;
 
 			if ($quote === -1)
@@ -189,8 +188,9 @@ class Database_Mysql_Driver implements Database_Driver {
 					}
 					else
 					{
-						// This detect the position of the operator and escape the rest...
-						//$k = $this->escape_column($k);
+						preg_match('/^(.+?)([<>!=]+|\bIS(?:\s+NULL))\s*$/i', $k, $matches);
+						$v = trim($matches[0]); // column
+						$k = trim($matches[1]); // operator
 					}
 
 					$v = ' '.(($quote == TRUE) ? $this->escape($v) : $v);
@@ -306,7 +306,7 @@ class Database_Mysql_Driver implements Database_Driver {
 
 	public function has_operator($str)
 	{
-		return (bool) preg_match('/!?[=<>]|\sIS\s/i', trim($str));
+		return (bool) preg_match('/[<>!=]|\sIS(?:\s+NULL)\b/i', trim($str));
 	}
 
 	public function escape($str)
