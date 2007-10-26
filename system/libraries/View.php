@@ -22,11 +22,11 @@
 class View_Core {
 
 	// The view file name and type
-	private $kohana_filename  = FALSE;
-	private $kohana_filetype  = FALSE;
+	protected $kohana_filename  = FALSE;
+	protected $kohana_filetype  = FALSE;
 
 	// Set variables
-	private $data = array();
+	protected $data = array();
 
 	/**
 	 * Construct
@@ -85,13 +85,7 @@ class View_Core {
 	 */
 	public function __set($name, $value)
 	{
-		$protected = array('kohana_filename', 'kohana_renderer', 'kohana_filetype');
-
-		if (in_array($name, $protected) AND $this->$name === FALSE)
-		{
-			$this->$name = $value;
-		}
-		else
+		if ( ! isset($this->$name))
 		{
 			$this->data[$name] = $value;
 		}
