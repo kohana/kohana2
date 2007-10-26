@@ -227,7 +227,7 @@ class Database_Core {
 		if ($this->config['benchmark'] == TRUE)
 		{
 			// Benchmark the query
-			self::$benchmarks[] = array('query' => $sql, 'time' => $stop - $start);
+			self::$benchmarks[] = array('query' => $sql, 'time' => $stop - $start, 'rows' => count($result));
 		}
 
 		return $result;
