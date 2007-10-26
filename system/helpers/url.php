@@ -117,12 +117,27 @@ class url {
 
 		if (strpos($uri, '://') === FALSE)
 		{
-			$uri = self::site($uri);
+			$qs = ''; // uri?query=string
+			$id = ''; // uri#id
+
+			if (strpos($uri, '?') !== FALSE)
+			{
+				list ($uri, $qs) = explode('?', $uri, 2);
+				$qs = '?'.$qs;
+			}
+
+			if (strpos($uri, '#') !== FALSE)
+			{
+				list ($uri, $id) = explode('#', $uri, 2);
+				$id = '#'.$id;
+			}
+
+			$uri = self::site($uri).$qs.$id;
 		}
 
 		if ($method == 'refresh')
 		{
-			header('Refresh: 0; url='. $uri);
+			header('Refresh: 0; url='.$uri);
 		}
 		else
 		{
@@ -144,7 +159,7 @@ class url {
 		}
 
 		// Last resort, exit and display the URL
-		exit('<a href="'.$uri.'">'.$uri.'</a>.');
+		exit('<a href="'.$uri.'">'.$uri.'</a>');
 	}
 
 } // End url
