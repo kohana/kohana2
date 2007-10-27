@@ -308,17 +308,18 @@ final class utf8 {
 		return ($pos === FALSE) ? FALSE : $pos + $offset;
 	}
 
-	/**
-	 * UTF-8 version of strrpos()
+	/*
+	 * Method: strrpos
+	 *  Find position of last occurrence of a char in a UTF-8 string
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 * Parameters:
+	 *  str - haystack
+	 *  str - needle
+	 *  int - offset: allows you to specify which character in haystack to start searching
 	 *
-	 * @see    http://php.net/strrpos
-	 * @access public
-	 * @param  string
-	 * @param  string  search string
-	 * @param  integer (optional) characters to offset
-	 * @return integer (FALSE on failure)
+	 * Returns:
+	 *  The position as an integer. If needle is not found, FALSE will be returned.
 	 */
 	public static function strrpos($str, $search, $offset = 0)
 	{
@@ -344,17 +345,18 @@ final class utf8 {
 		return ($pos === FALSE) ? FALSE : $pos + $offset;
 	}
 
-	/**
-	 * UTF-8 version of substr()
+	/*
+	 * Method: substr
+	 *  Return part of a UTF-8 string
+	 *  Original function written by Chris Smith <chris@jalakai.co.uk> for phputf8
 	 *
-	 * Original function written by Chris Smith <chris@jalakai.co.uk> for phputf8
+	 * Parameters:
+	 *  str - input string
+	 *  int - start (offset)
+	 *  int - length
 	 *
-	 * @see    http://php.net/substr
-	 * @access public
-	 * @param  string
-	 * @param  integer characters to offset
-	 * @param  integer (optional) length of return
-	 * @return string  (FALSE on failure)
+	 * Returns:
+	 *  Returns the portion of string specified by the start and length parameters or FALSE on failure.
 	 */
 	public static function substr($str, $offset, $length = NULL)
 	{
@@ -432,18 +434,19 @@ final class utf8 {
 		return $matches[1];
 	}
 
-	/**
-	 * UTF-8 version of substr_replace()
+	/*
+	 * Method: substr_replace
+	 *  Replace text within a portion of a UTF-8 string
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 * Parameters:
+	 *  str - input string
+	 *  str - replacement string
+	 *  int - start (offset)
+	 *  int - length
 	 *
-	 * @see    http://php.net/substr_replace
-	 * @access public
-	 * @param  string
-	 * @param  string
-	 * @param  integer characters to offset
-	 * @param  integer (optional) length of part to replace
-	 * @return string
+	 * Returns:
+	 *  The result string is returned.
 	 */
 	public static function substr_replace($str, $replacement, $offset, $length = NULL)
 	{
@@ -452,7 +455,7 @@ final class utf8 {
 			return ($length === NULL) ? substr_replace($str, $replacement, $offset) : substr_replace($str, $replacement, $offset, $length);
 		}
 
-		$length = ($length === NULL) ? self::strlen($str) : $length;
+		$length = ($length === NULL) ? self::strlen($str) : (int) $length;
 		preg_match_all('/./us', $str, $str_array);
 		preg_match_all('/./us', $replacement, $replacement_array);
 
@@ -460,15 +463,16 @@ final class utf8 {
 		return implode('', $str_array[0]);
 	}
 
-	/**
-	 * UTF-8 version of strtolower()
+	/*
+	 * Method: strtolower
+	 *  Makes a UTF-8 string lowercase
+	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
 	 *
-	 * Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
+	 * Parameters:
+	 *  str - input string
 	 *
-	 * @see    http://php.net/strtolower
-	 * @access public
-	 * @param  string
-	 * @return string
+	 * Returns:
+	 *  Lowercase UTF-8 string
 	 */
 	public static function strtolower($str)
 	{
@@ -550,15 +554,16 @@ final class utf8 {
 		return self::from_unicode($uni);
 	}
 
-	/**
-	 * UTF-8 version of strtoupper()
+	/*
+	 * Method: strtoupper
+	 *  Makes a UTF-8 string uppercase
+	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
 	 *
-	 * Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
+	 * Parameters:
+	 *  str - input string
 	 *
-	 * @see    http://php.net/strtoupper
-	 * @access public
-	 * @param  string
-	 * @return string
+	 * Returns:
+	 *  Uppercase UTF-8 string
 	 */
 	public static function strtoupper($str)
 	{
@@ -640,15 +645,16 @@ final class utf8 {
 		return self::from_unicode($uni);
 	}
 
-	/**
-	 * UTF-8 version of ucfirst()
+	/*
+	 * Method: ucfirst
+	 *  Makes a UTF-8 string's first character uppercase
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 * Parameters:
+	 *  str - input string
 	 *
-	 * @see    http://php.net/ucfirst
-	 * @access public
-	 * @param  string
-	 * @return string
+	 * Returns:
+	 *  UTF-8 string with first character in uppercase
 	 */
 	public static function ucfirst($str)
 	{
@@ -661,15 +667,16 @@ final class utf8 {
 		return self::strtoupper($matches[1]).$matches[2];
 	}
 
-	/**
-	 * UTF-8 version of ucwords()
+	/*
+	 * Method: ucwords
+	 *  Makes the first character of every word in a UTF-8 string uppercase
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 * Parameters:
+	 *  str - input string
 	 *
-	 * @see    http://php.net/ucwords
-	 * @access public
-	 * @param  string
-	 * @return string
+	 * Returns:
+	 *  UTF-8 string with first character of every word in uppercase
 	 */
 	public static function ucwords($str)
 	{
@@ -691,16 +698,17 @@ final class utf8 {
 		);
 	}
 
-	/**
-	 * UTF-8 version of strcasecmp()
+	/*
+	 * Method: strcasecmp
+	 *  Case-insensitive UTF-8 string comparison
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 * Parameters:
+	 *  str - first string
+	 *  str - second string
 	 *
-	 * @see    http://php.net/strcasecmp
-	 * @access public
-	 * @param  string
-	 * @param  string
-	 * @return integer
+	 * Returns:
+	 *  Returns integer < 0 if str1 is less than str2; > 0 if str1 is greater than str2, and 0 if they are equal.
 	 */
 	public static function strcasecmp($str1, $str2)
 	{
@@ -714,22 +722,23 @@ final class utf8 {
 		return strcmp($str1, $str2);
 	}
 
-	/**
-	 * UTF-8 version of str_ireplace()
+	/*
+	 * Method: str_ireplace
+	 *  Returns a string or an array with all occurrences of search in subject (ignoring case)
+	 *  replaced with the given replace value.
+	 *  Note: it's not fast and gets slower if $search and/or $replace are arrays
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
 	 *
-	 * NOTE: it's not fast and gets slower if $search and/or $replace are arrays
+	 * Parameters:
+	 *  mixed - string or array with text to replace
+	 *  mixed - string or array with replacement text
+	 *  mixed - string or array with subject text
+	 *  int   - number of matched and replaced needles will be returned via this parameter which is passed by reference
 	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
-	 *
-	 * @see    http://php.net/str_ireplace
-	 * @access public
-	 * @param  string  (or array) text to replace
-	 * @param  string  (or array) replacement text
-	 * @param  string  (or array) subject text
-	 * @param  integer (optional) number of matched and replaced needles will be returned in count which is passed by reference
-	 * @return string
+	 * Returns:
+	 *  A string or an array of replacements.
 	 */
-	public static function str_ireplace($search, $replace, $str, &$count = NULL)
+	public static function str_ireplace($search, $replace, $str, & $count = NULL)
 	{
 		if (self::is_ascii($search) AND self::is_ascii($replace) AND self::is_ascii($str))
 		{
@@ -1185,21 +1194,23 @@ final class utf8 {
 		}
 	}
 
-	/**
-	 * Takes an UTF-8 string and returns an array of ints representing the Unicode characters.
-	 * Astral planes are supported i.e. the ints in the output can be > 0xFFFF.
-	 * Occurrances of the BOM are ignored. Surrogates are not allowed.
+	/*
+	 * Method: to_unicode
+	 *  Takes an UTF-8 string and returns an array of ints representing the Unicode characters.
+	 *  Astral planes are supported i.e. the ints in the output can be > 0xFFFF.
+	 *  Occurrances of the BOM are ignored. Surrogates are not allowed.
+	 *  
+	 *  The Original Code is Mozilla Communicator client code.
+	 *  The Initial Developer of the Original Code is Netscape Communications Corporation.
+	 *  Portions created by the Initial Developer are Copyright (C) 1998 the Initial Developer
+	 *  Ported to PHP by Henri Sivonen <hsivonen@iki.fi>, see http://hsivonen.iki.fi/php-utf8/
+	 *  Slight modifications to fit with phputf8 library by Harry Fuecks <hfuecks@gmail.com>
 	 *
-	 * The Original Code is Mozilla Communicator client code.
-	 * The Initial Developer of the Original Code is Netscape Communications Corporation.
-	 * Portions created by the Initial Developer are Copyright (C) 1998 the Initial Developer
-	 * Ported to PHP by Henri Sivonen <hsivonen@iki.fi>
-	 * Slight modifications to fit with phputf8 library by Harry Fuecks <hfuecks@gmail.com>
+	 * Parameters:
+	 *  str - a UTF-8 encoded string
 	 *
-	 * @see    http://hsivonen.iki.fi/php-utf8/
-	 * @access public
-	 * @param  string  UTF-8 encoded string
-	 * @return mixed   array of unicode code points or FALSE if UTF-8 invalid
+	 * Returns:
+	 *  array of unicode code points or FALSE if UTF-8 invalid
 	 */
 	public static function to_unicode($str)
 	{
@@ -1333,21 +1344,23 @@ final class utf8 {
 		return $out;
 	}
 
-	/**
-	 * Takes an array of ints representing the Unicode characters and returns a UTF-8 string.
-	 * Astral planes are supported i.e. the ints in the input can be > 0xFFFF.
-	 * Occurrances of the BOM are ignored. Surrogates are not allowed.
+	/*
+	 * Method: from_unicode
+	 *  Takes an array of ints representing the Unicode characters and returns a UTF-8 string.
+	 *  Astral planes are supported i.e. the ints in the input can be > 0xFFFF.
+	 *  Occurrances of the BOM are ignored. Surrogates are not allowed.
+	 *  
+	 *  The Original Code is Mozilla Communicator client code.
+	 *  The Initial Developer of the Original Code is Netscape Communications Corporation.
+	 *  Portions created by the Initial Developer are Copyright (C) 1998 the Initial Developer
+	 *  Ported to PHP by Henri Sivonen <hsivonen@iki.fi>, see http://hsivonen.iki.fi/php-utf8/
+	 *  Slight modifications to fit with phputf8 library by Harry Fuecks <hfuecks@gmail.com>
 	 *
-	 * The Original Code is Mozilla Communicator client code.
-	 * The Initial Developer of the Original Code is Netscape Communications Corporation.
-	 * Portions created by the Initial Developer are Copyright (C) 1998 the Initial Developer
-	 * Ported to PHP by Henri Sivonen <hsivonen@iki.fi>
-	 * Slight modifications to fit with phputf8 library by Harry Fuecks <hfuecks@gmail.com>
+	 * Parameters:
+	 *  array - array of unicode code points representing a string
 	 *
-	 * @see    http://hsivonen.iki.fi/php-utf8/
-	 * @access public
-	 * @param  array  of unicode code points representing a string
-	 * @return mixed  UTF-8 string or FALSE if array contains invalid code points
+	 * Returns:
+	 *  UTF-8 string or FALSE if array contains invalid code points
 	 */
 	public static function from_unicode($arr)
 	{
