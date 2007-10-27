@@ -9,19 +9,19 @@
 <p class="pagination">
 	
 	<?php if ($previous_page): ?>
-		<a href="<?php echo $this->pagination->url($previous_page) ?>">&laquo;&nbsp;Previous</a>
+		<a href="<?php echo $this->pagination->url($previous_page) ?>">&laquo;&nbsp;<?php echo Kohana::lang('pagination.previous') ?></a>
 	<?php else: ?>
-		&laquo;&nbsp;Previous
+		&laquo;&nbsp;<?php echo Kohana::lang('pagination.previous') ?>
 	<?php endif; ?>
 	
-	| Page <?php echo $current_page ?> of <?php echo $total_pages ?>
+	| <?php echo Kohana::lang('pagination.page') ?> <?php echo $current_page ?> <?php echo utf8::strtolower(Kohana::lang('pagination.of')) ?> <?php echo $total_pages ?>
 	
-	| Showing items <?php echo $current_first_item ?>-<?php echo $current_last_item ?> of <?php echo $total_items ?>
+	| <?php echo Kohana::lang('pagination.item') ?> <?php echo $current_first_item ?>&ndash;<?php echo $current_last_item ?> <?php echo utf8::strtolower(Kohana::lang('pagination.of')) ?> <?php echo $total_items ?>
 	
 	| <?php if ($next_page): ?>
-		<a href="<?php echo $this->pagination->url($next_page) ?>">Next&nbsp;&raquo;</a>
+		<a href="<?php echo $this->pagination->url($next_page) ?>"><?php echo Kohana::lang('pagination.next') ?>&nbsp;&raquo;</a>
 	<?php else: ?>
-		Next&nbsp;&raquo;
+		<?php echo Kohana::lang('pagination.next') ?>&nbsp;&raquo;
 	<?php endif; ?>
 	
 </p>

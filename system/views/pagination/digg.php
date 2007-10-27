@@ -9,9 +9,9 @@
 <p class="pagination">
 	
 	<?php if ($previous_page): ?>
-		<a href="<?php echo $this->pagination->url($previous_page) ?>">&laquo;&nbsp;Previous</a>
+		<a href="<?php echo $this->pagination->url($previous_page) ?>">&laquo;&nbsp;<?php echo Kohana::lang('pagination.previous') ?></a>
 	<?php else: ?>
-		&laquo;&nbsp;Previous
+		&laquo;&nbsp;<?php echo Kohana::lang('pagination.previous') ?>
 	<?php endif; ?>
 	
 
@@ -75,9 +75,9 @@
 	
 	
 	<?php if ($next_page): ?>
-		<a href="<?php echo $this->pagination->url($next_page) ?>">Next&nbsp;&raquo;</a>
+		<a href="<?php echo $this->pagination->url($next_page) ?>"><?php echo Kohana::lang('pagination.next') ?>&nbsp;&raquo;</a>
 	<?php else: ?>
-		Next&nbsp;&raquo;
+		<?php echo Kohana::lang('pagination.next') ?>&nbsp;&raquo;
 	<?php endif; ?>
 
 </p>

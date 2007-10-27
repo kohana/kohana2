@@ -9,7 +9,7 @@
 <p class="pagination">
 	
 	<?php if ($first_page): ?>
-		<a href="<?php echo $this->pagination->url(1) ?>">&lsaquo;&nbsp;First</a>
+		<a href="<?php echo $this->pagination->url(1) ?>">&lsaquo;&nbsp;<?php echo Kohana::lang('pagination.first') ?></a>
 	<?php endif; ?>
 
 	<?php if ($previous_page): ?>
@@ -33,7 +33,7 @@
 	<?php endif; ?>
 
 	<?php if ($last_page): ?>
-		<a href="<?php echo $this->pagination->url($last_page) ?>">Last&nbsp;&rsaquo;</a>
+		<a href="<?php echo $this->pagination->url($last_page) ?>"><?php echo Kohana::lang('pagination.last') ?>&nbsp;&rsaquo;</a>
 	<?php endif; ?>
 
 </p>
