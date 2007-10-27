@@ -98,8 +98,8 @@ endforeach;
 	<table id="kp-queries">
 		<tr>
 			<th><?php echo Kohana::lang('profiler.queries') ?> (<?php echo ($queries == FALSE ? '0' : count($queries)) ?>)</th>
-			<th class="kp-column">Time</th>
 			<th class="kp-column">Rows</th>
+			<th class="kp-column">Time</th>
 		</tr>
 <?php
 
@@ -123,9 +123,9 @@ else:
 
 ?>
 		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
-			<td><?php echo htmlspecialchars($query['query']) ?></td>
-			<td class="kp-column kp-data"><?php echo number_format($query['time'], 4) ?></td>
+			<td><?php echo html::specialchars($query['query']) ?></td>
 			<td class="kp-column kp-data"><?php echo $query['rows'] ?></td>
+			<td class="kp-column kp-data"><?php echo number_format($query['time'], 4) ?></td>
 		</tr>
 <?php
 
@@ -156,7 +156,7 @@ else:
 		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
 			<td class="kp-postname"><?php echo $name ?></td>
 			<td>
-				<?php echo is_array($value) ? '<pre>'.htmlspecialchars(print_r($value, TRUE)).'</pre>' : htmlspecialchars($value) ?>
+				<?php echo is_array($value) ? '<pre>'.html::specialchars(print_r($value, TRUE)).'</pre>' : html::specialchars($value) ?>
 			</td>
 		</tr>
 <?php
