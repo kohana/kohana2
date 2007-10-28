@@ -724,13 +724,22 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	public function valid_url($url)
+	public function valid_url($url, $scheme = 'http')
 	{
+		if (is_array($scheme) AND ! empty($scheme))
+		{
+			$scheme = current($scheme);
+		}
+
+		// Scheme is always lowercase
+		$scheme = strtolower($scheme);
+
+		// Use parse_url to validate the URL
 		$url_check = @parse_url($url);
 
-		if (empty($url_check) OR empty($url_check['scheme']) OR empty($url_check['host']))
+		if (empty($url_check) OR empty($url_check['scheme']) OR empty($url_check['host']) OR $url_check['scheme'] !== $scheme)
 		{
-			$this->add_error('valid_url', $this->current_field, $url);
+			$this->add_error('valid_url', $this->current_field, $scheme, $url);
 			return FALSE;
 		}
 
@@ -821,7 +830,7 @@ class Validation_Core {
 		$this->add_error('valid_type', $this->current_field, 'alphabetical');
 		return FALSE;
 	}
-	
+
 	/**
 	 * Alpha (UTF-8 compatible)
 	 *
@@ -853,7 +862,7 @@ class Validation_Core {
 		$this->add_error('valid_type', $this->current_field, 'alphabetical');
 		return FALSE;
 	}
-	
+
 	/**
 	 * Alpha-numeric (UTF-8 compatible)
 	 *
@@ -885,7 +894,7 @@ class Validation_Core {
 		$this->add_error('valid_type', $this->current_field, 'alphabetical, dash, and underscore');
 		return FALSE;
 	}
-	
+
 	/**
 	 * Alpha-numeric with underscores and dashes (UTF-8 compatible)
 	 *
@@ -917,7 +926,7 @@ class Validation_Core {
 		$this->add_error('valid_type', $this->current_field, 'digit');
 		return FALSE;
 	}
-	
+
 	/**
 	 * Digits: 0-9, no dots or dashes (UTF-8 compatible)
 	 *

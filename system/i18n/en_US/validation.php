@@ -13,6 +13,7 @@ $lang = array
 	'max_length'    => 'The %s field must be %s characters or less.',
 	'exact_length'  => 'The %s field must be exactly %s characters.',
 	'matches'       => 'The %s field must match the %s field.',
+	'valid_url'     => 'The %s field must contain a valid URL, starting with %s://.',
 	'valid_email'   => 'The %s field must contain a valid email address.',
 	'valid_ip'      => 'The %s field must contain a valid IP address.',
 	'valid_type'    => 'The %s field must only contain %s characters.',
