@@ -22,20 +22,24 @@
 class View_Core {
 
 	// The view file name and type
-	protected $kohana_filename  = FALSE;
-	protected $kohana_filetype  = FALSE;
+	protected $kohana_filename = FALSE;
+	protected $kohana_filetype = FALSE;
 
 	// Set variables
 	protected $data = array();
 
-	/**
-	 * Construct
+	/*
+	 * Method: __construct
+	 *
+	 * Parameters:
+	 *  name - view filename string
+	 *  data - view data
 	 */
 	public function __construct($name, $data = NULL)
 	{
-		if (preg_match('/\.(gif|jpe?g|png|tiff?|js|css|swf)$/Di', $name, $type))
+		if (preg_match('/\.(?:gif|jpe?g|png|css|js|tiff?|swf)$/Di', $name, $type))
 		{
-			$type = $type[1];
+			$type = substr($type[0], 1);
 
 			$this->kohana_filename = Kohana::find_file('views', $name, TRUE, $type);
 			$this->kohana_filetype = current(Config::item('mimes.'.$type));
@@ -52,22 +56,25 @@ class View_Core {
 		// Preload data
 		if (is_array($data) AND ! empty($data))
 		{
-			foreach($data as $key => $val)
+			foreach($data as $name => $value)
 			{
-				$this->data[$key] = $val;
+				$this->data[$name] = $value;
 			}
 		}
 
 		Log::add('debug', 'View Class Initialized ['.str_replace(DOCROOT, '', $this->kohana_filename).']');
 	}
 
-	/**
-	 * Set a variable
+	/*
+	 * Method: set
+	 *  Sets a view variable
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  mixed
-	 * @return object
+	 * Parameters:
+	 *  name  - variable name
+	 *  value - variable contents
+	 * 
+	 * Returns:
+	 *  View object
 	 */
 	public function set($name, $value)
 	{
@@ -75,13 +82,13 @@ class View_Core {
 		return $this;
 	}
 
-	/**
-	 * Magic setting of a variable
+	/*
+	 * Method: __set
+	 *  Magically sets a view variable
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  mixed
-	 * @return void
+	 * Parameters:
+	 *  name  - variable name
+	 *  value - variable contents
 	 */
 	public function __set($name, $value)
 	{
@@ -91,38 +98,43 @@ class View_Core {
 		}
 	}
 
-	/**
-	 * Magic getting of a variable
+	/*
+	 * Method: __get
+	 *  Magically gets a view variable
 	 *
-	 * @access public
-	 * @param  string
-	 * @return void
+	 * Parameters:
+	 *  name - variable name
+	 * 
+	 * Returns:
+	 *  The variable contents or NULL if the variable does not exist
 	 */
 	public function __get($name)
 	{
-		return empty($this->data[$name]) ? NULL : $this->data[$name];
+		return isset($this->data[$name]) ? $this->data[$name] : NULL;
 	}
 
-	/**
-	 * Magic object to string
+	/*
+	 * Method: __toString
+	 *  Magically converts view object to string
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  mixed
-	 * @return void
+	 * Returns:
+	 *  The rendered view
 	 */
 	public function __toString()
 	{
 		return $this->render();
 	}
 
-	/**
-	 * Render a view
+	/*
+	 * Method: render
+	 *  Renders a view
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  callback
-	 * @return mixed
+	 * Parameters:
+	 *  print    - echo the output instead of returning it
+	 *  renderer - user defined renderer callback
+	 * 
+	 * Returns:
+	 *  The rendered view if print is set to FALSE
 	 */
 	public function render($print = FALSE, $renderer = FALSE)
 	{
@@ -146,7 +158,7 @@ class View_Core {
 		}
 		else
 		{
-			// Send the filetype header
+			// Overwrite the content-type header
 			header('Content-type: '.$this->kohana_filetype);
 
 			// Display the output
