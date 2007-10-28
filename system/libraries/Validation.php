@@ -724,6 +724,19 @@ class Validation_Core {
 		return FALSE;
 	}
 
+	public function valid_url($url)
+	{
+		$url_check = @parse_url($url);
+
+		if (empty($url_check) OR empty($url_check['scheme']) OR empty($url_check['host']))
+		{
+			$this->add_error('valid_url', $this->current_field, $url);
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+
 	/**
 	 * Valid Email, Commonly used characters only
 	 *
