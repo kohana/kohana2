@@ -726,24 +726,11 @@ class Validation_Core {
 
 	public function valid_url($url, $scheme = 'http')
 	{
-		if (is_array($scheme) AND ! empty($scheme))
-		{
-			$scheme = current($scheme);
-		}
-
-		// Scheme is always lowercase
-		$scheme = strtolower($scheme);
-
-		// Use parse_url to validate the URL
-		$url_check = @parse_url($url);
-
-		if (empty($url_check) OR empty($url_check['scheme']) OR empty($url_check['host']) OR $url_check['scheme'] !== $scheme)
-		{
-			$this->add_error('valid_url', $this->current_field, $scheme, $url);
-			return FALSE;
-		}
-
-		return TRUE;
+		if (valid::url($url, $scheme))
+			return TRUE;
+		
+		$this->add_error('valid_url', $this->current_field, $scheme, $url);
+		return FALSE;
 	}
 
 	/**
@@ -755,7 +742,7 @@ class Validation_Core {
 	 */
 	public function valid_email($email)
 	{
-		if (preg_match('/^(?!\.)[-+_a-z0-9.]++(?<!\.)@(?![-.])[-a-z0-9.]+(?<!\.)\.[a-z]{2,6}$/iD', $email))
+		if (valid::email($email))
 			return TRUE;
 
 		$this->add_error('valid_email', $this->current_field);
@@ -765,34 +752,13 @@ class Validation_Core {
 	/**
 	 * Valid Email, RFC compliant version
 	 *
-	 * NOTE: This function is LESS strict than valid_email. Choose carefully.
-	 *
-	 * Originally by Cal Henderson, modified to fit Kohana syntax standards
-	 *
-	 * @author  Cal Henderson
-	 * @link    http://www.iamcal.com/publish/articles/php/parsing_email/
-	 * @link    http://www.w3.org/Protocols/rfc822/
-	 *
 	 * @access  public
 	 * @param   string
 	 * @return  boolean
 	 */
-	public function valid_email_rfc($str)
+	public function valid_email_rfc($email)
 	{
-		$qtext = '[^\\x0d\\x22\\x5c\\x80-\\xff]';
-		$dtext = '[^\\x0d\\x5b-\\x5d\\x80-\\xff]';
-		$atom  = '[^\\x00-\\x20\\x22\\x28\\x29\\x2c\\x2e\\x3a-\\x3c\\x3e\\x40\\x5b-\\x5d\\x7f-\\xff]+';
-		$pair  = '\\x5c[\\x00-\\x7f]';
-
-		$domain_literal = "\\x5b($dtext|$pair)*\\x5d";
-		$quoted_string  = "\\x22($qtext|$pair)*\\x22";
-		$sub_domain     = "($atom|$domain_literal)";
-		$word           = "($atom|$quoted_string)";
-		$domain         = "$sub_domain(\\x2e$sub_domain)*";
-		$local_part     = "$word(\\x2e$word)*";
-		$addr_spec      = "$local_part\\x40$domain";
-
-		if (preg_match('/^'.$addr_spec.'$/', $str))
+		if (valid::email_rfc($email))
 			return TRUE;
 
 		$this->add_error('valid_email', $this->current_field);
@@ -808,7 +774,7 @@ class Validation_Core {
 	 */
 	public function valid_ip($ip)
 	{
-		if (Kohana::instance()->input->valid_ip($ip))
+		if (valid::ip($ip))
 			return TRUE;
 
 		$this->add_error('valid_ip', $this->current_field);

@@ -278,7 +278,7 @@ class Input_Core {
 	 *
 	 * @access  public
 	 * @param   string
-	 * @return  string
+	 * @return  boolean
 	 */
 	public function valid_ip($ip)
 	{
