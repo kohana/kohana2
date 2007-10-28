@@ -790,7 +790,7 @@ class Validation_Core {
 	 */
 	public function alpha($str)
 	{
-		if (ctype_alpha((string) $str))
+		if (valid::alpha($str))
 			return TRUE;
 
 		$this->add_error('valid_type', $this->current_field, 'alphabetical');
@@ -806,7 +806,7 @@ class Validation_Core {
 	 */
 	public function utf8_alpha($str)
 	{
-		if (preg_match('/^\pL+$/uD', (string) $str))
+		if (valid::alpha($str, TRUE))
 			return TRUE;
 
 		$this->add_error('valid_type', $this->current_field, 'alphabetical');
@@ -822,7 +822,7 @@ class Validation_Core {
 	 */
 	public function alpha_numeric($str)
 	{
-		if (ctype_alnum((string) $str))
+		if (valid::alpha_numeric($str))
 			return TRUE;
 
 		$this->add_error('valid_type', $this->current_field, 'alphabetical');
@@ -838,7 +838,7 @@ class Validation_Core {
 	 */
 	public function utf8_alpha_numeric($str)
 	{
-		if (preg_match('/^[\pL\pN]+$/uD', (string) $str))
+		if (valid::alpha_numeric($str, TRUE))
 			return TRUE;
 
 		$this->add_error('valid_type', $this->current_field, 'alphabetical');
@@ -854,7 +854,7 @@ class Validation_Core {
 	 */
 	public function alpha_dash($str)
 	{
-		if (preg_match('/^[-a-z0-9_]+$/iD', $str))
+		if (valid::alpha_dash($str))
 			return TRUE;
 
 		$this->add_error('valid_type', $this->current_field, 'alphabetical, dash, and underscore');
@@ -870,7 +870,7 @@ class Validation_Core {
 	 */
 	public function utf8_alpha_dash($str)
 	{
-		if (preg_match('/^[-\pL\pN_]+$/uD', (string) $str))
+		if (valid::alpha_dash($str, TRUE))
 			return TRUE;
 
 		$this->add_error('valid_type', $this->current_field, 'alphabetical, dash, and underscore');
@@ -886,7 +886,7 @@ class Validation_Core {
 	 */
 	public function digit($str)
 	{
-		if (ctype_digit((string) $str))
+		if (valid::digit($str))
 			return TRUE;
 
 		$this->add_error('valid_type', $this->current_field, 'digit');
@@ -902,7 +902,7 @@ class Validation_Core {
 	 */
 	public function utf8_digit($str)
 	{
-		if (preg_match('/^\pN+$/uD', (string) $str))
+		if (valid::digit($str, TRUE))
 			return TRUE;
 
 		$this->add_error('valid_type', $this->current_field, 'digit');
@@ -918,7 +918,7 @@ class Validation_Core {
 	 */
 	public function numeric($str)
 	{
-		if (is_numeric($str) AND preg_match('/^[-0-9.]+$/', $str))
+		if (valid::numeric($str))
 		    return TRUE;
 
 		$this->add_error('valid_type', $this->current_field, 'numeric');
