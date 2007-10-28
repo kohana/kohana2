@@ -40,6 +40,131 @@ class Examples_Controller extends Controller {
 	}
 
 	/*
+	 * Method: parser
+	 *  Kohana source code comment parser.
+	 */
+	function parser()
+	{
+		$docs = array();
+
+		foreach(glob('./system/core/*'.EXT) as $file)
+		{
+			$file = fopen($file, 'r');
+
+			$i = 1;
+			while ($line = fgets($file))
+			{
+				if (substr(trim($line), 0, 2) === '/*')
+				{
+					$closing_tag = '*/';
+
+					// Set up the current docs
+					$docs[$i] = array();
+
+					// Re-set the current doc to this file
+					unset($current_doc, $section, $p);
+					$current_doc =& $docs[$i];
+				}
+				elseif (isset($closing_tag))
+				{
+					if (trim($line) === $closing_tag)
+					{
+						unset($closing_tag);
+					}
+					else
+					{
+						// Remove the leading comment
+						$line = substr(ltrim($line), 2);
+
+						if (preg_match('/^([a-z ]+):(?:\s+([a-z\._ ]+))?/i', $line, $matches))
+						{
+							$name = $matches[1];
+
+							// Setup block matching
+							unset($section, $p);
+							$current_doc[$name] = array();
+							// References rock!
+							$section =& $current_doc[$name];
+
+							if (isset($matches[2]))
+							{
+								$title = strtolower($name);
+
+								switch($title)
+								{
+									case 'file':
+									case 'class':
+									case 'title':
+										$docs['title'] = $matches[2];
+									break;
+									default:
+										$section['title'] = $matches[2];
+									break;
+								}
+							}
+						}
+						elseif (isset($section))
+						{
+							$line = ltrim($line);
+
+							if (preg_match('/^\-\s+(.+)/', $line, $matches))
+							{
+								// An unordered list
+								$section['ul'][] = $matches[1];
+							}
+							elseif (preg_match('/^[0-9]+\.\s+(.+)/', $line, $matches))
+							{
+								// An ordered list
+								$section['ol'][] = $matches[1];
+							}
+							elseif (preg_match('/^([a-zA-Z ]+)\s+\-\s+(.+)/', $line, $matches))
+							{
+								// Definition list
+								$section['dl'][] = array($matches[1], $matches[2]);
+							}
+							else
+							{
+								if ( ! isset($p))
+								{
+									$p = 0;
+								}
+
+								if (trim($line) === '')
+								{
+									// Start a new paragraph
+									$p++;
+								}
+								else
+								{
+									// Make sure the current paragraph is set
+									if ( ! isset($section['p'][$p]))
+									{
+										$section['p'][$p] = '';
+									}
+
+									// Add to the current paragraph
+									$section['p'][$p] .= str_replace("\n", ' ', $line);
+								}
+							}
+						}
+						else
+						{
+							// print 'unmatched line: '.Kohana::debug($line);
+						}
+					}
+				}
+
+				$i++;
+			}
+
+			// Close the file
+			fclose($file);
+		}
+
+		die(Kohana::debug($docs));
+	}
+
+	/*
 	 * Method: template
 	 *  Demonstrates how to use views inside of views.
 	 */
