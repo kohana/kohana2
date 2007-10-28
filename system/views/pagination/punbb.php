@@ -8,7 +8,7 @@
 
 <p class="pagination">
 	
-	<?php echo inflector::plural(Kohana::lang('pagination.page')) ?>:
+	<?php echo Kohana::lang('pagination.pages') ?>:
 
 	<?php if ($current_page > 3): ?>
 		<a href="<?php echo $this->pagination->url(1) ?>">1</a>
