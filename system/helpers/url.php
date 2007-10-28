@@ -50,10 +50,25 @@ class url {
 	{
 		$uri = trim($uri, '/');
 
+		$id = ''; // anchor#id
+		$qs = ''; // anchor?query=string
+
+		if (strpos($uri, '?') !== FALSE)
+		{
+			list ($uri, $qs) = explode('?', $uri, 2);
+			$qs = '?'.$qs;
+		}
+
+		if (strpos($uri, '#') !== FALSE)
+		{
+			list ($uri, $id) = explode('#', $uri, 2);
+			$id = '#'.$id;
+		}
+
 		$index_page = Config::item('core.index_page', TRUE);
 		$url_suffix = ($uri != '') ? Config::item('core.url_suffix') : '';
 
-		return self::base(FALSE, $protocol).$index_page.$uri.$url_suffix;
+		return self::base(FALSE, $protocol).$index_page.$uri.$url_suffix.$qs.$id;
 	}
 
 	/*
@@ -117,22 +132,7 @@ class url {
 
 		if (strpos($uri, '://') === FALSE)
 		{
-			$qs = ''; // uri?query=string
-			$id = ''; // uri#id
-
-			if (strpos($uri, '?') !== FALSE)
-			{
-				list ($uri, $qs) = explode('?', $uri, 2);
-				$qs = '?'.$qs;
-			}
-
-			if (strpos($uri, '#') !== FALSE)
-			{
-				list ($uri, $id) = explode('#', $uri, 2);
-				$id = '#'.$id;
-			}
-
-			$uri = self::site($uri).$qs.$id;
+			$uri = self::site($uri);
 		}
 
 		if ($method == 'refresh')

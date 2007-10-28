@@ -80,22 +80,7 @@ class html {
 	{
 		if (strpos($uri, '://') === FALSE)
 		{
-			$id = ''; // anchor#id
-			$qs = ''; // anchor?query=string
-
-			if (strpos($uri, '?') !== FALSE)
-			{
-				list ($uri, $qs) = explode('?', $uri, 2);
-				$qs = '?'.$qs;
-			}
-
-			if (strpos($uri, '#') !== FALSE)
-			{
-				list ($uri, $id) = explode('#', $uri, 2);
-				$id = '#'.$id;
-			}
-
-			$site_url = url::site($uri, $protocol).$qs.$id;
+			$site_url = url::site($uri, $protocol);
 		}
 		else
 		{
