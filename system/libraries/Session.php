@@ -159,7 +159,7 @@ class Session_Core {
 		$_SESSION['total_hits']   += 1;
 
 		// Validate data only on hits after one
-		if ($_SESSION['total_hits'] === 1)
+		if ($_SESSION['total_hits'] > 1)
 		{
 			// Validate the session
 			foreach(self::$config['validate'] as $valid)
