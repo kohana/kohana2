@@ -44,7 +44,7 @@ class cookie {
 		}
 
 		// Expiration timestamp
-		$expire = ($expire > 0) ? time() + (int) $expire : 0;
+		$expire = ($expire == 0) ? 0 : time() + (int) $expire;
 
 		return setcookie($prefix.$name, $value, $expire, $path, $domain, $secure, $httponly);
 	}
@@ -93,8 +93,8 @@ class cookie {
 	 */
 	public static function delete($name, $path = '/', $domain = '', $prefix = '')
 	{
-		// Sets the cookie value to an empty string, and the expiration to 2 hours ago
-		return self::set($name, '', -7200, $path, $domain, FALSE, FALSE, $prefix);
+		// Sets the cookie value to an empty string, and the expiration to 24 hours ago
+		return self::set($name, '', -86400, $path, $domain, FALSE, FALSE, $prefix);
 	}
 
 } // End cookie
