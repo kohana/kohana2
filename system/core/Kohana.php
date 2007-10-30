@@ -269,7 +269,7 @@ class Kohana {
 	public static function display()
 	{
 		// This will flush the Kohana buffer, which sets self::$output
-		ob_end_clean();
+		(ob_get_level() === self::$buffer_level) and ob_end_clean();
 
 		// Run the output event
 		Event::run('system.display');
@@ -401,6 +401,9 @@ class Kohana {
 
 		// Run the system.shutdown event
 		Event::has_run('system.shutdown') or Event::run('system.shutdown');
+
+		// Prevent further output
+		exit;
 	}
 
 	/*
