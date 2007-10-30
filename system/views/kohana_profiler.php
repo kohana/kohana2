@@ -5,8 +5,13 @@
 	background-color: #F8FFF8;
 	margin-top: 20px;
 	clear: both;
-	padding: 10px;
+	padding: 10px 10px 0;
 	border: 1px solid #E5EFF8;
+}
+#kohana-profiler pre
+{
+	margin: 0;
+	font: inherit;
 }
 #kohana-profiler table
 {
@@ -49,6 +54,10 @@
 {
 	background-color: #E0E0FF;
 }
+#kp-sessiondata th
+{
+	background-color: #CCE8FB;
+}
 #kohana-profiler .kp-column
 {
 	width: 100px;
@@ -59,7 +68,7 @@
 {
 	background-color: #FAFAFB !important;
 }
-#kohana-profiler .kp-postname
+#kohana-profiler .kp-name
 {
 	width: 200px;
 	background-color: #FAFAFB !important;
@@ -154,7 +163,38 @@ else:
 
 ?>
 		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
-			<td class="kp-postname"><?php echo $name ?></td>
+			<td class="kp-name"><?php echo $name ?></td>
+			<td>
+				<?php echo is_array($value) ? '<pre>'.html::specialchars(print_r($value, TRUE)).'</pre>' : html::specialchars($value) ?>
+			</td>
+		</tr>
+<?php
+
+	endforeach;
+endif;
+
+?>
+	</table>
+
+	<table id="kp-sessiondata">
+		<tr>
+			<th colspan="2"><?php echo Kohana::lang('profiler.session_data') ?></th>
+		</tr>
+<?php
+
+if ( ! isset($_SESSION)):
+
+?>
+		<tr><td colspan="2"><?php echo Kohana::lang('profiler.no_session') ?></td></tr>
+<?php
+
+else:
+	text::alternate();
+	foreach($_SESSION as $name => $value):
+
+?>
+		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
+			<td class="kp-name"><?php echo $name ?></td>
 			<td>
 				<?php echo is_array($value) ? '<pre>'.html::specialchars(print_r($value, TRUE)).'</pre>' : html::specialchars($value) ?>
 			</td>
