@@ -60,7 +60,7 @@ class date {
 	 * Returns:
 	 *  A mirrored (foo => foo) array from 1-60.
 	 */
-	public static function seconds($step = 1)
+	public static function seconds($step = 1, $start = 0, $end = 60)
 	{
 		static $seconds;
 
@@ -71,7 +71,7 @@ class date {
 		{
 			$seconds[$step] = array();
 
-			for ($i = $step; $i < 61; $i += $step)
+			for ($i = $start; $i < $end; $i += $step)
 			{
 				$seconds[$step][$i] = $i;
 			}
@@ -110,7 +110,7 @@ class date {
 	 * Returns:
 	 *  A mirrored (foo => foo) array from 1-12 or 1-24.
 	 */
-	public static function hours($step = 1, $long = FALSE)
+	public static function hours($step = 1, $long = FALSE, $start = 0)
 	{
 		static $hours;
 
@@ -126,9 +126,9 @@ class date {
 			$hours[$cache][$step] = array();
 
 			// 24-hour time has 24 hours, instead of 12
-			$size = ($long == TRUE) ? 25 : 13;
+			$size = ($long == TRUE) ? 24 : 12;
 
-			for ($i = $step; $i < $size; $i += $step)
+			for ($i = $start; $i < $size; $i += $step)
 			{
 				$hours[$cache][$step][$i] = $i;
 			}
