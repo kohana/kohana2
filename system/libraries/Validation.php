@@ -325,7 +325,7 @@ class Validation_Core {
 
 					$result = Kohana::instance()->$callback($this->data[$field], $params);
 				}
-				elseif ($rule == 'matches')
+				elseif ($rule === 'matches')
 				{
 					$result = $this->$rule($field, $params);
 				}
@@ -362,6 +362,22 @@ class Validation_Core {
 		{
 			Event::run('validation.failure', $this->data);
 			return FALSE;
+		}
+	}
+
+	public function event($data, $events = FALSE)
+	{
+		// Validate the events
+		if (empty($events) OR ! is_array($events))
+		{
+			$this->add_error('event', $this->current_field);
+			return FALSE;
+		}
+
+		// Run the requested events
+		foreach($events as $event)
+		{
+			Event::run('validation.'.$event, $data);
 		}
 	}
 
@@ -726,9 +742,19 @@ class Validation_Core {
 
 	public function valid_url($url, $scheme = 'http')
 	{
+		if (empty($scheme))
+		{
+			$scheme = 'http';
+		}
+
+		if (is_array($scheme))
+		{
+			$scheme = current($scheme);
+		}
+
 		if (valid::url($url, $scheme))
 			return TRUE;
-		
+
 		$this->add_error('valid_url', $this->current_field, $scheme, $url);
 		return FALSE;
 	}

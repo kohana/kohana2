@@ -282,32 +282,7 @@ class Input_Core {
 	 */
 	public function valid_ip($ip)
 	{
-		if ( ! preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/D', $ip))
-			return FALSE;
-
-		$octets = explode('.', $ip);
-
-		for ($i = 1; $i < 5; $i++)
-		{
-			$octet = intval($octets[($i-1)]);
-			if ($i === 1)
-			{
-				if ($octet > 223 OR $octet < 1)
-					return FALSE;
-			}
-			elseif ($i === 4)
-			{
-				if ($octet < 1)
-					return FALSE;
-			}
-			else
-			{
-				if ($octet > 254)
-					return FALSE;
-			}
-		}
-
-		return TRUE;
+		return valid::ip($ip);
 	}
 
 	/**

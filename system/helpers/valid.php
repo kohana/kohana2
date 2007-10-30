@@ -71,21 +71,14 @@ class valid {
 	 */
 	public static function url($url, $scheme = 'http')
 	{
-		if (is_array($scheme) AND ! empty($scheme))
-		{
-			$scheme = current($scheme);
-		}
-
 		// Scheme is always lowercase
 		$scheme = strtolower($scheme);
 
 		// Use parse_url to validate the URL
-		$url_check = @parse_url($url);
+		$url = @parse_url($url);
 
-		if (empty($url_check) OR empty($url_check['scheme']) OR empty($url_check['host']) OR $url_check['scheme'] !== $scheme)
-			return FALSE;
-
-		return TRUE;
+		// If the boolean check returns TRUE, return FALSE, and vice versa
+		return ! (empty($url['host']) OR empty($url['scheme']) OR $url['scheme'] !== $scheme);
 	}
 
 	/*
@@ -100,7 +93,32 @@ class valid {
 	 */
 	public static function ip($ip)
 	{
-		return (bool) Kohana::instance()->input->valid_ip($ip);
+		if ( ! preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/D', $ip))
+			return FALSE;
+
+		$octets = explode('.', $ip);
+
+		for ($i = 1; $i < 5; $i++)
+		{
+			$octet = (int) $octets[($i-1)];
+			if ($i === 1)
+			{
+				if ($octet > 223 OR $octet < 1)
+					return FALSE;
+			}
+			elseif ($i === 4)
+			{
+				if ($octet < 1)
+					return FALSE;
+			}
+			else
+			{
+				if ($octet > 254)
+					return FALSE;
+			}
+		}
+
+		return TRUE;
 	}
 
 	/*
@@ -116,7 +134,7 @@ class valid {
 	 */
 	public static function alpha($str, $utf8 = FALSE)
 	{
-		return (bool) ($utf8)
+		return (bool) ($utf8 == TRUE)
 			? preg_match('/^\pL+$/uD', (string) $str)
 			: ctype_alpha((string) $str);
 	}
@@ -134,7 +152,7 @@ class valid {
 	 */
 	public static function alpha_numeric($str, $utf8 = FALSE)
 	{
-		return (bool) ($utf8)
+		return (bool) ($utf8 == TRUE)
 			? preg_match('/^[\pL\pN]+$/uD', (string) $str)
 			: ctype_alnum((string) $str);
 	}
@@ -152,7 +170,7 @@ class valid {
 	 */
 	public static function alpha_dash($str, $utf8 = FALSE)
 	{
-		return (bool) (utf8)
+		return (bool) ($utf8 == TRUE)
 			? preg_match('/^[-\pL\pN_]+$/uD', (string) $str)
 			: preg_match('/^[-a-z0-9_]+$/iD', (string) $str);
 	}
@@ -170,7 +188,7 @@ class valid {
 	 */
 	public static function digit($str, $utf8 = FALSE)
 	{
-		return (bool) ($utf8)
+		return (bool) ($utf8 == TRUE)
 			? preg_match('/^\pN+$/uD', (string) $str)
 			: ctype_digit((string) $str);
 	}

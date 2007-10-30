@@ -255,28 +255,6 @@ class Kohana {
 		// Run the send_headers event, specifically for cookies being set
 		Event::has_run('system.send_headers') or Event::run('system.send_headers');
 
-		// Fetch memory usage in MB
-		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
-
-		// Replace the global template variables
-		$output = str_replace(
-			array
-			(
-				'{kohana_version}',
-				'{kohana_codename}',
-				'{execution_time}',
-				'{memory_usage}'
-			),
-			array
-			(
-				KOHANA_VERSION,
-				KOHANA_CODENAME,
-				Benchmark::get(SYSTEM_BENCHMARK.'_total_execution_time'),
-				number_format($memory, 2)
-			),
-			$output
-		);
-
 		// Set final output
 		self::$output = $output;
 
@@ -296,6 +274,28 @@ class Kohana {
 		// Run the output event
 		Event::run('system.display');
 
+		// Fetch memory usage in MB
+		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
+
+		// Replace the global template variables
+		self::$output = str_replace(
+			array
+			(
+				'{kohana_version}',
+				'{kohana_codename}',
+				'{execution_time}',
+				'{memory_usage}'
+			),
+			array
+			(
+				KOHANA_VERSION,
+				KOHANA_CODENAME,
+				Benchmark::get(SYSTEM_BENCHMARK.'_total_execution_time'),
+				number_format($memory, 2)
+			),
+			self::$output
+		);
+
 		print self::$output;
 	}
 
@@ -312,6 +312,12 @@ class Kohana {
 	 */
 	public static function exception_handler($exception, $message = FALSE, $file = FALSE, $line = FALSE)
 	{
+		// If error_reporting() returns 0, it means the error was supressed by
+		// using the @ prefix, eg: print @$var_does_not_exist. These errors
+		// should not be displayed, as per PHP syntax.
+		if (error_reporting() === 0)
+			return;
+
 		// Error handling will use exactly 5 args, every time
 		if (func_num_args() === 5)
 		{
@@ -357,7 +363,7 @@ class Kohana {
 		$file = str_replace('\\', '/', realpath($file));
 		$file = preg_replace('|^'.preg_quote(DOCROOT).'|', '', $file);
 
-		if (ob_get_level() > self::$buffer_level)
+		if (ob_get_level() >= self::$buffer_level)
 		{
 			// Flush the entire buffer here, to ensure the error is displayed
 			while(ob_get_level() > self::$buffer_level) ob_end_clean();
@@ -390,12 +396,11 @@ class Kohana {
 			Log::add('error', Kohana::lang('core.uncaught_exception', $type, strip_tags($message), $file, $line));
 		}
 
+		// Load the error
+		include self::find_file('views', empty($template) ? 'kohana_error_page' : $template);
+
 		// Run the system.shutdown event
 		Event::has_run('system.shutdown') or Event::run('system.shutdown');
-
-		// Load the error page
-		include self::find_file('views', empty($template) ? 'kohana_error_page' : $template);
-		exit;
 	}
 
 	/*
@@ -583,7 +588,7 @@ class Kohana {
 
 			foreach(glob($path.'*') as $index => $item)
 			{
-				$files[] = $item;
+				$files[] = $item = str_replace('\\', '/', $item);
 
 				// Handle recursion
 				if (is_dir($item) AND $recursive == TRUE)
