@@ -687,7 +687,7 @@ class Database_Core {
 
 			$table = $this->from[0];
 		}
-		$this->where = $where;
+		$this->where = (is_null($where)) ? $this->where : array_merge($where, $this->where);
 		$sql = $this->driver->update($this->config['table_prefix'].$table, $this->set, $this->where);
 
 		$this->reset_write();
