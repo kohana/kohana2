@@ -27,7 +27,7 @@ class cookie {
 	 * Returns:
 	 *  TRUE or FALSE.
 	 */
-	public static function set($name, $value = '', $expire = 0, $path = '/', $domain = '', $secure = FALSE, $httponly = FALSE, $prefix = '')
+	public static function set($name, $value = NULL, $expire = NULL, $path = NULL, $domain = NULL, $secure = NULL, $httponly = NULL, $prefix = '')
 	{
 		// If the name param is an array, we import it
 		is_array($name) and extract($name, EXTR_OVERWRITE);
@@ -37,7 +37,7 @@ class cookie {
 
 		foreach (array('name', 'value', 'expire', 'domain', 'path', 'prefix', 'secure', 'httponly') as $item)
 		{
-			if (isset($config[$item]))
+			if ($$item === NULL AND isset($config[$item]))
 			{
 				$$item = $config[$item];
 			}
