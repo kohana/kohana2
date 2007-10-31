@@ -115,7 +115,7 @@ class Kohana {
 		header('Content-type: text/html; charset=UTF-8');
 
 		// Set locale information
-		setlocale(LC_ALL, Config::item('locale.language').'UTF-8');
+		setlocale(LC_ALL, Config::item('locale.language').'.UTF-8');
 
 		if ($hooks = Config::item('hooks.enable'))
 		{
