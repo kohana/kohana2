@@ -677,6 +677,11 @@ class Database_Core {
 			$this->set($set);
 		}
 
+		if ( ! is_null($where))
+		{
+			$this->where($where);
+		}
+
 		if ($this->set == FALSE)
 			return ($this->db_debug ? $this->display_error('db_must_use_set') : FALSE);
 
@@ -687,7 +692,7 @@ class Database_Core {
 
 			$table = $this->from[0];
 		}
-		$this->where = (is_null($where)) ? $this->where : array_merge($where, $this->where);
+
 		$sql = $this->driver->update($this->config['table_prefix'].$table, $this->set, $this->where);
 
 		$this->reset_write();
