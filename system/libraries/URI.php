@@ -63,12 +63,20 @@ class URI_Core extends Router {
 	 * Retrieve a specific routed URI segment
 	 *
 	 * @access	public
-	 * @param	integer
+	 * @param	mixed
 	 * @param	mixed
 	 * @return	mixed
 	 */
 	public function rsegment($index = 1, $default = FALSE)
 	{
+		if (is_string($index))
+		{
+			if (($key = array_search($index, self::$rsegments)) === FALSE)
+				return $default;
+
+			$index = $key + 2;
+		}
+
 		$index = (int) $index - 1;
 
 		return isset(self::$rsegments[$index]) ? self::$rsegments[$index] : $default;
