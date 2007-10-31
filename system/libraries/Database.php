@@ -711,7 +711,7 @@ class Database_Core {
 	 * Returns:
 	 *  <Database_Result> object
 	 */
-	public function delete($table = '', $where = '')
+	public function delete($table = '', $where = NULL)
 	{
 		if ($table == '')
 		{
@@ -721,7 +721,7 @@ class Database_Core {
 			$table = $this->from[0];
 		}
 
-		if ($where != '')
+		if (! is_null($where))
 		{
 			$this->where($where);
 		}
