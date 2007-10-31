@@ -15,19 +15,19 @@ class cookie {
 	 *  Sets a cookie with the given parameters.
 	 *
 	 * Parameters:
-	 * name     - cookie name or array of config options
-	 * value    - cookie value
-	 * expire   - number of seconds before the cookie expires
-	 * path     - URL path to allow
-	 * domain   - URL domain to allow
-	 * secure   - HTTPS only
-	 * httponly - HTTP only
-	 * prefix   - collision-prevention prefix
+	 *  name     - cookie name or array of config options
+	 *  value    - cookie value
+	 *  expire   - number of seconds before the cookie expires
+	 *  path     - URL path to allow
+	 *  domain   - URL domain to allow
+	 *  secure   - HTTPS only
+	 *  httponly - HTTP only
+	 *  prefix   - collision-prevention prefix
 	 *
 	 * Returns:
 	 *  TRUE or FALSE.
 	 */
-	public static function set($name, $value = NULL, $expire = NULL, $path = NULL, $domain = NULL, $secure = NULL, $httponly = NULL, $prefix = '')
+	public static function set($name, $value = NULL, $expire = NULL, $path = NULL, $domain = NULL, $secure = NULL, $httponly = NULL, $prefix = NULL)
 	{
 		// If the name param is an array, we import it
 		is_array($name) and extract($name, EXTR_OVERWRITE);
@@ -35,7 +35,7 @@ class cookie {
 		// Fetch default options
 		$config = Config::item('cookie');
 
-		foreach (array('name', 'value', 'expire', 'domain', 'path', 'prefix', 'secure', 'httponly') as $item)
+		foreach (array('value', 'expire', 'domain', 'path', 'prefix', 'secure', 'httponly') as $item)
 		{
 			if ($$item === NULL AND isset($config[$item]))
 			{
@@ -61,18 +61,18 @@ class cookie {
 	 * Returns:
 	 *  Value of the requested cookie.
 	 */
-	public static function get($name, $prefix = '', $xss_clean = FALSE)
+	public static function get($name, $prefix = NULL, $xss_clean = FALSE)
 	{
 		static $input;
 
 		if ($input === NULL)
 		{
-			$input = new Input();
+			$input = new Input;
 		}
 
-		if ($prefix == '')
+		if ($prefix === NULL)
 		{
-			$prefix = Config::item('cookie.prefix');
+			$prefix = (string) Config::item('cookie.prefix');
 		}
 
 		return $input->cookie($prefix.$name, $xss_clean);
@@ -91,7 +91,7 @@ class cookie {
 	 * Returns:
 	 *  TRUE or FALSE.
 	 */
-	public static function delete($name, $path = '/', $domain = '', $prefix = '')
+	public static function delete($name, $path = NULL, $domain = NULL, $prefix = NULL)
 	{
 		// Sets the cookie value to an empty string, and the expiration to 24 hours ago
 		return self::set($name, '', -86400, $path, $domain, FALSE, FALSE, $prefix);
