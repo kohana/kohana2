@@ -284,7 +284,7 @@ class Database_Core {
 		{
 			if (($val = trim($val)) == '') continue;
 
-			$this->from[] = $val;
+			$this->from[] = $this->config['table_prefix'].$val;
 		}
 
 		return $this;
