@@ -104,7 +104,7 @@ class Kohana {
 		// Set error handler
 		set_error_handler(array('Kohana', 'exception_handler'));
 
-		// Set execption handler
+		// Set exception handler
 		set_exception_handler(array('Kohana', 'exception_handler'));
 
 		// Disable magic_quotes_runtime. The Input library takes care of
@@ -275,7 +275,7 @@ class Kohana {
 		Event::run('system.display');
 
 		// Fetch memory usage in MB
-		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
+		$memory = function_exists('memory_get_usage') ? memory_get_usage() : 0;
 
 		// Replace the global template variables
 		self::$output = str_replace(
@@ -291,7 +291,7 @@ class Kohana {
 				KOHANA_VERSION,
 				KOHANA_CODENAME,
 				Benchmark::get(SYSTEM_BENCHMARK.'_total_execution_time'),
-				number_format($memory, 2)
+				text::bytes($memory, 'MiB')
 			),
 			self::$output
 		);
@@ -305,7 +305,7 @@ class Kohana {
 	 *  View to display the message.
 	 *
 	 * Parameters:
-	 *  execption - object or error code
+	 *  exception - object or error code
 	 *  message   - error message
 	 *  file      - filename
 	 *  line      - line number
@@ -313,7 +313,7 @@ class Kohana {
 	public static function exception_handler($exception, $message = FALSE, $file = FALSE, $line = FALSE)
 	{
 		// If error_reporting() returns 0, it means the error was supressed by
-		// using the @ prefix, eg: print @$var_does_not_exist. These errors
+		// using the @ prefix, e.g. print @$var_does_not_exist. These errors
 		// should not be displayed, as per PHP syntax.
 		if (error_reporting() === 0)
 			return;
@@ -669,10 +669,10 @@ class Kohana {
 
 	/*
 	 * Method: key_string
-	 *  Returns the value of a key, defined by a "dot-noted" string, from an array.
+	 *  Returns the value of a key, defined by a 'dot-noted' string, from an array.
 	 *
 	 * Parameters:
-	 *  keys  - dot-noted string, like "foo.bar.one"
+	 *  keys  - dot-noted string, like 'foo.bar.one'
 	 *  array - array to search
 	 *
 	 * Returns:
