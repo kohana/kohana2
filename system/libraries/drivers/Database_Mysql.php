@@ -88,7 +88,7 @@ class Database_Mysql_Driver implements Database_Driver {
 		{
 			$valstr[] = $this->escape_column($key)." = ".$val;
 		}
-		return 'UPDATE '.$this->escape_table($table).' SET '.implode(', ', $valstr).' WHERE '.implode(' AND ',$this->where($where, NULL, 'AND', 0, TRUE));
+		return 'UPDATE '.$this->escape_table($table).' SET '.implode(', ', $valstr).' WHERE '.implode(' AND ',$where);
 	}
 
 	public function set_charset($charset)
