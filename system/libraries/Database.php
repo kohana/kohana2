@@ -642,12 +642,22 @@ class Database_Core {
 		}
 
 		if ($this->set == NULL)
-			return ($this->db_debug ? $this->display_error('db_must_use_set') : FALSE);
+		{
+			if ($this->config['show_errors'])
+				throw new Kohana_Database_Exception('database.must_use_set');
+			else
+				return FALSE;
+		}
 
 		if ($table == '')
 		{
 			if ( ! isset($this->from[0]))
-				return ($this->db_debug ? $this->display_error('db_must_set_table') : FALSE);
+			{
+				if ($this->config['show_errors'])
+					throw new Kohana_Database_Exception('database.must_use_table');
+				else
+					return FALSE;
+			}
 
 			$table = $this->from[0];
 		}
@@ -672,7 +682,7 @@ class Database_Core {
 	 */
 	public function update($table = '', $set = NULL, $where = NULL)
 	{
-		if ( ! is_null($set))
+		if ( is_array($set))
 		{
 			$this->set($set);
 		}
@@ -683,16 +693,25 @@ class Database_Core {
 		}
 
 		if ($this->set == FALSE)
-			return ($this->db_debug ? $this->display_error('db_must_use_set') : FALSE);
+		{
+			if ($this->config['show_errors'])
+				throw new Kohana_Database_Exception('database.must_use_set');
+			else
+				return FALSE;
+		}
 
 		if ($table == '')
 		{
 			if ( ! isset($this->from[0]))
-				return ($this->db_debug ? $this->display_error('db_must_set_table') : FALSE);
+			{
+				if ($this->config['show_errors'])
+					throw new Kohana_Database_Exception('database.must_use_table');
+				else
+					return FALSE;
+			}
 
 			$table = $this->from[0];
 		}
-
 		$sql = $this->driver->update($this->config['table_prefix'].$table, $this->set, $this->where);
 
 		$this->reset_write();
@@ -716,7 +735,12 @@ class Database_Core {
 		if ($table == '')
 		{
 			if ( ! isset($this->from[0]))
-				return ($this->db_debug ? $this->display_error('db_must_set_table') : FALSE);
+			{
+				if ($this->config['show_errors'])
+					throw new Kohana_Database_Exception('database.must_use_table');
+				else
+					return FALSE;
+			}
 
 			$table = $this->from[0];
 		}
@@ -727,7 +751,12 @@ class Database_Core {
 		}
 
 		if (count($this->where) < 1)
-			return (($this->db_debug) ? $this->display_error('db_del_must_use_where') : FALSE);
+		{
+			if ($this->config['show_errors'])
+				throw new Kohana_Database_Exception('database.must_use_where');
+			else
+				return FALSE;
+		}
 
 		$sql = $this->driver->delete($this->config['table_prefix'].$table, $this->where);
 
