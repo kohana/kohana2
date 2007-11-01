@@ -1,28 +1,17 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+ /*
+ * Class: Controller
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Controller Class
- *
- * @category    Libraries
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/general/controllers.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class Controller_Core extends Kohana {
 
-	/**
-	 * Constructor
+	/*
+	 * Method: __construct
+	 *  Loads the Input, URI and Loader libraries into the '$this' namespace
 	 */
 	public function __construct()
 	{
@@ -39,13 +28,16 @@ class Controller_Core extends Kohana {
 		$this->input = new Input();
 	}
 
-	/**
-	 * Includes a View within the controller scope
+	/*
+	 * Method: kohana_include_view
+	 *  Includes a View within the controller scope
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  array
-	 * @return string
+	 * Parameters:
+	 *  kohana_view_filename - filename
+	 *  kohana_input_data    - array of data to make accessible within the view
+	 *
+	 * Returns:
+	 *  Output of view file
 	 */
 	public function kohana_include_view($kohana_view_filename, $kohana_input_data)
 	{

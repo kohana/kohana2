@@ -1,25 +1,11 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: Encrypt
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Encrypt Class
- *
- * @category    Libraries
- * @author      Rick Ellis, Kohana Team
- * @copyright   Copyright (c) 2006, EllisLab, Inc.
- * @license     http://www.codeigniter.com/user_guide/license.html
- * @link        http://kohanaphp.com/user_guide/en/libraries/encrypt.html
+ * Kohana Source Code:
+ *  author    - Rick Ellis, Kohana Team
+ *  copyright - Copyright (c) 2006, EllisLab, Inc.
+ *  license   - <http://www.codeigniter.com/user_guide/license.html>
  */
 class Encrypt_Core {
 
@@ -29,10 +15,9 @@ class Encrypt_Core {
 	protected $mcrypt_cipher  = '';
 	protected $mcrypt_mode    = '';
 
-	/**
-	 * Constructor
-	 *
-	 * Simply determines whether the mcrypt library exists.
+	/*
+	 * Method: __construct
+	 *  Simply determines whether the mcrypt library exists.
 	 */
 	public function __construct()
 	{
@@ -41,15 +26,16 @@ class Encrypt_Core {
 		Log::add('debug', 'Encrypt Library initialized');
 	}
 
-	/**
-	 * Fetch the encryption key
+	/*
+	 * Method: get_key
+	 *  Returns it as MD5 in order to have an exact-length 128 bit key.
+	 *  mcrypt is sensitive to keys that are not the correct length
 	 *
-	 * Returns it as MD5 in order to have an exact-length 128 bit key.
-	 * mcrypt is sensitive to keys that are not the correct length
+	 * Parameters:
+	 *  key - the key
 	 *
-	 * @access  public
-	 * @param   string
-	 * @return  string
+	 * Returns:
+	 *  String containing the 128 bit key
 	 */
 	public function get_key($key = '')
 	{
@@ -65,33 +51,34 @@ class Encrypt_Core {
 		return md5($key);
 	}
 
-	/**
-	 * Set the encryption key
+	/*
+	 * Method: set_key
+	 *  Set the encryption key
 	 *
-	 * @access  public
-	 * @param   string
-	 * @return  void
+	 * Parameters:
+	 *  key - the key
 	 */
 	public function set_key($key = '')
 	{
 		$this->encryption_key = $key;
 	}
 
-	/**
-	 * Encode
+	/*
+	 * Method: encode
+	 *  Encodes the message string using bitwise XOR encoding.
+	 *  The key is combined with a random hash, and then it
+	 *  too gets converted using XOR. The whole thing is then run
+	 *  through mcrypt (if supported) using the randomized key.
+	 *  The end result is a double-encrypted message string
+	 *  that is randomized with each call to this function,
+	 *  even if the supplied message and key are the same.
 	 *
-	 * Encodes the message string using bitwise XOR encoding.
-	 * The key is combined with a random hash, and then it
-	 * too gets converted using XOR. The whole thing is then run
-	 * through mcrypt (if supported) using the randomized key.
-	 * The end result is a double-encrypted message string
-	 * that is randomized with each call to this function,
-	 * even if the supplied message and key are the same.
+	 * Parameters:
+	 *  string - string to encode
+	 *  key    - the key
 	 *
-	 * @access  public
-	 * @param   string  the string to encode
-	 * @param   string  the key
-	 * @return  string
+	 * Returns:
+	 *  The encoded string.
 	 */
 	public function encode($string, $key = '')
 	{
@@ -106,15 +93,16 @@ class Encrypt_Core {
 		return base64_encode($enc);
 	}
 
-	/**
-	 * Decode
+	/*
+	 * Method: decode
+	 *  Reverses the encode process
 	 *
-	 * Reverses the above process
+	 * Parameters:
+	 *  string - string to decode
+	 *  key    - the key
 	 *
-	 * @access  public
-	 * @param   string
-	 * @param   string
-	 * @return  string
+	 * Returns:
+	 *  The decoded data.
 	 */
 	public function decode($string, $key = '')
 	{
@@ -132,16 +120,16 @@ class Encrypt_Core {
 		return $this->xor_decode($dec, $key);
 	}
 
-	/**
-	 * XOR Encode
+	/*
+	 * Method: xor_encode
+	 *  Takes a plain-text string and key as input and generates an encoded bit-string using XOR
 	 *
-	 * Takes a plain-text string and key as input and generates an
-	 * encoded bit-string using XOR
+	 * Parameters:
+	 *  string - string to encode
+	 *  key    - the key
 	 *
-	 * @access  protected
-	 * @param   string
-	 * @param   string
-	 * @return  string
+	 * Returns:
+	 *  The encoded string.
 	 */
 	protected function xor_encode($string, $key)
 	{
@@ -163,16 +151,16 @@ class Encrypt_Core {
 		return $this->xor_merge($enc, $key);
 	}
 
-	/**
-	 * XOR Decode
+	/*
+	 * Method: xor_decode
+	 *  Takes an encoded string and key as input and generates the plain-text original message
 	 *
-	 * Takes an encoded string and key as input and generates the
-	 * plain-text original message
+	 * Parameters:
+	 *  string - string to decode
+	 *  key    - the key
 	 *
-	 * @access  protected
-	 * @param   string
-	 * @param   string
-	 * @return  string
+	 * Returns:
+	 *  The decoded data.
 	 */
 	protected function xor_decode($string, $key)
 	{
@@ -187,15 +175,16 @@ class Encrypt_Core {
 		return $dec;
 	}
 
-	/**
-	 * XOR key + string Combiner
+	/*
+	 * Method: xor_merge
+	 *  Takes a string and key as input and computes the difference using XOR
 	 *
-	 * Takes a string and key as input and computes the difference using XOR
+	 * Parameters:
+	 *  string - the string
+	 *  key    - the key
 	 *
-	 * @access  protected
-	 * @param   string
-	 * @param   string
-	 * @return  string
+	 * Returns:
+	 *  The combined string and key.
 	 */
 	protected function xor_merge($string, $key)
 	{
@@ -210,13 +199,16 @@ class Encrypt_Core {
 		return $str;
 	}
 
-	/**
-	 * Encrypt using mcrypt
+	/*
+	 * Method: mcrypt_encode
+	 *  Encrypt using mcrypt
 	 *
-	 * @access  public
-	 * @param   string
-	 * @param   string
-	 * @return  string
+	 * Parameters:
+	 *  data - the data
+	 *  key  - the key
+	 *
+	 * Returns:
+	 *  The encoded string.
 	 */
 	public function mcrypt_encode($data, $key)
 	{
@@ -226,13 +218,16 @@ class Encrypt_Core {
 		return mcrypt_encrypt($this->get_cipher(), $key, $data, $this->get_mode(), $init_vect);
 	}
 
-	/**
-	 * Decrypt using mcrypt
+	/*
+	 * Method: mcrypt_decode
+	 *  Decrypt using mcrypt
 	 *
-	 * @access  public
-	 * @param   string
-	 * @param   string
-	 * @return  string
+	 * Parameters:
+	 *  data - the data
+	 *  key  - the key
+	 *
+	 * Returns:
+	 *  The decoded data.
 	 */
 	public function mcrypt_decode($data, $key)
 	{
@@ -242,35 +237,36 @@ class Encrypt_Core {
 		return rtrim(mcrypt_decrypt($this->get_cipher(), $key, $data, $this->get_mode(), $init_vect), "\0");
 	}
 
-	/**
-	 * Set the mcrypt Cipher
+	/*
+	 * Method: set_cipher
+	 *  Set the mcrypt Cipher
 	 *
-	 * @access  public
-	 * @param   constant
-	 * @return  string
+	 * Parameters:
+	 *  cipher - the cipher
 	 */
 	public function set_cipher($cipher)
 	{
 		$this->mcrypt_cipher = $cipher;
 	}
 
-	/**
-	 * Set the mcrypt Mode
+	/*
+	 * Method: set_mode
+	 *  Set the mcrypt Mode
 	 *
-	 * @access  public
-	 * @param   constant
-	 * @return  string
+	 * Parameters:
+	 *  mode - the mode
 	 */
 	public function set_mode($mode)
 	{
 		$this->mcrypt_mode = $mode;
 	}
 
-	/**
-	 * Get mcrypt cipher Value
+	/*
+	 * Method: get_cipher
+	 *  Get mcrypt cipher Value
 	 *
-	 * @access  public
-	 * @return  string
+	 * Returns:
+	 *  The mcrypt cipher
 	 */
 	public function get_cipher()
 	{
@@ -282,11 +278,12 @@ class Encrypt_Core {
 		return $this->mcrypt_cipher;
 	}
 
-	/**
-	 * Get mcrypt Mode Value
+	/*
+	 * Method: get_mode
+	 *  Get mcrypt Mode Value
 	 *
-	 * @access  public
-	 * @return  string
+	 * Returns:
+	 *  The mcrypt mode.
 	 */
 	public function get_mode()
 	{
@@ -298,24 +295,27 @@ class Encrypt_Core {
 		return $this->mcrypt_mode;
 	}
 
-	/**
-	 * Set the Hash type
+	/*
+	 * Method: set_hash
+	 *  Set the Hash type
 	 *
-	 * @access  public
-	 * @param   string
-	 * @return  string
+	 * Parameters:
+	 *  type - the type
 	 */
 	public function set_hash($type = 'sha1')
 	{
 		$this->hash_type = ($type == 'md5') ? 'md5' : 'sha1';
 	}
 
-	/**
-	 * Hash encode a string
+	/*
+	 * Method: hash
+	 *  Hash encode a string
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	string
+	 * Parameters:
+	 *  str - the string to encode
+	 *
+	 * Returns:
+	 *  The encoded string.
 	 */
 	public function hash($str)
 	{

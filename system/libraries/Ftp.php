@@ -1,40 +1,25 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: FTP
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * FTP Class
- *
- * @category    Libraries
- * @author      Rick Ellis, Kohana Team
- * @copyright   Copyright (c) 2006, EllisLab, Inc.
- * @license     http://www.codeigniter.com/user_guide/license.html
- * @link        http://kohanaphp.com/user_guide/en/libraries/ftp.html
+ * Kohana Source Code:
+ *  author    - Rick Ellis, Kohana Team
+ *  copyright - Copyright (c) 2006, EllisLab, Inc.
+ *  license   - <http://www.codeigniter.com/user_guide/license.html>
  */
 class FTP_Core {
 
-	private $hostname	= '';
-	private $username	= '';
-	private $password	= '';
-	private $port		= 21;
-	private $passive	= TRUE;
-	private $debug		= FALSE;
-	private $conn_id	= FALSE;
+	private $hostname = '';
+	private $username = '';
+	private $password = '';
+	private $port     = 21;
+	private $passive  = TRUE;
+	private $debug    = FALSE;
+	private $conn_id  = FALSE;
 
-	/**
-	 * Constructor - Sets Preferences
-	 *
-	 * The constructor can be passed an array of config values
+	/*
+	 * Method: __construct
+	 *  Sets Preferences. Can be passed an array of config values
 	 */
 	public function __construct($config = array())
 	{
@@ -46,12 +31,12 @@ class FTP_Core {
 		Log::add('debug', 'FTP Library initialized');
 	}
 
-	/**
-	 * Initialize preferences
+	/*
+	 * Method: initialize
+	 *  Initialize preferences
 	 *
-	 * @access	public
-	 * @param	array
-	 * @return	void
+	 * Parameters:
+	 *  config - config preferences
 	 */
 	public function initialize($config = array())
 	{
@@ -67,12 +52,15 @@ class FTP_Core {
 		$this->hostname = preg_replace('|^[^:]++://|', '', $this->hostname); 
 	}
 
-	/**
-	 * FTP Connect
+	/*
+	 * Method: connect
+	 *  Connect to the FTP
 	 *
-	 * @access	public
-	 * @param	array	 the connection values
-	 * @return	boolean
+	 * Parameters:
+	 *  config - the connection values
+	 *
+	 * Returns:
+	 *  TRUE or FALSE.
 	 */
 	public function connect($config = array())
 	{
@@ -108,22 +96,24 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/**
-	 * FTP Login
+	/*
+	 * Method: login
+	 *  Login to the FTP
 	 *
-	 * @access	private
-	 * @return	boolean
+	 * Returns:
+	 *  TRUE or FALSE.
 	 */
 	private function login()
 	{
 		return @ftp_login($this->conn_id, $this->username, $this->password);
 	}
 
-	/**
-	 * Validates the connection ID
+	/*
+	 * Method: is_conn
+	 *  Validates the connection ID
 	 *
-	 * @access	private
-	 * @return	boolean
+	 * Returns:
+	 *  TRUE or FALSE.
 	 */
 	private function is_conn()
 	{
@@ -139,19 +129,20 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/**
-	 * Change direcotry
+	/*
+	 * Method: changedir
+	 *  The second parameter lets us momentarily turn off debugging so that
+	 *  this function can be used to test for the existence of a folder
+	 *  without throwing an error.  There's no FTP equivalent to is_dir()
+	 *  so we do it by trying to change to a particular directory.
+	 *  Internally, this parameter is only used by the "mirror" function.
 	 *
-	 * The second parameter lets us momentarily turn off debugging so that
-	 * this function can be used to test for the existance of a folder
-	 * without throwing an error.  There's no FTP equivalent to is_dir()
-	 * so we do it by trying to change to a particular directory.
-	 * Internally, this paramter is only used by the "mirror" function below.
+	 * Parameters:
+	 *  path          - path of directory
+	 *  supress_debug - supress debug message
 	 *
-	 * @access	public
-	 * @param	string
-	 * @param	boolean
-	 * @return	boolean
+	 * Returns:
+	 *  TRUE or FALSE.
 	 */
 	public function changedir($path = '', $supress_debug = FALSE)
 	{
@@ -174,12 +165,16 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/**
-	 * Create a directory
+	/*
+	 * Method: mkdir
+	 *  Create a directory
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	boolean
+	 * Parameters:
+	 *  path        - path of directory
+	 *  permissions - permissions to give directory
+	 *
+	 * Returns:
+	 *  TRUE or FALSE.
 	 */
 	public function mkdir($path = '', $permissions = NULL)
 	{
@@ -206,14 +201,18 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/**
-	 * Upload a file to the server
+	/*
+	 * Method: upload
+	 *  Upload a file to the server
 	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string
-	 * @param	string
-	 * @return	boolean
+	 * Parameters:
+	 *  locpath     - path of file to upload
+	 *  rempath     - path on FTP to upload to
+	 *  mode        - transfer mode
+	 *  permissions - permissions to give file
+	 *
+	 * Returns:
+	 *  TRUE or FALSE.
 	 */
 	public function upload($locpath, $rempath, $mode = 'auto', $permissions = NULL)
 	{
@@ -256,14 +255,17 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/**
-	 * Rename (or move) a file
+	/*
+	 * Method: rename
+	 *  Rename (or move) a file
 	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string
-	 * @param	boolean
-	 * @return	boolean
+	 * Parameters:
+	 *  old_file - old file
+	 *  new_file - new file
+	 *  move     - use move debug message instead of rename
+	 *
+	 * Returns:
+	 *  TRUE or FALSE.
 	 */
 	public function rename($old_file, $new_file, $move = FALSE)
 	{
@@ -286,25 +288,31 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/**
-	 * Move a file
+	/*
+	 * Method: move
+	 *  Move a file
 	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string
-	 * @return	boolean
+	 * Parameters:
+	 *  old_file - old file
+	 *  new_file - new file
+	 *
+	 * Returns:
+	 *  TRUE or FALSE.
 	 */
 	public function move($old_file, $new_file)
 	{
 		return $this->rename($old_file, $new_file, TRUE);
 	}
 
-	/**
-	 * Rename (or move) a file
+	/*
+	 * Method: delete_file
+	 *  Delete a file
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	boolean
+	 * Parameters:
+	 *  filepath - file path
+	 *
+	 * Returns:
+	 *  TRUE or FALSE.
 	 */
 	public function delete_file($filepath)
 	{
@@ -325,13 +333,15 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/**
-	 * Delete a folder and recursively delete everything (including sub-folders)
-	 * containted within it.
+	/*
+	 * Method: delete_dir
+	 *  Delete a folder and recursively delete everything (including sub-folders) contained within it.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	boolean
+	 * Parameters:
+	 *  filepath - directory path
+	 *
+	 * Returns:
+	 *  TRUE or FALSE.
 	 */
 	public function delete_dir($filepath)
 	{
@@ -370,13 +380,16 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/**
-	 * Set file permissions
+	/*
+	 * Method: chmod
+	 *  Set file permissions
 	 *
-	 * @access	public
-	 * @param	string 	the file path
-	 * @param	string	the permissions
-	 * @return	boolean
+	 * Parameters:
+	 *  path - path of file or directory
+	 *  perm - permissions to set
+	 *
+	 * Returns:
+	 *  TRUE or FALSE.
 	 */
 	public function chmod($path, $perm)
 	{
@@ -407,13 +420,16 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/**
-	 * FTP List files in the specified directory
+	/*
+	 * Method: list_files
+	 *  FTP List files in the specified directory
 	 *
-	 * @access	public
-	 * @param	string path to the directory that will be listed
-	 * @param	string	mode in which the results will be returned (raw or nice)
-	 * @return	array
+	 * Parameters:
+	 *  path - path to the directory
+	 *  mode - mode in which the results will be returned (raw or nice)
+	 *
+	 * Returns:
+	 *  Array of files in directory
 	 */
 	public function list_files($path = '.', $mode = "nice")
 	{
@@ -426,17 +442,18 @@ class FTP_Core {
 		return ($mode == "nice") ? ftp_nlist($this->conn_id, $path) : ftp_rawlist($this->conn_id, $path, FALSE);
 	}
 
-	/**
-	 * Read a directory and recreate it remotely
+	/*
+	 * Method: mirror
+	 *  This function recursively reads a folder and everything it contains (including
+	 *  sub-folders) and creates a mirror via FTP based on it.  Whatever the directory structure
+	 *  of the original file path will be recreated on the server.
 	 *
-	 * This function recursively reads a folder and everything it contains (including
-	 * sub-folders) and creates a mirror via FTP based on it.  Whatever the directory structure
-	 * of the original file path will be recreated on the server.
+	 * Parameters:
+	 *  locpath - path to source with trailing slash
+	 *  rempath - path to destination - include the base folder with trailing slash
 	 *
-	 * @access	public
-	 * @param	string	path to source with trailing slash
-	 * @param	string	path to destination - include the base folder with trailing slash
-	 * @return	boolean
+	 * Returns:
+	 *  TRUE or FALSE.
 	 */
 	public function mirror($locpath, $rempath)
 	{
@@ -476,12 +493,15 @@ class FTP_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Extract the file extension
+	/*
+	 * Method: get_extension
+	 *  Extract the file extension
 	 *
-	 * @access	private
-	 * @param	string
-	 * @return	string
+	 * Parameters:
+	 *  filename - filename
+	 *
+	 * Returns:
+	 *  Extracted file extension.
 	 */
 	private function get_extension($filename)
 	{
@@ -494,12 +514,15 @@ class FTP_Core {
 		return end($x);
 	}
 
-	/**
-	 * Set the upload type
+	/*
+	 * Method: set_type
+	 *  Returns the transfer mode for a file extension (ascii or binary)
 	 *
-	 * @access	private
-	 * @param	string
-	 * @return	string
+	 * Parameters:
+	 *  ext - file extension
+	 *
+	 * Returns:
+	 *  'ascii' or 'binary'
 	 */
 	private function set_type($ext)
 	{
@@ -523,13 +546,12 @@ class FTP_Core {
 		return (in_array($ext, $text_types)) ? 'ascii' : 'binary';
 	}
 
-	/**
-	 * Close the connection
+	/*
+	 * Method: close
+	 *  Close the connection
 	 *
-	 * @access	public
-	 * @param	string	path to source
-	 * @param	string	path to destination
-	 * @return	boolean
+	 * Returns:
+	 *  TRUE or FALSE.
 	 */
 	public function close()
 	{
@@ -545,6 +567,16 @@ class FTP_Core {
 	 * @access	private
 	 * @param	string
 	 * @return	boolean
+	 */
+	/*
+	 * Method: error
+	 *  Display error message
+	 *
+	 * Parameters:
+	 *  msg - error message
+	 *
+	 * Throws:
+	 *  <Kohana_Exception>
 	 */
 	private function error($msg)
 	{

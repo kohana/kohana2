@@ -1,25 +1,11 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: Calendar
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Calendar Class
- *
- * @category    Libraries
- * @author      Rick Ellis, Kohana Team
- * @copyright   Copyright (c) 2006, EllisLab, Inc.
- * @license     http://www.codeigniter.com/user_guide/license.html
- * @link        http://kohanaphp.com/user_guide/en/libraries/calendar.html
+ * Kohana Source Code:
+ *  author    - Rick Ellis, Kohana Team
+ *  copyright - Copyright (c) 2006, EllisLab, Inc.
+ *  license   - <http://www.codeigniter.com/user_guide/license.html>
  */
 class Calendar_Core {
 
@@ -32,12 +18,12 @@ class Calendar_Core {
 	private $show_next_prev = FALSE;
 	private $next_prev_url  = '';
 
-	/**
-	 * Constructor
+	/*
+	 * Method: __construct
+	 *  Sets the default time reference
 	 *
-	 * Loads the calendar language file and sets the default time reference
-	 *
-	 * @access	public
+	 * Parameters:
+	 *  config - config preferences
 	 */
 	public function __construct($config = array())
 	{
@@ -51,14 +37,13 @@ class Calendar_Core {
 		Log::add('debug', 'Calendar Library initialized');
 	}
 
-	/**
-	 * Initialize the user preferences
+	/*
+	 * Method: initialize
+	 *  Initialize the user preferences. 
+	 *  Accepts an associative array as input, containing display preferences
 	 *
-	 * Accepts an associative array as input, containing display preferences
-	 *
-	 * @access	private
-	 * @param	array	config preferences
-	 * @return	void
+	 * Parameters:
+	 *  config - config preferences
 	 */
 	private function initialize($config = array())
 	{
@@ -71,14 +56,17 @@ class Calendar_Core {
 		}
 	}
 
-	/**
-	 * Generate the calendar
+	/*
+	 * Method: generate
+	 *  Generate the calendar
 	 *
-	 * @access	public
-	 * @param	integer	the year
-	 * @param	integer	the month
-	 * @param	array	the data to be shown in the calendar cells
-	 * @return	string
+	 * Parameters:
+	 *  year  - the year
+	 *  month - the month
+	 *  data  - the data to be shown in the calendar cells
+	 *
+	 * Returns:
+	 *  String containing the generated calendar HTML
 	 */
 	public function generate($year = '', $month = '', $data = array())
 	{
@@ -233,15 +221,15 @@ class Calendar_Core {
 		return $out;
 	}
 
-	/**
-	 * Get Month Name
+	/*
+	 * Method: get_month_name
+	 *  Generates a textual month name based on the numeric month provided.
 	 *
-	 * Generates a textual month name based on the numeric
-	 * month provided.
+	 * Parameters:
+	 *  month - the month
 	 *
-	 * @access	private
-	 * @param	integer	the month
-	 * @return	string
+	 * Returns:
+	 *  String containing the name of the month
 	 */
 	private function get_month_name($month)
 	{
@@ -264,15 +252,15 @@ class Calendar_Core {
 		return $return;
 	}
 
-	/**
-	 * Get Day Names
+	/*
+	 * Method: get_day_names
+	 *  Returns an array of day names (Sunday, Monday, etc.) based on the type.
+	 *  
+	 * Parameters:
+	 *  day_type - Options are long, short, abrev
 	 *
-	 * Returns an array of day names (Sunday, Monday, etc.) based
-	 * on the type.  Options: long, short, abrev
-	 *
-	 * @access	private
-	 * @param	string
-	 * @return	array
+	 * Returns:
+	 *  Array of day names
 	 */
 	private function get_day_names($day_type = '')
 	{
@@ -301,17 +289,18 @@ class Calendar_Core {
 		return $days;
 	}
 
-	/**
-	 * Adjust Date
+	/*
+	 * Method: adjust_date
+	 *  This function makes sure that we have a valid month/year.
+	 *  For example, if you submit 13 as the month, the year will
+	 *  increment and the month will become January.
 	 *
-	 * This function makes sure that we have a valid month/year.
-	 * For example, if you submit 13 as the month, the year will
-	 * increment and the month will become January.
+	 * Parameters:
+	 *  month - the month
+	 *  year  - the year
 	 *
-	 * @access	private
-	 * @param	integer	the month
-	 * @param	integer	the year
-	 * @return	array
+	 * Returns:
+	 *  Array containing the adjusted month and year values
 	 */
 	private function adjust_date($month, $year)
 	{
@@ -340,13 +329,16 @@ class Calendar_Core {
 		return $date;
 	}
 
-	/**
-	 * Total days in a given month
+	/*
+	 * Method: get_total_days
+	 *  Total days in a given month
 	 *
-	 * @access	private
-	 * @param	integer	the month
-	 * @param	integer	the year
-	 * @return	integer
+	 * Parameters:
+	 *  month - the month
+	 *  year  - the year
+	 *
+	 * Returns:
+	 *  Number of days in month
 	 */
 	private function get_total_days($month, $year)
 	{
@@ -369,49 +361,43 @@ class Calendar_Core {
 		return $days_in_month[$month - 1];
 	}
 
-	/**
-	 * Set Default Template Data
+	/*
+	 * Method: default_template
+	 *  This is used in the event that the user has not created their own template
 	 *
-	 * This is used in the event that the user has not created their own template
-	 *
-	 * @access	private
-	 * @return array
+	 * Returns:
+	 *  Array of template tags and values
 	 */
 	private function default_template()
 	{
 		return  array (
-						'table_open' 				=> '<table border="0" cellpadding="4" cellspacing="0">',
-						'heading_row_start' 		=> '<tr>',
-						'heading_previous_cell'		=> '<th><a href="{previous_url}">&lt;&lt;</a></th>',
-						'heading_title_cell' 		=> '<th colspan="{colspan}">{heading}</th>',
-						'heading_next_cell' 		=> '<th><a href="{next_url}">&gt;&gt;</a></th>',
-						'heading_row_end' 			=> '</tr>',
-						'week_row_start' 			=> '<tr>',
-						'week_day_cell' 			=> '<td>{week_day}</td>',
-						'week_row_end' 				=> '</tr>',
-						'cal_row_start' 			=> '<tr>',
-						'cal_cell_start' 			=> '<td>',
-						'cal_cell_start_today'		=> '<td>',
-						'cal_cell_content'			=> '<a href="{content}">{day}</a>',
-						'cal_cell_content_today'	=> '<a href="{content}"><strong>{day}</strong></a>',
-						'cal_cell_no_content'		=> '{day}',
-						'cal_cell_no_content_today'	=> '<strong>{day}</strong>',
-						'cal_cell_blank'			=> '&nbsp;',
-						'cal_cell_end'				=> '</td>',
-						'cal_cell_end_today'		=> '</td>',
-						'cal_row_end'				=> '</tr>',
-						'table_close'				=> '</table>'
+						'table_open'                => '<table border="0" cellpadding="4" cellspacing="0">',
+						'heading_row_start'         => '<tr>',
+						'heading_previous_cell'     => '<th><a href="{previous_url}">&lt;&lt;</a></th>',
+						'heading_title_cell'        => '<th colspan="{colspan}">{heading}</th>',
+						'heading_next_cell'         => '<th><a href="{next_url}">&gt;&gt;</a></th>',
+						'heading_row_end'           => '</tr>',
+						'week_row_start'            => '<tr>',
+						'week_day_cell'             => '<td>{week_day}</td>',
+						'week_row_end'              => '</tr>',
+						'cal_row_start'             => '<tr>',
+						'cal_cell_start'            => '<td>',
+						'cal_cell_start_today'      => '<td>',
+						'cal_cell_content'          => '<a href="{content}">{day}</a>',
+						'cal_cell_content_today'    => '<a href="{content}"><strong>{day}</strong></a>',
+						'cal_cell_no_content'       => '{day}',
+						'cal_cell_no_content_today' => '<strong>{day}</strong>',
+						'cal_cell_blank'            => '&nbsp;',
+						'cal_cell_end'              => '</td>',
+						'cal_cell_end_today'        => '</td>',
+						'cal_row_end'               => '</tr>',
+						'table_close'               => '</table>'
 					);
 	}
 
-	/**
-	 * Parse Template
-	 *
-	 * Harvests the data within the template {pseudo-variables}
-	 * used to display the calendar
-	 *
-	 * @access	private
-	 * @return	void
+	/*
+	 * Method: parse_template
+	 *  Harvests the data within the template {pseudo-variables} used to display the calendar
 	 */
  	private function parse_template()
  	{
