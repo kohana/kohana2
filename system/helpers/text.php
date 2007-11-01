@@ -201,4 +201,61 @@ class text {
 		return preg_replace($regex, $replacement, $str);
 	}
 
+	/*
+	 * Method: bytes
+	 *  Return human readable sizes.
+	 *
+	 * Parameters:
+	 *  size      - size
+	 *  unit      - the maximum unit
+	 *  retstring - the return string format
+	 *  si        - whether to use SI prefixes
+	 *
+	 * Returns:
+	 *  Human readable size.
+	 *
+	 * About:
+	 *  author  - Aidan Lister <aidan@php.net>
+	 *  link    - http://aidanlister.com/repos/v/function.size_readable.php
+	 *  version - 1.1.0
+	 */
+	public static function bytes($size, $unit = NULL, $retstring = NULL, $si = TRUE)
+	{
+		// Units
+		if ($si === TRUE)
+		{
+			$sizes = array('B', 'kB', 'MB', 'GB', 'TB', 'PB');
+			$mod   = 1000;
+		}
+		else
+		{
+			$sizes = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB');
+			$mod   = 1024;
+		}
+		$ii = count($sizes) - 1;
+
+		// Max unit
+		$unit = array_search( (string) $unit, $sizes);
+		if ($unit === NULL OR $unit === FALSE)
+		{
+			$unit = $ii;
+		}
+
+		// Return string
+		if ($retstring === NULL)
+		{
+			$retstring = '%01.2f %s';
+		}
+
+		// Loop
+		$i = 0;
+		while ($unit != $i AND $size >= 1024 AND $i < $ii)
+		{
+			$size /= $mod;
+			$i++;
+		}
+
+		return sprintf($retstring, $size, $sizes[$i]);
+	}
+
 } // End text
