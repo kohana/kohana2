@@ -91,6 +91,15 @@ class Validation_Core {
 			{
 				return $this->data[$key];
 			}
+			elseif ($key === 'data_array')
+			{
+				$data = array();
+				foreach (array_keys($this->rules) as $key)
+				{
+					$data[$key] = $this->data[$key];
+				}
+				return $data;
+			}
 		}
 	}
 
