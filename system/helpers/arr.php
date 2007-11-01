@@ -11,19 +11,19 @@
 class arr {
 	
 	/*
-	 * Method: transform
-	 *  Transforms a 2D array by swapping rows with columns.
+	 * Method: rotate
+	 *  Rotates a 2D array clockwise.
 	 *  Example, turns a 2x3 array into a 3x2 array
 	 *
 	 * Parameters:
-	 *  source_array - the array to transform
-	 *  keep_keys - keep the keys in the final transformed array. the sub arrays of the source array need to have the same key values.
+	 *  source_array - the array to rotate
+	 *  keep_keys - keep the keys in the final rotated array. the sub arrays of the source array need to have the same key values.
 	 *              if your subkeys might not match, you need to pass FALSE here!
 	 *
 	 * Returns:
 	 *  The transformed array
 	 */
-	function transform($source_array, $keep_keys = TRUE)
+	function rotate($source_array, $keep_keys = TRUE)
 	{
 		$new_array = array();
 		foreach ($source_array as $key => $value)
