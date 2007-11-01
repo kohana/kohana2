@@ -106,11 +106,12 @@ class date {
 	 * Parameters:
 	 *  step - amount to increment each step by
 	 *  long - use 24-hour time
+	 *  start - the hour to start at (24-hour time probably wants a 0 here)
 	 *
 	 * Returns:
-	 *  A mirrored (foo => foo) array from 1-12 or 1-24.
+	 *  A mirrored (foo => foo) array from start-12 or start-23.
 	 */
-	public static function hours($step = 1, $long = FALSE, $start = 0)
+	public static function hours($step = 1, $long = FALSE, $start = 1)
 	{
 		static $hours;
 
@@ -126,9 +127,9 @@ class date {
 			$hours[$cache][$step] = array();
 
 			// 24-hour time has 24 hours, instead of 12
-			$size = ($long == TRUE) ? 24 : 12;
+			$size = ($long == TRUE) ? 23 : 12;
 
-			for ($i = $start; $i < $size; $i += $step)
+			for ($i = $start; $i <= $size; $i += $step)
 			{
 				$hours[$cache][$step][$i] = $i;
 			}
@@ -203,7 +204,7 @@ class date {
 	 */
 	public static function months()
 	{
-		return self::hours(1, FALSE);
+		return self::hours(1, FALSE, 1);
 	}
 
 	/*
