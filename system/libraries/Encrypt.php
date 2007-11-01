@@ -78,7 +78,7 @@ class Encrypt_Core {
 	 *  key    - the key
 	 *
 	 * Returns:
-	 *  The encoded string.
+	 *  The encoded string
 	 */
 	public function encode($string, $key = '')
 	{
@@ -102,7 +102,7 @@ class Encrypt_Core {
 	 *  key    - the key
 	 *
 	 * Returns:
-	 *  The decoded data.
+	 *  The decoded data
 	 */
 	public function decode($string, $key = '')
 	{
@@ -129,7 +129,7 @@ class Encrypt_Core {
 	 *  key    - the key
 	 *
 	 * Returns:
-	 *  The encoded string.
+	 *  The encoded string
 	 */
 	protected function xor_encode($string, $key)
 	{
@@ -160,7 +160,7 @@ class Encrypt_Core {
 	 *  key    - the key
 	 *
 	 * Returns:
-	 *  The decoded data.
+	 *  The decoded data
 	 */
 	protected function xor_decode($string, $key)
 	{
@@ -184,7 +184,7 @@ class Encrypt_Core {
 	 *  key    - the key
 	 *
 	 * Returns:
-	 *  The combined string and key.
+	 *  The combined string and key
 	 */
 	protected function xor_merge($string, $key)
 	{
@@ -208,7 +208,7 @@ class Encrypt_Core {
 	 *  key  - the key
 	 *
 	 * Returns:
-	 *  The encoded string.
+	 *  The encoded string
 	 */
 	public function mcrypt_encode($data, $key)
 	{
@@ -227,7 +227,7 @@ class Encrypt_Core {
 	 *  key  - the key
 	 *
 	 * Returns:
-	 *  The decoded data.
+	 *  The decoded data
 	 */
 	public function mcrypt_decode($data, $key)
 	{

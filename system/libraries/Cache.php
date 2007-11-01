@@ -13,6 +13,13 @@ class Cache_Core {
 
 	protected $driver;
 
+	/*
+	 * Method: __construct
+	 *  Set up driver and get groups
+	 *
+	 * Parameters:
+	 *  config - custom configuration
+	 */
 	function __construct($config = array())
 	{
 		$this->driver = new Driver();
@@ -20,16 +27,47 @@ class Cache_Core {
 		$this->groups = $this->get('kohana.groups');
 	}
 
+	/*
+	 * Method: get
+	 *  Get data from cache
+	 *
+	 * Parameters:
+	 *  name - name of cache entry
+	 *
+	 * Returns:
+	 *   Cached data
+	 */
 	function get($name)
 	{
 		return $this->driver->get($name);
 	}
 
+	/*
+	 * Method: set
+	 *  Save data into cache
+	 *
+	 * Parameters:
+	 *  name - name of cache entry
+	 *  item - data to save
+	 *
+	 * Returns:
+	 *   TRUE or FALSE
+	 */
 	function set($name, $item)
 	{
 		return $this->driver->set($name, $item);
 	}
 
+	/*
+	 * Method: del
+	 *  Delete cache entry
+	 *
+	 * Parameters:
+	 *  name - name of cache entry
+	 *
+	 * Returns:
+	 *   TRUE or FALSE
+	 */
 	function del($name)
 	{
 		return $this->driver->del($name, $item);

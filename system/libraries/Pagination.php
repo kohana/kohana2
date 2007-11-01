@@ -1,23 +1,11 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: Pagination
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Pagination Class
- *
- * @category    Libraries
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/libraries/pagination.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class Pagination_Core {
 	
@@ -37,12 +25,12 @@ class Pagination_Core {
 	public $previous_page;
 	public $next_page;
 
-	/**
-	 * Constructor
+	/*
+	 * Method: __construct
+	 *  Sets up the config values
 	 *
-	 * @access  public
-	 * @param   array
-	 * @return  void
+	 * Parameters:
+	 *  config - custom configuration
 	 */
 	public function __construct($config = array())
 	{
@@ -105,13 +93,16 @@ class Pagination_Core {
 		// Initialization done
 		Log::add('debug', 'Pagination Library initialized');
 	}
-	
-	/**
-	 * Generates the HTML for the chosen pagination style
+
+	/*
+	 * Method: create_links
+	 *  Generates the HTML for the chosen pagination style
 	 *
-	 * @access  public
-	 * @param   string
-	 * @return  string
+	 * Parameters:
+	 *  style - style of generated links
+	 *
+	 * Returns:
+	 *  Generated pagination HTML
 	 */
 	public function create_links($style = NULL)
 	{
@@ -125,12 +116,15 @@ class Pagination_Core {
 		return $this->create_links();
 	}
 
-	/**
-	 * Returns the base_url with the specified page number
+	/*
+	 * Method: url
+	 *  Get the base_url with the specified page number
 	 *
-	 * @access  public
-	 * @param   integer
-	 * @return  string
+	 * Parameters:
+	 *  page - page number
+	 *
+	 * Returns:
+	 *  Base URL with specified page number
 	 */
 	public function url($page = NULL)
 	{
@@ -138,23 +132,25 @@ class Pagination_Core {
 		
 		return str_replace('{page}', $page, $this->base_url);
 	}
-	
-	/**
-	 * Returns the SQL offset of the first row to return
+
+	/*
+	 * Method: sql_offset
+	 *  Get the SQL offset of the first row to return
 	 *
-	 * @access  public
-	 * @return  integer
+	 * Returns:
+	 *  SQL offset
 	 */
 	public function sql_offset()
 	{
 		return (int) ($this->current_page - 1) * $this->items_per_page;
 	}
-	
-	/**
-	 * Returns the complete SQL LIMIT clause
+
+	/*
+	 * Method: url
+	 *  Generate the complete SQL LIMIT clause
 	 *
-	 * @access  public
-	 * @return  string
+	 * Returns:
+	 *  SQL LIMIT clause
 	 */
 	public function sql_limit()
 	{

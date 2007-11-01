@@ -1,23 +1,11 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: Session
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Session Class
- *
- * @category    Libraries
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/libraries/session.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class Session_Core {
 
@@ -37,8 +25,9 @@ class Session_Core {
 	// Input library
 	protected $input;
 
-	/**
-	 * Session Constructor
+	/*
+	 * Method: __construct
+	 *  On first session instance creation, sets up the driver and creates session
 	 */
 	public function __construct()
 	{
@@ -96,23 +85,21 @@ class Session_Core {
 		Log::add('debug', 'Session Library initialized');
 	}
 
-
-	/**
-	 * Return the session id
+	/*
+	 * Method: id
+	 *  Get the session id
 	 *
-	 * @access public
-	 * @return string
+	 * Returns:
+	 *  Session id
 	 */
 	public function id()
 	{
 		return $_SESSION['session_id'];
 	}
 
-	/**
-	 * Create a new session
-	 *
-	 * @access public
-	 * @return void
+	/*
+	 * Method: create
+	 *  Create a new session
 	 */
 	public function create($vars = NULL)
 	{
@@ -199,11 +186,9 @@ class Session_Core {
 		self::set($vars);
 	}
 
-	/**
-	 * Regenerates the global session id
-	 *
-	 * @access public
-	 * @return void
+	/*
+	 * Method: regenerate
+	 *  Regenerates the global session id
 	 */
 	public function regenerate()
 	{
@@ -214,11 +199,12 @@ class Session_Core {
 		$_SESSION['session_id'] = session_id();
 	}
 
-	/**
-	 * Destroy the current session
+	/*
+	 * Method: destroy
+	 *  Destroys the current session
 	 *
-	 * @access public
-	 * @return bool
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function destroy()
 	{
@@ -232,13 +218,13 @@ class Session_Core {
 		}
 	}
 
-	/**
-	 * Set a session variable
+	/*
+	 * Method: set
+	 *  Set a session variable
 	 *
-	 * @access public
-	 * @param  mixed   array of values, or key
-	 * @param  mixed   value (optional)
-	 * @return void
+	 * Parameters:
+	 *  keys - array of values, or key
+	 *  val  - value (if keys is not an array)
 	 */
 	public function set($keys, $val = FALSE)
 	{
@@ -259,13 +245,13 @@ class Session_Core {
 		}
 	}
 
-	/**
-	 * Set a flash variable
+	/*
+	 * Method: set_flash
+	 *  Set a flash variable
 	 *
-	 * @access public
-	 * @param  mixed   array of values, or key
-	 * @param  mixed   value (optional)
-	 * @return void
+	 * Parameters:
+	 *  keys - array of values, or key
+	 *  val  - value (if keys is not an array)
 	 */
 	public function set_flash($keys, $val = FALSE)
 	{
@@ -287,12 +273,12 @@ class Session_Core {
 		}
 	}
 
-	/**
-	 * Freshen a flash variable
+	/*
+	 * Method: keep_flash
+	 *  Freshen a flash variable
 	 *
-	 * @access public
-	 * @param  string  variable key
-	 * @return bool
+	 * Parameters:
+	 *  key - variable key
 	 */
 	public function keep_flash($key)
 	{
@@ -305,13 +291,16 @@ class Session_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Get a variable
+	/*
+	 * Method: get
+	 *  Get a variable
 	 *
-	 * @access public
-	 * @param  string  key (optional)
-	 * @param  mixed
-	 * @return mixed
+	 * Parameters:
+	 *  key     - variable key (optional)
+	 *  default - default value returned if variable does not exist
+	 *
+	 * Returns:
+	 *   Variable data if key specified, otherwise array containing all session data
 	 */
 	public function get($key = FALSE, $default = FALSE)
 	{
@@ -321,12 +310,15 @@ class Session_Core {
 		return isset($_SESSION[$key]) ? $_SESSION[$key] : $default;
 	}
 
-	/**
-	 * Get a variable, and delete it
+	/*
+	 * Method: get_once
+	 *  Get a variable, and delete it
 	 *
-	 * @access public
-	 * @param  string  key (optional)
-	 * @return mixed
+	 * Parameters:
+	 *  key - variable key (optional)
+	 *
+	 * Returns:
+	 *   Variable data if key specified, otherwise array containing all session data
 	 */
 	public function get_once($key)
 	{
@@ -336,12 +328,12 @@ class Session_Core {
 		return $return;
 	}
 
-	/**
-	 * Delete a variable
+	/*
+	 * Method: del
+	 *  Delete a variable
 	 *
-	 * @access public
-	 * @param  string  key
-	 * @return void
+	 * Parameters:
+	 *  key - variable key
 	 */
 	public function del($key)
 	{

@@ -1,28 +1,18 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: URI
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * URI Class
- *
- * @category    Libraries
- * @author      Rick Ellis, Kohana Team
- * @copyright   Copyright (c) 2006, EllisLab, Inc.
- * @license     http://www.codeigniter.com/user_guide/license.html
- * @link        http://kohanaphp.com/user_guide/en/libraries/uri.html
+ * Kohana Source Code:
+ *  author    - Rick Ellis, Kohana Team
+ *  copyright - Copyright (c) 2006, EllisLab, Inc.
+ *  license   - <http://www.codeigniter.com/user_guide/license.html>
  */
 class URI_Core extends Router {
 
+	/*
+	 * Method: __construct
+	 *  Detects current query string
+	 */
 	public function __construct()
 	{
 		if ( ! empty($_GET))
@@ -36,13 +26,16 @@ class URI_Core extends Router {
 		}
 	}
 
-	/**
-	 * Retrieve a specific URI segment
+	/*
+	 * Method: segment
+	 *  Retrieve a specific URI segment
 	 *
-	 * @access	public
-	 * @param	mixed
-	 * @param	mixed
-	 * @return	mixed
+	 * Parameters:
+	 *  index   - segment number or label
+	 *  default - default value returned if segment does not exist
+	 *
+	 * Returns:
+	 *   Value of segment
 	 */
 	public function segment($index = 1, $default = FALSE)
 	{
@@ -59,13 +52,16 @@ class URI_Core extends Router {
 		return isset(self::$segments[$index]) ? self::$segments[$index] : $default;
 	}
 
-	/**
-	 * Retrieve a specific routed URI segment
+	/*
+	 * Method: rsegment
+	 *  Retrieve a specific routed URI segment
 	 *
-	 * @access	public
-	 * @param	mixed
-	 * @param	mixed
-	 * @return	mixed
+	 * Parameters:
+	 *  index   - segment number or label
+	 *  default - default value returned if segment does not exist
+	 *
+	 * Returns:
+	 *   Value of segment
 	 */
 	public function rsegment($index = 1, $default = FALSE)
 	{
@@ -82,13 +78,16 @@ class URI_Core extends Router {
 		return isset(self::$rsegments[$index]) ? self::$rsegments[$index] : $default;
 	}
 
-	/**
-	 * Returns an array containing all the URI segments
+	/*
+	 * Method: segment_array
+	 *  Returns an array containing all the URI segments
 	 *
-	 * @access	public
-	 * @param	integer
-	 * @param	boolean
-	 * @return	array
+	 * Parameters:
+	 *  offset      - segment offset
+	 *  associative - return an associative array
+	 *
+	 * Returns:
+	 *   Array of URI segments
 	 */
 	public function segment_array($offset = 0, $associative = FALSE)
 	{
@@ -109,11 +108,12 @@ class URI_Core extends Router {
 		return $segment_array_assoc;
 	}
 
-	/**
-	 * Returns the complete URI as a string
+	/*
+	 * Method: string
+	 *  Returns the complete URI as a string
 	 *
-	 * @access	public
-	 * @return	string
+	 * Returns:
+	 *   Full URI as string
 	 */
 	public function string()
 	{
@@ -125,23 +125,24 @@ class URI_Core extends Router {
 		return $this->string();
 	}
 
-	/**
-	 * Returns the total number of URI segments
+	/*
+	 * Method: total_segments
+	 *  Returns the total number of URI segments
 	 *
-	 * @access	public
-	 * @return	integer
+	 * Returns:
+	 *   Total number of URI segments
 	 */
 	public function total_segments()
 	{
 		return count(self::$segments);
 	}
 
-	/**
-	 * Returns the last URI segment
+	/*
+	 * Method: last_segment
+	 *  Returns the last URI segment
 	 *
-	 * @access	public
-	 * @param	mixed
-	 * @return	string
+	 * Returns:
+	 *   Last URI segment
 	 */
 	public function last_segment($default = FALSE)
 	{

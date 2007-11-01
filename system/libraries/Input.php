@@ -1,25 +1,11 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: Input
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Input Class
- *
- * @category    Libraries
- * @author      Rick Ellis, Kohana Team
- * @copyright   Copyright (c) 2006, EllisLab, Inc.
- * @license     http://www.codeigniter.com/user_guide/license.html
- * @link        http://kohanaphp.com/user_guide/en/libraries/input.html
+ * Kohana Source Code:
+ *  author    - Rick Ellis, Kohana Team
+ *  copyright - Copyright (c) 2006, EllisLab, Inc.
+ *  license   - <http://www.codeigniter.com/user_guide/license.html>
  */
 class Input_Core {
 
@@ -30,14 +16,9 @@ class Input_Core {
 	public $ip_address = FALSE;
 	public $user_agent = FALSE;
 
-	/**
-	 * Constructor
-	 *
-	 * Sets whether to globally enable the XSS processing
-	 * and whether to allow the $_GET array
-	 *
-	 * @access  public
-	 * @return  void
+	/*
+	 * Method: __construct
+	 *  Sets whether to globally enable the XSS processing and whether to allow the $_GET array
 	 */
 	public function __construct()
 	{
@@ -112,13 +93,16 @@ class Input_Core {
 		Log::add('debug', 'Input Library initialized');
 	}
 
-	/**
-	 * Fetch an item from a global array
+	/*
+	 * Method: __call
+	 *  Fetch an item from a global array
 	 *
-	 * @access  protected
-	 * @param   string
-	 * @param   array
-	 * @return  string
+	 * Parameters:
+	 *  global - array to access (get, post, cookie or server)
+	 *  args   - arguments (array key, xss_clean)
+	 *
+	 * Returns:
+	 *  Value of array item
 	 */
 	public function __call($global, $args = array())
 	{
@@ -166,15 +150,15 @@ class Input_Core {
 		return isset($array[$key]) ? $array[$key] : FALSE;
 	}
 
-	/**
-	 * Clean Input Data
+	/*
+	 * Method: clean_input_data
+	 *  This is a helper function. It escapes data and standardizes newline characters to \n
 	 *
-	 * This is a helper function. It escapes data and
-	 * standardizes newline characters to \n
+	 * Parameters:
+	 *  str - string to clean
 	 *
-	 * @access  protected
-	 * @param   string
-	 * @return  string
+	 * Returns:
+	 *  Cleaned string
 	 */
 	protected function clean_input_data($str)
 	{
@@ -202,16 +186,17 @@ class Input_Core {
 		return str_replace(array("\r\n", "\r"), "\n", $str);
 	}
 
-	/**
-	 * Clean Keys
+	/*
+	 * Method: clean_input_keys
+	 *  This is a helper function. To prevent malicious users
+	 *  from trying to exploit keys we make sure that keys are
+	 *  only named with alpha-numeric text and a few other items.
 	 *
-	 * This is a helper function. To prevent malicious users
-	 * from trying to exploit keys we make sure that keys are
-	 * only named with alpha-numeric text and a few other items.
+	 * Parameters:
+	 *  str - string to clean
 	 *
-	 * @access  protected
-	 * @param   string
-	 * @return  string
+	 * Returns:
+	 *  Cleaned string
 	 */
 	protected function clean_input_keys($str)
 	{
@@ -223,11 +208,12 @@ class Input_Core {
 		return $str;
 	}
 
-	/**
-	 * Fetch the IP Address
+	/*
+	 * Method: ip_address
+	 *  Fetch the IP Address
 	 *
-	 * @access  public
-	 * @return  string
+	 * Returns:
+	 *  IP address
 	 */
 	public function ip_address()
 	{
@@ -271,25 +257,27 @@ class Input_Core {
 		return $this->ip_address;
 	}
 
-	/**
-	 * Validate IP Address
+	/*
+	 * Method: valid_ip
+	 *  Validates an IPv4 address based on RFC specifications
 	 *
-	 * Validates an IPv4 address based on RFC specifications
+	 * Parameters:
+	 *  ip - IP to validate
 	 *
-	 * @access  public
-	 * @param   string
-	 * @return  boolean
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function valid_ip($ip)
 	{
 		return valid::ip($ip);
 	}
 
-	/**
-	 * User Agent
+	/*
+	 * Method: user_agent
+	 *  Get the user agent of the current request
 	 *
-	 * @access  public
-	 * @return  string
+	 * Returns:
+	 *  The user agent
 	 */
 	public function user_agent()
 	{
@@ -301,17 +289,20 @@ class Input_Core {
 		return $this->user_agent;
 	}
 
-	/**
-	 * XSS Clean implemented by HTML Purifier
+	/*
+	 * Method: xss_clean
+	 *  Clean cross site scripting exploits from string.
+	 *  HTMLPurifier may be used if installed, otherwise defaults to built in method.
+	 *  Note - This function should only be used to deal with data upon submission.
+	 *  It's not something that should be used for general runtime processing
+	 *  since it requires a fair amount of processing overhead.
 	 *
-	 * Note: This function should only be used to deal with data upon submission.
-	 * It's not something that should be used for general runtime processing
-	 * since it requires a fair amount of processing overhead.
+	 * Parameters:
+	 *  string - string to clean
+	 *  tool   - xss_clean method to use ('htmlpurifier' or defaults to built in method)
 	 *
-	 * @access  public
-	 * @param   string
-	 * @param   string
-	 * @return  string
+	 * Returns:
+	 *  Cleaned string
 	 */
 	public function xss_clean($string, $tool = '')
 	{

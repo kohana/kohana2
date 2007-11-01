@@ -1,26 +1,23 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: Profiler
+ *  Adds useful information to the bottom of the current page for debugging and optimization purposes.
+ *  Benchmarks   - The times and memory usage of benchmarks run by the <Benchmark> library
+ *  Database     - The raw SQL and number of affected rows of <Database> queries
+ *  POST Data    - The name and values of any POST data submitted to the current page
+ *  Session Data - Data stored in the current session if using the <Session> library
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Profiler Class
- *
- * @category    Libraries
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/libraries/profiler.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class Profiler_Core {
 
+	/*
+	 * Method: __construct
+	 *  Adds event for adding the profile output to the page when displayed.
+	 */
 	public function __construct()
 	{
 		// Add profiler to page output automatically
@@ -29,11 +26,10 @@ class Profiler_Core {
 		Log::add('debug', 'Profiler Library initialized');
 	}
 
-	/**
-	 * Disables the profiler for this page only, best used when profiler is autoloaded
-	 *
-	 * @access public
-	 * @return void
+	/*
+	 * Method: disable
+	 *  Disables the profiler for this page only.
+	 *  Best used when profiler is autoloaded.
 	 */
 	public function disable()
 	{
@@ -41,11 +37,9 @@ class Profiler_Core {
 		Event::clear('system.display', array($this, 'render'));
 	}
 
-	/**
-	 * Run the Profiler and add to the bottom of the page
-	 *
-	 * @access public
-	 * @return void
+	/*
+	 * Method: render
+	 *  Run the Profiler and add to the bottom of the page
 	 */
 	public function render()
 	{

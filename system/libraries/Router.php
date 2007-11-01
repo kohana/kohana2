@@ -1,23 +1,11 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: Router
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Router Class
- *
- * @category    Core
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/general/routes.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class Router_Core {
 
@@ -34,11 +22,9 @@ class Router_Core {
 	public static $method     = FALSE;
 	public static $arguments  = FALSE;
 
-	/**
-	 * Router setup routine
-	 *
-	 * @access public
-	 * @return void
+	/*
+	 * Method: setup
+	 *  Router setup routine. Automatically called during Kohana setup process.
 	 */
 	public static function setup()
 	{
@@ -259,12 +245,15 @@ class Router_Core {
 		}
 	}
 
-	/**
-	 * Filter a URI string
+	/*
+	 * Method: filter_uri
+	 *  Filter a string for allowed URI characters
 	 *
-	 * @access public
-	 * @param  string
-	 * @return string
+	 * Parameters:
+	 *  str - string to filter
+	 *
+	 * Returns:
+	 *  Filtered string
 	 */
 	public static function filter_uri($str)
 	{

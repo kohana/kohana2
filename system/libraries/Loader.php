@@ -1,28 +1,17 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: Loader
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Loader Class
- *
- * @category    Libraries
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/libraries/loader.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class Loader_Core {
 
-	/**
-	 * Constructor
+	/*
+	 * Method: __construct
+	 *  Autoloads libraries and models specified in config file
 	 */
 	public function __construct()
 	{
@@ -54,14 +43,18 @@ class Loader_Core {
 		}
 	}
 
-	/**
-	 * Library
+	/*
+	 * Method: library
+	 *  Load library
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  array
-	 * @param  boolean
-	 * @return mixed
+	 * Parameters:
+	 *  name   - library name
+	 *  config - custom configuration
+	 *  return - return library instance instead of adding to Kohana instance
+	 *
+	 * Returns:
+	 *  FALSE  - library is already loaded
+	 *  Object - instance of library if 'return' parameter is TRUE
 	 */
 	public function library($name, $config = array(), $return = FALSE)
 	{
@@ -84,13 +77,16 @@ class Loader_Core {
 		}
 	}
 
-	/**
-	 * Database
+	/*
+	 * Method: database
+	 *  Load database
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  boolean
-	 * @return mixed
+	 * Parameters:
+	 *  group  - Database config group to use
+	 *  return - return database instance instead of adding to Kohana instance
+	 *
+	 * Returns:
+	 *  Database instance if 'return' parameter is TRUE
 	 */
 	public function database($group = 'default', $return = FALSE)
 	{
@@ -103,12 +99,12 @@ class Loader_Core {
 		Kohana::instance()->db = $db;
 	}
 
-	/**
-	 * Helper
+	/*
+	 * Method: helper
+	 *  Load helper
 	 *
-	 * @access public
-	 * @param  string
-	 * @return void
+	 * Parameters:
+	 *  name - helper name
 	 */
 	public function helper($name)
 	{
@@ -128,13 +124,17 @@ class Loader_Core {
 		}
 	}
 
-	/**
-	 * Model
+	/*
+	 * Method: model
+	 *  Load model
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  mixed
-	 * @return mixed
+	 * Parameters:
+	 *  name  - model name
+	 *  alias - custom name for accessing model, or TRUE to return instance of model
+	 *
+	 * Returns:
+	 *  FALSE  - model is already loaded
+	 *  Object - instance of model if 'alias' parameter is TRUE
 	 */
 	public function model($name, $alias = FALSE)
 	{
@@ -163,13 +163,16 @@ class Loader_Core {
 		Kohana::instance()->$alias = $model;
 	}
 
-	/**
-	 * View
+	/*
+	 * Method: view
+	 *  Load view
 	 *
-	 * @access public
-	 * @param  string
-	 * @param  array
-	 * @return object
+	 * Parameters:
+	 *  name - view name
+	 *  data - data to make accessible within view
+	 *
+	 * Returns:
+	 *  Instance of specified view
 	 */
 	public function view($name, $data = array())
 	{

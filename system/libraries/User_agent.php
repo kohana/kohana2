@@ -1,25 +1,11 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: User_Agent
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * User Agent Class
- *
- * @category    Libraries
- * @author      Rick Ellis, Kohana Team
- * @copyright   Copyright (c) 2006, EllisLab, Inc.
- * @license     http://www.codeigniter.com/user_guide/license.html
- * @link        http://kohanaphp.com/user_guide/en/libraries/user_agent.html
+ * Kohana Source Code:
+ *  author    - Rick Ellis, Kohana Team
+ *  copyright - Copyright (c) 2006, EllisLab, Inc.
+ *  license   - <http://www.codeigniter.com/user_guide/license.html>
  */
 class User_Agent_Core {
 
@@ -35,13 +21,9 @@ class User_Agent_Core {
 	protected $mobile   = '';
 	protected $robot    = '';
 
-	/**
-	 * Constructor
-	 *
-	 * Loads user agent data
-	 *
-	 * @access  public
-	 * @return  void
+	/*
+	 * Method: __construct
+	 *  Loads user agent data
 	 */
 	public function __construct()
 	{
@@ -100,14 +82,18 @@ class User_Agent_Core {
 		Log::add('debug', 'User Agent Library initialized');
 	}
 
-	/**
-	 * Fetch information about the user agent, examples:
+	/*
+	 * Method: __get
+	 *  Fetch information about the user agent, examples:
 	 *
-	 *   is_browser, is_mobile, is_robot
-	 *   agent, browser, mobile, version, referrer
+	 *  is_browser, is_mobile, is_robot
+	 *  agent, browser, mobile, version, referrer
 	 *
-	 * @access  public
-	 * @return  mixed
+	 * Parameters:
+	 *  key - key name
+	 *
+	 * Returns:
+	 *   Key value
 	 */
 	public function __get($key)
 	{
@@ -134,33 +120,43 @@ class User_Agent_Core {
 		}
 	}
 
-	/**
-	 * So that users can use $user_agent->is_robot() or $user_agent->is_robot
+	/*
+	 * Method: __call
+	 *  So that users can use $user_agent->is_robot() or $user_agent->is_robot
 	 *
-	 * @access  public
-	 * @return  mixed
+	 * Parameters:
+	 *  func - function name
+	 *  args - function arguments
+	 *
+	 * Returns:
+	 *   Function return value
 	 */
 	public function __call($func, $args = FALSE)
 	{
 		return $this->__get($func);
 	}
 
-	/**
-	 * Returns the full user agent string when the object is turned into a string.
+	/*
+	 * Method: __toString
+	 *  Returns the full user agent string when the object is turned into a string.
 	 *
-	 * @access  public
-	 * @return  string
+	 * Returns:
+	 *   User agent string
 	 */
 	public function __toString()
 	{
 		return $this->browser;
 	}
 
-	/**
-	 * Test for a particular language
+	/*
+	 * Method: accept_lang
+	 *  Test for a particular language
 	 *
-	 * @access  public
-	 * @return  boolean
+	 * Parameters:
+	 *  lang - language to test for
+	 *
+	 * Returns:
+	 *   TRUE or FALSE
 	 */
 	public function accept_lang($lang = 'en')
 	{
@@ -170,11 +166,15 @@ class User_Agent_Core {
 		return in_array(strtolower($lang), self::$languages);
 	}
 
-	/**
-	 * Test for a particular character set
+	/*
+	 * Method: accept_charset
+	 *  Test for a particular character set
 	 *
-	 * @access  public
-	 * @return  boolean
+	 * Parameters:
+	 *  charset - character set to test for
+	 *
+	 * Returns:
+	 *   TRUE or FALSE
 	 */
 	public function accept_charset($charset = 'utf-8')
 	{

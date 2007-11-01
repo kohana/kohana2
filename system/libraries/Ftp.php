@@ -60,7 +60,7 @@ class FTP_Core {
 	 *  config - the connection values
 	 *
 	 * Returns:
-	 *  TRUE or FALSE.
+	 *  TRUE or FALSE
 	 */
 	public function connect($config = array())
 	{
@@ -101,7 +101,7 @@ class FTP_Core {
 	 *  Login to the FTP
 	 *
 	 * Returns:
-	 *  TRUE or FALSE.
+	 *  TRUE or FALSE
 	 */
 	private function login()
 	{
@@ -113,7 +113,7 @@ class FTP_Core {
 	 *  Validates the connection ID
 	 *
 	 * Returns:
-	 *  TRUE or FALSE.
+	 *  TRUE or FALSE
 	 */
 	private function is_conn()
 	{
@@ -142,7 +142,7 @@ class FTP_Core {
 	 *  supress_debug - supress debug message
 	 *
 	 * Returns:
-	 *  TRUE or FALSE.
+	 *  TRUE or FALSE
 	 */
 	public function changedir($path = '', $supress_debug = FALSE)
 	{
@@ -174,7 +174,7 @@ class FTP_Core {
 	 *  permissions - permissions to give directory
 	 *
 	 * Returns:
-	 *  TRUE or FALSE.
+	 *  TRUE or FALSE
 	 */
 	public function mkdir($path = '', $permissions = NULL)
 	{
@@ -212,7 +212,7 @@ class FTP_Core {
 	 *  permissions - permissions to give file
 	 *
 	 * Returns:
-	 *  TRUE or FALSE.
+	 *  TRUE or FALSE
 	 */
 	public function upload($locpath, $rempath, $mode = 'auto', $permissions = NULL)
 	{
@@ -265,7 +265,7 @@ class FTP_Core {
 	 *  move     - use move debug message instead of rename
 	 *
 	 * Returns:
-	 *  TRUE or FALSE.
+	 *  TRUE or FALSE
 	 */
 	public function rename($old_file, $new_file, $move = FALSE)
 	{
@@ -297,7 +297,7 @@ class FTP_Core {
 	 *  new_file - new file
 	 *
 	 * Returns:
-	 *  TRUE or FALSE.
+	 *  TRUE or FALSE
 	 */
 	public function move($old_file, $new_file)
 	{
@@ -312,7 +312,7 @@ class FTP_Core {
 	 *  filepath - file path
 	 *
 	 * Returns:
-	 *  TRUE or FALSE.
+	 *  TRUE or FALSE
 	 */
 	public function delete_file($filepath)
 	{
@@ -335,13 +335,13 @@ class FTP_Core {
 
 	/*
 	 * Method: delete_dir
-	 *  Delete a folder and recursively delete everything (including sub-folders) contained within it.
+	 *  Delete a folder and recursively delete everything (including sub-folders) contained within it
 	 *
 	 * Parameters:
 	 *  filepath - directory path
 	 *
 	 * Returns:
-	 *  TRUE or FALSE.
+	 *  TRUE or FALSE
 	 */
 	public function delete_dir($filepath)
 	{
@@ -389,7 +389,7 @@ class FTP_Core {
 	 *  perm - permissions to set
 	 *
 	 * Returns:
-	 *  TRUE or FALSE.
+	 *  TRUE or FALSE
 	 */
 	public function chmod($path, $perm)
 	{
@@ -446,14 +446,14 @@ class FTP_Core {
 	 * Method: mirror
 	 *  This function recursively reads a folder and everything it contains (including
 	 *  sub-folders) and creates a mirror via FTP based on it.  Whatever the directory structure
-	 *  of the original file path will be recreated on the server.
+	 *  of the original file path will be recreated on the server
 	 *
 	 * Parameters:
 	 *  locpath - path to source with trailing slash
 	 *  rempath - path to destination - include the base folder with trailing slash
 	 *
 	 * Returns:
-	 *  TRUE or FALSE.
+	 *  TRUE or FALSE
 	 */
 	public function mirror($locpath, $rempath)
 	{
@@ -501,7 +501,7 @@ class FTP_Core {
 	 *  filename - filename
 	 *
 	 * Returns:
-	 *  Extracted file extension.
+	 *  Extracted file extension
 	 */
 	private function get_extension($filename)
 	{
@@ -551,7 +551,7 @@ class FTP_Core {
 	 *  Close the connection
 	 *
 	 * Returns:
-	 *  TRUE or FALSE.
+	 *  TRUE or FALSE
 	 */
 	public function close()
 	{
@@ -561,13 +561,6 @@ class FTP_Core {
 		@ftp_close($this->conn_id);
 	}
 
-	/**
-	 * Display error message
-	 *
-	 * @access	private
-	 * @param	string
-	 * @return	boolean
-	 */
 	/*
 	 * Method: error
 	 *  Display error message

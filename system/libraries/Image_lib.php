@@ -145,7 +145,7 @@ class Image_lib_Core {
 		 * Note:  We need to figure out how to determine image
 		 * properties using ImageMagick and NetPBM
 		 *
-		 * Note: GD is not required for this function
+		 * Note - GD is not required for this function
 		 *
 		 */
 		if ( ! function_exists('getimagesize'))
