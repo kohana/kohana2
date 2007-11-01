@@ -2,7 +2,7 @@
 /*
  * Class: Event
  *  Process queuing/execution class. Allows an unlimited number of callbacks
- *  to be added to "events". Events can be run multiple times, and can also
+ *  to be added to 'events'. Events can be run multiple times, and can also
  *  process event-specific data. By default, Kohana has several system events.
  *
  * Kohana Source Code:
@@ -30,19 +30,19 @@
  *  before an object is created.
  *
  * About: system.post_controller
- *  Called within syste.execute, after the controller object is created.
+ *  Called within system.execute, after the controller object is created.
  *  Kohana::instance() will return the controller at this point, and views can
  *  be loaded.
  *
  * About: system.send_headers
- *  Called just before the global output bufferis closed, before any content
+ *  Called just before the global output buffer is closed, before any content
  *  is displayed. Writing cookies is not possible after this point, and
  *  <Session> data will not be saved.
  *
  * About: system.display
  *  Displays the output that Kohana has generated. Views can be loaded, but
  *  headers have already been sent. The rendered output, Kohana::$output, can
- *  be manipluated.
+ *  be manipulated.
  *
  * About: system.shutdown
  *  Last event to run, just before PHP starts to shut down. Calls Log::write()

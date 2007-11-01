@@ -129,7 +129,7 @@ final class utf8 {
 	 *  str - string to check
 	 *
 	 * Returns:
-	 *  TRUE or FALSE, whether the string is ASCII
+	 *  TRUE or FALSE, whether the string is ASCII.
 	 */
 	public static function is_ascii($str)
 	{
@@ -169,14 +169,14 @@ final class utf8 {
 	/*
 	 * Method: transliterate_to_ascii
 	 *  Replaces special/accented UTF-8 characters by ASCII-7 'equivalents'.
-	 *  Original function (accents_to_ascii) written by Andreas Gohr <andi@splitbrain.org> for phputf8
+	 *  Original function (accents_to_ascii) written by Andreas Gohr <andi@splitbrain.org> for phputf8.
 	 *
 	 * Parameters:
-	 *  str - string to transliterate
-	 *  int - -1 lowercase only, +1 uppercase only, 0 both cases
+	 *  str  - string to transliterate
+	 *  case - -1 lowercase only, +1 uppercase only, 0 both cases
 	 *
 	 * Returns:
-	 *  String with only ASCII characters
+	 *  String with only ASCII characters.
 	 */
 	public static function transliterate_to_ascii($str, $case = 0)
 	{
@@ -273,13 +273,13 @@ final class utf8 {
 
 	/*
 	 * Method: strpos
-	 *  Find position of first occurrence of a UTF-8 string
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 *  Finds position of first occurrence of a UTF-8 string.
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
 	 *
 	 * Parameters:
-	 *  str - haystack
-	 *  str - needle
-	 *  int - offset: allows you to specify which character in haystack to start searching
+	 *  str    - haystack
+	 *  search - needle
+	 *  offset - allows you to specify from which character in haystack to start searching
 	 *
 	 * Returns:
 	 *  The position as an integer. If needle is not found, FALSE will be returned.
@@ -310,13 +310,13 @@ final class utf8 {
 
 	/*
 	 * Method: strrpos
-	 *  Find position of last occurrence of a char in a UTF-8 string
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 *  Finds position of last occurrence of a char in a UTF-8 string.
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
 	 *
 	 * Parameters:
-	 *  str - haystack
-	 *  str - needle
-	 *  int - offset: allows you to specify which character in haystack to start searching
+	 *  str    - haystack
+	 *  search - needle
+	 *  offset - allows you to specify from which character in haystack to start searching
 	 *
 	 * Returns:
 	 *  The position as an integer. If needle is not found, FALSE will be returned.
@@ -347,16 +347,16 @@ final class utf8 {
 
 	/*
 	 * Method: substr
-	 *  Return part of a UTF-8 string
-	 *  Original function written by Chris Smith <chris@jalakai.co.uk> for phputf8
+	 *  Returns part of a UTF-8 string.
+	 *  Original function written by Chris Smith <chris@jalakai.co.uk> for phputf8.
 	 *
 	 * Parameters:
-	 *  str - input string
-	 *  int - start (offset)
-	 *  int - length
+	 *  str    - input string
+	 *  offset - start
+	 *  length - 
 	 *
 	 * Returns:
-	 *  Returns the portion of string specified by the start and length parameters or FALSE on failure.
+	 *  The portion of string specified by the start and length parameters or FALSE on failure.
 	 */
 	public static function substr($str, $offset, $length = NULL)
 	{
@@ -436,14 +436,14 @@ final class utf8 {
 
 	/*
 	 * Method: substr_replace
-	 *  Replace text within a portion of a UTF-8 string
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 *  Replaces text within a portion of a UTF-8 string.
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
 	 *
 	 * Parameters:
-	 *  str - input string
-	 *  str - replacement string
-	 *  int - start (offset)
-	 *  int - length
+	 *  str         - input string
+	 *  replacement - replacement string
+	 *  offset      - start
+	 *  length      - 
 	 *
 	 * Returns:
 	 *  The result string is returned.
@@ -465,14 +465,14 @@ final class utf8 {
 
 	/*
 	 * Method: strtolower
-	 *  Makes a UTF-8 string lowercase
-	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
+	 *  Makes a UTF-8 string lowercase.
+	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8.
 	 *
 	 * Parameters:
 	 *  str - input string
 	 *
 	 * Returns:
-	 *  Lowercase UTF-8 string
+	 *  Lowercase UTF-8 string.
 	 */
 	public static function strtolower($str)
 	{
@@ -556,14 +556,14 @@ final class utf8 {
 
 	/*
 	 * Method: strtoupper
-	 *  Makes a UTF-8 string uppercase
-	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
+	 *  Makes a UTF-8 string uppercase.
+	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8.
 	 *
 	 * Parameters:
 	 *  str - input string
 	 *
 	 * Returns:
-	 *  Uppercase UTF-8 string
+	 *  Uppercase UTF-8 string.
 	 */
 	public static function strtoupper($str)
 	{
@@ -647,14 +647,14 @@ final class utf8 {
 
 	/*
 	 * Method: ucfirst
-	 *  Makes a UTF-8 string's first character uppercase
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 *  Makes a UTF-8 string's first character uppercase.
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
 	 *
 	 * Parameters:
 	 *  str - input string
 	 *
 	 * Returns:
-	 *  UTF-8 string with first character in uppercase
+	 *  UTF-8 string with first character in uppercase.
 	 */
 	public static function ucfirst($str)
 	{
@@ -669,14 +669,14 @@ final class utf8 {
 
 	/*
 	 * Method: ucwords
-	 *  Makes the first character of every word in a UTF-8 string uppercase
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 *  Makes the first character of every word in a UTF-8 string uppercase.
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
 	 *
 	 * Parameters:
 	 *  str - input string
 	 *
 	 * Returns:
-	 *  UTF-8 string with first character of every word in uppercase
+	 *  UTF-8 string with first character of every word in uppercase.
 	 */
 	public static function ucwords($str)
 	{
@@ -700,15 +700,15 @@ final class utf8 {
 
 	/*
 	 * Method: strcasecmp
-	 *  Case-insensitive UTF-8 string comparison
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 *  Case-insensitive UTF-8 string comparison.
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
 	 *
 	 * Parameters:
-	 *  str - first string
-	 *  str - second string
+	 *  str1 - first string
+	 *  str2 - second string
 	 *
 	 * Returns:
-	 *  Returns integer < 0 if str1 is less than str2; > 0 if str1 is greater than str2, and 0 if they are equal.
+	 *  integer < 0 if str1 is less than str2; > 0 if str1 is greater than str2, and 0 if they are equal.
 	 */
 	public static function strcasecmp($str1, $str2)
 	{
@@ -724,16 +724,16 @@ final class utf8 {
 
 	/*
 	 * Method: str_ireplace
-	 *  Returns a string or an array with all occurrences of search in subject (ignoring case)
+	 *  Returns a string or an array with all occurrences of search in subject (ignoring case).
 	 *  replaced with the given replace value.
-	 *  Note: it's not fast and gets slower if $search and/or $replace are arrays
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 *  Note: it's not fast and gets slower if $search and/or $replace are arrays.
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
 	 *
 	 * Parameters:
-	 *  mixed - string or array with text to replace
-	 *  mixed - string or array with replacement text
-	 *  mixed - string or array with subject text
-	 *  int   - number of matched and replaced needles will be returned via this parameter which is passed by reference
+	 *  search  - string or array with text to replace
+	 *  replace - string or array with replacement text
+	 *  str     - string or array with subject text
+	 *  count   - number of matched and replaced needles will be returned via this parameter which is passed by reference
 	 *
 	 * Returns:
 	 *  A string or an array of replacements.
@@ -1202,15 +1202,15 @@ final class utf8 {
 	 *  
 	 *  The Original Code is Mozilla Communicator client code.
 	 *  The Initial Developer of the Original Code is Netscape Communications Corporation.
-	 *  Portions created by the Initial Developer are Copyright (C) 1998 the Initial Developer
-	 *  Ported to PHP by Henri Sivonen <hsivonen@iki.fi>, see http://hsivonen.iki.fi/php-utf8/
-	 *  Slight modifications to fit with phputf8 library by Harry Fuecks <hfuecks@gmail.com>
+	 *  Portions created by the Initial Developer are Copyright (C) 1998 the Initial Developer.
+	 *  Ported to PHP by Henri Sivonen <hsivonen@iki.fi>, see http://hsivonen.iki.fi/php-utf8/.
+	 *  Slight modifications to fit with phputf8 library by Harry Fuecks <hfuecks@gmail.com>.
 	 *
 	 * Parameters:
 	 *  str - a UTF-8 encoded string
 	 *
 	 * Returns:
-	 *  array of unicode code points or FALSE if UTF-8 invalid
+	 *  Array of unicode code points or FALSE if UTF-8 invalid.
 	 */
 	public static function to_unicode($str)
 	{
@@ -1352,15 +1352,15 @@ final class utf8 {
 	 *  
 	 *  The Original Code is Mozilla Communicator client code.
 	 *  The Initial Developer of the Original Code is Netscape Communications Corporation.
-	 *  Portions created by the Initial Developer are Copyright (C) 1998 the Initial Developer
-	 *  Ported to PHP by Henri Sivonen <hsivonen@iki.fi>, see http://hsivonen.iki.fi/php-utf8/
-	 *  Slight modifications to fit with phputf8 library by Harry Fuecks <hfuecks@gmail.com>
+	 *  Portions created by the Initial Developer are Copyright (C) 1998 the Initial Developer.
+	 *  Ported to PHP by Henri Sivonen <hsivonen@iki.fi>, see http://hsivonen.iki.fi/php-utf8/.
+	 *  Slight modifications to fit with phputf8 library by Harry Fuecks <hfuecks@gmail.com>.
 	 *
 	 * Parameters:
-	 *  array - array of unicode code points representing a string
+	 *  arr - array of unicode code points representing a string
 	 *
 	 * Returns:
-	 *  UTF-8 string or FALSE if array contains invalid code points
+	 *  UTF-8 string or FALSE if array contains invalid code points.
 	 */
 	public static function from_unicode($arr)
 	{
