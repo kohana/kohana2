@@ -204,7 +204,7 @@ class date {
 	 */
 	public static function months()
 	{
-		return self::hours(1, FALSE, 1);
+		return self::hours();
 	}
 
 	/*
