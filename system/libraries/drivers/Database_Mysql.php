@@ -484,9 +484,9 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 		switch($object)
 		{
-			case NULL:  $fetch = $this->fetch_type;    break;
 			case TRUE:  $fetch = 'mysql_fetch_object'; break;
-			default:    $fetch = 'mysql_fetch_array';  break;
+			case FALSE: $fetch = 'mysql_fetch_array';  break;
+			default:    $fetch = $this->fetch_type;    break;
 		}
 
 		// This check has to be outside the previous switch(), because we do not

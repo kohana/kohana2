@@ -351,6 +351,20 @@ class Validation_Core {
 	}
 
 	/*
+	 * Method: in_array
+	 */
+	public function in_array($data, $array = FALSE)
+	{
+		if (empty($array) OR ! is_array($array) OR ! in_array($data, $array))
+		{
+			$this->add_error('in_array', $this->current_field);
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+
+	/*
 	 * Method: event
 	 */
 	public function event($data, $events = FALSE)
