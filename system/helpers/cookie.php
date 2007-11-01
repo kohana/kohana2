@@ -21,7 +21,7 @@ class cookie {
 	 *  path     - URL path to allow
 	 *  domain   - URL domain to allow
 	 *  secure   - HTTPS only
-	 *  httponly - HTTP only
+	 *  httponly - HTTP only (requires PHP 5.2 or higher)
 	 *  prefix   - collision-prevention prefix
 	 *
 	 * Returns:
@@ -46,7 +46,10 @@ class cookie {
 		// Expiration timestamp
 		$expire = ($expire == 0) ? 0 : time() + (int) $expire;
 
-		return setcookie($prefix.$name, $value, $expire, $path, $domain, $secure, $httponly);
+		// Only set httponly if possible
+		return (version_compare(PHP_VERSION, '5.2', '>='))
+			? setcookie($prefix.$name, $value, $expire, $path, $domain, $secure, $httponly)
+			: setcookie($prefix.$name, $value, $expire, $path, $domain, $secure);
 	}
 
 	/*
