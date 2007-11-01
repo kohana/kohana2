@@ -36,7 +36,7 @@ class form {
 		// Default action is to use the current URI
 		if ($action == '' OR ! is_string($action))
 		{
-			$action = Router::$current_uri;
+			$action = url::site(Router::$current_uri);
 		}
 		elseif (strpos($action, '://') === FALSE)
 		{
