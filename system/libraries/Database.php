@@ -757,7 +757,6 @@ class Database_Core {
 	 * Returns:
 	 *  A number containing the records in the table
 	 */
-	/* TODO: does this work in every database???? */
 	public function count_records($table = FALSE)
 	{
 		if (count($this->from) < 1)
