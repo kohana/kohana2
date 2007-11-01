@@ -82,20 +82,22 @@
 		<tr>
 			<th><?php echo Kohana::lang('profiler.benchmarks') ?></th>
 			<th class="kp-column">Time</th>
+			<th class="kp-column">Memory</th>
 		</tr>
 <?php
 
 // Moves the first benchmark (total execution time) to the end of the array
 $benchmarks = array_slice($benchmarks, 1) + array_slice($benchmarks, 0, 1);
 
-foreach ($benchmarks as $name => $time):
+foreach ($benchmarks as $name => $benchmark):
 
 	$name = ucwords(str_replace(array('_', '-'), ' ', $name));
 
 ?>
 			<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
 				<td><?php echo $name ?></td>
-				<td class="kp-column kp-data"><?php echo number_format($time, 4) ?></td>
+				<td class="kp-column kp-data"><?php echo number_format($benchmark['time'], 4) ?></td>
+				<td class="kp-column kp-data"><?php echo text::bytes($benchmark['memory'], 'MB') ?></td>
 			</tr>
 <?php
 
@@ -107,8 +109,8 @@ endforeach;
 	<table id="kp-queries">
 		<tr>
 			<th><?php echo Kohana::lang('profiler.queries') ?> (<?php echo ($queries == FALSE ? '0' : count($queries)) ?>)</th>
-			<th class="kp-column">Rows</th>
 			<th class="kp-column">Time</th>
+			<th class="kp-column">Rows</th>
 		</tr>
 <?php
 
@@ -133,8 +135,8 @@ else:
 ?>
 		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
 			<td><?php echo html::specialchars($query['query']) ?></td>
-			<td class="kp-column kp-data"><?php echo $query['rows'] ?></td>
 			<td class="kp-column kp-data"><?php echo number_format($query['time'], 4) ?></td>
+			<td class="kp-column kp-data"><?php echo $query['rows'] ?></td>
 		</tr>
 <?php
 

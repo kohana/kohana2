@@ -26,8 +26,10 @@ final class Benchmark {
 		{
 			self::$marks[$name] = array
 			(
-				'start' => microtime(TRUE),
-				'stop'  => FALSE
+				'start'        => microtime(TRUE),
+				'stop'         => FALSE,
+				'memory_start' => function_exists('memory_get_usage') ? memory_get_usage() : 0,
+				'memory_stop'  => FALSE
 			);
 		}
 	}
@@ -44,6 +46,7 @@ final class Benchmark {
 		if (isset(self::$marks[$name]) AND self::$marks[$name]['stop'] === FALSE)
 		{
 			self::$marks[$name]['stop'] = microtime(TRUE);
+			self::$marks[$name]['memory_stop'] = function_exists('memory_get_usage') ? memory_get_usage() : 0;
 		}
 	}
 
@@ -82,7 +85,11 @@ final class Benchmark {
 
 		// Return a string version of the time between the start and stop points
 		// Properly reading a float requires using number_format or sprintf
-		return number_format(self::$marks[$name]['stop'] - self::$marks[$name]['start'], $decimals);
+		return array
+		(
+			'time'   => number_format(self::$marks[$name]['stop'] - self::$marks[$name]['start'], $decimals),
+			'memory' => (self::$marks[$name]['memory_stop'] - self::$marks[$name]['memory_start'])
+		);
 	}
 
 } // End Benchmark

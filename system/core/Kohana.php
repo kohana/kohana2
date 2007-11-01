@@ -277,6 +277,9 @@ class Kohana {
 		// Fetch memory usage in MB
 		$memory = function_exists('memory_get_usage') ? memory_get_usage() : 0;
 
+		// Fetch benchmark for page execution time
+		$benchmark = Benchmark::get(SYSTEM_BENCHMARK.'_total_execution_time');
+
 		// Replace the global template variables
 		self::$output = str_replace(
 			array
@@ -290,7 +293,7 @@ class Kohana {
 			(
 				KOHANA_VERSION,
 				KOHANA_CODENAME,
-				Benchmark::get(SYSTEM_BENCHMARK.'_total_execution_time'),
+				$benchmark['time'],
 				text::bytes($memory, 'MiB')
 			),
 			self::$output
