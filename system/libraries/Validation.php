@@ -1,25 +1,11 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: Validation
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Validation Class
- *
- * @category    Libraries
- * @author      Rick Ellis, Kohana Team
- * @copyright   Copyright (c) 2006, EllisLab, Inc.
- * @license     http://www.codeigniter.com/user_guide/license.html
- * @link        http://kohanaphp.com/user_guide/en/libraries/validation.html
+ * Kohana Source Code:
+ *  author    - Rick Ellis, Kohana Team
+ *  copyright - Copyright (c) 2006, EllisLab, Inc.
+ *  license   - <http://www.codeigniter.com/user_guide/license.html>
  */
 class Validation_Core {
 
@@ -47,12 +33,11 @@ class Validation_Core {
 	// Data to validate
 	protected $data = array();
 
-	/**
-	 * Constructor
+	/*
+	 * Method: __construct
 	 *
-	 * @access  public
-	 * @param   array   array to validate
-	 * @return  void
+	 * Parameters:
+	 *  data - array to validate
 	 */
 	public function __construct( & $data = array())
 	{
@@ -128,17 +113,15 @@ class Validation_Core {
 		return $output;
 	}
 
-	/**
-	 * Set Field Information
+	/*
+	 * Method: set_rules
+	 *  This function takes an array of key names, rules, and field names as
+	 *  input and sets internal field information.
 	 *
-	 * This function takes an array of key names, rules, and field names as
-	 * input and sets internal field information.
-	 *
-	 * @access  public
-	 * @param   mixed
-	 * @param   string
-	 * @param   string
-	 * @return  void
+	 * Parameters:
+	 *  data  - key names
+	 *  rules - rules
+	 *  field - field names
 	 */
 	public function set_rules($data, $rules = '', $field = FALSE)
 	{
@@ -173,16 +156,14 @@ class Validation_Core {
 		}
 	}
 
-	/**
-	 * Set Error Message
+	/*
+	 * Method: set_message
+	 *  Lets users set their own error messages on the fly.
+	 *  Note - The key name has to match the function name that it corresponds to.
 	 *
-	 * Lets users set their own error messages on the fly.  Note:  The key
-	 * name has to match the  function name that it corresponds to.
-	 *
-	 * @access  public
-	 * @param   string
-	 * @param   string
-	 * @return  string
+	 * Parameters:
+	 *  func    - function name
+	 *  message - error message
 	 */
 	public function set_message($func, $message = '')
 	{
@@ -197,15 +178,13 @@ class Validation_Core {
 		}
 	}
 
-	/**
-	 * Error Message Format
+	/*
+	 * Method: error_format
+	 *  Allows the user to change the error message format. Error formats must
+	 *  contain the string "{message}" or Kohana_Exception will be triggered.
 	 *
-	 * Allows the user to change the error message format. Error formats must
-	 * contain the string "{message}" or Kohana_Exception will be triggered.
-	 *
-	 * @access  public
-	 * @param   string
-	 * @return  void
+	 * Parameters:
+	 *  string - error message
 	 */
 	public function error_format($string = '')
 	{
@@ -215,6 +194,13 @@ class Validation_Core {
 		$this->error_format = $string;
 	}
 
+	/*
+	 * Method: add_error
+	 *
+	 * Parameters:
+	 *  func  - function name
+	 *  field - field name
+	 */
 	public function add_error($func, $field)
 	{
 		// Set the friendly field name
@@ -232,13 +218,12 @@ class Validation_Core {
 		$this->errors[$field][] = $message;
 	}
 
-	/**
-	 * Run the Validator
+	/*
+	 * Method: run
+	 *  This function does all the work.
 	 *
-	 * This function does all the work.
-	 *
-	 * @access  public
-	 * @return  boolean
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function run()
 	{
@@ -365,6 +350,9 @@ class Validation_Core {
 		}
 	}
 
+	/*
+	 * Method: event
+	 */
 	public function event($data, $events = FALSE)
 	{
 		// Validate the events
@@ -381,6 +369,9 @@ class Validation_Core {
 		}
 	}
 
+	/*
+	 * Method: upload
+	 */
 	public function upload($data, $params = FALSE)
 	{
 		// By default, nothing is allowed
@@ -599,13 +590,15 @@ class Validation_Core {
 		return TRUE;
 	}
 
-	/**
-	 * Required
+	/*
+	 * Method: required
 	 *
-	 * @access  public
-	 * @param   string
-	 * @param   integer
-	 * @return  boolean
+	 * Parameters:
+	 *  str    - string to validate
+	 *  length - 
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function required($str, $length = FALSE)
 	{
@@ -650,13 +643,16 @@ class Validation_Core {
 		}
 	}
 
-	/**
-	 * Match one field to another
+	/*
+	 * Method: matches
+	 *  Match one field to another.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string
-	 * @return	boolean
+	 * Parameters:
+	 *  field - first field
+	 *  match - field to match to first
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function matches($field, $match)
 	{
@@ -674,13 +670,16 @@ class Validation_Core {
 		}
 	}
 
-	/**
-	 * Minimum Length
+	/*
+	 * Method: min_length
+	 *  Check a string for a minimum length.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @param	integer
-	 * @return	boolean
+	 * Parameters:
+	 *  str - string to validate
+	 *  val - minimum length
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function min_length($str, $val)
 	{
@@ -696,13 +695,16 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Max Length
+	/*
+	 * Method: max_length
+	 *  Check a string for a maximum length.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @param	integer
-	 * @return	boolean
+	 * Parameters:
+	 *  str - string to validate
+	 *  val - maximum length
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function max_length($str, $val)
 	{
@@ -718,13 +720,16 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Exact Length
+	/*
+	 * Method: exact_length
+	 *  Check a string for an exact length.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @param	integer
-	 * @return	boolean
+	 * Parameters:
+	 *  str - string to validate
+	 *  val - length
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function exact_length($str, $val)
 	{
@@ -740,7 +745,18 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	public function valid_url($url, $scheme = 'http')
+	/*
+	 * Method: valid_url
+	 *  Valid URL.
+	 *
+	 * Parameters:
+	 *  url    - URL
+	 *  scheme - protocol
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
+	 */
+	public function valid_url($url, $scheme = '')
 	{
 		if (empty($scheme))
 		{
@@ -759,12 +775,15 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Valid Email, Commonly used characters only
+	/*
+	 * Method: valid_email
+	 *  Valid Email, Commonly used characters only.
 	 *
-	 * @access  public
-	 * @param   string
-	 * @return  boolean
+	 * Parameters:
+	 *  email - email address
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function valid_email($email)
 	{
@@ -775,12 +794,15 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Valid Email, RFC compliant version
+	/*
+	 * Method: valid_email_rfc
+	 *  Valid Email, RFC compliant version
 	 *
-	 * @access  public
-	 * @param   string
-	 * @return  boolean
+	 * Parameters:
+	 *  email - email address
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function valid_email_rfc($email)
 	{
@@ -791,12 +813,15 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Validate IP Address
+	/*
+	 * Method: valid_ip
+	 *  Validate IP Address.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	boolean
+	 * Parameters:
+	 *  ip - ip address
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function valid_ip($ip)
 	{
@@ -807,12 +832,15 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Alpha
+	/*
+	 * Method: alpha
+	 *  Alphabetic characters only.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	boolean
+	 * Parameters:
+	 *  str - string to validate
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function alpha($str)
 	{
@@ -823,12 +851,15 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Alpha (UTF-8 compatible)
+	/*
+	 * Method: utf8_alpha
+	 *  Alphabetic characters only (UTF-8 compatible).
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	boolean
+	 * Parameters:
+	 *  str - string to validate
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function utf8_alpha($str)
 	{
@@ -839,12 +870,15 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Alpha-numeric
+	/*
+	 * Method: alpha_numeric
+	 *  Alphabetic and numeric characters only.
 	 *
-	 * @access  public
-	 * @param   string
-	 * @return  boolean
+	 * Parameters:
+	 *  str - string to validate
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function alpha_numeric($str)
 	{
@@ -855,12 +889,15 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Alpha-numeric (UTF-8 compatible)
+	/*
+	 * Method: utf8_alpha_numeric
+	 *  Alphabetic and numeric characters only (UTF-8 compatible).
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	boolean
+	 * Parameters:
+	 *  str - string to validate
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function utf8_alpha_numeric($str)
 	{
@@ -871,12 +908,15 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Alpha-numeric with underscores and dashes
+	/*
+	 * Method: alpha_dash
+	 *  Alpha-numeric with underscores and dashes.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	boolean
+	 * Parameters:
+	 *  str - string to validate
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function alpha_dash($str)
 	{
@@ -887,12 +927,15 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Alpha-numeric with underscores and dashes (UTF-8 compatible)
+	/*
+	 * Method: utf8_alpha_dash
+	 *  Alpha-numeric with underscores and dashes (UTF-8 compatible).
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	boolean
+	 * Parameters:
+	 *  str - string to validate
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function utf8_alpha_dash($str)
 	{
@@ -903,12 +946,15 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Digits: 0-9, no dots or dashes
+	/*
+	 * Method: digit
+	 *  Digits 0-9, no dots or dashes.
 	 *
-	 * @access  public
-	 * @param   integer
-	 * @return  boolean
+	 * Parameters:
+	 *  str - string to validate
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function digit($str)
 	{
@@ -919,12 +965,15 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Digits: 0-9, no dots or dashes (UTF-8 compatible)
+	/*
+	 * Method: utf8_digit
+	 *  Digits 0-9, no dots or dashes (UTF-8 compatible).
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	boolean
+	 * Parameters:
+	 *  str - string to validate
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function utf8_digit($str)
 	{
@@ -935,12 +984,15 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Numeric
+	/*
+	 * Method: numeric
+	 *  Digits 0-9 (negative and decimal numbers allowed).
 	 *
-	 * @access  public
-	 * @param   integer
-	 * @return  boolean
+	 * Parameters:
+	 *  str - string to validate
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function numeric($str)
 	{
@@ -951,15 +1003,16 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Prep data for form
+	/*
+	 * Method: prep_for_form
+	 *  This function allows HTML to be safely shown in a form.
+	 *  Special characters are converted.
 	 *
-	 * This function allows HTML to be safely shown in a form.
-	 * Special characters are converted.
+	 * Parameters:
+	 *  str - HTML
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	string
+	 * Returns:
+	 *  Prepped HTML
 	 */
 	public function prep_for_form($str = '')
 	{
@@ -969,12 +1022,11 @@ class Validation_Core {
 		return html::specialchars($str);
 	}
 
-	/**
-	 * Prep URL
+	/*
+	 * Method: prep_url
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	string
+	 * Parameters:
+	 *  str - URL
 	 */
 	public function prep_url($str = '')
 	{
@@ -992,36 +1044,36 @@ class Validation_Core {
 		$this->data[$this->current_field] = $str;
 	}
 
-	/**
-	 * Strip Image Tags
+	/*
+	 * Method: strip_image_tags
+	 *  Strip image tags from string.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	string
+	 * Parameters:
+	 *  str - string
 	 */
 	public function strip_image_tags($str)
 	{
 		$this->data[$this->current_field] = security::strip_image_tags($str);
 	}
 
-	/**
-	 * XSS Clean
+	/*
+	 * Method: xss_clean
+	 *  XSS clean string.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	string
+	 * Parameters:
+	 *  str - string
 	 */
 	public function xss_clean($str)
 	{
 		$this->data[$this->current_field] = Kohana::instance()->input->xss_clean($str);
 	}
 
-	/**
-	 * Convert PHP tags to entities
+	/*
+	 * Method: encode_php_tags
+	 *  Convert PHP tags to entities.
 	 *
-	 * @access	public
-	 * @param	string
-	 * @return	string
+	 * Parameters:
+	 *  str - string
 	 */
 	public function encode_php_tags($str)
 	{

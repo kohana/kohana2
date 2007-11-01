@@ -11,7 +11,7 @@ class Controller_Core extends Kohana {
 
 	/*
 	 * Method: __construct
-	 *  Loads the Input, URI and Loader libraries into the '$this' namespace
+	 *  Loads the Input, URI and Loader libraries into the '$this' namespace.
 	 */
 	public function __construct()
 	{
@@ -30,7 +30,7 @@ class Controller_Core extends Kohana {
 
 	/*
 	 * Method: kohana_include_view
-	 *  Includes a View within the controller scope
+	 *  Includes a View within the controller scope.
 	 *
 	 * Parameters:
 	 *  kohana_view_filename - filename

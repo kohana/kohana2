@@ -39,7 +39,7 @@ class Profiler_Core {
 
 	/*
 	 * Method: render
-	 *  Run the Profiler and add to the bottom of the page
+	 *  Run the Profiler and add to the bottom of the page.
 	 */
 	public function render()
 	{

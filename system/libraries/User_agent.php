@@ -23,7 +23,7 @@ class User_Agent_Core {
 
 	/*
 	 * Method: __construct
-	 *  Loads user agent data
+	 *  Loads user agent data.
 	 */
 	public function __construct()
 	{
@@ -122,7 +122,7 @@ class User_Agent_Core {
 
 	/*
 	 * Method: __call
-	 *  So that users can use $user_agent->is_robot() or $user_agent->is_robot
+	 *  So that users can use $user_agent->is_robot() or $user_agent->is_robot.
 	 *
 	 * Parameters:
 	 *  func - function name
@@ -150,7 +150,7 @@ class User_Agent_Core {
 
 	/*
 	 * Method: accept_lang
-	 *  Test for a particular language
+	 *  Test for a particular language.
 	 *
 	 * Parameters:
 	 *  lang - language to test for
@@ -168,7 +168,7 @@ class User_Agent_Core {
 
 	/*
 	 * Method: accept_charset
-	 *  Test for a particular character set
+	 *  Test for a particular character set.
 	 *
 	 * Parameters:
 	 *  charset - character set to test for

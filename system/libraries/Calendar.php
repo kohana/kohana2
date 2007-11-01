@@ -20,7 +20,7 @@ class Calendar_Core {
 
 	/*
 	 * Method: __construct
-	 *  Sets the default time reference
+	 *  Sets the default time reference.
 	 *
 	 * Parameters:
 	 *  config - config preferences
@@ -40,10 +40,9 @@ class Calendar_Core {
 	/*
 	 * Method: initialize
 	 *  Initialize the user preferences. 
-	 *  Accepts an associative array as input, containing display preferences
 	 *
 	 * Parameters:
-	 *  config - config preferences
+	 *  config - display preferences
 	 */
 	private function initialize($config = array())
 	{
@@ -58,7 +57,7 @@ class Calendar_Core {
 
 	/*
 	 * Method: generate
-	 *  Generate the calendar
+	 *  Generate the calendar.
 	 *
 	 * Parameters:
 	 *  year  - the year
@@ -331,7 +330,7 @@ class Calendar_Core {
 
 	/*
 	 * Method: get_total_days
-	 *  Total days in a given month
+	 *  Total days in a given month.
 	 *
 	 * Parameters:
 	 *  month - the month
@@ -363,7 +362,7 @@ class Calendar_Core {
 
 	/*
 	 * Method: default_template
-	 *  This is used in the event that the user has not created their own template
+	 *  This is used in the event that the user has not created their own template.
 	 *
 	 * Returns:
 	 *  Array of template tags and values
@@ -397,7 +396,7 @@ class Calendar_Core {
 
 	/*
 	 * Method: parse_template
-	 *  Harvests the data within the template {pseudo-variables} used to display the calendar
+	 *  Harvests the data within the template {pseudo-variables} used to display the calendar.
 	 */
  	private function parse_template()
  	{

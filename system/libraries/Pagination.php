@@ -27,7 +27,7 @@ class Pagination_Core {
 
 	/*
 	 * Method: __construct
-	 *  Sets up the config values
+	 *  Sets up the config values.
 	 *
 	 * Parameters:
 	 *  config - custom configuration
@@ -96,7 +96,7 @@ class Pagination_Core {
 
 	/*
 	 * Method: create_links
-	 *  Generates the HTML for the chosen pagination style
+	 *  Generates the HTML for the chosen pagination style.
 	 *
 	 * Parameters:
 	 *  style - style of generated links
@@ -118,7 +118,7 @@ class Pagination_Core {
 
 	/*
 	 * Method: url
-	 *  Get the base_url with the specified page number
+	 *  Get the base_url with the specified page number.
 	 *
 	 * Parameters:
 	 *  page - page number
@@ -135,7 +135,7 @@ class Pagination_Core {
 
 	/*
 	 * Method: sql_offset
-	 *  Get the SQL offset of the first row to return
+	 *  Get the SQL offset of the first row to return.
 	 *
 	 * Returns:
 	 *  SQL offset
@@ -147,7 +147,7 @@ class Pagination_Core {
 
 	/*
 	 * Method: url
-	 *  Generate the complete SQL LIMIT clause
+	 *  Generate the complete SQL LIMIT clause.
 	 *
 	 * Returns:
 	 *  SQL LIMIT clause

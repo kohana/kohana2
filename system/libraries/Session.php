@@ -27,7 +27,7 @@ class Session_Core {
 
 	/*
 	 * Method: __construct
-	 *  On first session instance creation, sets up the driver and creates session
+	 *  On first session instance creation, sets up the driver and creates session.
 	 */
 	public function __construct()
 	{
@@ -87,7 +87,7 @@ class Session_Core {
 
 	/*
 	 * Method: id
-	 *  Get the session id
+	 *  Get the session id.
 	 *
 	 * Returns:
 	 *  Session id
@@ -99,7 +99,7 @@ class Session_Core {
 
 	/*
 	 * Method: create
-	 *  Create a new session
+	 *  Create a new session.
 	 */
 	public function create($vars = NULL)
 	{
@@ -188,7 +188,7 @@ class Session_Core {
 
 	/*
 	 * Method: regenerate
-	 *  Regenerates the global session id
+	 *  Regenerates the global session id.
 	 */
 	public function regenerate()
 	{
@@ -201,7 +201,7 @@ class Session_Core {
 
 	/*
 	 * Method: destroy
-	 *  Destroys the current session
+	 *  Destroys the current session.
 	 *
 	 * Returns:
 	 *  TRUE or FALSE
@@ -220,7 +220,7 @@ class Session_Core {
 
 	/*
 	 * Method: set
-	 *  Set a session variable
+	 *  Set a session variable.
 	 *
 	 * Parameters:
 	 *  keys - array of values, or key
@@ -247,7 +247,7 @@ class Session_Core {
 
 	/*
 	 * Method: set_flash
-	 *  Set a flash variable
+	 *  Set a flash variable.
 	 *
 	 * Parameters:
 	 *  keys - array of values, or key
@@ -275,7 +275,7 @@ class Session_Core {
 
 	/*
 	 * Method: keep_flash
-	 *  Freshen a flash variable
+	 *  Freshen a flash variable.
 	 *
 	 * Parameters:
 	 *  key - variable key
@@ -293,7 +293,7 @@ class Session_Core {
 
 	/*
 	 * Method: get
-	 *  Get a variable
+	 *  Get a variable.
 	 *
 	 * Parameters:
 	 *  key     - variable key (optional)
@@ -312,7 +312,7 @@ class Session_Core {
 
 	/*
 	 * Method: get_once
-	 *  Get a variable, and delete it
+	 *  Get a variable, and delete it.
 	 *
 	 * Parameters:
 	 *  key - variable key (optional)
@@ -330,7 +330,7 @@ class Session_Core {
 
 	/*
 	 * Method: del
-	 *  Delete a variable
+	 *  Delete a variable.
 	 *
 	 * Parameters:
 	 *  key - variable key

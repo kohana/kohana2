@@ -247,7 +247,7 @@ class Router_Core {
 
 	/*
 	 * Method: filter_uri
-	 *  Filter a string for allowed URI characters
+	 *  Filter a string for allowed URI characters.
 	 *
 	 * Parameters:
 	 *  str - string to filter

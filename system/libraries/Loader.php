@@ -11,7 +11,7 @@ class Loader_Core {
 
 	/*
 	 * Method: __construct
-	 *  Autoloads libraries and models specified in config file
+	 *  Autoloads libraries and models specified in config file.
 	 */
 	public function __construct()
 	{
@@ -45,7 +45,7 @@ class Loader_Core {
 
 	/*
 	 * Method: library
-	 *  Load library
+	 *  Load library.
 	 *
 	 * Parameters:
 	 *  name   - library name
@@ -79,7 +79,7 @@ class Loader_Core {
 
 	/*
 	 * Method: database
-	 *  Load database
+	 *  Load database.
 	 *
 	 * Parameters:
 	 *  group  - Database config group to use
@@ -101,7 +101,7 @@ class Loader_Core {
 
 	/*
 	 * Method: helper
-	 *  Load helper
+	 *  Load helper.
 	 *
 	 * Parameters:
 	 *  name - helper name
@@ -126,7 +126,7 @@ class Loader_Core {
 
 	/*
 	 * Method: model
-	 *  Load model
+	 *  Load model.
 	 *
 	 * Parameters:
 	 *  name  - model name
@@ -165,7 +165,7 @@ class Loader_Core {
 
 	/*
 	 * Method: view
-	 *  Load view
+	 *  Load view.
 	 *
 	 * Parameters:
 	 *  name - view name

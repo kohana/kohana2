@@ -55,7 +55,7 @@ class View_Core {
 
 	/*
 	 * Method: set
-	 *  Sets a view variable
+	 *  Sets a view variable.
 	 *
 	 * Parameters:
 	 *  name  - variable name
@@ -72,7 +72,7 @@ class View_Core {
 
 	/*
 	 * Method: __set
-	 *  Magically sets a view variable
+	 *  Magically sets a view variable.
 	 *
 	 * Parameters:
 	 *  name  - variable name
@@ -88,7 +88,7 @@ class View_Core {
 
 	/*
 	 * Method: __get
-	 *  Magically gets a view variable
+	 *  Magically gets a view variable.
 	 *
 	 * Parameters:
 	 *  name - variable name
@@ -103,7 +103,7 @@ class View_Core {
 
 	/*
 	 * Method: __toString
-	 *  Magically converts view object to string
+	 *  Magically converts view object to string.
 	 *
 	 * Returns:
 	 *  The rendered view
@@ -115,7 +115,7 @@ class View_Core {
 
 	/*
 	 * Method: render
-	 *  Renders a view
+	 *  Renders a view.
 	 *
 	 * Parameters:
 	 *  print    - echo the output instead of returning it

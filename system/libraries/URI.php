@@ -11,7 +11,7 @@ class URI_Core extends Router {
 
 	/*
 	 * Method: __construct
-	 *  Detects current query string
+	 *  Detects current query string.
 	 */
 	public function __construct()
 	{
@@ -28,7 +28,7 @@ class URI_Core extends Router {
 
 	/*
 	 * Method: segment
-	 *  Retrieve a specific URI segment
+	 *  Retrieve a specific URI segment.
 	 *
 	 * Parameters:
 	 *  index   - segment number or label
@@ -54,7 +54,7 @@ class URI_Core extends Router {
 
 	/*
 	 * Method: rsegment
-	 *  Retrieve a specific routed URI segment
+	 *  Retrieve a specific routed URI segment.
 	 *
 	 * Parameters:
 	 *  index   - segment number or label
@@ -80,7 +80,7 @@ class URI_Core extends Router {
 
 	/*
 	 * Method: segment_array
-	 *  Returns an array containing all the URI segments
+	 *  Returns an array containing all the URI segments.
 	 *
 	 * Parameters:
 	 *  offset      - segment offset
@@ -110,7 +110,7 @@ class URI_Core extends Router {
 
 	/*
 	 * Method: string
-	 *  Returns the complete URI as a string
+	 *  Returns the complete URI as a string.
 	 *
 	 * Returns:
 	 *   Full URI as string
@@ -127,7 +127,7 @@ class URI_Core extends Router {
 
 	/*
 	 * Method: total_segments
-	 *  Returns the total number of URI segments
+	 *  Returns the total number of URI segments.
 	 *
 	 * Returns:
 	 *   Total number of URI segments
@@ -139,7 +139,7 @@ class URI_Core extends Router {
 
 	/*
 	 * Method: last_segment
-	 *  Returns the last URI segment
+	 *  Returns the last URI segment.
 	 *
 	 * Returns:
 	 *   Last URI segment

@@ -18,7 +18,7 @@ class Input_Core {
 
 	/*
 	 * Method: __construct
-	 *  Sets whether to globally enable the XSS processing and whether to allow the $_GET array
+	 *  Sets whether to globally enable the XSS processing and whether to allow the $_GET array.
 	 */
 	public function __construct()
 	{
@@ -95,7 +95,7 @@ class Input_Core {
 
 	/*
 	 * Method: __call
-	 *  Fetch an item from a global array
+	 *  Fetch an item from a global array.
 	 *
 	 * Parameters:
 	 *  global - array to access (get, post, cookie or server)
@@ -152,7 +152,7 @@ class Input_Core {
 
 	/*
 	 * Method: clean_input_data
-	 *  This is a helper function. It escapes data and standardizes newline characters to \n
+	 *  This is a helper function. It escapes data and standardizes newline characters to '\n'.
 	 *
 	 * Parameters:
 	 *  str - string to clean
@@ -210,7 +210,7 @@ class Input_Core {
 
 	/*
 	 * Method: ip_address
-	 *  Fetch the IP Address
+	 *  Fetch the IP Address.
 	 *
 	 * Returns:
 	 *  IP address
@@ -259,7 +259,7 @@ class Input_Core {
 
 	/*
 	 * Method: valid_ip
-	 *  Validates an IPv4 address based on RFC specifications
+	 *  Validates an IPv4 address based on RFC specifications.
 	 *
 	 * Parameters:
 	 *  ip - IP to validate
@@ -274,7 +274,7 @@ class Input_Core {
 
 	/*
 	 * Method: user_agent
-	 *  Get the user agent of the current request
+	 *  Get the user agent of the current request.
 	 *
 	 * Returns:
 	 *  The user agent

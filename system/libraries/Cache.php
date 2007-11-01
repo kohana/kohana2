@@ -15,7 +15,7 @@ class Cache_Core {
 
 	/*
 	 * Method: __construct
-	 *  Set up driver and get groups
+	 *  Set up driver and get groups.
 	 *
 	 * Parameters:
 	 *  config - custom configuration
@@ -29,7 +29,7 @@ class Cache_Core {
 
 	/*
 	 * Method: get
-	 *  Get data from cache
+	 *  Get data from cache.
 	 *
 	 * Parameters:
 	 *  name - name of cache entry
@@ -44,7 +44,7 @@ class Cache_Core {
 
 	/*
 	 * Method: set
-	 *  Save data into cache
+	 *  Save data into cache.
 	 *
 	 * Parameters:
 	 *  name - name of cache entry
@@ -60,7 +60,7 @@ class Cache_Core {
 
 	/*
 	 * Method: del
-	 *  Delete cache entry
+	 *  Delete cache entry.
 	 *
 	 * Parameters:
 	 *  name - name of cache entry

@@ -19,7 +19,10 @@ class FTP_Core {
 
 	/*
 	 * Method: __construct
-	 *  Sets Preferences. Can be passed an array of config values
+	 *  Sets Preferences.
+	 *
+	 * Parameters:
+	 *  config - custom configuration
 	 */
 	public function __construct($config = array())
 	{
@@ -33,10 +36,10 @@ class FTP_Core {
 
 	/*
 	 * Method: initialize
-	 *  Initialize preferences
+	 *  Initialize preferences.
 	 *
 	 * Parameters:
-	 *  config - config preferences
+	 *  config - custom configuration
 	 */
 	public function initialize($config = array())
 	{
@@ -54,7 +57,7 @@ class FTP_Core {
 
 	/*
 	 * Method: connect
-	 *  Connect to the FTP
+	 *  Connect to the FTP.
 	 *
 	 * Parameters:
 	 *  config - the connection values
@@ -98,7 +101,7 @@ class FTP_Core {
 
 	/*
 	 * Method: login
-	 *  Login to the FTP
+	 *  Login to the FTP.
 	 *
 	 * Returns:
 	 *  TRUE or FALSE
@@ -110,7 +113,7 @@ class FTP_Core {
 
 	/*
 	 * Method: is_conn
-	 *  Validates the connection ID
+	 *  Validates the connection ID.
 	 *
 	 * Returns:
 	 *  TRUE or FALSE
@@ -167,7 +170,7 @@ class FTP_Core {
 
 	/*
 	 * Method: mkdir
-	 *  Create a directory
+	 *  Create a directory.
 	 *
 	 * Parameters:
 	 *  path        - path of directory
@@ -203,7 +206,7 @@ class FTP_Core {
 
 	/*
 	 * Method: upload
-	 *  Upload a file to the server
+	 *  Upload a file to the server.
 	 *
 	 * Parameters:
 	 *  locpath     - path of file to upload
@@ -257,7 +260,7 @@ class FTP_Core {
 
 	/*
 	 * Method: rename
-	 *  Rename (or move) a file
+	 *  Rename (or move) a file.
 	 *
 	 * Parameters:
 	 *  old_file - old file
@@ -290,7 +293,7 @@ class FTP_Core {
 
 	/*
 	 * Method: move
-	 *  Move a file
+	 *  Move a file.
 	 *
 	 * Parameters:
 	 *  old_file - old file
@@ -306,7 +309,7 @@ class FTP_Core {
 
 	/*
 	 * Method: delete_file
-	 *  Delete a file
+	 *  Delete a file.
 	 *
 	 * Parameters:
 	 *  filepath - file path
@@ -335,7 +338,7 @@ class FTP_Core {
 
 	/*
 	 * Method: delete_dir
-	 *  Delete a folder and recursively delete everything (including sub-folders) contained within it
+	 *  Delete a folder and recursively delete everything (including sub-folders) contained within it.
 	 *
 	 * Parameters:
 	 *  filepath - directory path
@@ -382,7 +385,7 @@ class FTP_Core {
 
 	/*
 	 * Method: chmod
-	 *  Set file permissions
+	 *  Set file permissions.
 	 *
 	 * Parameters:
 	 *  path - path of file or directory
@@ -422,7 +425,7 @@ class FTP_Core {
 
 	/*
 	 * Method: list_files
-	 *  FTP List files in the specified directory
+	 *  FTP List files in the specified directory.
 	 *
 	 * Parameters:
 	 *  path - path to the directory
@@ -446,7 +449,7 @@ class FTP_Core {
 	 * Method: mirror
 	 *  This function recursively reads a folder and everything it contains (including
 	 *  sub-folders) and creates a mirror via FTP based on it.  Whatever the directory structure
-	 *  of the original file path will be recreated on the server
+	 *  of the original file path will be recreated on the server.
 	 *
 	 * Parameters:
 	 *  locpath - path to source with trailing slash
@@ -495,7 +498,7 @@ class FTP_Core {
 
 	/*
 	 * Method: get_extension
-	 *  Extract the file extension
+	 *  Extract the file extension.
 	 *
 	 * Parameters:
 	 *  filename - filename
@@ -516,7 +519,7 @@ class FTP_Core {
 
 	/*
 	 * Method: set_type
-	 *  Returns the transfer mode for a file extension (ascii or binary)
+	 *  Returns the transfer mode for a file extension (ascii or binary).
 	 *
 	 * Parameters:
 	 *  ext - file extension
@@ -548,7 +551,7 @@ class FTP_Core {
 
 	/*
 	 * Method: close
-	 *  Close the connection
+	 *  Close the connection.
 	 *
 	 * Returns:
 	 *  TRUE or FALSE
@@ -563,7 +566,7 @@ class FTP_Core {
 
 	/*
 	 * Method: error
-	 *  Display error message
+	 *  Display error message.
 	 *
 	 * Parameters:
 	 *  msg - error message

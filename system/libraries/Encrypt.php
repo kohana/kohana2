@@ -29,7 +29,7 @@ class Encrypt_Core {
 	/*
 	 * Method: get_key
 	 *  Returns it as MD5 in order to have an exact-length 128 bit key.
-	 *  mcrypt is sensitive to keys that are not the correct length
+	 *  mcrypt is sensitive to keys that are not the correct length.
 	 *
 	 * Parameters:
 	 *  key - the key
@@ -53,7 +53,7 @@ class Encrypt_Core {
 
 	/*
 	 * Method: set_key
-	 *  Set the encryption key
+	 *  Set the encryption key.
 	 *
 	 * Parameters:
 	 *  key - the key
@@ -95,7 +95,7 @@ class Encrypt_Core {
 
 	/*
 	 * Method: decode
-	 *  Reverses the encode process
+	 *  Reverses the encode process.
 	 *
 	 * Parameters:
 	 *  string - string to decode
@@ -122,7 +122,7 @@ class Encrypt_Core {
 
 	/*
 	 * Method: xor_encode
-	 *  Takes a plain-text string and key as input and generates an encoded bit-string using XOR
+	 *  Takes a plain-text string and key as input and generates an encoded bit-string using XOR.
 	 *
 	 * Parameters:
 	 *  string - string to encode
@@ -153,7 +153,7 @@ class Encrypt_Core {
 
 	/*
 	 * Method: xor_decode
-	 *  Takes an encoded string and key as input and generates the plain-text original message
+	 *  Takes an encoded string and key as input and generates the plain-text original message.
 	 *
 	 * Parameters:
 	 *  string - string to decode
@@ -177,7 +177,7 @@ class Encrypt_Core {
 
 	/*
 	 * Method: xor_merge
-	 *  Takes a string and key as input and computes the difference using XOR
+	 *  Takes a string and key as input and computes the difference using XOR.
 	 *
 	 * Parameters:
 	 *  string - the string
@@ -201,7 +201,7 @@ class Encrypt_Core {
 
 	/*
 	 * Method: mcrypt_encode
-	 *  Encrypt using mcrypt
+	 *  Encrypt using mcrypt..
 	 *
 	 * Parameters:
 	 *  data - the data
@@ -220,7 +220,7 @@ class Encrypt_Core {
 
 	/*
 	 * Method: mcrypt_decode
-	 *  Decrypt using mcrypt
+	 *  Decrypt using mcrypt.
 	 *
 	 * Parameters:
 	 *  data - the data
@@ -239,7 +239,7 @@ class Encrypt_Core {
 
 	/*
 	 * Method: set_cipher
-	 *  Set the mcrypt Cipher
+	 *  Set the mcrypt Cipher.
 	 *
 	 * Parameters:
 	 *  cipher - the cipher
@@ -251,7 +251,7 @@ class Encrypt_Core {
 
 	/*
 	 * Method: set_mode
-	 *  Set the mcrypt Mode
+	 *  Set the mcrypt Mode.
 	 *
 	 * Parameters:
 	 *  mode - the mode
@@ -263,7 +263,7 @@ class Encrypt_Core {
 
 	/*
 	 * Method: get_cipher
-	 *  Get mcrypt cipher Value
+	 *  Get mcrypt cipher Value.
 	 *
 	 * Returns:
 	 *  The mcrypt cipher
@@ -280,7 +280,7 @@ class Encrypt_Core {
 
 	/*
 	 * Method: get_mode
-	 *  Get mcrypt Mode Value
+	 *  Get mcrypt Mode Value.
 	 *
 	 * Returns:
 	 *  The mcrypt mode.
@@ -297,7 +297,7 @@ class Encrypt_Core {
 
 	/*
 	 * Method: set_hash
-	 *  Set the Hash type
+	 *  Set the Hash type.
 	 *
 	 * Parameters:
 	 *  type - the type
@@ -309,7 +309,7 @@ class Encrypt_Core {
 
 	/*
 	 * Method: hash
-	 *  Hash encode a string
+	 *  Hash encode a string.
 	 *
 	 * Parameters:
 	 *  str - the string to encode
