@@ -330,13 +330,18 @@ class Session_Core {
 
 	/*
 	 * Method: del
-	 *  Delete a variable.
+	 *  Delete one or more variables.
 	 *
 	 * Parameters:
-	 *  key - variable key
+	 *  key - variable key(s)
 	 */
 	public function del($key)
 	{
+		if (func_num_args() > 1)
+		{
+			$key = func_get_args();
+		}
+
 		if (is_array($key))
 		{
 			foreach($key as $k)
