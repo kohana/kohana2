@@ -304,7 +304,7 @@ class Database_Mysql_Driver implements Database_Driver {
 	}
 
 	/*
-	 * Method: where
+	 * Method: insert
 	 *  builds an INSERT query
 	 *
 	 * Parameters:
