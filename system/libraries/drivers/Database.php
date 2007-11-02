@@ -28,7 +28,7 @@ interface Database_Driver {
 	 * @param   string  config array
 	 * @return  boolean
 	 */
-	public function connect($config);
+	public function connect();
 
 	/**
 	 * Perform a query

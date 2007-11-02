@@ -181,7 +181,7 @@ class Database_Core {
 	{
 		if ( ! is_resource($this->link))
 		{
-			if ( ! is_resource($this->link = $this->driver->connect($this->config)))
+			if ( ! is_resource($this->link = $this->driver->connect()))
 				throw new Kohana_Exception('database.connection', $this->driver->show_error());
 		}
 	}
@@ -847,7 +847,7 @@ class Database_Core {
 	 */
 	public function list_tables()
 	{
-		$this->link OR $this->driver->connect($this->config);
+		$this->link OR $this->driver->connect();
 
 		$this->reset_select();
 
