@@ -777,7 +777,7 @@ class Database_Core {
 	}
 
 	/*
-	 * Method: last_query
+	 * Method: count_records
 	 *  Count query records
 	 *
 	 * Parameters:
