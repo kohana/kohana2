@@ -197,7 +197,7 @@ class Validation_Core {
 	 */
 	public function error_format($string = '')
 	{
-		if (strpos('{message}', (string) $string) === FALSE)
+		if (strpos((string) $string, '{message}') === FALSE)
 			throw new Kohana_Exception('validation.error_format');
 
 		$this->error_format = $string;
