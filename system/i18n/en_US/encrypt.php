@@ -2,5 +2,6 @@
 
 $lang = array
 (
-	'no_encryption_key' => 'To use the Encrypt class, you need to set a encryption key in your config file.'
+	'requires_mcrypt'   => 'To use the Encrypt library, mcrypt must be enabled.',
+	'no_encryption_key' => 'To use the Encrypt library, you need to set a encryption key in your config file.'
 );
