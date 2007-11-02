@@ -88,7 +88,7 @@ class Database_Mysql_Driver implements Database_Driver {
 		{
 			$valstr[] = $this->escape_column($key)." = ".$val;
 		}
-		return 'UPDATE '.$this->escape_table($table).' SET '.implode(', ', $valstr).' WHERE '.implode(' AND ',$where);
+		return 'UPDATE '.$this->escape_table($table).' SET '.implode(', ', $valstr).' WHERE '.implode(' ',$where);
 	}
 
 	public function set_charset($charset)
@@ -592,5 +592,4 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		return $this->offsetExists($this->current_row);
 	}
 	// End Interface
-
 } // End Mysql_Result Class
