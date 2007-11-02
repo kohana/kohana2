@@ -387,8 +387,7 @@ class form {
 
 		if (isset($data['value']))
 		{
-			$value = $data['value'];
-			unset($data['value']);
+			$value = arr::remove('value', $data);
 		}
 
 		return '<button'.self::attributes($data).$extra.'>'.html::specialchars($value).'</button>';

@@ -49,13 +49,14 @@ class arr {
 	 * Returns:
 	 *  The value of the requested array key
 	 */
-	function remove($key, &$array)
+	function remove($key, & $array)
 	{
-		if (!isset($array[$key]))
+		if ( ! isset($array[$key]))
 			return NULL;
-			
-		$temp = $array[$key];
+
+		$val = $array[$key];
 		unset($array[$key]);
-		return $temp;
+
+		return $val;
 	}
 }

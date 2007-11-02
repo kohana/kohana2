@@ -228,8 +228,8 @@ class Session_Core {
 	 */
 	public function set($keys, $val = FALSE)
 	{
-		if ($keys == FALSE)
-			return;
+		if (empty($keys))
+			return FALSE;
 
 		if ( ! is_array($keys))
 		{
@@ -238,9 +238,10 @@ class Session_Core {
 
 		foreach($keys as $key => $val)
 		{
-			if (isset(self::$protect[$key]))
+			if(isset(self::$protect[$key]))
 				continue;
 
+			// Set the key
 			$_SESSION[$key] = $val;
 		}
 	}
@@ -335,22 +336,22 @@ class Session_Core {
 	 * Parameters:
 	 *  key - variable key(s)
 	 */
-	public function del($key)
+	public function del($keys)
 	{
+		if (empty($keys))
+			return FALSE;
+
 		if (func_num_args() > 1)
 		{
-			$key = func_get_args();
+			$keys = func_get_args();
 		}
 
-		if (is_array($key))
+		foreach((array) $keys as $key)
 		{
-			foreach($key as $k)
-			{
-				unset($_SESSION[$k]);
-			}
-		}
-		else
-		{
+			if(isset(self::$protect[$key]))
+				continue;
+
+			// Unset the key
 			unset($_SESSION[$key]);
 		}
 	}

@@ -4,7 +4,7 @@
  *
  * Kohana Source Code:
  *  author    - Kohana Team
- *  copyright - Copyright (c) 2007 Kohana Team
+ *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
  */
 class Encrypt_Core {

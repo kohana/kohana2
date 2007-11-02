@@ -4,11 +4,13 @@
  *  Settings for the Encryption Library
  *
  * Options:
- *  secret  - Default encryption key. To provide a high level of security,
- *            make sure your key is at least 16 characters and contains
- *            letters, numbers, and symbols
+ *  key  - Default encryption key. To provide a high level of security,
+ *         make sure your key is at least 16 characters and contains
+ *         letters, numbers, and symbols.
  */
 $config = array
 (
-	'secret' => 'K0H@NA+PHP'
+	'key'    => 'K0H@NA+PHP15Aw3s0ME',
+	'mode'   => MCRYPT_MODE_ECB,
+	'cipher' => MCRYPT_RIJNDAEL_256
 );
