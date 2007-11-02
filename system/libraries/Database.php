@@ -778,15 +778,16 @@ class Database_Core {
 
 	/*
 	 * Method: last_query
-	 *  Count table records
+	 *  Count query records
 	 *
 	 * Parameters:
 	 *  table - the table to count
+	 *  where - an optional WHERE clause to count
 	 *
 	 * Returns:
-	 *  A number containing the records in the table
+	 *  A number containing the records in the query set
 	 */
-	public function count_records($table = FALSE)
+	public function count_records($table = FALSE, $where = NULL)
 	{
 		if (count($this->from) < 1)
 		{
@@ -794,6 +795,11 @@ class Database_Core {
 				return FALSE;
 
 			$this->from($table);
+		}
+
+		if ( ! is_null($where))
+		{
+			$this->where($where);
 		}
 
 		$query = $this->select('COUNT(*)')->get();
