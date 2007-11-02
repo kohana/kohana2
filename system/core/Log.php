@@ -35,10 +35,11 @@ final class Log {
 	 */
 	public static function write()
 	{
-		$filename = Config::item('log.directory');
+		$filename  = Config::item('log.directory');
+		$threshold = Config::item('log.threshold');
 
 		// Don't log if there is nothing to log to
-		if (count(self::$messages) == 0 OR $filename == FALSE) return;
+		if ($threshold < 1 OR count(self::$messages) == 0 OR $filename == FALSE) return;
 
 		// Make sure that the log directory is absolute
 		$filename = (substr($filename, 0, 1) !== '/') ? APPPATH.$filename : $filename;
