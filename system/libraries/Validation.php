@@ -221,6 +221,12 @@ class Validation_Core {
 		// Replacements in strings
 		$replace = array_slice(func_get_args(), 1);
 
+		if ( ! empty($replace) AND $replace[0] === $field)
+		{
+			// Add the friendly name instead of the field name
+			$replace[0] = $friendly;
+		}
+
 		// Add the field name into the message, if there is a place for it
 		$message = (strpos($message, '%s') !== FALSE) ? vsprintf($message, $replace) : $message;
 
@@ -343,6 +349,10 @@ class Validation_Core {
 					// Trying to validate with a rule that does not exist? No way!
 					throw new Kohana_Exception('validation.invalid_rule', $rule);
 				}
+
+				// Stop validating when there is an error
+				if (isset($result) AND $result === FALSE)
+					break;
 			}
 		}
 
@@ -618,7 +628,7 @@ class Validation_Core {
 	 *
 	 * Parameters:
 	 *  str    - string to validate
-	 *  length - 
+	 *  length -
 	 *
 	 * Returns:
 	 *  TRUE or FALSE
