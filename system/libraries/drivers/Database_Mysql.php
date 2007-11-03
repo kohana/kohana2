@@ -160,7 +160,7 @@ class Database_Mysql_Driver implements Database_Driver {
 	 */
 	public function escape_column($column)
 	{
-		if (strtolower($column) == 'count(*)' or $column = '*')
+		if (strtolower($column) == 'count(*)' or $column == '*')
 			return $column;
 
 		// This matches any modifiers we support to SELECT.
