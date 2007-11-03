@@ -9,10 +9,11 @@
  */
 class Pagination_Core {
 	
-	public $base_url           = '';
-	public $style              = 'classic';
-	public $uri_segment        = 3;
-	public $items_per_page     = 10;
+	public $base_url       = '';
+	public $directory      = 'pagination';
+	public $style          = 'classic';
+	public $uri_segment    = 3;
+	public $items_per_page = 10;
 	
 	public $current_page;
 	public $total_pages;
@@ -108,7 +109,7 @@ class Pagination_Core {
 	{
 		$style = (isset($style)) ? $style : $this->style;
 		
-		return (string) new View('pagination/'.$style, get_object_vars($this));
+		return (string) new View(trim($this->directory, '/').'/'.$style, get_object_vars($this));
 	}
 	
 	public function __toString()
@@ -118,7 +119,7 @@ class Pagination_Core {
 
 	/*
 	 * Method: url
-	 *  Get the base_url with the specified page number.
+	 *  Gets the base_url with the specified page number.
 	 *
 	 * Parameters:
 	 *  page - page number
@@ -135,7 +136,7 @@ class Pagination_Core {
 
 	/*
 	 * Method: sql_offset
-	 *  Get the SQL offset of the first row to return.
+	 *  Gets the SQL offset of the first row to return.
 	 *
 	 * Returns:
 	 *  SQL offset
@@ -147,7 +148,7 @@ class Pagination_Core {
 
 	/*
 	 * Method: url
-	 *  Generate the complete SQL LIMIT clause.
+	 *  Generates the complete SQL LIMIT clause.
 	 *
 	 * Returns:
 	 *  SQL LIMIT clause

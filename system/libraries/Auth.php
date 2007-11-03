@@ -43,34 +43,32 @@ class Auth_Core {
 			(
 				'username' => $username,
 				'password' => sha1($password),
-				'level >=' => $level
+				'level >=' => (int) $level
 			))
 			->limit(1)
 			->get();
 
-		if (count($result) === 1)
-		{
-			// Get the first result
-			$result = $result->offsetGet(0);
+		if (count($result) !== 1)
+			return FALSE;
 
-			// Update the number of logins
-			$this->db
-				->set('logins', ($result->logins + 1))
-				->where('id', $result->id)
-				->update($this->users_table);
-
-			// Store session data
-			$this->session->set(array
-			(
-				'user_id'  => $result->id,
-				'username' => $username,
-				'level'    => $result->level
-			));
-
-			return TRUE;
-		}
-
-		return FALSE;
+		// Get the first result
+		$result = $result->offsetGet(0);
+        
+		// Update the number of logins
+		$this->db
+			->set('logins', ($result->logins + 1))
+			->where('id', (int) $result->id)
+			->update($this->users_table);
+        
+		// Store session data
+		$this->session->set(array
+		(
+			'user_id'  => (int) $result->id,
+			'username' => $username,
+			'level'    => (int) $result->level
+		));
+        
+		return TRUE;
 	}
 
 	/*

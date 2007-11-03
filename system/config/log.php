@@ -13,10 +13,9 @@
  *  1 - Error Messages (including PHP errors)
  *  2 - Debug Messages
  *  3 - Informational Messages
- *  4 - All Messages
  *
  * Options:
- * threshold  - Message threshold
+ * threshold  - Cascading message threshold
  * directory  - Log file directory, relative to application/, or absolute
  * format     - PHP date format for timestamps, see: http://php.net/date
  *
@@ -26,7 +25,7 @@
  */
 $config = array
 (
-	'threshold' => 4,
+	'threshold' => 1,
 	'directory' => 'logs',
 	'format'    => 'Y-m-d H:i:s'
 );

@@ -119,7 +119,7 @@ class Database_Pgsql_Driver implements Database_Driver {
 		foreach ($key as $k => $v)
 		{
 
-			$prefix = (($num_wheres > 0) or ($count++ > 1)) ? $type : '';
+			$prefix = (($num_wheres > 0) OR ($count++ > 1)) ? $type : '';
 
 			if ($quote === -1)
 			{

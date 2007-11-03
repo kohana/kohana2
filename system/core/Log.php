@@ -10,6 +10,7 @@
  */
 final class Log {
 
+	private static $types = array(1 => 'error', 2 => 'debug', 3 => 'info');
 	private static $messages = array();
 
 	/*
@@ -22,7 +23,7 @@ final class Log {
 	 */
 	public static function add($type, $message)
 	{
-		self::$messages[$type][] = array
+		self::$messages[strtolower($type)][] = array
 		(
 			date(Config::item('log.format')),
 			$message
@@ -62,10 +63,13 @@ final class Log {
 		// Get messages
 		foreach(self::$messages as $type => $data)
 		{
+			if (array_search($type, self::$types) > $threshold)
+				continue;
+
 			foreach($data as $date => $text)
 			{
 				list($date, $message) = $text;
-				$messages .= $date.' --- '.$type.': '.$message."\r\n";
+				$messages .= $date.' -- '.$type.': '.$message."\r\n";
 			}
 		}
 
