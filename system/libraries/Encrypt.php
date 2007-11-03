@@ -2,6 +2,11 @@
 /*
  * Class: Encrypt
  *
+ * Note:
+ *  Data encoded by the CodeIgniter version of this library cannot be decoded
+ *  by this version. This is due to CI "double encoding" the data using it's
+ *  own internal XOR encoding method. Sorry folks!
+ *
  * Kohana Source Code:
  *  author    - Kohana Team
  *  copyright - (c) 2007 Kohana Team
