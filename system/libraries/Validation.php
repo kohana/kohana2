@@ -663,9 +663,9 @@ class Validation_Core {
 					return FALSE;
 				}
 			}
-			else
+			elseif (strlen($str) !== (int) current($length))
 			{
-				// Test exact length
+				// Text exact length
 				$this->add_error('exact_length', $this->current_field, current($length));
 				return FALSE;
 			}
