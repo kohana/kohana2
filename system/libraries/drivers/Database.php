@@ -154,7 +154,7 @@ interface Database_Driver {
 	 * Returns:
 	 *  a string containing the LIMIT query
 	 */
-	public function limit($limit, $offset);
+	public function limit($limit, $offset = 0);
 
 	/*
 	 * Method: compile_select
