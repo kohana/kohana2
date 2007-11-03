@@ -33,8 +33,12 @@ class Session_Cookie_Driver implements Session_Driver {
 		$this->expiration  = Config::item('session.expiration');
 		$this->encryption  = Config::item('session.encryption');
 
-		$this->input   = new Input();
-		$this->encrypt = new Encrypt();
+		$this->input = new Input();
+
+		if ($this->encryption == TRUE)
+		{
+			$this->encrypt = new Encrypt();
+		}
 
 		Log::add('debug', 'Session Cookie Driver Initialized');
 	}
