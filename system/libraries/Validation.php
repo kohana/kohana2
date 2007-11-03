@@ -50,6 +50,9 @@ class Validation_Core {
 			$this->data =& $data;
 		}
 
+		// Load the default error messages
+		$this->messages = Kohana::lang('validation');
+
 		// Add one more instance to the count
 		self::$instances++;
 
@@ -246,12 +249,6 @@ class Validation_Core {
 		if (count($this->data) == 0 OR count($this->rules) == 0)
 		{
 			return FALSE;
-		}
-
-		if ($this->messages == FALSE)
-		{
-			// Load the default error messages
-			$this->messages = Kohana::lang('validation');
 		}
 
 		// Cycle through the rules and test for errors
@@ -665,8 +662,8 @@ class Validation_Core {
 			}
 			elseif (strlen($str) !== (int) current($length))
 			{
-				// Text exact length
-				$this->add_error('exact_length', $this->current_field, current($length));
+				// Test exact length
+				$this->add_error('exact_length', $this->current_field, (int) current($length));
 				return FALSE;
 			}
 		}
