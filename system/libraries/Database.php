@@ -916,6 +916,36 @@ class Database_Core {
 		return $this->driver->field_data($table);
 	}
 
+	/*
+	 * Method: escape
+	 *  escapes a value for a query
+	 *
+	 * Parameters:
+	 *  str - the value to escape
+	 *
+	 * Returns:
+	 *  an escaped version of the value
+	 */
+	public function escape($str)
+	{
+		return $this->driver->escape($str);
+	}
+
+	/*
+	 * Method: escape_str
+	 *  escapes a string for a query
+	 *
+	 * Parameters:
+	 *  str - the string to escape
+	 *
+	 * Returns:
+	 *  an escaped version of the string
+	 */
+	public function escape_str($str)
+	{
+		return $this->driver->escape_str($str);
+	}
+
 } // End Database Class
 
 /*
