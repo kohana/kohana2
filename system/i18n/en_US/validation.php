@@ -9,9 +9,9 @@ $lang = array
 	// General errors
 	'unknown_error' => 'Unknown validation error while validating the %s field.',
 	'required'      => 'The %s field is required.',
-	'min_length'    => 'The %s field must be at least %s characters long.',
-	'max_length'    => 'The %s field must be %s characters or less.',
-	'exact_length'  => 'The %s field must be exactly %s characters.',
+	'min_length'    => 'The %s field must be at least %d characters long.',
+	'max_length'    => 'The %s field must be %d characters or less.',
+	'exact_length'  => 'The %s field must be exactly %d characters.',
 	'in_array'      => 'The %s field must be selected from the options listed.',
 	'matches'       => 'The %s field must match the %s field.',
 	'valid_url'     => 'The %s field must contain a valid URL, starting with %s://.',

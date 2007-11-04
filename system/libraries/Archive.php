@@ -41,7 +41,7 @@ class Archive_Core {
 
 		// Validate the driver
 		if ( ! in_array('Archive_Driver', class_implements($this->driver)))
-			throw new Kohana_Exception('database.driver_not_supported', 'Database drivers must use the Database_Driver interface.');
+			throw new Kohana_Exception('archive.driver_implements', $type);
 
 		Log::add('debug', 'Archive Library initialized');
 	}
@@ -61,7 +61,7 @@ class Archive_Core {
 		// Normalize to forward slashes
 		$path = str_replace('\\', '/', $path);
 
-		if (is_dir($path))
+		if (file_exists($path) AND is_dir($path))
 		{
 			// Normalize ending slash
 			$path = rtrim($path, '/').'/';

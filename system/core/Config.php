@@ -92,7 +92,7 @@ final class Config {
 			return FALSE;
 
 		// Convert dot-noted key string to an array
-		$keys = explode('.', $key);
+		$keys = explode('.', rtrim($key, '.'));
 
 		// Used for recursion
 		$conf =& self::$conf;
