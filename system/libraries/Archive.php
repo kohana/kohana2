@@ -58,11 +58,17 @@ class Archive_Core {
 	 */
 	public function add($path)
 	{
-		// Use real paths, normalize to forward slashes
-		$path = str_replace('\\', '/', realpath($path));
+		// Normalize to forward slashes
+		$path = str_replace('\\', '/', $path);
 
 		if (is_dir($path))
 		{
+			// Normalize ending slash
+			$path = rtrim($path, '/').'/';
+
+			// Add directory to paths
+			$this->paths[] = $path;
+
 			$dir = opendir($path);
 			while (($file = readdir($dir)) !== FALSE)
 			{
@@ -70,7 +76,8 @@ class Archive_Core {
 				if (substr($file, 0, 1) === '.')
 					continue;
 
-				$this->add($path.'/'.$file);
+				// Read directory contents
+				$this->add($path.$file);
 			}
 			closedir($dir);
 		}
@@ -124,8 +131,7 @@ class Archive_Core {
 	 */
 	public function download($filename)
 	{
-		/* Blah, headers and shit */
-		print $this->driver->create($this->paths);
+		download::force($filename, $this->driver->create($this->paths));
 	}
 
 } // End Archive
