@@ -33,9 +33,9 @@ class date {
 
 		// What voodoo is this? I have no idea... Geert can explain it though,
 		// and that's good enough for me.
-		return ($timebit['year']    << 25 | $timebit['mon']     << 21 |
-		        $timebit['mday']    << 16 | $timebit['hours']   << 11 |
-		        $timebit['minutes'] << 5  | $timebit['seconds'] >> 1);
+		return ($timestamp['year']    << 25 | $timestamp['mon']     << 21 |
+		        $timestamp['mday']    << 16 | $timestamp['hours']   << 11 |
+		        $timestamp['minutes'] << 5  | $timestamp['seconds'] >> 1);
 	}
 
 	/*
