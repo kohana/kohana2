@@ -663,26 +663,28 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	{
 		$rows = array();
 
-		if (is_bool($object))
-		{
-			$fetch = ($object == TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
-		}
-		elseif (is_string($object))
+		if (is_string($object))
 		{
 			$fetch = $object;
+		}
+		elseif (is_bool($object))
+		{
+			if ($object === TRUE)
+			{
+				$fetch = 'mysql_fetch_object';
+
+				// NOTE: The class set by $type must be defined before fetching the result,
+				// autoloading is disabled to save a lot of stupid overhead.
+				$type = class_exists($type, FALSE) ? $type : 'stdClass';
+			}
+			else
+			{
+				$fetch = 'mysql_fetch_array';
+			}
 		}
 		else
 		{
 			$fetch = $this->fetch_type;
-		}
-
-		// This check has to be outside the previous switch(), because we do not
-		// know the state of $fetch when $object = NULL
-		// NOTE: The class set by $type must be defined before fetching the result,
-		// autoloading is disabled to save a lot of stupid overhead.
-		if ($fetch == 'mysql_fetch_object')
-		{
-			$type = class_exists($type, FALSE) ? $type : 'stdClass';
 		}
 
 		while ($row = $fetch($this->result, $type))
