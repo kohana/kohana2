@@ -53,17 +53,17 @@ class Loader_Core {
 	 *  return - return library instance instead of adding to Kohana instance
 	 *
 	 * Returns:
-	 *  FALSE  - library is already loaded
+	 *  FALSE  - library is already loaded and 'return' parameter is FALSE
 	 *  Object - instance of library if 'return' parameter is TRUE
 	 */
 	public function library($name, $config = array(), $return = FALSE)
 	{
-		if (isset(Kohana::instance()->$name))
+		if (isset(Kohana::instance()->$name) AND $return == FALSE)
 			return FALSE;
 
 		if ($name == 'database')
 		{
-			$this->database($config);
+			$this->database($config, $return);
 		}
 		else
 		{
