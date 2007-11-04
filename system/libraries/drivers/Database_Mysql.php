@@ -659,15 +659,21 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 *  <Mysql_Result> object
 	 *
 	 */
-	public function result_array($object = TRUE, $type = MYSQL_ASSOC)
+	public function result_array($object = NULL, $type = MYSQL_ASSOC)
 	{
 		$rows = array();
 
-		switch($object)
+		if (is_bool($object))
 		{
-			case TRUE:  $fetch = 'mysql_fetch_object'; break;
-			case FALSE: $fetch = 'mysql_fetch_array';  break;
-			default:    $fetch = $this->fetch_type;    break;
+			$fetch = ($object == TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
+		}
+		elseif (is_string($object))
+		{
+			$fetch = $object;
+		}
+		else
+		{
+			$fetch = $this->fetch_type;
 		}
 
 		// This check has to be outside the previous switch(), because we do not
