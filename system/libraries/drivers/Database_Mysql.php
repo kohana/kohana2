@@ -168,6 +168,9 @@ class Database_Mysql_Driver implements Database_Driver {
 		{
 			if (stripos($column, ' AS ') !== FALSE)
 			{
+				// Force 'AS' to uppercase
+				$column = str_ireplace(' AS ', ' AS ', $column);
+
 				// Runs escape_column on both sides of an AS statement
 				$column = array_map(array($this, __FUNCTION__), explode(' AS ', $column));
 
