@@ -11,6 +11,56 @@
 class date {
 
 	/*
+	 * Method: unix2dos
+	 *  Converts a UNIX timestamp to DOS format.
+	 *
+	 * Parameters:
+	 *  timestamp - UNIX timestamp
+	 *
+	 * Returns:
+	 *  DOS timestamp
+	 */
+	public static function unix2dos($timestamp = FALSE)
+	{
+		$timestamp = ($timestamp === FALSE) ? getdate() : getdate($timestamp);
+
+		if ($timestamp['year'] < 1980)
+		{
+			return (1 << 21 | 1 << 16);
+		}
+
+		$timestamp['year'] -= 1980;
+
+		// What voodoo is this? I have no idea... Geert can explain it though,
+		// and that's good enough for me.
+		return ($timebit['year']    << 25 | $timebit['mon']     << 21 |
+		        $timebit['mday']    << 16 | $timebit['hours']   << 11 |
+		        $timebit['minutes'] << 5  | $timebit['seconds'] >> 1);
+	}
+
+	/*
+	 * Method: dos2unix
+	 *  Converts a DOS timestamp to UNIX format.
+	 *
+	 * Parameters:
+	 *  timestamp - DOS timestamp
+	 *
+	 * Returns:
+	 *  UNIX timestamp
+	 */
+	public static function dos2unix($timestamp = FALSE)
+	{
+		$sec  = 2 * ($timestamp & 0x1f);
+		$min  = ($timestamp >>  5) & 0x3f;
+		$hrs  = ($timestamp >> 11) & 0x1f;
+		$day  = ($timestamp >> 16) & 0x1f;
+		$mon  = ($timestamp >> 21) & 0x0f;
+		$year = ($timestamp >> 25) & 0x7f;
+
+		return mktime($hrs, $min, $sec, $mon, $day, $year + 1980);
+	}
+
+	/*
 	 * Method: offset
 	 *  Returns the offset (in seconds) between two time zones. See
 	 *  <http://php.net/timezones> for a list of supported time zones.
