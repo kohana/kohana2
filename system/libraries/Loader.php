@@ -63,7 +63,7 @@ class Loader_Core {
 
 		if ($name == 'database')
 		{
-			$this->database($config, $return);
+			return $this->database($config, $return);
 		}
 		else
 		{
