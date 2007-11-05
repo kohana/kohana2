@@ -13,11 +13,7 @@ class Media_Controller extends Controller {
 		}
 		catch (Kohana_Exception $e)
 		{
-			// Send the 404 header
-			header('HTTP/1.1 404 File Not Found');
-
-			// Display a comment, valid for both JS and CSS
-			print '/* No file found */';
+			throw new Kohana_404_Exception();
 		}
 	}
 
