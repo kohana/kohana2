@@ -799,16 +799,18 @@ final class utf8 {
 		return $str;
 	}
 
-	/**
-	 * UTF-8 version of stristr()
+	/*
+	 * Method: stristr
+	 *  Case-insenstive UTF-8 version of strstr. Returns all of input string
+	 *  from the first occurrence of needle to the end.
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
 	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 * Parameters:
+	 *  str    - input string
+	 *  search - needle
 	 *
-	 * @see    http://php.net/stristr
-	 * @access public
-	 * @param  string
-	 * @param  string  search string
-	 * @return string  (FALSE if search string not found)
+	 * Returns:
+	 *  The matched substring. If search is not found, FALSE is returned.
 	 */
 	public static function stristr($str, $search)
 	{
@@ -835,18 +837,20 @@ final class utf8 {
 		return FALSE;
 	}
 
-	/**
-	 * UTF-8 version of strspn()
+	/*
+	 * Method: strspn
+	 *  Finds the length of the initial segment matching mask.
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
 	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 * Parameters:
+	 *  str    - input string
+	 *  mask   - mask for search
+	 *  offset - optional integer: start position of the string to examine
+	 *  length - optional integer: length of the string to examine
 	 *
-	 * @see    http://php.net/strspn
-	 * @access public
-	 * @param  string
-	 * @param  string  mask for search
-	 * @param  integer (optional) start position of the string to examine
-	 * @param  integer (optional) length of the string to examine
-	 * @return integer
+	 * Returns:
+	 *  The length (int) of the initial segment of str
+	 *  which consists entirely of characters in mask.
 	 */
 	public static function strspn($str, $mask, $offset = NULL, $length = NULL)
 	{
@@ -873,18 +877,20 @@ final class utf8 {
 		return (isset($matches[0])) ? self::strlen($matches[0]) : 0;
 	}
 
-	/**
-	 * UTF-8 version of strcspn()
+	/*
+	 * Method: strcspn
+	 *  Finds the length of the initial segment not matching mask.
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
 	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 * Parameters:
+	 *  str    - input string
+	 *  mask   - negative mask for search
+	 *  offset - optional integer: start position of the string to examine
+	 *  length - optional integer: length of the string to examine
 	 *
-	 * @see    http://php.net/strspn
-	 * @access public
-	 * @param  string
-	 * @param  string  negative mask for search
-	 * @param  integer (optional) start position of the string to examine
-	 * @param  integer (optional) length of the string to examine
-	 * @return integer
+	 * Returns:
+	 *  The length (int) of the initial segment of str
+	 *  which does not contain any of the characters in mask.
 	 */
 	public static function strcspn($str, $mask, $offset = NULL, $length = NULL)
 	{
@@ -911,18 +917,19 @@ final class utf8 {
 		return (isset($matches[0])) ? self::strlen($matches[0]) : 0;
 	}
 
-	/**
-	 * UTF-8 version of str_pad()
+	/*
+	 * Method: str_pad
+	 *  Pads a UTF-8 string to a certain length with another string.
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
 	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 * Parameters:
+	 *  str              - input string
+	 *  final_str_length - desired string length after padding
+	 *  pad_str          - string to use as padding
+	 *  pad_type         - STR_PAD_RIGHT, STR_PAD_LEFT, or STR_PAD_BOTH
 	 *
-	 * @see    http://php.net/str_pad
-	 * @access public
-	 * @param  string
-	 * @param  integer desired string length after padding
-	 * @param  string  string to use as padding
-	 * @param  define  STR_PAD_RIGHT, STR_PAD_LEFT, STR_PAD_BOTH
-	 * @return string
+	 * Returns:
+	 *  The padded string.
 	 */
 	public static function str_pad($str, $final_str_length, $pad_str = ' ', $pad_type = STR_PAD_RIGHT)
 	{
@@ -969,16 +976,17 @@ final class utf8 {
 		trigger_error('utf8::str_pad: Unknown padding type (' . $type . ')', E_USER_ERROR);
 	}
 
-	/**
-	 * UTF-8 version of str_split()
+	/*
+	 * Method: str_split
+	 *  Converts a UTF-8 string to an array.
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
 	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 * Parameters:
+	 *  str          - input string
+	 *  split_length - maximum length of each chunk (default = 1 char)
 	 *
-	 * @see    http://php.net/str_split
-	 * @access public
-	 * @param  string
-	 * @param  integer maximum length of chunk
-	 * @return array   (FALSE if split_length < 1)
+	 * Returns:
+	 *  An array with str chunks, or FALSE if split_length is less than 1.
 	 */
 	public static function str_split($str, $split_length = 1)
 	{
@@ -1004,15 +1012,16 @@ final class utf8 {
 		return $matches[0];
 	}
 
-	/**
-	 * UTF-8 version of strrev()
+	/*
+	 * Method: strrev
+	 *  Reverses a UTF-8 string.
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
 	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 * Parameters:
+	 *  str - string to be reversed
 	 *
-	 * @see    http://php.net/strrev
-	 * @access public
-	 * @param  string
-	 * @return string
+	 * Returns:
+	 *  The reversed string.
 	 */
 	public static function strrev($str)
 	{
@@ -1025,22 +1034,22 @@ final class utf8 {
 		return implode('', array_reverse($matches[0]));
 	}
 
-	/**
-	 * UTF-8 version of trim()
+	/*
+	 * Method: trim
+	 *  Strips whitespace (or other UTF-8 characters)
+	 *  from the beginning and end of a string.
+	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8.
 	 *
-	 * Note: if you don't need the $charlist you can use PHP's native trim function.
+	 * Parameters:
+	 *  str      - input string
+	 *  charlist - string of characters that need to be stripped
 	 *
-	 * Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
-	 *
-	 * @see    http://php.net/trim
-	 * @access public
-	 * @param  string
-	 * @param  string  (optional) characters that need to be stripped (specify a range of characters with ..)
-	 * @return string
+	 * Returns:
+	 *  The trimmed string.
 	 */
 	public static function trim($str, $charlist = NULL)
 	{
-		if ($charlist === NULL OR (self::is_ascii($str) AND self::is_ascii($charlist)))
+		if ($charlist === NULL OR self::is_ascii($charlist))
 		{
 			return ($charlist === NULL) ? trim($str) : trim($str, $charlist);
 		}
@@ -1048,22 +1057,21 @@ final class utf8 {
 		return self::ltrim(self::rtrim($str, $charlist), $charlist);
 	}
 
-	/**
-	 * UTF-8 version of ltrim()
+	/*
+	 * Method: ltrim
+	 *  Strips whitespace (or other UTF-8 characters) from the beginning of a string.
+	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8.
 	 *
-	 * Note: if you don't need the $charlist you can use PHP's native ltrim function.
+	 * Parameters:
+	 *  str      - input string
+	 *  charlist - string of characters that need to be stripped
 	 *
-	 * Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
-	 *
-	 * @see    http://php.net/ltrim
-	 * @access public
-	 * @param  string
-	 * @param  string  (optional) characters that need to be stripped (specify a range of characters with ..)
-	 * @return string
+	 * Returns:
+	 *  The left trimmed string.
 	 */
 	public static function ltrim($str, $charlist = NULL)
 	{
-		if ($charlist === NULL OR (self::is_ascii($str) AND self::is_ascii($charlist)))
+		if ($charlist === NULL OR self::is_ascii($charlist))
 		{
 			return ($charlist === NULL) ? ltrim($str) : ltrim($str, $charlist);
 		}
@@ -1077,18 +1085,17 @@ final class utf8 {
 		return ($str_ranged !== NULL) ? $str_ranged : preg_replace('/^['.$charlist.']+/u', '', $str);
 	}
 
-	/**
-	 * UTF-8 version of rtrim()
+	/*
+	 * Method: rtrim
+	 *  Strips whitespace (or other UTF-8 characters) from the end of a string.
+	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8.
 	 *
-	 * Note: if you don't need the $charlist you can use PHP's native rtrim function.
+	 * Parameters:
+	 *  str      - input string
+	 *  charlist - string of characters that need to be stripped
 	 *
-	 * Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8
-	 *
-	 * @see    http://php.net/rtrim
-	 * @access public
-	 * @param  string
-	 * @param  string  (optional) characters that need to be stripped (specify a range of characters with ..)
-	 * @return string
+	 * Returns:
+	 *  The right trimmed string.
 	 */
 	public static function rtrim($str, $charlist = NULL)
 	{
@@ -1105,15 +1112,16 @@ final class utf8 {
 		return ($str_ranged !== NULL) ? $str_ranged : preg_replace('/['.$charlist.']+$/u', '', $str);
 	}
 
-	/**
-	 * UTF-8 version of ord()
+	/*
+	 * Method: ord
+	 *  Returns the unicode ordinal for a character.
+	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
 	 *
-	 * Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8
+	 * Parameters:
+	 *  chr - a UTF-8 encoded character
 	 *
-	 * @see    http://php.net/ord
-	 * @access public
-	 * @param  string  UTF-8 encoded character
-	 * @return integer unicode ordinal for that character
+	 * Returns:
+	 *  The unicode ordinal for the given character.
 	 */
 	public static function ord($chr)
 	{
@@ -1199,7 +1207,7 @@ final class utf8 {
 	 *  Takes an UTF-8 string and returns an array of ints representing the Unicode characters.
 	 *  Astral planes are supported i.e. the ints in the output can be > 0xFFFF.
 	 *  Occurrances of the BOM are ignored. Surrogates are not allowed.
-	 *  
+	 *
 	 *  The Original Code is Mozilla Communicator client code.
 	 *  The Initial Developer of the Original Code is Netscape Communications Corporation.
 	 *  Portions created by the Initial Developer are Copyright (C) 1998 the Initial Developer.
@@ -1349,7 +1357,7 @@ final class utf8 {
 	 *  Takes an array of ints representing the Unicode characters and returns a UTF-8 string.
 	 *  Astral planes are supported i.e. the ints in the input can be > 0xFFFF.
 	 *  Occurrances of the BOM are ignored. Surrogates are not allowed.
-	 *  
+	 *
 	 *  The Original Code is Mozilla Communicator client code.
 	 *  The Initial Developer of the Original Code is Netscape Communications Corporation.
 	 *  Portions created by the Initial Developer are Copyright (C) 1998 the Initial Developer.
