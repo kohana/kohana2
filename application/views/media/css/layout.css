@@ -34,10 +34,10 @@ abbr { border-bottom: solid 1px #ccc; cursor: help; }
 #menu { position: absolute; bottom: 0; margin: 0 4em; margin-right: 22em; }
 	#menu li { display: block; float: left; margin-right: 0.4em; }
 	#menu li.active { border-right-color: #76b714; }
-		#menu a { display: block; padding: 1em 1.2em 0.6em; margin-bottom: -0.1em; border: solid 0.1em #83c018; border-bottom: 0; text-transform: uppercase; font-weight: bold; color: #3f5c0b; }
+		#menu a { display: block; padding: 1em 1.2em 0.6em; margin-bottom: -0.1em; border: solid 0.1em #83c018; border-bottom: 0; border-right-width: 0.2em; text-transform: uppercase; font-weight: bold; color: #3f5c0b; }
 		#menu a:hover { background: #76b714; color: #2c360b; }
-		#menu li.active a { background: #f7fbf1; border-color: #96a67a; }
-		#menu li.active a:hover { color: #000; }
+		#menu li.active a { background: #f7fbf1; border-color: #96a67a; color: #a04807; }
+		#menu li.active a:hover { color: #b04f08; }
 
 /* Main Body */
 #body { position: relative; padding: 1em 4em; background: #f7fbf1; }
@@ -52,13 +52,13 @@ abbr { border-bottom: solid 1px #ccc; cursor: help; }
 
 /* Sidebar */
 #sidebar { float: right; width: 20em; margin-top: -12em; margin-bottom: 2em; }
-	#sidebody { background: #a04807; color: #ddd; }
-		#sidecontent h6 { margin-bottom: 1em; padding: 0.5em 0; background: #b04f08; border-bottom: dotted 0.1em #ce6110; text-transform: uppercase; text-indent: 0.6em; font-weight: bold; }
+	#sidebody { background: #ebeee6; padding: 0.4em; border: solid 0.1em #96a67a; border-right-width: 0.2em; }
+		#sidecontent h6 { margin-bottom: 1em; padding: 0.5em 0; border-bottom: dotted 0.1em #999; text-transform: uppercase; text-indent: 0.6em; font-weight: bold; }
 		#sidecontent p { padding: 0 1em 1em; }
 
-#download { margin-bottom: 2em; border: solid 0.1em #96a67a; }
-	#download a { display: block; padding: 2em 1em; padding-right: 90px; background: #a04807;  text-transform: uppercase; font-size: 0.8em; color: #efefef; }
-	#download a:hover { background: #b04f08; }
+#download { margin-bottom: 2em; border: solid 0.3em #76b714; }
+	#download a { display: block; padding: 2em 1em; padding-right: 90px; background: #93c924; border: solid 0.1em #63a80d; text-transform: uppercase; font-size: 0.8em; color: #efefef; }
+	#download a:hover { background-color: #a2d135; }
 		#download a strong,
 		#download a span { display: block; font-size: 2em; font-weight: bold; }
 		#download a span { font-size: 1.8em; text-transform: none; }

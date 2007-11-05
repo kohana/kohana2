@@ -44,7 +44,7 @@ $config['index_page'] = 'index.php';
 | completely freeform, but should start with a period.
 |
 */
-$config['url_suffix'] = '';
+$config['url_suffix'] = '.html';
 
 /*
 | -----------------------------------------------------------------------------
