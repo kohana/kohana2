@@ -22,7 +22,7 @@
 	<li>Strict PHP5 <abbr title="Object Oriented Programming">OOP</abbr></li>
 	<li>Simple database abstraction using SQL helpers</li>
 	<li>Multiple session drivers (native, database, and cookie)</li>
-	<li>Advanced cache system with drivers (file, database, memcache, shmop)</li>
+	<!-- <li>Advanced cache system with drivers (file, database, memcache, shmop)</li> -->
 	<li>Powerful event handler allows small modifications dynamically</li>
 	<li>Originally based on <?php echo html::anchor('http://www.codeigniter.com', 'CodeIgniter') ?></li>
 </ul>

@@ -40,7 +40,7 @@ body {
 	text-shadow:0 0 0 #000;
 }
 
-/* Clear floats without extra markup */
+/* http://www.positioniseverything.net/easyclearing.html */
 .clearfix:after {
 	content:'.';
 	display:block;
