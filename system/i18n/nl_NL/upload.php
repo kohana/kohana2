@@ -2,7 +2,7 @@
 
 $lang = array
 (
-	// Not translated yet:
+	// Not translated yet; this library will be rewritten.
 	
 	'userfile_not_set'   => 'Unable to find a post variable called %s.',
 	'file_exceeds_limit' => 'The uploaded file exceeds the maximum allowed size in your PHP configuration file',

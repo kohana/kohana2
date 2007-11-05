@@ -12,5 +12,5 @@ $lang = array
 	'no_source_file'      => 'Kon het bronbestand niet vinden. Controleer het opgegeven path.',
 	'unable_to_remame'    => 'Kon het bestand niet van naam wijzigen.',
 	'unable_to_delete'    => 'Kon het bestand niet verwijderen.',
-	'unable_to_move'      => 'Kon het bestand niet verplaatsen. Controleer of de bestemmingsdirectory bestaat.'	
+	'unable_to_move'      => 'Kon het bestand niet verplaatsen. Controleer of de bestemmingsdirectory bestaat.'
 );

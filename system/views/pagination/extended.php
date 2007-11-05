@@ -14,9 +14,9 @@
 		&laquo;&nbsp;<?php echo Kohana::lang('pagination.previous') ?>
 	<?php endif; ?>
 	
-	| <?php echo Kohana::lang('pagination.page') ?> <?php echo $current_page ?> <?php echo utf8::strtolower(Kohana::lang('pagination.of')) ?> <?php echo $total_pages ?>
+	| <?php echo Kohana::lang('pagination.page') ?> <?php echo $current_page ?> <?php echo Kohana::lang('pagination.of') ?> <?php echo $total_pages ?>
 	
-	| <?php echo Kohana::lang('pagination.items') ?> <?php echo $current_first_item ?>&ndash;<?php echo $current_last_item ?> <?php echo utf8::strtolower(Kohana::lang('pagination.of')) ?> <?php echo $total_items ?>
+	| <?php echo Kohana::lang('pagination.items') ?> <?php echo $current_first_item ?>&ndash;<?php echo $current_last_item ?> <?php echo Kohana::lang('pagination.of') ?> <?php echo $total_items ?>
 	
 	| <?php if ($next_page): ?>
 		<a href="<?php echo $this->pagination->url($next_page) ?>"><?php echo Kohana::lang('pagination.next') ?>&nbsp;&raquo;</a>

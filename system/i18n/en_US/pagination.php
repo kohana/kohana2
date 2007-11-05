@@ -2,13 +2,13 @@
 
 $lang = array
 (
-	'page'     => 'Page',
-	'pages'    => 'Pages',
-	'item'     => 'Item',
-	'items'    => 'Items',
-	'of'       => 'Of',
-	'first'    => 'First',
-	'last'     => 'Last',
-	'previous' => 'Previous',
-	'next'     => 'Next',
+	'page'     => 'page',
+	'pages'    => 'pages',
+	'item'     => 'item',
+	'items'    => 'items',
+	'of'       => 'of',
+	'first'    => 'first',
+	'last'     => 'last',
+	'previous' => 'previous',
+	'next'     => 'next',
 );

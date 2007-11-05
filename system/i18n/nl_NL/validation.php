@@ -12,6 +12,7 @@ $lang = array
 	'min_length'    => 'Het %s veld moet minstens %s karakters lang zijn.',
 	'max_length'    => 'Het %s veld mag maximum %s karakters lang zijn.',
 	'exact_length'  => 'Het %s veld moet exact %s karakters lang zijn.',
+	'in_array'      => 'Het %s veld moet geselecteerd worden uit de gegeven opties.',
 	'matches'       => 'Het %s veld moet overeenkomen met het %s veld.',
 	'valid_url'     => 'Het %s veld moet een geldige URL zijn, beginnend met %s://.',
 	'valid_email'   => 'Het %s veld moet een geldig e-mailadres zijn.',

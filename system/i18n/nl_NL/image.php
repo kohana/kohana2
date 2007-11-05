@@ -4,7 +4,7 @@ $lang = array
 (
 	'driver_not_supported'    => 'De %s image driver bestaat niet.',
 	
-	// Not translated yet:
+	// Not translated yet; this library will be rewritten.
 	
 	// CI's Image_lib stuff below
 	'source_image_required'   => 'You must specify a source image in your preferences.',
