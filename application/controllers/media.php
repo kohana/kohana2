@@ -13,7 +13,7 @@ class Media_Controller extends Controller {
 		}
 		catch (Kohana_Exception $e)
 		{
-			Kohana::show_404();
+			/* No file found */
 		}
 	}
 
