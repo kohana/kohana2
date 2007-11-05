@@ -13,7 +13,7 @@ class Media_Controller extends Controller {
 		}
 		catch (Kohana_Exception $e)
 		{
-			/* No file found */
+			print '/* No file found */';
 		}
 	}
 
