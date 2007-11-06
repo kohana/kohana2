@@ -946,6 +946,18 @@ class Database_Core {
 		return $this->driver->escape_str($str);
 	}
 
+	/*
+	* Method: table_prefix
+	*  Returns table prefix of current configuration
+	*
+	* Returns:
+	*  a string containing the table prefix for the database
+	*/
+	public function table_prefix()
+	{
+		return $this->config['table_prefix'];
+	}
+
 } // End Database Class
 
 /*
