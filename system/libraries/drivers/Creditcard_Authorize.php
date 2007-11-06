@@ -1,23 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: Creditcard_Authorize_Driver
+ *  Provides payment processing with Authorize.net
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id: Database_Mysql.php 829 2007-10-15 18:15:37Z zombor $
- */
-
-/**
- * Credit Card Authorize.net Driver
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  *
- * @category    Credit Card
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/libraries/database.html
+ * $Id: Creditcard_Authorize.php 975 2007-11-04 13:18:16Z Geert $
  */
 class Creditcard_Authorize_Driver
 {
