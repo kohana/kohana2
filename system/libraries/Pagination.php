@@ -147,7 +147,7 @@ class Pagination_Core {
 	}
 
 	/*
-	 * Method: url
+	 * Method: sql_limit
 	 *  Generates the complete SQL LIMIT clause.
 	 *
 	 * Returns:
