@@ -585,6 +585,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		{
 			$this->current_row = 0;
 			$this->total_rows  = mysql_num_rows($this->result);
+			$this->fetch_type = ($object === TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
 		}
 		elseif (is_bool($result))
 		{
@@ -600,6 +601,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 				$this->total_rows = mysql_affected_rows($link);
 			}
 		}
+
 
 		// Set result type
 		$this->result($object);
