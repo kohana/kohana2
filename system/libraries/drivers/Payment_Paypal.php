@@ -95,7 +95,7 @@ class Payment_Paypal_Driver
 		}
 
 		//post data for submitting to server
-		$nvpstr="&TOKEN=".$this->session->get('paypal_token').
+		$data="&TOKEN=".$this->session->get('paypal_token').
 		        "&PAYERID=".$this->paypal_values['payer_id'].
 		        "&IPADDRESS=".urlencode($_SERVER['SERVER_NAME']) ;
 		        "&Amt=".$this->paypal_values['Amt'].
@@ -105,10 +105,10 @@ class Payment_Paypal_Driver
 		        "&CURRENCYCODE=".$this->paypal_values['currencyCodeType'];
 
 		$response = $this->contact_paypal('DoExpressCheckoutPayment', $data);
-		//convrting NVPResponse to an Associative Array
-		$nvpResArray=deformatNVP($response);
-		$nvpReqArray=deformatNVP($nvpreq);
-		$_SESSION['nvpReqArray']=$nvpReqArray;
+		//convrting Response to an Associative Array
+		$nvpResArray = $this->deformatNVP($response);
+		//$nvpReqArray = $this->deformatNVP($data);
+		//$_SESSION['nvpReqArray']=$nvpReqArray;
 
 		return $nvpResArray;
 	}
@@ -135,7 +135,7 @@ class Payment_Paypal_Driver
 			// We are off to paypal to login!
 			url::redirect($this->paypal_url.$paypal_token);
 		}
-		else // Something went terrebly wrong...
+		else // Something went terribly wrong...
 		{
 			url::redirect($this->error_url);
 		}
@@ -162,7 +162,7 @@ class Payment_Paypal_Driver
 
 		if (curl_errno($ch))
 		{
-			// moving to display page to display curl errors
+			// moving to error page to display curl errors
 			$this->session->set_flash(array('curl_error_no' => curl_errno($ch), 'curl_error_msg' => curl_error($ch)));
 			url::redirect($this->error_url);
 		}
@@ -172,5 +172,28 @@ class Payment_Paypal_Driver
 		}
 
 		return $response;
+	}
+
+	// This is from paypal. It decodes their return string and converts it into an array
+	function deformatNVP($nvpstr)
+	{
+		$intial=0;
+		$nvpArray = array();
+
+		while(strlen($nvpstr))
+		{
+			//postion of Key
+			$keypos= strpos($nvpstr,'=');
+			//position of value
+			$valuepos = strpos($nvpstr,'&') ? strpos($nvpstr,'&'): strlen($nvpstr);
+
+			/*getting the Key and Value values and storing in a Associative Array*/
+			$keyval=substr($nvpstr,$intial,$keypos);
+			$valval=substr($nvpstr,$keypos+1,$valuepos-$keypos-1);
+			//decoding the respose
+			$nvpArray[urldecode($keyval)] =urldecode( $valval);
+			$nvpstr=substr($nvpstr,$valuepos+1,strlen($nvpstr));
+		}
+		return $nvpArray;
 	}
 }
