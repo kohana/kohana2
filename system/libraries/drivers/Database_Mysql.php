@@ -7,8 +7,6 @@
  *  author    - Kohana Team
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
- *
- * $Id$
  */
 class Database_Mysql_Driver implements Database_Driver {
 
