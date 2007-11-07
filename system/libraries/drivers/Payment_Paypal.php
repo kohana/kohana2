@@ -73,7 +73,7 @@ class Payment_Paypal_Driver
 		$this->session = new Session();
 		$this->input = new Input();
 
-		Log::add('debug', 'Authorize Payment Driver Initialized');
+		Log::add('debug', 'PayPal Payment Driver Initialized');
 	}
 
 	/*

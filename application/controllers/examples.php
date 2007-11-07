@@ -284,6 +284,10 @@ class Examples_Controller extends Controller {
 	{
 		$credit_card = new Payment();
 
+		// You can also pass the driver name to the library to use multiple ones:
+		$credit_card = new Payment('Paypal');
+		$credit_card = new Payment("Authorize");
+		
 		// You can specify one parameter at a time:
 		$credit_card->login = 'this';
 		$credit_card->first_name = 'Jeremy';
