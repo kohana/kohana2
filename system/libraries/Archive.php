@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /*
- * Class: Auth
+ * Class: Archive
  *
  * Kohana Source Code:
  *  author    - Kohana Team
