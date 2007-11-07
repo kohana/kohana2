@@ -13,6 +13,9 @@
  *  With the this driver, you will need to run process() twice,
  *  once to check authoriztion with paypal to get the token string,
  *  and once to actually process the transacton with that token string.
+ * 
+ *  You have to set payerid after authorizing with paypal:
+ *   $this->paypment->payerid = $this->input->get('payerid);
  *
  */
 class Payment_Paypal_Driver
@@ -27,7 +30,7 @@ class Payment_Paypal_Driver
 	                                'ReturnUrl'     => FALSE,
 	                                'CANCELURL'     => FALSE,
 	                                'CURRENCYCODE'  => TRUE,
-	                                'payerid'       => FALSE);
+	                                /*'payerid'       => FALSE*/);
 
 	private $paypal_values = array('API_UserName'  => '',
 	                               'API_Password'  => '',
@@ -42,7 +45,7 @@ class Payment_Paypal_Driver
 	                               'CURRENCYCODE'  => 'USD',
 	                               'payerid'       => '');
 
-	private $paypal_url = 'https://www.paypal.com/webscr&cmd=_express-checkout&token=';
+	private $paypal_url = '';
 
 	function __construct($config)
 	{
@@ -52,6 +55,9 @@ class Payment_Paypal_Driver
 		$this->paypal_values['ReturnUrl'] = $config['ReturnUrl'];
 		$this->paypal_values['CANCELURL'] = $config['CANCELURL'];
 		$this->paypal_values['CURRENCYCODE'] = $config['CURRENCYCODE'];
+		$this->paypal_values['API_Endpoint'] = ($config['test_mode']) ? 'https://api.sandbox.paypal.com/nvp' : 'https://api-3t.paypal.com/nvp';
+		$this->paypal_url = ($config['test_mode']) ? 'https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=' : 'https://www.paypal.com/webscr&cmd=%20express-checkout&token=';
+
 		$this->required_fields['API_UserName'] = !empty($config['API_UserName']);
 		$this->required_fields['API_Password'] = !empty($config['API_Password']);
 		$this->required_fields['API_Signature'] = !empty($config['API_Signature']);
@@ -62,6 +68,7 @@ class Payment_Paypal_Driver
 		$this->curl_config = $config['curl_config'];
 
 		$this->session = new Session();
+		$this->input = new Input();
 
 		Log::add('debug', 'Authorize Payment Driver Initialized');
 	}
@@ -70,12 +77,15 @@ class Payment_Paypal_Driver
 	{
 		foreach ((array) $fields as $key => $value)
 		{
-			// Do variable translation (none needed)
-			/*switch($key)
+			// Do variable translation
+			switch($key)
 			{
+				case 'amount':
+					$key = 'Amt';
+					break;
 				default:
 					break;
-			}*/
+			}
 
 			$this->paypal_values[$key] = $value;
 			if (array_key_exists($key, $this->required_fields) and !empty($value)) $this->required_fields[$key] = TRUE;
@@ -86,7 +96,14 @@ class Payment_Paypal_Driver
 	{
 		// Check for required fields
 		if (in_array(FALSE, $this->required_fields))
-			throw new Kohana_Exception('payment.required');
+		{
+			$fields = array();
+			foreach ($this->required_fields as $key => $field)
+			{
+				if (!$field) $fields[] = $key;
+			}
+			throw new Kohana_Exception('payment.required', implode(', ', $fields));
+		}
 
 		if (!$this->session->get('paypal_token'))
 		{
@@ -96,13 +113,13 @@ class Payment_Paypal_Driver
 
 		//post data for submitting to server
 		$data="&TOKEN=".$this->session->get('paypal_token').
-		        "&PAYERID=".$this->paypal_values['payer_id'].
-		        "&IPADDRESS=".urlencode($_SERVER['SERVER_NAME']) ;
+		        "&PAYERID=".$this->input->get('PayerID').
+		        "&IPADDRESS=".urlencode($_SERVER['SERVER_NAME']).
 		        "&Amt=".$this->paypal_values['Amt'].
 		        "&PAYMENTACTION=".$this->paypal_values['PAYMENTACTION'].
-		        "&ReturnUrl=".$this->paypal_values['returnURL'].
-		        "&CANCELURL=".$this->paypal_values['cancelURL'] .
-		        "&CURRENCYCODE=".$this->paypal_values['currencyCodeType'];
+		        "&ReturnUrl=".$this->paypal_values['ReturnUrl'].
+		        "&CANCELURL=".$this->paypal_values['CANCELURL'] .
+		        "&CURRENCYCODE=".$this->paypal_values['CURRENCYCODE']."&COUNTRYCODE=US";
 
 		$response = $this->contact_paypal('DoExpressCheckoutPayment', $data);
 		//convrting Response to an Associative Array
@@ -110,21 +127,20 @@ class Payment_Paypal_Driver
 		//$nvpReqArray = $this->deformatNVP($data);
 		//$_SESSION['nvpReqArray']=$nvpReqArray;
 
-		return $nvpResArray;
+		return ($nvpResArray['ACK'] == TRUE);
 	}
 
 	function paypal_login()
 	{
 		$data = "&Amt=".$this->paypal_values['Amt'].
 		        "&PAYMENTACTION=".$this->paypal_values['PAYMENTACTION'].
-		        "&ReturnUrl=".$this->paypal_values['ReturnUrl'].
-		        "&CANCELURL=".$this->paypal_values['CANCELURL'] .
-		        "&CURRENCYCODE=".$this->paypal_values['CURRENCYCODE'];
+		        "&ReturnURL=".$this->paypal_values['ReturnUrl'].
+		        "&CancelURL=".$this->paypal_values['CANCELURL'];
 
 		$reply = $this->contact_paypal("SetExpressCheckout",$data);
 		$this->session->set(array('reshash' => $reply));
-
-		$ack = strtoupper($resArray["ACK"]);
+		$reply = $this->deformatNVP($reply);
+		$ack = strtoupper($reply["ACK"]);
 
 		if($ack=="SUCCESS")
 		{
@@ -137,18 +153,20 @@ class Payment_Paypal_Driver
 		}
 		else // Something went terribly wrong...
 		{
+			echo '<pre>'.print_r($reply, true);die;
 			url::redirect($this->error_url);
 		}
 	}
 	
 	function contact_paypal($method, $data)
 	{
-		$data   ="METHOD=".urlencode($method).
-		        "&VERSION=".urlencode(urlencode($this->paypal_values['version'])).
+		$final_data   ="METHOD=".urlencode($method).
+		        "&VERSION=".urlencode($this->paypal_values['version']).
 		        "&PWD=".urlencode($this->paypal_values['API_Password']).
 		        "&USER=".urlencode($this->paypal_values['API_UserName']).
 		        "&SIGNATURE=".urlencode($this->paypal_values['API_Signature']).
 		        $data;
+		       // echo $final_data;die;
 		$ch = curl_init($this->paypal_values['API_Endpoint']);
 
 		// Set custom curl options
@@ -156,7 +174,7 @@ class Payment_Paypal_Driver
 		curl_setopt($ch, CURLOPT_POST, 1);
 
 		//setting the nvpreq as POST FIELD to curl
-		curl_setopt($ch,CURLOPT_POSTFIELDS,$data);
+		curl_setopt($ch,CURLOPT_POSTFIELDS,$final_data);
 		//getting response from server
 		$response =  curl_exec($ch);
 
