@@ -18,7 +18,7 @@ class FTP_Core {
 	private $conn_id  = FALSE;
 
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *  Sets Preferences.
 	 *
 	 * Parameters:

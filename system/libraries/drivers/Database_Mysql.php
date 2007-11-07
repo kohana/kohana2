@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /*
  * Class: Database_Mysql_Driver
- *  Provides specific database items for MySQL
+ *  Provides specific database items for MySQL.
  *
  * Kohana Source Code:
  *  author    - Kohana Team
@@ -15,11 +15,11 @@ class Database_Mysql_Driver implements Database_Driver {
 	protected $db_config;
 
 	/*
-	 * Method: __construct
-	 *  sets up the config for the class
+	 * Constructor: __construct
+	 *  Sets up the config for the class.
 	 *
 	 * Parameters:
-	 *  config - the config options to use
+	 *  config - database configuration
 	 *
 	 */
 	public function __construct($config)
@@ -29,14 +29,6 @@ class Database_Mysql_Driver implements Database_Driver {
 		Log::add('debug', 'MySQL Database Driver Initialized');
 	}
 
-	/*
-	 * Method: connect
-	 *  connects to the database
-	 *
-	 * Returns:
-	 *  the database link on success or FALSE on failure
-	 *
-	 */
 	public function connect()
 	{
 		// Import the connect variables
@@ -63,52 +55,16 @@ class Database_Mysql_Driver implements Database_Driver {
 		return FALSE;
 	}
 
-	/*
-	 * Method: query
-	 *  perform a query
-	 *
-	 * Parameters:
-	 *  sql - the query to run
-	 * 
-	 * Returns:
-	 *  <Mysql_Result> object
-	 *
-	 */
 	public function query($sql)
 	{
 		return new Mysql_Result(mysql_query($sql, $this->link), $this->link, $this->db_config['object'], $sql);
 	}
 
-	/*
-	 * Method: delete
-	 *  builds a DELETE query
-	 *
-	 * Parameters:
-	 *  table - the table to delete from
-	 *  where - there WHERE clause of the query
-	 * 
-	 * Returns:
-	 *  a DELETE sql string
-	 *
-	 */
 	public function delete($table, $where)
 	{
 		return 'DELETE FROM '.$this->escape_table($table).' WHERE '.implode(' ', $where);
 	}
 
-	/*
-	 * Method: update
-	 *  builds an UPDATE query
-	 *
-	 * Parameters:
-	 *  table - the table to delete from
-	 *  values - the values to set
-	 *  where - there WHERE clause of the query
-	 * 
-	 * Returns:
-	 *  an UPDATE sql string
-	 *
-	 */
 	public function update($table, $values, $where)
 	{
 		foreach($values as $key => $val)
@@ -118,44 +74,16 @@ class Database_Mysql_Driver implements Database_Driver {
 		return 'UPDATE '.$this->escape_table($table).' SET '.implode(', ', $valstr).' WHERE '.implode(' ',$where);
 	}
 
-	/*
-	 * Method: set_charset
-	 *  sets the character set for future queries
-	 *
-	 * Parameters:
-	 *  charset - the character set to use
-	 *
-	 */
 	public function set_charset($charset)
 	{
 		$this->query('SET NAMES '.$this->escape_str($charset));
 	}
 
-	/*
-	 * Method: escape_table
-	 *  escape the passed table using backticks
-	 *
-	 * Parameters:
-	 *  table - the table name to escape
-	 *
-	 * Returns:
-	 *  a string containing the escaped table name
-	 */
 	public function escape_table($table)
 	{
 		return str_replace('.', '`.`', $table);
 	}
 
-	/*
-	 * Method: escape_table
-	 *  escape the passed column using backticks
-	 *
-	 * Parameters:
-	 *  column - the column name to escape
-	 *
-	 * Returns:
-	 *  a string containing the escaped column name
-	 */
 	public function escape_column($column)
 	{
 		if (strtolower($column) == 'count(*)' OR $column == '*')
@@ -202,20 +130,6 @@ class Database_Mysql_Driver implements Database_Driver {
 		return $column;
 	}
 
-	/*
-	 * Method: where
-	 *  builds a WHERE portion of a query
-	 *
-	 * Parameters:
-	 *  key - a key name, or an array of key => value pairs
-	 *  value - the value
-	 *  type - the value to join multiple wheres with (AND/OR)
-	 *  num_wheres - the number of existing WHERE clauses
-	 *  quote - disables the quoting of the WHERE clause
-	 *
-	 * Returns:
-	 *  an array of WHERE clauses
-	 */
 	public function where($key, $value, $type, $num_wheres, $quote)
 	{
 		if ( ! is_array($key))
@@ -272,19 +186,6 @@ class Database_Mysql_Driver implements Database_Driver {
 		return $wheres;
 	}
 
-	/*
-	 * Method: like
-	 *  builds a LIKE portion of a query
-	 *
-	 * Parameters:
-	 *  field - a field name, or an array of field => value pairs
-	 *  match - the value to match
-	 *  type - the value to join multiple likes with (AND/OR)
-	 *  num_likes - the number of existing LIKE clauses
-	 *
-	 * Returns:
-	 *  an array of WHERE clauses
-	 */
 	public function like($field, $match = '', $type = 'AND ', $num_likes)
 	{
 		if ( ! is_array($field))
@@ -304,18 +205,6 @@ class Database_Mysql_Driver implements Database_Driver {
 		return $likes;
 	}
 
-	/*
-	 * Method: insert
-	 *  builds an INSERT query
-	 *
-	 * Parameters:
-	 *  table - the table to run the query on
-	 *  keys - an array of keys
-	 *  values - an array of values to insert with the keys
-	 *
-	 * Returns:
-	 *  a string containing the INSERT query
-	 */
 	public function insert($table, $keys, $values)
 	{
 		// Escape the column names
@@ -326,34 +215,11 @@ class Database_Mysql_Driver implements Database_Driver {
 		return 'INSERT INTO '.$this->escape_table($table).' ('.implode(', ', $keys).') VALUES ('.implode(', ', $values).')';
 	}
 
-	/*
-	 * Method: limit
-	 *  builds a LIMIT portion of a query
-	 *
-	 * Parameters:
-	 *  limit - a number to limit the returned data to
-	 *  offset - the offset to use
-	 *
-	 * Returns:
-	 *  a string containing the LIMIT query
-	 */
 	public function limit($limit, $offset = 0)
 	{
 		return 'LIMIT '.$offset.', '.$limit;
 	}
 
-	/*
-	 * Method: compile_select
-	 *  Compile the SELECT statement
-	 *  Generates a query string based on which functions were used.
-	 *  Should not be called directly.  The get() function calls it.
-	 *
-	 * Parameters:
-	 *  database - all the query parts set from the database library
-	 *
-	 * Returns:
-	 *  a string containing the SELECT query
-	 */
 	public function compile_select($database)
 	{
 		$sql = ($database['distinct'] == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
@@ -414,59 +280,29 @@ class Database_Mysql_Driver implements Database_Driver {
 		return $sql;
 	}
 
-	/*
-	 * Method: has_operator
-	 *  determines if the string has an arithmetic operator in it
-	 *
-	 * Parameters:
-	 *  str - the string to test
-	 *
-	 * Returns:
-	 *  TRUE if the string has an operator in it, FALSE otherwise
-	 */
 	public function has_operator($str)
 	{
 		return (bool) preg_match('/[<>!=]|\sIS\s+(?:NOT\s+)?NULL\b/i', trim($str));
 	}
 
-	/*
-	 * Method: escape
-	 *  escapes a value for a query
-	 *
-	 * Parameters:
-	 *  str - the value to escape
-	 *
-	 * Returns:
-	 *  an escaped version of the value
-	 */
-	public function escape($str)
+	public function escape($value)
 	{
-		switch (gettype($str))
+		switch (gettype($value))
 		{
 			case 'string':
-				$str = "'".$this->escape_str($str)."'";
+				$value = "'".$this->escape_str($value)."'";
 				break;
 			case 'boolean':
-				$str = (int) $str;
+				$value = (int) $value;
 			break;
 			default:
-				$str = ($str === NULL) ? 'NULL' : $str;
+				$value = ($value === NULL) ? 'NULL' : $value;
 			break;
 		}
 
-		return (string) $str;
+		return (string) $value;
 	}
 
-	/*
-	 * Method: escape_str
-	 *  escapes a string for a query
-	 *
-	 * Parameters:
-	 *  str - the string to escape
-	 *
-	 * Returns:
-	 *  an escaped version of the string
-	 */
 	public function escape_str($str)
 	{
 		is_resource($this->link) or $this->connect($this->db_config);
@@ -474,13 +310,6 @@ class Database_Mysql_Driver implements Database_Driver {
 		return mysql_real_escape_string($str, $this->link);
 	}
 
-	/*
-	 * Method: list_tables
-	 *  list all tables in the database
-	 *
-	 * Returns:
-	 *  an array of table names
-	 */
 	public function list_tables()
 	{
 		$sql    = 'SHOW TABLES FROM `'.$this->db_config['connection']['database'].'`';
@@ -495,28 +324,11 @@ class Database_Mysql_Driver implements Database_Driver {
 		return $retval;
 	}
 
-	/*
-	 * Method: show_error
-	 *  shows the last MySQL error
-	 *
-	 * Returns:
-	 *  a string containing the error
-	 */
 	public function show_error()
 	{
 		return mysql_error($this->link);
 	}
 
-	/*
-	 * Method: field_data
-	 *  returns field data about a table
-	 *
-	 * Parameters:
-	 *  table - the table to query
-	 *
-	 * Returns:
-	 *  an array containing the field data
-	 */
 	public function field_data($table)
 	{
 		$query  = mysql_query('SELECT * FROM '.$this->escape_table($table).' LIMIT 1', $this->link);
@@ -534,18 +346,16 @@ class Database_Mysql_Driver implements Database_Driver {
 		return $table;
 	}
 
-} // End Database_Mysql Class
+} // End Database_Mysql_Driver Class
 
 /*
  * Class: Mysql_Result
- *  The result class for MySQL queries
+ *  The result class for MySQL queries.
  *
  * Kohana Source Code:
  *  author    - Kohana Team
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
- *
- * $Id$
  */
 class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable {
 
@@ -564,14 +374,14 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	protected $return_type = MYSQL_ASSOC;
 
 	/*
-	 * Method: __construct
-	 *  sets up the class
+	 * Constructor: __construct
+	 *  Sets up the class.
 	 *
 	 * Parameters:
-	 *  result - the result resource
-	 *  link - the database resource link
+	 *  result - result resource
+	 *  link   - database resource link
 	 *  object - return objects or arrays
-	 *  sql - the sql string that was run
+	 *  sql    - sql query that was run
 	 *
 	 */
 	public function __construct($result, $link, $object = TRUE, $sql)
@@ -606,8 +416,8 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	}
 
 	/*
-	 * Method: __destruct
-	 *  Magic __destruct function, frees the result
+	 * Destructor: __destruct
+	 *  Magic __destruct function, frees the result.
 	 */
 	public function __destruct()
 	{
@@ -617,18 +427,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		}
 	}
 
-	/*
-	 * Method: result
-	 *  prepares the query result
-	 *
-	 * Parameters:
-	 *  object - use objects or arrays
-	 *  type - the array type to use (if using arrays) or a class name (if using objects)
-	 * 
-	 * Returns:
-	 *  <Mysql_Result> object
-	 *
-	 */
 	public function result($object = TRUE, $type = MYSQL_ASSOC)
 	{
 		$this->fetch_type = (bool) $object ? 'mysql_fetch_object' : 'mysql_fetch_array';
@@ -648,20 +446,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 		return $this;
 	}
-	// End Interface
 
-	/*
-	 * Method: result_array
-	 *  builds an array of query results
-	 *
-	 * Parameters:
-	 *  object - use objects or arrays
-	 *  type - the array type to use (if using arrays) or a class name (if using objects)
-	 * 
-	 * Returns:
-	 *  <Mysql_Result> object
-	 *
-	 */
 	public function result_array($object = NULL, $type = MYSQL_ASSOC)
 	{
 		$rows = array();
@@ -697,15 +482,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		return $rows;
 	}
 
-	// Interface: Database_Result
-	/*
-	 * Method: insert_id
-	 *  get the insert id of an INSERT statement
-	 * 
-	 * Returns:
-	 *  the insert id number
-	 *
-	 */
 	public function insert_id()
 	{
 		return $this->insert_id;
@@ -715,10 +491,10 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	// Interface: Countable
 	/*
 	 * Method: count
-	 *  counts the number of rows in the result set
+	 *  Counts the number of rows in the result set.
 	 * 
 	 * Returns:
-	 *  the number of rows in the result set
+	 *  The number of rows in the result set
 	 *
 	 */
 	public function count()
@@ -737,10 +513,10 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	// Interface: ArrayAccess
 	/*
 	 * Method: offsetExists
-	 *  determine if the requested offset of the result set exists
+	 *  Determines if the requested offset of the result set exists.
 	 *
 	 * Parameters:
-	 *  offset - the offset id
+	 *  offset - offset id
 	 * 
 	 * Returns:
 	 *  TRUE if the offset exists, FALSE otherwise
@@ -761,10 +537,10 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 	/*
 	 * Method: offsetGet
-	 *  retreive the requested query result offset
+	 *  Retreives the requested query result offset.
 	 *
 	 * Parameters:
-	 *  offset - the offset id
+	 *  offset - offset id
 	 * 
 	 * Returns:
 	 *  The query row
@@ -782,11 +558,11 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 	/*
 	 * Method: offsetSet
-	 *  Sets the offset with the provided value. Since you can't modify query result sets, this function just throws an exception
+	 *  Sets the offset with the provided value. Since you can't modify query result sets, this function just throws an exception.
 	 *
 	 * Parameters:
-	 *  offset - the offset id
-	 *  value - the value to set
+	 *  offset - offset id
+	 *  value  - value to set
 	 * 
 	 * Returns:
 	 *  <Kohana_Database_Exception> object
@@ -799,10 +575,10 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 	/*
 	 * Method: offsetUnset
-	 *  Unsets the offset. Since you can't modify query result sets, this function just throws an exception
+	 *  Unsets the offset. Since you can't modify query result sets, this function just throws an exception.
 	 *
 	 * Parameters:
-	 *  offset - the offset id
+	 *  offset - offset id
 	 * 
 	 * Returns:
 	 *  <Kohana_Database_Exception> object
@@ -817,10 +593,10 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	// Interface: Iterator
 	/*
 	 * Method: current
-	 *  retreives the current result set row
+	 *  Retreives the current result set row.
 	 * 
 	 * Returns:
-	 *  the current result row (type based on <Mysql_result.result>)
+	 *  The current result row (type based on <Mysql_result.result>)
 	 *
 	 */
 	public function current()
@@ -830,10 +606,10 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 	/*
 	 * Method: key
-	 *  retreives the current row id
+	 *  Retreives the current row id.
 	 * 
 	 * Returns:
-	 *  the current result row id
+	 *  The current result row id
 	 *
 	 */
 	public function key()
@@ -843,10 +619,10 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 	/*
 	 * Method: next
-	 *  moves the result points ahead one
+	 *  Moves the result pointer ahead one.
 	 * 
 	 * Returns:
-	 *  the next row id
+	 *  The next row id
 	 *
 	 */
 	public function next()
@@ -856,10 +632,10 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 	/*
 	 * Method: next
-	 *  moves the result points back one
+	 *  Moves the result pointer back one.
 	 * 
 	 * Returns:
-	 *  the previous row id
+	 *  The previous row id
 	 *
 	 */
 	public function prev()
@@ -869,7 +645,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 	/*
 	 * Method: rewind
-	 *  moves the result points to the beginning of the result set
+	 *  Moves the result pointer to the beginning of the result set.
 	 * 
 	 * Returns:
 	 *  0
@@ -882,7 +658,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 	/*
 	 * Method: valid
-	 *  Determines if the current result pointer is valid
+	 *  Determines if the current result pointer is valid.
 	 * 
 	 * Returns:
 	 *  TRUE if the pointer is valid, FALSE otherwise

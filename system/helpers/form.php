@@ -75,20 +75,10 @@ class form {
 		return self::open($action, $attr, $hidden);
 	}
 
-	/**
-	 * Hidden Input Field
-	 *
-	 * Generates hidden fields.  You can pass a simple key/value string or an associative
-	 * array with multiple values.
-	 *
-	 * @access  public
-	 * @param   mixed
-	 * @param   string
-	 * @return  string
-	 */
 	/*
-	 * Method: open
+	 * Method: hidden
 	 *  Generates hidden form fields.
+	 *  You can pass a simple key/value string or an associative array with multiple values.
 	 *
 	 * Parameters:
 	 *  data  - input name (string) or key/value pairs (array)

@@ -14,7 +14,7 @@ class Cache_Core {
 	protected $driver;
 
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *  Set up driver and get groups.
 	 *
 	 * Parameters:

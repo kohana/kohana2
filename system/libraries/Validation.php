@@ -34,7 +34,7 @@ class Validation_Core {
 	protected $data = array();
 
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *
 	 * Parameters:
 	 *  data - array to validate

@@ -22,7 +22,7 @@ class User_Agent_Core {
 	protected $robot    = '';
 
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *  Loads user agent data.
 	 */
 	public function __construct()

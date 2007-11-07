@@ -17,7 +17,7 @@ class Input_Core {
 	public $user_agent = FALSE;
 
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *  Sets whether to globally enable the XSS processing and whether to allow the $_GET array.
 	 */
 	public function __construct()

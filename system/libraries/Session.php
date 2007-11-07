@@ -26,7 +26,7 @@ class Session_Core {
 	protected $input;
 
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *  On first session instance creation, sets up the driver and creates session.
 	 */
 	public function __construct()

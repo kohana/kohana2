@@ -10,7 +10,7 @@
 class Controller_Core extends Kohana {
 
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *  Loads the Input, URI and Loader libraries into the '$this' namespace.
 	 */
 	public function __construct()

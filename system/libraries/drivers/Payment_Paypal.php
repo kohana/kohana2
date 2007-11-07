@@ -1,17 +1,16 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /*
- * Class: Creditcard_Paypal_Driver
- *  Provides payment processing with Paypal
+ * Class: Payment_Paypal_Driver
+ *  Provides payment processing with Paypal.
  *
  * Kohana Source Code:
  *  author    - Kohana Team
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
- * 
+ *
  * Notes:
  *  You have to set payerid after authorizing with paypal:
- *   $this->paypment->payerid = $this->input->get('payerid');
- *
+ *  >$this->paypment->payerid = $this->input->get('payerid');
  */
 class Payment_Paypal_Driver
 {
@@ -43,12 +42,11 @@ class Payment_Paypal_Driver
 	private $paypal_url = '';
 
 	/*
-	 * Method: __construct
-	 *  Sets up the class
+	 * Constructor: __construct
+	 *  Sets up the class.
 	 *
 	 * Parameters:
-	 *  config - the config apssed from the library
-	 *
+	 *  config - config passed from the library
 	 */
 	function __construct($config)
 	{
@@ -78,11 +76,10 @@ class Payment_Paypal_Driver
 
 	/*
 	 * Method: set_fields
-	 *  sets driver fields and marks reqired fields as TRUE
+	 *  Sets driver fields and marks reqired fields as TRUE.
 	 *
 	 * Parameters:
-	 *  fields - an array of key/value pairs to set
-	 *
+	 *  fields - array of key => value pairs to set
 	 */
 	public function set_fields($fields)
 	{
@@ -105,14 +102,13 @@ class Payment_Paypal_Driver
 
 	/*
 	 * Method: process
-	 *  runs the paypal transaction.
+	 *  Runs the paypal transaction.
 	 *  With the this driver, you will need to run process() twice,
-	*  once to check authoriztion with paypal to get the token string,
-	*  and once to actually process the transacton with that token string.
+	 *  once to check authoriztion with paypal to get the token string,
+	 *  and once to actually process the transacton with that token string.
 	 * 
 	 * Returns:
 	 *  TRUE if the transaction was success, FALSE otherwise
-	 *
 	 */
 	function process()
 	{
@@ -157,8 +153,7 @@ class Payment_Paypal_Driver
 
 	/*
 	 * Method: paypal_login
-	 *  runs paypal authentication
-	 *
+	 *  Runs paypal authentication.
 	 */
 	function paypal_login()
 	{
@@ -190,15 +185,14 @@ class Payment_Paypal_Driver
 
 	/*
 	 * Method: contact_paypal
-	 *  runs the CURL methods to communicate with paypal.
+	 *  Runs the CURL methods to communicate with paypal.
 	 * 
 	 * Parameters:
-	 *  method - the paypal API call to run
-	 *  data - any additional query string data to send to paypal
+	 *  method - paypal API call to run
+	 *  data   - any additional query string data to send to paypal
 	 * 
 	 * Returns:
-	 *  the response from paypal
-	 *
+	 *  The response from paypal
 	 */
 	function contact_paypal($method, $data)
 	{
@@ -239,12 +233,11 @@ class Payment_Paypal_Driver
 	 *  We can probably rewrite this better, but it works, so its going in for now.
 	 * 
 	 * Parameters:
-	 *  nvpstr - the query string
+	 *  nvpstr - query string
 	 * 
 	 * Returns:
-	 *  an array of the passed query string
-	 *
-	 */// 
+	 *  An array of the passed query string
+	 */
 	function deformatNVP($nvpstr)
 	{
 		$intial=0;

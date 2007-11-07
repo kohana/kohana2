@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /*
- * Class: Archive_Driver
+ * Interface: Archive_Driver
  *
  * Kohana Source Code:
  *  author    - Kohana Team
@@ -22,4 +22,4 @@ interface Archive_Driver {
 	 */
 	public function create($paths, $filename = FALSE);
 
-} // End Archive_Driver
+} // End Archive_Driver Interface

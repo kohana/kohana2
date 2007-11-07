@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /*
- * Class: Archive_Zip
+ * Class: Archive_Zip_Driver
  *
  * Kohana Source Code:
  *  author    - Kohana Team
@@ -195,4 +195,4 @@ class Archive_Zip_Driver implements Archive_Driver {
 		$this->offset = strlen(implode('', $this->data));
 	}
 
-} // End Archive_Zip
+} // End Archive_Zip_Driver Class

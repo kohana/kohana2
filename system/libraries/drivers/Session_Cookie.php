@@ -1,23 +1,11 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: Session_Cookie_Driver
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Session Cookie Driver
- *
- * @category    Session
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/libraries/session.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class Session_Cookie_Driver implements Session_Driver {
 
@@ -112,13 +100,16 @@ class Session_Cookie_Driver implements Session_Driver {
 		$_SESSION = array_merge($_SESSION, $save_data);
 	}
 
-	/**
-	 * Proxy for setcookie()
+	/*
+	 * Method: setcookie
+	 *  Proxy for setcookie()
 	 *
-	 * @access	private
-	 * @param	string	session data
-	 * @param	integer	session expiration
-	 * @return	void
+	 * Parameters:
+	 *  data       - session data
+	 *  expiration - cookie expiration
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	protected function setcookie($data, $expiration)
 	{

@@ -1,32 +1,22 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Interface: Image_Driver
+ *  Image API Driver
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Image API Driver
- *
- * @category    Image
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/libraries/image.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 interface Image_Driver {
 
-	/**
-	 * Returns the driver version
+	/*
+	 * Method: version
+	 *  Returns the driver version.
 	 *
-	 * @access  public
-	 * @return  string
+	 * Returns:
+	 *  The driver version.
 	 */
 	public function version();
 
-} // End Image Driver Interface
+} // End Image_Driver Interface

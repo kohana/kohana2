@@ -1,23 +1,11 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: Session_Database_Driver
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Session Database Driver
- *
- * @category    Session
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/libraries/session.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class Session_Database_Driver implements Session_Driver {
 
@@ -34,9 +22,6 @@ class Session_Database_Driver implements Session_Driver {
 	// Database connection
 	protected $db;
 
-	/**
-	 * Constructor
-	 */
 	public function __construct()
 	{
 		// Set config options
@@ -62,16 +47,16 @@ class Session_Database_Driver implements Session_Driver {
 		Log::add('debug', 'Session Database Driver Initialized');
 	}
 
-	/**
-	 * Open the session
-	 * Session opens a dedicated database connection.
-	 * This is done for 3 reasons:
-	 * 1. A sessions database group MUST be configured.
-	 * 2. To prevent data loss occurring with different db connections.
-	 * 3. To keep the session db connection available in the shutdown handler.
+	/*
+	 * Method: open
+	 *  Session opens a dedicated database connection.
+	 *  This is done for 3 reasons:
+	 *  1. A sessions database group MUST be configured.
+	 *  2. To prevent data loss occurring with different db connections.
+	 *  3. To keep the session db connection available in the shutdown handler.
 	 *
-	 * @access	public
-	 * @return	boolean
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function open($path, $name)
 	{
@@ -93,25 +78,12 @@ class Session_Database_Driver implements Session_Driver {
 		return is_object($this->db);
 	}
 
-	/**
-	 * Close the session
-	 *
-	 * @access	public
-	 * @return	boolean
-	 */
 	public function close()
 	{
 		// Garbage collect
 		$this->gc();
 	}
 
-	/**
-	 * Read a session
-	 *
-	 * @access	public
-	 * @param	string	session id
-	 * @return	string
-	 */
 	public function read($id)
 	{
 		$query = $this->db->from($this->group_name)->where('session_id', $id)->get();
@@ -123,17 +95,8 @@ class Session_Database_Driver implements Session_Driver {
 		return '';
 	}
 
-	/**
-	 * Write session data
-	 *
-	 * @access	public
-	 * @param	string	session id
-	 * @param	string	session data
-	 * @return	boolean
-	 */
 	public function write($id, $session_string)
 	{
-		//ob_start();
 		$data = array
 		(
 			'session_id'    => $id,
@@ -143,7 +106,7 @@ class Session_Database_Driver implements Session_Driver {
 
 		// Fetch current session data
 		$query = $this->db->select('session_id')->from($this->group_name)->where('session_id', $id)->get();
-//echo $this->db->last_query().'<pre>'.print_r($query->result(), true).'</pre>';die;
+
 		// Yes? Do update
 		if ($query->result()->num_rows() > 0)
 		{
@@ -160,36 +123,22 @@ class Session_Database_Driver implements Session_Driver {
 		return (bool) $query->num_rows();
 	}
 
-	/**
-	 * Destroy the session
-	 *
-	 * @access	public
-	 * @return	boolean
-	 */
 	public function destroy($id)
 	{
 		return (bool) $this->db->delete($this->group_name, array('session_id' => $id))->num_rows();
 	}
 
-	/**
-	 * Regenerate the session, keeping existing data
-	 *
-	 * @access	public
-	 * @return	void
-	 */
 	public function regenerate($new_id)
 	{
 	}
 
-	/**
-	 * Collect garbage
-	 * 
-	 * Upon each call there is a 3% chance that this function will delete all
-	 * sessions older than session.gc.maxlifetime. If it does so, the number
-	 * of deleted rows will be returned. Otherwise TRUE will be returned.
+	/*
+	 * Method: gc
+	 *  Upon each call there is a 3% chance that this function will delete all
+	 *  sessions older than session.expiration.
 	 *
-	 * @access	public
-	 * @return	mixed
+	 * Returns:
+	 *  Number of deleted rows if gc run, TRUE if not
 	 */
 	public function gc()
 	{

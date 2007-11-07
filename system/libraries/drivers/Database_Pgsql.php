@@ -1,23 +1,12 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Class: Database_Pgsql_Driver
+ *  Provides specific database items for PostgreSQL.
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Database Postgre Driver
- *
- * @category    Database
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/libraries/database.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 class Database_Pgsql_Driver implements Database_Driver {
 
@@ -32,13 +21,6 @@ class Database_Pgsql_Driver implements Database_Driver {
 		Log::add('debug', 'PgSQL Database Driver Initialized');
 	}
 
-	/**
-	 * Connect to the database
-	 *
-	 * @access  public
-	 * @param   array  config array
-	 * @return  bool
-	 */
 	public function connect($config)
 	{
 		// Import the connect variables
@@ -66,13 +48,6 @@ class Database_Pgsql_Driver implements Database_Driver {
 		return FALSE;
 	}
 
-	/**
-	 * Perform a query
-	 *
-	 * @access  public
-	 * @param   string  SQL statement
-	 * @return  int
-	 */
 	public function query($sql)
 	{
 		return new Pgsql_Result(pg_query($this->link, $sql), $this->link, $this->db_config['object'], $sql);
@@ -189,15 +164,6 @@ class Database_Pgsql_Driver implements Database_Driver {
 		return 'LIMIT '.$limit.' OFFSET '.$offset;
 	}
 
-	/**
-	 * Compile the SELECT statement
-	 *
-	 * Generates a query string based on which functions were used.
-	 * Should not be called directly.  The get() function calls it.
-	 *
-	 * @access  private
-	 * @return  string
-	 */
 	public function compile_select($database)
 	{
 		$sql  = ($database['distinct'] == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
@@ -281,13 +247,6 @@ class Database_Pgsql_Driver implements Database_Driver {
 		return (string) $str;
 	}
 
-	/**
-	* Escape String
-	*
-	* @access      public
-	* @param       string
-	* @return      string
-	*/
 	public function escape_str($str)
 	{
 		if ( ! is_resource($this->link))
@@ -297,15 +256,7 @@ class Database_Pgsql_Driver implements Database_Driver {
 
 		return mysql_real_escape_string($str, $this->link);
 	}
-	
-	/**
- 	* List table query
- 	*
- 	* Generates a platform-specific query string so that the table names can be fetched
- 	*
- 	* @access      private
-	* @return      string
- 	*/   
+ 
 	public function list_tables()
 	{
 		$sql = 'SHOW TABLES FROM `'.$this->db_config['connection']['database'].'`';
@@ -326,8 +277,17 @@ class Database_Pgsql_Driver implements Database_Driver {
 	{
 		return pg_last_error($this->link);
 	}
-} // End Database_Pgsql Class
+} // End Database_Pgsql_Driver Class
 
+/*
+ * Class: Pgsql_Result
+ *  The result class for PostgreSQL queries.
+ *
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
+ */
 class Pgsql_Result implements Database_Result, Iterator
 {
 	private $link      = FALSE;

@@ -1,21 +1,16 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /*
  * Class: Payment_Authorize_Driver
- *  Provides payment processing with Authorize.net
+ *  Provides payment processing with Authorize.net.
  *
  * Kohana Source Code:
  *  author    - Kohana Team
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
- *
  */
 class Payment_Authorize_Driver
 {
-	/**
-	 * Fields required to do a transaction
-	 *
-	 * @var array
-	 */
+	// Fields required to do a transaction
 	private $required_fields = array('x_login' => FALSE,
 	                                 'x_version' => TRUE,
 	                                 'x_delim_char' => TRUE,
@@ -28,11 +23,7 @@ class Payment_Authorize_Driver
 	                                 'x_expiration_date' => FALSE,
 	                                 'x_amount' => FALSE,
 	                                 );
-	/**
-	 * Default required values
-	 *
-	 * @var array
-	 */
+	// Default required values
 	private $authnet_values = array
 	(
 		'x_version'         => '3.1',

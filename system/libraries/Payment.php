@@ -7,7 +7,6 @@
  *  author    - Kohana Team
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
- *
  */
 class Payment_Core {
 
@@ -27,8 +26,9 @@ class Payment_Core {
 
 	protected $driver = NULL;
 	private $fields = array();
+
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *  Sets the payment processing fields.
 	 *  The driver will translate these into the specific format for the provider.
 	 *  Standard fields are (Providers may have additional or different fields):
@@ -59,8 +59,7 @@ class Payment_Core {
 	 *
 	 * Parameters:
 	 *  config - the driver string
-	 *
-	*/
+	 */
 	public function __construct($config = array())
 	{
 		if (empty($config))
@@ -100,8 +99,7 @@ class Payment_Core {
 	 * Parameters:
 	 *  name - the field name
 	 *  val  - the value
-	 *
-	*/
+	 */
 	public function __set($name, $val)
 	{
 		$this->driver->set_fields(array($name => $val));
@@ -116,7 +114,7 @@ class Payment_Core {
 	 *
 	 * Returns:
 	 *  <Payment> object
-	*/
+	 */
 	public function set_fields($fields)
 	{
 		$this->driver->set_fields(array_merge($this->fields, (array) $fields));

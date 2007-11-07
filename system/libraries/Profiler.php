@@ -2,6 +2,7 @@
 /*
  * Class: Profiler
  *  Adds useful information to the bottom of the current page for debugging and optimization purposes.
+ *
  *  Benchmarks   - The times and memory usage of benchmarks run by the <Benchmark> library
  *  Database     - The raw SQL and number of affected rows of <Database> queries
  *  POST Data    - The name and values of any POST data submitted to the current page
@@ -15,7 +16,7 @@
 class Profiler_Core {
 
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *  Adds event for adding the profile output to the page when displayed.
 	 */
 	public function __construct()

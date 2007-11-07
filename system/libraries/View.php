@@ -17,7 +17,7 @@ class View_Core {
 	protected $data = array();
 
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *
 	 * Parameters:
 	 *  name - view filename string

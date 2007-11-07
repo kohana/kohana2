@@ -10,7 +10,7 @@
 class Model_Core {
 
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *  Loads database into '$this->db'.
 	 */
 	public function __construct()

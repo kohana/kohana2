@@ -42,7 +42,7 @@ class Kohana {
 	public static $output = '';
 
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *  Allows the controller to be a true singleton object. This method *must*
 	 *  be called by all controllers.
 	 *

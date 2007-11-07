@@ -19,7 +19,7 @@ class Calendar_Core {
 	private $next_prev_url  = '';
 
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *  Sets the default time reference.
 	 *
 	 * Parameters:

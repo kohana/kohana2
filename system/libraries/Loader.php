@@ -10,7 +10,7 @@
 class Loader_Core {
 
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *  Autoloads libraries and models specified in config file.
 	 */
 	public function __construct()

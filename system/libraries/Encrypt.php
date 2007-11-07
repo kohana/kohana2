@@ -18,8 +18,8 @@ class Encrypt_Core {
 	protected $module;
 
 	/*
-	 * Method: __construct
-	 *  Initializes mcrypt
+	 * Constructor: __construct
+	 *  Initializes mcrypt.
 	 */
 	public function __construct($config = array())
 	{

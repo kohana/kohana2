@@ -10,7 +10,7 @@
 class URI_Core extends Router {
 
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *  Detects current query string.
 	 */
 	public function __construct()

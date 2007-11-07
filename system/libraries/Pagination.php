@@ -27,7 +27,7 @@ class Pagination_Core {
 	public $next_page;
 
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *  Sets up the config values.
 	 *
 	 * Parameters:

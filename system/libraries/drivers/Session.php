@@ -1,78 +1,78 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Kohana: The swift, small, and secure PHP5 framework
+/*
+ * Interface: Session_Driver
+ *  Session API Driver
  *
- * @package    Kohana
- * @author     Kohana Team
- * @copyright  Copyright (c) 2007 Kohana Team
- * @link       http://kohanaphp.com
- * @license    http://kohanaphp.com/license.html
- * @since      Version 2.0
- * @filesource
- * $Id$
- */
-
-/**
- * Session API Driver
- *
- * @category    Session
- * @author      Kohana Team
- * @link        http://kohanaphp.com/user_guide/en/libraries/session.html
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
  */
 interface Session_Driver {
 
-	/**
-	 * Open a session
+	/*
+	 * Method: open
+	 *  Opens a session.
 	 *
-	 * @access  public
-	 * @param   string  file path
-	 * @param   string  session name
-	 * @return  bool
+	 * Parameters:
+	 *  path - save path
+	 *  name - session name
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function open($path, $name);
 
-	/**
-	 * Close a session
-	 *
-	 * @access  public
-	 * @return  void
+	/*
+	 * Method: close
+	 *  Closes a session.
 	 */
 	public function close();
 
-	/**
-	 * Read a session
+	/*
+	 * Method: read
+	 *  Reads a session.
 	 *
-	 * @access  public
-	 * @param   string  id
-	 * @return  string
+	 * Parameters:
+	 *  id - session id
+	 *
+	 * Returns:
+	 *  Session data
 	 */
 	public function read($id);
 
-	/**
-	 * Write a session
+	/*
+	 * Method: write
+	 *  Writes a session.
 	 *
-	 * @access  public
-	 * @param   string
-	 * @param   string
-	 * @return  bool
+	 * Parameters:
+	 *  id   - session id
+	 *  data - session data
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function write($id, $data);
 
-	/**
-	 * Destroy a session
+	/*
+	 * Method: destroy
+	 *  Destroys a session.
 	 *
-	 * @access  public
-	 * @param   string
-	 * @return  bool
+	 * Parameters:
+	 *  id - session id
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function destroy($id);
 
-	/**
-	 * Garbage collection, called by close()
+	/*
+	 * Method: gc
+	 *  Garbage collection, called by close()
 	 *
-	 * @access  public
-	 * @return  bool
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function gc();
 
-} // End Session Driver Class
+} // End Session Driver Interface

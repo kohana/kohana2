@@ -16,7 +16,7 @@ class Archive_Core {
 	protected $driver;
 
 	/*
-	 * Method: __construct
+	 * Constructor: __construct
 	 *  Loads the archive driver.
 	 *
 	 * Throws: Kohana_Exception
