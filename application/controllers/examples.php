@@ -280,9 +280,9 @@ class Examples_Controller extends Controller {
 	 * Method: credit_card
 	 *  Demonstrates the CreditCard library.
 	 */
-	function credit_card()
+	function payment()
 	{
-		$credit_card = new Creditcard();
+		$credit_card = new payment();
 
 		// You can specify one parameter at a time:
 		$credit_card->login = 'this';
