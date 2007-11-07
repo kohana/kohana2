@@ -96,21 +96,19 @@ class Payment_Paypal_Driver
 
 		//post data for submitting to server
 		$nvpstr="&TOKEN=".$this->session->get('paypal_token').
-	            "&PAYERID=".$this->paypal_values['payer_id'].
-	            "&IPADDRESS=".urlencode($_SERVER['SERVER_NAME']) ;
-	            "&Amt=".$this->paypal_values['Amt'].
-	            "&PAYMENTACTION=".$this->paypal_values['PAYMENTACTION'].
-	            "&ReturnUrl=".$this->paypal_values['returnURL'].
-	            "&CANCELURL=".$this->paypal_values['cancelURL'] .
-	            "&CURRENCYCODE=".$this->paypal_values['currencyCodeType'];
+		        "&PAYERID=".$this->paypal_values['payer_id'].
+		        "&IPADDRESS=".urlencode($_SERVER['SERVER_NAME']) ;
+		        "&Amt=".$this->paypal_values['Amt'].
+		        "&PAYMENTACTION=".$this->paypal_values['PAYMENTACTION'].
+		        "&ReturnUrl=".$this->paypal_values['returnURL'].
+		        "&CANCELURL=".$this->paypal_values['cancelURL'] .
+		        "&CURRENCYCODE=".$this->paypal_values['currencyCodeType'];
 
 		$response = $this->contact_paypal('DoExpressCheckoutPayment', $data);
 		//convrting NVPResponse to an Associative Array
 		$nvpResArray=deformatNVP($response);
 		$nvpReqArray=deformatNVP($nvpreq);
 		$_SESSION['nvpReqArray']=$nvpReqArray;
-
-		
 
 		return $nvpResArray;
 	}
@@ -145,7 +143,7 @@ class Payment_Paypal_Driver
 	
 	function contact_paypal($method, $data)
 	{
-		$nvpreq="METHOD=".urlencode($method).
+		$data   ="METHOD=".urlencode($method).
 		        "&VERSION=".urlencode(urlencode($this->paypal_values['version'])).
 		        "&PWD=".urlencode($this->paypal_values['API_Password']).
 		        "&USER=".urlencode($this->paypal_values['API_UserName']).
@@ -165,7 +163,7 @@ class Payment_Paypal_Driver
 		if (curl_errno($ch))
 		{
 			// moving to display page to display curl errors
-			$this->session->set(array('curl_error_no' => curl_errno($ch), 'curl_error_msg' => curl_error($ch)));
+			$this->session->set_flash(array('curl_error_no' => curl_errno($ch), 'curl_error_msg' => curl_error($ch)));
 			url::redirect($this->error_url);
 		}
 		else
