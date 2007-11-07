@@ -26,7 +26,7 @@ class Payment_Core {
 	);
 
 	protected $driver = NULL;
-
+	private $fields = array();
 	/*
 	 * Method: __construct
 	 *  Sets the payment processing fields.

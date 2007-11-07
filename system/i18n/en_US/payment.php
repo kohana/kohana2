@@ -2,5 +2,5 @@
 
 $lang = array
 (
-	'required'       => 'Some required fields were not supplied.'
+	'required'       => 'Some required fields were not supplied: %s'
 );

@@ -26,4 +26,4 @@ $config['Paypal'] = array
 	'ReturnUrl' => '',
 	'CANCELURL' => '',
 	'CURRENCYCODE' => 'USD'
-)
+);
