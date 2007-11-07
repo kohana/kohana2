@@ -13,5 +13,5 @@
 $config = array
 (
 	'_allowed' => 'a-z 0-9~%.:_-',
-	'_default' => 'user_guide'
+	'_default' => 'welcome'
 );
