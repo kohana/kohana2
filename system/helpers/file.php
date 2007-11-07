@@ -73,7 +73,7 @@ class file {
 
 	/*
 	 * Method: join
-	 *  Join a split file into a whole fike.
+	 *  Join a split file into a whole file.
 	 *
 	 * Parameters:
 	 *  filename  - split filename, without .000 extension
