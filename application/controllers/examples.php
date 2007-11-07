@@ -282,7 +282,7 @@ class Examples_Controller extends Controller {
 	 */
 	function payment()
 	{
-		$credit_card = new payment();
+		$credit_card = new Payment();
 
 		// You can specify one parameter at a time:
 		$credit_card->login = 'this';
@@ -292,7 +292,7 @@ class Examples_Controller extends Controller {
 		$credit_card->exp_date = '0910';
 		$credit_card->amount = '478.41';
 
-		// Or you can also set fields with an array and the <Creditcard.set_fields> method:
+		// Or you can also set fields with an array and the <Payment.set_fields> method:
 		$credit_card->set_fields(array('login' => 'test',
                                        'first_name' => 'Jeremy',
                                        'last_name' => 'Bush',
