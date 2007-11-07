@@ -56,7 +56,7 @@ class Archive_Core {
 	 * Returns:
 	 *  Archive object
 	 */
-	public function add($path)
+	public function add($path, $recursive = TRUE)
 	{
 		// Normalize to forward slashes
 		$path = str_replace('\\', '/', $path);
@@ -69,17 +69,20 @@ class Archive_Core {
 			// Add directory to paths
 			$this->paths[] = $path;
 
-			$dir = opendir($path);
-			while (($file = readdir($dir)) !== FALSE)
+			if ($recursive == TRUE)
 			{
-				// Do not add hidden files or directories
-				if (substr($file, 0, 1) === '.')
-					continue;
+				$dir = opendir($path);
+				while (($file = readdir($dir)) !== FALSE)
+				{
+					// Do not add hidden files or directories
+					if (substr($file, 0, 1) === '.')
+						continue;
 
-				// Read directory contents
-				$this->add($path.$file);
+					// Read directory contents
+					$this->add($path.$file);
+				}
+				closedir($dir);
 			}
-			closedir($dir);
 		}
 		else
 		{
