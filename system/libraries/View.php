@@ -75,14 +75,14 @@ class View_Core {
 	 *  Magically sets a view variable.
 	 *
 	 * Parameters:
-	 *  name  - variable name
+	 *  key   - variable name
 	 *  value - variable contents
 	 */
-	public function __set($name, $value)
+	public function __set($key, $value)
 	{
-		if ( ! isset($this->$name))
+		if ( ! isset($this->$key))
 		{
-			$this->data[$name] = $value;
+			$this->data[$key] = $value;
 		}
 	}
 
@@ -91,14 +91,17 @@ class View_Core {
 	 *  Magically gets a view variable.
 	 *
 	 * Parameters:
-	 *  name - variable name
+	 *  key - variable name
 	 * 
 	 * Returns:
 	 *  The variable contents or NULL if the variable does not exist
 	 */
-	public function __get($name)
+	public function __get($key)
 	{
-		return isset($this->data[$name]) ? $this->data[$name] : NULL;
+		if (isset($this->data[$key]))
+		{
+			return $this->data[$key];
+		}
 	}
 
 	/*
