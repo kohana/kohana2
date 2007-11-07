@@ -25,7 +25,7 @@ class Payment_Paypal_Driver
 	                                'ReturnUrl'     => FALSE,
 	                                'CANCELURL'     => FALSE,
 	                                'CURRENCYCODE'  => TRUE,
-	                                'payerid'       => TRUE);
+	                                'payerid'       => FALSE);
 
 	private $paypal_values = array('API_UserName'  => '',
 	                               'API_Password'  => '',
