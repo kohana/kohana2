@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /*
- * Class: Creditcard_Authorize_Driver
+ * Class: Payment_Authorize_Driver
  *  Provides payment processing with Authorize.net
  *
  * Kohana Source Code:
@@ -8,27 +8,26 @@
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
  *
- * $Id: Creditcard_Authorize.php 975 2007-11-04 13:18:16Z Geert $
  */
-class Creditcard_Authorize_Driver
+class Payment_Authorize_Driver
 {
 	/**
 	 * Fields required to do a transaction
 	 *
 	 * @var array
 	 */
-	private $required_fields = array(   'x_login' => FALSE,
-                                        'x_version' => TRUE,
-                                        'x_delim_char' => TRUE,
-                                        'x_url' => TRUE,
-                                        'x_type' => TRUE,
-                                        'x_method' => TRUE,
-                                        'x_tran_key' => FALSE,
-                                        'x_relay_response' => TRUE,
-                                        'x_card_num' => FALSE,
-                                        'x_expiration_date' => FALSE,
-                                        'x_amount' => FALSE,
-                                        );
+	private $required_fields = array('x_login' => FALSE,
+	                                 'x_version' => TRUE,
+	                                 'x_delim_char' => TRUE,
+	                                 'x_url' => TRUE,
+	                                 'x_type' => TRUE,
+	                                 'x_method' => TRUE,
+	                                 'x_tran_key' => FALSE,
+	                                 'x_relay_response' => TRUE,
+	                                 'x_card_num' => FALSE,
+	                                 'x_expiration_date' => FALSE,
+	                                 'x_amount' => FALSE,
+	                                 );
 	/**
 	 * Default required values
 	 *
@@ -49,10 +48,12 @@ class Creditcard_Authorize_Driver
 	{
 		$this->authnet_values['x_login'] = $config['auth_net_login_id'];
 		$this->authnet_values['x_tran_key'] = $config['auth_net_tran_key'];
+		$this->required_field['x_login'] = !empty($config['auth_net_login_id']);
+		$this->required_field['x_tran_key'] = !empty($config['auth_net_tran_key']);
 
 		$this->curl_config = $config['curl_config'];
 		
-		Log::add('debug', 'Authorize Credit Card Driver Initialized');
+		Log::add('debug', 'Authorize Payment Driver Initialized');
 	}
 
 	public function set_fields($fields)
@@ -70,7 +71,7 @@ class Creditcard_Authorize_Driver
 			}
 
 			$this->authnet_values['x_'.$key] = $value;
-			if (array_key_exists('x_'.$key, $this->required_fields) and $value != '') $this->required_fields['x_'.$key] = TRUE;
+			if (array_key_exists('x_'.$key, $this->required_fields) and !empty($value)) $this->required_fields['x_'.$key] = TRUE;
 		}
 	}
 
@@ -78,7 +79,7 @@ class Creditcard_Authorize_Driver
 	{
 		// Check for required fields
 		if (in_array(FALSE, $this->required_fields))
-			throw new Kohana_Exception('creditcard.required');
+			throw new Kohana_Exception('payment.required');
 
 		$fields = "";
 		foreach( $this->authnet_values as $key => $value )

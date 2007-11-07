@@ -625,7 +625,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 *
 	 * Parameters:
 	 *  object - use objects or arrays
-	 *  type - the array type to use (if using arrays) or an class name (if using objects)
+	 *  type - the array type to use (if using arrays) or a class name (if using objects)
 	 * 
 	 * Returns:
 	 *  <Mysql_Result> object
@@ -658,7 +658,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 *
 	 * Parameters:
 	 *  object - use objects or arrays
-	 *  type - the array type to use (if using arrays) or an class name (if using objects)
+	 *  type - the array type to use (if using arrays) or a class name (if using objects)
 	 * 
 	 * Returns:
 	 *  <Mysql_Result> object

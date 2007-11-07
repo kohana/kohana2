@@ -17,3 +17,13 @@ $config['Authorize'] = array
 	'auth_net_login_id' => 'blah',
 	'auth_net_tran_key' => 'blah'
 );
+
+$config['Paypal'] = array
+(
+	'API_UserName' => '',
+	'API_Password' => '',
+	'API_Signature' => '',
+	'ReturnUrl' => '',
+	'CANCELURL' => '',
+	'CURRENCYCODE' => 'USD'
+)
