@@ -27,22 +27,22 @@ code { display: block; padding: 1em; margin: 1em 0 1em; background: #eee; border
 			#developer a:active { border-color: #114; }
 
 /* Header */
-#header { height: 14em; background: #83c018 url(../img/kohana.png) 1.2em center no-repeat; }
+#header { height: 16em; }
 
 /* Logo */
-#logo { display: none;  }
+#logo { position: absolute; top: 1.1em; left: 0.3em; height: 141px; width: 400px; background: url(../img/kohana.png) top left no-repeat; text-indent: -3000em; }
 
 /* Main Menu */
-#menu { padding: 0 4em; border-bottom: solid 0.1em #96a67a; }
+#menu { padding: 0 4em; margin-top: -2em; margin-right: 22em; border-top: solid 1px #83c018; border-bottom: solid 0.1em #96a67a; }
 	#menu li { display: block; float: left; margin-right: 0.4em; }
 	#menu li.active { border-right-color: #76b714; }
 		#menu a { display: block; padding: 1em 1.2em 0.6em; margin-bottom: -0.1em; border: solid 0.1em #83c018; border-bottom: 0; border-right-width: 0.2em; text-transform: uppercase; font-weight: bold; color: #3f5c0b; }
 		#menu a:hover { background: #76b714; color: #2c360b; }
 		#menu li.active a { background: #f7fbf1; border-color: #96a67a; color: #a04807; }
-		#menu li.active a:hover { color: #b04f08; }
+		#menu li.active a:hover { background: #f7fbf1; color: #b04f08; }
 
 /* Main Body */
-#body { padding: 1em 4em; background: #f7fbf1; }
+#body { padding: 1em 4em; _margin-top: -1.1em; background: #f7fbf1; }
 	#body h2 span { float: right; padding-right: 1em; font-weight: bold; font-size: 0.6em; }
 	#body strong { font-weight: bold; }
 	#body p { padding-bottom: 1em; }
@@ -57,7 +57,7 @@ code { display: block; padding: 1em; margin: 1em 0 1em; background: #eee; border
 #content { float: left; width: 100%; margin-right: -21em; }
 
 /* Sidebar */
-#sidebar { float: right; width: 20em; margin-top: -12em; margin-bottom: 2em; }
+#sidebar { float: right; width: 20em; margin-top: -14em; margin-bottom: 2em; }
 	#sidebody { background: #ebeee6; padding: 0.4em; border: solid 0.1em #96a67a; border-right-width: 0.2em; }
 		#sidecontent h6 { margin-bottom: 1em; padding: 0.5em 0; border-bottom: dotted 1px #999; text-transform: uppercase; text-indent: 0.6em; font-weight: bold; }
 		#sidecontent p { padding: 0 1em 1em; }

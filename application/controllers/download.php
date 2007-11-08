@@ -18,6 +18,9 @@ class Download_Controller extends Controller {
 		// Counter
 		$content->counter = file_get_contents('application/cache/counter.txt');
 
+		// Pull date
+		$content->sync_date = strtotime('2006/11/8');
+
 		// Set up groups array
 		$groups = array
 		(
@@ -67,7 +70,45 @@ class Download_Controller extends Controller {
 				'system/views',
 				'system/views/kohana_error_page.php'
 			),
-			'standard' => array()
+			'standard' => array
+			(
+				'application/helpers',
+				'application/hooks',
+				'application/libraries',
+				'application/controllers/examples.php',
+				'application/views/viewinview',
+				'application/views/viewinview/container.php',
+				'application/views/viewinview/footer.php',
+				'application/views/viewinview/header.php',
+				'system/config/database.php',
+				'system/config/encryption.php',
+				'system/config/hooks.php',
+				'system/config/pagination.php',
+				'system/helpers/date.php',
+				'system/helpers/download.php',
+				'system/helpers/feed.php',
+				'system/helpers/inflector.php',
+				'system/helpers/text.php',
+				'system/libraries/drivers/Archive.php',
+				'system/libraries/drivers/Archive_Zip.php',
+				'system/libraries/drivers/Database.php',
+				'system/libraries/drivers/Database_Mysql.php',
+				'system/libraries/drivers/Session_Database.php',
+				'system/libraries/Archive.php',
+				'system/libraries/Calendar.php',
+				'system/libraries/Database.php',
+				'system/libraries/Encrypt.php',
+				'system/libraries/Pagination.php',
+				'system/libraries/Profiler.php',
+				'system/views',
+				'system/views/kohana_holiday.php',
+				'system/views/kohana_profiler.php',
+				'system/views/pagination',
+				'system/views/pagination/classic.php',
+				'system/views/pagination/digg.php',
+				'system/views/pagination/extended.php',
+				'system/views/pagination/punbb.php'
+			)
 		);
 
 		// Add core files
@@ -76,42 +117,8 @@ class Download_Controller extends Controller {
 			$groups['minimal'][] = substr($file, strlen(DOCROOT.'kohana_trunk/'));
 		}
 
-		// Standard Group
-		$groups['standard'] = array_merge($groups['minimal'], array
-		(
-			'application/helpers',
-			'application/hooks',
-			'application/libraries',
-			'application/controllers/examples.php',
-			'system/config/database.php',
-			'system/config/encryption.php',
-			'system/config/hooks.php',
-			'system/config/pagination.php',
-			'system/helpers/date.php',
-			'system/helpers/download.php',
-			'system/helpers/feed.php',
-			'system/helpers/inflector.php',
-			'system/helpers/text.php',
-			'system/libraries/drivers/Archive.php',
-			'system/libraries/drivers/Archive_Zip.php',
-			'system/libraries/drivers/Database.php',
-			'system/libraries/drivers/Database_Mysql.php',
-			'system/libraries/drivers/Session_Database.php',
-			'system/libraries/Archive.php',
-			'system/libraries/Calendar.php',
-			'system/libraries/Database.php',
-			'system/libraries/Encrypt.php',
-			'system/libraries/Pagination.php',
-			'system/libraries/Profiler.php',
-			'system/views',
-			'system/views/kohana_holiday.php',
-			'system/views/kohana_profiler.php',
-			'system/views/pagination',
-			'system/views/pagination/classic.php',
-			'system/views/pagination/digg.php',
-			'system/views/pagination/extended.php',
-			'system/views/pagination/punbb.php'
-		));
+		// Standard should have all the files that minimal does
+		$groups['standard'] = array_merge($groups['minimal'], $groups['standard']);
 
 		// Language files for each group
 		$group_langs = array
@@ -134,6 +141,9 @@ class Download_Controller extends Controller {
 				'profiler'
 			)
 		);
+
+		// Standard group should have all the files that minimal does
+		$group_langs['standard'] = array_merge($group_langs['minimal'], $group_langs['standard']);
 
 		// Vendor resources
 		$content->vendors = array
@@ -250,7 +260,7 @@ class Download_Controller extends Controller {
 			}
 
 			// Force a download of the archive
-			$archive->download('Kohana_v'.KOHANA_VERSION.'.zip');
+			$archive->download('Kohana_v'.KOHANA_VERSION.'_'.date('Y-m-d', $content->sync_date).'.zip');
 
 			// Return to the original directory
 			chdir($return_dir);
@@ -265,50 +275,6 @@ class Download_Controller extends Controller {
 
 		// Add content to view
 		$this->template->set('content', $content);
-	}
-
-	protected function _build($paths, $langs = 'en_US', $prefix = '')
-	{
-		$files = array();
-		foreach($paths as $dir => $file)
-		{
-			if (is_numeric($dir))
-			{
-				// Add file
-				$files[] = $prefix.$file.EXT;
-			}
-			else
-			{
-				if ($dir === 'i18n')
-				{
-					// Add i18n dir
-					$files[] = $prefix.$dir.'/';
-
-					// Add the language name to the dir
-					$dir .= '/'.$lang;
-				}
-
-				// Add the current dir to the package
-				$files[] = $prefix.$dir.'/';
-
-				if ($dir === 'core')
-				{
-					foreach(Kohana::list_files('core') as $file)
-					{
-						$files[] = substr($file, strlen(DOCROOT));
-					}
-				}
-				elseif (is_array($file))
-				{
-					if (empty($file))
-						continue;
-
-					// Recursion, for files in subdirs
-					$files = array_merge($files, $this->_build($file, $lang, $prefix.$dir.'/'));
-				}
-			}
-		}
-		return $files;
 	}
 
 } // End Download_Controller

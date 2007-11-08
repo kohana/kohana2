@@ -5,6 +5,11 @@ $(document).ready(function()
 		// IE has issues with the nifty css clearfix that every other browser supports
 		$('.clearfix').removeClass('clearfix').append('<div style="height:1px;clear:both;"></div>');
 		$('#menu').css('margin-bottom', '-2px');
+		if ($.browser.version == '6.0')
+		{
+			// IE6 doens't support transparent PNGs
+			$('#logo').ifixpng('../img/pixel.gif');
+		}
 	}
 	// Menu link effects
 	$('#menu li').not('.active').find('a').each(function()
