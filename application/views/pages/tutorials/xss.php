@@ -59,10 +59,10 @@ echo geshi_highlight('$config = array
 	// ...
 	
 	// Enable global XSS filtering using the default filter.
-	'global_xss_filtering' => TRUE,
+	\'global_xss_filtering\' => TRUE,
 	
 	// Or, enable global XSS filtering using HTML Purifier.
-	'global_xss_filtering' => 'htmlpurifier',
+	\'global_xss_filtering\' => \'htmlpurifier\',
 	
 	// ...
 );
