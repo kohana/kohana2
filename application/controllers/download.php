@@ -243,7 +243,7 @@ class Download_Controller extends Controller {
 			// Force a download of the archive
 			$archive->download('Kohana.zip');
 
-			// Return to the orginal directory
+			// Return to the original directory
 			chdir($return_dir);
 
 			// Do this to prevent the template from trying to render and fucking up the download
