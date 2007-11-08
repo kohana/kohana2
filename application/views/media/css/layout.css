@@ -25,7 +25,7 @@ abbr { border-bottom: solid 1px #ccc; cursor: help; }
 			#developer a:active { border-color: #114; }
 
 /* Header */
-#header { height: 16em; background: #83c018 url(../img/kohana.png) 4em 5em no-repeat; border-bottom: solid 0.1em #96a67a; }
+#header { height: 16em; background: #83c018 url(../img/kohana.png) 1.2em center no-repeat; border-bottom: solid 0.1em #96a67a; }
 
 /* Logo */
 #logo { display: none;  }
