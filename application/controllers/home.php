@@ -4,7 +4,7 @@ class Home_Controller extends Controller {
 
 	protected $auto_render = TRUE;
 
-	public function _remap($page = 'index')
+	public function _remap()
 	{
 		$this->template->content = new View('pages/home');
 	}
