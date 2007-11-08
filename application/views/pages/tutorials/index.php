@@ -6,4 +6,5 @@
 
 <ul>
 <li><?php echo html::anchor('tutorials/page', 'Creating a Page Controller') ?></li>
+<li><?php echo html::anchor('tutorials/xss', 'XSS Filtering') ?></li>
 </ul>
