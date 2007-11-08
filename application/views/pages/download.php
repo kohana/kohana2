@@ -1,6 +1,6 @@
 <h2>Download Kohana <span>Total Downloads: <?php echo $counter ?></span></h2>
 
-<p>Download intro text goes here</p>
+<p>You are downloading Kohana v<?php echo KOHANA_VERSION ?>. Please use <?php echo html::anchor('http://kohanaphp.com/trac/newticket', 'Trac tickets') ?> to report any bugs you experience.</p>
 
 <?php echo form::open('download') ?> 
 <p>Choose your download type:</p>

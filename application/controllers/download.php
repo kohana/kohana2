@@ -6,13 +6,10 @@ class Download_Controller extends Controller {
 
 	public function index()
 	{
-		if ( ! is_writable('application/cache/counter.txt'))
+		if ( ! file_exists('application/cache/counter.txt'))
 		{
-			throw new Kohana_User_Exception
-			(
-				'Counter Unwritable',
-				'Please make the file application/cache/counter.txt writable!'
-			);
+			// Create a new counter
+			file_put_contents('application/cache/counter.txt', '0');
 		}
 
 		// Load content

@@ -1,10 +1,39 @@
+<?php
+
+$feed_names = array
+(
+	'trac' => 'Latest Changes',
+	'forums' => 'Latest Forum Activity'
+);
+
+?>
+
 <div id="sidecontent">
-<h6>Current Release</h6>
-<p>Version {kohana_version}, &quot;{kohana_codename}&quot;.</p>
+<?php
 
-<h6>Forum Activity</h6>
-<p>blarg, latest forum posts go here!</p>
+foreach($feeds as $name => $items): 
 
-<h6>Newest Tutorials</h6>
-<p>Me can haz tutorials plz?</p>
+?>
+<h6><?php echo $feed_names[$name] ?></h6>
+<ul>
+<?php
+
+foreach($items as $data):
+
+	$date = date('M j, g:i:s A', strtotime($data['pubDate']));
+
+?>
+<li><strong><?php echo $data['title'] ?></strong> &ndash; <?php echo $date ?> - <?php echo html::anchor($data['link'], 'Read More')?></li>
+<?php
+
+endforeach;
+
+?>
+</ul>
+<?php
+
+endforeach;
+
+?>
+
 </div>
