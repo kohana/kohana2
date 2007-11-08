@@ -33,6 +33,9 @@ class Validation_Core {
 	// Data to validate
 	protected $data = array();
 
+	// Result from validation rules
+	protected $result;
+
 	/*
 	 * Constructor: __construct
 	 *
@@ -291,64 +294,11 @@ class Validation_Core {
 			// Loop through the rules and process each one
 			foreach(explode('|', $rules) as $rule)
 			{
-				if ($rule === 'trim' OR $rule === 'sha1' OR $rule === 'md5')
-				{
-					/**
-					 * @todo safe_form_data
-					 */
-					$this->data[$field] = $rule($this->data[$field]);
-				}
-
-				// Handle callback rules
-				$callback = FALSE;
-				if (preg_match('/callback_(.+)/', $rule, $match))
-				{
-					$callback = $match[1];
-				}
-
-				// Handle params
-				$params = FALSE;
-				if (preg_match('/([^\[]*+)\[(.*?)\]/', $rule, $match))
-				{
-					$rule   = $match[1];
-					$params = explode(',', $match[2]);
-				}
-
-				// Process this field with the rule
-				if ($callback !== FALSE)
-				{
-					if ( ! method_exists(Kohana::instance(), $callback))
-						throw new Kohana_Exception('validation.invalid_rule', $callback);
-
-					$result = Kohana::instance()->$callback($this->data[$field], $params);
-				}
-				elseif ($rule === 'matches')
-				{
-					$result = $this->$rule($field, $params);
-				}
-				elseif (method_exists($this, $rule))
-				{
-					$result = $this->$rule($this->data[$field], $params);
-				}
-				elseif (is_callable($rule, TRUE))
-				{
-					if (strpos($rule, '::') !== FALSE)
-					{
-						$result = call_user_func(explode('::', $rule), $field);
-					}
-					else
-					{
-						$result = $rule($this->data[$field]);
-					}
-				}
-				else
-				{
-					// Trying to validate with a rule that does not exist? No way!
-					throw new Kohana_Exception('validation.invalid_rule', $rule);
-				}
+				// To properly handle recursion
+				$this->run_rule($rule, $field);
 
 				// Stop validating when there is an error
-				if (isset($result) AND $result === FALSE)
+				if ($this->result === FALSE)
 					break;
 			}
 		}
@@ -363,6 +313,87 @@ class Validation_Core {
 		{
 			Event::run('validation.failure', $this->data);
 			return FALSE;
+		}
+	}
+
+	/*
+	 * Method: run_rule
+	 *  Handles recursively calling rules on arrays of data.
+	 *
+	 * Parameters:
+	 *  rule  - validation rule to be run on the data
+	 *  field - name of field
+	 */
+	protected function run_rule($rule, $field)
+	{
+		// Use key_string to extract the field data
+		$data = Kohana::key_string($field, $this->data);
+
+		if (is_array($data))
+		{
+			foreach($data as $key => $value)
+			{
+				// Recursion is fun!
+				$this->run_rule($rule, $field.'.'.$key);
+			}
+		}
+		else
+		{
+			if ($rule === 'trim' OR $rule === 'sha1' OR $rule === 'md5')
+			{
+				/**
+				 * @todo safe_form_data
+				 */
+				$this->data[$field] = $rule($data);
+			}
+
+			// Handle callback rules
+			$callback = FALSE;
+			if (preg_match('/callback_(.+)/', $rule, $match))
+			{
+				$callback = $match[1];
+			}
+
+			// Handle params
+			$params = FALSE;
+			if (preg_match('/([^\[]*+)\[(.*?)\]/', $rule, $match))
+			{
+				$rule   = $match[1];
+				$params = explode(',', $match[2]);
+			}
+
+			// Process this field with the rule
+			if ($callback !== FALSE)
+			{
+				if ( ! method_exists(Kohana::instance(), $callback))
+					throw new Kohana_Exception('validation.invalid_rule', $callback);
+
+				$this->result = Kohana::instance()->$callback($data, $params);
+			}
+			elseif ($rule === 'matches')
+			{
+				$this->result = $this->$rule($field, $params);
+			}
+			elseif (method_exists($this, $rule))
+			{
+				$this->result = $this->$rule($data, $params);
+			}
+			elseif (is_callable($rule, TRUE))
+			{
+				if (strpos($rule, '::') !== FALSE)
+				{
+					$this->result = call_user_func(explode('::', $rule), $field);
+				}
+				else
+				{
+					$this->result = $rule($data);
+				}
+			}
+			else
+			{
+				// Trying to validate with a rule that does not exist? No way!
+				throw new Kohana_Exception('validation.invalid_rule', $rule);
+			}
 		}
 	}
 
@@ -662,6 +693,7 @@ class Validation_Core {
 			}
 			elseif (strlen($str) !== (int) current($length))
 			{
+				die(Kohana::debug($str));
 				// Test exact length
 				$this->add_error('exact_length', $this->current_field, (int) current($length));
 				return FALSE;

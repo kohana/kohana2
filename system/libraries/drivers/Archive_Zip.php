@@ -31,6 +31,9 @@ class Archive_Zip_Driver implements Archive_Driver {
 	 */
 	public function create($paths, $filename = FALSE)
 	{
+		// Sort the paths to make sure that directories come before files
+		sort($paths);
+
 		foreach($paths as $file)
 		{
 			if (substr($file, -1) === '/')
