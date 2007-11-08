@@ -41,6 +41,7 @@ abbr { border-bottom: solid 1px #ccc; cursor: help; }
 
 /* Main Body */
 #body { position: relative; padding: 1em 4em; background: #f7fbf1; }
+	#body h2 span { float: right; padding-right: 1em; font-weight: bold; font-size: 0.6em; }
 	#body strong { font-weight: bold; }
 	#body p { padding-bottom: 1em; }
 	#body ul { padding-left: 1.5em; margin-bottom: 1em; list-style: square; line-height: 180%; }

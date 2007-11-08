@@ -1,6 +1,6 @@
-<h2>Download Kohana</h2>
+<h2>Download Kohana <span>Total Downloads: <?php echo $counter ?></span></h2>
 
-<p>Downloads so far: <?php echo $counter ?>.</p>
+<p>Download intro text goes here</p>
 
 <?php echo form::open('download') ?> 
 <p>Choose your download type:</p>
@@ -60,5 +60,5 @@ endforeach;
 ?>
 </ul>
 
-<?php echo form::button(array('type' => 'submit', 'name' => 'download'), 'Download!') ?> 
+<?php echo form::button(array('type' => 'submit', 'name' => 'download'), 'Download Kohana!') ?> 
 <?php echo form::close() ?> 
