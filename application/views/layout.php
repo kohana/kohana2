@@ -14,6 +14,16 @@ echo html::stylesheet(array
 
 ?>
 
+<?php
+
+echo html::script(array
+(
+	'media/js/jquery',
+	'media/js/effects'
+)) 
+
+?>
+
 </head>
 <body>
 <!-- Start Developer Menu -->
@@ -53,7 +63,7 @@ echo html::stylesheet(array
 <div id="body" class="container clearfix">
 
 <!-- Start Content -->
-<div id="content-wrapper"><div id="content" class="clearfix">
+<div id="content-wrapper"><div id="content">
 <?php echo $content ?>
 </div></div>
 <!-- End Content -->
