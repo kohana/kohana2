@@ -27,13 +27,13 @@ code { display: block; padding: 1em; margin: 1em 0 1em; background: #eee; border
 			#developer a:active { border-color: #114; }
 
 /* Header */
-#header { height: 16em; background: #83c018 url(../img/kohana.png) 1.2em center no-repeat; border-bottom: solid 0.1em #96a67a; }
+#header { height: 14em; background: #83c018 url(../img/kohana.png) 1.2em center no-repeat; }
 
 /* Logo */
 #logo { display: none;  }
 
 /* Main Menu */
-#menu { position: absolute; bottom: 0; margin: 0 4em; margin-right: 22em; }
+#menu { padding: 0 4em; border-bottom: solid 0.1em #96a67a; }
 	#menu li { display: block; float: left; margin-right: 0.4em; }
 	#menu li.active { border-right-color: #76b714; }
 		#menu a { display: block; padding: 1em 1.2em 0.6em; margin-bottom: -0.1em; border: solid 0.1em #83c018; border-bottom: 0; border-right-width: 0.2em; text-transform: uppercase; font-weight: bold; color: #3f5c0b; }
@@ -42,7 +42,7 @@ code { display: block; padding: 1em; margin: 1em 0 1em; background: #eee; border
 		#menu li.active a:hover { color: #b04f08; }
 
 /* Main Body */
-#body { position: relative; padding: 1em 4em; background: #f7fbf1; }
+#body { padding: 1em 4em; background: #f7fbf1; }
 	#body h2 span { float: right; padding-right: 1em; font-weight: bold; font-size: 0.6em; }
 	#body strong { font-weight: bold; }
 	#body p { padding-bottom: 1em; }

@@ -28,7 +28,7 @@ echo html::script(array
 </head>
 <body>
 <!-- Start Developer Menu -->
-<div id="developer" class="container clearfix">
+<div id="developer">
 <span>Developers:</span>
 <ul>
 <li><?php echo html::anchor('http://kohanaphp.com/trac', 'Trac') ?></li>
@@ -41,11 +41,14 @@ echo html::script(array
 <!-- End Developer Menu -->
 
 <!-- Start Header -->
-<div id="header" class="container clearfix">
+<div id="header">
 
 <!-- Start Logo -->
 <h1 id="logo">Kohana</h1>
 <!-- End Logo -->
+
+</div>
+<!-- End Header -->
 
 <!-- Start Main Menu -->
 <div id="menu" class="clearfix">
@@ -57,11 +60,8 @@ echo html::script(array
 </div>
 <!-- End Main Menu -->
 
-</div>
-<!-- End Header -->
-
 <!-- Start Body -->
-<div id="body" class="container clearfix">
+<div id="body" class="clearfix">
 
 <!-- Start Content -->
 <div id="content-wrapper"><div id="content">
@@ -90,7 +90,7 @@ echo html::script(array
 </div>
 <!-- End Body -->
 
-<div id="footer" class="container"><strong>&copy;2007 Kohana Team. All rights reserved.</strong> Powered by Kohana v{kohana_version}. Rendered in {execution_time} seconds.</div>
+<div id="footer"><strong>&copy;2007 Kohana Team. All rights reserved.</strong> Powered by Kohana v{kohana_version}. Rendered in {execution_time} seconds.</div>
 
 </div>
 </body>
