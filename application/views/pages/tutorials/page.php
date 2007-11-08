@@ -5,9 +5,9 @@
 	<li>Create a virtual, database storage page system</li>
 	<li>Create a simple authentication library for admins to edit pages</li>
 </ol>
-<h2>Starting Out</h2>
-<p>To start we will create a file to hold our controller:</p>
 
+<h3>Starting Out</h3>
+<p>To start we will create a file to hold our controller:</p>
 
 <h4>application/controllers/page.php</h4>
 <?php
