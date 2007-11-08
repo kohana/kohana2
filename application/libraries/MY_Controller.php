@@ -60,8 +60,8 @@ class Controller extends Controller_Core {
 			{
 				$filename = $cache.$name.'.xml';
 
-				// Cache the feed for 2 hours
-				if ( ! file_exists($filename) OR (time() - 7200) > filemtime($filename))
+				// Cache the feed for 30 minutes, 60 (one minute) * 30 = 1800
+				if ( ! file_exists($filename) OR (time() - 1800) > filemtime($filename))
 				{
 					file_put_contents($filename, file_get_contents($link));
 				}
