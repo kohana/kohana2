@@ -40,19 +40,6 @@ class Examples_Controller extends Controller {
 	}
 
 	/*
-	 * Method: parser
-	 *  Kohana source code comment parser.
-	 */
-	function parser()
-	{
-		$parse = new Kodoc();
-
-		print $parse->get_docs();
-
-		print Kohana::lang('core.stats_footer');
-	}
-
-	/*
 	 * Method: template
 	 *  Demonstrates how to use views inside of views.
 	 */
