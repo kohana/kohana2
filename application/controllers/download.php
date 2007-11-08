@@ -18,6 +18,9 @@ class Download_Controller extends Controller {
 		// Load content
 		$content = new View('pages/download');
 
+		// Counter
+		$content->counter = file_get_contents('application/cache/counter.txt');
+
 		// Set up groups array
 		$groups = array
 		(
@@ -256,7 +259,7 @@ class Download_Controller extends Controller {
 			chdir($return_dir);
 
 			// Increase the counter
-			file_put_contents('application/cache/counter.txt', file_get_contents('application/cache/counter.txt') + 1);
+			file_put_contents('application/cache/counter.txt', $content->counter + 1);
 
 			// Do this to prevent the template from trying to render and fucking up the download
 			$this->auto_render = FALSE;

@@ -1,6 +1,6 @@
 <h2>Download Kohana</h2>
 
-<p>Download intro</p>
+<p>Downloads so far: <?php echo $counter ?>.</p>
 
 <?php echo form::open('download') ?> 
 <p>Choose your download type:</p>
