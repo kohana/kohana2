@@ -25,15 +25,23 @@ class html {
 	{
 		// Do encode existing HTML entities (default)
 		if ($double_encode == TRUE)
-			return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
-
-		// Do not encode existing HTML entities
-		// From PHP 5.2.3 this functionality is built-in, otherwise use a regex
-		if (version_compare(PHP_VERSION, '5.2.3', '>='))
-			return htmlspecialchars($str, ENT_QUOTES, 'UTF-8', FALSE);
-
-		$str = preg_replace('/&(?!(?:#\d+|[a-z]+);)/i', '&amp;', $str);
-		$str = str_replace(array('<', '>', '\'', '"'), array('&lt;', '&gt;', '&#39;', '&quot;'), $str);
+		{
+			$str = htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
+		}
+		else
+		{
+			// Do not encode existing HTML entities
+			// From PHP 5.2.3 this functionality is built-in, otherwise use a regex
+			if (version_compare(PHP_VERSION, '5.2.3', '>='))
+			{
+				$str = htmlspecialchars($str, ENT_QUOTES, 'UTF-8', FALSE);
+			}
+			else
+			{
+				$str = preg_replace('/&(?!(?:#\d+|[a-z]+);)/i', '&amp;', $str);
+				$str = str_replace(array('<', '>', '\'', '"'), array('&lt;', '&gt;', '&#39;', '&quot;'), $str);
+			}
+		}
 
 		return $str;
 	}
