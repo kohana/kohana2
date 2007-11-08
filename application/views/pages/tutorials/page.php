@@ -61,9 +61,11 @@ echo geshi_highlight('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://
 	<body>
 		<div id="menu">
 			<ul class="nav">
-				<?php foreach ($menu["menu"] as $url => $title):?><li><?=html::anchor($url, htmlentities($title))?>
+				<?php foreach ($menu["menu"] as $url => $title):?>
+				<li><?=html::anchor($url, htmlentities($title))?>
 					<?php if (isset($menu["submenu"][$url])):?><ul>
-						<?php foreach ($menu["submenu"][$url] as $child_url => $title):?><li><?=html::anchor($child_url, htmlentities($title))?></li>
+						<?php foreach ($menu["submenu"][$url] as $child_url => $title):?>
+						<li><?=html::anchor($child_url, htmlentities($title))?></li>
 						<?php endforeach; ?>
 					</ul><?php endif; ?>
 				</li><?php endforeach; ?>
@@ -89,7 +91,7 @@ echo geshi_highlight('<?php
  	$this->session->set(array("last_page" => $this_page));
  }
  if ($this->session->get("loggedin") and !in_array($this->uri->segment(1), $no_edit))
- 	echo "<a href="/" . (($this->uri->rsegment(1) != "") ? $this->uri->rsegment(1) : "page") . "/edit/" . $this->uri->segment(1) . (($this->uri->segment(2) !== false) ? ("/" . $this->uri->segment(2)) : "") . "">Edit this page</a>";
+ 	echo html::anchor(($this->uri->rsegment(1) != "") ? $this->uri->rsegment(1) : "page") . "/edit/" . $this->uri->segment(1) . (($this->uri->segment(2) !== false) ? ("/" . $this->uri->segment(2)) : "", "Edit this page");
 
 ?>
 </div>
