@@ -49,7 +49,6 @@ class Examples_Controller extends Controller {
 
 		print $parse->get_docs();
 
-		// print Kohana::debug($parse->get_docs());
 		print Kohana::lang('core.stats_footer');
 	}
 

@@ -8,7 +8,7 @@
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
  */
-define('KOHANA_VERSION',  '2.0a1');
+define('KOHANA_VERSION',  '2.0');
 define('KOHANA_CODENAME', 'Superlime');
 
 // Kohana benchmarks are prefixed by a random string to prevent collisions

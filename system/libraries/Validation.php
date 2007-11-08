@@ -37,7 +37,7 @@ class Validation_Core {
 	protected $result;
 
 	/*
-	 * Constructor: __construct
+	 * Method: __construct
 	 *
 	 * Parameters:
 	 *  data - array to validate
@@ -62,6 +62,17 @@ class Validation_Core {
 		Log::add('debug', 'Validation Library Initialized, instance '.self::$instances);
 	}
 
+	/*
+	 * Method: __get
+	 *  Magically gets a validation variable. This can be an error string or a
+	 *  data field, or an array of all field data.
+	 *
+	 * Parameters:
+	 *  key - variable name
+	 * 
+	 * Returns:
+	 *  The variable contents or NULL if the variable does not exist
+	 */
 	public function __get($key)
 	{
 		if ( ! isset($this->$key))
@@ -107,25 +118,6 @@ class Validation_Core {
 				return $data;
 			}
 		}
-	}
-
-	public function debug()
-	{
-		// Start buffering
-		ob_start();
-
-		// Debug important variables
-		foreach(array('data', 'fields', 'rules', 'errors', 'messages') as $var)
-		{
-			print strtoupper($var);
-			print '<pre>'.print_r($this->$var, TRUE)."</pre>\n\n";
-		}
-
-		// Fetch the buffer
-		$output = ob_get_contents();
-		ob_end_clean();
-
-		return $output;
 	}
 
 	/*
