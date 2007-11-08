@@ -655,8 +655,9 @@ class Kohana {
 
 		$line = self::key_string($key, $language);
 
+		// Return the key string as fallback
 		if ($line === NULL)
-			return FALSE;
+			return $key;
 
 		if (is_string($line) AND func_num_args() > 1)
 		{
