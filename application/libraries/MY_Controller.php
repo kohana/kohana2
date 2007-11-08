@@ -12,6 +12,12 @@ class Controller extends Controller_Core {
 	{
 		parent::__construct();
 
+		if ($this->uri->segment(1) == FALSE)
+		{
+			// Need the first segment so that the main menu has an active tab
+			url::redirect('home');
+		}
+
 		if ($this->auto_render == TRUE)
 		{
 			// Load the template
