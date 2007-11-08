@@ -472,7 +472,13 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		}
 		else
 		{
+			// Use the default config values
 			$fetch = $this->fetch_type;
+
+			if ($fetch == 'mysql_fetch_object')
+			{
+				$type = class_exists($type, FALSE) ? $type : 'stdClass';
+			}
 		}
 
 		while ($row = $fetch($this->result, $type))

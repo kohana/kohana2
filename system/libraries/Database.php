@@ -482,10 +482,10 @@ class Database_Core {
 
 		if ($direction != '')
 		{
-			$direction = (in_array($direction, array('ASC', 'DESC', 'RAND()'))) ? ' '.$direction : ' ASC';
+			$direction = (in_array($direction, array('ASC', 'DESC', 'RAND()', 'NULL'))) ? ' '.$direction : ' ASC';
 		}
 
-		$this->orderby[] = $this->driver->escape_column($orderby).$direction;
+		$this->orderby[] = (empty($orderby)) ? $direction : $this->driver->escape_column($orderby).$direction;
 		return $this;
 	}
 
