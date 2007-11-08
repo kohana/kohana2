@@ -23,7 +23,7 @@ foreach($items as $data):
 	$date = date('M j, g:i:s A', strtotime($data['pubDate']));
 
 ?>
-<li><strong><?php echo $data['title'] ?></strong> &ndash; <?php echo $date ?> - <?php echo html::anchor($data['link'], 'Read More')?></li>
+<li><strong><?php echo html::specialchars($data['title']) ?></strong> &ndash; <?php echo $date ?> - <?php echo html::anchor($data['link'], 'Read More')?></li>
 <?php
 
 endforeach;
