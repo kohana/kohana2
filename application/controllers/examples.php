@@ -171,7 +171,22 @@ class Examples_Controller extends Controller {
 	/*
 	 * Method: database
 	 *  Demonstrates the features of the Database library.
-	 */
+	 * Table Structure:
+	 *  CREATE TABLE `pages` (
+	 *  `id` mediumint( 9 ) NOT NULL AUTO_INCREMENT ,
+	 *  `page_name` varchar( 100 ) NOT NULL ,
+	 *  `title` varchar( 255 ) NOT NULL ,
+	 *  `content` longtext NOT NULL ,
+	 *  `menu` tinyint( 1 ) NOT NULL default '0',
+	 *  `filename` varchar( 255 ) NOT NULL ,
+	 *  `order` mediumint( 9 ) NOT NULL ,
+	 *  `date` int( 11 ) NOT NULL ,
+	 *  `child_of` mediumint( 9 ) NOT NULL default '0',
+	 *  PRIMARY KEY ( `id` ) ,
+	 *  UNIQUE KEY `filename` ( `filename` )
+	 *  ) ENGINE = MYISAM DEFAULT CHARSET = utf8 PACK_KEYS =0;
+	 *
+	*/
 	function database()
 	{
 		$this->load->database();
@@ -279,7 +294,7 @@ class Examples_Controller extends Controller {
 	 * Method: credit_card
 	 *  Demonstrates the CreditCard library.
 	 */
-	function payment()
+	/*function payment()
 	{
 		$credit_card = new Payment();
 
@@ -307,6 +322,6 @@ class Examples_Controller extends Controller {
 
 		echo 'Success? ';
 		echo ($response = $credit_card->process() == TRUE) ? 'YES!' : $response;
-	}
+	}*/
 
 } // End Welcome
