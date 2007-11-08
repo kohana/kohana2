@@ -6,6 +6,15 @@ class Download_Controller extends Controller {
 
 	public function index()
 	{
+		if ( ! is_writable('application/cache/counter.txt'))
+		{
+			throw new Kohana_User_Exception
+			(
+				'Counter Unwritable',
+				'Please make the file application/cache/counter.txt writable!'
+			);
+		}
+
 		// Load content
 		$content = new View('pages/download');
 
@@ -245,6 +254,9 @@ class Download_Controller extends Controller {
 
 			// Return to the original directory
 			chdir($return_dir);
+
+			// Increase the counter
+			file_put_contents('application/cache/counter.txt', file_get_contents('application/cache/counter.txt') + 1);
 
 			// Do this to prevent the template from trying to render and fucking up the download
 			$this->auto_render = FALSE;
