@@ -241,7 +241,7 @@ class Download_Controller extends Controller {
 			}
 
 			// Force a download of the archive
-			$archive->download('Kohana.zip');
+			$archive->download('Kohana_v'.KOHANA_VERSION.'.zip');
 
 			// Return to the original directory
 			chdir($return_dir);
