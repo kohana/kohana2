@@ -65,7 +65,7 @@ class download {
 		}
 
 		// Generate the server headers
-		header('Content-Type: "'.$mime.'"');
+		header('Content-Type: '.$mime);
 		header('Content-Disposition: attachment; filename="'.$filename.'"');
 		header('Content-Transfer-Encoding: binary');
 		header('Expires: 0');
