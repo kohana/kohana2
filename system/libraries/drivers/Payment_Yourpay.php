@@ -45,7 +45,11 @@ class Payment_Yourpay_Driver
 
 	public function __construct($config)
 	{
-		$this->certificate = (file_exists($config['certificate'])) ? $config['certificate'] : throw new Kohana_Exception('payment.invalid_certificate');
+		// Check to make sure the certificate is valid
+		$this->certificate = (file_exists($config['certificate'])) ? $config['certificate'] : FALSE;
+
+		if (!$this->certificate)
+			throw new Kohana_Exception('payment.invalid_certificate');
 
 		$this->curl_config = $config['curl_config'];
 		$this->test_mode = $config['test_mode'];
@@ -117,7 +121,7 @@ class Payment_Yourpay_Driver
 					<name>'.$this->fields['shipping_name'].'</name>
 					<address1>'.$this->fields['shipping_address'].'</address1>
 					<city>'.$this->fields['shipping_city'].'</city>
-					<state>'.$this->fields['shipping_state'.'</state>
+					<state>'.$this->fields['shipping_state'].'</state>
 					<zip>'.$this->fields['shipping_zip'].'</zip>
 				</shipping>
 			</order>';
