@@ -47,8 +47,9 @@ class Controller extends Controller_Core {
 				'home'       => 'Home',
 				'download'   => 'Download',
 				'tutorials'  => 'Tutorials',
-				'forums'     => 'Forums',
-				'user_guide' => 'User Guide'
+				// External links
+				'http://kohanaphp.com/forums/'     => 'Forums',
+				'http://kohanaphp.com/user_guide/' => 'User Guide'
 			);
 
 			// Sidebar
