@@ -1,4 +1,4 @@
-<h2>Creating a Page Controller</h2>
+<h2>Creating a Page Controller <span>By Jeremy Bush, &copy; 2007</span></h2>
 <p>Here we will show a short example of many of the features of Kohana:</p>
 <ol>
 	<li>Setting up templates using Views within Views</li>
