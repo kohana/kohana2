@@ -53,7 +53,7 @@ echo html::stylesheet(array
 <div id="body" class="container clearfix">
 
 <!-- Start Content -->
-<div id="content-wrapper"><div id="content">
+<div id="content-wrapper"><div id="content" class="clearfix">
 <?php echo $content ?>
 </div></div>
 <!-- End Content -->
