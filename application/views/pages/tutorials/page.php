@@ -120,14 +120,14 @@ echo geshi_highlight('<?=$content->content?>
 ?>
 
 <p>Wasn't that easy? ;)</p>
-<p>Now that we have all the view files set up, we will set up our controller to use them:</p>
+<p>Now that we have all the view files set up, we will set up our controller to use them. This will use Views in Views to create a basic templating system:</p>
 
 <h4>application/controllers/page.php</h4>
 <?php
 
 echo geshi_highlight('function index()
 {
-	$this->layout->header = $this->load->view("header", array_merge($this->header, array("title" => "radd-cpa.org :: " . $page->title)));
+	$this->layout->header = $this->load->view("header", array_merge($this->header, array("title" => $page->title)));
 	$this->layout->content = $this->load->view("page/index", array("content" => ""));
 	$this->layout->footer = $this->load->view("footer.php");
 	$this->layout->render(TRUE);
@@ -139,6 +139,24 @@ echo geshi_highlight('function index()
 <p>Here we are just passing an empty page into the view, so we will have a pretty boring blank white page.
 This actually won't work yet, since we haven't set any pages for the menus that you see in the header file.
 We will get to that in a bit =)</p>
+<p>We need to set up a pages table in our database, which you can do with the following SQL:</p>
+<?php 
+
+echo geshi_highlight('CREATE TABLE `pages` (
+`id` mediumint( 9 ) NOT NULL AUTO_INCREMENT ,
+`page_name` varchar( 100 ) NOT NULL ,
+`title` varchar( 255 ) NOT NULL ,
+`content` longtext NOT NULL ,
+`menu` tinyint( 1 ) NOT NULL default '0',
+`filename` varchar( 255 ) NOT NULL ,
+`order` mediumint( 9 ) NOT NULL ,
+`date` int( 11 ) NOT NULL ,
+`child_of` mediumint( 9 ) NOT NULL default '0',
+PRIMARY KEY ( `id` ) ,
+UNIQUE KEY `filename` ( `filename` )
+) ENGINE = MYISAM DEFAULT CHARSET = utf8 PACK_KEYS =0;', 'sql', NULL, TRUE)
+
+?>
 <p>Next we will set up a model to grab some pages out of our database and feed them into our controller.</p>
 
 <h4>application/models/page.php</h4>
@@ -204,7 +222,7 @@ echo geshi_highlight('function __construct()
 
 ?>
 <p>In this example, our site will support folder/subpage.html layout, and no deeper. You could expand this system to allow for an infinite level of "folders" if you wish.
-We also will support having the user add a GET parameter to not load the header and footer, useful for loading pages with ajax.</p>
+We will also support having the user add a GET parameter to not load the header and footer, useful for loading pages with ajax.</p>
 <p>Now we will add this support into the index function:</p>
 <?php
 
@@ -227,4 +245,6 @@ echo geshi_highlight('function index()
 
 ?>
 <p>Here we load the page from the model, and also cleverly show a 404 status if the page doesn't exist (the database result would be FALSE).</p>
-<!-- <p>This is the basics of getting it going. You can find a whole application <?=html::anchor('#', 'here')?>.</p> -->
+<p>I have provided a whole <?=html::anchor('/tutorials/download/page.zip', 'application')?> for you to look at, pick apart or use on your own projects.<br />
+Feel free to send any changes or improvements back to me at <?=html::mailto('contractfrombelow@gmail.com')?>.</p>
+<p>It includes a basic authentication system for administrating pages, a FCKeditor for easy editing of pages, and some basic HTML views to get you going.</p>
