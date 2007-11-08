@@ -35,16 +35,19 @@ class Payment_Authorize_Driver
 		'x_relay_response'  => 'FALSE',
 	);
 
+	private $test_mode = TRUE;
+
 	public function __construct($config)
 	{
 		$this->authnet_values['x_login'] = $config['auth_net_login_id'];
 		$this->authnet_values['x_tran_key'] = $config['auth_net_tran_key'];
-		$this->required_field['x_login'] = !empty($config['auth_net_login_id']);
-		$this->required_field['x_tran_key'] = !empty($config['auth_net_tran_key']);
+		$this->required_fields['x_login'] = !empty($config['auth_net_login_id']);
+		$this->required_fields['x_tran_key'] = !empty($config['auth_net_tran_key']);
 
 		$this->curl_config = $config['curl_config'];
-		
-		Log::add('debug', 'Authorize Payment Driver Initialized');
+		$this->test_mode = $config['test_mode'];
+
+		Log::add('debug', 'Authorize.net Payment Driver Initialized');
 	}
 
 	public function set_fields($fields)
@@ -70,7 +73,14 @@ class Payment_Authorize_Driver
 	{
 		// Check for required fields
 		if (in_array(FALSE, $this->required_fields))
-			throw new Kohana_Exception('payment.required');
+		{
+			$fields = array();
+			foreach ($this->required_fields as $key => $field)
+			{
+				if (!$field) $fields[] = $key;
+			}
+			throw new Kohana_Exception('payment.required', implode(', ', $fields));
+		}
 
 		$fields = "";
 		foreach( $this->authnet_values as $key => $value )
@@ -110,7 +120,7 @@ class Payment_Authorize_Driver
 
 				if($pstr_trimmed=="")
 				{
-					$pstr_trimmed='NO VALUE RETURNED';
+					throw new Kohana_Exception('payment.gateway_connection_error');
 				}
 
 				switch($j)

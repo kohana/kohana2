@@ -305,7 +305,8 @@ class Examples_Controller extends Controller {
 
 		echo '<pre>'.print_r($credit_card, true).'</pre>';
 
-		echo 'Success? '.$credit_card->process();
+		echo 'Success? ';
+		echo ($response = $credit_card->process() == TRUE) ? 'YES!' : $response;
 	}
 
 } // End Welcome

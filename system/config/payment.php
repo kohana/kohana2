@@ -25,6 +25,16 @@ $config['Authorize'] = array
 );
 
 /*
+ * YourPay.net Options:
+ *  certificate - the location on your server of the certificate file.
+ */
+$config['Yourpay'] = array
+(
+	'merchant_id' => '',
+	'certificate' => './path/to/certificate.pem'
+);
+
+/*
  * PayPal Options:
  *  API_UserName - the username to use
  *  API_Password - the password to use
