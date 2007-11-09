@@ -31,10 +31,10 @@ echo html::script(array
 <div id="developer">
 <span>Developers:</span>
 <ul>
-<li><?php echo html::anchor('http://kohanaphp.com/trac', 'Trac') ?></li>
-<li><?php echo html::anchor('http://kohanaphp.com/trac/timeline', 'Timeline') ?></li>
-<li><?php echo html::anchor('http://kohanaphp.com/trac/browser/trunk', 'Browse Source') ?></li>
-<li><?php echo html::anchor('http://kohanaphp.com/trac/report/1', 'Tickets') ?></li>
+<li><?php echo html::anchor('http://trac.kohanaphp.com/', 'Trac') ?></li>
+<li><?php echo html::anchor('http://trac.kohanaphp.com/timeline', 'Timeline') ?></li>
+<li><?php echo html::anchor('http://trac.kohanaphp.com/browser/trunk', 'Browse Source') ?></li>
+<li><?php echo html::anchor('http://trac.kohanaphp.com/report/1', 'Tickets') ?></li>
 <li><?php echo html::anchor('developer/join', 'Join') ?></li>
 </ul>
 </div>

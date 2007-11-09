@@ -1,6 +1,6 @@
 <h2><span>Total Downloads: <?php echo $counter ?></span>Download Kohana</h2>
 
-<p>You are downloading Kohana v<?php echo KOHANA_VERSION ?>. Please use <?php echo html::anchor('http://kohanaphp.com/trac/newticket', 'Trac tickets') ?> to report any bugs you experience. <span style="font-size:0.8em;font-style:italic;">Download files were last synced on <?php echo date('F jS, Y', $sync_date) ?>.</span></p>
+<p>You are downloading Kohana v<?php echo KOHANA_VERSION ?>. Please use <?php echo html::anchor('http://trac.kohanaphp.com/newticket', 'Trac tickets') ?> to report any bugs you experience. <span style="font-size:0.8em;font-style:italic;">Download files were last synced on <?php echo date('F jS, Y', $sync_date) ?>.</span></p>
 
 
 <?php echo form::open('download') ?> 
