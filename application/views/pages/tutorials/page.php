@@ -82,16 +82,16 @@ echo geshi_highlight('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://
 
 echo geshi_highlight('<?php
 
- $no_edit = array("add", "edit", "details", "store");
+ $no_edit = array("add", "edit", "details");
 
  /* Set this page for the login redirections */
- if ($this->uri->segment(1) != "user" and $this->uri->segment(2) != "edit")
+ if ($this->uri->segment(1) != "user" and !in_array($this->uri->segment(1), $no_edit))
  {
  	$this_page = $_SERVER["REQUEST_URI"];
  	$this->session->set(array("last_page" => $this_page));
  }
  if ($this->session->get("loggedin") and !in_array($this->uri->segment(1), $no_edit))
- 	echo html::anchor(($this->uri->rsegment(1) != "") ? $this->uri->rsegment(1) : "page") . "/edit/" . $this->uri->segment(1) . (($this->uri->segment(2) !== false) ? ("/" . $this->uri->segment(2)) : "", "Edit this page");
+  	echo html::anchor((($this->uri->rsegment(1) != \'\') ? $this->uri->rsegment(1) : \'page\') . \'/edit/\' . $this->uri->segment(1) . (($this->uri->segment(2) !== false) ? (\'/\' . $this->uri->segment(2)) : \'\'), \'Edit this page\');
 
 ?>
 </div>
