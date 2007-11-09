@@ -21,4 +21,16 @@ class Tutorials_Controller extends Controller {
 		}
 	}
 
+	public function download($filename = FALSE)
+	{
+		if ($filename == FALSE OR ! file_exists(APPPATH.'views/media/downloads/'.$filename))
+			url::redirect('tutorials');
+
+		// Disable auto rendering
+		$this->auto_render = FALSE;
+
+		// Download the file
+		download::force(APPPATH.'views/media/downloads/'.$filename);
+	}
+
 } // End Tutorial_Controller

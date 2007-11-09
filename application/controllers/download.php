@@ -19,7 +19,7 @@ class Download_Controller extends Controller {
 		$content->counter = file_get_contents('application/cache/counter.txt');
 
 		// Pull date
-		$content->sync_date = strtotime('2006/11/8');
+		$content->sync_date = strtotime('2006/11/9');
 
 		// Set up groups array
 		$groups = array

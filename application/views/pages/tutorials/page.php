@@ -248,3 +248,5 @@ echo geshi_highlight('function index()
 <p>I have provided a whole <?=html::anchor('/tutorials/download/page.zip', 'application')?> for you to look at, pick apart or use on your own projects.<br />
 Feel free to send any changes or improvements back to me at <?=html::mailto('contractfrombelow@gmail.com')?>.</p>
 <p>It includes a basic authentication system for administrating pages, a FCKeditor for easy editing of pages, and some basic HTML views to get you going.</p>
+
+<p><strong><?php echo html::file_anchor(Config::item('core.index_page', TRUE).'tutorials/download/page_tutorial.zip', 'Download Tutorial Files') ?></strong></p>
