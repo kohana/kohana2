@@ -16,7 +16,7 @@
  */
 $config = array
 (
-	'site_domain'          => 'localhost/kohanaphp.com/',
+	'site_domain'          => '192.168.1.109/kohanaphp.com/',
 	'site_protocol'        => 'http',
 	'index_page'           => 'index.php',
 	'url_suffix'           => '.html',
