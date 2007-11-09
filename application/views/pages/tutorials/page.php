@@ -142,7 +142,7 @@ We will get to that in a bit =)</p>
 <p>We need to set up a pages table in our database, which you can do with the following SQL:</p>
 <?php 
 
-echo geshi_highlight('CREATE TABLE `pages` (
+echo geshi_highlight("CREATE TABLE `pages` (
 `id` mediumint( 9 ) NOT NULL AUTO_INCREMENT ,
 `page_name` varchar( 100 ) NOT NULL ,
 `title` varchar( 255 ) NOT NULL ,
@@ -154,7 +154,7 @@ echo geshi_highlight('CREATE TABLE `pages` (
 `child_of` mediumint( 9 ) NOT NULL default '0',
 PRIMARY KEY ( `id` ) ,
 UNIQUE KEY `filename` ( `filename` )
-) ENGINE = MYISAM DEFAULT CHARSET = utf8 PACK_KEYS =0;', 'sql', NULL, TRUE)
+) ENGINE = MYISAM DEFAULT CHARSET = utf8 PACK_KEYS =0;", 'sql', NULL, TRUE)
 
 ?>
 <p>Next we will set up a model to grab some pages out of our database and feed them into our controller.</p>
