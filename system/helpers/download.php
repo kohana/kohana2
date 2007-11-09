@@ -42,6 +42,9 @@ class download {
 
 			// Remove directory path from the filename
 			$filename = end(explode('/', $filepath));
+
+			// Set filesize
+			$filesize = filesize($filepath);
 		}
 		else
 		{
@@ -52,6 +55,9 @@ class download {
 			// We need it in order to set the MIME type
 			if ($data == '' OR $extension === $filename)
 				return FALSE;
+
+			// Set filesize
+			$filesize = strlen($data);
 		}
 
 		// Set a default mime if we can't find it
@@ -69,7 +75,7 @@ class download {
 		header('Content-Disposition: attachment; filename="'.$filename.'"');
 		header('Content-Transfer-Encoding: binary');
 		header('Expires: 0');
-		header('Content-Length: '.strlen($data));
+		header('Content-Length: '.$filesize);
 
 		// IE headers
 		if ($user_agent->browser === 'Internet Explorer')
