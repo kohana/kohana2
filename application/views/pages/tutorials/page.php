@@ -154,7 +154,10 @@ echo geshi_highlight("CREATE TABLE `pages` (
 `child_of` mediumint( 9 ) NOT NULL default '0',
 PRIMARY KEY ( `id` ) ,
 UNIQUE KEY `filename` ( `filename` )
-) ENGINE = MYISAM DEFAULT CHARSET = utf8 PACK_KEYS =0;", 'sql', NULL, TRUE)
+) ENGINE = MYISAM DEFAULT CHARSET = utf8 PACK_KEYS =0;
+
+INSERT INTO `pages` ( `id` , `page_name` , `title` , `content` , `menu` , `filename` , `order` , `date` , `child_of` ) 
+VALUES (  NULL , 'Home', 'Home', 'index', '1', '', '1', '0', '0' );", 'sql', NULL, TRUE)
 
 ?>
 <p>Next we will set up a model to grab some pages out of our database and feed them into our controller.</p>
