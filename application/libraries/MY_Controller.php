@@ -19,8 +19,6 @@ class Controller extends Controller_Core {
 	{
 		parent::__construct();
 
-		$this->load->library('session');
-
 		if ($this->uri->segment(1) == FALSE)
 		{
 			// Need the first segment so that the main menu has an active tab
