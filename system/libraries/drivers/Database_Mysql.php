@@ -555,7 +555,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	public function offsetGet($offset)
 	{
 		// Check to see if the requested offset exists.
-		if (!$this->offsetExists($offset)
+		if (!$this->offsetExists($offset))
 			return FALSE;
 
 		// Go to the offset
