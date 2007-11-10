@@ -48,8 +48,8 @@ class Controller extends Controller_Core {
 				'download'   => 'Download',
 				'tutorials'  => 'Tutorials',
 				// External links
-				'http://kohanaphp.com/forums/'     => 'Forums',
-				'http://kohanaphp.com/user_guide/' => 'User Guide'
+				'http://forums.kohanaphp.com/' => 'Forums',
+				'http://api.kohanaphp.com/'    => 'API Manual'
 			);
 
 			// Sidebar
@@ -100,11 +100,9 @@ class Controller extends Controller_Core {
 					curl_close($curl);
 				}
 
-				// Add the feed to the template
-				$feeds[$name] = feed::parse($filename, 3);
+				// Add the feed to the sidebar
+				// $this->template->sidebar->feeds[$name] = feed::parse($filename, 3);
 			}
-
-			$this->template->sidebar->feeds = $feeds;
 
 			// Auto-rendering
 			Event::add('system.post_controller', array($this, '_display'));

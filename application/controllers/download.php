@@ -184,10 +184,10 @@ class Download_Controller extends Controller {
 			'zip' => 'Zip Archive'
 		);
 
-		if (empty($_POST))
+		if (empty($_GET))
 		{
-			// Fake POST data, for validation
-			$_POST = array
+			// Fake validation data, so that we can pre-fill the form
+			$validate = array
 			(
 				'group' => 'standard',
 				'format' => 'zip',
@@ -196,17 +196,15 @@ class Download_Controller extends Controller {
 					'en_US' => '1'
 				)
 			);
-
-			// Do not validate fake POST data
-			$validate = FALSE;
 		}
 		else
 		{
-			$validate = TRUE;
+			// Validate GET data
+			$validate = $_GET;
 		}
 
 		// Load validation
-		$this->load->library('validation');
+		$this->load->library('validation', $validate);
 
 		// Set rules
 		$this->validation->set_rules(array
@@ -216,7 +214,7 @@ class Download_Controller extends Controller {
 			'languages' => 'required[5]|in_array['.implode(',', array_keys($content->languages)).']'
 		));
 
-		if ($validate AND $this->validation->run())
+		if ( ! empty($_GET) AND $this->validation->run())
 		{
 			// Get current directory for return
 			$return_dir = getcwd();
