@@ -11,7 +11,7 @@ class Controller extends Controller_Core {
 	// RSS feeds
 	protected $feeds = array
 	(
-		'forums' => 'http://kohanaphp.com/forums/index.php?action=.xml;limit=3;type=rss2',
+		// 'forums' => 'http://kohanaphp.com/forums/index.php?action=.xml;limit=3;type=rss2',
 		'trac'   => 'http://trac.kohanaphp.com/timeline?milestone=on&ticket=on&changeset=on&max=3&daysback=90&format=rss'
 	);
 
@@ -101,7 +101,7 @@ class Controller extends Controller_Core {
 				}
 
 				// Add the feed to the sidebar
-				// $this->template->sidebar->feeds[$name] = feed::parse($filename, 3);
+				$this->template->sidebar->feeds[$name] = feed::parse($filename, 3);
 			}
 
 			// Auto-rendering
