@@ -105,7 +105,10 @@ class Database_Core {
 		{
 			// Get the username and password
 			list ($db['pass'], $connection) = explode('@', $connection, 2);
-			list ($db['user'], $db['pass']) = explode(':', $db['pass'], 2);
+			// Check if a password is supplied
+			$logindata = explode(':', $db['pass'], 2);
+			$db['pass'] = (count($logindata) > 1) ? $logindata[1] : '';
+			$db['user'] = $logindata[0];
 
 			// Prepare for finding the database
 			$connection = explode('/', $connection);
