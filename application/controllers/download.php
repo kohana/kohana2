@@ -174,7 +174,8 @@ class Download_Controller extends Controller {
 			'en_US' => 'English (US)',
 			'fr_FR' => 'French',
 			'nl_NL' => 'Dutch',
-			'mk_MK' => 'Macedonian'
+			'mk_MK' => 'Macedonian',
+			'pl_PL' => 'Polish'
 		);
 
 		// Download formats
