@@ -1,0 +1,13 @@
+<?php defined('SYSPATH') or die('No direct access allowed.');
+
+$lang = array
+(
+	'undefined_group'       => 'Brak definicji grupy % w konfiguracji.',
+	'error'                 => 'Wystąpił błąd SQL: %s',
+	'connection'            => 'Wystąpił błąd podczas połączenia do bazy danych: %s',
+	'driver_not_supported'  => 'Sterownik bazy danych %s nie istnieje.',
+	'invalid_dsn'           => 'Ustawiony DSN jest nieprawidłowy: %s',
+	'must_use_set'          => 'Proszę ustawić sekcję SET dla zapytania.',
+	'must_use_where'        => 'Proszę ustawić sekcję WHERE dla zapytania.',
+	'must_use_table'        => 'Proszę wybrać tabelę dla zapytania.',
+);
