@@ -11,13 +11,15 @@ class Controller extends Controller_Core {
 	// RSS feeds
 	protected $feeds = array
 	(
-		// 'forums' => 'http://kohanaphp.com/forums/index.php?action=.xml;limit=3;type=rss2',
+		'forums' => 'http://forum.kohanaphp.com/index.php?action=.xml;limit=3;type=rss2',
 		'trac'   => 'http://trac.kohanaphp.com/timeline?milestone=on&ticket=on&changeset=on&max=3&daysback=90&format=rss'
 	);
 
 	public function __construct()
 	{
 		parent::__construct();
+
+		$this->load->library('session');
 
 		if ($this->uri->segment(1) == FALSE)
 		{
@@ -48,8 +50,8 @@ class Controller extends Controller_Core {
 				'download'   => 'Download',
 				'tutorials'  => 'Tutorials',
 				// External links
-				'http://forums.kohanaphp.com/' => 'Forums',
-				'http://api.kohanaphp.com/'    => 'API Manual'
+				'http://forum.kohanaphp.com/' => 'Forum',
+				'http://api.kohanaphp.com/'   => 'API Manual'
 			);
 
 			// Sidebar
