@@ -113,7 +113,8 @@ class Examples_Controller extends Controller {
 			print '<p>validation result: '.var_export($this->validation->run(), TRUE).'</p>';
 		}
 
-		print $this->validation->debug();
+		print Kohana::debug($this->validation);
+		print Kohana::lang('core.stats_footer');
 	}
 
 	/*
