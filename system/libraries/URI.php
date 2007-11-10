@@ -21,8 +21,24 @@ class URI_Core extends Router {
 
 			foreach($_GET as $key => $val)
 			{
-				self::$query_string .= $key.'='.rawurlencode($val);
+				if (is_array($val))
+				{
+					foreach($val as $sub_key => $sub_val)
+					{
+						// Integer subkeys are numerically indexed arrays
+						$sub_key = is_int($sub_key) ? '[]' : '['.$sub_key.']';
+
+						self::$query_string .= $key.rawurlencode($sub_key).'='.rawurlencode($sub_val).'&';
+					}
+				}
+				else
+				{
+					self::$query_string .= $key.'='.rawurlencode($val).'&';
+				}
 			}
+
+			// Remove the ending ampersand
+			self::$query_string = rtrim(self::$query_string, '&');
 		}
 	}
 
