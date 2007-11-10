@@ -40,9 +40,16 @@ class Profiler_Core {
 
 	/*
 	 * Method: render
-	 *  Run the Profiler and add to the bottom of the page.
+	 *  Render the profiler. Output is added to
+	 *  the bottom of the page by default.
+	 *
+	 * Parameters:
+	 *  return - return the output if TRUE
+	 *
+	 * Returns:
+	 *  The profiler output if $return is TRUE
 	 */
-	public function render()
+	public function render($return = FALSE)
 	{
 		$data = array
 		(
@@ -64,6 +71,10 @@ class Profiler_Core {
 
 		// Load the profiler view
 		$view = new View('kohana_profiler', $data);
+		
+		// Return rendered view if $return is TRUE
+		if ($return == TRUE)
+			return $view->render();
 
 		// Add profiler data to the output
 		if (stripos(Kohana::$output, '</body>') !== FALSE)
