@@ -433,7 +433,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 		// This check has to be outside the previous statement, because we do not
 		// know the state of fetch_type when $object = NULL
-		// NOTE: The class set by $type must be defined before fetching the result,
+		// NOTE - The class set by $type must be defined before fetching the result,
 		// autoloading is disabled to save a lot of stupid overhead.
 		if ($this->fetch_type == 'mysql_fetch_object')
 		{
@@ -461,7 +461,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 			{
 				$fetch = 'mysql_fetch_object';
 
-				// NOTE: The class set by $type must be defined before fetching the result,
+				// NOTE - The class set by $type must be defined before fetching the result,
 				// autoloading is disabled to save a lot of stupid overhead.
 				$type = class_exists($type, FALSE) ? $type : 'stdClass';
 			}
