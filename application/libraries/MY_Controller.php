@@ -100,9 +100,11 @@ class Controller extends Controller_Core {
 					curl_close($curl);
 				}
 
-				// Add the feed to the sidebar
-				$this->template->sidebar->feeds[$name] = feed::parse($filename, 3);
+				$feeds[$name] = feed::parse($filename, 3);
 			}
+
+			// Add the feeds to the sidebar
+			$this->template->sidebar->feeds = $feeds;
 
 			// Auto-rendering
 			Event::add('system.post_controller', array($this, '_display'));
