@@ -6,5 +6,6 @@
 
 <ul>
 <li><?php echo html::anchor('tutorials/xss', 'XSS Attack Filtering') ?></li>
+<li><?php echo html::anchor('tutorials/remove_index', 'Removing index.php From URLs') ?></li>
 <li><?php echo html::anchor('tutorials/page', 'Creating a Page Controller') ?></li>
 </ul>

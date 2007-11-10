@@ -90,7 +90,7 @@ echo html::script(array
 </div>
 <!-- End Body -->
 
-<div id="footer"><strong>&copy;2007 Kohana Team. All rights reserved.</strong> Powered by Kohana v{kohana_version}. Rendered in {execution_time} seconds.</div>
+<div id="footer"><strong>&copy;2007 Kohana Team. All rights reserved.</strong> Powered by Kohana v{kohana_version}. Rendered in {execution_time} seconds, using {memory_usage} of memory.</div>
 
 </div>
 </body>
