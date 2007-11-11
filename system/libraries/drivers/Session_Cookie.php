@@ -76,28 +76,17 @@ class Session_Cookie_Driver implements Session_Driver {
 		return $this->setcookie(session_id(), (time() - 86400));
 	}
 
+	public function regenerate()
+	{
+		session_regenerate_id(TRUE);
+
+		// Return new id
+		return session_id();
+	}
 
 	public function gc()
 	{
 		return TRUE;
-	}
-
-	public function regenerate($new_id)
-	{
-		// Save the session data for re-insertion
-		$save_data = $_SESSION;
-
-		// Remove the session_id
-		unset($save_data['session_id']);
-
-		// Set the new session ID
-		session_id($new_id);
-
-		// Create a new session
-		Session::create();
-
-		// Merge in the old data, overwriting everything but the session_id
-		$_SESSION = array_merge($_SESSION, $save_data);
 	}
 
 	/*

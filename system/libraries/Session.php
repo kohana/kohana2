@@ -68,15 +68,15 @@ class Session_Core {
 			// Create a new session
 			$this->create();
 
+			if (($_SESSION['total_hits'] % self::$config['regenerate']) === 0)
+			{
+				// Regenerate session ID
+				$this->regenerate();
+			}
+
 			// Close the session just before sending the headers, so that
 			// the session cookie can be written
 			Event::add('system.send_headers', 'session_write_close');
-		}
-
-		if (($_SESSION['total_hits'] % self::$config['regenerate']) === 0)
-		{
-			// Regenerate session ID
-			$this->regenerate();
 		}
 
 		// New instance
@@ -192,11 +192,20 @@ class Session_Core {
 	 */
 	public function regenerate()
 	{
-		// Thank god for small gifts
-		session_regenerate_id(TRUE);
+		if (self::$config['driver'] == 'native')
+		{
+			// Thank god for small gifts
+			session_regenerate_id(TRUE);
 
-		// Update session with new id
-		$_SESSION['session_id'] = session_id();
+			// Update session with new id
+			$_SESSION['session_id'] = session_id();
+		}
+		else
+		{
+			// Pass the regenerating off to the driver in case it wants to do anything special
+			// The new id is returned
+			$_SESSION['session_id'] = self::$driver->regenerate();
+		}
 	}
 
 	/*

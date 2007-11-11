@@ -22,6 +22,9 @@ class Session_Database_Driver implements Session_Driver {
 	// Database connection
 	protected $db;
 
+	protected $new_session = TRUE;
+	protected $old_id;
+
 	public function __construct()
 	{
 		// Set config options
@@ -88,8 +91,12 @@ class Session_Database_Driver implements Session_Driver {
 	{
 		$query = $this->db->from($this->group_name)->where('session_id', $id)->get();
 
-		if ($query->result()->num_rows() > 0)
+		if (count($query) > 0)
+		{
+			// New session, this is used when writing the data
+			$this->new_session = FALSE;
 			return $query->current()->data;
+		}
 
 		// Return value must be string, NOT a boolean
 		return '';
@@ -104,32 +111,46 @@ class Session_Database_Driver implements Session_Driver {
 			'data'          => $session_string
 		);
 
-		// Fetch current session data
-		$query = $this->db->select('session_id')->from($this->group_name)->where('session_id', $id)->get();
-
-		// Yes? Do update
-		if ($query->result()->num_rows() > 0)
+		if ($this->new_session)
 		{
-			// Remove session ID from the update
-			unset($data['session_id']);
-
-			$query = $this->db->update($this->group_name, $data, array('session_id' => $id));
-		}
-		else // No? Add the session
-		{
+			// No existing session, insert new one
 			$query = $this->db->insert($this->group_name, $data);
 		}
+		else
+		{
+			// Is this a regenerated session?
+			if (empty($this->old_id))
+			{
+				// Remove session ID from the update
+				unset($data['session_id']);
 
-		return (bool) $query->num_rows();
+				$query = $this->db->update($this->group_name, $data, array('session_id' => $id));
+			}
+			else
+			{
+				// Session id has been regenerated, so just update the old row with the new id
+				$query = $this->db->update($this->group_name, $data, array('session_id' => $this->old_id));
+			}
+		}
+
+		return (bool) count($query);
 	}
 
 	public function destroy($id)
 	{
-		return (bool) $this->db->delete($this->group_name, array('session_id' => $id))->num_rows();
+		return (bool) count($this->db->delete($this->group_name, array('session_id' => $id)));
 	}
 
-	public function regenerate($new_id)
+	public function regenerate()
 	{
+		// It's wasteful to delete the old session and insert a whole new one so
+		// we cache the old id to simply update the db with the new one
+		$this->old_id = session_id();
+
+		session_regenerate_id();
+
+		// Return new session id
+		return session_id();
 	}
 
 	/*

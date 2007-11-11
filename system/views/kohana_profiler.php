@@ -64,16 +64,19 @@
 	border-left: 1px solid #E5EFF8;
 	text-align: center;
 }
-#kohana-profiler .kp-data
+#kohana-profiler .kp-data, #kohana-profiler .kp-name
 {
-	background-color: #FAFAFB !important;
+	background-color: #FAFAFB;
+	vertical-align: top;
 }
 #kohana-profiler .kp-name
 {
 	width: 200px;
-	background-color: #FAFAFB !important;
 	border-right: 1px solid #E5EFF8;
-	vertical-align: top;
+}
+#kohana-profiler .kp-altrow .kp-data, #kohana-profiler .kp-altrow .kp-name
+{
+	background-color: #F6F8FB;
 }
 </style>
 <div id="kohana-profiler">

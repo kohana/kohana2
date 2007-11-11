@@ -67,6 +67,15 @@ interface Session_Driver {
 	public function destroy($id);
 
 	/*
+	 * Method: regenerate
+	 *  Regenerates the session id.
+	 *
+	 * Returns:
+	 *  The new session id
+	 */
+	public function regenerate();
+
+	/*
 	 * Method: gc
 	 *  Garbage collection, called by close()
 	 *
