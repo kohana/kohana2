@@ -51,6 +51,7 @@ code { display: block; padding: 1em; margin: 1em 0 1em; background: #eee; border
 	#body form fieldset { padding: 0.5em 0; }
 	#body form .legend { display: block; padding: 0.5em; background: #ddefbd; }
 	#body form ul { display: block; padding: 0.5em 1em 0; list-style: none; }
+	#body form p.error { font-weight: bold; padding: 0.5em 1em 0; color: #600; }
 	#body .intro { margin: 0 1em 1em; margin-left: -4em; padding: 1em 2em; padding-left: 4em; background: #eaeee5; font-size: 1.6em; line-height: 1.4em; color: #8C9393; }
 		#body .intro strong { text-transform: uppercase; font-weight: bold; font-size: 0.76em; color: #7b7d78; letter-spacing: -0.02em; white-space: nowrap; }
 

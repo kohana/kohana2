@@ -31,6 +31,7 @@ endforeach;
 </fieldset>
 
 <fieldset><span class="legend">Include the following languages in my download:</span>
+<?php echo ($this->validation->languages_error ? '<p class="error">You must select at least one language.</p>' : '') ?>
 <ul>
 <?php
 
