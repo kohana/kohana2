@@ -446,7 +446,7 @@ class Database_Core {
 	 */
 	public function having($key, $value = '')
 	{
-	    $this->like = array_merge($this->like, $this->driver->having($key, $value, 'AND'));
+	    $this->having = array_merge($this->having, $this->driver->having($key, $value, 'AND'));
         return $this;
 	}
 
@@ -463,7 +463,7 @@ class Database_Core {
 	 */
 	public function orhaving($key, $value = '')
 	{
-		$this->like = array_merge($this->like, $this->driver->having($key, $value, 'OR'));
+		$this->having = array_merge($this->having, $this->driver->having($key, $value, 'OR'));
         return $this;
 	}
 
