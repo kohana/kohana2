@@ -41,10 +41,10 @@ class View_Core {
 			$this->kohana_filetype = EXT;
 		}
 
-		// Preload data
 		if (is_array($data) AND ! empty($data))
 		{
-			$this->data = $data;
+			// Preload data using array_merge, to allow user extensions
+			$this->data = array_merge($this->data, $data);
 		}
 
 		Log::add('debug', 'View Class Initialized ['.str_replace(DOCROOT, '', $this->kohana_filename).']');
