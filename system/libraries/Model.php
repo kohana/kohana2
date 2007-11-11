@@ -11,12 +11,19 @@ class Model_Core {
 
 	/*
 	 * Constructor: __construct
-	 *  Loads database into '$this->db'.
+	 *  Loads database to $this->db.
 	 */
 	public function __construct()
 	{
 		// Load the database into the model
-		$this->db = isset(Kohana::instance()->db) ? Kohana::instance()->db : new Database('default');
+		if (Event::has_run('system.pre_controller'))
+		{
+			$this->db = isset(Kohana::instance()->db) ? Kohana::instance()->db : new Database('default');
+		}
+		else
+		{
+			$this->db = new Database('default');
+		}
 	}
 
 } // End Model Core
