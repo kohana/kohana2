@@ -99,9 +99,9 @@ final class Event {
 		if (empty($name) OR empty($existing) OR empty($callback))
 			return FALSE;
 
-		if ( ! isset(self::$events[$name]) OR ($key = array_search($existing, self::$events[$name])) === FALSE)
+		if (empty(self::$events[$name]) OR ($key = array_search($existing, self::$events[$name])) === FALSE)
 		{
-			// Add the event if there are no events or if the exsisting event is not set
+			// Just add the event if there are no events
 			self::add($name, $callback);
 		}
 		else
@@ -121,15 +121,18 @@ final class Event {
 	 *  name     - event name
 	 *  existing - existing event callback
 	 *  callback - event callback
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public static function add_after($name, $existing, $callback)
 	{
 		if (empty($name) OR empty($existing) OR empty($callback))
 			return FALSE;
 
-		if ( ! isset(self::$events[$name]) OR ($key = array_search($existing, self::$events[$name])) === FALSE)
+		if (empty(self::$events[$name]) OR ($key = array_search($existing, self::$events[$name])) === FALSE)
 		{
-			// Add the event if there are no events or if the exsisting event is not set
+			// Just add the event if there are no events
 			self::add($name, $callback);
 		}
 		else
@@ -162,6 +165,44 @@ final class Event {
 			// Events after the key
 			array_slice(self::$events[$name], $key)
 		);
+	}
+
+	/*
+	 * Method: replace
+	 *  Replaces an event with another event.
+	 *
+	 * Parameters:
+	 *  name     - event name
+	 *  existing - event to replace
+	 *  callback - new callback
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
+	 */
+	public static function replace($name, $existing, $callback)
+	{
+		if (empty($name) OR empty($existing) OR empty($callback) OR empty(self::$events[$name]))
+			return FALSE;
+
+		// If the existing event does not exist, or the 
+		if (($key = array_search($existing, self::$events[$name])) === FALSE)
+			return FALSE;
+
+		if ( ! in_array($callback, self::$events[$name]))
+		{
+			// Replace the exisiting event with the new event
+			self::$events[$name][$key] = $callback;
+		}
+		else
+		{
+			// Remove the existing event from the queue
+			unset(self::$events[$name][$key]);
+
+			// Reset the array so the keys are ordered properly
+			self::$events[$name] = array_values(self::$events[$name]);
+		}
+
+		return TRUE;
 	}
 
 	/*
