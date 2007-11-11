@@ -36,7 +36,6 @@ class Database_Core {
 	protected $from       = array();
 	protected $join       = array();
 	protected $where      = array();
-	protected $like       = array();
 	protected $orderby    = array();
 	protected $order      = array();
 	protected $groupby    = array();
@@ -383,7 +382,7 @@ class Database_Core {
 	 */
 	public function like($field, $match = '')
 	{
-		$this->like = array_merge($this->like, $this->driver->like($field, $match, 'AND ', count($this->like)));
+		$this->where = array_merge($this->where, $this->driver->like($field, $match, 'AND ', count($this->where)));
 		return $this;
 	}
 
@@ -400,7 +399,7 @@ class Database_Core {
 	 */
 	public function orlike($field, $match = '')
 	{
-		$this->like = array_merge($this->like, $this->driver->like($field, $match, 'OR ', count($this->like)));
+		$this->where = array_merge($this->where, $this->driver->like($field, $match, 'OR ', count($this->where)));
 		return $this;
 	}
 

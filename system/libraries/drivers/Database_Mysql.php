@@ -236,22 +236,12 @@ class Database_Mysql_Driver implements Database_Driver {
 			$sql .= ' '.implode("\n", $database['join']);
 		}
 
-		if (count($database['where']) > 0 OR count($database['like']) > 0)
+		if (count($database['where']) > 0)
 		{
 			$sql .= "\nWHERE ";
 		}
 
 		$sql .= implode("\n", $database['where']);
-
-		if (count($database['like']) > 0)
-		{
-			if (count($database['where']) > 0)
-			{
-				$sql .= ' ';
-			}
-
-			$sql .= implode("\n", $database['like']);
-		}
 
 		if (count($database['groupby']) > 0)
 		{
