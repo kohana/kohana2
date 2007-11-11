@@ -41,7 +41,7 @@ echo geshi_highlight('<?php
 // This hook sets the locale.language and locale.lang config values
 // based on the language found in the first segment of the URL.
 
-Event::add(\'system.execute\', \'site_lang\');
+Event::add(\'system.routing\', \'site_lang\');
 
 function site_lang()
 {
