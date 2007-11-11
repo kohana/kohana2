@@ -117,20 +117,22 @@ class Kohana {
 		// Set locale information
 		setlocale(LC_ALL, Config::item('locale.language').'.UTF-8');
 
+		// Enable Kohana routing
+		Event::add('system.routing', array('Router', 'find_uri'));
+		Event::add('system.routing', array('Router', 'setup'));
+
+		// Enable Kohana controller initialization
+		Event::add('system.execute', array('Kohana', 'instance'));
+
+		// Enable Kohana output handling
+		Event::add('system.shutdown', array('Kohana', 'display'));
+
 		if ($hooks = Config::item('hooks.enable'))
 		{
-			// All hooks are enabled, we must build an array of filenames
 			if ( ! is_array($hooks))
 			{
-				$hooks = array();
-				foreach(Config::include_paths() as $path)
-				{
-					// Find all the hooks in each path
-					if ($files = glob($path.'hooks/*'.EXT))
-					{
-						$hooks = array_merge($hooks, $files);
-					}
-				}
+				// All hooks are enabled, find them
+				$hooks = Kohana::list_files('hooks');
 			}
 
 			foreach($hooks as $file)
@@ -142,15 +144,6 @@ class Kohana {
 				include_once $file;
 			}
 		}
-
-		// Enable Kohana routing
-		Event::add('system.routing', array('Router', 'setup'));
-
-		// Enable Kohana controller initialization
-		Event::add('system.execute', array('Kohana', 'instance'));
-
-		// Enable Kohana output handling
-		Event::add('system.shutdown', array('Kohana', 'display'));
 
 		if (Config::item('log.threshold') > 0)
 		{
@@ -490,7 +483,7 @@ class Kohana {
 			break;
 		}
 
-		require self::find_file($type, $file, TRUE);
+		require_once self::find_file($type, $file, TRUE);
 
 		if ($type == 'libraries')
 		{
@@ -498,7 +491,7 @@ class Kohana {
 			{
 				require $extension;
 			}
-			else
+			elseif (substr($class, -5) !== '_Core')
 			{
 				eval('class '.$class.' extends '.$class.'_Core { }');
 			}
@@ -685,7 +678,7 @@ class Kohana {
 	public static function key_string($keys, $array)
 	{
 		// No array to search
-		if (empty($keys) OR empty($array))
+		if ((empty($keys) AND is_array($keys)) OR (empty($array) AND is_array($array)))
 			return;
 
 		// Prepare for loop

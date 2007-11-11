@@ -34,72 +34,10 @@ class Router_Core {
 		if ( ! isset(self::$routes['_default']))
 			throw new Kohana_Exception('core.no_default_route');
 
-		// The follow block of if/else attempts to retrieve the URI segments automagically
-		// Supported methods: CLI, GET, PATH_INFO, ORIG_PATH_INFO, PHP_SELF
-		if (PHP_SAPI === 'cli')
-		{
-			// Command line requires a bit of hacking
-			if (isset($_SERVER['argv'][1]))
-			{
-				self::$segments = $_SERVER['argv'][1];
-
-				// Remove GET string from segments
-				if (($query = strrpos(self::$segments, '?')) !== FALSE)
-				{
-					list (self::$segments, $query) = explode('?', self::$segments);
-
-					// Insert query into GET array
-					foreach(explode('&', $query) as $pair)
-					{
-						list ($key, $val) = array_pad(explode('=', $pair), 1, '');
-
-						$_GET[utf8::clean($key)] = utf8::clean($val);
-					}
-				}
-			}
-		}
-		elseif (count($_GET) === 1 AND current($_GET) == '')
-		{
-			self::$segments = current(array_keys($_GET));
-
-			// Fixes really stange handling of a suffix in a GET string
-			if ($suffix = Config::item('core.url_suffix') AND substr(self::$segments, -(strlen($suffix))) === '_'.substr($suffix, 1))
-			{
-				self::$segments = substr(self::$segments, 0, -(strlen($suffix)));
-			}
-
-			// Destroy GET
-			$_GET = array();
-		}
-		elseif (isset($_SERVER['PATH_INFO']) AND $_SERVER['PATH_INFO'])
-		{
-			self::$segments = $_SERVER['PATH_INFO'];
-		}
-		elseif (isset($_SERVER['ORIG_PATH_INFO']) AND $_SERVER['ORIG_PATH_INFO'])
-		{
-			self::$segments = $_SERVER['ORIG_PATH_INFO'];
-		}
-		elseif (isset($_SERVER['PHP_SELF']) AND $_SERVER['PHP_SELF'])
-		{
-			self::$segments = $_SERVER['PHP_SELF'];
-		}
-
-		// Find the URI string based on the location of the front controller
-		if (($offset = strpos(self::$segments, KOHANA)) !== FALSE)
-		{
-			// Add the length of the index file to the offset
-			$offset += strlen(KOHANA);
-
-			// Get the segment part of the URL
-			self::$segments = substr(self::$segments, $offset);
-			self::$segments = trim(self::$segments, '/');
-		}
-
-
 		// Use the default route when no segments exist
-		if (self::$segments == '' OR self::$segments == '/')
+		if (self::$current_uri == '' OR self::$current_uri == '/')
 		{
-			self::$segments = self::$routes['_default'];
+			self::$current_uri = self::$routes['_default'];
 			$default_route = TRUE;
 		}
 		else
@@ -110,15 +48,15 @@ class Router_Core {
 		// Remove the URL suffix
 		if ($suffix = Config::item('core.url_suffix'))
 		{
-			self::$segments = preg_replace('!'.preg_quote($suffix).'$!u', '', self::$segments);
+			self::$current_uri = preg_replace('!'.preg_quote($suffix).'$!u', '', self::$current_uri);
 		}
 
 		// Remove extra slashes from the segments that could cause fucked up routing
-		self::$segments = preg_replace('!//+!', '/', self::$segments);
+		self::$current_uri = preg_replace('!//+!', '/', self::$current_uri);
 
 		// At this point, set the segments, rsegments, and current URI
 		// In many cases, all of these variables will match
-		self::$segments = self::$rsegments = self::$current_uri = trim(self::$segments, '/');
+		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, '/');
 
 		(self::$segments === 'L0LEAST3R') and include SYSPATH.'views/kohana_holiday.php';
 
@@ -242,6 +180,72 @@ class Router_Core {
 		if (empty(self::$controller))
 		{
 			Kohana::show_404();
+		}
+	}
+
+	/*
+	 * Method: find_uri
+	 *  Attempts to determine the current URI using CLI, GET, PATH_INFO, ORIG_PATH_INFO, or PHP_SELF.
+	 */
+	public static function find_uri()
+	{
+		if (PHP_SAPI === 'cli')
+		{
+			// Command line requires a bit of hacking
+			if (isset($_SERVER['argv'][1]))
+			{
+				self::$current_uri = $_SERVER['argv'][1];
+
+				// Remove GET string from segments
+				if (($query = strpos(self::$current_uri, '?')) !== FALSE)
+				{
+					list (self::$current_uri, $query) = explode('?', self::$segments, 2);
+
+					// Insert query into GET array
+					foreach(explode('&', $query) as $pair)
+					{
+						list ($key, $val) = array_pad(explode('=', $pair), 1, '');
+
+						$_GET[utf8::clean($key)] = utf8::clean($val);
+					}
+				}
+			}
+		}
+		elseif (count($_GET) === 1 AND current($_GET) == '')
+		{
+			self::$current_uri = current(array_keys($_GET));
+
+			// Fixes really stange handling of a suffix in a GET string
+			if ($suffix = Config::item('core.url_suffix') AND substr(self::$current_uri, -(strlen($suffix))) === '_'.substr($suffix, 1))
+			{
+				self::$current_uri = substr(self::$current_uri, 0, -(strlen($suffix)));
+			}
+
+			// Destroy GET
+			$_GET = array();
+		}
+		elseif (isset($_SERVER['PATH_INFO']) AND $_SERVER['PATH_INFO'])
+		{
+			self::$current_uri = $_SERVER['PATH_INFO'];
+		}
+		elseif (isset($_SERVER['ORIG_PATH_INFO']) AND $_SERVER['ORIG_PATH_INFO'])
+		{
+			self::$current_uri = $_SERVER['ORIG_PATH_INFO'];
+		}
+		elseif (isset($_SERVER['PHP_SELF']) AND $_SERVER['PHP_SELF'])
+		{
+			self::$current_uri = $_SERVER['PHP_SELF'];
+		}
+
+		// Find the URI string based on the location of the front controller
+		if (($offset = strpos(self::$current_uri, KOHANA)) !== FALSE)
+		{
+			// Add the length of the index file to the offset
+			$offset += strlen(KOHANA);
+
+			// Get the segment part of the URL
+			self::$current_uri = substr(self::$current_uri, $offset);
+			self::$current_uri = trim(self::$current_uri, '/');
 		}
 	}
 

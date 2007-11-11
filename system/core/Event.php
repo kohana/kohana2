@@ -69,20 +69,99 @@ final class Event {
 	 */
 	public static function add($name, $callback)
 	{
-		if ($name == FALSE OR $callback == FALSE)
+		if (empty($name) OR empty($callback))
 			return FALSE;
 
-		// Make sure that the event name is defined
 		if ( ! isset(self::$events[$name]))
 		{
+			// Create an empty event if it is not yet defined
 			self::$events[$name] = array();
 		}
 
-		// Make sure the event is not already in the queue
 		if ( ! in_array($callback, self::$events[$name]))
 		{
+			// Add the event if it does not already exist in the queue
 			self::$events[$name][] = $callback;
 		}
+	}
+
+	/*
+	 * Method: add_before
+	 *  Add a callback to an event queue, before a given event.
+	 *
+	 * Parameters:
+	 *  name     - event name
+	 *  existing - existing event callback
+	 *  callback - event callback
+	 */
+	public static function add_before($name, $existing, $callback)
+	{
+		if (empty($name) OR empty($existing) OR empty($callback))
+			return FALSE;
+
+		if ( ! isset(self::$events[$name]) OR ($key = array_search($existing, self::$events[$name])) === FALSE)
+		{
+			// Add the event if there are no events or if the exsisting event is not set
+			self::add($name, $callback);
+		}
+		else
+		{
+			// Insert the event immediately before the existing event
+			self::insert_event($name, $key, $callback);
+		}
+
+		return TRUE;
+	}
+
+	/*
+	 * Method: add_after
+	 *  Add a callback to an event queue, after a given event.
+	 *
+	 * Parameters:
+	 *  name     - event name
+	 *  existing - existing event callback
+	 *  callback - event callback
+	 */
+	public static function add_after($name, $existing, $callback)
+	{
+		if (empty($name) OR empty($existing) OR empty($callback))
+			return FALSE;
+
+		if ( ! isset(self::$events[$name]) OR ($key = array_search($existing, self::$events[$name])) === FALSE)
+		{
+			// Add the event if there are no events or if the exsisting event is not set
+			self::add($name, $callback);
+		}
+		else
+		{
+			// Insert the event immediately after the existing event
+			self::insert_event($name, $key + 1, $callback);
+		}
+
+		return TRUE;
+	}
+
+	/*
+	 * Method: insert_event
+	 *  Inserts a new event at a specfic key location.
+	 *
+	 * Parameters:
+	 *  name     - event name
+	 *  key      - key to insert new event at
+	 *  callback - event callback
+	 */
+	private static function insert_event($name, $key, $callback)
+	{
+		// Add the new event at the given key location
+		self::$events[$name] = array_merge
+		(
+			// Events before the key
+			array_slice(self::$events[$name], 0, $key),
+			// New event callback
+			array($callback),
+			// Events after the key
+			array_slice(self::$events[$name], $key)
+		);
 	}
 
 	/*

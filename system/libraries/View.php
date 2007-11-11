@@ -44,10 +44,7 @@ class View_Core {
 		// Preload data
 		if (is_array($data) AND ! empty($data))
 		{
-			foreach($data as $name => $value)
-			{
-				$this->data[$name] = $value;
-			}
+			$this->data = $data;
 		}
 
 		Log::add('debug', 'View Class Initialized ['.str_replace(DOCROOT, '', $this->kohana_filename).']');
@@ -64,9 +61,19 @@ class View_Core {
 	 * Returns:
 	 *  View object
 	 */
-	public function set($name, $value)
+	public function set($name, $value = NULL)
 	{
-		$this->__set($name, $value);
+		if (func_num_args() === 1 AND is_array($name))
+		{
+			foreach($name as $key => $value)
+			{
+				$this->__set($key, $value);
+			}
+		}
+		else
+		{
+			$this->__set($name, $value);
+		}
 		return $this;
 	}
 
