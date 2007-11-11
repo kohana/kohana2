@@ -8,4 +8,5 @@
 <li><?php echo html::anchor('tutorials/xss', 'XSS Attack Filtering') ?></li>
 <li><?php echo html::anchor('tutorials/remove_index', 'Removing index.php From URLs') ?></li>
 <li><?php echo html::anchor('tutorials/page', 'Creating a Page Controller') ?></li>
+<li><?php echo html::anchor('tutorials/multilingual', 'Setting Up a Multilingual Website') ?></li>
 </ul>

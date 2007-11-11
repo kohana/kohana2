@@ -1,6 +1,6 @@
-<h2>Setting up a multilingual site <span>By Geert De Deckere, &copy; 2007</span></h2>
+<h2><span>&copy; 2007, Geert De Deckere</span>Setting Up a Multilingual Website</h2>
 
-<p>You want to create a multilingual site. Each translation should be available via a <abbr title="Uniform Resource Locator">URL</abbr> with a language code of two characters in its first segment, like this: <tt>example.com/en/page</tt>, <tt>example.com/nl/page</tt>, etc. This may seem a daunting task. However, this tutorial is here to show you how to tackle this situation using the power and flexibility of Kohana. Just four steps.</p>
+<p>You want to create a multilingual site. Each translation should be available via a <abbr title="Uniform Resource Locator">URL</abbr> with a language code of two characters in its first segment, like this: <tt>example.com/en/page</tt>, <tt>example.com/nl/page</tt>, etc. This may seem a daunting task. However, this tutorial is here to show you how to tackle this situation using the power and flexibility of Kohana, in just four steps.</p>
 
 
 <h3>1. Force language in every URL via .htaccess</h3>
@@ -50,7 +50,7 @@ function site_lang()
 
 	// Extract language from URL
 	$lang = strtolower(substr(url::current(), 0, 2));
-	
+
 	// Invalid language is given in the URL
 	if ( ! array_key_exists($lang, $locales))
 	{
@@ -59,10 +59,10 @@ function site_lang()
 		//  1. cookie
 		//  2. http_accept_language header
 		//  3. default lang
-		
+
 		// Look for cookie
 		$new_langs[] = (string) cookie::get(\'lang\');
-		
+
 		// Look for HTTP_ACCEPT_LANGUAGE
 		if (isset($_SERVER[\'HTTP_ACCEPT_LANGUAGE\']))
 		{
@@ -71,33 +71,33 @@ function site_lang()
 				$new_langs[] = substr($part, 0, 2);
 			}
 		}
-		
+
 		// Lowest priority goes to default language
 		$new_langs[] = \'nl\';
-		
+
 		// Now loop through the new languages and pick out the first valid one
 		foreach(array_unique($new_langs) as $new_lang)
 		{
 			$new_lang = strtolower($new_lang);
-			
+
 			if (array_key_exists($new_lang, $locales))
 			{
 				$lang = $new_lang;
 				break;
 			}
 		}
-		
+
 		// Redirect to URL with valid language
 		url::redirect($lang.substr(url::current(), 2));
 	}
-	
+
 	// Store locale config values
 	Config::set(\'locale.lang\', $lang);
 	Config::set(\'locale.language\', $locales[$lang]);
-	
+
 	// Overwrite setlocale which has already been set before in Kohana::setup()
 	setlocale(LC_ALL, Config::item(\'locale.language\').\'.UTF-8\');
-	
+
 	// Finally set a language cookie for 6 months
 	cookie::set(\'lang\', $lang, 15768000);
 }
@@ -122,10 +122,10 @@ $config = array
 		\'fr\' => \'fr_FR\',
 		\'de\' => \'de_DE\',
 	),
-	
+
 	// Long version of language (name of i18n folder)
 	\'language\'        => \'nl_NL\',
-	
+
 	// Short version of language (for use in URLs)
 	\'lang\'            => \'nl\',
 );
@@ -144,7 +144,7 @@ $config = array
 echo geshi_highlight('<?php
 
 // Collision check
-( ! isset($lang)) or die(\'Variable collision in \'.__FILE__);
+isset($lang) and die(\'Variable collision in \'.__FILE__);
 
 // Regex part for URL language
 $lang = \'[a-zA-Z]{2}\';
@@ -153,7 +153,7 @@ $config = array
 (
 	// \'_default\' => \'home\',
 	$lang => \'home\',
-	
+
 	// Catch-all language route
 	$lang.\'/(.*)\' => \'$1\',
 );
@@ -200,7 +200,7 @@ class url_lang {
 		{
 			$lang = Config::item(\'locale.lang\');
 		}
-	
+
 		return url::site($lang.\'/\'.trim($uri, \'/\'), $protocol);
 	}
 
@@ -235,7 +235,7 @@ class url_lang {
 		{
 			$lang = Config::item(\'locale.lang\');
 		}
-	
+
 		return url::redirect($lang.\'/\'.trim($uri, \'/\'), $method);
 	}
 

@@ -10,7 +10,7 @@ h6 { font-size: 1.1em; }
 h2, h3, h4, h5, h6 { margin-bottom: 0.6em; }
 a { color: #006; text-decoration: none; }
 a:hover { color: #009; }
-abbr { border-bottom: solid 1px #ccc; cursor: help; }
+abbr { border-bottom: dotted 1px #aaa; cursor: help; }
 tt, code { font-family: 'Monaco', Courier, monospace; }
 code { display: block; padding: 1em; margin: 1em 0 1em; background: #eee; border: solid 1px #999; }
 
@@ -42,7 +42,7 @@ code { display: block; padding: 1em; margin: 1em 0 1em; background: #eee; border
 		#menu li.active a:hover { background: #f7fbf1; color: #b04f08; }
 
 /* Main Body */
-#body { padding: 1em 4em; _margin-top: -1.1em; background: #f7fbf1; }
+#body { padding: 2em 4em 1em; _margin-top: -1.1em; background: #f7fbf1; line-height: 140%; }
 	#body h2 span { float: right; padding-right: 1em; font-weight: bold; font-size: 0.6em; }
 	#body strong { font-weight: bold; }
 	#body p { padding-bottom: 1em; }
@@ -51,7 +51,7 @@ code { display: block; padding: 1em; margin: 1em 0 1em; background: #eee; border
 	#body form fieldset { padding: 0.5em 0; }
 	#body form .legend { display: block; padding: 0.5em; background: #ddefbd; }
 	#body form ul { display: block; padding: 0.5em 1em 0; list-style: none; }
-	#body .intro { margin: 1em; margin-left: -4em; padding: 1em 2em; padding-left: 4em; background: #eaeee5; font-size: 1.6em; line-height: 1.4em; color: #8C9393; }
+	#body .intro { margin: 0 1em 1em; margin-left: -4em; padding: 1em 2em; padding-left: 4em; background: #eaeee5; font-size: 1.6em; line-height: 1.4em; color: #8C9393; }
 		#body .intro strong { text-transform: uppercase; font-weight: bold; font-size: 0.76em; color: #7b7d78; letter-spacing: -0.02em; white-space: nowrap; }
 
 /* Content */
