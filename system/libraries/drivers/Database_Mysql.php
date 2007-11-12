@@ -104,11 +104,17 @@ class Database_Mysql_Driver implements Database_Driver {
 				return implode(' AS ', $column);
 			}
 
+			// Check if there's a table name in the string
 			if (strpos($column, '.') !== FALSE)
 			{
+				if (substr($column, -1) == '*')
+				{
+					$column = str_replace('.', '`.', $column);
+					return '`'.$column;
+				}
+				
 				$column = str_replace('.', '`.`', $column);
 			}
-
 			return '`'.$column.'`';
 		}
 
