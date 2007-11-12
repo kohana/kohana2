@@ -276,7 +276,7 @@ class Validation_Core {
 			}
 
 			// Process empty fields
-			if ( ! isset($this->data[$field]))
+			if ( ! isset($this->data[$field]) OR $this->data[$field] == NULL)
 			{
 				// This field is required
 				if (preg_match('/required|callback|matches/', $rules))
