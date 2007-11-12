@@ -258,6 +258,33 @@ class html {
 	}
 
 	/*
+	 * Method: image
+	 *  Creates a image link.
+	 *
+	 * Parameters:
+	 *  attr  - array of html attributes, or an image name
+	 *  index - include the index_page in the link
+	 *
+	 * Returns:
+	 *  An HTML image link.
+	 */
+	public static function image($attr = NULL, $index = TRUE)
+	{
+		if ( ! is_array($attr))
+		{
+			$attr = array('src' => $attr);
+		}
+
+		if (strpos($attr['src'], '://') === FALSE)
+		{
+			// Make the src attribute into an absolute URL
+			$attr['src'] = url::base($index).$attr['src'];
+		}
+
+		return '<img'.self::attributes($attr).' />';
+	}
+
+	/*
 	 * Method: attributes
 	 *  Compiles an array of HTML attributes into an attribute string.
 	 *
