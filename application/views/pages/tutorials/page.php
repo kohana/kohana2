@@ -1,4 +1,6 @@
-<h2>Creating a Page Controller <span>By Jeremy Bush, &copy; 2007</span></h2>
+<h2>Creating a Virtual Database Page System <span>By Jeremy Bush, &copy; 2007</span></h2>
+<p>Please note that this tutorial assumes that the user has a bit of experience setting up Kohana 2 websites.</p>
+<p>This tutorial level is Medium to Advanced.</p>
 <p>Here we will show a short example of many of the features of Kohana:</p>
 <ol>
 	<li>Setting up templates using Views within Views</li>
@@ -47,16 +49,13 @@ echo geshi_highlight('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
 	<head>
 		<title><?=$title?></title>
-		<link rel="stylesheet" type="text/css" href="/css/layout.css" />
-		<link rel="stylesheet" type="text/css" href="/css/style.css" />
-		<link rel="stylesheet" type="text/css" href="/css/menu.css" />
+		<?=html::stylesheet(\'css/layout.css\')?>
+		<?=html::stylesheet(\'css/style.css\')?>
+		<?=html::stylesheet(\'css/menu.css\')?>
 
-		<script type="text/javascript" src="/js/jquery.js"></script>
-		<script type="text/javascript" src="/js/jquery.livequery.js"></script>
-		<script type="text/javascript" src="/js/jquery.corner.js"></script>
-		<script type="text/javascript" src="/js/jquery.overlabel.js"></script>
-		<script type="text/javascript" src="/js/jqModal.js"></script>
-		<script type="text/javascript" src="/js/effects.js"></script>
+		<?=html::script(\'js/jquery.js\')?>
+		<?=html::script(\'js/jquery.livequery.js\')?>
+		<?=html::script(\'js/effects.js\')?>
 	</head>
 	<body>
 		<div id="menu">
@@ -248,8 +247,8 @@ echo geshi_highlight('function index()
 
 ?>
 <p>Here we load the page from the model, and also cleverly show a 404 status if the page doesn't exist (the database result would be FALSE).</p>
-<p>I have provided a whole <?=html::anchor('/tutorials/download/page.zip', 'application')?> for you to look at, pick apart or use on your own projects.<br />
-Feel free to send any changes or improvements back to me at <?=html::mailto('contractfrombelow@gmail.com')?>.</p>
+<p>I have provided a whole <?= html::file_anchor(Config::item('core.index_page', TRUE).'tutorials/download/page_tutorial.zip', 'application')?> for you to look at, pick apart or use on your own projects.<br />
+Feel free to send any changes or improvements back to me at <?=html::mailto('jeremy.bush@kohanaphp.com')?>.</p>
 <p>It includes a basic authentication system for administrating pages, a FCKeditor for easy editing of pages, and some basic HTML views to get you going.</p>
 
-<p><strong><?php echo html::file_anchor(Config::item('core.index_page', TRUE).'tutorials/download/page_tutorial.zip', 'Download Tutorial Files') ?></strong></p>
+<p><strong><?= html::file_anchor(Config::item('core.index_page', TRUE).'tutorials/download/page_tutorial.zip', 'Download Tutorial Files') ?></strong></p>
