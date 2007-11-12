@@ -113,7 +113,10 @@ class Validation_Core {
 				$data = array();
 				foreach (array_keys($this->rules) as $key)
 				{
-					$data[$key] = $this->data[$key];
+					if (isset($this->data[$key]))
+					{
+						$data[$key] = $this->data[$key];
+					}
 				}
 				return $data;
 			}
