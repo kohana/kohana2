@@ -75,7 +75,7 @@ final class Config {
 	 *  Sets a configuration item, if allowed.
 	 *
 	 * Parameters:
-	 *  key   - config key sting
+	 *  key   - config key string
 	 *  value - config value
 	 */
 	public static function set($key, $value)
