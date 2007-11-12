@@ -184,7 +184,7 @@ class Examples_Controller extends Controller {
 		{
 			echo '<p>YES! Lets do some work =)</p>';
 
-			$query = $this->db->select('pages.*')->from($table)->get();
+			$query = $this->db->select('DISTINCT pages.*')->from($table)->get();
 			echo $this->db->last_query();
 			echo '<h3>Iterate through the result:</h3>';
 			foreach($query as $item)

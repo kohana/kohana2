@@ -103,7 +103,7 @@ class Database_Mysql_Driver implements Database_Driver {
 				// Re-create the AS statement
 				return implode(' AS ', $column);
 			}
-
+		
 			// Check if there's a table name in the string
 			if (strpos($column, '.') !== FALSE)
 			{
@@ -118,6 +118,7 @@ class Database_Mysql_Driver implements Database_Driver {
 			return '`'.$column.'`';
 		}
 
+
 		$parts = explode(' ', $column);
 		$column = '';
 
@@ -126,7 +127,21 @@ class Database_Mysql_Driver implements Database_Driver {
 			// The column is always last
 			if ($i == ($c - 1))
 			{
-				$column .= '`'.$parts[$i].'`';
+				// Check if there's a table name in the string
+				if (strpos($parts[$i], '.') !== FALSE)
+				{
+					$column_parts = explode('.', $parts[$i]);
+					if ($column_parts[1] == '*')
+					{
+						$column .= '`'.$column_parts[0].'`.'.$column_parts[1];
+					}
+					else
+					{
+						$column .= '`'.$column_parts[0].'`.`'.$column_parts[1].'`';
+					}
+				}
+				else
+					$column .= '`'.$parts[$i].'`';
 			}
 			else // otherwise, it's a modifier
 			{
