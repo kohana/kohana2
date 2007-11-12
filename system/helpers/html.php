@@ -201,11 +201,12 @@ class html {
 	 * Parameters:
 	 *  style - filename
 	 *  media - media type of stylesheet
+	 *  index  - include the index_page in the link
 	 *
 	 * Returns:
 	 *  An HTML stylesheet link.
 	 */
-	public static function stylesheet($style, $media = FALSE)
+	public static function stylesheet($style, $media = FALSE, $index = TRUE)
 	{
 		$compiled = '';
 
@@ -213,14 +214,14 @@ class html {
 		{
 			foreach($style as $name)
 			{
-				$compiled .= self::stylesheet($name, $media)."\n";
+				$compiled .= self::stylesheet($name, $media, $index)."\n";
 			}
 		}
 		else
 		{
 			$media = ($media == FALSE) ? '' : ' media="'.$media.'"';
 
-			$compiled = '<link rel="stylesheet" href="'.url::base(TRUE).$style.'.css"'.$media.' />';
+			$compiled = '<link rel="stylesheet" href="'.url::base((bool) $index).$style.'.css"'.$media.' />';
 		}
 
 		return $compiled;
@@ -232,11 +233,12 @@ class html {
 	 *
 	 * Parameters:
 	 *  script - filename
+	 *  index  - include the index_page in the link
 	 *
 	 * Returns:
 	 *  An HTML script link.
 	 */
-	public static function script($script)
+	public static function script($script, $index = TRUE)
 	{
 		$compiled = '';
 
@@ -244,12 +246,12 @@ class html {
 		{
 			foreach($script as $name)
 			{
-				$compiled .= self::script($name)."\n";
+				$compiled .= self::script($name, $index)."\n";
 			}
 		}
 		else
 		{
-			$compiled = '<script type="text/javascript" src="'.url::base(TRUE).$script.'.js"></script>';
+			$compiled = '<script type="text/javascript" src="'.url::base((bool) $index).$script.'.js"></script>';
 		}
 
 		return $compiled;
