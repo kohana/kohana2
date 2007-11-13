@@ -127,21 +127,7 @@ class Database_Mysql_Driver implements Database_Driver {
 			// The column is always last
 			if ($i == ($c - 1))
 			{
-				// Check if there's a table name in the string
-				if (strpos($parts[$i], '.') !== FALSE)
-				{
-					$column_parts = explode('.', $parts[$i]);
-					if ($column_parts[1] == '*')
-					{
-						$column .= '`'.$column_parts[0].'`.'.$column_parts[1];
-					}
-					else
-					{
-						$column .= '`'.$column_parts[0].'`.`'.$column_parts[1].'`';
-					}
-				}
-				else
-					$column .= '`'.$parts[$i].'`';
+				$column .= preg_replace('/[^.*]+/', '`$0`', $parts[$i]);
 			}
 			else // otherwise, it's a modifier
 			{
