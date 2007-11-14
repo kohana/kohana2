@@ -279,7 +279,7 @@ class Validation_Core {
 			if ( ! isset($this->data[$field]) OR $this->data[$field] == NULL)
 			{
 				// This field is required
-				if (preg_match('/required|callback|matches/', $rules))
+				if (strpos($rules, 'required') !== FALSE)
 				{
 					$this->add_error('required', $field);
 				}
