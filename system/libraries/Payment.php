@@ -35,6 +35,7 @@ class Payment_Core {
 	 *
 	 *  card_num
 	 *  exp_date
+	 *  cvv
 	 *  description
 	 *  amount
 	 *  tax

@@ -36,16 +36,18 @@ $config['Yourpay'] = array
 );
 
 /*
- * YourPay.net Options:
- *  merchant_id - the merchant ID number
- *  certificate - the location on your server of the certificate file.
+ * TrustCommerce Options:
+ *  custid - the customer ID assigned to you by TrustCommerce
+ *  password - the password assigned to you by TrustCommerce
+ *  media - "cc" for credit card or "ach" for ACH.
+ *  tclink_library - the location of the tclink library (relative to your index file) you need to compile to get this driver to work.
  */
 $config['Trustcommerce'] = array
 (
 	'custid' => '',
 	'password' => '',
 	'media' => 'cc',
-	'tclink_library' => './path/to/certificate.pem'
+	'tclink_library' => './path/to/library.so'
 );
 
 /*

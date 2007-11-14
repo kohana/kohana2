@@ -27,8 +27,14 @@ class Payment_Trustcommerce_Driver
 
 	public function __construct($config)
 	{
+		
 		$this->test_mode = $config['test_mode'];
+		$this->tclink_library = $config['tclink_library'];	
 		$this->fields['ip'] = $_SERVER['REMOTE_ADDR'];
+		$this->fields['custid'] = $config['custid'];
+		$this->fields['password'] = $config['password'];
+		$this->fields['action'] = 'sale';
+		$this->fields['media'] = $config['media'];
 
 		if (!extension_loaded('tclink'))
 		{
@@ -52,9 +58,28 @@ class Payment_Trustcommerce_Driver
 					break;
 				case 'exp_date':
 					$key = 'exp';
+					if (strlen($value) == 3) $value = '0'.$value;
 					break;
 				case 'amount':
 					$value = $value * 100;
+					break;
+				case 'address':
+					$key = 'address1';
+					break;
+				case 'ship_to_address':
+					$key = 'shipto_address1';
+					break;
+				case 'ship_to_city':
+					$key = 'shipto_city';
+					break;
+				case 'ship_to_state':
+					$key = 'shipto_state';
+					break;
+				case 'ship_to_zip':
+					$key = 'shipto_zip';
+					break;
+				case 'cvv':
+					$value = (int) $value;
 					break;
 				default:
 					break;
@@ -72,6 +97,11 @@ class Payment_Trustcommerce_Driver
 	{
 		if ($this->test_mode)
 			$this->fields['demo'] = 'y';
+
+		$this->fields['name'] = $this->fields['first_name'].' '.$this->fields['last_name'];
+		$this->fields['shipto_name'] = $this->fields['ship_to_first_name'].' '.$this->fields['ship_to_last_name'];
+		unset($this->fields['first_name'], $this->fields['last_name'],$this->fields['ship_to_first_name'],$this->fields['ship_to_last_name']);
+
 		// Check for required fields
 		if (in_array(FALSE, $this->required_fields))
 		{
@@ -92,8 +122,8 @@ class Payment_Trustcommerce_Driver
 		if ($result['status'] == 'approved')
 			return TRUE;
 		elseif ($result['status'] == 'decline')
-			return Kohana::lang('payment.errors.Trustcommerce.decline.'.$result[$result['status'].'type']);
+			return Kohana::lang('payment.error', 'payment.errors.Trustcommerce.decline.'.$result[$result['status'].'type']);
 		else
-			throw new Kohana_Exception('payment.error', Kohana::lang('payment.errors.Trustcommerce.'.$result['status'].'.'.$result[$result['status'].'type']));
+			throw new Kohana_Exception('payment.error', Kohana::lang('payment.errors.Trustcommerce.'.$result['status'].'.'.$result['error']));
 	}
 }
