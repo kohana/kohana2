@@ -19,6 +19,7 @@ $lang = array
 	'valid_ip'      => 'The %s field must contain a valid IP address.',
 	'valid_type'    => 'The %s field must only contain %s characters.',
 	'range'         => 'The %s field must be between specified ranges.',
+	'regex'         => 'The %s field does not match accepted input.',
 
 	// Upload errors
 	'user_aborted'  => 'The %s file was aborted during upload.',

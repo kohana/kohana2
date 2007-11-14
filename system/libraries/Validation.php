@@ -69,7 +69,7 @@ class Validation_Core {
 	 *
 	 * Parameters:
 	 *  key - variable name
-	 * 
+	 *
 	 * Returns:
 	 *  The variable contents or NULL if the variable does not exist
 	 */
@@ -151,8 +151,8 @@ class Validation_Core {
 			{
 				if (count($rules) > 1)
 				{
-					// Double equals revents $rules from getting borked by list()
-					list($field, $rules) = $rule = $rules;
+					$field = current($rules);
+					$rules = next($rules);
 				}
 				else
 				{
@@ -161,8 +161,11 @@ class Validation_Core {
 			}
 
 			// Empty field names default to the name of the element
-			$this->fields[$name] = ($field == '') ? $name : $field;
+			$this->fields[$name] = isset($field) ? $field : $name;
 			$this->rules[$name]  = $rules;
+
+			// Prevent fields from getting the wrong name
+			unset($field);
 		}
 	}
 
@@ -351,7 +354,7 @@ class Validation_Core {
 
 			// Handle params
 			$params = FALSE;
-			if (preg_match('/([^\[]*+)\[(.*?)\]/', $rule, $match))
+			if (preg_match('/([^\[]*+)\[(.+)\]/', $rule, $match))
 			{
 				$rule   = $match[1];
 				$params = explode(',', $match[2]);
@@ -1061,23 +1064,35 @@ class Validation_Core {
 
 	/*
 	 * Method: range
+	 *  Test that a field is between a range.
 	 *
 	 * Parameters:
-	 *  str    - string to validate
+	 *  num    - number to validate
 	 *  ranges - ranges
 	 *
 	 * Returns:
 	 *  TRUE or FALSE
 	 */
-	public function range($str, $ranges)
+	public function range($num, $ranges)
 	{
 		if (is_array($ranges) AND ! empty($ranges))
 		{
-			foreach($ranges as $range) 
-			{
-				list($low, $high) = explode(':', $range);
+			// Number is always an integer
+			$num = (float) $num;
 
-				if (in_array($str, range((int)$low, (int)$high)))
+			foreach($ranges as $range)
+			{
+				list($low, $high) = explode(':', $range, 2);
+
+				if ($low == 'FALSE' AND $num <= (float) $high)
+				{
+					return TRUE;
+				}
+				elseif ($high == 'FALSE' AND $num >= (float) $low)
+				{
+					return TRUE;
+				}
+				elseif ($num >= (float) $low AND $num <= (float) $high)
 				{
 					return TRUE;
 				}
@@ -1085,6 +1100,43 @@ class Validation_Core {
 		}
 
 		$this->add_error('range', $this->current_field);
+		return FALSE;
+	}
+
+	/*
+	 * Method: regex
+	 *  Test a field against a regex rule
+	 *
+	 * Parameters:
+	 *  str   - string to test
+	 *  regex - regular expression to run
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
+	 */
+	public function regex($str, $regex)
+	{
+		if ( ! empty($regex))
+		{
+			// Only one regex validation per field
+			$regex = current($regex);
+
+			// Find a usable delimiter
+			foreach (str_split('~#|!:;,./=-+*?\'"$', 1) as $delim)
+			{
+				if (strpos($regex, $delim) === FALSE)
+				{
+					if (preg_match($delim.$regex.$delim, $str))
+					{
+						// Regex matches, return
+						return TRUE;
+					}
+					break;
+				}
+			}
+		}
+
+		$this->add_error('regex', $this->current_field);
 		return FALSE;
 	}
 
