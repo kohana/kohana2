@@ -268,7 +268,7 @@ class Kohana {
 		Event::run('system.display');
 
 		// Fetch memory usage in MB
-		$memory = function_exists('memory_get_usage') ? memory_get_usage() : 0;
+		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
 
 		// Fetch benchmark for page execution time
 		$benchmark = Benchmark::get(SYSTEM_BENCHMARK.'_total_execution_time');
@@ -287,7 +287,7 @@ class Kohana {
 				KOHANA_VERSION,
 				KOHANA_CODENAME,
 				$benchmark['time'],
-				text::bytes($memory, 'MiB')
+				number_format($memory, 2).'MB'
 			),
 			self::$output
 		);
