@@ -688,7 +688,6 @@ class Validation_Core {
 			}
 			elseif (strlen($str) !== (int) current($length))
 			{
-				die(Kohana::debug($str));
 				// Test exact length
 				$this->add_error('exact_length', $this->current_field, (int) current($length));
 				return FALSE;
