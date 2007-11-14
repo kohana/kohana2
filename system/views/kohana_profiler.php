@@ -100,7 +100,7 @@ foreach ($benchmarks as $name => $benchmark):
 			<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
 				<td><?php echo $name ?></td>
 				<td class="kp-column kp-data"><?php echo number_format($benchmark['time'], 4) ?></td>
-				<td class="kp-column kp-data"><?php echo text::bytes($benchmark['memory'], 'MB') ?></td>
+				<td class="kp-column kp-data"><?php echo number_format($benchmark['memory'] / 1024 / 1024, 2) ?> MB</td>
 			</tr>
 <?php
 
