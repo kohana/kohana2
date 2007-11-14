@@ -26,12 +26,26 @@ $config['Authorize'] = array
 
 /*
  * YourPay.net Options:
+ *  merchant_id - the merchant ID number
  *  certificate - the location on your server of the certificate file.
  */
 $config['Yourpay'] = array
 (
 	'merchant_id' => '',
 	'certificate' => './path/to/certificate.pem'
+);
+
+/*
+ * YourPay.net Options:
+ *  merchant_id - the merchant ID number
+ *  certificate - the location on your server of the certificate file.
+ */
+$config['Trustcommerce'] = array
+(
+	'custid' => '',
+	'password' => '',
+	'media' => 'cc',
+	'tclink_library' => './path/to/certificate.pem'
 );
 
 /*

@@ -49,7 +49,7 @@ class Payment_Yourpay_Driver
 		$this->certificate = (file_exists($config['certificate'])) ? $config['certificate'] : FALSE;
 
 		if (!$this->certificate)
-			throw new Kohana_Exception('payment.invalid_certificate');
+			throw new Kohana_Exception('payment.invalid_certificate', $config['certificate']);
 
 		$this->curl_config = $config['curl_config'];
 		$this->test_mode = $config['test_mode'];
