@@ -1060,6 +1060,35 @@ class Validation_Core {
 	}
 
 	/*
+	 * Method: range
+	 *
+	 * Parameters:
+	 *  str    - string to validate
+	 *  ranges - ranges
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
+	 */
+	public function range($str, $ranges)
+	{
+		if (is_array($ranges) AND ! empty($ranges))
+		{
+			foreach($ranges as $range) 
+			{
+				list($low, $high) = explode(':', $range);
+
+				if (in_array($str, range((int)$low, (int)$high)))
+				{
+					return TRUE;
+				}
+			}
+		}
+
+		$this->add_error('range', $this->current_field);
+		return FALSE;
+	}
+
+	/*
 	 * Method: prep_for_form
 	 *  This function allows HTML to be safely shown in a form.
 	 *  Special characters are converted.
