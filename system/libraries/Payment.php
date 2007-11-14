@@ -124,7 +124,7 @@ class Payment_Core {
 
 	/*
 	 * Method: process
-	 *  Runs the transaction and returns the status string on failure or TRUE on success
+	 *  Runs the transaction
 	 *
 	 * Returns:
 	 *  TRUE on successful payment, an error string on failure
