@@ -327,7 +327,7 @@ class Kohana {
 			$message  = $exception->getMessage();
 			$file     = $exception->getFile();
 			$line     = $exception->getLine();
-			$template = $exception->getTemplate();
+			$template = method_exists($exception, 'getTemplate') ? $exception->getTemplate() : 'kohana_error_page';
 		}
 
 		// Do not display E_STRICT notices, they are garbage
@@ -344,7 +344,8 @@ class Kohana {
 			else
 			{
 				$level = 1;
-				$error = 'Unknown Error';
+				$error = (func_num_args() === 5) ? 'Unknown Error' : get_class($exception);
+				$description = '';
 			}
 		}
 		else
