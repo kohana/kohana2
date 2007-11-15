@@ -80,7 +80,7 @@ class Profiler_Core {
 		if (stripos(Kohana::$output, '</body>') !== FALSE)
 		{
 			// Closing body tag was found, insert the profiler data before it
-			Kohana::$output = str_replace('</body>', $view.'</body>', Kohana::$output);
+			Kohana::$output = str_replace('</body>', $view->render().'</body>', Kohana::$output);
 		}
 		else
 		{
