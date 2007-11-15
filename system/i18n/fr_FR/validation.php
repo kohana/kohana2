@@ -18,6 +18,8 @@ $lang = array
 	'valid_email'   => 'Le champ %s doit contenir une adresse email valide.',
 	'valid_ip'      => 'Le champ %s doit contenir une adresse IP valide.',
 	'valid_type'    => 'Le champ %s doit contenir seulement les charactères suivants: %s',
+    'range'         => 'Le champ %s doit être situé dans la plage de valeurs spécifiée.',
+	'regex'         => 'Le champ %s ne correspond pas aux valeurs acceptées.',
 
 	// Upload errors
 	'user_aborted'  => 'L\'envoi du fichier %s sur le serveur a échoué.',
