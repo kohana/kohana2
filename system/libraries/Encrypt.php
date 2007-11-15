@@ -54,19 +54,6 @@ class Encrypt_Core {
 	}
 
 	/*
-	 * Method: __destruct
-	 *  Unload mcrypt when PHP shuts down
-	 */
-	public function __destruct()
-	{
-		// Shut down mcrypt
-		mcrypt_generic_deinit($this->module);
-
-		// Close the module
-		mcrypt_module_close($this->module);
-	}
-
-	/*
 	 * Method: encode
 	 *  Encrypts a string.
 	 *
