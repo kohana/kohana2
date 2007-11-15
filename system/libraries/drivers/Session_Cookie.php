@@ -45,7 +45,7 @@ class Session_Cookie_Driver implements Session_Driver {
 	{
 		$data = $this->input->cookie($this->cookie_name);
 
-		if ($this->encryption == TRUE)
+		if ($this->encryption == TRUE AND $data != '')
 		{
 			$data = $this->encrypt->decode($data);
 		}
