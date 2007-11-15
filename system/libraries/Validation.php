@@ -368,7 +368,7 @@ class Validation_Core {
 
 				$this->result = Kohana::instance()->$callback($data, $params);
 			}
-			elseif ($rule === 'matches')
+			elseif ($rule === 'matches' OR $rule === 'depend_on')
 			{
 				$this->result = $this->$rule($field, $params);
 			}
@@ -1100,6 +1100,31 @@ class Validation_Core {
 		}
 
 		$this->add_error('range', $this->current_field);
+		return FALSE;
+	}
+
+	/*
+	 * Method: depend_on
+	 *
+	 * Parameters:
+	 *  field 	  - first field
+	 *  depend_on - field which the first field is depend on it
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
+	 */
+	public function depend_on($field, $depend_on)
+	{
+		$depend_on = is_array($depend_on) ? trim(current($depend_on)) : NULL;
+
+		if ($depend_on !== NULL AND isset($this->data[$field]) AND isset($this->data[$depend_on])) 
+		{
+			return TRUE;
+		}
+
+		$depend_on = isset($this->fields[$depend_on]) ? $this->fields[$depend_on] : $depend_on;
+
+		$this->add_error('depend_on', $field, $depend_on);
 		return FALSE;
 	}
 
