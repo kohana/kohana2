@@ -34,7 +34,7 @@ class Donate_Controller extends Controller {
 			$this->payment->amount = $amount;
 			$this->payment->process();
 		}
-		else if ($amount = $this->session->get('donate_amount') and $payerid = $this->input->get('payerid')) // They are returning from paypal
+		else if ($amount = $this->session->get('donate_amount') AND $payerid = $this->input->get('payerid')) // They are returning from paypal
 		{
 			// Display the final 'order' page
 			$this->template->set(array
