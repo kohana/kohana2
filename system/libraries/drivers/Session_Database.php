@@ -38,7 +38,7 @@ class Session_Database_Driver implements Session_Driver {
 		// Load Encryption
 		if ($this->encryption == TRUE)
 		{
-			$this->encrypt = new Encryption();
+			$this->encrypt = new Encrypt();
 		}
 
 		// Set 'no expiration' to two years

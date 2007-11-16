@@ -327,12 +327,16 @@ class Validation_Core {
 		// Use key_string to extract the field data
 		$data = Kohana::key_string($field, $this->data);
 
-		if (is_array($data))
+		// Make sure that data input is not upload data
+		if (is_array($data) AND ! (isset($data['tmp_name']) AND isset($data['error'])))
 		{
 			foreach($data as $key => $value)
 			{
 				// Recursion is fun!
 				$this->run_rule($rule, $field.'.'.$key);
+
+				if ($this->result === FALSE)
+					break;
 			}
 		}
 		else
@@ -445,18 +449,23 @@ class Validation_Core {
 			'height' => FALSE
 		);
 
-		// Validate the uploaded file
-		if ( ! isset($data['tmp_name']) OR ! is_uploaded_file($data['tmp_name']))
-			return FALSE;
+		if ($data === $this->data[$this->current_field])
+		{
+			// Clear the raw upload data, it's internal now
+			$this->data[$this->current_field] = NULL;
+		}
 
 		if (is_array($data['name']))
 		{
 			// Handle an array of inputs
 			$files = $data;
-			$total = count($files['name']) + 1;
+			$total = count($files['name']);
 
 			for ($i = 0; $i < $total; $i++)
 			{
+				if (empty($files['name'][$i]))
+					continue;
+
 				// Fake a single upload input
 				$data = array
 				(
@@ -473,8 +482,12 @@ class Validation_Core {
 			}
 
 			// All files uploaded successfully
-			return TRUE;
+			return empty($this->errors);
 		}
+
+		// Validate the uploaded file
+		if ( ! isset($data['tmp_name']) OR ! is_uploaded_file($data['tmp_name']))
+			return FALSE;
 
 		// Parse addition parameters
 		if (is_array($params) AND ! empty($params))
@@ -628,7 +641,7 @@ class Validation_Core {
 		// is trusted (validated by the server), we check if the mime is in the
 		// list of known mime types for the current extension.
 
-		if ($ext == FALSE OR array_search($mime, Config::item('mimes.'.$ext)) === NULL)
+		if ($ext == FALSE OR ! in_array($ext, $allowed) OR array_search($mime, Config::item('mimes.'.$ext)) === NULL)
 		{
 			$this->add_error('invalid_type', $this->current_field);
 			return FALSE;
@@ -643,8 +656,21 @@ class Validation_Core {
 		// Move the upload file to the new location
 		move_uploaded_file($data['tmp_name'], $filename);
 
+		if ( ! empty($this->data[$this->current_field]))
+		{
+			// Conver the returned data into an array
+			$this->data[$this->current_field] = array($this->data[$this->current_field]);
+		}
+
 		// Set the data to the current field name
-		$this->data[$this->current_field] = $filename;
+		if (is_array($this->data[$this->current_field]))
+		{
+			$this->data[$this->current_field][] = $filename;
+		}
+		else
+		{
+			$this->data[$this->current_field] = $filename;
+		}
 
 		return TRUE;
 	}
