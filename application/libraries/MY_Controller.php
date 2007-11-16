@@ -38,6 +38,9 @@ class Controller extends Controller_Core {
 
 		if ($this->auto_render == TRUE)
 		{
+			// Load session
+			$this->session = new Session();
+
 			// Load the template
 			$this->template = new View($this->template);
 
