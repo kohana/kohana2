@@ -20,6 +20,7 @@ $lang = array
 	'valid_type'    => 'Le champ %s doit contenir seulement les charactères suivants: %s',
     'range'         => 'Le champ %s doit être situé dans la plage de valeurs spécifiée.',
 	'regex'         => 'Le champ %s ne correspond pas aux valeurs acceptées.',
+    'depend_on'     => 'Le champ %s est dépendant du champ %s.',
 
 	// Upload errors
 	'user_aborted'  => 'L\'envoi du fichier %s sur le serveur a échoué.',
