@@ -28,7 +28,7 @@ class Donate_Controller extends Controller {
 		if ($amount = $this->input->post('amount')) // They are coming from index()
 		{
 			// Set the payment amount in session for when they return from paypal
-			$session->set(array('donate_amount' => $amount));
+			$this->session->set(array('donate_amount' => $amount));
 
 			// Set the amount and send em to PayPal
 			$this->payment->amount = $amount;
@@ -52,12 +52,13 @@ class Donate_Controller extends Controller {
 
 	public function process_paypal()
 	{
-		$this->payment->amount = $session->get('donate_amount');
+		$this->payment->amount  = $this->session->get('donate_amount');
 		$this->payment->payerid = $this->input->post('payerid');
 
 		// Try and process the payment
 		if ($payment->process())
 		{
+			// Remove the donate amount from the session
 			$this->session->del('donate_amount');
 
 			$this->template->set(array
