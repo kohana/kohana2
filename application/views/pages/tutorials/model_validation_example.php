@@ -39,6 +39,11 @@ class User_Model extends Model
 		$this->validation = new Validation();
 	}
 
+	public function __destruct()
+	{
+		return TRUE;
+	}
+
 	public function __set($key, $val)
 	{
 		// Make sure this key and value is valid
@@ -195,6 +200,9 @@ class User_Model extends Model
 
 		$query = $this->db->delete(\'users\', array(\'id\' => $this->id));
 
-		return count($query);
+		if (count($query) > 0)
+			return $this->__destruct();
+
+		return FALSE;
 	}
 }', 'php', NULL, TRUE);

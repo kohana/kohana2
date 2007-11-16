@@ -1,4 +1,5 @@
 <h2><span>By Jeremy Bush, &copy; 2007</span>Built-in Model Validation</h2>
+<p class="intro">Make your models self-contained with built-in <strong>validation</strong> and <strong>database access</strong>.</p>
 <p>Please note that this tutorial assumes that the user has a bit of experience setting up Kohana 2 websites.</p>
 <p>This tutorial level is Advanced.</p>
 <h3>Introduction</h3>
@@ -23,7 +24,7 @@ echo geshi_highlight('class User_Model extends Model
 }', 'php', NULL, TRUE)
 
 ?>
-<p>Since we want validation inside the model, lets declare some variables to test and hold that information:</p>
+<p>Since we want validation inside the model, let's declare a rules vairable to hold our rules, field names and if the field has been validated yet:</p>
 <?php
 
 echo geshi_highlight('class User_Model extends Model
@@ -38,7 +39,7 @@ echo geshi_highlight('class User_Model extends Model
 	protected $zip;
 	protected $last_login;
 
-	private $rules = array(\'id\' =>       array(\'name\' => \'User ID\',
+	private $rules = array(\'id\' =>     array(\'name\' => \'User ID\',
 	                                           \'rules\' => \'\',
 	                                           \'valid\' => FALSE),
 	                       \'username\' => array(\'name\' => \'Username\',
@@ -69,91 +70,91 @@ echo geshi_highlight('class User_Model extends Model
 <?php
 
 echo geshi_highlight('public function __set($key, $val)
+{
+	// Make sure this key and value is valid
+	if (isset($this->$key))
 	{
-		// Make sure this key and value is valid
-		if (isset($this->$key))
+		$this->validation->set_rules(array($key => $value), $this->rules[$key][\'rules\'], $this->rules[$key][\'name\']);
+		if (!$this->validation->run())
+			return FALSE;
+
+		// You win at life!
+		$this->$key = $val;
+		$this->rules[$key][\'valid\'] = TRUE;
+
+		// See if the whole thing is validated
+		foreach ($this->rules as $key => $rule)
 		{
-			$this->validation->set_rules(array($key => $value), $this->rules[$key][\'rules\'], $this->rules[$key][\'name\']);
-			if (!$this->validation->run())
-				return FALSE;
-
-			// You win at life!
-			$this->$key = $val;
-			$this->rules[$key][\'valid\'] = TRUE;
-
-			// See if the whole thing is validated
-			foreach ($this->rules as $key => $rule)
-			{
-				// If anything isnt validated, just return success
-				if ($rule[\'valid\'] == FALSE)
-					return TRUE;
-			}
-			// Otherwise set validated and return
-			$this->validated = TRUE;
-			return TRUE;
+			// If anything isnt validated, just return success
+			if ($rule[\'valid\'] == FALSE)
+				return TRUE;
 		}
-
-		return FALSE;
+		// Otherwise set validated and return
+		$this->validated = TRUE;
+		return TRUE;
 	}
-	
-	public function __get($key)
-	{
-		if (isset($this->$key))
-			return $this->$key;
 
-		return FALSE;
-	}', 'php', NULL, TRUE)
+	return FALSE;
+}
+
+public function __get($key)
+{
+	if (isset($this->$key))
+		return $this->$key;
+
+	return FALSE;
+}', 'php', NULL, TRUE)
 ?>
 <p>As you can see in our __set() function, we are using our validation rules we defined above to make sure any data that is being set is actually sane data. We are also checking to see if all the keys have been validated, and if so, set our global validated check to TRUE.</p>
 <p>It might also be nice if we could set object properties with a big array instead of one at a time with __set(). Wil will make a set_fields() method for this:</p>
 <?php
 
 echo geshi_highlight('public function set_fields($input)
+{
+	$data = array();
+	$rules = array();
+	$fields = array();
+	$new_input = array();
+
+	foreach ($this->rules as $key => $value)
 	{
-		$data = array();
-		$rules = array();
-		$fields = array();
-		$new_input = array();
+		//silently ignore invalid fields
+		$data[$key] = @$input[$key];
+		$rules[$key] = $this->rules[$key][\'rules\'];
+		$fields[$key] = $this->rules[$key][\'name\'];
 
-		foreach ($this->rules as $key => $value)
+		if (isset($data[$key]) and isset($input[$key]))
+		$new_input[$key] = $data[$key];
+	}
+
+	$this->validation->set_rules($data, $rules, $fields);
+
+	if ($this->validation->run())
+	{
+		// Only set valid the keys that were inputed
+		foreach ($new_input as $key => $value)
 		{
-			//silently ignore invalid fields
-			$data[$key] = @$input[$key];
-			$rules[$key] = $this->rules[$key][\'rules\'];
-			$fields[$key] = $this->rules[$key][\'name\'];
-			
-			if (isset($data[$key]) and isset($input[$key]))
-				$new_input[$key] = $data[$key];
+			$this->$key = $value;
+			$this->rules[$key][\'valid\'] = TRUE;
 		}
 
-		$this->validation->set_rules($data, $rules, $fields);
-
-		if ($this->validation->run())
+		// Check to see if everything is validated
+		foreach ($this->rules as $key => $rule)
 		{
-			// Only set valid the keys that were inputed
-			foreach ($new_input as $key => $value)
-			{
-				$this->$key = $value;
-				$this->rules[$key][\'valid\'] = TRUE;
-			}
-
-			// Check to see if everything is validated
-			foreach ($this->rules as $key => $rule)
-			{
-				// If anything isnt validated, just return success
-				if ($rule[\'valid\'] == FALSE)
-					return TRUE;
-			}
-
-			// Otherwise set validated and return
-			$this->validated = TRUE;
-			return TRUE;
+			// If anything isnt validated, just return success
+			if ($rule[\'valid\'] == FALSE)
+				return TRUE;
 		}
 
-		return FALSE;
-	}', 'php', NULL, TRUE)
+		// Otherwise set validated and return
+		$this->validated = TRUE;
+		return TRUE;
+	}
+
+	return FALSE;
+}', 'php', NULL, TRUE)
 ?>
-<p>Here you will see that it is basically a big, giant version of __set(), with some additional checks.</p>
+<p>Here you will see that it is basically a catch-all version of __set(), with some additional checks.</p>
 <h3>Controller Code example</h3>
 <p>To use this model, we can write some code like this:</p>
 <?php
@@ -175,7 +176,55 @@ else
 
 ', 'php', NULL, TRUE)
 ?>
+<p>In addition, you can create new database rows:</p>
+<?php
+
+echo geshi_highlight('$user = new User_Model();
+
+$user->username = \'test\';
+$user->password = \'test\';
+
+$user->save();
+
+', 'php', NULL, TRUE)
+?>
+<p>and delete rows:</p>
+<?php
+
+echo geshi_highlight('$user = new User_Model();
+
+$user->fetch(array(\'username\' => \'test\'));
+
+$user->delete();
+
+', 'php', NULL, TRUE)
+?>
+<p>You need to be careful when using the fetch method, as it has special behavior. If only one row is returned, it assigns the returned results to itself (as above), otherwise, it returns an array of User objects. Therefore, you need to test the result to see what kind of results you are getting back. If you aren't sure how many results are you are going to get back, use <?php echo html::anchor('http://php.net/count', 'count()')?></p>
+<p>Here we will delete all user accounts that are from Chicago.</p>
+<?php
+
+echo geshi_highlight('$user = new User_Model();
+
+// This might return more than one row
+$users = $user->fetch(array(\'city\' => \'Chicago\'));
+
+if (count($users) > 1)
+{
+	foreach ($users as $user)
+	{
+		if ($user->delete())
+			continue;
+		throw new Kohana_Exception(\'user.delete\');
+	}
+}
+else
+{
+	$users->delete();
+}
+', 'php', NULL, TRUE)
+?>
 <h3>Conclusion</h3>
 <p>As you can see in this brief tutorial, putting your validation into your model can clean up your controller code in great ways.</p>
+<p>I have also shown how to use models in true MVC fashion: to model and behave like <strong>real</strong> objects.</p>
 <p>I have provided a whole <?php echo html::anchor('tutorials/model_validation_example', 'example class')?> for you to play around with, and you can always email me at <?php echo html::mailto('jeremy.bush@kohanaphp.com')?>.</p>
 <p>I always appreciate any and all feedback!</p>
