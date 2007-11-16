@@ -34,13 +34,13 @@ class Donate_Controller extends Controller {
 			$this->payment->amount = $amount;
 			$this->payment->process();
 		}
-		else if ($amount = $session->get('donate_amount'))
+		else if ($amount = $this->session->get('donate_amount') and $payerid = $this->input->get('payerid')) // They are returning from paypal
 		{
 			// Display the final 'order' page
 			$this->template->set(array
 			(
 				'title'   => 'Donate',
-				'content' => new View('pages/donate/paypal', array('payerid' => $this->input->get('payerid')))
+				'content' => new View('pages/donate/paypal', array('payerid' => $payerid))
 			));
 		}
 		else
@@ -56,7 +56,7 @@ class Donate_Controller extends Controller {
 		$this->payment->payerid = $this->input->post('payerid');
 
 		// Try and process the payment
-		if ($payment->process())
+		if ($this->payment->process())
 		{
 			// Remove the donate amount from the session
 			$this->session->del('donate_amount');

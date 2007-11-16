@@ -17,8 +17,8 @@ $config['default'] = array
  *  API_UserName - the username to use
  *  API_Password - the password to use
  *  API_Signature - the api signature to use
- *  ReturnUrl - the URL to sent the user to after they login with paypal
- *  CANCELURL - the URL to sent the user to if they cancel the paypal transaction
+ *  ReturnUrl - the URL to send the user to after they login with paypal
+ *  CANCELURL - the URL to send the user to if they cancel the paypal transaction
  *  CURRENCYCODE - the Currency Code to to the transactions in (What do you want to get paid in?)
  */
 $config['Paypal'] = array
