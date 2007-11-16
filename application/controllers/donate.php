@@ -3,7 +3,12 @@
 class Donate_Controller extends Controller {
 
 	protected $auto_render = TRUE;
+	protected $payment;
 
+	public function __construct()
+	{
+		$this->payment = new Payment();
+	}
 	public function index()
 	{
 		$this->template->set(array
@@ -15,7 +20,6 @@ class Donate_Controller extends Controller {
 
 	public function paypal()
 	{
-		$payment = new Payment();
 		$session = new Session();
 		if ($amount = $this->input->post('amount')) // They are coming from index()
 		{
@@ -23,8 +27,8 @@ class Donate_Controller extends Controller {
 			$session->set(array('donate_amount' => $amount));
 
 			// Set the amount and send em to PayPal
-			$payment->amount = $amount;
-			$payment->process();
+			$this->payment->payment->amount = $amount;
+			$this->payment->payment->process();
 		}
 		else if ($amount = $session->get('amount'))
 		{
@@ -44,8 +48,8 @@ class Donate_Controller extends Controller {
 
 	public function process_paypal()
 	{
-		$payment->amount = $session->get('donate_amount');
-		$payment->payerid = $this->input->post('payerid');
+		$this->payment->payment->amount = $session->get('donate_amount');
+		$this->payment->payment->payerid = $this->input->post('payerid');
 
 		// Try and process the payment
 		if ($payment->process())
