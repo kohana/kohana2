@@ -1,4 +1,4 @@
-<h2>Creating a Model with built-in Validation <span>By Jeremy Bush, &copy; 2007</span></h2>
+<h2>Built-in Model Validation <span>By Jeremy Bush, &copy; 2007</span></h2>
 <p>Please note that this tutorial assumes that the user has a bit of experience setting up Kohana 2 websites.</p>
 <p>This tutorial level is Advanced.</p>
 <h3>Introduction</h3>
