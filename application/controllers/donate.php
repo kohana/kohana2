@@ -46,7 +46,7 @@ class Donate_Controller extends Controller {
 		else
 		{
 			// They shouldn't be here!
-			url::redirect('')
+			url::redirect('');
 		}
 	}
 
