@@ -9,6 +9,10 @@ $feed_names = array
 ?>
 
 <div id="sidecontent">
+<h6>Keep Kohana Alive</h6>
+<p id="donate">If you use Kohana and find it worth something, please consider <strong><?php echo html::anchor('donate', 'donating') ?></strong>. Your donations will be directly used to cover the costs of maintaining Kohana.</li>
+</p>
+
 <?php
 
 foreach($feeds as $name => $items): 

@@ -8,11 +8,24 @@ class Tutorials_Controller extends Controller {
 	{
 		$titles = array
 		(
-			'xss'              => 'XSS Attack Filtering',
-			'remove_index'     => 'Removing index.php From URLs',
-			'page'             => 'Creating a Page Controller',
-			'model_validation' => 'Built-in Model Validation',
-			'multilingual'     => 'Setting Up a Multilingual Website'
+			'Security' => array
+			(
+				'xss'          => 'XSS Attack Filtering',
+			),
+			'Static Content' => array
+			(
+				'page'             => 'Creating a Page Controller',
+			),
+			'Forms and Validation' => array
+			(
+				'model_validation' => 'Built-in Model Validation',
+				'quick_forms'      => 'Quick Form Generation'
+			),
+			'Advanced Tutorials' => array
+			(
+				'remove_index'     => 'Removing index.php From URLs',
+				'multilingual'     => 'Setting Up a Multilingual Website'
+			)
 		);
 
 		// Include Geshi syntax highlighter
@@ -20,12 +33,22 @@ class Tutorials_Controller extends Controller {
 
 		try
 		{
-			$tut = $this->uri->segment(2);
+			$tut   = $this->uri->segment(2);
+			$title = 'Tutorial';
+
+			foreach($titles as $heading => $group)
+			{
+				if (isset($group[$tut]))
+				{
+					$title = $group[$tut];
+					break;
+				}
+			}
 
 			// Attempt to load a tutorial
 			$this->template->set(array
 			(
-				'title'   => isset($titles[$tut]) ? $titles[$tut] : 'Tutorial',
+				'title'   => $title,
 				'content' => new View('pages/tutorials/'.$tut)
 			));
 		}

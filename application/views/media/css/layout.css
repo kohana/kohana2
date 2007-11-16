@@ -7,7 +7,7 @@ h3 { font-size: 1.7em; }
 h4 { font-size: 1.5em; }
 h5 { font-size: 1.3em; }
 h6 { font-size: 1.1em; }
-h2, h3, h4, h5, h6 { margin-bottom: 0.6em; }
+h2, h3, h4, h5, h6 { margin: 0.4em 0 0.6em; }
 a { color: #006; text-decoration: none; }
 a:hover { color: #009; }
 abbr { border-bottom: dotted 1px #aaa; cursor: help; }
@@ -52,12 +52,17 @@ code { display: block; padding: 1em; margin: 1em 0 1em; background: #eee; border
 	#body form .legend { display: block; padding: 0.5em; background: #ddefbd; }
 	#body form ul { display: block; padding: 0.5em 1em 0; list-style: none; }
 	#body form p.error { font-weight: bold; padding: 0.5em 1em 0; color: #600; }
-	#body .intro { margin: 0 1em 1em; margin-left: -4em; padding: 1em 2em; padding-left: 4em; background: #eaeee5; font-size: 1.6em; line-height: 1.4em; color: #8C9393; }
+	#body .intro { margin-bottom: 1em; margin-left: -4em; padding: 1em 2em; padding-left: 4em; background: #eaeee5; font-size: 1.6em; line-height: 1.4em; color: #8C9393; }
 		#body .intro strong { text-transform: uppercase; font-weight: bold; font-size: 0.76em; color: #7b7d78; letter-spacing: -0.02em; white-space: nowrap; }
+	#body .note { font-weight: bold; font-size: 0.9em; color: #225; }
 
 /* Content */
-#content-wrapper { margin-right: 21em; }
+#content-wrapper { margin-right: 22em; }
 #content { float: left; width: 100%; margin-right: -21em; }
+
+/* Donations */
+#donate { background: #eaeee5; padding-right: 2em; line-height: 1.4em; color: #6d7273; }
+#donate strong { text-transform: uppercase; font-weight: bold; font-size: 0.85em; color: #434442; letter-spacing: -0.02em; }
 
 /* Sidebar */
 #sidebar { float: right; width: 20em; margin-top: -14em; margin-bottom: 2em; }
