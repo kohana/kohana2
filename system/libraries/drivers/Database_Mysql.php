@@ -107,7 +107,6 @@ class Database_Mysql_Driver implements Database_Driver {
 			return preg_replace('/[^.*]+/', '`$0`', $column);
 		}
 
-
 		$parts = explode(' ', $column);
 		$column = '';
 
@@ -317,6 +316,9 @@ class Database_Mysql_Driver implements Database_Driver {
 
 	public function field_data($table)
 	{
+		if ( ! in_array($table, $this->list_tables()))
+			return FALSE;
+
 		$query  = mysql_query('SELECT * FROM '.$this->escape_table($table).' LIMIT 1', $this->link);
 		$fields = mysql_num_fields($query);
 		$table  = array();

@@ -124,6 +124,6 @@ class Payment_Trustcommerce_Driver
 		elseif ($result['status'] == 'decline')
 			return Kohana::lang('payment.error', 'payment.errors.Trustcommerce.decline.'.$result[$result['status'].'type']);
 		else
-			throw new Kohana_Exception('payment.error', Kohana::lang('payment.errors.Trustcommerce.'.$result['status'].'.'.$result['error']));
+			return Kohana::lang('payment.error', Kohana::lang('payment.errors.Trustcommerce.'.$result['status'].'.'.$result['error']));
 	}
 }
