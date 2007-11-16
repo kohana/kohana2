@@ -4,7 +4,7 @@
 <h3>Introduction</h3>
 <p>In this tutorial, we will set up a User Model, complete with "fake" ORM and built in validation. I have started moving all my validation needs into my models, so that I could clear up the clutter in my controllers and make everything more logical.</p>
 <p>When you hear the 'M' in MVC, the M stands for Model. It is meant to model actual "things" (usually stored in a database, although they could also model static objects, like <?=html::anchor('tutorials/custom_model_behavior', 'circles and physics equations')?> ;)). This should include performing sanity checks on it's input before it tries to modify itself. This is the reason you should put validation checks in your model. From a MVC architecture standpoint, it "just makes sense."</p>
-<p>To start we will create a model with our basica variables. THe variables will match our database columns.</p>
+<p>To start we will create a model with our basica variables. The variables will match our database columns.</p>
 <h4>application/models/user.php</h4>
 <?php
 
