@@ -1,9 +1,9 @@
-<h2>Built-in Model Validation <span>By Jeremy Bush, &copy; 2007</span></h2>
+<h2><span>By Jeremy Bush, &copy; 2007</span>Built-in Model Validation</h2>
 <p>Please note that this tutorial assumes that the user has a bit of experience setting up Kohana 2 websites.</p>
 <p>This tutorial level is Advanced.</p>
 <h3>Introduction</h3>
 <p>In this tutorial, we will set up a User Model, complete with "fake" ORM and built in validation. I have started moving all my validation needs into my models, so that I could clear up the clutter in my controllers and make everything more logical.</p>
-<p>When you hear the 'M' in MVC, the M stands for Model. It is meant to model actual "things" (usually stored in a database, although they could also model static objects, like <?=html::anchor('tutorials/custom_model_behavior', 'circles and physics equations')?> ;)). This should include performing sanity checks on it's input before it tries to modify itself. This is the reason you should put validation checks in your model. From a MVC architecture standpoint, it "just makes sense."</p>
+<p>When you hear the 'M' in MVC, the M stands for Model. It is meant to model actual "things" (usually stored in a database, although they could also model static objects, like <?php echo html::anchor('tutorials/custom_model_behavior', 'circles and physics equations')?> ;)). This should include performing sanity checks on it's input before it tries to modify itself. This is the reason you should put validation checks in your model. From a MVC architecture standpoint, it "just makes sense."</p>
 <p>To start we will create a model with our basica variables. The variables will match our database columns.</p>
 <h4>application/models/user.php</h4>
 <?php
@@ -177,5 +177,5 @@ else
 ?>
 <h3>Conclusion</h3>
 <p>As you can see in this brief tutorial, putting your validation into your model can clean up your controller code in great ways.</p>
-<p>I have provided a whole <?=html::anchor('tutorials/model_validation_example', 'example class')?> for you to play around with, and you can always email me at <?=html::mailto('jeremy.bush@kohanaphp.com')?>.</p>
+<p>I have provided a whole <?php echo html::anchor('tutorials/model_validation_example', 'example class')?> for you to play around with, and you can always email me at <?php echo html::mailto('jeremy.bush@kohanaphp.com')?>.</p>
 <p>I always appreciate any and all feedback!</p>

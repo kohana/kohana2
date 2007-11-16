@@ -1,4 +1,4 @@
-<h2>XSS Filtering <span>By Geert De Deckere, &copy; 2007</span></h2>
+<h2><span>By Geert De Deckere, &copy; 2007</span>XSS Filtering</h2>
 
 <p>To protect your website against <abbr title="Cross Site Scripting">XSS</abbr> attacks, Kohana comes bundled with two XSS filters. In this short tutorial you will learn how to work with them.</p>
 

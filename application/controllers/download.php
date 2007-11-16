@@ -272,8 +272,12 @@ class Download_Controller extends Controller {
 			return;
 		}
 
-		// Add content to view
-		$this->template->set('content', $content);
+		// Set page title and content
+		$this->template->set(array
+		(
+			'title'   => 'Download',
+			'content' => $content
+		));
 	}
 
 } // End Download_Controller

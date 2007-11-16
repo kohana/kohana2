@@ -1,4 +1,4 @@
-<h2>Creating a Virtual Database Page System <span>By Jeremy Bush, &copy; 2007</span></h2>
+<h2><span>By Jeremy Bush, &copy; 2007</span>Creating a Virtual Database Page System</h2>
 <p>Please note that this tutorial assumes that the user has a bit of experience setting up Kohana 2 websites.</p>
 <p>This tutorial level is Medium to Advanced.</p>
 <p>Here we will show a short example of many of the features of Kohana:</p>

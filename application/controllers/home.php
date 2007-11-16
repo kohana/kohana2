@@ -6,7 +6,11 @@ class Home_Controller extends Controller {
 
 	public function _remap()
 	{
-		$this->template->content = new View('pages/home');
+		$this->template->set(array
+		(
+			'title'   => 'Home',
+			'content' => new View('pages/home')
+		));
 	}
 
 } // End Kohana Website Controller
