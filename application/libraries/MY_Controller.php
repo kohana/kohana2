@@ -91,7 +91,7 @@ class Controller extends Controller_Core {
 					$curl = curl_init();
 
 					// Set cURL options
-					curl_setopt($curl, CURLOPT_URL, $data['link']); // Remote feed location
+					curl_setopt($curl, CURLOPT_URL, $data['url']); // Remote feed location
 					curl_setopt($curl, CURLOPT_HEADER, 0);          // No headers in fetched page
 					curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  // Return the fetched page, instead of printing it
 					curl_setopt($curl, CURLOPT_TIMEOUT, 3);         // Five second timeout
