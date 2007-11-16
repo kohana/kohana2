@@ -44,6 +44,7 @@ code { display: block; padding: 1em; margin: 1em 0 1em; background: #eee; border
 /* Main Body */
 #body { padding: 2em 4em 1em; _margin-top: -1.1em; background: #f7fbf1; line-height: 140%; }
 	#body h2 span { float: right; padding-right: 1em; font-weight: bold; font-size: 0.6em; }
+	#body em { font-style: italic; }
 	#body strong { font-weight: bold; }
 	#body p { padding-bottom: 1em; }
 	#body ul, #body ol { padding-left: 1.5em; margin-bottom: 1em; list-style: square; line-height: 180%; }

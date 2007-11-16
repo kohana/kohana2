@@ -11,8 +11,18 @@ class Controller extends Controller_Core {
 	// RSS feeds
 	protected $feeds = array
 	(
-		'forums' => 'http://forum.kohanaphp.com/index.php?action=.xml;limit=3;type=rss2',
-		'trac'   => 'http://trac.kohanaphp.com/timeline?milestone=on&ticket=on&changeset=on&max=3&daysback=90&format=rss'
+		'forums' => array
+		(
+			'title' => 'Latest Forum Activity',
+			'url'   => 'http://forum.kohanaphp.com/index.php?action=.xml;limit=20;type=rss2',
+			'items' => array()
+		),
+		'trac' => array
+		(
+			'title' => 'Latest Changes',
+			'url'   => 'http://trac.kohanaphp.com/timeline?milestone=on&ticket=on&changeset=on&max=20&daysback=90&format=rss',
+			'items' => array()
+		)
 	);
 
 	public function __construct()
@@ -25,6 +35,7 @@ class Controller extends Controller_Core {
 			url::redirect('home');
 		}
 
+		// Cache location
 		$cache = APPPATH.'cache/';
 
 		if ( ! is_writable($cache))
@@ -69,7 +80,7 @@ class Controller extends Controller_Core {
 			}
 
 			// Feed caching
-			foreach($this->feeds as $name => $link)
+			foreach($this->feeds as $name => $data)
 			{
 				$filename = $cache.$name.'.xml';
 
@@ -80,10 +91,10 @@ class Controller extends Controller_Core {
 					$curl = curl_init();
 
 					// Set cURL options
-					curl_setopt($curl, CURLOPT_URL, $link);        // Fetch remote feed
-					curl_setopt($curl, CURLOPT_HEADER, 0);         // No headers in fetched page
-					curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); // Return the fetched page, instead of printing it
-					curl_setopt($curl, CURLOPT_TIMEOUT, 3);        // Five second timeout
+					curl_setopt($curl, CURLOPT_URL, $data['link']); // Remote feed location
+					curl_setopt($curl, CURLOPT_HEADER, 0);          // No headers in fetched page
+					curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  // Return the fetched page, instead of printing it
+					curl_setopt($curl, CURLOPT_TIMEOUT, 3);         // Five second timeout
 
 					// Fetch the remote feed
 					$feed_content = curl_exec($curl);
@@ -103,11 +114,11 @@ class Controller extends Controller_Core {
 					curl_close($curl);
 				}
 
-				$feeds[$name] = feed::parse($filename, 3);
+				$this->feeds[$name]['items'] = feed::parse($filename, 3);
 			}
 
 			// Add the feeds to the sidebar
-			$this->template->sidebar->feeds = $feeds;
+			$this->template->sidebar->feeds = $this->feeds;
 
 			// Auto-rendering
 			Event::add('system.post_controller', array($this, '_display'));
