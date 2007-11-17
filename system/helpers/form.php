@@ -176,7 +176,7 @@ class form {
 	}
 
 	/*
-	 * Method: input
+	 * Method: upload
 	 *  Creates an HTML form upload input tag.
 	 *
 	 * Parameters:
