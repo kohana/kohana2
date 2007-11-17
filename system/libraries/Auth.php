@@ -10,102 +10,48 @@
 class Auth_Core {
 
 	protected $db;
-	protected $users_table = 'users';
 
-	protected $salt_pattern;
+	protected $config;
 
-	public function __construct()
+	public function __construct($config = NULL)
 	{
 		// Load libraries
 		$this->db = new Database();
 		$this->session = new Session();
 
-		// Get the salt pattern
-		$this->salt_pattern = array_map('trim', explode(',', Config::item('auth.salt_pattern')));
+		if ($config === NULL)
+		{
+			// Fetch configuration
+			$this->config = Config::item('auth');
 
-		$plain = 'breakfast';
-
-		$pass = $this->hash_password($plain);
-		$salt = $this->find_salt($pass);
-		$test = $this->hash_password($plain, $salt);
-
-		print 'Hashed: '.Kohana::debug($pass);
-		print 'Rebuilt: '.Kohana::debug($test);
-		print 'Matches: '.Kohana::debug($pass === $test);
-		exit;
+			// Clean up the salt pattern
+			$this->config['salt_pattern'] = array_map('trim', explode(',', Config::item('auth.salt_pattern')));
+		}
 
 		Log::add('debug', 'Auth Library loaded');
 	}
 
 	/*
-	 * Creates a hashed password from a plaintext password, inserting salt
-	 * based on the configured salt pattern.
+	 * Create a new user.
 	 *
 	 * Parameters:
+	 *  username - unqiue username
 	 *  password - plaintext password
+	 *  level    - user level
 	 *
 	 * Returns:
-	 *  Hashed password string
+	 *  TRUE or FALSE
 	 */
-	protected function hash_password($password, $salt = FALSE)
+	public function create($username, $password, $level = 1)
 	{
-		if ($salt == FALSE)
-		{
-			// Create a salt string, same length as the number of offsets in the pattern
-			$salt = substr(sha1(uniqid(NULL, TRUE)), 0, count($this->salt_pattern));
-		}
+		$data = array
+		(
+			'username' => $username,
+			'password' => $this->hash_password($password),
+			'level'    => $level
+		);
 
-		// Password hash that the salt will be inserted into
-		$hash = sha1($salt.$password);
-
-		// Change salt to an array
-		$salt = str_split($salt, 1);
-
-		// Returned password
-		$password = '';
-
-		// Used to calculate the length of splits
-		$last_offset = 0;
-
-		foreach($this->salt_pattern as $offset)
-		{
-			// Split a new part of the hash off
-			$part = substr($hash, 0, $offset - $last_offset);
-
-			// Cut the current part out of the hash
-			$hash = substr($hash, $offset - $last_offset);
-
-			// Add the part to the password, appending the salt character
-			$password .= $part.array_shift($salt);
-
-			// Set the last offset to the current offset
-			$last_offset = $offset;
-		}
-
-		// Return the password, with the remaining hash appended
-		return $password.$hash;
-	}
-
-	/*
-	 * Finds the salt from a password, based on the figured salt pattern.
-	 *
-	 * Parameters:
-	 *  password - hashed password
-	 *
-	 * Returns:
-	 *  Salt string
-	 */
-	protected function find_salt($password)
-	{
-		$salt = '';
-
-		foreach($this->salt_pattern as $i => $offset)
-		{
-			// Find salt characters... take a good long look
-			$salt .= substr($password, $offset + $i, 1);
-		}
-
-		return $salt;
+		return (count($this->db->insert($this->config['user_table'], $data)) === 1);
 	}
 
 	/*
@@ -124,13 +70,12 @@ class Auth_Core {
 	{
 		// Fetch user information
 		$result = $this->db
-			->select('id, level, logins')
-			->from($this->users_table)
+			->select('id, password, level, logins')
+			->from($this->config['user_table'])
 			->where(array
 			(
 				'username' => $username,
-				'password' => sha1($password),
-				'level >=' => (int) $level
+				'level >=' => $level
 			))
 			->limit(1)
 			->get();
@@ -139,23 +84,31 @@ class Auth_Core {
 			return FALSE;
 
 		// Get the first result
-		$result = $result->offsetGet(0);
-        
-		// Update the number of logins
-		$this->db
-			->set('logins', ($result->logins + 1))
-			->where('id', (int) $result->id)
-			->update($this->users_table);
-        
-		// Store session data
-		$this->session->set(array
-		(
-			'user_id'  => (int) $result->id,
-			'username' => $username,
-			'level'    => (int) $result->level
-		));
-        
-		return TRUE;
+		$result = $result->current();
+
+		// Find the salt from the stored password
+		$salt = $this->find_salt($result->password);
+
+		if ($result->password === $this->hash_password($password, $salt))
+		{
+			// Update the number of logins
+			$this->db
+				->set('logins', ($result->logins + 1))
+				->where('id', (int) $result->id)
+				->update($this->config['user_table']);
+
+			// Store session data
+			$this->session->set(array
+			(
+				'user_id'  => (int) $result->id,
+				'username' => $username,
+				'level'    => (int) $result->level
+			));
+
+			return TRUE;
+		}
+
+		return FALSE;
 	}
 
 	/*
@@ -175,6 +128,91 @@ class Auth_Core {
 		{
 			$this->session->del('user_id', 'username', 'level');
 		}
+	}
+
+	/*
+	 * Perform a hash, using the configured method.
+	 *
+	 * Parameters:
+	 *  str - string to be hashed
+	 *
+	 * Returns:
+	 *  Hashed string.
+	 */
+	protected function hash($str)
+	{
+		return hash($this->config['hash_method'], $str);
+	}
+
+	/*
+	 * Finds the salt from a password, based on the configured salt pattern.
+	 *
+	 * Parameters:
+	 *  password - hashed password
+	 *
+	 * Returns:
+	 *  Salt string
+	 */
+	protected function find_salt($password)
+	{
+		$salt = '';
+
+		foreach($this->config['salt_pattern'] as $i => $offset)
+		{
+			// Find salt characters... take a good long look..
+			$salt .= substr($password, $offset + $i, 1);
+		}
+
+		return $salt;
+	}
+
+	/*
+	 * Creates a hashed password from a plaintext password, inserting salt
+	 * based on the configured salt pattern.
+	 *
+	 * Parameters:
+	 *  password - plaintext password
+	 *
+	 * Returns:
+	 *  Hashed password string
+	 */
+	protected function hash_password($password, $salt = FALSE)
+	{
+		if ($salt == FALSE)
+		{
+			// Create a salt string, same length as the number of offsets in the pattern
+			$salt = substr($this->hash(uniqid(NULL, TRUE)), 0, count($this->config['salt_pattern']));
+		}
+
+		// Password hash that the salt will be inserted into
+		$hash = $this->hash($salt.$password);
+
+		// Change salt to an array
+		$salt = str_split($salt, 1);
+
+		// Returned password
+		$password = '';
+
+		// Used to calculate the length of splits
+		$last_offset = 0;
+
+		foreach($this->config['salt_pattern'] as $offset)
+		{
+			// Split a new part of the hash off
+			$part = substr($hash, 0, $offset - $last_offset);
+
+			// Cut the current part out of the hash
+			$hash = substr($hash, $offset - $last_offset);
+
+			// Add the part to the password, appending the salt character
+			$password .= $part.array_shift($salt);
+
+			// Set the last offset to the current offset
+			$last_offset = $offset;
+		}
+
+		// Return the password, with the remaining hash appended
+		return $password.$hash;
 	}
 
 } // End Auth

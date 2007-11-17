@@ -1,6 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
-/*
- * List of 8 random offsets, lower than 30
+/**
+ * Authentication configuration options.
+ *
+ * Parameters:
+ *  hash_method  - hash type used for passwords, see <http://php.net/hash_algos>
+ *  salt_pattern - character offsets to place the random salt at
  */
-$config['salt_pattern'] = '1, 5, 7, 8, 11, 14, 15, 17, 22, 25, 30';
+$config = array
+(
+	'user_table'   => 'users',
+	'hash_method'  => 'sha1',
+	'salt_pattern' => '1, 3, 5, 9, 14, 15, 20, 21, 28, 30'
+);
