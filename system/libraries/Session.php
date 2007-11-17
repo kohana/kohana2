@@ -303,7 +303,7 @@ class Session_Core {
 
 	/*
 	 * Method: get
-	 *  Get a variable.
+	 *  Get a variable. Access to sub-arrays is supported with key.subkey.
 	 *
 	 * Parameters:
 	 *  key     - variable key (optional)
@@ -317,7 +317,7 @@ class Session_Core {
 		if ($key == FALSE)
 			return $_SESSION;
 
-		return isset($_SESSION[$key]) ? $_SESSION[$key] : $default;
+		return Kohana::key_string($key, $_SESSION);
 	}
 
 	/*
