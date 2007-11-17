@@ -200,7 +200,8 @@ class Input_Core {
 	 */
 	protected function clean_input_keys($str)
 	{
-		if ( ! preg_match('#^[?:(\pL|A-Za-z)0-9:_/-]+$#uD', $str))
+		// A-Za-z added to work around a bug in PHP 5.1.6
+		if ( ! preg_match('#^[\pLA-Za-z0-9:_/-]+$#uD', $str))
 		{
 			exit('Disallowed key characters in global data.');
 		}

@@ -18,6 +18,9 @@ $lang = array
 	'valid_email'   => 'Het %s veld moet een geldig e-mailadres zijn.',
 	'valid_ip'      => 'Het %s veld moet een geldig IP-adres zijn.',
 	'valid_type'    => 'Het %s veld mag alleen maar %s karakters bevatten.',
+	'range'         => 'Het %s veld moet tussen bepaalde waardes liggen.',
+	'regex'         => 'Het %s veld valideert niet als geldige invoer.',
+	'depend_on'     => 'Het %s veld is afhankelijk van het %s veld.',
 
 	// Upload errors
 	'user_aborted'  => 'Het uploaden van het %s bestand werd afgebroken.',
