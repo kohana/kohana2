@@ -262,7 +262,12 @@ class Database_Core {
 		{
 			if (($val = trim($val)) == '') continue;
 
-			$this->select[] = $this->driver->escape_column($val);
+			if (strpos($val, '(') === FALSE AND strpos($val, '*') === FALSE)
+			{
+				$val = $this->driver->escape_column($this->config['table_prefix'].$val);
+			}
+
+			$this->select[] = $val;
 		}
 
 		return $this;
@@ -284,7 +289,7 @@ class Database_Core {
 		{
 			if (($val = trim($val)) == '') continue;
 
-			$this->from[] = $this->config['table_prefix'].$val;
+			$this->from[] = $this->driver->escape_column($this->config['table_prefix'].$val);
 		}
 
 		return $this;
@@ -318,6 +323,13 @@ class Database_Core {
 			}
 		}
 
+		if (preg_match('/([a-z\.].+) = ([a-z\.].+)/', $cond, $where))
+		{
+			$cond = $this->driver->escape_column($this->config['table_prefix'].$where[1]).
+			        ' = '.
+			       $this->driver->escape_column($this->config['table_prefix'].$where[2]);
+		}
+
 		$this->join[] = $type.'JOIN '.$this->driver->escape_column($this->config['table_prefix'].$table).' ON '.$cond;
 
 		return $this;
@@ -340,6 +352,11 @@ class Database_Core {
 		if (func_num_args() < 2 AND ! is_array($key))
 		{
 			$quote = -1;
+		}
+
+		if (strpos($key, '.') !== FALSE)
+		{
+			$key = $this->config['table_prefix'].$key;
 		}
 
 		$this->where = array_merge($this->where, $this->driver->where($key, $value, 'AND ', count($this->where), $quote));

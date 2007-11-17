@@ -398,7 +398,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 			}
 		}
 
-
 		// Set result type
 		$this->result($object);
 	}
