@@ -264,7 +264,8 @@ class Database_Core {
 
 			if (strpos($val, '(') === FALSE AND strpos($val, '*') === FALSE)
 			{
-				$val = $this->driver->escape_column($this->config['table_prefix'].$val);
+				$val = (strpos($val, '.') !== FALSE) ? $this->config['table_prefix'].$val : $val;
+				$val = $this->driver->escape_column($val);
 			}
 
 			$this->select[] = $val;
