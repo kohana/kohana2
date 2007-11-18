@@ -1143,15 +1143,15 @@ class Validation_Core {
 	{
 		$depend_on = is_array($depend_on) ? trim(current($depend_on)) : NULL;
 
-		if ($depend_on !== NULL AND isset($this->data[$field]) AND isset($this->data[$depend_on])) 
+		if ($depend_on == NULL OR empty($this->data[$field]) OR empty($this->data[$depend_on]))
 		{
-			return TRUE;
+			$depend_on = isset($this->fields[$depend_on]) ? $this->fields[$depend_on] : $depend_on;
+
+			$this->add_error('depend_on', $field, $depend_on);
+			return FALSE;
 		}
 
-		$depend_on = isset($this->fields[$depend_on]) ? $this->fields[$depend_on] : $depend_on;
-
-		$this->add_error('depend_on', $field, $depend_on);
-		return FALSE;
+		return TRUE;
 	}
 
 	/*
