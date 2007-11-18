@@ -161,7 +161,7 @@ class Validation_Core {
 			}
 
 			// Empty field names default to the name of the element
-			$this->fields[$name] = isset($field) ? $field : $name;
+			$this->fields[$name] = empty($field) ? $name : $field;
 			$this->rules[$name]  = $rules;
 
 			// Prevent fields from getting the wrong name
