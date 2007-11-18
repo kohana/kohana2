@@ -83,9 +83,9 @@ class ORM_Core {
 	 */
 	public function __set($key, $value)
 	{
-		if (isset($this->object->$key))
+		if ($key != 'id' AND isset($this->object->$key))
 		{
-			if ($key != 'id' AND $this->object->$key !== $value)
+			if ($this->object->$key !== $value)
 			{
 				// Set new value
 				$this->object->$key = $value;
