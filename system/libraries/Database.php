@@ -354,11 +354,6 @@ class Database_Core {
 			$quote = -1;
 		}
 
-		if (strpos($key, '.') !== FALSE)
-		{
-			$key = $this->config['table_prefix'].$key;
-		}
-
 		$this->where = array_merge($this->where, $this->driver->where($key, $value, 'AND ', count($this->where), $quote));
 		return $this;
 	}

@@ -135,6 +135,8 @@ class Database_Mysql_Driver implements Database_Driver {
 		$wheres = array();
 		foreach ($key as $k => $v)
 		{
+			$k = $this->db_config['table_prefix'].$k;
+
 			$prefix = ($num_wheres++ == 0) ? '' : $type;
 
 			if ($quote === -1)
