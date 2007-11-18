@@ -43,13 +43,13 @@ final class Log {
 		if ($threshold < 1 OR count(self::$messages) == 0 OR $filename == FALSE) return;
 
 		// Make sure that the log directory is absolute
-		$filename = (substr($filename, 0, 1) !== '/') ? APPPATH.$filename : $filename;
+		$filename = (substr($filename, 0, 1) === '/') ? $filename : APPPATH.$filename;
 
-		// Make sure there is an ending slash
-		$filename = rtrim($filename, '/').'/';
+		// Find the realpath to the log directory
+		$filename = realpath($filename).'/';
 
 		// Make sure the log directory is writable
-		if ( ! is_writable($filename))
+		if ( ! is_dir($filename) OR ! is_writable($filename))
 		{
 			ob_get_level() AND ob_clean();
 			exit(Kohana::lang('core.cannot_write_log'));
