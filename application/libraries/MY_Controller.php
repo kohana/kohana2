@@ -107,7 +107,7 @@ class Controller extends Controller_Core {
 					else
 					{
 						// Log fetching errors
-						Log::add('error', 'Error fetching remote feed ('.$link.'): '.curl_error($curl));
+						Log::add('error', 'Error fetching remote feed ('.$data['url'].'): '.curl_error($curl));
 					}
 
 					// Close cURL
