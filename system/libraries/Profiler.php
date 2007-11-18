@@ -51,22 +51,30 @@ class Profiler_Core {
 	 */
 	public function render($return = FALSE)
 	{
-		$data = array
-		(
-			'benchmarks' => array(),
-			'queries'    => FALSE
-		);
+		if (Config::item('profiler.benchmarks'))
+		{
+			// Clean unique id from system benchmark names
+			foreach (Benchmark::get(TRUE) as $name => $time)
+			{
+				$data['benchmarks'][str_replace(SYSTEM_BENCHMARK.'_', '', $name)] = $time;
+			}
+		}
 
 		// Load database benchmarks, if Database has been loaded
-		if (class_exists('Database', FALSE))
+		if (Config::item('profiler.database') AND class_exists('Database', FALSE))
 		{
 			$data['queries'] = Database::$benchmarks;
 		}
 
-		// Clean unique id from system benchmark names
-		foreach (Benchmark::get(TRUE) as $name => $time)
+		// Load POST data
+		if (Config::item('profiler.post'))
 		{
-			$data['benchmarks'][str_replace(SYSTEM_BENCHMARK.'_', '', $name)] = $time;
+			$data['post'] = TRUE;
+		}
+
+		if (Config::item('profiler.session'))
+		{
+			$data['session'] = TRUE;
 		}
 
 		// Load the profiler view

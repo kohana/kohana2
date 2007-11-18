@@ -108,20 +108,8 @@ class Loader_Core {
 	 */
 	public function helper($name)
 	{
-		// Allow recursive loading
-		if (is_array($name))
-		{
-			$helpers = $name;
-
-			foreach($helpers as $name)
-			{
-				$this->helper($name);
-			}
-		}
-		else
-		{
-			include Kohana::find_file('helpers', $name, TRUE);
-		}
+		// Just don't do this... there's no point.
+		Log::add('debug', 'Using $this->load->helper() is deprecated. See Kohana::auto_load().');
 	}
 
 	/*
@@ -157,6 +145,7 @@ class Loader_Core {
 		// Load the model
 		$model = new $class();
 
+		// Return the model
 		if ($alias === TRUE)
 			return $model;
 

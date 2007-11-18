@@ -103,7 +103,7 @@ class text {
 	 *  length - length of string to return
 	 *
 	 * Default Types:
-	 *  unique  - a 32 character unique hash
+	 *  unique  - 40 character unique hash
 	 *  alnum   - alpha-numeric characters
 	 *  alpha   - alphabetical characters
 	 *  numeric - digit characters, 0-9
@@ -117,8 +117,7 @@ class text {
 		switch ($type)
 		{
 			case 'unique':
-				return md5(uniqid(mt_rand()));
-			case '':
+				return sha1(uniqid(NULL, TRUE));
 			case 'alnum':
 				$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 			break;

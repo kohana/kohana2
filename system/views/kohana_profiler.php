@@ -81,6 +81,7 @@
 </style>
 <div id="kohana-profiler">
 
+<?php if (isset($benchmarks)): ?>
 	<table id="kp-benchmarks">
 		<tr>
 			<th><?php echo Kohana::lang('profiler.benchmarks') ?></th>
@@ -108,7 +109,9 @@ endforeach;
 
 ?>
 	</table>
+<?php endif; ?>
 
+<?php if (isset($queries)): ?>
 	<table id="kp-queries">
 		<tr>
 			<th><?php echo Kohana::lang('profiler.queries') ?> (<?php echo ($queries == FALSE ? '0' : count($queries)) ?>)</th>
@@ -149,7 +152,9 @@ endif;
 
 ?>
 	</table>
+<?php endif; ?>
 
+<?php if (isset($post)): ?>
 	<table id="kp-postdata">
 		<tr>
 			<th colspan="2"><?php echo Kohana::lang('profiler.post_data') ?></th>
@@ -180,7 +185,9 @@ endif;
 
 ?>
 	</table>
+<?php endif; ?>
 
+<?php if (isset($session)): ?>
 	<table id="kp-sessiondata">
 		<tr>
 			<th colspan="2"><?php echo Kohana::lang('profiler.session_data') ?></th>
@@ -211,5 +218,6 @@ endif;
 
 ?>
 	</table>
+<?php endif; ?>
 
 </div>

@@ -727,7 +727,10 @@ class Database_Core {
 
 			$table = $this->from[0];
 		}
-		$sql = $this->driver->update($this->config['table_prefix'].$table, $this->set, $this->where);
+
+		$table = $this->driver->escape_table($this->config['table_prefix'].$table);
+
+		$sql = $this->driver->update($table, $this->set, $this->where);
 
 		$this->reset_write();
 		return $this->query($sql);
@@ -861,7 +864,7 @@ class Database_Core {
 	 */
 	public function list_tables()
 	{
-		$this->link OR $this->driver->connect();
+		$this->link or $this->connect();
 
 		$this->reset_select();
 
@@ -927,7 +930,26 @@ class Database_Core {
 	 */
 	public function field_data($table ='')
 	{
+		$this->link or $this->connect();
+
 		return $this->driver->field_data($table);
+	}
+
+	/*
+	 * Method: list_fields
+	 *  Get the field data for a database table, along with the field's attributes.
+	 *
+	 * Parameters:
+	 *  table - table name
+	 *
+	 * Returns:
+	 *  Array containing the field data
+	 */
+	public function list_fields($table ='')
+	{
+		$this->link or $this->connect();
+
+		return $this->driver->list_fields($table);
 	}
 
 	/*

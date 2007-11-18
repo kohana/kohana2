@@ -81,7 +81,7 @@ class Database_Mysql_Driver implements Database_Driver {
 
 	public function escape_table($table)
 	{
-		return str_replace('.', '`.`', $table);
+		return '`'.str_replace('.', '`.`', $table).'`';
 	}
 
 	public function escape_column($column)
@@ -313,6 +313,18 @@ class Database_Mysql_Driver implements Database_Driver {
 	public function show_error()
 	{
 		return mysql_error($this->link);
+	}
+
+	public function list_fields($table)
+	{
+		$query = mysql_query('DESCRIBE '.$this->escape_table($table), $this->link);
+
+		$fields = array();
+		while ($row = mysql_fetch_object($query))
+		{
+			$fields[] = $row->Field;
+		}
+		return $fields;
 	}
 
 	public function field_data($table)

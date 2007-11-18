@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Kohana
  *  Provides Kohana-specific helper functions. This is where the magic happens!
  *
@@ -419,7 +419,7 @@ class Kohana {
 		throw new Kohana_404_Exception($page, $template);
 	}
 
-	/*
+	/**
 	 * Method: show_error
 	 *  Show a custom error message
 	 *
@@ -436,7 +436,7 @@ class Kohana {
 		throw new Kohana_User_Exception($title, $message, $template);
 	}
 
-	/*
+	/**
 	 * Method: auto_load
 	 *  Provides class auto-loading
 	 *
@@ -499,7 +499,7 @@ class Kohana {
 		}
 	}
 
-	/*
+	/**
 	 * Method: find_file
 	 *  Find a resource file in a given directory
 	 *
@@ -562,14 +562,14 @@ class Kohana {
 		}
 	}
 
-	/*
+	/**
 	 * Method: list_files
 	 *  Lists all files and directories in a resource path
 	 *
 	 * Parameters:
 	 *  directory - directory to search
 	 *  recursive - list all files to the maximum depth?
-     *  path      - full path to search (used for recursion, *never* set this manually)
+	 *  path      - full path to search (used for recursion, *never* set this manually)
 	 */
 	public static function list_files($directory, $recursive = FALSE, $path = FALSE)
 	{
