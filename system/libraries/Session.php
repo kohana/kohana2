@@ -317,7 +317,9 @@ class Session_Core {
 		if ($key == FALSE)
 			return $_SESSION;
 
-		return Kohana::key_string($key, $_SESSION);
+		$result = Kohana::key_string($key, $_SESSION);
+
+		return ($result === NULL) ? $default : $result;
 	}
 
 	/*
