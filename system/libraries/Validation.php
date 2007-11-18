@@ -1130,16 +1130,16 @@ class Validation_Core {
 	}
 
 	/*
-	 * Method: depend_on
+	 * Method: depends_on
 	 *
 	 * Parameters:
-	 *  field 	  - first field
+	 *  field     - first field
 	 *  depend_on - field which the first field is depend on it
 	 *
 	 * Returns:
 	 *  TRUE or FALSE
 	 */
-	public function depend_on($field, $depend_on)
+	public function depends_on($field, $depend_on)
 	{
 		$depend_on = is_array($depend_on) ? trim(current($depend_on)) : NULL;
 
@@ -1147,7 +1147,7 @@ class Validation_Core {
 		{
 			$depend_on = isset($this->fields[$depend_on]) ? $this->fields[$depend_on] : $depend_on;
 
-			$this->add_error('depend_on', $field, $depend_on);
+			$this->add_error('depends_on', $field, $depend_on);
 			return FALSE;
 		}
 
