@@ -68,6 +68,7 @@ class Download_Controller extends Controller {
 				'system/libraries/User_agent.php',
 				'system/libraries/Validation.php',
 				'system/libraries/View.php',
+				'system/models',
 				'system/views',
 				'system/views/kohana_error_page.php'
 			),
@@ -100,7 +101,8 @@ class Download_Controller extends Controller {
 				'system/libraries/Encrypt.php',
 				'system/libraries/Pagination.php',
 				'system/libraries/Profiler.php',
-				'system/views',
+				'system/models/form.php',
+				'system/views/kohana_form.php',
 				'system/views/kohana_holiday.php',
 				'system/views/kohana_profiler.php',
 				'system/views/pagination',
