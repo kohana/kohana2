@@ -34,7 +34,7 @@ echo geshi_highlight(
 
 <h4>The View</h4>
 
-<p>In order to display our form, we need a view. By default, the model will load a view called <tt>generate_form</tt>, but you are free to change the default name, or use a custom template with the <tt>generate</tt> method.</p>
+<p>In order to display our form, we need a view. By default, the model will load a view called <tt>kohana_form</tt>, but you are free to change the default name, or use a custom template with the <tt>generate($template_name)</tt> method.</p>
 
 <?php
 
