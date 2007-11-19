@@ -26,7 +26,7 @@ class ORM_Core {
 	protected $has_and_belongs_to_many = array();
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	public function __construct($id = FALSE)
 	{
@@ -68,7 +68,7 @@ class ORM_Core {
 	}
 
 	/**
-	 * Magic __get method
+	 * Magic __get method.
 	 */
 	public function __get($key)
 	{
@@ -87,7 +87,7 @@ class ORM_Core {
 	}
 
 	/**
-	 * Magic __set method
+	 * Magic __set method.
 	 */
 	public function __set($key, $value)
 	{
@@ -105,7 +105,7 @@ class ORM_Core {
 	}
 
 	/**
-	 * Magic __call method
+	 * Magic __call method.
 	 */
 	public function __call($method, $args)
 	{
@@ -189,8 +189,8 @@ class ORM_Core {
 				$model->find(($data === $model) ? FALSE : $data);
 			}
 
-			// Table should always be plural from here out
-			$table = inflector::plural($table);
+			// Use model table name, instead of guessing with inflector
+			$table = $model->table_name;
 
 			// Set primary and foreign keys
 			$primary = $this->class.'_id';
@@ -264,7 +264,7 @@ class ORM_Core {
 	}
 
 	/**
-	 * Find and load object data.
+	 * Find and load this object data.
 	 */
 	public function find($where = FALSE, $limit = 1)
 	{
@@ -321,89 +321,7 @@ class ORM_Core {
 	}
 
 	/**
-	 * Create a relationship by adding a model to this model.
-	 */
-	public function add($model)
-	{
-		// Foreign table
-		$table = $model->table_name;
-
-		// Change the table name to the related table name
-		$related = $this->related_table($table);
-
-		// Set primary and foreign keys
-		$primary = $this->class.'_id';
-		$foreign = $model->class_name.'_id';
-
-		if (strpos($related, $this->table) !== FALSE)
-		{
-			// Many-to-many relationship
-			$relationship = array
-			(
-				$primary => $this->object->id,
-				$foreign => $model->id
-			);
-
-			// Save the relationship
-			self::$db->insert($related, $relationship);
-		}
-		elseif (in_array($table, $this->has_one) OR in_array($table, $this->has_many))
-		{
-			// Set the primary key
-			$model->$primary = $this->id;
-		}
-		else
-		{
-			// This model does not have ownership
-			return FALSE;
-		}
-
-		return $model->save();
-	}
-
-	/**
-	 * Removes the relationship or object between this object and the model.
-	 */
-	public function remove($model)
-	{
-		// Foreign table
-		$table = $model->table_name;
-
-		// Change the table name to the related table name
-		$related = $this->related_table($table);
-
-		// Set primary and foreign keys
-		$primary = $this->class.'_id';
-		$foreign = $model->class_name.'_id';
-
-		if (strpos($related, $this->table) !== FALSE)
-		{
-			// Many-to-many relationship
-			$relationship = array
-			(
-				$primary => $this->object->id,
-				$foreign => $model->id
-			);
-
-			// Attempt to delete the relationship
-			return (bool) count(self::$db
-				->where($relationship)
-				->delete($related));
-		}
-		elseif (in_array($table, $this->has_one) OR in_array($table, $this->has_many))
-		{
-			// Double check that the model has the same key as this object
-			return ($model->$primary === $this->object->id) ? $model->delete() : FALSE;
-		}
-		else
-		{
-			// This model does not have ownership
-			return FALSE;
-		}
-	}
-
-	/**
-	 * Saves object data.
+	 * Saves this object data.
 	 */
 	public function save()
 	{
@@ -448,7 +366,7 @@ class ORM_Core {
 	}
 
 	/**
-	 * Deletes the current object
+	 * Deletes this object.
 	 */
 	public function delete()
 	{
@@ -501,7 +419,7 @@ class ORM_Core {
 	}
 
 	/**
-	 * Finds the many<>many relationship table
+	 * Finds the many<>many relationship table.
 	 */
 	protected function related_table($table)
 	{
@@ -520,7 +438,7 @@ class ORM_Core {
 	}
 
 	/**
-	 * Execute a join to a table
+	 * Execute a join to a table.
 	 */
 	protected function related_join($table)
 	{
