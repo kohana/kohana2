@@ -145,7 +145,7 @@ class User_Agent_Core {
 	 */
 	public function __toString()
 	{
-		return $this->browser;
+		return self::$agent;
 	}
 
 	/*
