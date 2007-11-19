@@ -166,7 +166,7 @@ class Session_Database_Driver implements Session_Driver {
 		if (rand(1, 100) < 4)
 		{
 			$expiry = time() - $this->expiration;
-			$result = (int) $this->db->delete($this->group_name, array('last_activity <' => $expiry))->num_rows();
+			$result = (int) count($this->db->delete($this->group_name, array('last_activity <' => $expiry)));
 
 			Log::add('debug', 'Session garbage was collected, '.$result.' row(s) deleted');
 
