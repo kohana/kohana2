@@ -505,6 +505,17 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	{
 		return $this->insert_id;
 	}
+
+	public function list_fields()
+	{
+		$field_names = array();
+		while ($field = mysql_fetch_field($this->result))
+		{
+			$field_names[] = $field->name;
+		}
+		
+		return $field_names;
+	}
 	// End Interface
 
 	// Interface: Countable

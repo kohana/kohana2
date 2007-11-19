@@ -277,4 +277,13 @@ interface Database_Result {
 	 */
 	public function insert_id();
 
+	/*
+	 * Method: list_fields
+	 *  Gets the fields of an already run query
+	 * 
+	 * Returns:
+	 *  an array containing the fields
+	 */
+	public function list_fields();
+
 } // End Database Result Interface
