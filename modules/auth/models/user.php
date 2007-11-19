@@ -2,32 +2,36 @@
 
 class User_Model extends ORM {
 
+	// Relationships
+	protected $has_many = array('posts');
+	protected $has_and_belongs_to_many = array('roles');
+
 	// User roles
 	protected $roles = array();
 
-	// Relationships
-	protected $has_and_belongs_to_many = array('roles');
-
-	/*
-	 * Constructor
-	 */
 	public function __construct($id = FALSE)
 	{
 		parent::__construct($id);
 
-		// Load auth configuration
-		$this->config = Config::item('auth');
-
-		foreach($this->find_related_roles() as $role)
+		if ($this->object->id != 0)
 		{
-			// Load roles
-			$this->roles[$role->id] = $role->name;
+			// Preload the roles, so that we can optimize has_role
+			foreach($this->find_related_roles() as $role)
+			{
+				$this->roles[$role->id] = $role->name;
+			}
 		}
 	}
 
-	/*
-	 * Magic __set function.
-	 */
+	public function __get($key)
+	{
+		// Allow roles to be fetched as array(id => name)
+		if ($key === 'roles')
+			return $this->roles;
+
+		return parent::__get($key);
+	}
+
 	public function __set($key, $value = NULL)
 	{
 		static $auth;
@@ -47,63 +51,30 @@ class User_Model extends ORM {
 		parent::__set($key, $value);
 	}
 
-	/*
-	 * Magic __get function.
-	 */
-	public function __get($key)
-	{
-		return ($key === 'roles') ? $this->roles : parent::__get($key);
-	}
-
-	/*
-	 * Check if a user has a specified role.
+	/**
+	 * Overloading the has_role method, for optimization.
 	 */
 	public function has_role($role)
 	{
-		if (is_numeric($role))
+		// Don't mess with these calls, they are too complex
+		if (is_object($role))
+			return parent::has_role($role);
+
+		// Make sure the role name is a string
+		$role = (string) $role;
+
+		if (ctype_digit($role))
 		{
+			// Find by id
 			return isset($this->roles[$role]);
 		}
 		else
 		{
-			// Use in_array to search for the value
+			// Find by name
 			return in_array($role, $this->roles);
 		}
 	}
 
-	public function add_role($role)
-	{
-		if ($this->has_role($role))
-			return TRUE;
-
-		if ( ! ctype_digit((string) $role))
-		{
-			// Find the role id
-			$role = new Role_Model($role);
-			$role = $role->id;
-		}
-
-		try
-		{
-			$result = $this->db->set(array
-			(
-				'user_id' => $this->user->id,
-				'role_id' => $role
-			))
-			->insert($this->config['user_table'].'_'.$this->config['role_table']);
-		}
-		catch (Kohana_Database_Exception $e)
-		{
-			// Database error
-			return FALSE;
-		}
-
-		return (bool) count($result);
-	}
-
-	/**
-	 * Generate a WHERE array.
-	 */
 	protected function where($id)
 	{
 		// Primary key

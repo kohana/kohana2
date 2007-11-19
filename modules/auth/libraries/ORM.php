@@ -76,6 +76,14 @@ class ORM_Core {
 		{
 			return $this->object->$key;
 		}
+		elseif ($key === 'table_name')
+		{
+			return $this->table;
+		}
+		elseif ($key === 'class_name')
+		{
+			return $this->class;
+		}
 	}
 
 	/**
@@ -101,16 +109,19 @@ class ORM_Core {
 	 */
 	public function __call($method, $args)
 	{
-		// Return user data as an array
 		if ($method === 'as_array')
+		{
+			// Return object data as an array
 			return (array) $this->object;
+		}
 
 		if ($method === 'find_all')
 		{
 			// Return an array of all objects
 			return $this->find(count($args) ? current($args) : FALSE, ALL);
 		}
-		elseif (substr($method, 0, 8) === 'find_by_')
+
+		if (substr($method, 0, 8) === 'find_by_')
 		{
 			$key = substr($method, 8);
 			$val = count($args) ? current($args) : FALSE;
@@ -118,7 +129,8 @@ class ORM_Core {
 			// Find a single result
 			return $this->find(array($key => $val));
 		}
-		elseif (substr($method, 0, 12) === 'find_all_by_')
+
+		if (substr($method, 0, 12) === 'find_all_by_')
 		{
 			$key = substr($method, 12);
 			$val = count($args) ? current($args) : FALSE;
@@ -126,32 +138,129 @@ class ORM_Core {
 			// Find a all results
 			return $this->find(array($key => $val), ALL);
 		}
-		elseif (substr($method, 0, 13) === 'find_related_')
+
+		if (substr($method, 0, 13) === 'find_related_')
 		{
 			// Get table name
 			$table = substr($method, 13);
 
-			// Find the model suffix
-			preg_match('/_[a-zA-Z]+$/', get_class($this), $suffix);
-
 			// Construct a new model
-			$model = ucfirst(inflector::singular($table)).current($suffix);
-			$model = new $model();
+			$model = $this->load_model($table);
 
-			// Execute joins
-			$this->related_join($table);
+			if (in_array($table, $this->has_and_belongs_to_many))
+			{
+				// Execute joins for many<>many
+				$this->related_join($table);
+			}
+			else
+			{
+				// Add this object id to WHERE
+				self::$db->where($this->class.'_id', $this->object->id);
+			}
 
 			return $model->find_all();
 		}
-		elseif (substr($method, 0, 4) === 'add_')
-		{
-			
-		}
-	}
 
-	public function add($data)
-	{
-		
+		if (preg_match('/^(has|add|remove)_/', $method, $action))
+		{
+			// Action is always the first match
+			$action = $action[1];
+
+			// Get table name
+			$table = substr($method, strlen($action) + 1);
+
+			// Get added data
+			$data = count($args) ? current($args) : FALSE;
+
+			// Load a new model
+			$model = is_object($data) ? $data : $this->load_model($table);
+
+			if (is_array($data) AND $action === 'add')
+			{
+				foreach($data as $key => $val)
+				{
+					// Set new object data
+					$model->$key = $val;
+				}
+			}
+			else
+			{
+				// Load model data
+				$model->find(($data === $model) ? FALSE : $data);
+			}
+
+			// Table should always be plural from here out
+			$table = inflector::plural($table);
+
+			// Set primary and foreign keys
+			$primary = $this->class.'_id';
+			$foreign = $model->class_name.'_id';
+
+			if (in_array($table, $this->has_one) OR in_array($table, $this->has_many))
+			{
+				// Set the primary key
+				$model->$primary = $this->object->id;
+			}
+			elseif (in_array($table, $this->has_and_belongs_to_many))
+			{
+				// Many-to-many relationship
+				$relationship = array
+				(
+					$primary => $this->object->id,
+					$foreign => $model->id
+				);
+			}
+			else
+			{
+				// This model does not have ownership
+				return FALSE;
+			}
+
+			switch($action)
+			{
+				case 'add':
+					if (isset($relationship))
+					{
+						// Save the relationship
+						self::$db->insert($this->related_table($table), $relationship);
+					}
+
+					return $model->save();
+				break;
+				case 'has':
+					if (isset($relationship))
+					{
+						// Find if the relationship exists, in the case of many<>many
+						return (bool) count(self::$db
+							->select($primary)
+							->from($this->related_table(inflector::plural($table)))
+							->where($relationship)
+							->limit(1)
+							->get());
+					}
+
+					// Return TRUE if the primary key of the model matches this objects id
+					return ($model->$primary === $this->object->id);
+				break;
+				case 'remove':
+					if (isset($relationship))
+					{
+						// Attempt to delete the relationship
+						return (bool) count(self::$db
+							->where($relationship)
+							->delete($this->related_table($table)));
+					}
+
+					if (in_array($table, $this->has_one) OR in_array($table, $this->has_many))
+					{
+						// Double check that the model has the same key as this object
+						return ($model->$primary === $this->object->id) ? $model->delete() : FALSE;
+					}
+				break;
+			}
+
+			return FALSE;
+		}
 	}
 
 	/**
@@ -204,7 +313,93 @@ class ORM_Core {
 			}
 		}
 
-		return $this;
+		// Reset changed
+		$this->changed = array();
+
+		// Return true if something was actually loaded
+		return ($this->object->id != 0);
+	}
+
+	/**
+	 * Create a relationship by adding a model to this model.
+	 */
+	public function add($model)
+	{
+		// Foreign table
+		$table = $model->table_name;
+
+		// Change the table name to the related table name
+		$related = $this->related_table($table);
+
+		// Set primary and foreign keys
+		$primary = $this->class.'_id';
+		$foreign = $model->class_name.'_id';
+
+		if (strpos($related, $this->table) !== FALSE)
+		{
+			// Many-to-many relationship
+			$relationship = array
+			(
+				$primary => $this->object->id,
+				$foreign => $model->id
+			);
+
+			// Save the relationship
+			self::$db->insert($related, $relationship);
+		}
+		elseif (in_array($table, $this->has_one) OR in_array($table, $this->has_many))
+		{
+			// Set the primary key
+			$model->$primary = $this->id;
+		}
+		else
+		{
+			// This model does not have ownership
+			return FALSE;
+		}
+
+		return $model->save();
+	}
+
+	/**
+	 * Removes the relationship or object between this object and the model.
+	 */
+	public function remove($model)
+	{
+		// Foreign table
+		$table = $model->table_name;
+
+		// Change the table name to the related table name
+		$related = $this->related_table($table);
+
+		// Set primary and foreign keys
+		$primary = $this->class.'_id';
+		$foreign = $model->class_name.'_id';
+
+		if (strpos($related, $this->table) !== FALSE)
+		{
+			// Many-to-many relationship
+			$relationship = array
+			(
+				$primary => $this->object->id,
+				$foreign => $model->id
+			);
+
+			// Attempt to delete the relationship
+			return (bool) count(self::$db
+				->where($relationship)
+				->delete($related));
+		}
+		elseif (in_array($table, $this->has_one) OR in_array($table, $this->has_many))
+		{
+			// Double check that the model has the same key as this object
+			return ($model->$primary === $this->object->id) ? $model->delete() : FALSE;
+		}
+		else
+		{
+			// This model does not have ownership
+			return FALSE;
+		}
 	}
 
 	/**
@@ -212,6 +407,7 @@ class ORM_Core {
 	 */
 	public function save()
 	{
+		// No data was changed
 		if (empty($this->changed))
 			return TRUE;
 
@@ -224,8 +420,7 @@ class ORM_Core {
 
 		if (empty($this->object->id))
 		{
-			$query = self::$db
-				->insert($this->table, $data);
+			$query = self::$db->insert($this->table, $data);
 
 			if (count($query) === 1)
 			{
@@ -236,8 +431,9 @@ class ORM_Core {
 		else
 		{
 			$query = self::$db
+				->set($data)
 				->where('id', $this->object->id)
-				->update($this->table, $data);
+				->update($this->table);
 		}
 
 		if (count($query) === 1)
@@ -252,11 +448,28 @@ class ORM_Core {
 	}
 
 	/**
-	 * Fetch object data as an array.
+	 * Deletes the current object
 	 */
-	public function data_array()
+	public function delete()
 	{
-		return (array) $this->object;
+		// Can't delete something that does not exist
+		if (empty($this->object->id))
+			return FALSE;
+
+		$query = self::$db
+			->where('id', $this->object->id)
+			->delete($this->table);
+
+		if (count($query))
+		{
+			// Reset the object
+			$this->object = NULL;
+			$this->find(FALSE);
+
+			return TRUE;
+		}
+
+		return FALSE;
 	}
 
 	/**
@@ -275,12 +488,42 @@ class ORM_Core {
 	}
 
 	/**
+	 * Creates a model from a table name.
+	 */
+	protected function load_model($table)
+	{
+		// Get model name
+		$model= ucfirst(inflector::singular($table)).'_Model';
+
+		// Create a new model
+		return new $model();
+	}
+
+	/**
+	 * Finds the many<>many relationship table
+	 */
+	protected function related_table($table)
+	{
+		if (in_array($table, $this->has_and_belongs_to_many))
+		{
+			return $this->table.'_'.$table;
+		}
+		elseif (in_array($table, $this->belongs_to_many))
+		{
+			return $table.'_'.$this->table;
+		}
+		else
+		{
+			return $table;
+		}
+	}
+
+	/**
 	 * Execute a join to a table
 	 */
 	protected function related_join($table)
 	{
-		// If this object owns the child object, the table is THIS_THAT, otherwise THAT_THIS
-		$join_table = in_array($table, $this->has_and_belongs_to_many) ? $this->table.'_'.$table : $table.'_'.$this->table;
+		$join_table = $this->related_table($table);
 
 		// Primary and foreign keys
 		$primary = $this->class.'_id';
