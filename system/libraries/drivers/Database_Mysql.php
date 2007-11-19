@@ -315,16 +315,28 @@ class Database_Mysql_Driver implements Database_Driver {
 		return mysql_error($this->link);
 	}
 
-	public function list_fields($table)
+	public function list_fields($table, $query = FALSE)
 	{
-		$query = mysql_query('DESCRIBE '.$this->escape_table($table), $this->link);
+		static $tables;
 
-		$fields = array();
-		while ($row = mysql_fetch_object($query))
+		if (is_object($query))
 		{
-			$fields[] = $row->Field;
+			if (empty($tables[$table]))
+			{
+				$tables[$table] = array();
+
+				foreach($query as $row)
+				{
+					$tables[$table][] = $row->Field;
+				}
+			}
+
+			return $tables[$table];
 		}
-		return $fields;
+		else
+		{
+			return 'DESCRIBE '.$this->escape_table($table);
+		}
 	}
 
 	public function field_data($table)

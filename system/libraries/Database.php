@@ -728,9 +728,7 @@ class Database_Core {
 			$table = $this->from[0];
 		}
 
-		$table = $this->driver->escape_table($this->config['table_prefix'].$table);
-
-		$sql = $this->driver->update($table, $this->set, $this->where);
+		$sql = $this->driver->update($this->config['table_prefix'].$table, $this->set, $this->where);
 
 		$this->reset_write();
 		return $this->query($sql);
@@ -947,9 +945,11 @@ class Database_Core {
 	 */
 	public function list_fields($table ='')
 	{
-		$this->link or $this->connect();
+		static $tables;
 
-		return $this->driver->list_fields($table);
+		$query = $this->query($this->driver->list_fields($table));
+
+		return $this->driver->list_fields($table, $query);
 	}
 
 	/*

@@ -9,6 +9,8 @@
  */
 class Model_Core {
 
+	protected $db;
+
 	/*
 	 * Constructor: __construct
 	 *  Loads database to $this->db.
