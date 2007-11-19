@@ -245,7 +245,7 @@ class ORM_Core {
 				case 'remove':
 					if (isset($relationship))
 					{
-						// Attempt to delete the relationship
+						// Attempt to delete the many<>many relationship
 						return (bool) count(self::$db
 							->where($relationship)
 							->delete($this->related_table($table)));
@@ -456,6 +456,7 @@ class ORM_Core {
 		if (empty($this->object->id))
 			return FALSE;
 
+		// Delete this object
 		$query = self::$db
 			->where('id', $this->object->id)
 			->delete($this->table);

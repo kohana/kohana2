@@ -75,6 +75,25 @@ class User_Model extends ORM {
 		}
 	}
 
+	/**
+	 * Removes all roles for this user when the object is deleted.
+	 */
+	public function delete()
+	{
+		$where = array($this->class.'_id' => $this->object->id);
+		$table = $this->related_table('roles');
+
+		if ($return = parent::delete())
+		{
+			// Remove users<>roles relationships
+			self::$db
+				->where($where)
+				->delete($table);
+		}
+
+		return $return;
+	}
+
 	protected function where($id)
 	{
 		// Primary key
