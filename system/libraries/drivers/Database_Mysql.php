@@ -135,7 +135,7 @@ class Database_Mysql_Driver implements Database_Driver {
 		$wheres = array();
 		foreach ($key as $k => $v)
 		{
-			$k		= (strpos($k, '.') !== FALSE) ? $this->db_config['table_prefix'].$k : $k;
+			$k      = (strpos($k, '.') !== FALSE) ? $this->db_config['table_prefix'].$k : $k;
 			$prefix = ($num_wheres++ == 0) ? '' : $type;
 
 			if ($quote === -1)
@@ -192,6 +192,7 @@ class Database_Mysql_Driver implements Database_Driver {
 		$likes = array();
 		foreach ($field as $k => $v)
 		{
+			$k      = (strpos($k, '.') !== FALSE) ? $this->db_config['table_prefix'].$k : $k;
 			$prefix = ($num_likes++ == 0) ? '' : $type;
 
 			$v = (substr($v, 0, 1) == '%' OR substr($v, (strlen($v)-1), 1) == '%') ? $this->escape_str($v) : '%'.$this->escape_str($v).'%';
