@@ -290,7 +290,7 @@ class Database_Core {
 		{
 			if (($val = trim($val)) == '') continue;
 
-			$this->from[] = $this->driver->escape_column($this->config['table_prefix'].$val);
+			$this->from[] = $this->driver->escape_table($this->config['table_prefix'].$val);
 		}
 
 		return $this;
