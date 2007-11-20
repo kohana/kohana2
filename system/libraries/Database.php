@@ -833,7 +833,6 @@ class Database_Core {
 		$this->from     = array();
 		$this->join     = array();
 		$this->where    = array();
-		$this->like     = array();
 		$this->orderby  = array();
 		$this->groupby  = array();
 		$this->having   = array();
