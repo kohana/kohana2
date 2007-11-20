@@ -4,12 +4,9 @@ class Media_Controller extends Controller {
 
 	public function _remap()
 	{
-		$type = $this->uri->segment(2);
-		$file = $this->uri->segment(3);
-
 		try
 		{
-			echo new View('media/'.$type.'/'.$file);
+			echo new View($this->uri->string());
 		}
 		catch (Kohana_Exception $e)
 		{

@@ -85,6 +85,7 @@ class Download_Controller extends Controller {
 				'system/config/database.php',
 				'system/config/encryption.php',
 				'system/config/pagination.php',
+				'system/config/profiler.php',
 				'system/helpers/date.php',
 				'system/helpers/download.php',
 				'system/helpers/feed.php',
