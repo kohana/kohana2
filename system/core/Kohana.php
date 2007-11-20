@@ -451,9 +451,12 @@ class Kohana {
 		if (class_exists($class, FALSE))
 			return TRUE;
 
-		preg_match('/_([^_]+)$/', $class, $type);
+		$type = strrpos($class, '_');
 
-		$type = isset($type[1]) ? $type[1] : FALSE;
+		if ($type !== FALSE)
+		{
+			$type = substr($class, $type + 1);
+		}
 
 		switch($type)
 		{
@@ -570,6 +573,9 @@ class Kohana {
 	 *  directory - directory to search
 	 *  recursive - list all files to the maximum depth?
 	 *  path      - full path to search (used for recursion, *never* set this manually)
+	 * 
+	 * Returns:
+	 *  An array of filenames and directories.
 	 */
 	public static function list_files($directory, $recursive = FALSE, $path = FALSE)
 	{
