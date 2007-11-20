@@ -612,6 +612,9 @@ class Kohana {
 	 * Parameters:
 	 *  key  - language key to fetch
 	 *  args - additional information to insert into the line
+	 * 
+	 * Returns:
+	 *  A i18n language string, or the requested key if the i18n item is not found.
 	 */
 	public static function lang($key, $args = array())
 	{
@@ -655,8 +658,7 @@ class Kohana {
 
 		if (is_string($line) AND func_num_args() > 1)
 		{
-			$args = func_get_args();
-			$args = array_slice($args, 1);
+			$args = array_slice(func_get_args(), 1);
 
 			// Add the arguments into the line
 			$line = vsprintf($line, is_array($args[0]) ? $args[0] : $args);
@@ -776,14 +778,13 @@ class Kohana_Exception extends Exception {
 	 */
 	function __construct($error)
 	{
-		$args = func_get_args();
-		$args = array_slice($args, 1);
+		$args = array_slice(func_get_args(), 1);
 
 		// Fetch the error message
 		$message = Kohana::lang($error, $args);
 
 		// Handle error messages that are not set
-		if ($message == '')
+		if ($message == $error)
 		{
 			$this->message .= $error;
 		}
@@ -802,7 +803,7 @@ class Kohana_Exception extends Exception {
 	 */
 	public function __toString()
 	{
-		return $this->message;
+		return (string) $this->message;
 	}
 
 	/*
