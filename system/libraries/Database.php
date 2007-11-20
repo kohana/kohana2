@@ -350,12 +350,15 @@ class Database_Core {
 	 */
 	public function where($key, $value = NULL, $quote = TRUE)
 	{
-		if (func_num_args() < 2 AND ! is_array($key))
+		$quote = (func_num_args() < 2 AND ! is_array($key)) ? -1 : $quote;
+		$keys  = is_array($key) ? $key : array($key => $value);
+
+		foreach ($keys as $key => $value)
 		{
-			$quote = -1;
+			$key           = (strpos($key, '.') !== FALSE) ? $this->config['table_prefix'].$key : $key;
+			$this->where[] = $this->driver->where($key, $value, 'AND ', count($this->where), $quote);
 		}
 
-		$this->where = array_merge($this->where, $this->driver->where($key, $value, 'AND ', count($this->where), $quote));
 		return $this;
 	}
 
@@ -373,12 +376,15 @@ class Database_Core {
 	 */
 	public function orwhere($key, $value = NULL, $quote = TRUE)
 	{
-		if (func_num_args() < 2 AND ! is_array($key))
-		{
-			$quote = -1;
-		}
+		$quote = (func_num_args() < 2 AND ! is_array($key)) ? -1 : $quote;
+		$keys  = is_array($key) ? $key : array($key => $value);
 
-		$this->where = array_merge($this->where, $this->driver->where($key, $value, 'OR ', count($this->where), $quote));
+		foreach ($keys as $key => $value)
+		{
+			$key           = (strpos($key, '.') !== FALSE) ? $this->config['table_prefix'].$key : $key;
+			$this->where[] = $this->driver->where($key, $value, 'OR ', count($this->where), $quote);
+		}		
+
 		return $this;
 	}
 
@@ -395,7 +401,14 @@ class Database_Core {
 	 */
 	public function like($field, $match = '')
 	{
-		$this->where = array_merge($this->where, $this->driver->like($field, $match, 'AND ', count($this->where)));
+		$fields = is_array($field) ? $field : array($field => $match);
+
+		foreach ($fields as $field => $match)
+		{
+			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
+			$this->where[] = $this->driver->like($field, $match, 'AND ', count($this->where));
+		}
+	
 		return $this;
 	}
 
@@ -412,8 +425,15 @@ class Database_Core {
 	 */
 	public function orlike($field, $match = '')
 	{
-		$this->where = array_merge($this->where, $this->driver->like($field, $match, 'OR ', count($this->where)));
-		return $this;
+		$fields = is_array($field) ? $field : array($field => $match);
+
+		foreach ($fields as $field => $match)
+		{
+			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
+			$this->where[] = $this->driver->like($field, $match, 'OR ', count($this->where));
+		}
+	
+		return $this;	
 	}
 
 	/*
@@ -460,7 +480,7 @@ class Database_Core {
 	public function having($key, $value = '')
 	{
 	    $this->having = array_merge($this->having, $this->driver->having($key, $value, 'AND'));
-        return $this;
+		return $this;
 	}
 
 	/*
@@ -477,7 +497,7 @@ class Database_Core {
 	public function orhaving($key, $value = '')
 	{
 		$this->having = array_merge($this->having, $this->driver->having($key, $value, 'OR'));
-        return $this;
+		return $this;
 	}
 
 	/*

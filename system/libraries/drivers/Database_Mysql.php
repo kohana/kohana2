@@ -127,79 +127,60 @@ class Database_Mysql_Driver implements Database_Driver {
 
 	public function where($key, $value, $type, $num_wheres, $quote)
 	{
-		if ( ! is_array($key))
+		$prefix = ($num_wheres == 0) ? '' : $type;
+
+		if ($quote === -1)
 		{
-			$key = array($key => $value);
+			$value = '';
 		}
-
-		$wheres = array();
-		foreach ($key as $k => $v)
+		else
 		{
-			$k      = (strpos($k, '.') !== FALSE) ? $this->db_config['table_prefix'].$k : $k;
-			$prefix = ($num_wheres++ == 0) ? '' : $type;
-
-			if ($quote === -1)
+			if ($value === NULL)
 			{
-				$v = '';
+				if ( ! $this->has_operator($key))
+				{
+					$key .= ' IS';
+				}
+
+				$value = ' NULL';
+			}
+			elseif (is_bool($value))
+			{
+				if ( ! $this->has_operator($key))
+				{
+					$key .= ' =';
+				}
+
+				$value = ($value == TRUE) ? ' 1' : ' 0';
 			}
 			else
 			{
-				if ($v === NULL)
+				if ( ! $this->has_operator($key))
 				{
-					if ( ! $this->has_operator($k))
-					{
-						$k .= ' IS';
-					}
-
-					$v = ' NULL';
-				}
-				elseif (is_bool($v))
-				{
-					if ( ! $this->has_operator($k))
-					{
-						$k .= ' =';
-					}
-
-					$v = ($v == TRUE) ? ' 1' : ' 0';
+					$key = $this->escape_column($key).' =';
 				}
 				else
 				{
-					if ( ! $this->has_operator($k))
-					{
-						$k = $this->escape_column($k).' =';
-					}
-					else
-					{
-						preg_match('/^(.+?)([<>!=]+|\bIS(?:\s+NULL))\s*$/i', $k, $matches);
-						$k = $this->escape_column(trim($matches[1])).' '.trim($matches[2]);
-					}
-
-					$v = ' '.(($quote == TRUE) ? $this->escape($v) : $v);
+					preg_match('/^(.+?)([<>!=]+|\bIS(?:\s+NULL))\s*$/i', $key, $matches);
+					$key = $this->escape_column(trim($matches[1])).' '.trim($matches[2]);
 				}
+
+				$value = ' '.(($quote == TRUE) ? $this->escape($value) : $value);
 			}
-			$wheres[] = $prefix.$k.$v;
 		}
-		return $wheres;
+
+		return $prefix.$key.$value;
 	}
 
 	public function like($field, $match = '', $type = 'AND ', $num_likes)
 	{
-		if ( ! is_array($field))
-		{
-			$field = array($field => $match);
-		}
+		$prefix = $num_likes == 0 ? '' : $type;
 
-		$likes = array();
-		foreach ($field as $k => $v)
-		{
-			$k      = (strpos($k, '.') !== FALSE) ? $k : $k;
-			$prefix = ($num_likes++ == 0) ? '' : $type;
+		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%') 
+			   ? $this->escape_str($match) 
+			   : '%'.$this->escape_str($match).'%';
 
-			$v = (substr($v, 0, 1) == '%' OR substr($v, (strlen($v)-1), 1) == '%') ? $this->escape_str($v) : '%'.$this->escape_str($v).'%';
-
-			$likes[] = $prefix." ".$k." LIKE '".$v . "'";
-		}
-		return $likes;
+		return $prefix." ".$this->escape_column($field)." LIKE '".$match . "'";
 	}
 
 	public function insert($table, $keys, $values)
