@@ -125,7 +125,7 @@ class html {
 		// Attributes empty? Use an empty string
 		.(empty($attributes) ? '' : self::attributes($attributes)).'>'
 		// Title empty? Use the filename part of the URI
-		.(empty($title) ? end(explode('/', $file)) : $title) .'</a>';
+		.htmlspecialchars(empty($title) ? end(explode('/', $file)) : $title) .'</a>';
 	}
 
 	/*
@@ -191,7 +191,7 @@ class html {
 		$attributes = ($attributes == TRUE) ? self::attributes($attributes) : '';
 
 		// Encoded start of the href="" is a static encoded version of 'mailto:'
-		return '<a href="&#109;&#097;&#105;&#108;&#116;&#111;&#058;'.$safe.$subject.'"'.$attributes.'>'.$title.'</a>';
+		return '<a href="&#109;&#097;&#105;&#108;&#116;&#111;&#058;'.$safe.$subject.'"'.$attributes.'>'.htmlspecialchars($title).'</a>';
 	}
 
 	/*
