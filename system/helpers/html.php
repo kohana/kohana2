@@ -101,7 +101,7 @@ class html {
 		// Attributes empty? Use an empty string
 		.(empty($attributes) ? '' : self::attributes($attributes)).'>'
 		// Title empty? Use the parsed URL
-		.(empty($title) ? $site_url : $title).'</a>';
+		.htmlspecialchars(empty($title) ? $site_url : $title).'</a>';
 	}
 
 	/*
