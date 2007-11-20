@@ -582,7 +582,7 @@ class Database_Core {
 	{
 		if ($table != '')
 		{
-			$this->from($table);
+			$this->from($this->config['table_prefix'].$table);
 		}
 
 		if ( ! is_null($limit))
@@ -618,7 +618,7 @@ class Database_Core {
 	{
 		if ($table != '')
 		{
-			$this->from($table);
+			$this->from($this->config['table_prefix'].$table);
 		}
 
 		if ( ! is_null($where))
@@ -809,7 +809,7 @@ class Database_Core {
 			if ($table == FALSE)
 				return FALSE;
 
-			$this->from($table);
+			$this->from($this->config['table_prefix'].$table);
 		}
 
 		if ( ! is_null($where))
@@ -881,7 +881,7 @@ class Database_Core {
 	 */
 	public function table_exists($table_name)
 	{
-		return in_array($table_name, $this->list_tables());
+		return in_array($this->config['table_prefix'].$table_name, $this->list_tables());
 	}
 
 	/*
@@ -930,7 +930,7 @@ class Database_Core {
 	{
 		$this->link or $this->connect();
 
-		return $this->driver->field_data($table);
+		return $this->driver->field_data($this->config['table_prefix'].$table);
 	}
 
 	/*
@@ -947,9 +947,9 @@ class Database_Core {
 	{
 		static $tables;
 
-		$query = $this->query($this->driver->list_fields($table));
+		$query = $this->query($this->driver->list_fields($this->config['table_prefix'].$table));
 
-		return $this->driver->list_fields($table, $query);
+		return $this->driver->list_fields($this->config['table_prefix'].$table, $query);
 	}
 
 	/*
