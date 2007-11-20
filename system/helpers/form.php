@@ -416,7 +416,7 @@ class form {
 		{
 			if (strpos($data, '[') !== FALSE)
 			{
-				$data = preg_replace('/\[(?:.+)?\]/', '', $data);
+				$data = preg_replace('/\[.*\]/', '', $data);
 			}
 
 			$data = array

@@ -324,7 +324,7 @@ class Database_Core {
 			}
 		}
 
-		if (preg_match('/([a-z\.].+) = ([a-z\.].+)/', $cond, $where))
+		if (preg_match('/([a-z.].+)\s+=\s+([a-z.].+)/i', $cond, $where))
 		{
 			$cond = $this->driver->escape_column($this->config['table_prefix'].$where[1]).
 			        ' = '.
