@@ -101,7 +101,7 @@ class html {
 		// Attributes empty? Use an empty string
 		.(empty($attributes) ? '' : self::attributes($attributes)).'>'
 		// Title empty? Use the parsed URL
-		.htmlspecialchars(empty($title) ? $site_url : $title).'</a>';
+		.self::specialchars(empty($title) ? $site_url : $title).'</a>';
 	}
 
 	/*
@@ -125,7 +125,7 @@ class html {
 		// Attributes empty? Use an empty string
 		.(empty($attributes) ? '' : self::attributes($attributes)).'>'
 		// Title empty? Use the filename part of the URI
-		.htmlspecialchars(empty($title) ? end(explode('/', $file)) : $title) .'</a>';
+		.self::specialchars(empty($title) ? end(explode('/', $file)) : $title) .'</a>';
 	}
 
 	/*
