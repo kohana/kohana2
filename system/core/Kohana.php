@@ -875,7 +875,7 @@ class Kohana_404_Exception extends Kohana_Exception {
 	{
 		if ($page === FALSE)
 		{
-			$page = Router::$current_uri.Config::item('core.url_suffix').Router::$query_string;
+			$page = Router::$current_uri.Router::$query_string;
 		}
 
 		$this->message = Kohana::lang('core.page_not_found', $page);

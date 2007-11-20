@@ -14,7 +14,7 @@ foreach($inputs as $name => $data):
 	$error = arr::remove('error', $data);
 
 	// Set input name and id
-	$data['name'] = $data['id'] = $name;
+	$data['name'] = $name;
 
 	if ( ! empty($data['options']))
 	{

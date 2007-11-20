@@ -414,6 +414,11 @@ class form {
 	{
 		if ( ! is_array($data))
 		{
+			if (strpos($data, '[') !== FALSE)
+			{
+				$data = preg_replace('/\[(?:.+)?\]/', '', $data);
+			}
+
 			$data = array
 			(
 				'for' => $data
