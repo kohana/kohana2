@@ -582,7 +582,7 @@ class Database_Core {
 	{
 		if ($table != '')
 		{
-			$this->from($this->config['table_prefix'].$table);
+			$this->from($table);
 		}
 
 		if ( ! is_null($limit))
@@ -618,7 +618,7 @@ class Database_Core {
 	{
 		if ($table != '')
 		{
-			$this->from($this->config['table_prefix'].$table);
+			$this->from($table);
 		}
 
 		if ( ! is_null($where))
@@ -809,7 +809,7 @@ class Database_Core {
 			if ($table == FALSE)
 				return FALSE;
 
-			$this->from($this->config['table_prefix'].$table);
+			$this->from($table);
 		}
 
 		if ( ! is_null($where))
