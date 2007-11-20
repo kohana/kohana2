@@ -62,7 +62,7 @@ class Database_Mysql_Driver implements Database_Driver {
 
 	public function delete($table, $where)
 	{
-		return 'DELETE FROM '.$this->escape_table($table).' WHERE '.implode(' ', $where);
+		return 'DELETE FROM '.$this->escape_table($this->db_config['table_prefix'].$table).' WHERE '.implode(' ', $where);
 	}
 
 	public function update($table, $values, $where)
@@ -71,7 +71,7 @@ class Database_Mysql_Driver implements Database_Driver {
 		{
 			$valstr[] = $this->escape_column($key)." = ".$val;
 		}
-		return 'UPDATE '.$this->escape_table($table).' SET '.implode(', ', $valstr).' WHERE '.implode(' ',$where);
+		return 'UPDATE '.$this->escape_table($this->db_config['table_prefix'].$table).' SET '.implode(', ', $valstr).' WHERE '.implode(' ',$where);
 	}
 
 	public function set_charset($charset)
@@ -209,7 +209,7 @@ class Database_Mysql_Driver implements Database_Driver {
 		{
 			$keys[$key] = $this->escape_column($value);
 		}
-		return 'INSERT INTO '.$this->escape_table($table).' ('.implode(', ', $keys).') VALUES ('.implode(', ', $values).')';
+		return 'INSERT INTO '.$this->escape_table($this->db_config['table_prefix'].$table).' ('.implode(', ', $keys).') VALUES ('.implode(', ', $values).')';
 	}
 
 	public function limit($limit, $offset = 0)
@@ -225,7 +225,7 @@ class Database_Mysql_Driver implements Database_Driver {
 		if (count($database['from']) > 0)
 		{
 			$sql .= "\nFROM ";
-			$sql .= implode(', ', $database['from']);
+			$sql .= implode(', ', $this->db_config['table_prefix'].$database['from']);
 		}
 
 		if (count($database['join']) > 0)
@@ -336,7 +336,7 @@ class Database_Mysql_Driver implements Database_Driver {
 		}
 		else
 		{
-			return 'DESCRIBE '.$this->escape_table($table);
+			return 'DESCRIBE '.$this->escape_table($this->db_config['table_prefix'].$table);
 		}
 	}
 
@@ -345,7 +345,7 @@ class Database_Mysql_Driver implements Database_Driver {
 		if ( ! in_array($table, $this->list_tables()))
 			return FALSE;
 
-		$query  = mysql_query('SELECT * FROM '.$this->escape_table($table).' LIMIT 1', $this->link);
+		$query  = mysql_query('SELECT * FROM '.$this->escape_table($this->db_config['table_prefix'].$table).' LIMIT 1', $this->link);
 		$fields = mysql_num_fields($query);
 		$table  = array();
 
