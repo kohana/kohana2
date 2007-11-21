@@ -9,22 +9,23 @@
  */
 class Pagination_Core {
 
-	public $base_url       = '';
-	public $directory      = 'pagination';
-	public $style          = 'classic';
-	public $uri_segment    = 3;
-	public $items_per_page = 10;
+	// Config values
+	protected $base_url       = '';
+	protected $directory      = 'pagination';
+	protected $style          = 'classic';
+	protected $uri_segment    = 3;
+	protected $items_per_page = 10;
 
-	public $current_page;
-	public $total_pages;
-	public $total_items;
-	public $current_first_item;
-	public $current_last_item;
-
-	public $first_page;
-	public $last_page;
-	public $previous_page;
-	public $next_page;
+	// Automatically calculated values
+	protected $current_page;
+	protected $total_pages;
+	protected $total_items;
+	protected $current_first_item;
+	protected $current_last_item;
+	protected $first_page;
+	protected $last_page;
+	protected $previous_page;
+	protected $next_page;
 
 	/*
 	 * Constructor: __construct
@@ -38,6 +39,20 @@ class Pagination_Core {
 		// Merge all pagination config values
 		$config = array_merge(Config::load('pagination', FALSE), (array) $config);
 
+		$this->initialize($config);
+
+		Log::add('debug', 'Pagination Library initialized');
+	}
+
+	/*
+	 * Method: initialize
+	 *  Sets or overwrites (some) config values.
+	 *
+	 * Parameters:
+	 *  config - custom configuration
+	 */
+	public function initialize($config = array())
+	{
 		// Assign config values to the object
 		foreach ($config as $key => $value)
 		{
@@ -47,33 +62,40 @@ class Pagination_Core {
 			}
 		}
 
-		// Set a default base_url if none given via config
-		if ($this->base_url == '')
+		// Clean view directory
+		$this->directory = trim($this->directory, '/').'/';
+
+		// Don't bother about full base_urls
+		if (strpos($this->base_url, '://') === FALSE)
 		{
-			$this->base_url = Kohana::instance()->uri->string();
-		}
-
-		// Explode base_url into segments
-		$this->base_url = explode('/', trim($this->base_url, '/'));
-
-		// Convert uri 'label' to corresponding integer if needed
-		if (is_string($this->uri_segment))
-		{
-			if (($key = array_search($this->uri_segment, $this->base_url)) === FALSE)
+			// Default base_url
+			if ($this->base_url == '')
 			{
-				// If uri 'label' is not found, auto add it to base_url
-				$this->base_url[] = $this->uri_segment;
-				$this->uri_segment = count($this->base_url) + 1;
+				$this->base_url = url::current();
 			}
-			else
-			{
-				$this->uri_segment = $key + 2;
-			}
-		}
 
-		// Create a generic base_url with {page} placeholder
-		$this->base_url[$this->uri_segment - 1] = '{page}';
-		$this->base_url = url::site(implode('/', $this->base_url));
+			// Explode base_url into segments
+			$this->base_url = explode('/', trim($this->base_url, '/'));
+
+			// Convert uri 'label' to corresponding integer if needed
+			if (is_string($this->uri_segment))
+			{
+				if (($key = array_search($this->uri_segment, $this->base_url)) === FALSE)
+				{
+					// If uri 'label' is not found, auto add it to base_url
+					$this->base_url[] = $this->uri_segment;
+					$this->uri_segment = count($this->base_url) + 1;
+				}
+				else
+				{
+					$this->uri_segment = $key + 2;
+				}
+			}
+
+			// Create a generic base_url with {page} placeholder
+			$this->base_url[$this->uri_segment - 1] = '{page}';
+			$this->base_url = url::site(implode('/', $this->base_url));
+		}
 
 		// Core pagination values
 		$this->total_items        = (int) max(0, $this->total_items);
@@ -83,16 +105,12 @@ class Pagination_Core {
 		$this->current_first_item = (int) min((($this->current_page - 1) * $this->items_per_page) + 1, $this->total_items);
 		$this->current_last_item  = (int) min($this->current_first_item + $this->items_per_page - 1, $this->total_items);
 
-		// Helper variables
-		// - first_page/last_page     FALSE if the current page is the first/last page
-		// - previous_page/next_page  FALSE if that page doesn't exist relative to the current page
+		// If there is no first/last/previous/next page, relative to the
+		// current page, value is set to FALSE. Valid page number otherwise.
 		$this->first_page         = ($this->current_page == 1) ? FALSE : 1;
 		$this->last_page          = ($this->current_page >= $this->total_pages) ? FALSE : $this->total_pages;
 		$this->previous_page      = ($this->current_page > 1) ? $this->current_page - 1 : FALSE;
 		$this->next_page          = ($this->current_page < $this->total_pages) ? $this->current_page + 1 : FALSE;
-
-		// Initialization done
-		Log::add('debug', 'Pagination Library initialized');
 	}
 
 	/*
@@ -103,16 +121,23 @@ class Pagination_Core {
 	 *  style - style of generated links
 	 *
 	 * Returns:
-	 *  Generated pagination HTML
+	 *  Generated pagination HTML.
 	 */
 	public function create_links($style = NULL)
 	{
 		$style = (isset($style)) ? $style : $this->style;
 
-		$view = new View(trim($this->directory, '/').'/'.$style, get_object_vars($this));
+		$view = new View($this->directory.$style, get_object_vars($this));
 		return $view->render();
 	}
 
+	/*
+	 * Method: __toString
+	 *  Magic method for converting an object to a string.
+	 *
+	 * Returns:
+	 *  The generated pagination HTML.
+	 */
 	public function __toString()
 	{
 		return $this->create_links();
@@ -126,7 +151,7 @@ class Pagination_Core {
 	 *  page - page number
 	 *
 	 * Returns:
-	 *  Base URL with specified page number
+	 *  Base URL with specified page number.
 	 */
 	public function url($page = NULL)
 	{
@@ -140,7 +165,7 @@ class Pagination_Core {
 	 *  Gets the SQL offset of the first row to return.
 	 *
 	 * Returns:
-	 *  SQL offset
+	 *  SQL offset integer.
 	 */
 	public function sql_offset()
 	{
@@ -152,7 +177,7 @@ class Pagination_Core {
 	 *  Generates the complete SQL LIMIT clause.
 	 *
 	 * Returns:
-	 *  SQL LIMIT clause
+	 *  SQL LIMIT clause.
 	 */
 	public function sql_limit()
 	{
