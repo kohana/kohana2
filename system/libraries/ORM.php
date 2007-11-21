@@ -1,5 +1,12 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+ /*
+ * Class: ORM
+ *
+ * Kohana Source Code:
+ *  author    - Kohana Team
+ *  copyright - (c) 2007 Kohana Team
+ *  license   - <http://kohanaphp.com/license.html>
+ */
 class ORM_Core {
 
 	// Database field caching
@@ -25,8 +32,9 @@ class ORM_Core {
 	protected $belongs_to_many = array();
 	protected $has_and_belongs_to_many = array();
 
-	/**
-	 * Constructor.
+	/*
+	 * Constructor: __construct
+	 *  Initialize database, setup internal variables.
 	 */
 	public function __construct($id = FALSE)
 	{
@@ -67,8 +75,9 @@ class ORM_Core {
 		}
 	}
 
-	/**
-	 * Magic __get method.
+	/*
+	 * Method: __get
+	 *  Magic method for getting data.
 	 */
 	public function __get($key)
 	{
@@ -86,8 +95,9 @@ class ORM_Core {
 		}
 	}
 
-	/**
-	 * Magic __set method.
+	/*
+	 * Method: __set
+	 *  Magic method for setting data.
 	 */
 	public function __set($key, $value)
 	{
@@ -104,8 +114,9 @@ class ORM_Core {
 		}
 	}
 
-	/**
-	 * Magic __call method.
+	/*
+	 * Method: __call
+	 *  Magic method for calling dynamic methods.
 	 */
 	public function __call($method, $args)
 	{
@@ -263,8 +274,17 @@ class ORM_Core {
 		}
 	}
 
-	/**
-	 * Find and load this object data.
+	/*
+	 * Method: find
+	 *  Find and load this object data.
+	 *
+	 * Parameters:
+	 *  where - database where clause or array of clauses
+	 *  limit - maximum number of returned objects
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
+	 *  Array of objects if where is an array
 	 */
 	public function find($where = FALSE, $limit = 1)
 	{
@@ -320,8 +340,12 @@ class ORM_Core {
 		return ($this->object->id != 0);
 	}
 
-	/**
-	 * Saves this object data.
+	/*
+	 * Method: save
+	 *  Saves this object data.
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function save()
 	{
@@ -365,8 +389,12 @@ class ORM_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Deletes this object.
+	/*
+	 * Method: delete
+	 *  Deletes this object.
+	 *
+	 * Returns:
+	 *  TRUE or FALSE
 	 */
 	public function delete()
 	{
@@ -391,8 +419,15 @@ class ORM_Core {
 		return FALSE;
 	}
 
-	/**
-	 * Generate a WHERE array.
+	/*
+	 * Method: where
+	 *  Generate a WHERE array.
+	 *
+	 * Parameters:
+	 *  id - id or array of id's
+	 *
+	 * Returns:
+	 *  FALSE or Array
 	 */
 	protected function where($id)
 	{
@@ -406,8 +441,15 @@ class ORM_Core {
 			return array('id' => $id);
 	}
 
-	/**
-	 * Creates a model from a table name.
+	/*
+	 * Method: load_model
+	 *  Creates a model from a table name.
+	 *
+	 * Parameters:
+	 *  table - table name
+	 *
+	 * Returns:
+	 *  Instance of model
 	 */
 	protected function load_model($table)
 	{
@@ -418,8 +460,15 @@ class ORM_Core {
 		return new $model();
 	}
 
-	/**
-	 * Finds the many<>many relationship table.
+	/*
+	 * Method: related_table
+	 *  Finds the many<>many relationship table.
+	 *
+	 * Parameters:
+	 *  table - table name
+	 *
+	 * Returns:
+	 *  Table name
 	 */
 	protected function related_table($table)
 	{
@@ -437,8 +486,12 @@ class ORM_Core {
 		}
 	}
 
-	/**
-	 * Execute a join to a table.
+	/*
+	 * Method: related_join
+	 *  Execute a join to a table.
+	 *
+	 * Parameters:
+	 *  table - table name
 	 */
 	protected function related_join($table)
 	{
