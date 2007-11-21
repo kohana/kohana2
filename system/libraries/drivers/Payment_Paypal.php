@@ -23,8 +23,7 @@ class Payment_Paypal_Driver
 	                                'PAYMENTACTION' => TRUE,
 	                                'ReturnUrl'     => FALSE,
 	                                'CANCELURL'     => FALSE,
-	                                'CURRENCYCODE'  => TRUE,
-	                                'payerid'       => FALSE);
+	                                'CURRENCYCODE'  => TRUE);
 
 	private $paypal_values = array('API_UserName'  => '',
 	                               'API_Password'  => '',
@@ -113,9 +112,9 @@ class Payment_Paypal_Driver
 	function process()
 	{
 		//Make sure the payer ID is set. We do it here because it's not required the first time around.
-		if ($this->session->get('paypal_token') && !isset($this->required_fields['payerid']))
+		if ($this->session->get('paypal_token') AND isset($this->paypal_values['payerid']))
 		{
-			$this->required_fields['payerid'] = FALSE;
+			$this->required_fields['payerid'] = TRUE;
 		}
 
 		// Check for required fields
