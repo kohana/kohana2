@@ -3,5 +3,5 @@
 <?php echo form::open('donate/paypal')?>
 <h4>Amount</h4>
 <p>$<?php echo form::input('amount')?></p>
-<p><?php echo form::submit(array(), 'Submit')?></p>
+<p><?php echo form::submit('submit', 'Donate')?></p>
 <?php echo form::close()?>
