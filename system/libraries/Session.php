@@ -68,7 +68,7 @@ class Session_Core {
 			// Create a new session
 			$this->create();
 
-			if (($_SESSION['total_hits'] % self::$config['regenerate']) === 0)
+			if (self::$config['regenerate'] > 0 AND ($_SESSION['total_hits'] % self::$config['regenerate']) === 0)
 			{
 				// Regenerate session ID
 				$this->regenerate();
