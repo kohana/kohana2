@@ -50,7 +50,7 @@ class Pagination_Core {
 		// Set a default base_url if none given via config
 		if ($this->base_url == '')
 		{
-			$this->base_url = (string) Kohana::instance()->uri;
+			$this->base_url = Kohana::instance()->uri->string();
 		}
 
 		// Explode base_url into segments
