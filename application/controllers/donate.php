@@ -68,7 +68,7 @@ class Donate_Controller extends Controller {
 			$this->db->insert('donations', $insert);
 
 			// Remove the session data
-			$this->session->del(array('donate_amount', 'donate_name', 'donate_email');
+			$this->session->del(array('donate_amount', 'donate_name', 'donate_email'));
 
 			$this->template->set(array
 			(
