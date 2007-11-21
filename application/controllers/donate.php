@@ -36,9 +36,15 @@ class Donate_Controller extends Controller {
 
 			// Set the amount and send em to PayPal
 			$this->payment->amount = $amount;
-			$this->payment->process();
+			if ($status = $this->payment->process() === FALSE)
+			{
+				// Something went wrong, so delete the session data and make em start over again.
+				$this->session->set_flash('donate_status', '<p style="color: red;">There was a problem processing your donation. Please try again.</p>');
+				$this->session->del(array('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token'));
+				url::redirect('donate');
+			}
 		}
-		else if ($amount = $this->session->get('donate_amount') AND $payerid = $this->input->get('payerid')) // They are returning from paypal
+		else if ($amount = $this->session->get('donate_amount') AND $payerid = $this->input->get('PayerID')) // They are returning from paypal
 		{
 			// Display the final 'order' page
 			$this->template->set(array
@@ -50,7 +56,7 @@ class Donate_Controller extends Controller {
 		else
 		{
 			// They shouldn't be here!
-			$this->auto_render = FALSE;
+			$this->auto_render = FALSE
 			url::redirect('');
 		}
 	}
@@ -61,17 +67,17 @@ class Donate_Controller extends Controller {
 		$this->payment->payerid = $this->input->post('payerid');
 
 		// Try and process the payment
-		if ($this->payment->process())
+		if (($status = $this->payment->process() === TRUE)
 		{
 			// Store the payment
-			$insert = array('name'   => $this->session->get('donate_name') ? $this->session->get('donate_name') : 'Anonymous',
+			$insert = array('name'   => empty($this->session->get('donate_name')) ? 'Anonymous' : $this->session->get('donate_name'),
 			                'email'  => $this->session->get('donate_email'),
 			                'amount' => $this->session->get('donate_amount'));
 
 			$this->db->insert('donations', $insert);
 
 			// Remove the session data
-			$this->session->del(array('donate_amount', 'donate_name', 'donate_email'));
+			$this->session->del(array('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token'));
 
 			$this->template->set(array
 			(
@@ -81,6 +87,8 @@ class Donate_Controller extends Controller {
 		}
 		else
 		{
+			$this->session->set_flash('donate_status', '<p style="color: red;">There was a problem processing your donation. Please try again.</p>');
+			$this->session->del(array('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token'));
 			$this->template->set(array
 			(
 				'title'   => 'Donate',
