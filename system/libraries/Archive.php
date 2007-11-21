@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Archive
  *
  * Kohana Source Code:
@@ -15,7 +15,7 @@ class Archive_Core {
 	// Driver instance
 	protected $driver;
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Loads the archive driver.
 	 *
@@ -46,7 +46,7 @@ class Archive_Core {
 		Log::add('debug', 'Archive Library initialized');
 	}
 
-	/*
+	/**
 	 * Method: add
 	 *  Adds files or directories, recursively, to an archive.
 	 *
@@ -92,7 +92,7 @@ class Archive_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: save
 	 *  Creates an archive and saves it into a file.
 	 *
@@ -125,7 +125,7 @@ class Archive_Core {
 		return $this->driver->create($this->paths, $filename);
 	}
 
-	/*
+	/**
 	 * Method: download
 	 *  Forces a download of a created archive.
 	 *

@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: array_helper
  *  Array helper class.
  *
@@ -10,7 +10,7 @@
  */
 class arr {
 	
-	/*
+	/**
 	 * Method: rotate
 	 *  Rotates a 2D array clockwise.
 	 *  Example, turns a 2x3 array into a 3x2 array
@@ -38,7 +38,7 @@ class arr {
 		return $new_array;
 	}
 	
-	/*
+	/**
 	 * Method: remove
 	 *  Removes a key from an array and returns the value
 	 *

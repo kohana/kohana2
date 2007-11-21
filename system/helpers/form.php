@@ -1,5 +1,5 @@
 ﻿<?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: form
  *  Form helper class.
  *
@@ -10,7 +10,7 @@
  */
 class form {
 
-	/*
+	/**
 	 * Method: open
 	 *  Generates an opening HTML form tag.
 	 *
@@ -55,7 +55,7 @@ class form {
 		return $form;
 	}
 
-	/*
+	/**
 	 * Method: open_multipart
 	 *  Generates an opening HTML form tag that can be used for uploading files.
 	 *
@@ -75,7 +75,7 @@ class form {
 		return self::open($action, $attr, $hidden);
 	}
 
-	/*
+	/**
 	 * Method: hidden
 	 *  Generates hidden form fields.
 	 *  You can pass a simple key/value string or an associative array with multiple values.
@@ -113,7 +113,7 @@ class form {
 		return $input;
 	}
 
-	/*
+	/**
 	 * Method: input
 	 *  Creates an HTML form input tag. Defaults to a text type.
 	 *
@@ -151,7 +151,7 @@ class form {
 		return '<input'.self::attributes($data).$extra.' />';
 	}
 
-	/*
+	/**
 	 * Method: password
 	 *  Creates a HTML form password input tag.
 	 *
@@ -175,7 +175,7 @@ class form {
 		return self::input($data, $value, $extra);
 	}
 
-	/*
+	/**
 	 * Method: upload
 	 *  Creates an HTML form upload input tag.
 	 *
@@ -199,7 +199,7 @@ class form {
 		return self::input($data, $value, $extra);
 	}
 
-	/*
+	/**
 	 * Method: textarea
 	 *  Creates an HTML form textarea tag.
 	 *
@@ -227,7 +227,7 @@ class form {
 		return '<textarea'.self::attributes($data).'>'.html::specialchars($value).'</textarea>';
 	}
 
-	/*
+	/**
 	 * Method: dropdown
 	 *  Creates an HTML form select tag, or "dropdown menu".
 	 *
@@ -259,7 +259,7 @@ class form {
 		return $input;
 	}
 
-	/*
+	/**
 	 * Method: checkbox
 	 *  Creates an HTML form checkbox input tag.
 	 *
@@ -293,7 +293,7 @@ class form {
 		return self::input($data, $value, $extra);
 	}
 
-	/*
+	/**
 	 * Method: radio
 	 *  Creates an HTML form radio input tag.
 	 *
@@ -327,7 +327,7 @@ class form {
 		return self::input($data, $value, $extra);
 	}
 
-	/*
+	/**
 	 * Method: submit
 	 *  Creates an HTML form submit input tag.
 	 *
@@ -351,7 +351,7 @@ class form {
 		return self::input($data, $value, $extra);
 	}
 
-	/*
+	/**
 	 * Method: button
 	 *  Creates an HTML form button input tag.
 	 *
@@ -383,7 +383,7 @@ class form {
 		return '<button'.self::attributes($data).$extra.'>'.html::specialchars($value).'</button>';
 	}
 
-	/*
+	/**
 	 * Method: close
 	 *  Closes an open form tag.
 	 *
@@ -398,7 +398,7 @@ class form {
 		return '</form>'."\n".$extra;
 	}
 
-	/*
+	/**
 	 * Method: label
 	 *  Creates an HTML form label tag.
 	 *
@@ -428,7 +428,7 @@ class form {
 		return '<label'.self::attributes($data).$extra.'>'.$text.'</label>';
 	}
 
-	/*
+	/**
 	 * Method: attributes
 	 *  Sorts a key/value array of HTML attributes, putting form attributes first,
 	 *  and returns an attribute string.

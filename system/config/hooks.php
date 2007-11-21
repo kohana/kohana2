@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * File: Hooks
  *
  * Options:

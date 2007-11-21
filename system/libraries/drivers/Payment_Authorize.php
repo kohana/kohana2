@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Payment_Authorize_Driver
  *  Provides payment processing with Authorize.net.
  *

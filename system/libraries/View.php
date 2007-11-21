@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
- /*
+ /**
  * Class: View
  *
  * Kohana Source Code:
@@ -16,7 +16,7 @@ class View_Core {
 	// Set variables
 	protected $data = array();
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *
 	 * Parameters:
@@ -50,7 +50,7 @@ class View_Core {
 		Log::add('debug', 'View Class Initialized ['.str_replace(DOCROOT, '', $this->kohana_filename).']');
 	}
 
-	/*
+	/**
 	 * Method: set
 	 *  Sets a view variable.
 	 *
@@ -77,7 +77,7 @@ class View_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: __set
 	 *  Magically sets a view variable.
 	 *
@@ -93,7 +93,7 @@ class View_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: __get
 	 *  Magically gets a view variable.
 	 *
@@ -111,7 +111,7 @@ class View_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: __toString
 	 *  Magically converts view object to string.
 	 *
@@ -123,7 +123,7 @@ class View_Core {
 		return $this->render();
 	}
 
-	/*
+	/**
 	 * Method: render
 	 *  Renders a view.
 	 *

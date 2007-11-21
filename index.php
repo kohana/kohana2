@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * File: index.php
  *  This file acts as the "front controller" to your application. You can
  *  configure your application and system directories here, as well as error
@@ -16,7 +16,7 @@
  *  - HTML cleaning from <http://htmlpurifier.org> (c) 2006-2007 Edward Z. Yang
  */
 
-/*
+/**
  * About: Error Reporting
  *  Set the error reporting level. By default, Kohana will ignore E_NOTICE
  *  messages. Unless you have a special need, E_ALL is a good level for
@@ -24,7 +24,7 @@
  */
 error_reporting(E_ALL);
 
-/*
+/**
  * About: Display Errors
  *  Enable or disable error display. During development, it is very helpful
  *  to display errors. However, errors can give away information about your
@@ -33,7 +33,7 @@ error_reporting(E_ALL);
  */
 ini_set('display_errors', TRUE);
 
-/*
+/**
  * About: Application Directory
  *  Kohana website application directory. Most of your controllers, models, and
  *  views will by placed in this directory. This directory must contain the
@@ -41,14 +41,14 @@ ini_set('display_errors', TRUE);
  */
 $kohana_application = 'application';
 
-/*
+/**
  * About: System Directory
  *  Kohana core resources, includes libraries, drivers, language files, helpers,
  *  and library-related views.
  */
 $kohana_system = 'system';
 
-/*
+/**
  * About: Filename Extension
  *  If you have to rename all of the .php files distributed with Kohana to a
  *  different filename, you set the new extension here. Most people will never
@@ -56,7 +56,7 @@ $kohana_system = 'system';
  */
 define('EXT', '.php');
 
-/*
+/**
  * PLEASE DO NOT EDIT BELOW THIS LINE, unless you understand the repercussions!
  * ----------------------------------------------------------------------------
  * $Id$

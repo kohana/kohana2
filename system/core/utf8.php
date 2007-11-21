@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: utf8
  *  A port of phputf8 to a unified file/class. This single file will check PHP
  *  to ensure that UTF-8 support is available and normalize global variables to
@@ -85,7 +85,7 @@ if (PHP_SAPI == 'cli')
 
 final class utf8 {
 
-	/*
+	/**
 	 * Method: clean
 	 *  Recursively cleans arrays, objects, and strings. Removes ASCII control
 	 *  codes and converts to UTF-8 while silently discarding incompatible
@@ -120,7 +120,7 @@ final class utf8 {
 		return $str;
 	}
 
-	/*
+	/**
 	 * Method: is_ascii
 	 *  Tests whether a string contains only 7bit ASCII bytes. This is used to
 	 *  determine when to use native functions or UTF-8 functions.
@@ -136,7 +136,7 @@ final class utf8 {
 		return ! preg_match('/[^\x00-\x7F]/S', $str);
 	}
 
-	/*
+	/**
 	 * Method: strip_ascii_ctrl
 	 *  Strips out device control codes in the ASCII range.
 	 *
@@ -151,7 +151,7 @@ final class utf8 {
 		return preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+/S', '', $str);
 	}
 
-	/*
+	/**
 	 * Method: strip_non_ascii
 	 *  Strips out all non-7bit ASCII bytes.
 	 *
@@ -166,7 +166,7 @@ final class utf8 {
 		return preg_replace('/[^\x00-\x7F]+/S', '', $str);
 	}
 
-	/*
+	/**
 	 * Method: transliterate_to_ascii
 	 *  Replaces special/accented UTF-8 characters by ASCII-7 'equivalents'.
 	 *  Original function (accents_to_ascii) written by Andreas Gohr <andi@splitbrain.org> for phputf8.
@@ -246,7 +246,7 @@ final class utf8 {
 		return $str;
 	}
 
-	/*
+	/**
 	 * Method: strlen
 	 *  Returns the length of the given string.
 	 *
@@ -271,7 +271,7 @@ final class utf8 {
 		return strlen(utf8_decode($str));
 	}
 
-	/*
+	/**
 	 * Method: strpos
 	 *  Finds position of first occurrence of a UTF-8 string.
 	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
@@ -308,7 +308,7 @@ final class utf8 {
 		return ($pos === FALSE) ? FALSE : $pos + $offset;
 	}
 
-	/*
+	/**
 	 * Method: strrpos
 	 *  Finds position of last occurrence of a char in a UTF-8 string.
 	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
@@ -345,7 +345,7 @@ final class utf8 {
 		return ($pos === FALSE) ? FALSE : $pos + $offset;
 	}
 
-	/*
+	/**
 	 * Method: substr
 	 *  Returns part of a UTF-8 string.
 	 *  Original function written by Chris Smith <chris@jalakai.co.uk> for phputf8.
@@ -434,7 +434,7 @@ final class utf8 {
 		return $matches[1];
 	}
 
-	/*
+	/**
 	 * Method: substr_replace
 	 *  Replaces text within a portion of a UTF-8 string.
 	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
@@ -463,7 +463,7 @@ final class utf8 {
 		return implode('', $str_array[0]);
 	}
 
-	/*
+	/**
 	 * Method: strtolower
 	 *  Makes a UTF-8 string lowercase.
 	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8.
@@ -554,7 +554,7 @@ final class utf8 {
 		return self::from_unicode($uni);
 	}
 
-	/*
+	/**
 	 * Method: strtoupper
 	 *  Makes a UTF-8 string uppercase.
 	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8.
@@ -645,7 +645,7 @@ final class utf8 {
 		return self::from_unicode($uni);
 	}
 
-	/*
+	/**
 	 * Method: ucfirst
 	 *  Makes a UTF-8 string's first character uppercase.
 	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
@@ -667,7 +667,7 @@ final class utf8 {
 		return self::strtoupper($matches[1]).$matches[2];
 	}
 
-	/*
+	/**
 	 * Method: ucwords
 	 *  Makes the first character of every word in a UTF-8 string uppercase.
 	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
@@ -698,7 +698,7 @@ final class utf8 {
 		);
 	}
 
-	/*
+	/**
 	 * Method: strcasecmp
 	 *  Case-insensitive UTF-8 string comparison.
 	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
@@ -722,7 +722,7 @@ final class utf8 {
 		return strcmp($str1, $str2);
 	}
 
-	/*
+	/**
 	 * Method: str_ireplace
 	 *  Returns a string or an array with all occurrences of search in subject (ignoring case).
 	 *  replaced with the given replace value.
@@ -799,7 +799,7 @@ final class utf8 {
 		return $str;
 	}
 
-	/*
+	/**
 	 * Method: stristr
 	 *  Case-insenstive UTF-8 version of strstr. Returns all of input string
 	 *  from the first occurrence of needle to the end.
@@ -837,7 +837,7 @@ final class utf8 {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: strspn
 	 *  Finds the length of the initial segment matching mask.
 	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
@@ -877,7 +877,7 @@ final class utf8 {
 		return (isset($matches[0])) ? self::strlen($matches[0]) : 0;
 	}
 
-	/*
+	/**
 	 * Method: strcspn
 	 *  Finds the length of the initial segment not matching mask.
 	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
@@ -917,7 +917,7 @@ final class utf8 {
 		return (isset($matches[0])) ? self::strlen($matches[0]) : 0;
 	}
 
-	/*
+	/**
 	 * Method: str_pad
 	 *  Pads a UTF-8 string to a certain length with another string.
 	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
@@ -976,7 +976,7 @@ final class utf8 {
 		trigger_error('utf8::str_pad: Unknown padding type (' . $type . ')', E_USER_ERROR);
 	}
 
-	/*
+	/**
 	 * Method: str_split
 	 *  Converts a UTF-8 string to an array.
 	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
@@ -1012,7 +1012,7 @@ final class utf8 {
 		return $matches[0];
 	}
 
-	/*
+	/**
 	 * Method: strrev
 	 *  Reverses a UTF-8 string.
 	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
@@ -1034,7 +1034,7 @@ final class utf8 {
 		return implode('', array_reverse($matches[0]));
 	}
 
-	/*
+	/**
 	 * Method: trim
 	 *  Strips whitespace (or other UTF-8 characters)
 	 *  from the beginning and end of a string.
@@ -1057,7 +1057,7 @@ final class utf8 {
 		return self::ltrim(self::rtrim($str, $charlist), $charlist);
 	}
 
-	/*
+	/**
 	 * Method: ltrim
 	 *  Strips whitespace (or other UTF-8 characters) from the beginning of a string.
 	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8.
@@ -1085,7 +1085,7 @@ final class utf8 {
 		return ($str_ranged !== NULL) ? $str_ranged : preg_replace('/^['.$charlist.']+/u', '', $str);
 	}
 
-	/*
+	/**
 	 * Method: rtrim
 	 *  Strips whitespace (or other UTF-8 characters) from the end of a string.
 	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8.
@@ -1112,7 +1112,7 @@ final class utf8 {
 		return ($str_ranged !== NULL) ? $str_ranged : preg_replace('/['.$charlist.']+$/u', '', $str);
 	}
 
-	/*
+	/**
 	 * Method: ord
 	 *  Returns the unicode ordinal for a character.
 	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
@@ -1202,7 +1202,7 @@ final class utf8 {
 		}
 	}
 
-	/*
+	/**
 	 * Method: to_unicode
 	 *  Takes an UTF-8 string and returns an array of ints representing the Unicode characters.
 	 *  Astral planes are supported i.e. the ints in the output can be > 0xFFFF.
@@ -1352,7 +1352,7 @@ final class utf8 {
 		return $out;
 	}
 
-	/*
+	/**
 	 * Method: from_unicode
 	 *  Takes an array of ints representing the Unicode characters and returns a UTF-8 string.
 	 *  Astral planes are supported i.e. the ints in the input can be > 0xFFFF.

@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Session_Cookie_Driver
  *
  * Kohana Source Code:
@@ -89,7 +89,7 @@ class Session_Cookie_Driver implements Session_Driver {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: setcookie
 	 *  Proxy for setcookie()
 	 *

@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Validation
  *
  * Kohana Source Code:
@@ -36,7 +36,7 @@ class Validation_Core {
 	// Result from validation rules
 	protected $result;
 
-	/*
+	/**
 	 * Method: __construct
 	 *
 	 * Parameters:
@@ -62,7 +62,7 @@ class Validation_Core {
 		Log::add('debug', 'Validation Library Initialized, instance '.self::$instances);
 	}
 
-	/*
+	/**
 	 * Method: __get
 	 *  Magically gets a validation variable. This can be an error string or a
 	 *  data field, or an array of all field data.
@@ -123,7 +123,7 @@ class Validation_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: set_rules
 	 *  This function takes an array of key names, rules, and field names as
 	 *  input and sets internal field information.
@@ -169,7 +169,7 @@ class Validation_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: set_message
 	 *  Lets users set their own error messages on the fly.
 	 *  Note - The key name has to match the function name that it corresponds to.
@@ -191,7 +191,7 @@ class Validation_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: error_format
 	 *  Allows the user to change the error message format. Error formats must
 	 *  contain the string "{message}" or Kohana_Exception will be triggered.
@@ -207,7 +207,7 @@ class Validation_Core {
 		$this->error_format = $string;
 	}
 
-	/*
+	/**
 	 * Method: add_error
 	 *
 	 * Parameters:
@@ -237,7 +237,7 @@ class Validation_Core {
 		$this->errors[$field][] = $message;
 	}
 
-	/*
+	/**
 	 * Method: run
 	 *  This function does all the work.
 	 *
@@ -314,7 +314,7 @@ class Validation_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: run_rule
 	 *  Handles recursively calling rules on arrays of data.
 	 *
@@ -399,7 +399,7 @@ class Validation_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: in_array
 	 */
 	public function in_array($data, $array = FALSE)
@@ -413,7 +413,7 @@ class Validation_Core {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: event
 	 */
 	public function event($data, $events = FALSE)
@@ -432,7 +432,7 @@ class Validation_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: upload
 	 */
 	public function upload($data, $params = FALSE)
@@ -675,7 +675,7 @@ class Validation_Core {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: required
 	 *
 	 * Parameters:
@@ -728,7 +728,7 @@ class Validation_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: matches
 	 *  Match one field to another.
 	 *
@@ -755,7 +755,7 @@ class Validation_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: min_length
 	 *  Check a string for a minimum length.
 	 *
@@ -780,7 +780,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: max_length
 	 *  Check a string for a maximum length.
 	 *
@@ -805,7 +805,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: exact_length
 	 *  Check a string for an exact length.
 	 *
@@ -830,7 +830,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: valid_url
 	 *  Valid URL.
 	 *
@@ -860,7 +860,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: valid_email
 	 *  Valid Email, Commonly used characters only.
 	 *
@@ -879,7 +879,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: valid_email_rfc
 	 *  Valid Email, RFC compliant version
 	 *
@@ -898,7 +898,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: valid_ip
 	 *  Validate IP Address.
 	 *
@@ -917,7 +917,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: alpha
 	 *  Alphabetic characters only.
 	 *
@@ -936,7 +936,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: utf8_alpha
 	 *  Alphabetic characters only (UTF-8 compatible).
 	 *
@@ -955,7 +955,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: alpha_numeric
 	 *  Alphabetic and numeric characters only.
 	 *
@@ -974,7 +974,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: utf8_alpha_numeric
 	 *  Alphabetic and numeric characters only (UTF-8 compatible).
 	 *
@@ -993,7 +993,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: alpha_dash
 	 *  Alpha-numeric with underscores and dashes.
 	 *
@@ -1012,7 +1012,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: utf8_alpha_dash
 	 *  Alpha-numeric with underscores and dashes (UTF-8 compatible).
 	 *
@@ -1031,7 +1031,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: digit
 	 *  Digits 0-9, no dots or dashes.
 	 *
@@ -1050,7 +1050,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: utf8_digit
 	 *  Digits 0-9, no dots or dashes (UTF-8 compatible).
 	 *
@@ -1069,7 +1069,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: numeric
 	 *  Digits 0-9 (negative and decimal numbers allowed).
 	 *
@@ -1088,7 +1088,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: range
 	 *  Test that a field is between a range.
 	 *
@@ -1129,7 +1129,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: depends_on
 	 *
 	 * Parameters:
@@ -1154,7 +1154,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: regex
 	 *  Test a field against a regex rule
 	 *
@@ -1191,7 +1191,7 @@ class Validation_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: prep_for_form
 	 *  This function allows HTML to be safely shown in a form.
 	 *  Special characters are converted.
@@ -1210,7 +1210,7 @@ class Validation_Core {
 		return html::specialchars($str);
 	}
 
-	/*
+	/**
 	 * Method: prep_url
 	 *
 	 * Parameters:
@@ -1232,7 +1232,7 @@ class Validation_Core {
 		$this->data[$this->current_field] = $str;
 	}
 
-	/*
+	/**
 	 * Method: strip_image_tags
 	 *  Strip image tags from string.
 	 *
@@ -1244,7 +1244,7 @@ class Validation_Core {
 		$this->data[$this->current_field] = security::strip_image_tags($str);
 	}
 
-	/*
+	/**
 	 * Method: xss_clean
 	 *  XSS clean string.
 	 *
@@ -1256,7 +1256,7 @@ class Validation_Core {
 		$this->data[$this->current_field] = Kohana::instance()->input->xss_clean($str);
 	}
 
-	/*
+	/**
 	 * Method: encode_php_tags
 	 *  Convert PHP tags to entities.
 	 *

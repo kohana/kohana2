@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Session
  *
  * Kohana Source Code:
@@ -25,7 +25,7 @@ class Session_Core {
 	// Input library
 	protected $input;
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  On first session instance creation, sets up the driver and creates session.
 	 */
@@ -85,7 +85,7 @@ class Session_Core {
 		Log::add('debug', 'Session Library initialized');
 	}
 
-	/*
+	/**
 	 * Method: id
 	 *  Get the session id.
 	 *
@@ -97,7 +97,7 @@ class Session_Core {
 		return $_SESSION['session_id'];
 	}
 
-	/*
+	/**
 	 * Method: create
 	 *  Create a new session.
 	 */
@@ -186,7 +186,7 @@ class Session_Core {
 		self::set($vars);
 	}
 
-	/*
+	/**
 	 * Method: regenerate
 	 *  Regenerates the global session id.
 	 */
@@ -208,7 +208,7 @@ class Session_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: destroy
 	 *  Destroys the current session.
 	 *
@@ -227,7 +227,7 @@ class Session_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: set
 	 *  Set a session variable.
 	 *
@@ -255,7 +255,7 @@ class Session_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: set_flash
 	 *  Set a flash variable.
 	 *
@@ -283,7 +283,7 @@ class Session_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: keep_flash
 	 *  Freshen a flash variable.
 	 *
@@ -301,7 +301,7 @@ class Session_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: get
 	 *  Get a variable. Access to sub-arrays is supported with key.subkey.
 	 *
@@ -322,7 +322,7 @@ class Session_Core {
 		return ($result === NULL) ? $default : $result;
 	}
 
-	/*
+	/**
 	 * Method: get_once
 	 *  Get a variable, and delete it.
 	 *
@@ -340,7 +340,7 @@ class Session_Core {
 		return $return;
 	}
 
-	/*
+	/**
 	 * Method: del
 	 *  Delete one or more variables.
 	 *

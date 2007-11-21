@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: User_Agent
  *
  * Kohana Source Code:
@@ -21,7 +21,7 @@ class User_Agent_Core {
 	protected $mobile   = '';
 	protected $robot    = '';
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Loads user agent data.
 	 */
@@ -82,7 +82,7 @@ class User_Agent_Core {
 		Log::add('debug', 'User Agent Library initialized');
 	}
 
-	/*
+	/**
 	 * Method: __get
 	 *  Fetch information about the user agent, examples:
 	 *
@@ -120,7 +120,7 @@ class User_Agent_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: __call
 	 *  So that users can use $user_agent->is_robot() or $user_agent->is_robot.
 	 *
@@ -136,7 +136,7 @@ class User_Agent_Core {
 		return $this->__get($func);
 	}
 
-	/*
+	/**
 	 * Method: __toString
 	 *  Returns the full user agent string when the object is turned into a string.
 	 *
@@ -148,7 +148,7 @@ class User_Agent_Core {
 		return self::$agent;
 	}
 
-	/*
+	/**
 	 * Method: accept_lang
 	 *  Test for a particular language.
 	 *
@@ -166,7 +166,7 @@ class User_Agent_Core {
 		return in_array(strtolower($lang), self::$languages);
 	}
 
-	/*
+	/**
 	 * Method: accept_charset
 	 *  Test for a particular character set.
 	 *

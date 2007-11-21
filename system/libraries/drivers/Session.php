@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Interface: Session_Driver
  *  Session API Driver
  *
@@ -10,7 +10,7 @@
  */
 interface Session_Driver {
 
-	/*
+	/**
 	 * Method: open
 	 *  Opens a session.
 	 *
@@ -23,13 +23,13 @@ interface Session_Driver {
 	 */
 	public function open($path, $name);
 
-	/*
+	/**
 	 * Method: close
 	 *  Closes a session.
 	 */
 	public function close();
 
-	/*
+	/**
 	 * Method: read
 	 *  Reads a session.
 	 *
@@ -41,7 +41,7 @@ interface Session_Driver {
 	 */
 	public function read($id);
 
-	/*
+	/**
 	 * Method: write
 	 *  Writes a session.
 	 *
@@ -54,7 +54,7 @@ interface Session_Driver {
 	 */
 	public function write($id, $data);
 
-	/*
+	/**
 	 * Method: destroy
 	 *  Destroys a session.
 	 *
@@ -66,7 +66,7 @@ interface Session_Driver {
 	 */
 	public function destroy($id);
 
-	/*
+	/**
 	 * Method: regenerate
 	 *  Regenerates the session id.
 	 *
@@ -75,7 +75,7 @@ interface Session_Driver {
 	 */
 	public function regenerate();
 
-	/*
+	/**
 	 * Method: gc
 	 *  Garbage collection, called by close()
 	 *

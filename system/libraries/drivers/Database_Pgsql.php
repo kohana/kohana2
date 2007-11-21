@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Database_Pgsql_Driver
  *  Provides specific database items for PostgreSQL.
  *
@@ -279,7 +279,7 @@ class Database_Pgsql_Driver implements Database_Driver {
 	}
 } // End Database_Pgsql_Driver Class
 
-/*
+/**
  * Class: Pgsql_Result
  *  The result class for PostgreSQL queries.
  *

@@ -41,7 +41,7 @@ class Kohana {
 	// The final output that will displayed by Kohana
 	public static $output = '';
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Allows the controller to be a true singleton object. This method *must*
 	 *  be called by all controllers.
@@ -57,7 +57,7 @@ class Kohana {
 		self::$instance = $this;
 	}
 
-	/*
+	/**
 	 * Method: __clone
 	 *  Protects the Kohana instance from being copied
 	 */
@@ -66,7 +66,7 @@ class Kohana {
 		$this->__construct();
 	}
 
-	/*
+	/**
 	 * Method: setup
 	 *  Sets up the PHP environment. Adds error/exception handling, output
 	 *  buffering, and adds an auto-loading method for loading classes.
@@ -155,7 +155,7 @@ class Kohana {
 		$run = TRUE;
 	}
 
-	/*
+	/**
 	 * Method: instance
 	 *  Loads the controller and initializes it.
 	 */
@@ -187,7 +187,7 @@ class Kohana {
 			}
 			elseif (isset($methods[Router::$method]) AND Router::$method != 'kohana_include_view')
 			{
-				/*
+				/**
 				 * Do nothing. Exciting! Honestly, I am surprised having only
 				 * a comment here works.
 				 */
@@ -233,7 +233,7 @@ class Kohana {
 		return self::$instance;
 	}
 
-	/*
+	/**
 	 * Method: output_buffer
 	 *  Kohana output handler
 	 *
@@ -255,7 +255,7 @@ class Kohana {
 		return $output;
 	}
 
-	/*
+	/**
 	 * Method: display
 	 *  Displays the final rendered output
 	 */
@@ -295,7 +295,7 @@ class Kohana {
 		print self::$output;
 	}
 
-	/*
+	/**
 	 * Method: exception handler
 	 *  Dual-purpose PHP error and exception handler. Uses the kohana_error_page
 	 *  View to display the message.
@@ -403,7 +403,7 @@ class Kohana {
 		exit;
 	}
 
-	/*
+	/**
 	 * Method: show_404
 	 *  Displays a 404 page
 	 *
@@ -611,7 +611,7 @@ class Kohana {
 		return $files;
 	}
 
-	/*
+	/**
 	 * Method: lang
 	 *  Fetch a i18n language item
 	 *
@@ -673,7 +673,7 @@ class Kohana {
 		return $line;
 	}
 
-	/*
+	/**
 	 * Method: key_string
 	 *  Returns the value of a key, defined by a 'dot-noted' string, from an array.
 	 *
@@ -726,7 +726,7 @@ class Kohana {
 		return;
 	}
 
-	/*
+	/**
 	 * Method: debug
 	 *  Quick debugging of any variable.
 	 *
@@ -755,7 +755,7 @@ class Kohana {
 
 } // End Kohana
 
-/*
+/**
  * Class: Kohana_Exception
  *  Creates a generic i18n exception.
  */
@@ -775,7 +775,7 @@ class Kohana_Exception extends Exception {
 	protected $file = FALSE;
 	protected $line = FALSE;
 
-	/*
+	/**
 	 * Method: __construct
 	 *
 	 * Parameters:
@@ -800,7 +800,7 @@ class Kohana_Exception extends Exception {
 		}
 	}
 
-	/*
+	/**
 	 * Method: __toString
 	 *  Magic method for converting an object to a string.
 	 *
@@ -812,7 +812,7 @@ class Kohana_Exception extends Exception {
 		return (string) $this->message;
 	}
 
-	/*
+	/**
 	 * Method: getTemplate
 	 *  Fetch the template name.
 	 *
@@ -824,7 +824,7 @@ class Kohana_Exception extends Exception {
 		return $this->template;
 	}
 
-	/*
+	/**
 	 * Method: sendHeaders()
 	 *  Sends a Internal Server Error header.
 	 */
@@ -836,13 +836,13 @@ class Kohana_Exception extends Exception {
 
 } // End Kohana Exception
 
-/*
+/**
  * Class: Kohana_User_Exception
  *  Creates a custom exception.
  */
 class Kohana_User_Exception extends Kohana_Exception {
 
-	/*
+	/**
 	 * Method: __construct
 	 *
 	 * Parameters:
@@ -863,7 +863,7 @@ class Kohana_User_Exception extends Kohana_Exception {
 
 } // End Kohana PHP Exception
 
-/*
+/**
  * Class: Kohana_404_Exception
  *  Creates a Page Not Found exception.
  */
@@ -871,7 +871,7 @@ class Kohana_404_Exception extends Kohana_Exception {
 
 	protected $code = E_PAGE_NOT_FOUND;
 
-	/*
+	/**
 	 * Method: __construct
 	 *
 	 * Parameters:
@@ -895,7 +895,7 @@ class Kohana_404_Exception extends Kohana_Exception {
 		$this->template = $template;
 	}
 
-	/*
+	/**
 	 * Method: sendHeaders
 	 *  Sends a Page Not Found header.
 	 */

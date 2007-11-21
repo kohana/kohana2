@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: date
  *  Date helper class.
  *
@@ -10,7 +10,7 @@
  */
 class date {
 
-	/*
+	/**
 	 * Method: unix2dos
 	 *  Converts a UNIX timestamp to DOS format.
 	 *
@@ -38,7 +38,7 @@ class date {
 		        $timestamp['minutes'] << 5  | $timestamp['seconds'] >> 1);
 	}
 
-	/*
+	/**
 	 * Method: dos2unix
 	 *  Converts a DOS timestamp to UNIX format.
 	 *
@@ -60,7 +60,7 @@ class date {
 		return mktime($hrs, $min, $sec, $mon, $day, $year + 1980);
 	}
 
-	/*
+	/**
 	 * Method: offset
 	 *  Returns the offset (in seconds) between two time zones. See
 	 *  <http://php.net/timezones> for a list of supported time zones.
@@ -100,7 +100,7 @@ class date {
 		return $offsets[$cache];
 	}
 
-	/*
+	/**
 	 * Method: seconds
 	 *  Number of seconds in a minute, incrementing by a step.
 	 *
@@ -130,7 +130,7 @@ class date {
 		return $seconds[$step];
 	}
 
-	/*
+	/**
 	 * Method: minutes
 	 *  Number of minutes in an hour, incrementing by a step.
 	 *
@@ -149,7 +149,7 @@ class date {
 		return self::seconds($step);
 	}
 
-	/*
+	/**
 	 * Method: hours
 	 *  Number of hours in a day.
 	 *
@@ -188,7 +188,7 @@ class date {
 		return $hours[$cache][$step];
 	}
 
-	/*
+	/**
 	 * Method: ampm
 	 *  Returns AM or PM, based on a given hour.
 	 *
@@ -206,7 +206,7 @@ class date {
 		return ($hour > 11) ? 'PM' : 'AM';
 	}
 
-	/*
+	/**
 	 * Method: days
 	 *  Number of days in month.
 	 *
@@ -245,7 +245,7 @@ class date {
 		return $months[$year][$month];
 	}
 
-	/*
+	/**
 	 * Method: months
 	 *  Number of months in a year
 	 *
@@ -257,7 +257,7 @@ class date {
 		return self::hours();
 	}
 
-	/*
+	/**
 	 * Method: years
 	 *  Returns an array of years between a starting and ending year. Uses the
 	 *  current year +/- 5 as the max/min.
@@ -296,7 +296,7 @@ class date {
 		return $years[$cache];
 	}
 
-	/*
+	/**
 	 * Method:
 	 *  Returns time difference between two timestamps, in human readable format.
 	 *

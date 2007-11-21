@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Interface: Database_Driver
  *  Database API driver
  *
@@ -10,7 +10,7 @@
  */
 interface Database_Driver {
 
-	/*
+	/**
 	 * Method: connect
 	 *  Connects to the database.
 	 *
@@ -19,7 +19,7 @@ interface Database_Driver {
 	 */
 	public function connect();
 
-	/*
+	/**
 	 * Method: query
 	 *  Executes a query.
 	 *
@@ -31,7 +31,7 @@ interface Database_Driver {
 	 */
 	public function query($sql);
 
-	/*
+	/**
 	 * Method: delete
 	 *  Builds a DELETE query.
 	 *
@@ -44,7 +44,7 @@ interface Database_Driver {
 	 */
 	public function delete($table, $where);
 
-	/*
+	/**
 	 * Method: update
 	 *  Builds an UPDATE query.
 	 *
@@ -58,7 +58,7 @@ interface Database_Driver {
 	 */
 	public function update($table, $val, $where);
 
-	/*
+	/**
 	 * Method: set_charset
 	 *  Sets the character set for future queries.
 	 *
@@ -67,7 +67,7 @@ interface Database_Driver {
 	 */
 	public function set_charset($charset);
 
-	/*
+	/**
 	 * Method: escape_table
 	 *  Escape the passed table name.
 	 *
@@ -79,7 +79,7 @@ interface Database_Driver {
 	 */
 	public function escape_table($table);
 
-	/*
+	/**
 	 * Method: escape_column
 	 *  Escape the passed column name.
 	 *
@@ -91,7 +91,7 @@ interface Database_Driver {
 	 */
 	public function escape_column($column);
 
-	/*
+	/**
 	 * Method: where
 	 *  Builds a WHERE portion of a query.
 	 *
@@ -107,7 +107,7 @@ interface Database_Driver {
 	 */
 	public function where($key, $value, $type, $num_wheres, $quote);
 
-	/*
+	/**
 	 * Method: like
 	 *  Builds a LIKE portion of a query.
 	 *
@@ -122,7 +122,7 @@ interface Database_Driver {
 	 */
 	public function like($field, $match, $type, $num_likes);
 
-	/*
+	/**
 	 * Method: insert
 	 *  Builds an INSERT query.
 	 *
@@ -136,7 +136,7 @@ interface Database_Driver {
 	 */
 	public function insert($table, $keys, $values);
 
-	/*
+	/**
 	 * Method: limit
 	 *  Builds a LIMIT portion of a query.
 	 *
@@ -149,7 +149,7 @@ interface Database_Driver {
 	 */
 	public function limit($limit, $offset = 0);
 
-	/*
+	/**
 	 * Method: compile_select
 	 *  Compiles the SELECT statement.
 	 *  Generates a query string based on which functions were used.
@@ -163,7 +163,7 @@ interface Database_Driver {
 	 */
 	public function compile_select($database);
 
-	/*
+	/**
 	 * Method: has_operator
 	 *  Determines if the string has an arithmetic operator in it.
 	 *
@@ -175,7 +175,7 @@ interface Database_Driver {
 	 */
 	public function has_operator($str);
 
-	/*
+	/**
 	 * Method: escape
 	 *  Escapes a value for a query.
 	 *
@@ -187,7 +187,7 @@ interface Database_Driver {
 	 */
 	public function escape($value);
 
-	/*
+	/**
 	 * Method: escape_str
 	 *  Escapes a string for a query.
 	 *
@@ -199,7 +199,7 @@ interface Database_Driver {
 	 */
 	public function escape_str($str);
 
-	/*
+	/**
 	 * Method: list_tables
 	 *  List all tables in the database.
 	 *
@@ -208,7 +208,7 @@ interface Database_Driver {
 	 */
 	public function list_tables();
 
-	/*
+	/**
 	 * Method: show_error
 	 *  Shows the last database error.
 	 *
@@ -217,7 +217,7 @@ interface Database_Driver {
 	 */
 	public function show_error();
 
-	/*
+	/**
 	 * Method: field_data
 	 *  Returns field data about a table.
 	 *
@@ -231,7 +231,7 @@ interface Database_Driver {
 
 } // End Database Driver Interface
 
-/*
+/**
  * Interface: Database_Result
  *  Database Result API driver
  *
@@ -242,7 +242,7 @@ interface Database_Driver {
  */
 interface Database_Result {
 
-	/*
+	/**
 	 * Method: result
 	 *  Prepares the query result.
 	 *
@@ -255,7 +255,7 @@ interface Database_Result {
 	 */
 	public function result($object = TRUE, $type = FALSE);
 
-	/*
+	/**
 	 * Method: result_array
 	 *  Builds an array of query results.
 	 *
@@ -268,7 +268,7 @@ interface Database_Result {
 	 */
 	public function result_array($object = NULL, $type = FALSE);
 
-	/*
+	/**
 	 * Method: insert_id
 	 *  Gets the id of an INSERT statement.
 	 * 
@@ -277,7 +277,7 @@ interface Database_Result {
 	 */
 	public function insert_id();
 
-	/*
+	/**
 	 * Method: list_fields
 	 *  Gets the fields of an already run query
 	 * 

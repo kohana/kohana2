@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Loader
  *
  * Kohana Source Code:
@@ -9,7 +9,7 @@
  */
 class Loader_Core {
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Autoloads libraries and models specified in config file.
 	 */
@@ -43,7 +43,7 @@ class Loader_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: library
 	 *  Load library.
 	 *
@@ -77,7 +77,7 @@ class Loader_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: database
 	 *  Load database.
 	 *
@@ -99,7 +99,7 @@ class Loader_Core {
 		Kohana::instance()->db = $db;
 	}
 
-	/*
+	/**
 	 * Method: helper
 	 *  Load helper.
 	 *
@@ -112,7 +112,7 @@ class Loader_Core {
 		Log::add('debug', 'Using $this->load->helper() is deprecated. See Kohana::auto_load().');
 	}
 
-	/*
+	/**
 	 * Method: model
 	 *  Load model.
 	 *
@@ -152,7 +152,7 @@ class Loader_Core {
 		Kohana::instance()->$alias = $model;
 	}
 
-	/*
+	/**
 	 * Method: view
 	 *  Load view.
 	 *

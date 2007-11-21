@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * File: Credit Card
  *  Settings related to the CreditCard library.
  *
@@ -13,7 +13,7 @@ $config['default'] = array
 	'test_mode'     => TRUE
 );
 
-/*
+/**
  * Authorize.net Options:
  *  auth_net_login_id - the transaction login ID; provided by gateway provider
  *  auth_net_tran_key - the transaction key; provided by gateway provider
@@ -24,7 +24,7 @@ $config['Authorize'] = array
 	'auth_net_tran_key' => ''
 );
 
-/*
+/**
  * YourPay.net Options:
  *  merchant_id - the merchant ID number
  *  certificate - the location on your server of the certificate file.
@@ -35,7 +35,7 @@ $config['Yourpay'] = array
 	'certificate' => './path/to/certificate.pem'
 );
 
-/*
+/**
  * TrustCommerce Options:
  *  custid - the customer ID assigned to you by TrustCommerce
  *  password - the password assigned to you by TrustCommerce
@@ -50,7 +50,7 @@ $config['Trustcommerce'] = array
 	'tclink_library' => './path/to/library.so'
 );
 
-/*
+/**
  * PayPal Options:
  *  API_UserName - the username to use
  *  API_Password - the password to use

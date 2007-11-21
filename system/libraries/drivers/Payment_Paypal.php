@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Payment_Paypal_Driver
  *  Provides payment processing with Paypal.
  *
@@ -40,7 +40,7 @@ class Payment_Paypal_Driver
 
 	private $paypal_url = '';
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Sets up the class.
 	 *
@@ -73,7 +73,7 @@ class Payment_Paypal_Driver
 		Log::add('debug', 'PayPal Payment Driver Initialized');
 	}
 
-	/*
+	/**
 	 * Method: set_fields
 	 *  Sets driver fields and marks reqired fields as TRUE.
 	 *
@@ -99,7 +99,7 @@ class Payment_Paypal_Driver
 		}
 	}
 
-	/*
+	/**
 	 * Method: process
 	 *  Runs the paypal transaction.
 	 *  With the this driver, you will need to run process() twice,
@@ -154,7 +154,7 @@ class Payment_Paypal_Driver
 		return ($nvpResArray['ACK'] == TRUE);
 	}
 
-	/*
+	/**
 	 * Method: paypal_login
 	 *  Runs paypal authentication.
 	 */
@@ -186,7 +186,7 @@ class Payment_Paypal_Driver
 		}
 	}
 
-	/*
+	/**
 	 * Method: contact_paypal
 	 *  Runs the CURL methods to communicate with paypal.
 	 * 
@@ -230,7 +230,7 @@ class Payment_Paypal_Driver
 		return $response;
 	}
 
-	/*
+	/**
 	 * Method: deformatNVP
 	 *  This is from paypal. It decodes their return string and converts it into an array.
 	 *  We can probably rewrite this better, but it works, so its going in for now.

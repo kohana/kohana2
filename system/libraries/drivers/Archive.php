@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Interface: Archive_Driver
  *
  * Kohana Source Code:
@@ -9,7 +9,7 @@
  */
 interface Archive_Driver {
 
-	/*
+	/**
 	 * Method: create
 	 *  Creates a zip archive and optionally, saves it to a file.
 	 *

@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Session_Database_Driver
  *
  * Kohana Source Code:
@@ -9,7 +9,7 @@
  */
 class Session_Database_Driver implements Session_Driver {
 
-	/*
+	/**
 	CREATE TABLE `kohana_session` (
 		`session_id` VARCHAR( 40 ) NOT NULL ,
 		`last_activity` INT( 11 ) NOT NULL ,
@@ -50,7 +50,7 @@ class Session_Database_Driver implements Session_Driver {
 		Log::add('debug', 'Session Database Driver Initialized');
 	}
 
-	/*
+	/**
 	 * Method: open
 	 *  Session opens a dedicated database connection.
 	 *  This is done for 3 reasons:
@@ -153,7 +153,7 @@ class Session_Database_Driver implements Session_Driver {
 		return session_id();
 	}
 
-	/*
+	/**
 	 * Method: gc
 	 *  Upon each call there is a 3% chance that this function will delete all
 	 *  sessions older than session.expiration.

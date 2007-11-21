@@ -12,7 +12,7 @@ final class Benchmark {
 	// Benchmark timestamps
 	private static $marks;
 
-	/*
+	/**
 	 * Method: start
 	 *  Set a benchmark start point.
 	 *
@@ -33,7 +33,7 @@ final class Benchmark {
 		}
 	}
 
-	/*
+	/**
 	 * Method: stop
 	 *  Set a benchmark stop point.
 	 *
@@ -49,7 +49,7 @@ final class Benchmark {
 		}
 	}
 
-	/*
+	/**
 	 * Method: get
 	 *  Get the elapsed time between a start and stop.
 	 *

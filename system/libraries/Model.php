@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Model
  *
  * Kohana Source Code:
@@ -11,7 +11,7 @@ class Model_Core {
 
 	protected $db;
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Loads database to $this->db.
 	 */

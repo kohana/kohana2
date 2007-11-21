@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Database_Mysql_Driver
  *  Provides specific database items for MySQL.
  *
@@ -14,7 +14,7 @@ class Database_Mysql_Driver implements Database_Driver {
 	protected $link;
 	protected $db_config;
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Sets up the config for the class.
 	 *
@@ -343,7 +343,7 @@ class Database_Mysql_Driver implements Database_Driver {
 
 } // End Database_Mysql_Driver Class
 
-/*
+/**
  * Class: Mysql_Result
  *  The result class for MySQL queries.
  *
@@ -368,7 +368,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	protected $fetch_type  = 'mysql_fetch_object';
 	protected $return_type = MYSQL_ASSOC;
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Sets up the class.
 	 *
@@ -409,7 +409,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		$this->result($object);
 	}
 
-	/*
+	/**
 	 * Destructor: __destruct
 	 *  Magic __destruct function, frees the result.
 	 */
@@ -500,7 +500,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	// End Interface
 
 	// Interface: Countable
-	/*
+	/**
 	 * Method: count
 	 *  Counts the number of rows in the result set.
 	 * 
@@ -522,7 +522,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	// End Interface
 
 	// Interface: ArrayAccess
-	/*
+	/**
 	 * Method: offsetExists
 	 *  Determines if the requested offset of the result set exists.
 	 *
@@ -546,7 +546,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: offsetGet
 	 *  Retreives the requested query result offset.
 	 *
@@ -571,7 +571,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		return $fetch($this->result, $this->return_type);
 	}
 
-	/*
+	/**
 	 * Method: offsetSet
 	 *  Sets the offset with the provided value. Since you can't modify query result sets, this function just throws an exception.
 	 *
@@ -588,7 +588,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		throw new Kohana_Database_Exception('database.result_read_only');
 	}
 
-	/*
+	/**
 	 * Method: offsetUnset
 	 *  Unsets the offset. Since you can't modify query result sets, this function just throws an exception.
 	 *
@@ -606,7 +606,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	// End Interface
 
 	// Interface: Iterator
-	/*
+	/**
 	 * Method: current
 	 *  Retreives the current result set row.
 	 * 
@@ -619,7 +619,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		return $this->offsetGet($this->current_row);
 	}
 
-	/*
+	/**
 	 * Method: key
 	 *  Retreives the current row id.
 	 * 
@@ -632,7 +632,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		return $this->current_row;
 	}
 
-	/*
+	/**
 	 * Method: next
 	 *  Moves the result pointer ahead one.
 	 * 
@@ -645,7 +645,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		return ++$this->current_row;
 	}
 
-	/*
+	/**
 	 * Method: next
 	 *  Moves the result pointer back one.
 	 * 
@@ -658,7 +658,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		return --$this->current_row;
 	}
 
-	/*
+	/**
 	 * Method: rewind
 	 *  Moves the result pointer to the beginning of the result set.
 	 * 
@@ -671,7 +671,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		return $this->current_row = 0;
 	}
 
-	/*
+	/**
 	 * Method: valid
 	 *  Determines if the current result pointer is valid.
 	 * 

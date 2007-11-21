@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: text
  *  Text helper class.
  *
@@ -10,7 +10,7 @@
  */
 class text {
 
-	/*
+	/**
 	 * Method: limit_words
 	 *  Limits a phrase to a given number of words.
 	 *
@@ -39,7 +39,7 @@ class text {
 		return rtrim($matches[0]).(strlen($matches[0]) == strlen($str) ? '' : $end_char);
 	}
 
-	/*
+	/**
 	 * Method: limit_chars
 	 *  Limits a phrase to a given number of characters.
 	 *
@@ -70,7 +70,7 @@ class text {
 		return rtrim($matches[0]).(strlen($matches[0]) == strlen($str) ? '' : $end_char);
 	}
 
-	/*
+	/**
 	 * Method: alternate
 	 *  Alternates between two or more strings.
 	 *
@@ -94,7 +94,7 @@ class text {
 		return $args[($i++ % count($args))];
 	}
 
-	/*
+	/**
 	 * Method: random
 	 *  Generates a random string of a given type and length.
 	 *
@@ -146,7 +146,7 @@ class text {
 		return $str;
 	}
 
-	/*
+	/**
 	 * Method: reduce_slashes
 	 *  Reduce multiple slashes in a string to single slashes.
 	 *
@@ -161,7 +161,7 @@ class text {
 		return preg_replace('#(?<!:)//+#', '/', $str);
 	}
 
-	/*
+	/**
 	 * Method: censor
 	 *  Replaces the given words with a string.
 	 *
@@ -200,7 +200,7 @@ class text {
 		return preg_replace($regex, $replacement, $str);
 	}
 
-	/*
+	/**
 	 * Method: bytes
 	 *  Return human readable sizes.
 	 *  Based on original functions written by:

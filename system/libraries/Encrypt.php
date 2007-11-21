@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Encrypt
  *
  * Note:
@@ -17,7 +17,7 @@ class Encrypt_Core {
 	// mcrypt module handle
 	protected $module;
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Initializes mcrypt.
 	 */
@@ -53,7 +53,7 @@ class Encrypt_Core {
 		Log::add('debug', 'Encrypt Library initialized');
 	}
 
-	/*
+	/**
 	 * Method: encode
 	 *  Encrypts a string.
 	 *
@@ -68,7 +68,7 @@ class Encrypt_Core {
 		return base64_encode(mcrypt_generic($this->module, $data));
 	}
 
-	/*
+	/**
 	 * Method: decode
 	 *  Decrypts an encrypted string.
 	 *

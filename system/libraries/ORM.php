@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
- /*
+ /**
  * Class: ORM
  *
  * Kohana Source Code:
@@ -32,7 +32,7 @@ class ORM_Core {
 	protected $belongs_to_many = array();
 	protected $has_and_belongs_to_many = array();
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Initialize database, setup internal variables.
 	 */
@@ -75,7 +75,7 @@ class ORM_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: __get
 	 *  Magic method for getting data.
 	 */
@@ -95,7 +95,7 @@ class ORM_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: __set
 	 *  Magic method for setting data.
 	 */
@@ -114,7 +114,7 @@ class ORM_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: __call
 	 *  Magic method for calling dynamic methods.
 	 */
@@ -274,7 +274,7 @@ class ORM_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: find
 	 *  Find and load this object data.
 	 *
@@ -340,7 +340,7 @@ class ORM_Core {
 		return ($this->object->id != 0);
 	}
 
-	/*
+	/**
 	 * Method: save
 	 *  Saves this object data.
 	 *
@@ -389,7 +389,7 @@ class ORM_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: delete
 	 *  Deletes this object.
 	 *
@@ -419,7 +419,7 @@ class ORM_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: where
 	 *  Generate a WHERE array.
 	 *
@@ -441,7 +441,7 @@ class ORM_Core {
 			return array('id' => $id);
 	}
 
-	/*
+	/**
 	 * Method: load_model
 	 *  Creates a model from a table name.
 	 *
@@ -460,7 +460,7 @@ class ORM_Core {
 		return new $model();
 	}
 
-	/*
+	/**
 	 * Method: related_table
 	 *  Finds the many<>many relationship table.
 	 *
@@ -486,7 +486,7 @@ class ORM_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: related_join
 	 *  Execute a join to a table.
 	 *

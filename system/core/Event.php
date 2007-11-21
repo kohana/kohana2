@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Event
  *  Process queuing/execution class. Allows an unlimited number of callbacks
  *  to be added to 'events'. Events can be run multiple times, and can also
@@ -59,7 +59,7 @@ final class Event {
 	// Data that can be processed during events
 	public static $data;
 
-	/*
+	/**
 	 * Method: add
 	 *  Add a callback to an event queue.
 	 *
@@ -85,7 +85,7 @@ final class Event {
 		}
 	}
 
-	/*
+	/**
 	 * Method: add_before
 	 *  Add a callback to an event queue, before a given event.
 	 *
@@ -113,7 +113,7 @@ final class Event {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: add_after
 	 *  Add a callback to an event queue, after a given event.
 	 *
@@ -144,7 +144,7 @@ final class Event {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: insert_event
 	 *  Inserts a new event at a specfic key location.
 	 *
@@ -167,7 +167,7 @@ final class Event {
 		);
 	}
 
-	/*
+	/**
 	 * Method: replace
 	 *  Replaces an event with another event.
 	 *
@@ -205,7 +205,7 @@ final class Event {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: get
 	 *  Get all callbacks for an event.
 	 *
@@ -220,7 +220,7 @@ final class Event {
 		return empty(self::$events[$name]) ? array() : self::$events[$name];
 	}
 
-	/*
+	/**
 	 * Method: clear
 	 *  Clear some or all callbacks from an event.
 	 *
@@ -249,7 +249,7 @@ final class Event {
 		}
 	}
 
-	/*
+	/**
 	 * Method: run
 	 *  Execute all of the callbacks attached to an event.
 	 *
@@ -278,7 +278,7 @@ final class Event {
 		self::$has_run[$name] = $name;
 	}
 
-	/*
+	/**
 	 * Method: has_run
 	 *  Check if a given event has been run.
 	 *

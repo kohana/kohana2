@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: download
  *  Download helper class.
  *
@@ -10,7 +10,7 @@
  */
 class download {
 
-	/*
+	/**
 	 * Method: force
 	 *  Force a download of a file to the user's browser. This function is
 	 *  binary-safe and will work with any MIME type that Kohana is aware of.

@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Payment_Yourpay_Driver
  *  Provides payment processing with YourPay.net.
  *

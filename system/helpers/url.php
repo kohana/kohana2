@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: url
  *  URL helper class.
  *
@@ -10,7 +10,7 @@
  */
 class url {
 
-	/*
+	/**
 	 * Method: base
 	 *  Base URL, with or without the index page.
 	 *
@@ -35,7 +35,7 @@ class url {
 		return $base_url;
 	}
 
-	/*
+	/**
 	 * Method: site
 	 *  Fetches a site URL based on a URI segment.
 	 *
@@ -71,7 +71,7 @@ class url {
 		return self::base(FALSE, $protocol).$index_page.$uri.$url_suffix.$qs.$id;
 	}
 
-	/*
+	/**
 	 * Method: current
 	 *  Fetches the current URI.
 	 *
@@ -83,7 +83,7 @@ class url {
 		return Router::$current_uri;
 	}
 
-	/*
+	/**
 	 * Method: title
 	 *  Convert a phrase to a URL-safe title.
 	 *
@@ -113,7 +113,7 @@ class url {
 		return $title;
 	}
 
-	/*
+	/**
 	 * Method: redirect
 	 *  Sends a page redirect header.
 	 *

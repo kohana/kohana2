@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Profiler
  *  Adds useful information to the bottom of the current page for debugging and optimization purposes.
  *
@@ -15,7 +15,7 @@
  */
 class Profiler_Core {
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Adds event for adding the profile output to the page when displayed.
 	 */
@@ -27,7 +27,7 @@ class Profiler_Core {
 		Log::add('debug', 'Profiler Library initialized');
 	}
 
-	/*
+	/**
 	 * Method: disable
 	 *  Disables the profiler for this page only.
 	 *  Best used when profiler is autoloaded.
@@ -38,7 +38,7 @@ class Profiler_Core {
 		Event::clear('system.display', array($this, 'render'));
 	}
 
-	/*
+	/**
 	 * Method: render
 	 *  Render the profiler. Output is added to
 	 *  the bottom of the page by default.

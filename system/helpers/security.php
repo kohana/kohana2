@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: security
  *  Security helper class.
  *
@@ -10,7 +10,7 @@
  */
 class security {
 
-	/*
+	/**
 	 * Method: xss_clean
 	 *  Sanitize a string with the xss_clean method.
 	 *
@@ -32,7 +32,7 @@ class security {
 		return $input->xss_clean($str);
 	}
 
-	/*
+	/**
 	 * Method: strip_image_tags
 	 *  Remove image tags from a string.
 	 *
@@ -49,7 +49,7 @@ class security {
 		return trim($str);
 	}
 
-	/*
+	/**
 	 * Method: encode_php_tags
 	 *  Remove PHP tags from a string.
 	 *

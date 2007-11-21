@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
- /*
+ /**
  * Class: Controller
  *
  * Kohana Source Code:
@@ -9,7 +9,7 @@
  */
 class Controller_Core extends Kohana {
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Loads the Input, URI and Loader libraries into the '$this' namespace.
 	 */
@@ -28,7 +28,7 @@ class Controller_Core extends Kohana {
 		$this->input = new Input();
 	}
 
-	/*
+	/**
 	 * Method: kohana_include_view
 	 *  Includes a View within the controller scope.
 	 *

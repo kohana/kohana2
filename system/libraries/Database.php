@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Database
  *  Provides database access in a platform agnostic way, using simple query building blocks.
  *
@@ -45,7 +45,7 @@ class Database_Core {
 	protected $offset     = FALSE;
 	protected $last_query = '';
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Sets up the database configuration, loads the <Database_Driver>.
 	 *
@@ -173,7 +173,7 @@ class Database_Core {
 		Log::add('debug', 'Database Library initialized');
 	}
 
-	/*
+	/**
 	 * Method: connect
 	 *  Simple connect method to get the database queries up and running.
 	 */
@@ -186,7 +186,7 @@ class Database_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: query
 	 *  Runs a query into the driver and returns the result.
 	 *
@@ -233,7 +233,7 @@ class Database_Core {
 		return $result;
 	}
 
-	/*
+	/**
 	 * Method: select
 	 *  Selects the column names for a database <Database.query>.
 	 *
@@ -274,7 +274,7 @@ class Database_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: from
 	 *  Selects the from table(s) for a database <Database.query>.
 	 *
@@ -296,7 +296,7 @@ class Database_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: join
 	 *  Generates the JOIN portion of the query.
 	 *
@@ -336,7 +336,7 @@ class Database_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: where
 	 *  Selects the where(s) for a database <Database.query>.
 	 *
@@ -362,7 +362,7 @@ class Database_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: orwhere
 	 *  Selects the or where(s) for a database <Database.query>.
 	 *
@@ -388,7 +388,7 @@ class Database_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: like
 	 *  Selects the like(s) for a database <Database.query>.
 	 *
@@ -412,7 +412,7 @@ class Database_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: orlike
 	 *  Selects the or like(s) for a database <Database.query>.
 	 *
@@ -436,7 +436,7 @@ class Database_Core {
 		return $this;	
 	}
 
-	/*
+	/**
 	 * Method: groupby
 	 *  chooses the column to group by in a select <Database.query>.
 	 *
@@ -466,7 +466,7 @@ class Database_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: having
 	 *  Selects the having(s) for a database <Database.query>.
 	 *
@@ -483,7 +483,7 @@ class Database_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: orhaving
 	 *  Selects the or having(s) for a database <Database.query>.
 	 *
@@ -500,7 +500,7 @@ class Database_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: orderby
 	 *  Chooses which column(s) to order the <Database.select> <Database.query> by.
 	 *
@@ -524,7 +524,7 @@ class Database_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: limit
 	 *  Selects the limit section of a <Database.query>.
 	 *
@@ -543,7 +543,7 @@ class Database_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: offset
 	 *  Sets the offset portion of a <Database.query>.
 	 *
@@ -559,7 +559,7 @@ class Database_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: set
 	 *  Allows key/value pairs to be set for <Database.insert>ing or <Database.update>ing.
 	 *
@@ -585,7 +585,7 @@ class Database_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: get
 	 *  Compiles the <Database.select> statement based on
 	 *  the other functions called and runs the query.
@@ -620,7 +620,7 @@ class Database_Core {
 		return $result;
 	}
 
-	/*
+	/**
 	 * Method: getwhere
 	 *  Compiles the <Database.select> statement based on
 	 *  the other functions called and runs the <Database.query>.
@@ -658,7 +658,7 @@ class Database_Core {
 		return $result;
 	}
 
-	/*
+	/**
 	 * Method: insert
 	 *  Compiles an insert string and runs the <Database.query>.
 	 *
@@ -703,7 +703,7 @@ class Database_Core {
 		return $this->query($sql);
 	}
 
-	/*
+	/**
 	 * Method: update
 	 *  Compiles an update string and runs the <Database.query>.
 	 *
@@ -754,7 +754,7 @@ class Database_Core {
 		return $this->query($sql);
 	}
 
-	/*
+	/**
 	 * Method: delete
 	 *  Compiles a delete string and runs the <Database.query>.
 	 *
@@ -799,7 +799,7 @@ class Database_Core {
 		return $this->query($sql);
 	}
 
-	/*
+	/**
 	 * Method: last_query
 	 *  Returns the last <Database.query> run.
 	 *
@@ -811,7 +811,7 @@ class Database_Core {
 	   return $this->last_query;
 	}
 
-	/*
+	/**
 	 * Method: count_records
 	 *  Count query records.
 	 *
@@ -843,7 +843,7 @@ class Database_Core {
 		return $query->current()->$column;
 	}
 
-	/*
+	/**
 	 * Method: reset_select
 	 *  Resets all private select variables.
 	 */
@@ -861,7 +861,7 @@ class Database_Core {
 		$this->offset   = FALSE;
 	}
 
-	/*
+	/**
 	 * Method: reset_write
 	 *  Resets all private insert and update variables.
 	 */
@@ -872,7 +872,7 @@ class Database_Core {
 		$this->where = array();
 	}
 
-	/*
+	/**
 	 * Method: list_tables
 	 *  Lists all the tables in the current database.
 	 *
@@ -888,7 +888,7 @@ class Database_Core {
 		return $this->driver->list_tables();
 	}
 
-	/*
+	/**
 	 * Method: table_exists
 	 *  See if a table exists in the database.
 	 *
@@ -903,7 +903,7 @@ class Database_Core {
 		return in_array($this->config['table_prefix'].$table_name, $this->list_tables());
 	}
 
-	/*
+	/**
 	 * Method: compile_binds
 	 *  Combine a sql statement with the bind values. Used for safe queries.
 	 *
@@ -935,7 +935,7 @@ class Database_Core {
 		return str_replace('{%bind_marker%}', '?', $sql);
 	}
 
-	/*
+	/**
 	 * Method: field_data
 	 *  Get the field data for a database table, along with the field's attributes.
 	 *
@@ -952,7 +952,7 @@ class Database_Core {
 		return $this->driver->field_data($this->config['table_prefix'].$table);
 	}
 
-	/*
+	/**
 	 * Method: list_fields
 	 *  Get the field data for a database table, along with the field's attributes.
 	 *
@@ -971,7 +971,7 @@ class Database_Core {
 		return $this->driver->list_fields($this->config['table_prefix'].$table, $query);
 	}
 
-	/*
+	/**
 	 * Method: escape
 	 *  Escapes a value for a query.
 	 *
@@ -986,7 +986,7 @@ class Database_Core {
 		return $this->driver->escape($value);
 	}
 
-	/*
+	/**
 	 * Method: escape_str
 	 *  Escapes a string for a query.
 	 *
@@ -1001,7 +1001,7 @@ class Database_Core {
 		return $this->driver->escape_str($str);
 	}
 
-	/*
+	/**
 	* Method: table_prefix
 	*  Returns table prefix of current configuration.
 	*
@@ -1015,7 +1015,7 @@ class Database_Core {
 
 } // End Database Class
 
-/*
+/**
  * Class: Kohana Database Exception
  *  Sets the code for a <Database> exception.
  *

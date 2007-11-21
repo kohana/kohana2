@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-/*
+/**
 	Has one?
 	  TRUE - Add fields via join()
 	Has many?
@@ -125,7 +125,7 @@ class ORM_Core {
 			}
 		}
 
-		/*
+		/**
 		if ( ! empty($where))
 		{
 			// Primary key

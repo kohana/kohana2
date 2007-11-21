@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: valid
  *  Validation helper class.
  *
@@ -10,7 +10,7 @@
  */
 class valid {
 
-	/*
+	/**
 	 * Method: email
 	 *  Validate email, commonly used characters only
 	 *
@@ -25,7 +25,7 @@ class valid {
 		return (bool) preg_match('/^(?!\.)[-+_a-z0-9.]++(?<!\.)@(?![-.])[-a-z0-9.]+(?<!\.)\.[a-z]{2,6}$/iD', $email);
 	}
 
-	/*
+	/**
 	 * Method: email_rfc
 	 *  Validate email, RFC compliant version
 	 *  Note: This function is LESS strict than valid_email. Choose carefully.
@@ -58,7 +58,7 @@ class valid {
 		return (bool) preg_match('/^'.$addr_spec.'$/', $email);
 	}
 
-	/*
+	/**
 	 * Method: url
 	 *  Validate URL
 	 *
@@ -81,7 +81,7 @@ class valid {
 		return ! (empty($url['host']) OR empty($url['scheme']) OR $url['scheme'] !== $scheme);
 	}
 
-	/*
+	/**
 	 * Method: ip
 	 *  Validate IP
 	 *
@@ -121,7 +121,7 @@ class valid {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: alpha
 	 *  Checks whether a string consists of alphabetical characters only
 	 *
@@ -139,7 +139,7 @@ class valid {
 			: ctype_alpha((string) $str);
 	}
 
-	/*
+	/**
 	 * Method: alpha_numeric
 	 *  Checks whether a string consists of alphabetical characters and numbers only
 	 *
@@ -157,7 +157,7 @@ class valid {
 			: ctype_alnum((string) $str);
 	}
 
-	/*
+	/**
 	 * Method: alpha_dash
 	 *  Checks whether a string consists of alphabetical characters, numbers, underscores and dashes only
 	 *
@@ -175,7 +175,7 @@ class valid {
 			: preg_match('/^[-a-z0-9_]+$/iD', (string) $str);
 	}
 
-	/*
+	/**
 	 * Method: digit
 	 *  Checks whether a string consists of digits only (no dots or dashes)
 	 *
@@ -193,7 +193,7 @@ class valid {
 			: ctype_digit((string) $str);
 	}
 
-	/*
+	/**
 	 * Method: numeric
 	 *  Checks whether a string is a valid number (negative and decimal numbers allowed)
 	 *

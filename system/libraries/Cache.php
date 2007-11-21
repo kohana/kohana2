@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Cache
  *
  * Kohana Source Code:
@@ -13,7 +13,7 @@ class Cache_Core {
 
 	protected $driver;
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Set up driver and get groups.
 	 *
@@ -27,7 +27,7 @@ class Cache_Core {
 		$this->groups = $this->get('kohana.groups');
 	}
 
-	/*
+	/**
 	 * Method: get
 	 *  Get data from cache.
 	 *
@@ -42,7 +42,7 @@ class Cache_Core {
 		return $this->driver->get($name);
 	}
 
-	/*
+	/**
 	 * Method: set
 	 *  Save data into cache.
 	 *
@@ -58,7 +58,7 @@ class Cache_Core {
 		return $this->driver->set($name, $item);
 	}
 
-	/*
+	/**
 	 * Method: del
 	 *  Delete cache entry.
 	 *

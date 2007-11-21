@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Provides self-generating documentation about Kohana.
  *
  * Kohana Source Code:
@@ -9,7 +9,7 @@
  */
 class Kodoc_Core {
 
-	protected $types = array
+	protected static $types = array
 	(
 		'core',
 		'config',
@@ -19,282 +19,287 @@ class Kodoc_Core {
 		'views'
 	);
 
-	// All files to be parsed
-	protected $files = array();
-
-	public function __construct()
+	public static function get_types()
 	{
-		// Find all files and parse them
-		foreach($this->types as $type)
-		{
-			foreach(Kohana::list_files($type, TRUE) as $file)
-			{
-				$this->files[] = $this->parse($type, $file);
-			}
-		}
+		return self::$types;
 	}
 
-	/*
+	public static function get_files()
+	{
+		// Extension length
+		$ext_len = -(strlen(EXT));
+
+		$files = array();
+		foreach(self::$types as $type)
+		{
+			$files[$type] = array();
+			foreach(Kohana::list_files($type, TRUE) as $file)
+			{
+				// Not a source file
+				if (substr($file, $ext_len) !== EXT)
+					continue;
+
+				// Remove the dirs from the filename
+				$file = preg_replace('!^.+'.$type.'/(.+)'.EXT.'$!', '$1', $file);
+
+				if ($type === 'libraries' AND substr($file, 0, 8) === 'drivers/')
+				{
+					// Remove the drivers directory from the file
+					$file = explode('_', substr($file, 8));
+
+					if (count($file) === 1)
+					{
+						// Driver interface
+						$files[$type][current($file)][] = current($file);
+					}
+					else
+					{
+						// Driver is class suffix
+						$driver = array_pop($file);
+
+						// Library is everything else
+						$library = implode('_', $file);
+
+						// Library driver
+						$files[$type][$library][] = $driver;
+					}
+				}
+				else
+				{
+					$files[$type][$file] = NULL;
+				}
+			}
+		}
+
+		return $files;
+	}
+
+	public static function remove_docroot($file)
+	{
+		return preg_replace('!^'.preg_quote(DOCROOT, '!').'!', '', $file);
+	}
+
+	// All files to be parsed
+	protected $file = array();
+
+	public function __construct($type, $filename)
+	{
+		// Parse the file
+		$this->file = $this->parse($type, $filename);
+	}
+
+	/**
 	 * Fetch documentation for all files parsed.
 	 *
 	 * Returns:
-	 *  Array of files
+	 *  array: file documentation
 	 */
-	public function get_docs()
+	public function get()
 	{
-		return $this->files;
+		return $this->file;
 	}
 
-	/*
+	/**
 	 * Parse a file for Kodoc commands, classes, and methods.
 	 *
 	 * Parameters:
-	 *  type - file type
-	 *  file - filename to read
+	 *  string: file type
+	 *  string: absolute filename path
 	 */
-	protected function parse($type, $file)
+	protected function parse($type, $filename)
 	{
-		$data = array
+		// File definition
+		$file = array
 		(
 			'type'      => $type,
 			'about'     => '',
-			'package'   => '',
-			'file'      => preg_replace('!^'.preg_quote(DOCROOT, '!').'!', '', $file),
-			'classes'   => array(),
-			'functions' => array()
+			'file'      => self::remove_docroot($filename),
+			'classes'   => array()
 		);
 
 		// Open the file for reading
-		$handle = fopen($file, 'r');
+		$handle = fopen($filename, 'r');
 
-		// Start the line number count
-		$l = 0;
+		// Do not start in a comment
+		$in_comment = FALSE;
 
-		// Loop through each line of the file
+		// Add first comment to the file info
+		$add_about = TRUE;
+
 		while ($line = fgets($handle))
 		{
-			$l++;
-
-			// Handle some basics
 			switch(substr(trim($line), 0, 2))
 			{
-				case '<?':
-				case '?>':
-				case '//':
-					// Ignore PHP start and end tags, and non-block comments
-					continue;
 				case '/*':
-					// Open a new comment block
-					$block = '';
+				case '//':
+					// Opening of a comment
+					$in_comment = TRUE;
+					continue;
 				break;
-				case '* ':
-					if (isset($block))
-					{
-						// Part of this block
-						$block .= substr(ltrim($line), 2);
-					}
-				break;
-				case '*':
-					if (isset($block))
-					{
-						// Empty line, add a newline
-						$block .= "\n";
-					}
-				break;
-				default:
-					if (strpos($line, 'class') !== FALSE AND preg_match('/(class|interface) ([a-zA-Z0-9_]+)/', $line, $matches))
-					{
-						// Class definition
-						$class = array
-						(
-							'line'       => $l,
-							'name'       => $matches[2],
-							'about'      => isset($block) ? $block : 'NO INFO! WTF?!',
-							'final'      => FALSE,
-							'abstract'   => FALSE,
-							'interface'  => FALSE,
-							'extends'    => '',
-							'implements' => array()
-						);
-
-						// Clear the current block and class
-						unset($current_class, $block);
-
-						if ($matches[1] === 'interface')
-						{
-							// Interfaces cannot be final, abstract, extend or implement
-							$class['interface'] = TRUE;
-						}
-						else
-						{
-							if ($this->is_final($line))
-							{
-								// Class is final
-								$class['final'] = TRUE;
-							}
-							elseif ($this->is_abstract($line))
-							{
-								// Class is abstract, and therefore cannot be final
-								$class['abstract'] = TRUE;
-							}
-
-							if (preg_match('/extends ([a-zA-Z0-9_]+)/', $line, $matches))
-							{
-								// Class extension
-								$class['extends'] = $matches[1];
-							}
-
-							if (preg_match('/implements ([a-zA-Z0-9_, ]+)/', $line, $matches))
-							{
-								// Class implements
-								$class['implements'] = explode(',', $matches[1]);
-
-								// Remove trailing spaces
-								$class['implements'] = array_map('trim', $class['implements']);
-							}
-						}
-
-						// Add class info to the class list
-						$data['classes'][] = $class;
-
-						// Set the current class reference
-						$current_class = count($data['classes']) - 1;
-						$current_class =& $data['classes'][$current_class];
-					}
-					elseif (strpos($line, 'function') !== FALSE AND preg_match('/function ([a-z0-9_]+) ?\((.+?)\)/', $line, $matches))
-					{
-						$method = array
-						(
-							'line'      => $l,
-							'name'      => $matches[1],
-							'params'    => array(),
-							'about'     => isset($block) ? $block : 'NO INFO? WTF?!',
-							'final'     => FALSE,
-							'abstract'  => FALSE,
-							'static'    => $this->is_static($line),
-							'visbility' => $this->visibility($line)
-						);
-
-						// Clear the current block
-						unset($block);
-
-						if ($this->is_final($line))
-						{
-							// Method is final
-							$method['final'] = TRUE;
-						}
-						elseif ($this->is_abstract($line))
-						{
-							// Method is abstract
-							$method['abstract'] = TRUE;
-						}
-
-						if ( ! empty($matches[2]))
-						{
-							// Method parameters
-							$method['params'] = explode(',', $matches[2]);
-
-							// Remove trailing spaces
-							$method['params'] = array_map('trim', $method['params']);
-						}
-
-						if (isset($current_class))
-						{
-							// Add method info the the current class
-							$current_class['methods'][] = $method;
-						}
-						else
-						{
-							// Add function info the current file
-							$data['functions'][] = $method;
-						}
-					}
+				case '*/':
+					// Ending of a comment
+					$in_comment = FALSE;
+					// Stop adding to the about text after the end of the first comment
+					$add_about = FALSE;
+					continue;
 				break;
 			}
+
+			if ($in_comment)
+			{
+				if ($add_about)
+				{
+					// Add info to the block
+					$file['about'] .= $line;
+				}
+
+				// Keep ignoring comments...
+				continue;
+			}
+
+			if (strpos($line, 'class') !== FALSE AND preg_match('/(?:class|interface) ([a-zA-Z0-9_]+)/', $line, $matches))
+			{
+				// Include the file if it has not already been included
+				class_exists($matches[1], FALSE) or include_once $filename;
+
+				// Use reflection to find information
+				$reflection = new ReflectionClass($matches[1]);
+
+				// Class definition
+				$class = array
+				(
+					'name'       => $reflection->getName(),
+					'about'      => $reflection->getDocComment(),
+					'final'      => $reflection->isFinal(),
+					'abstract'   => $reflection->isAbstract(),
+					'interface'  => $reflection->isInterface(),
+					'extends'    => '',
+					'implements' => array(),
+					'methods'    => array()
+				);
+
+				if ($implements = $reflection->getInterfaces())
+				{
+					foreach($implements as $interface)
+					{
+						// Get implemented interfaces
+						$class['implements'][] = $interface->getName();
+					}
+				}
+
+				if ($parent = $reflection->getParentClass())
+				{
+					// Get parent class
+					$class['extends'] = $parent->getName();
+				}
+
+				if ($methods = $reflection->getMethods())
+				{
+					foreach($methods as $method)
+					{
+						// Don't try to document internal methods
+						if ($method->isInternal()) continue;
+
+						$class['methods'][] = array
+						(
+							'name'       => $method->getName(),
+							'about'      => $method->getDocComment(),
+							'final'      => $method->isFinal(),
+							'static'     => $method->isStatic(),
+							'abstract'   => $method->isAbstract(),
+							'visibility' => $this->visibility($method),
+							'parameters' => $this->parameters($method)
+						);
+					}
+				}
+
+				// Add class to file info
+				$file['classes'][] = $class;
+			}
+		}
+
+		if (count($file['classes']) > 0)
+		{
+			$file['about'] = '';
 		}
 
 		// Close the file
 		fclose($handle);
 
-		if (isset($block))
+		return $file;
+	}
+
+	/**
+	 * Finds the parameters for a ReflectionMethod.
+	 *
+	 * Parameters
+	 *  object: ReflectionMethod
+	 *
+	 * Returns
+	 *  array: parameters
+	 */
+	protected function parameters(ReflectionMethod $method)
+	{
+		$params = array();
+
+		if ($parameters = $method->getParameters())
 		{
-			// There is no class information, this block is about the file
-			$data['about'] = $block;
-		}
-
-		return $data;
-	}
-
-	/*
-	 * Test if a file line is defined as final.
-	 *
-	 * Parameters:
-	 *  line - file line to check
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
-	 */
-	protected function is_final($line)
-	{
-		return (substr(trim($line), 0, 5) === 'final');
-	}
-
-	/*
-	 * Test if a file line is defined as abstract.
-	 *
-	 * Parameters:
-	 *  line - file line to check
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
-	 */
-	protected function is_abstract($line)
-	{
-		return (substr(trim($line), 0, 8) === 'abstract');
-	}
-
-	/*
-	 * Test if a file line is defined as static.
-	 *
-	 * Parameters:
-	 *  line - file line to check
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
-	 */
-	protected function is_static($line)
-	{
-		return (strpos(trim($line), 'static function') !== FALSE);
-	}
-
-	/*
-	 * Finds the visbility of a line.
-	 *
-	 * Parameters:
-	 *  line - file line to check
-	 *
-	 * Returns:
-	 *  public, protected, or private
-	 */
-	protected function visibility($line)
-	{
-		$visibility = 'public';
-
-		foreach(explode(' ', trim($line), 4) as $part)
-		{
-			if (in_array($part, array('public', 'protected', 'private')))
+			foreach($parameters as $param)
 			{
-				$visbility = $part;
+				// Parameter data
+				$data = array
+				(
+					'name' => $param->getName()
+				);
+
+				if ($param->isOptional())
+				{
+					// Set default value
+					$data['default'] = $param->getDefaultValue();
+				}
+
+				$params[] = $data;
 			}
 		}
 
-		return $visibility;
+		return $params;
+	}
+
+	/**
+	 * Finds the visibility of a ReflectionMethod.
+	 *
+	 * Parameters:
+	 *  object: ReflectionMethod
+	 *
+	 * Returns:
+	 *  string: visibility of method
+	 */
+	protected function visibility(ReflectionMethod $method)
+	{
+		$vis = array_flip(Reflection::getModifierNames($method->getModifiers()));
+
+		if (isset($vis['public']))
+		{
+			return 'public';
+		}
+
+		if (isset($vis['protected']))
+		{
+			return 'protected';
+		}
+
+		if (isset($vis['private']))
+		{
+			return 'private';
+		}
+
+		return FALSE;
 	}
 
 } // End Kodoc
 class Kodoc_xCore {
 
-	/*
+	/**
 	 * libraries, helpers, etc
 	 */
 	protected $files = array
@@ -307,7 +312,7 @@ class Kodoc_xCore {
 		'views'     => array()
 	);
 
-	/*
+	/**
 	 * $classes[$name] = array $properties;
 	 * $properties = array
 	 * (
@@ -478,7 +483,7 @@ class Kodoc_xCore {
 		fclose($file);
 	}
 
-	/*
+	/**
 	 * Method:
 	 *  Checks if a line is a class, and parses the data out.
 	 *
@@ -540,7 +545,7 @@ class Kodoc_xCore {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method:
 	 *  Checks if a line is a property, and parses the data out.
 	 *
@@ -612,7 +617,7 @@ class Kodoc_xCore {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method:
 	 *  Checks if a line is a function, and parses the data out.
 	 *

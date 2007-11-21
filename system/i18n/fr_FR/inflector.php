@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
-/*
+/**
  * This array contains words that do not change (uncountables words)
  *
  * For french people: 

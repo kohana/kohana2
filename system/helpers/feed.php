@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: feed
  *  Feed helper class.
  *
@@ -10,7 +10,7 @@
  */
 class feed {
 
-	/*
+	/**
 	 * Method: parse
 	 *  Parses a remote feed into an array.
 	 *

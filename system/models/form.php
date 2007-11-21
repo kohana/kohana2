@@ -26,7 +26,7 @@ class Form_Model extends Model {
 		$this->validation = new Validation();
 	}
 
-	/*
+	/**
 	 * Set the form action.
 	 */
 	public function action($uri)
@@ -36,7 +36,7 @@ class Form_Model extends Model {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Set the form title.
 	 */
 	public function title($title)
@@ -46,7 +46,7 @@ class Form_Model extends Model {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Set input data.
 	 */
 	public function inputs($inputs)
@@ -73,7 +73,7 @@ class Form_Model extends Model {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Run validation.
 	 */
 	public function validate()
@@ -87,7 +87,7 @@ class Form_Model extends Model {
 		return $this->status;
 	}
 
-	/*
+	/**
 	 * Returns the validated data.
 	 */
 	public function data($key = NULL)
@@ -102,7 +102,7 @@ class Form_Model extends Model {
 		}
 	}
 
-	/*
+	/**
 	 * Build the form and return it.
 	 */
 	public function build($template = 'kohana_form')

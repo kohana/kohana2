@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: html
  *  HTML helper class.
  *
@@ -10,7 +10,7 @@
  */
 class html {
 
-	/*
+	/**
 	 * Method: specialchars
 	 *  Convert special characters to HTML entities
 	 *
@@ -46,7 +46,7 @@ class html {
 		return $str;
 	}
 
-	/*
+	/**
 	 * Method: query_string
 	 *  Creates an HTTP query string from an array.
 	 *
@@ -71,7 +71,7 @@ class html {
 		return implode('&', $string);
 	}
 
-	/*
+	/**
 	 * Method: anchor
 	 *  Create HTML link anchors.
 	 *
@@ -104,7 +104,7 @@ class html {
 		.(empty($title) ? $site_url : $title).'</a>';
 	}
 
-	/*
+	/**
 	 * Method: file_anchor
 	 *  Creates an HTML anchor to a file.
 	 *
@@ -128,7 +128,7 @@ class html {
 		.(empty($title) ? end(explode('/', $file)) : $title) .'</a>';
 	}
 
-	/*
+	/**
 	 * Method: panchor
 	 *  Similar to anchor, but with the protocol parameter first.
 	 *
@@ -146,7 +146,7 @@ class html {
 		return self::anchor($uri, $title, $attributes, $protocol);
 	}
 
-	/*
+	/**
 	 * Method: mailto
 	 *  Creates a email anchor.
 	 *
@@ -194,7 +194,7 @@ class html {
 		return '<a href="&#109;&#097;&#105;&#108;&#116;&#111;&#058;'.$safe.$subject.'"'.$attributes.'>'.$title.'</a>';
 	}
 
-	/*
+	/**
 	 * Method: stylesheet
 	 *  Creates a stylesheet link.
 	 *
@@ -227,7 +227,7 @@ class html {
 		return $compiled;
 	}
 
-	/*
+	/**
 	 * Method: script
 	 *  Creates a script link.
 	 *
@@ -257,7 +257,7 @@ class html {
 		return $compiled;
 	}
 
-	/*
+	/**
 	 * Method: image
 	 *  Creates a image link.
 	 *
@@ -284,7 +284,7 @@ class html {
 		return '<img'.self::attributes($attr).' />';
 	}
 
-	/*
+	/**
 	 * Method: attributes
 	 *  Compiles an array of HTML attributes into an attribute string.
 	 *

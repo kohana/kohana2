@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Pagination
  *
  * Kohana Source Code:
@@ -27,7 +27,7 @@ class Pagination_Core {
 	protected $previous_page;
 	protected $next_page;
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Sets up the config values.
 	 *
@@ -44,7 +44,7 @@ class Pagination_Core {
 		Log::add('debug', 'Pagination Library initialized');
 	}
 
-	/*
+	/**
 	 * Method: initialize
 	 *  Sets or overwrites (some) config values.
 	 *
@@ -113,7 +113,7 @@ class Pagination_Core {
 		$this->next_page          = ($this->current_page < $this->total_pages) ? $this->current_page + 1 : FALSE;
 	}
 
-	/*
+	/**
 	 * Method: create_links
 	 *  Generates the HTML for the chosen pagination style.
 	 *
@@ -131,7 +131,7 @@ class Pagination_Core {
 		return $view->render();
 	}
 
-	/*
+	/**
 	 * Method: __toString
 	 *  Magic method for converting an object to a string.
 	 *
@@ -143,7 +143,7 @@ class Pagination_Core {
 		return $this->create_links();
 	}
 
-	/*
+	/**
 	 * Method: url
 	 *  Gets the base_url with the specified page number.
 	 *
@@ -160,7 +160,7 @@ class Pagination_Core {
 		return str_replace('{page}', $page, $this->base_url);
 	}
 
-	/*
+	/**
 	 * Method: sql_offset
 	 *  Gets the SQL offset of the first row to return.
 	 *
@@ -172,7 +172,7 @@ class Pagination_Core {
 		return (int) ($this->current_page - 1) * $this->items_per_page;
 	}
 
-	/*
+	/**
 	 * Method: sql_limit
 	 *  Generates the complete SQL LIMIT clause.
 	 *

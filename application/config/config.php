@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * File: config.php
  *  This configuration file is unique to every application.
  *
@@ -19,12 +19,18 @@ $config = array
 	'site_domain'          => 'localhost/kohana/',
 	'site_protocol'        => 'http',
 	'index_page'           => 'index.php',
-	'url_suffix'           => '.html',
-	'allow_config_set'     => FALSE,
+	'url_suffix'           => '',
+	'allow_config_set'     => TRUE,
 	'global_xss_filtering' => FALSE,
 	'extension_prefix'     => 'MY_',
 	'include_paths'        => array
 	(
+		// 'modules/auth',
+		// 'modules/ikeafans',
+		// 'modules/user_guide',
+		// 'modules/orm',
+		'modules/kodoc',
+		// 'modules/mixnotify'
 	),
 	'autoload'             => array
 	(

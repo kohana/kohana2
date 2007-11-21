@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Calendar
  *
  * Kohana Source Code:
@@ -18,7 +18,7 @@ class Calendar_Core {
 	private $show_next_prev = FALSE;
 	private $next_prev_url  = '';
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Sets the default time reference.
 	 *
@@ -37,7 +37,7 @@ class Calendar_Core {
 		Log::add('debug', 'Calendar Library initialized');
 	}
 
-	/*
+	/**
 	 * Method: initialize
 	 *  Initialize the user preferences. 
 	 *
@@ -55,7 +55,7 @@ class Calendar_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: generate
 	 *  Generate the calendar.
 	 *
@@ -220,7 +220,7 @@ class Calendar_Core {
 		return $out;
 	}
 
-	/*
+	/**
 	 * Method: get_month_name
 	 *  Generates a textual month name based on the numeric month provided.
 	 *
@@ -251,7 +251,7 @@ class Calendar_Core {
 		return $return;
 	}
 
-	/*
+	/**
 	 * Method: get_day_names
 	 *  Returns an array of day names (Sunday, Monday, etc.) based on the type.
 	 *  
@@ -288,7 +288,7 @@ class Calendar_Core {
 		return $days;
 	}
 
-	/*
+	/**
 	 * Method: adjust_date
 	 *  This function makes sure that we have a valid month/year.
 	 *  For example, if you submit 13 as the month, the year will
@@ -328,7 +328,7 @@ class Calendar_Core {
 		return $date;
 	}
 
-	/*
+	/**
 	 * Method: get_total_days
 	 *  Total days in a given month.
 	 *
@@ -360,7 +360,7 @@ class Calendar_Core {
 		return $days_in_month[$month - 1];
 	}
 
-	/*
+	/**
 	 * Method: default_template
 	 *  This is used in the event that the user has not created their own template.
 	 *
@@ -394,7 +394,7 @@ class Calendar_Core {
 					);
 	}
 
-	/*
+	/**
 	 * Method: parse_template
 	 *  Harvests the data within the template {pseudo-variables} used to display the calendar.
 	 */

@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: cookie
  *  Cookie helper class.
  *
@@ -10,7 +10,7 @@
  */
 class cookie {
 
-	/*
+	/**
 	 * Method: set
 	 *  Sets a cookie with the given parameters.
 	 *
@@ -52,7 +52,7 @@ class cookie {
 			: setcookie($prefix.$name, $value, $expire, $path, $domain, $secure);
 	}
 
-	/*
+	/**
 	 * Method: get
 	 *  Fetch a cookie value, using the Input library.
 	 *
@@ -81,7 +81,7 @@ class cookie {
 		return $input->cookie($prefix.$name, $xss_clean);
 	}
 
-	/*
+	/**
 	 * Method: delete
 	 *  Nullify and unset a cookie.
 	 *

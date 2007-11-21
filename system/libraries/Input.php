@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Input
  *
  * Kohana Source Code:
@@ -16,7 +16,7 @@ class Input_Core {
 	public $ip_address = FALSE;
 	public $user_agent = FALSE;
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Sets whether to globally enable the XSS processing and whether to allow the $_GET array.
 	 */
@@ -93,7 +93,7 @@ class Input_Core {
 		Log::add('debug', 'Input Library initialized');
 	}
 
-	/*
+	/**
 	 * Method: __call
 	 *  Fetch an item from a global array.
 	 *
@@ -150,7 +150,7 @@ class Input_Core {
 		return isset($array[$key]) ? $array[$key] : FALSE;
 	}
 
-	/*
+	/**
 	 * Method: clean_input_data
 	 *  This is a helper function. It escapes data and standardizes newline characters to '\n'.
 	 *
@@ -186,7 +186,7 @@ class Input_Core {
 		return str_replace(array("\r\n", "\r"), "\n", $str);
 	}
 
-	/*
+	/**
 	 * Method: clean_input_keys
 	 *  This is a helper function. To prevent malicious users
 	 *  from trying to exploit keys we make sure that keys are
@@ -209,7 +209,7 @@ class Input_Core {
 		return $str;
 	}
 
-	/*
+	/**
 	 * Method: ip_address
 	 *  Fetch the IP Address.
 	 *
@@ -258,7 +258,7 @@ class Input_Core {
 		return $this->ip_address;
 	}
 
-	/*
+	/**
 	 * Method: valid_ip
 	 *  Validates an IPv4 address based on RFC specifications.
 	 *
@@ -273,7 +273,7 @@ class Input_Core {
 		return valid::ip($ip);
 	}
 
-	/*
+	/**
 	 * Method: user_agent
 	 *  Get the user agent of the current request.
 	 *
@@ -290,7 +290,7 @@ class Input_Core {
 		return $this->user_agent;
 	}
 
-	/*
+	/**
 	 * Method: xss_clean
 	 *  Clean cross site scripting exploits from string.
 	 *  HTMLPurifier may be used if installed, otherwise defaults to built in method.

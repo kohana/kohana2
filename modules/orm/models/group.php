@@ -4,7 +4,8 @@ class Group_Model extends ORM {
 
 	protected $_relationships = array
 	(
-		'has_many' => array('users')
+		'has_one' => array('access'),
+		'belongs_to_many' => array('users')
 	);
 
 }

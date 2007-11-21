@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Payment_Core
  *  Provides payment support for credit cards and other providers like PayPal
  *
@@ -27,7 +27,7 @@ class Payment_Core {
 	protected $driver = NULL;
 	private $fields = array();
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Sets the payment processing fields.
 	 *  The driver will translate these into the specific format for the provider.
@@ -93,7 +93,7 @@ class Payment_Core {
 		$this->driver = new $driver($this->config);
 	}
 
-	/*
+	/**
 	 * Method: __set
 	 *  Sets the credit card processing fields
 	 *
@@ -106,7 +106,7 @@ class Payment_Core {
 		$this->driver->set_fields(array($name => $val));
 	}
 
-	/*
+	/**
 	 * Method: set_fields
 	 *  Bulk setting of payment processing fields
 	 *
@@ -123,7 +123,7 @@ class Payment_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: process
 	 *  Runs the transaction
 	 *

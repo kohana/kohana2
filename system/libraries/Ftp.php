@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: FTP
  *
  * Kohana Source Code:
@@ -17,7 +17,7 @@ class FTP_Core {
 	private $debug    = FALSE;
 	private $conn_id  = FALSE;
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Sets Preferences.
 	 *
@@ -34,7 +34,7 @@ class FTP_Core {
 		Log::add('debug', 'FTP Library initialized');
 	}
 
-	/*
+	/**
 	 * Method: initialize
 	 *  Initialize preferences.
 	 *
@@ -55,7 +55,7 @@ class FTP_Core {
 		$this->hostname = preg_replace('|^[^:]++://|', '', $this->hostname); 
 	}
 
-	/*
+	/**
 	 * Method: connect
 	 *  Connect to the FTP.
 	 *
@@ -99,7 +99,7 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: login
 	 *  Login to the FTP.
 	 *
@@ -111,7 +111,7 @@ class FTP_Core {
 		return @ftp_login($this->conn_id, $this->username, $this->password);
 	}
 
-	/*
+	/**
 	 * Method: is_conn
 	 *  Validates the connection ID.
 	 *
@@ -132,7 +132,7 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: changedir
 	 *  The second parameter lets us momentarily turn off debugging so that
 	 *  this function can be used to test for the existence of a folder
@@ -168,7 +168,7 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: mkdir
 	 *  Create a directory.
 	 *
@@ -204,7 +204,7 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: upload
 	 *  Upload a file to the server.
 	 *
@@ -258,7 +258,7 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: rename
 	 *  Rename (or move) a file.
 	 *
@@ -291,7 +291,7 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: move
 	 *  Move a file.
 	 *
@@ -307,7 +307,7 @@ class FTP_Core {
 		return $this->rename($old_file, $new_file, TRUE);
 	}
 
-	/*
+	/**
 	 * Method: delete_file
 	 *  Delete a file.
 	 *
@@ -336,7 +336,7 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: delete_dir
 	 *  Delete a folder and recursively delete everything (including sub-folders) contained within it.
 	 *
@@ -383,7 +383,7 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: chmod
 	 *  Set file permissions.
 	 *
@@ -423,7 +423,7 @@ class FTP_Core {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: list_files
 	 *  FTP List files in the specified directory.
 	 *
@@ -445,7 +445,7 @@ class FTP_Core {
 		return ($mode == "nice") ? ftp_nlist($this->conn_id, $path) : ftp_rawlist($this->conn_id, $path, FALSE);
 	}
 
-	/*
+	/**
 	 * Method: mirror
 	 *  This function recursively reads a folder and everything it contains (including
 	 *  sub-folders) and creates a mirror via FTP based on it.  Whatever the directory structure
@@ -496,7 +496,7 @@ class FTP_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: get_extension
 	 *  Extract the file extension.
 	 *
@@ -517,7 +517,7 @@ class FTP_Core {
 		return end($x);
 	}
 
-	/*
+	/**
 	 * Method: set_type
 	 *  Returns the transfer mode for a file extension (ascii or binary).
 	 *
@@ -549,7 +549,7 @@ class FTP_Core {
 		return (in_array($ext, $text_types)) ? 'ascii' : 'binary';
 	}
 
-	/*
+	/**
 	 * Method: close
 	 *  Close the connection.
 	 *
@@ -564,7 +564,7 @@ class FTP_Core {
 		@ftp_close($this->conn_id);
 	}
 
-	/*
+	/**
 	 * Method: error
 	 *  Display error message.
 	 *

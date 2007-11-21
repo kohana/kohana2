@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * File: Cookie
  *  By default, cookie security is very relaxed. You are encouraged to set a
  *  domain and path to add some security to your cookies.

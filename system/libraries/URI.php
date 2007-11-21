@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: URI
  *
  * Kohana Source Code:
@@ -9,7 +9,7 @@
  */
 class URI_Core extends Router {
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *  Detects current query string.
 	 */
@@ -42,7 +42,7 @@ class URI_Core extends Router {
 		}
 	}
 
-	/*
+	/**
 	 * Method: segment
 	 *  Retrieve a specific URI segment.
 	 *
@@ -68,7 +68,7 @@ class URI_Core extends Router {
 		return isset(self::$segments[$index]) ? self::$segments[$index] : $default;
 	}
 
-	/*
+	/**
 	 * Method: rsegment
 	 *  Retrieve a specific routed URI segment.
 	 *
@@ -94,7 +94,7 @@ class URI_Core extends Router {
 		return isset(self::$rsegments[$index]) ? self::$rsegments[$index] : $default;
 	}
 
-	/*
+	/**
 	 * Method: segment_array
 	 *  Returns an array containing all the URI segments.
 	 *
@@ -124,7 +124,7 @@ class URI_Core extends Router {
 		return $segment_array_assoc;
 	}
 
-	/*
+	/**
 	 * Method: string
 	 *  Returns the complete URI as a string.
 	 *
@@ -141,7 +141,7 @@ class URI_Core extends Router {
 		return $this->string();
 	}
 
-	/*
+	/**
 	 * Method: total_segments
 	 *  Returns the total number of URI segments.
 	 *
@@ -153,7 +153,7 @@ class URI_Core extends Router {
 		return count(self::$segments);
 	}
 
-	/*
+	/**
 	 * Method: last_segment
 	 *  Returns the last URI segment.
 	 *

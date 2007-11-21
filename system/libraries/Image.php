@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Image
  *
  * Kohana Source Code:
@@ -13,7 +13,7 @@ class Image_Core {
 	protected $properties;
 	protected $commands;
 
-	/*
+	/**
 	 * Constructor: __construct
 	 *
 	 * Parameters:
@@ -25,7 +25,7 @@ class Image_Core {
 		// Load the driver
 		try
 		{
-			$driver = (empty($driver)) ? Config::item('image.driver') : $driver;
+			$driver = empty($driver) ? Config::item('image.driver') : $driver;
 			$driver_filename = 'Image_'.ucfirst($driver).'_Driver';
 
 			// Manually call auto-loading, for proper exception handling
@@ -74,7 +74,7 @@ class Image_Core {
 		Log::add('debug', 'Image Library initialized');
 	}
 
-	/*
+	/**
 	 * Method: properties
 	 *  Returns the original image properties.
 	 *
@@ -102,7 +102,7 @@ class Image_Core {
 		return $return;
 	}
 
-	/*
+	/**
 	 * Method: driver
 	 *  Returns driver version.
 	 *
@@ -114,7 +114,7 @@ class Image_Core {
 		return $this->driver->version();
 	}
 
-	/*
+	/**
 	 * Method: width
 	 *  Set image width.
 	 *
@@ -138,7 +138,7 @@ class Image_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: height
 	 *  Set image height.
 	 *
@@ -162,7 +162,7 @@ class Image_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: constrain_proportions
 	 *  Set constrain proportions flag.
 	 *
@@ -179,7 +179,7 @@ class Image_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: rotate
 	 *  Set image rotation.
 	 *
@@ -206,7 +206,7 @@ class Image_Core {
 		return $this;
 	}
 
-	/*
+	/**
 	 * Method: display
 	 *  Display image.
 	 */
@@ -216,7 +216,7 @@ class Image_Core {
 		// Process all commands ...
 	}
 
-	/*
+	/**
 	 * Method: save
 	 *  Save image.
 	 *

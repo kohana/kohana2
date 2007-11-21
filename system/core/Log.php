@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Log
  *  Message file logging class.
  *
@@ -13,7 +13,7 @@ final class Log {
 	private static $types = array(1 => 'error', 2 => 'debug', 3 => 'info');
 	private static $messages = array();
 
-	/*
+	/**
 	 * Method: add
 	 *  Add a log message.
 	 *
@@ -30,7 +30,7 @@ final class Log {
 		);
 	}
 
-	/*
+	/**
 	 * Method: write
 	 *  Write the current log to a file.
 	 */

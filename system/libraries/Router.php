@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Router
  *
  * Kohana Source Code:
@@ -22,7 +22,7 @@ class Router_Core {
 	public static $method     = FALSE;
 	public static $arguments  = FALSE;
 
-	/*
+	/**
 	 * Method: setup
 	 *  Router setup routine. Automatically called during Kohana setup process.
 	 */
@@ -183,7 +183,7 @@ class Router_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: find_uri
 	 *  Attempts to determine the current URI using CLI, GET, PATH_INFO, ORIG_PATH_INFO, or PHP_SELF.
 	 */
@@ -249,7 +249,7 @@ class Router_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Method: filter_uri
 	 *  Filter a string for allowed URI characters.
 	 *

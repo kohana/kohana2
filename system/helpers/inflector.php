@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: inflector
  *  Inflector helper class.
  *
@@ -10,7 +10,7 @@
  */
 class inflector {
 
-	/*
+	/**
 	 * Method: uncountable
 	 *  Checks if a word is defined as uncountable.
 	 *
@@ -33,7 +33,7 @@ class inflector {
 		return isset($uncountables[$str]);
 	}
 
-	/*
+	/**
 	 * Method: singular
 	 *  Makes a plural word singular.
 	 *
@@ -69,7 +69,7 @@ class inflector {
 		return $str;
 	}
 
-	/*
+	/**
 	 * Method: plural
 	 *  Makes a singular word plural.
 	 *
@@ -110,7 +110,7 @@ class inflector {
 		return $str;
 	}
 
-	/*
+	/**
 	 * Method: camelize
 	 *  Makes a phrase camel case.
 	 *
@@ -128,7 +128,7 @@ class inflector {
 		return substr(str_replace(' ', '', $str), 1);
 	}
 
-	/*
+	/**
 	 * Method: underscore
 	 *  Makes a phrase underscored instead of spaced.
 	 *
@@ -143,7 +143,7 @@ class inflector {
 		return preg_replace('/\s+/', '_', trim($str));
 	}
 
-	/*
+	/**
 	 * Method:
 	 *  Makes an underscored or dashed phrase human-reable.
 	 *

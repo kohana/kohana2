@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Archive_Zip_Driver
  *
  * Kohana Source Code:
@@ -18,7 +18,7 @@ class Archive_Zip_Driver implements Archive_Driver {
 	// Offset location
 	protected $offset = 0;
 
-	/*
+	/**
 	 * Method: create
 	 *  Creates a zip archive and optionally, saves it to a file.
 	 *
@@ -91,7 +91,7 @@ class Archive_Zip_Driver implements Archive_Driver {
 		return (bool) $return;
 	}
 
-	/*
+	/**
 	 * Method: add_dir
 	 *  Adds a directory to a zip.
 	 *
@@ -141,7 +141,7 @@ class Archive_Zip_Driver implements Archive_Driver {
 		$this->offset = strlen(implode('', $this->data));
 	}
 
-	/*
+	/**
 	 * Method: add_file
 	 *  Adds a file to a zip.
 	 *

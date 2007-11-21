@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Auth
  *
  * Kohana Source Code:
@@ -32,7 +32,7 @@ class Auth_Core {
 		Log::add('debug', 'Auth Library loaded');
 	}
 
-	/*
+	/**
 	 * Method: login
 	 *  Attempt a user login.
 	 *
@@ -75,7 +75,7 @@ class Auth_Core {
 		return FALSE;
 	}
 
-	/*
+	/**
 	 * Method: logout
 	 *  Force a logout of a user.
 	 *
@@ -94,7 +94,7 @@ class Auth_Core {
 		}
 	}
 
-	/*
+	/**
 	 * Creates a hashed password from a plaintext password, inserting salt
 	 * based on the configured salt pattern.
 	 *
@@ -143,7 +143,7 @@ class Auth_Core {
 		return $password.$hash;
 	}
 
-	/*
+	/**
 	 * Perform a hash, using the configured method.
 	 *
 	 * Parameters:
@@ -157,7 +157,7 @@ class Auth_Core {
 		return hash($this->config['hash_method'], $str);
 	}
 
-	/*
+	/**
 	 * Finds the salt from a password, based on the configured salt pattern.
 	 *
 	 * Parameters:

@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: file
  *  File helper class.
  *
@@ -10,7 +10,7 @@
  */
 class file {
 
-	/*
+	/**
 	 * Method: split
 	 *  Split a file into pieces matching a specific size.
 	 *
@@ -71,7 +71,7 @@ class file {
 		return ($piece - 1);
 	}
 
-	/*
+	/**
 	 * Method: join
 	 *  Join a split file into a whole file.
 	 *

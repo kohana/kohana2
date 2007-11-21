@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Config
  *  Loads configuration files and retrieves keys. This class is declared as final.
  *
@@ -16,7 +16,7 @@ final class Config {
 	// Include paths
 	private static $include_paths;
 
-	/*
+	/**
 	 * Method: item
 	 *  Get a config item or group.
 	 *
@@ -70,7 +70,7 @@ final class Config {
 		: $value;
 	}
 
-	/*
+	/**
 	 * Method: Set
 	 *  Sets a configuration item, if allowed.
 	 *
@@ -122,7 +122,7 @@ final class Config {
 		return TRUE;
 	}
 
-	/*
+	/**
 	 * Method: include_paths
 	 *  Get all include paths.
 	 *
@@ -155,7 +155,7 @@ final class Config {
 		return self::$include_paths;
 	}
 
-	/*
+	/**
 	 * Method: load
 	 *  Load a config file.
 	 *

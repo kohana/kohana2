@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Interface: Image_Driver
  *  Image API Driver
  *
@@ -10,7 +10,7 @@
  */
 interface Image_Driver {
 
-	/*
+	/**
 	 * Method: version
 	 *  Returns the driver version.
 	 *

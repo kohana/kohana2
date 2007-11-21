@@ -126,7 +126,7 @@ class Image_lib_Core {
 			}
 		}
 
-		/*
+		/**
 		 * Is there a source image?
 		 *
 		 * If not, there's no reason to continue
@@ -138,7 +138,7 @@ class Image_lib_Core {
 			return FALSE;
 		}
 
-		/*
+		/**
 		 * Is getimagesize() Available?
 		 *
 		 * We use it to determine the image properties (width/height).
@@ -156,7 +156,7 @@ class Image_lib_Core {
 
 		$this->image_library = strtolower($this->image_library);
 
-		/*
+		/**
 		 * Set the full server path
 		 *
 		 * The source image may or may not contain a path.
@@ -181,7 +181,7 @@ class Image_lib_Core {
 		if ( ! $this->get_image_properties($this->source_folder.$this->source_image))
 			return FALSE;
 
-		/*
+		/**
 		 * Assign the "new" image name/path
 		 *
 		 * If the user has set a "new_image" name it means
@@ -228,7 +228,7 @@ class Image_lib_Core {
 			}
 		}
 
-		/*
+		/**
 		 * Compile the finalized filenames/paths
 		 *
 		 * We'll create two master strings containing the
@@ -251,7 +251,7 @@ class Image_lib_Core {
 		$this->full_src_path = $this->source_folder.$this->source_image;
 		$this->full_dst_path = $this->dest_folder.$filename.$this->thumb_marker.$file_ext;
 
-		/*
+		/**
 		 * Should we maintain image proportions?
 		 *
 		 * When creating thumbs or copies, the target width/height
@@ -264,7 +264,7 @@ class Image_lib_Core {
 			$this->image_reproportion();
 		}
 
-		/*
+		/**
 		 * Was a width and height specified?
 		 *
 		 * If the destination width/height was

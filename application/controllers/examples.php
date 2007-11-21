@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Class: Examples
  *  Contains examples of various Kohana library examples. You can access these
  *  samples in your own installation of Kohana by going to ROOT_URL/examples.
@@ -11,7 +11,7 @@
  */
 class Examples_Controller extends Controller {
 
-	/*
+	/**
 	 * Method: index
 	 *  Displays a list of available examples
 	 */
@@ -39,7 +39,7 @@ class Examples_Controller extends Controller {
 		echo "<p>".Kohana::lang('core.stats_footer')."</p>\n";
 	}
 
-	/*
+	/**
 	 * Method: template
 	 *  Demonstrates how to use views inside of views.
 	 */
@@ -58,7 +58,7 @@ class Examples_Controller extends Controller {
 		$view->render(TRUE);
 	}
 
-	/*
+	/**
 	 * Method: rss
 	 *  Demonstrates how to parse RSS feeds by using DOMDocument.
 	 */
@@ -73,7 +73,7 @@ class Examples_Controller extends Controller {
 		print Kohana::lang('core.stats_footer');
 	}
 
-	/*
+	/**
 	 * Method: session
 	 *  Demonstrates the Session library and using session data.
 	 */
@@ -89,7 +89,7 @@ class Examples_Controller extends Controller {
 		print "<br/>{execution_time} seconds";
 	}
 
-	/*
+	/**
 	 * Method: form
 	 *  Demonstrates how to use the form helper with the Validation library.
 	 */
@@ -100,9 +100,9 @@ class Examples_Controller extends Controller {
 		print form::open('', array('enctype' => 'multipart/form-data'));
 
 		print form::label('imageup', 'Image Uploads').':<br/>';
-		print form::upload('imageup').'<br/>';
-		// print form::upload('imageup[]').'<br/>';
-		// print form::upload('imageup[]').'<br/>';
+		print form::upload('imageup[]').'<br/>';
+		print form::upload('imageup[]').'<br/>';
+		print form::upload('imageup[]').'<br/>';
 		print form::submit('upload', 'Upload!');
 
 		print form::close();
@@ -117,7 +117,7 @@ class Examples_Controller extends Controller {
 		print Kohana::lang('core.stats_footer');
 	}
 
-	/*
+	/**
 	 * Method: validation
 	 *  Demontrates how to use the Validation library to validate an arbitrary array.
 	 */
@@ -141,7 +141,7 @@ class Examples_Controller extends Controller {
 		(
 			// Format:
 			// key          friendly name,  validation rules
-			'user' => array('username',    'trim|required[1,2]'),
+			'user' => array('username',    'trim|required[1,12]|regex[[0-9]+]'),
 			'pass' => array('password',    'required|sha1'),
 			'reme' => array('remember me', 'required')
 		));
@@ -150,13 +150,13 @@ class Examples_Controller extends Controller {
 		$this->validation->run();
 
 		// Same syntax, but dynamcially generated wth __get()
-		print $this->validation->user_error;
+		print $this->validation->error_string;
 
 		// Yay!
 		print "{execution_time} ALL DONE!";
 	}
 
-	/*
+	/**
 	 * Method: database
 	 *  Demonstrates the features of the Database library.
 	 * Table Structure:
@@ -235,7 +235,7 @@ class Examples_Controller extends Controller {
 		print "done in {execution_time} seconds";
 	}
 
-	/*
+	/**
 	 * Method: pagination
 	 *  Demonstrates how to use the Pagination library and Pagination styles.
 	 */
@@ -262,7 +262,7 @@ class Examples_Controller extends Controller {
 		echo "done in {execution_time} seconds";
 	}
 
-	/*
+	/**
 	 * Method: user_agent
 	 *  Demonstrates the User_Agent library.
 	 */
@@ -279,7 +279,7 @@ class Examples_Controller extends Controller {
 		print "done in {execution_time} seconds";
 	}
 
-	/*
+	/**
 	 * Method: credit_card
 	 *  Demonstrates the CreditCard library.
 	 */
