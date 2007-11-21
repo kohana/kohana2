@@ -505,7 +505,7 @@ class Database_Core {
 	 *  Chooses which column(s) to order the <Database.select> <Database.query> by.
 	 *
 	 * Parameters:
-	 *  orderby   - column(s) to order on
+	 *  orderby   - column(s) to order on, can be an array, single column, or comma seperated list of columns
 	 *  direction - direction of the order
 	 *
 	 * Returns:
@@ -520,7 +520,28 @@ class Database_Core {
 			$direction = (in_array($direction, array('ASC', 'DESC', 'RAND()', 'NULL'))) ? ' '.$direction : ' ASC';
 		}
 
-		$this->orderby[] = (empty($orderby)) ? $direction : $this->driver->escape_column($orderby).$direction;
+		if (empty($orderby))
+		{
+			$this->orderby[] = $direction;
+			return $this;
+		}
+
+		if ( ! is_array($orderby))
+		{
+			$orderby = explode(',', (string) $orderby);
+		}
+
+		$order = array();
+		foreach ($orderby as $field)
+		{
+			$field = trim($field);
+
+			if ($field != '')
+			{
+				$order[] = $this->driver->escape_column($field);
+			}
+		}
+		$this->orderby[] = implode(',', $order).$direction;
 		return $this;
 	}
 
