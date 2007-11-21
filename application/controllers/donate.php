@@ -2,6 +2,8 @@
 
 class Donate_Controller extends Controller {
 
+	protected $auth_required = 'developer';
+
 	protected $auto_render = TRUE;
 
 	protected $payment;
