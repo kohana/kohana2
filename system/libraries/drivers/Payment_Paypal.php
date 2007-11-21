@@ -116,7 +116,7 @@ class Payment_Paypal_Driver
 		{
 			$this->required_fields['payerid'] = TRUE;
 		}
-		else if (($this->session->get('paypal_token'))
+		else if ($this->session->get('paypal_token'))
 		{
 			$this->required_fields['payerid'] = FALSE;
 		}
