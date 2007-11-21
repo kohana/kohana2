@@ -39,7 +39,7 @@ class ORM_Core {
 			self::$db = Kohana::instance()->db;
 		}
 
-		// Denfine ALL
+		// Define ALL
 		defined('ALL') or define('ALL', 100);
 
 		// Fetch table name
