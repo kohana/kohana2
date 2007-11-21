@@ -30,7 +30,7 @@ class Donate_Controller extends Controller {
 		if ($amount = $this->input->post('amount')) // They are coming from index()
 		{
 			// Set the payment amount in session for when they return from paypal
-			$this->session->set(array('donate_amount' => $amount));
+			$this->session->set(array('donate_amount' => $amount, 'donate_name' => $this->input->post('name'), 'donate_email' => $this->input->post('email')));
 
 			// Set the amount and send em to PayPal
 			$this->payment->amount = $amount;
@@ -42,7 +42,7 @@ class Donate_Controller extends Controller {
 			$this->template->set(array
 			(
 				'title'   => 'Donate',
-				'content' => new View('pages/donate/paypal', array('payerid' => $payerid))
+				'content' => new View('pages/donate/paypal', array('payerid' => $payerid, 'donate_amount' => $amount))
 			));
 		}
 		else
@@ -54,14 +54,21 @@ class Donate_Controller extends Controller {
 
 	public function process_paypal()
 	{
-		$this->payment->amount  = $this->session->get('donate_amount');
+		$this->payment->amount  = $this->input->post('donate_amount');
 		$this->payment->payerid = $this->input->post('payerid');
 
 		// Try and process the payment
 		if ($this->payment->process())
 		{
-			// Remove the donate amount from the session
-			$this->session->del('donate_amount');
+			// Store the payment
+			$insert = array('name'   => (empty($this->session->get('donate_name'))) ? 'Anonymous' : $this->session->get('donate_name'),
+			                'email'  => $this->session->get('donate_email'),
+			                'amount' => $this->session->get('donate_amount'));
+
+			$this->db->insert('donations', $insert);
+
+			// Remove the session data
+			$this->session->del(array('donate_amount', 'donate_name', 'donate_email');
 
 			$this->template->set(array
 			(

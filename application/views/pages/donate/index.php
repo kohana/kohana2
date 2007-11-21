@@ -1,3 +1,7 @@
 <h2>Donating</h2>
-
-<p>Kohana will be accepting donations via <?php echo html::anchor('https://www.paypal.com', 'PayPal') ?> shortly. Thank you for your interest in helping fund Kohana development!</p>
+<p>To donate any amount to the Kohana project, enter the amount in the box below and click Submit. You will be sent to PayPal to login, then back to our site to complete the donation.</p>
+<?php echo form::open('donate/paypal')?>
+<h4>Amount</h4>
+<p>$<?php echo form::input('amount')?></p>
+<p><?php echo form::submit('Submit')?></p>
+<?php echo form::close()?>
