@@ -29,6 +29,8 @@ class Donate_Controller extends Controller {
 	{
 		if ($amount = $this->input->post('amount')) // They are coming from index()
 		{
+			$this->auto_render = FALSE
+
 			// Set the payment amount in session for when they return from paypal
 			$this->session->set(array('donate_amount' => $amount, 'donate_name' => $this->input->post('name'), 'donate_email' => $this->input->post('email')));
 
@@ -48,6 +50,7 @@ class Donate_Controller extends Controller {
 		else
 		{
 			// They shouldn't be here!
+			$this->auto_render = FALSE
 			url::redirect('');
 		}
 	}
