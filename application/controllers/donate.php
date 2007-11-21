@@ -40,7 +40,7 @@ class Donate_Controller extends Controller {
 			{
 				// Something went wrong, so delete the session data and make em start over again.
 				$this->session->set_flash('donate_status', '<p style="color: red;">There was a problem processing your donation. Please try again.</p>');
-				$this->session->del(array('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token'));
+				$this->session->del('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token');
 				url::redirect('donate');
 			}
 		}
@@ -56,8 +56,8 @@ class Donate_Controller extends Controller {
 		else
 		{
 			// They shouldn't be here!
-			$this->auto_render = FALSE
-			url::redirect('');
+			$this->auto_render = FALSE;
+			url::redirect();
 		}
 	}
 
@@ -67,17 +67,17 @@ class Donate_Controller extends Controller {
 		$this->payment->payerid = $this->input->post('payerid');
 
 		// Try and process the payment
-		if (($status = $this->payment->process() === TRUE)
+		if ($status = $this->payment->process() === TRUE)
 		{
 			// Store the payment
-			$insert = array('name'   => empty($this->session->get('donate_name')) ? 'Anonymous' : $this->session->get('donate_name'),
+			$insert = array('name'   => $this->session->get('donate_name', 'Anonymous'),
 			                'email'  => $this->session->get('donate_email'),
 			                'amount' => $this->session->get('donate_amount'));
 
 			$this->db->insert('donations', $insert);
 
 			// Remove the session data
-			$this->session->del(array('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token'));
+			$this->session->del('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token');
 
 			$this->template->set(array
 			(
@@ -88,7 +88,7 @@ class Donate_Controller extends Controller {
 		else
 		{
 			$this->session->set_flash('donate_status', '<p style="color: red;">There was a problem processing your donation. Please try again.</p>');
-			$this->session->del(array('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token'));
+			$this->session->del('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token');
 			$this->template->set(array
 			(
 				'title'   => 'Donate',
