@@ -103,7 +103,7 @@ interface Database_Driver {
 	 *  quote      - disable quoting of WHERE clause
 	 *
 	 * Returns:
-	 *  An array of WHERE clauses
+	 *  A WHERE portion of a query
 	 */
 	public function where($key, $value, $type, $num_wheres, $quote);
 
@@ -118,7 +118,7 @@ interface Database_Driver {
 	 *  num_likes - number of existing LIKE clauses
 	 *
 	 * Returns:
-	 *  An array of WHERE clauses
+	 *  A LIKE portion of a query
 	 */
 	public function like($field, $match, $type, $num_likes);
 
@@ -133,7 +133,7 @@ interface Database_Driver {
 	 *  num_likes - number of existing LIKE clauses
 	 *
 	 * Returns:
-	 *  An array of WHERE clauses
+	 *  A NOT LIKE portion of a query
 	 */
 	public function notlike($field, $match, $type, $num_likes);
 
