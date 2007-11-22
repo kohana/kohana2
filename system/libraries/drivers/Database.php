@@ -165,6 +165,18 @@ interface Database_Driver {
 	public function limit($limit, $offset = 0);
 
 	/**
+	 * Method: regex
+	 *  Builds a REGEXP portion of a query.
+	 *
+	 * Parameters:
+	 *  pattern  - the regex pattern to search
+	 *
+	 * Returns:
+	 *  A string containing the REGEXP query
+	 */
+	public function regex($pattern);
+
+	/**
 	 * Method: compile_select
 	 *  Compiles the SELECT statement.
 	 *  Generates a query string based on which functions were used.

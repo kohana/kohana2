@@ -40,6 +40,7 @@ class Database_Core {
 	protected $order      = array();
 	protected $groupby    = array();
 	protected $having     = array();
+	protected $regex      = array();
 	protected $distinct   = FALSE;
 	protected $limit      = FALSE;
 	protected $offset     = FALSE;
@@ -549,6 +550,24 @@ class Database_Core {
 	}
 
 	/**
+	 * Method: regex
+	 *  Selects a regex pattern for a database <Database.query>.
+	 *
+	 * Parameters:
+	 *  key   - key name or array of key => value pairs
+	 *  value - value to match with key
+	 *
+	 * Returns:
+	 *  The <Database> object
+	 */
+	public function regex($string, $pattern)
+	{
+		$this->select[] = '\''.$string.'\'';
+		$this->regex[] = $this->driver->regex($pattern);
+		return $this;
+	}
+
+	/**
 	 * Method: orderby
 	 *  Chooses which column(s) to order the <Database.select> <Database.query> by.
 	 *
@@ -928,6 +947,7 @@ class Database_Core {
 		$this->distinct = FALSE;
 		$this->limit    = FALSE;
 		$this->offset   = FALSE;
+		$this->regex   = FALSE;
 	}
 
 	/**

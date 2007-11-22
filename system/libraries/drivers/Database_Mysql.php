@@ -209,6 +209,11 @@ class Database_Mysql_Driver implements Database_Driver {
 		return 'LIMIT '.$offset.', '.$limit;
 	}
 
+	public function regex($pattern)
+	{
+		return 'REGEXP \''.$pattern.'\'';
+	}
+
 	public function compile_select($database)
 	{
 		$sql = ($database['distinct'] == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
@@ -254,6 +259,12 @@ class Database_Mysql_Driver implements Database_Driver {
 		{
 			$sql .= "\n";
 			$sql .= $this->limit($database['limit'], $database['offset']);
+		}
+
+		if (count($database['regex']) > 0)
+		{
+			$sql .= "\n";
+			$sql .= implode(',', $database['regex']);
 		}
 
 		return $sql;
