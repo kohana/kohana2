@@ -20,7 +20,6 @@ class Database_Mysql_Driver implements Database_Driver {
 	 *
 	 * Parameters:
 	 *  config - database configuration
-	 *
 	 */
 	public function __construct($config)
 	{
@@ -174,7 +173,7 @@ class Database_Mysql_Driver implements Database_Driver {
 
 	public function like($field, $match = '', $type = 'AND ', $num_likes)
 	{
-		$prefix = $num_likes == 0 ? '' : $type;
+		$prefix = ($num_likes == 0) ? '' : $type;
 
 		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%') 
 			   ? $this->escape_str($match) 
@@ -185,20 +184,20 @@ class Database_Mysql_Driver implements Database_Driver {
 
 	public function notlike($field, $match = '', $type = 'AND ', $num_likes)
 	{
-		$prefix = $num_likes == 0 ? '' : $type;
+		$prefix = ($num_likes == 0) ? '' : $type;
 
 		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%') 
 			   ? $this->escape_str($match) 
 			   : '%'.$this->escape_str($match).'%';
 
-		return $prefix." ".$this->escape_column($field)." NOT LIKE '".$match . "'";
+		return $prefix.' '.$this->escape_column($field)." NOT LIKE '".$match."'";
 	}
 
 	public function regex($field, $match = '', $type = 'AND ', $num_regexs)
 	{
-		$prefix = $num_regexs == 0 ? '' : $type;
+		$prefix = ($num_regexs == 0) ? '' : $type;
 
-		return $prefix." ".$this->escape_column($field)." REGEXP '".$this->escape_str($match) . "'";
+		return $prefix.' '.$this->escape_column($field)." REGEXP '".$this->escape_str($match)."'";
 	}
 
 	public function insert($table, $keys, $values)
@@ -333,10 +332,8 @@ class Database_Mysql_Driver implements Database_Driver {
 
 			return $tables[$table];
 		}
-		else
-		{
-			return 'DESCRIBE '.$this->escape_table($table);
-		}
+
+		return 'DESCRIBE '.$this->escape_table($table);
 	}
 
 	public function field_data($table)
@@ -395,7 +392,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 *  link   - database resource link
 	 *  object - return objects or arrays
 	 *  sql    - sql query that was run
-	 *
 	 */
 	public function __construct($result, $link, $object = TRUE, $sql)
 	{
@@ -441,7 +437,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 	public function result($object = TRUE, $type = MYSQL_ASSOC)
 	{
-		$this->fetch_type = (bool) $object ? 'mysql_fetch_object' : 'mysql_fetch_array';
+		$this->fetch_type = ((bool) $object) ? 'mysql_fetch_object' : 'mysql_fetch_array';
 
 		// This check has to be outside the previous statement, because we do not
 		// know the state of fetch_type when $object = NULL
@@ -497,6 +493,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		{
 			$rows[] = $row;
 		}
+
 		return $rows;
 	}
 
@@ -524,7 +521,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 * 
 	 * Returns:
 	 *  The number of rows in the result set
-	 *
 	 */
 	public function count()
 	{
@@ -549,7 +545,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 * 
 	 * Returns:
 	 *  TRUE if the offset exists, FALSE otherwise
-	 *
 	 */
 	public function offsetExists($offset)
 	{
@@ -573,7 +568,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 * 
 	 * Returns:
 	 *  The query row
-	 *
 	 */
 	public function offsetGet($offset)
 	{
@@ -599,7 +593,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 * 
 	 * Returns:
 	 *  <Kohana_Database_Exception> object
-	 *
 	 */
 	public function offsetSet($offset, $value)
 	{
@@ -615,7 +608,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 * 
 	 * Returns:
 	 *  <Kohana_Database_Exception> object
-	 *
 	 */
 	public function offsetUnset($offset)
 	{
@@ -630,7 +622,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 * 
 	 * Returns:
 	 *  The current result row (type based on <Mysql_result.result>)
-	 *
 	 */
 	public function current()
 	{
@@ -643,7 +634,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 * 
 	 * Returns:
 	 *  The current result row id
-	 *
 	 */
 	public function key()
 	{
@@ -656,7 +646,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 * 
 	 * Returns:
 	 *  The next row id
-	 *
 	 */
 	public function next()
 	{
@@ -669,7 +658,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 * 
 	 * Returns:
 	 *  The previous row id
-	 *
 	 */
 	public function prev()
 	{
@@ -682,7 +670,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 * 
 	 * Returns:
 	 *  0
-	 *
 	 */
 	public function rewind()
 	{
@@ -695,7 +682,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 * 
 	 * Returns:
 	 *  TRUE if the pointer is valid, FALSE otherwise
-	 *
 	 */
 	public function valid()
 	{
