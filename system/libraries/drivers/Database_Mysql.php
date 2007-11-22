@@ -183,6 +183,17 @@ class Database_Mysql_Driver implements Database_Driver {
 		return $prefix." ".$this->escape_column($field)." LIKE '".$match . "'";
 	}
 
+	public function notlike($field, $match = '', $type = 'AND ', $num_likes)
+	{
+		$prefix = $num_likes == 0 ? '' : $type;
+
+		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%') 
+			   ? $this->escape_str($match) 
+			   : '%'.$this->escape_str($match).'%';
+
+		return $prefix." ".$this->escape_column($field)." NOT LIKE '".$match . "'";
+	}
+
 	public function insert($table, $keys, $values)
 	{
 		// Escape the column names

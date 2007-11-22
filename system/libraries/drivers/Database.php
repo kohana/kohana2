@@ -123,6 +123,21 @@ interface Database_Driver {
 	public function like($field, $match, $type, $num_likes);
 
 	/**
+	 * Method: notlike
+	 *  Builds a NOT LIKE portion of a query.
+	 *
+	 * Parameters:
+	 *  field     - field name or array of field => match pairs
+	 *  match     - like value to match with field
+	 *  type      - operator to join multiple likes with (AND/OR)
+	 *  num_likes - number of existing LIKE clauses
+	 *
+	 * Returns:
+	 *  An array of WHERE clauses
+	 */
+	public function notlike($field, $match, $type, $num_likes);
+
+	/*
 	 * Method: insert
 	 *  Builds an INSERT query.
 	 *
