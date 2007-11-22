@@ -68,7 +68,7 @@ class Database_Mysql_Driver implements Database_Driver {
 	{
 		foreach($values as $key => $val)
 		{
-			$valstr[] = $this->escape_column($key)." = ".$val;
+			$valstr[] = $this->escape_column($key).' = '.$val;
 		}
 		return 'UPDATE '.$this->escape_table($table).' SET '.implode(', ', $valstr).' WHERE '.implode(' ',$where);
 	}
@@ -176,10 +176,10 @@ class Database_Mysql_Driver implements Database_Driver {
 		$prefix = ($num_likes == 0) ? '' : $type;
 
 		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%') 
-			   ? $this->escape_str($match) 
-			   : '%'.$this->escape_str($match).'%';
+		       ? $this->escape_str($match) 
+		       : '%'.$this->escape_str($match).'%';
 
-		return $prefix." ".$this->escape_column($field)." LIKE '".$match . "'";
+		return $prefix.' '.$this->escape_column($field).' LIKE \''.$match . '\'';
 	}
 
 	public function notlike($field, $match = '', $type = 'AND ', $num_likes)
@@ -187,24 +187,24 @@ class Database_Mysql_Driver implements Database_Driver {
 		$prefix = ($num_likes == 0) ? '' : $type;
 
 		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%') 
-			   ? $this->escape_str($match) 
-			   : '%'.$this->escape_str($match).'%';
+		       ? $this->escape_str($match) 
+		       : '%'.$this->escape_str($match).'%';
 
-		return $prefix.' '.$this->escape_column($field)." NOT LIKE '".$match."'";
+		return $prefix.' '.$this->escape_column($field).' NOT LIKE \''.$match.'\'';
 	}
 
 	public function regex($field, $match = '', $type = 'AND ', $num_regexs)
 	{
 		$prefix = ($num_regexs == 0) ? '' : $type;
 
-		return $prefix.' '.$this->escape_column($field)." REGEXP '".$this->escape_str($match)."'";
+		return $prefix.' '.$this->escape_column($field).' REGEXP \''.$this->escape_str($match).'\'';
 	}
 
 	public function notregex($field, $match = '', $type = 'AND ', $num_regexs)
 	{
 		$prefix = $num_regexs == 0 ? '' : $type;
 
-		return $prefix." ".$this->escape_column($field)." NOT REGEXP '".$this->escape_str($match) . "'";
+		return $prefix.' '.$this->escape_column($field).' NOT REGEXP \''.$this->escape_str($match) . '\'';
 	}
 
 	public function insert($table, $keys, $values)
@@ -282,7 +282,7 @@ class Database_Mysql_Driver implements Database_Driver {
 		switch (gettype($value))
 		{
 			case 'string':
-				$value = "'".$this->escape_str($value)."'";
+				$value = '\''.$this->escape_str($value).'\'';
 				break;
 			case 'boolean':
 				$value = (int) $value;
