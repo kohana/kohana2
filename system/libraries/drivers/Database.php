@@ -174,7 +174,7 @@ interface Database_Driver {
 	 * Returns:
 	 *  A string containing the REGEXP query
 	 */
-	public function regex($pattern);
+	public function regex($field, $match, $type, $num_regexs);
 
 	/**
 	 * Method: compile_select

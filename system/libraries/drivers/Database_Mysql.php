@@ -194,6 +194,13 @@ class Database_Mysql_Driver implements Database_Driver {
 		return $prefix." ".$this->escape_column($field)." NOT LIKE '".$match . "'";
 	}
 
+	public function regex($field, $match = '', $type = 'AND ', $num_regexs)
+	{
+		$prefix = $num_regexs == 0 ? '' : $type;
+
+		return $prefix." ".$this->escape_column($field)." REGEXP '".$this->escape_str($match) . "'";
+	}
+
 	public function insert($table, $keys, $values)
 	{
 		// Escape the column names
@@ -207,11 +214,6 @@ class Database_Mysql_Driver implements Database_Driver {
 	public function limit($limit, $offset = 0)
 	{
 		return 'LIMIT '.$offset.', '.$limit;
-	}
-
-	public function regex($pattern)
-	{
-		return 'REGEXP \''.$pattern.'\'';
 	}
 
 	public function compile_select($database)
@@ -259,12 +261,6 @@ class Database_Mysql_Driver implements Database_Driver {
 		{
 			$sql .= "\n";
 			$sql .= $this->limit($database['limit'], $database['offset']);
-		}
-
-		if (count($database['regex']) > 0)
-		{
-			$sql .= "\n";
-			$sql .= implode(',', $database['regex']);
 		}
 
 		return $sql;

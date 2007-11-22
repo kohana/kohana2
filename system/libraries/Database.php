@@ -438,6 +438,54 @@ class Database_Core {
 	}
 
 	/**
+	 * Method: regex
+	 *  Selects the like(s) for a database <Database.query>.
+	 *
+	 * Parameters:
+	 *  field - field name or array of field => match pairs
+	 *  match - like value to match with field
+	 *
+	 * Returns:
+	 *  The <Database> object
+	 */
+	public function regex($field, $match = '')
+	{
+		$fields = is_array($field) ? $field : array($field => $match);
+
+		foreach ($fields as $field => $match)
+		{
+			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
+			$this->where[] = $this->driver->regex($field, $match, 'AND ', count($this->where));
+		}
+	
+		return $this;
+	}
+
+	/**
+	 * Method: orregex
+	 *  Selects the or like(s) for a database <Database.query>.
+	 *
+	 * Parameters:
+	 *  field - field name or array of field => match pairs
+	 *  match - like value to match with field
+	 *
+	 * Returns:
+	 *  The <Database> object
+	 */
+	public function orregex($field, $match = '')
+	{
+		$fields = is_array($field) ? $field : array($field => $match);
+
+		foreach ($fields as $field => $match)
+		{
+			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
+			$this->where[] = $this->driver->regex($field, $match, 'OR ', count($this->where));
+		}
+	
+		return $this;	
+	}
+
+	/**
 	 * Method: notlike
 	 *  Selects the not like(s) for a database <Database.query>.
 	 *
@@ -546,24 +594,6 @@ class Database_Core {
 	public function orhaving($key, $value = '')
 	{
 		$this->having = array_merge($this->having, $this->driver->having($key, $value, 'OR'));
-		return $this;
-	}
-
-	/**
-	 * Method: regex
-	 *  Selects a regex pattern for a database <Database.query>.
-	 *
-	 * Parameters:
-	 *  key   - key name or array of key => value pairs
-	 *  value - value to match with key
-	 *
-	 * Returns:
-	 *  The <Database> object
-	 */
-	public function regex($string, $pattern)
-	{
-		$this->select[] = '\''.$string.'\'';
-		$this->regex[] = $this->driver->regex($pattern);
 		return $this;
 	}
 
@@ -944,10 +974,10 @@ class Database_Core {
 		$this->orderby  = array();
 		$this->groupby  = array();
 		$this->having   = array();
+		$this->regex    = array();
 		$this->distinct = FALSE;
 		$this->limit    = FALSE;
 		$this->offset   = FALSE;
-		$this->regex   = FALSE;
 	}
 
 	/**
