@@ -438,6 +438,54 @@ class Database_Core {
 	}
 
 	/**
+	 * Method: notlike
+	 *  Selects the not like(s) for a database <Database.query>.
+	 *
+	 * Parameters:
+	 *  field - field name or array of field => match pairs
+	 *  match - like value to match with field
+	 *
+	 * Returns:
+	 *  The <Database> object
+	 */
+	public function notlike($field, $match = '')
+	{
+		$fields = is_array($field) ? $field : array($field => $match);
+
+		foreach ($fields as $field => $match)
+		{
+			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
+			$this->where[] = $this->driver->notlike($field, $match, 'AND ', count($this->where));
+		}
+	
+		return $this;
+	}
+
+	/**
+	 * Method: ornotlike
+	 *  Selects the or not like(s) for a database <Database.query>.
+	 *
+	 * Parameters:
+	 *  field - field name or array of field => match pairs
+	 *  match - like value to match with field
+	 *
+	 * Returns:
+	 *  The <Database> object
+	 */
+	public function ornotlike($field, $match = '')
+	{
+		$fields = is_array($field) ? $field : array($field => $match);
+
+		foreach ($fields as $field => $match)
+		{
+			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
+			$this->where[] = $this->driver->notlike($field, $match, 'OR ', count($this->where));
+		}
+	
+		return $this;	
+	}
+
+	/**
 	 * Method: regex
 	 *  Selects the like(s) for a database <Database.query>.
 	 *
@@ -486,48 +534,48 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: notlike
-	 *  Selects the not like(s) for a database <Database.query>.
+	 * Method: notregex
+	 *  Selects the not regex(s) for a database <Database.query>.
 	 *
 	 * Parameters:
 	 *  field - field name or array of field => match pairs
-	 *  match - like value to match with field
+	 *  match - regex value to match with field
 	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
-	public function notlike($field, $match = '')
+	public function notregex($field, $match = '')
 	{
 		$fields = is_array($field) ? $field : array($field => $match);
 
 		foreach ($fields as $field => $match)
 		{
 			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
-			$this->where[] = $this->driver->notlike($field, $match, 'AND ', count($this->where));
+			$this->where[] = $this->driver->notregex($field, $match, 'AND ', count($this->where));
 		}
 	
 		return $this;
 	}
 
 	/**
-	 * Method: orlike
-	 *  Selects the or not like(s) for a database <Database.query>.
+	 * Method: ornotregex
+	 *  Selects the or not regex(s) for a database <Database.query>.
 	 *
 	 * Parameters:
 	 *  field - field name or array of field => match pairs
-	 *  match - like value to match with field
+	 *  match - regex value to match with field
 	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
-	public function ornotlike($field, $match = '')
+	public function ornotregex($field, $match = '')
 	{
 		$fields = is_array($field) ? $field : array($field => $match);
 
 		foreach ($fields as $field => $match)
 		{
 			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
-			$this->where[] = $this->driver->notlike($field, $match, 'OR ', count($this->where));
+			$this->where[] = $this->driver->notregex($field, $match, 'OR ', count($this->where));
 		}
 	
 		return $this;	

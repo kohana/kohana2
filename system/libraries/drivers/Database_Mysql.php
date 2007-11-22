@@ -200,6 +200,13 @@ class Database_Mysql_Driver implements Database_Driver {
 		return $prefix.' '.$this->escape_column($field)." REGEXP '".$this->escape_str($match)."'";
 	}
 
+	public function notregex($field, $match = '', $type = 'AND ', $num_regexs)
+	{
+		$prefix = $num_regexs == 0 ? '' : $type;
+
+		return $prefix." ".$this->escape_column($field)." NOT REGEXP '".$this->escape_str($match) . "'";
+	}
+
 	public function insert($table, $keys, $values)
 	{
 		// Escape the column names

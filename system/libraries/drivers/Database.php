@@ -115,7 +115,7 @@ interface Database_Driver {
 	 *  field     - field name or array of field => match pairs
 	 *  match     - like value to match with field
 	 *  type      - operator to join multiple likes with (AND/OR)
-	 *  num_likes - number of existing LIKE clauses
+	 *  num_likes - number of existing WHERE clauses
 	 *
 	 * Returns:
 	 *  A LIKE portion of a query
@@ -130,12 +130,42 @@ interface Database_Driver {
 	 *  field     - field name or array of field => match pairs
 	 *  match     - like value to match with field
 	 *  type      - operator to join multiple likes with (AND/OR)
-	 *  num_likes - number of existing LIKE clauses
+	 *  num_likes - number of existing WHERE clauses
 	 *
 	 * Returns:
 	 *  A NOT LIKE portion of a query
 	 */
 	public function notlike($field, $match, $type, $num_likes);
+
+	/**
+	 * Method: regex
+	 *  Builds a REGEXP portion of a query.
+	 *
+	 * Parameters:
+	 *  field     - field name or array of field => match pairs
+	 *  match     - like value to match with field
+	 *  type      - operator to join multiple likes with (AND/OR)
+	 *  num_regexs - number of existing WHERE clauses
+	 *
+	 * Returns:
+	 *  A string containing the REGEXP query
+	 */
+	public function regex($field, $match, $type, $num_regexs);
+
+	/**
+	 * Method: notregex
+	 *  Builds a NOT REGEXP portion of a query.
+	 *
+	 * Parameters:
+	 *  field     - field name or array of field => match pairs
+	 *  match     - like value to match with field
+	 *  type      - operator to join multiple likes with (AND/OR)
+	 *  num_regexs - number of existing WHERE clauses
+	 *
+	 * Returns:
+	 *  A string containing the NOT REGEXP query
+	 */
+	public function notregex($field, $match, $type, $num_regexs);
 
 	/*
 	 * Method: insert
@@ -163,18 +193,6 @@ interface Database_Driver {
 	 *  A string containing the LIMIT query
 	 */
 	public function limit($limit, $offset = 0);
-
-	/**
-	 * Method: regex
-	 *  Builds a REGEXP portion of a query.
-	 *
-	 * Parameters:
-	 *  pattern  - the regex pattern to search
-	 *
-	 * Returns:
-	 *  A string containing the REGEXP query
-	 */
-	public function regex($field, $match, $type, $num_regexs);
 
 	/**
 	 * Method: compile_select
