@@ -1,14 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Class: Database_Pgsql_Driver
- *  Provides specific database items for PostgreSQL.
+ *  Provides specific database items for PostgreSQL 8.1+.
  *
  * Kohana Source Code:
  *  author    - Kohana Team
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
  */
-class Database_Pgsql_Driver implements Database_Driver {
+class Database_Pgsql_Driver extends Database_Driver {
 
 	// Database connection link
 	private $link;
@@ -42,7 +42,7 @@ class Database_Pgsql_Driver implements Database_Driver {
 				echo $this->set_charset($charset);
 			}
 
-			return TRUE;
+			return $this->link;
 		}
 
 		return FALSE;
@@ -50,21 +50,7 @@ class Database_Pgsql_Driver implements Database_Driver {
 
 	public function query($sql)
 	{
-		return new Pgsql_Result(pg_query($this->link, $sql), $this->link, $this->db_config['object'], $sql);
-	}
-
-	public function delete($table, $where)
-	{
-    	return 'DELETE FROM '.$this->escape_table($table).' WHERE '.implode(' ', $where);
-	}
-
-	public function update($table, $values, $where)
-	{
-		foreach($values as $key => $val)
-		{
-			$valstr[] = $this->escape_column($key)." = ".$val;
-		}
-		return 'UPDATE '.$this->escape_table($table).' SET '.implode(', ', $valstr).' WHERE '.implode(' AND ',$this->where($where, NULL, 'AND', 0, TRUE));
+		return new Pgsql_Result(pg_query($sql, $this->link), $this->link, $this->db_config['object'], $sql);
 	}
 
 	public function set_charset($charset)
@@ -74,89 +60,62 @@ class Database_Pgsql_Driver implements Database_Driver {
 
 	public function escape_table($table)
 	{
-		return str_replace('.', '`.`', $table);
+		return '\''.str_replace('.', '\'.\'', $table).'\'';
 	}
 
-	public function escape_column($column)
+public function escape_column($column)
 	{
-		return '\''.$column.'\'';
-	}
+		if (strtolower($column) == 'count(*)' OR $column == '*')
+			return $column;
 
-	public function where($key, $value, $type, $num_wheres, $quote)
-	{
-		if ( ! is_array($key))
+		// This matches any modifiers we support to SELECT.
+		if ( ! preg_match('/\b(?:rand|all|distinct(?:row)?|high_priority|sql_(?:small_result|b(?:ig_result|uffer_result)|no_cache|ca(?:che|lc_found_rows)))\s/i', $column))
 		{
-			$key = array($key => $value);
-		}
-
-		$wheres = array();
-		$count = 1;
-		foreach ($key as $k => $v)
-		{
-
-			$prefix = (($num_wheres > 0) OR ($count++ > 1)) ? $type : '';
-
-			if ($quote === -1)
+			if (stripos($column, ' AS ') !== FALSE)
 			{
-				$v = '';
+				// Force 'AS' to uppercase
+				$column = str_ireplace(' AS ', ' AS ', $column);
+
+				// Runs escape_column on both sides of an AS statement
+				$column = array_map(array($this, __FUNCTION__), explode(' AS ', $column));
+
+				// Re-create the AS statement
+				return implode(' AS ', $column);
 			}
-			else
+		
+			return preg_replace('/[^.*]+/', '\'$0\'', $column);
+		}
+
+		$parts = explode(' ', $column);
+		$column = '';
+
+		for ($i = 0, $c = count($parts); $i < $c; $i++)
+		{
+			// The column is always last
+			if ($i == ($c - 1))
 			{
-				if ($v === NULL)
-				{
-					if ( ! $this->has_operator($k))
-					{
-						$k .= ' IS';
-					}
-
-					$v = ' NULL';
-				}
-				elseif (is_bool($v))
-				{
-					if ( ! $this->has_operator($k))
-					{
-						$k .= ' =';
-					}
-
-					$v = ($v == TRUE) ? ' 1' : ' 0';
-				}
-				else
-				{
-					if ( ! $this->has_operator($k))
-					{
-					   $k .= ' =';
-					}
-
-					$v = ' '.(($quote == TRUE) ? $this->escape($v) : $v);
-				}
+				$column .= preg_replace('/[^.*]+/', '\'$0\'', $parts[$i]);
 			}
-			$wheres[] = $prefix.$k.$v;
+			else // otherwise, it's a modifier
+			{
+				$column .= $parts[$i].' ';
+			}
 		}
-		return $wheres;
+		return $column;
 	}
 
-	public function like($field, $match = '', $type = 'AND ', $num_likes)
+	public function regex($field, $match = '', $type = 'AND ', $num_regexs)
 	{
-		if ( ! is_array($field))
-		{
-			$field = array($field => $match);
-		}
+		$prefix = ($num_regexs == 0) ? '' : $type;
 
-		$likes = array();
-		foreach ($field as $k => $v)
-		{
-			$prefix = (count($num_likes) == 0) ? '' : $type;
-
-			$v = (substr($v, 0, 1) == '%' OR substr($v, (strlen($v)-1), 1) == '%') ? $this->escape_str($v) : '%'.$this->escape_str($v).'%';
-
-			$likes[] = $prefix." ".$k." LIKE '".$v . "'";
-		}
-		return $likes;
+		return $prefix.' '.$this->escape_column($field).' REGEXP \''.$this->escape_str($match).'\'';
 	}
 
-	public function insert($table, $keys, $values)
+	public function notregex($field, $match = '', $type = 'AND ', $num_regexs)
 	{
-		return 'INSERT INTO '.$this->escape_table($table).' ('.implode(', ', $keys).') VALUES ('.implode(', ', $values).')';
+		$prefix = $num_regexs == 0 ? '' : $type;
+
+		return $prefix.' '.$this->escape_column($field).' NOT REGEXP \''.$this->escape_str($match) . '\'';
 	}
 
 	public function limit($limit, $offset = 0)
@@ -166,7 +125,7 @@ class Database_Pgsql_Driver implements Database_Driver {
 
 	public function compile_select($database)
 	{
-		$sql  = ($database['distinct'] == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
+		$sql = ($database['distinct'] == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
 		$sql .= (count($database['select']) > 0) ? implode(', ', $database['select']) : '*';
 
 		if (count($database['from']) > 0)
@@ -175,22 +134,17 @@ class Database_Pgsql_Driver implements Database_Driver {
 			$sql .= implode(', ', $database['from']);
 		}
 
-		if (count($database['where']) > 0 OR count($database['like']) > 0)
+		if (count($database['join']) > 0)
+		{
+			$sql .= ' '.implode("\n", $database['join']);
+		}
+
+		if (count($database['where']) > 0)
 		{
 			$sql .= "\nWHERE ";
 		}
 
 		$sql .= implode("\n", $database['where']);
-
-		if (count($database['like']) > 0)
-		{
-			if (count($database['where']) > 0)
-			{
-				$sql .= ' ';
-			}
-
-			$sql .= implode("\n", $database['like']);
-		}
 
 		if (count($database['groupby']) > 0)
 		{
@@ -208,11 +162,6 @@ class Database_Pgsql_Driver implements Database_Driver {
 		{
 			$sql .= "\nORDER BY ";
 			$sql .= implode(', ', $database['orderby']);
-
-			if ($database['order'] !== FALSE)
-			{
-				$sql .= ($database['order'] == 'desc') ? ' DESC' : ' ASC';
-			}
 		}
 
 		if (is_numeric($database['limit']))
@@ -224,59 +173,105 @@ class Database_Pgsql_Driver implements Database_Driver {
 		return $sql;
 	}
 
-	public function has_operator($str)
-	{
-		return (bool) preg_match('/!?[=<>]|\sIS\s/i', trim($str));
-	}
-
-	public function escape($str)
-	{
-		switch (gettype($str))
-		{
-			case 'string':
-				$str = "'".$this->escape_str($str)."'";
- 			break;
-			case 'boolean':
-				$str = (int) $str;
-			break;
-			default:
-				$str = ($str === NULL) ? 'NULL' : $str;
-			break;
-		}
-
-		return (string) $str;
-	}
-
 	public function escape_str($str)
 	{
-		if ( ! is_resource($this->link))
-		{
-			$this->connect($this->db_config);
-		}
+		is_resource($this->link) or $this->connect($this->db_config);
 
-		return mysql_real_escape_string($str, $this->link);
+		return pg_escape_string($this->link, $str);
 	}
- 
+
 	public function list_tables()
 	{
-		$sql = 'SHOW TABLES FROM `'.$this->db_config['connection']['database'].'`';
-		$query = $this->query($sql);
-		$query = $query->result();
-		
+		$sql    = 'SELECT table_name FROM information_schema.tables WHERE table_schema = \'public\'';
+		$result = $this->query($sql)->result(FALSE, PGSQL_ASSOC);
+
 		$retval = array();
-		foreach($query as $row)
+		foreach($result as $row)
 		{
-			$column = 'Tables_in_'.$this->db_config['connection']['database'];
-			$retval[] = $row->$column;
+			$retval[] = current($row);
 		}
-		
+
 		return $retval;
 	}
 
-	function show_error()
+	public function show_error()
 	{
 		return pg_last_error($this->link);
 	}
+
+	public function list_fields($table, $query = FALSE)
+	{
+		static $tables;
+
+		if (is_object($query))
+		{
+			if (empty($tables[$table]))
+			{
+				$tables[$table] = array();
+
+				foreach($query as $row)
+				{
+					$tables[$table][] = $row->Field;
+				}
+			}
+
+			return $tables[$table];
+		}
+
+		// WOW...REALLY?!?
+		// Taken from http://www.postgresql.org/docs/7.4/interactive/catalogs.html
+		return 'SELECT
+  -- Field
+  pg_attribute.attname AS "Field",
+  -- Type
+  CASE pg_type.typname
+    WHEN \'int2\' THEN \'smallint\'
+    WHEN \'int4\' THEN \'int\'
+    WHEN \'int8\' THEN \'bigint\'
+    WHEN \'varchar\' THEN \'varchar(\' || pg_attribute.atttypmod-4 || \')\'
+    ELSE pg_type.typname
+  END AS "Type",
+  -- Null
+  CASE WHEN pg_attribute.attnotnull THEN \'\'
+    ELSE \'YES\'
+  END AS "Null",
+  -- Default
+  CASE pg_type.typname
+    WHEN \'varchar\' THEN substring(pg_attrdef.adsrc from \'^\'(.*)\'.*$\')
+    ELSE pg_attrdef.adsrc
+  END AS "Default"
+FROM pg_class
+  INNER JOIN pg_attribute
+    ON (pg_class.oid=pg_attribute.attrelid)
+  INNER JOIN pg_type
+    ON (pg_attribute.atttypid=pg_type.oid)
+  LEFT JOIN pg_attrdef
+    ON (pg_class.oid=pg_attrdef.adrelid AND pg_attribute.attnum=pg_attrdef.adnum)
+WHERE pg_class.relname=\''.$this->escape_table($table).'\' AND pg_attribute.attnum>=1 AND NOT pg_attribute.attisdropped
+ORDER BY pg_attribute.attnum';
+
+	}
+
+	public function field_data($table)
+	{
+		// TODO: This whole function needs to be debugged.
+		if ( ! in_array($table, $this->list_tables()))
+			return FALSE;
+
+		$query  = pg_query('SELECT * FROM '.$this->escape_table($table).' LIMIT 1', $this->link);
+		$fields = pg_num_fields($query);
+		$table  = array();
+
+		for ($i=0; $i < $fields; $i++)
+		{
+			$table[$i]['type']  = pg_field_type($query, $i);
+			$table[$i]['name']  = pg_field_name($query, $i);
+			$table[$i]['len']   = pg_field_prtlen($query, $i);
+		}
+
+		return $table;
+	}
+
 } // End Database_Pgsql_Driver Class
 
 /**
@@ -288,60 +283,134 @@ class Database_Pgsql_Driver implements Database_Driver {
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
  */
-class Pgsql_Result implements Database_Result, Iterator
-{
-	private $link      = FALSE;
-	private $result    = FALSE;
-	private $insert_id = NULL;
-	private $num_rows  = 0;
-	private $rows      = array();
-	private $object    = TRUE;
+class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable {
 
+	// Result resource
+	protected $result = NULL;
+
+	// Total rows and current row
+	protected $total_rows  = FALSE;
+	protected $current_row = FALSE;
+
+	// Insert id
+	protected $insert_id = FALSE;
+
+	// Data fetching types
+	protected $fetch_type  = 'pgsql_fetch_object';
+	protected $return_type = PGSQL_ASSOC;
+
+	/**
+	 * Constructor: __construct
+	 *  Sets up the class.
+	 *
+	 * Parameters:
+	 *  result - result resource
+	 *  link   - database resource link
+	 *  object - return objects or arrays
+	 *  sql    - sql query that was run
+	 */
 	public function __construct($result, $link, $object = TRUE, $sql)
 	{
-		$this->object = (bool) $object;
+		$this->result = $result;
 
 		// If the query is a resource, it was a SELECT, SHOW, DESCRIBE, EXPLAIN query
 		if (is_resource($result))
 		{
-			$this->result   = $result;
-			$this->num_rows = pg_num_rows($this->result);
+			$this->current_row = 0;
+			$this->total_rows  = pg_num_rows($this->result);
+			$this->fetch_type = ($object === TRUE) ? 'pg_fetch_object' : 'pg_fetch_array';
 		}
-		else
+		elseif (is_bool($result))
 		{
 			if ($result == FALSE)
 			{
-				throw new Kohana_Exception('database.error', pg_last_error($this->link).' - '.$sql);
+				// SQL error
+				throw new Kohana_Database_Exception('database.error', pg_last_error().' - '.$sql);
 			}
-			else if ($result == TRUE) // Its an DELETE, INSERT, REPLACE, or UPDATE query
+			else
 			{
-				//$this->insert_id = mysql_insert_id($link);
-				$this->num_rows  = pg_affected_rows($link);
+				// Its an DELETE, INSERT, REPLACE, or UPDATE query
+				$this->insert_id  = $this->get_insert_id($link);
+				$this->total_rows = pg_affected_rows($link);
 			}
+		}
+
+		// Set result type
+		$this->result($object);
+	}
+
+	/**
+	 * Destructor: __destruct
+	 *  Magic __destruct function, frees the result.
+	 */
+	public function __destruct()
+	{
+		if (is_resource($this->result))
+		{
+			pg_free_result($this->result);
 		}
 	}
 
 	public function result($object = TRUE, $type = PGSQL_ASSOC)
 	{
-		$fetch = ($object == TRUE) ? 'pg_fetch_object' : 'pg_fetch_array';
-		$type  = ($object == TRUE) ? 'stdClass' : $type;
+		$this->fetch_type = ((bool) $object) ? 'pg_fetch_object' : 'pg_fetch_array';
 
-		while ($row = $fetch($this->result, $type))
+		// This check has to be outside the previous statement, because we do not
+		// know the state of fetch_type when $object = NULL
+		// NOTE - The class set by $type must be defined before fetching the result,
+		// autoloading is disabled to save a lot of stupid overhead.
+		if ($this->fetch_type == 'pg_fetch_object')
 		{
-			$this->rows[] = $row;
+			$this->return_type = class_exists($type, FALSE) ? $type : 'stdClass';
+		}
+		else
+		{
+			$this->return_type = $type;
 		}
 
 		return $this;
 	}
 
-	public function num_rows()
+	public function result_array($object = NULL, $type = PGSQL_ASSOC)
 	{
-		return $this->num_rows;
-	}
+		$rows = array();
 
-	public function get_rows()
-	{
-		return $this->rows;
+		if (is_string($object))
+		{
+			$fetch = $object;
+		}
+		elseif (is_bool($object))
+		{
+			if ($object === TRUE)
+			{
+				$fetch = 'pg_fetch_object';
+
+				// NOTE - The class set by $type must be defined before fetching the result,
+				// autoloading is disabled to save a lot of stupid overhead.
+				$type = class_exists($type, FALSE) ? $type : 'stdClass';
+			}
+			else
+			{
+				$fetch = 'pg_fetch_array';
+			}
+		}
+		else
+		{
+			// Use the default config values
+			$fetch = $this->fetch_type;
+
+			if ($fetch == 'pg_fetch_object')
+			{
+				$type = class_exists($type, FALSE) ? $type : 'stdClass';
+			}
+		}
+
+		while ($row = $fetch($this->result, $type))
+		{
+			$rows[] = $row;
+		}
+
+		return $rows;
 	}
 
 	public function insert_id()
@@ -349,28 +418,184 @@ class Pgsql_Result implements Database_Result, Iterator
 		return $this->insert_id;
 	}
 
+	public function list_fields()
+	{
+		throw new Kohana_Database_Exception('database.not_implimented', __FUNCTION__);
+	}
+	// End Interface
+
+	private function get_insert_id($link)
+	{
+		$query = 'SELECT LASTVAL() as insert_id';
+
+		$result = pg_query($link, $query);
+		$insert_id = pg_fetch_array($result, NULL, PGSQL_ASSOC);
+
+		return $insert_id['insert_id'];
+	}
+
+	// Interface: Countable
+	/**
+	 * Method: count
+	 *  Counts the number of rows in the result set.
+	 * 
+	 * Returns:
+	 *  The number of rows in the result set
+	 */
+	public function count()
+	{
+		return $this->total_rows;
+	}
+	// End Interface
+
+	// Interface: ArrayAccess
+	/**
+	 * Method: offsetExists
+	 *  Determines if the requested offset of the result set exists.
+	 *
+	 * Parameters:
+	 *  offset - offset id
+	 * 
+	 * Returns:
+	 *  TRUE if the offset exists, FALSE otherwise
+	 */
+	public function offsetExists($offset)
+	{
+		if ($this->total_rows > 0)
+		{
+			$min = 0;
+			$max = $this->total_rows - 1;
+
+			return ($offset < $min OR $offset > $max) ? FALSE : TRUE;
+		}
+
+		return FALSE;
+	}
+
+	/**
+	 * Method: offsetGet
+	 *  Retreives the requested query result offset.
+	 *
+	 * Parameters:
+	 *  offset - offset id
+	 * 
+	 * Returns:
+	 *  The query row
+	 */
+	public function offsetGet($offset)
+	{
+		// Check to see if the requested offset exists.
+		if (!$this->offsetExists($offset))
+			return FALSE;
+
+		// Go to the offset and return the row
+		$fetch = $this->fetch_type;
+		return $fetch($this->result, $offset, $this->return_type);
+	}
+
+	/**
+	 * Method: offsetSet
+	 *  Sets the offset with the provided value. Since you can't modify query result sets, this function just throws an exception.
+	 *
+	 * Parameters:
+	 *  offset - offset id
+	 *  value  - value to set
+	 * 
+	 * Returns:
+	 *  <Kohana_Database_Exception> object
+	 */
+	public function offsetSet($offset, $value)
+	{
+		throw new Kohana_Database_Exception('database.result_read_only');
+	}
+
+	/**
+	 * Method: offsetUnset
+	 *  Unsets the offset. Since you can't modify query result sets, this function just throws an exception.
+	 *
+	 * Parameters:
+	 *  offset - offset id
+	 * 
+	 * Returns:
+	 *  <Kohana_Database_Exception> object
+	 */
+	public function offsetUnset($offset)
+	{
+		throw new Kohana_Database_Exception('database.result_read_only');
+	}
+	// End Interface
+
+	// Interface: Iterator
+	/**
+	 * Method: current
+	 *  Retreives the current result set row.
+	 * 
+	 * Returns:
+	 *  The current result row (type based on <Pgsql_result.result>)
+	 */
 	public function current()
 	{
-		return current($this->rows);
+		return $this->offsetGet($this->current_row);
 	}
 
-	public function next()
-	{
-		return next($this->rows);
-	}
-
+	/**
+	 * Method: key
+	 *  Retreives the current row id.
+	 * 
+	 * Returns:
+	 *  The current result row id
+	 */
 	public function key()
 	{
-		return key($this->rows);
+		return $this->current_row;
 	}
 
-	public function valid()
+	/**
+	 * Method: next
+	 *  Moves the result pointer ahead one.
+	 * 
+	 * Returns:
+	 *  The next row id
+	 */
+	public function next()
 	{
-		return ($this->current() !== FALSE);
+		return ++$this->current_row;
 	}
 
+	/**
+	 * Method: next
+	 *  Moves the result pointer back one.
+	 * 
+	 * Returns:
+	 *  The previous row id
+	 */
+	public function prev()
+	{
+		return --$this->current_row;
+	}
+
+	/**
+	 * Method: rewind
+	 *  Moves the result pointer to the beginning of the result set.
+	 * 
+	 * Returns:
+	 *  0
+	 */
 	public function rewind()
 	{
-		reset($this->rows);
+		return $this->current_row = 0;
 	}
+
+	/**
+	 * Method: valid
+	 *  Determines if the current result pointer is valid.
+	 * 
+	 * Returns:
+	 *  TRUE if the pointer is valid, FALSE otherwise
+	 */
+	public function valid()
+	{
+		return $this->offsetExists($this->current_row);
+	}
+	// End Interface
 } // End Pgsql_Result Class

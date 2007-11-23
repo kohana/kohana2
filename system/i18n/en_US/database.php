@@ -9,5 +9,6 @@ $lang = array
 	'invalid_dsn'           => 'The DSN you supplied is not valid: %s',
 	'must_use_set'          => 'You must set a SET clause for your query.',
 	'must_use_where'        => 'You must set a WHERE clause for your query.',
-	'must_use_table'        => 'You must set a datbase table for your query.'
+	'must_use_table'        => 'You must set a datbase table for your query.',
+	'not_implimented'       => 'The method you called, %s, is not supported by this driver.'
 );
