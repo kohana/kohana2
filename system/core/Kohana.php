@@ -82,6 +82,9 @@ class Kohana {
 		if ($run === TRUE)
 			return;
 
+		// Start the environment setup benchmark
+		Benchmark::start(SYSTEM_BENCHMARK.'_environment_setup');
+
 		if (function_exists('date_default_timezone_set'))
 		{
 			// Set default timezone, due to increased validation of date settings
@@ -110,6 +113,9 @@ class Kohana {
 		// Disable magic_quotes_runtime. The Input library takes care of
 		// magic_quotes_gpc later.
 		set_magic_quotes_runtime(0);
+
+		// Only include utf8 support if it's enabled
+		Config::item('core.enable_utf8') and require SYSPATH.'core/utf8'.EXT;
 
 		// Send default text/html UTF-8 header
 		header('Content-type: text/html; charset=UTF-8');
@@ -153,6 +159,9 @@ class Kohana {
 
 		// Setup is complete, prevent it from being run again
 		$run = TRUE;
+
+		// Stop the environment setup routine
+		Benchmark::start(SYSTEM_BENCHMARK.'_environment_setup');
 	}
 
 	/**
@@ -163,6 +172,8 @@ class Kohana {
 	{
 		if (self::$instance == FALSE)
 		{
+			Benchmark::start(SYSTEM_BENCHMARK.'_controller_setup');
+
 			// Include the Controller file
 			require Router::$directory.Router::$controller.EXT;
 
@@ -217,6 +228,12 @@ class Kohana {
 			// Run system.post_controller_constructor
 			Event::run('system.post_controller_constructor');
 
+			// Stop the controller setup benchmark
+			Benchmark::stop(SYSTEM_BENCHMARK.'_controller_setup');
+
+			// Start the controller execution benchmark
+			Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
+
 			// Controller method name, used for calling
 			$method = Router::$method;
 
@@ -252,6 +269,8 @@ class Kohana {
 
 			// Run system.post_controller
 			Event::run('system.post_controller');
+
+			Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
 		}
 
 		return self::$instance;

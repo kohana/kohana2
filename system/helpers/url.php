@@ -101,8 +101,11 @@ class url {
 		// Replace all dashes, underscores and whitespace by the separator
 		$title = preg_replace('/[-_\s]+/', $separator, $title);
 
-		// Replace accented characters by their unaccented equivalents
-		$title = utf8::transliterate_to_ascii($title);
+		if (class_exists('utf8', FALSE))
+		{
+			// Replace accented characters by their unaccented equivalents
+			$title = utf8::transliterate_to_ascii($title);
+		}
 
 		// Remove all characters that are not a-z, 0-9, or the separator
 		$title = preg_replace('/[^a-z0-9'.$separator.']+/', '', strtolower($title));

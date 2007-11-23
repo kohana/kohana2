@@ -1,11 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Simple benchmarking.
+ * Kohana
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * copyright - (c) 2007 Kohana Team
+ * license   - <http://kohanaphp.com/license.html>
+ * revision  - $Id$
+ */
+
+/**
+ * Simple benchmarking.
  */
 final class Benchmark {
 

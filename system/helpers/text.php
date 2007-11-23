@@ -52,18 +52,22 @@ class text {
 	 * Returns:
 	 *  A character-limited string with the end character attached.
 	 */
-	public static function limit_chars($str, $limit = 100, $end_char = '&#8230;', $preserve_words = FALSE)
+	public static function limit_chars($str, $limit = 100, $end_char = NULL, $preserve_words = FALSE)
 	{
+		$end_char = ($end_char === NULL) ? '&#8230;' : $end_char;
+
 		$limit = (int) $limit;
 
-		if (trim($str) == '' OR utf8::strlen($str) <= $limit)
+		if (trim($str) == '' OR (class_exists('utf8', FALSE) AND utf8::strlen($str) <= $limit) OR strlen($str) <= $limit)
 			return $str;
 
 		if ($limit <= 0)
 			return $end_char;
 
-		if ( ! $preserve_words)
-			return rtrim(utf8::substr($str, 0, $limit)).$end_char;
+		if ($preserve_words == FALSE)
+		{
+			return rtrim(class_exists('utf8', FALSE) ? utf8::substr($str, 0, $limit) : substr($str, 0, $limit)).$end_char;
+		}
 
 		preg_match('/^.{'.($limit - 1).'}\S*/us', $str, $matches);
 

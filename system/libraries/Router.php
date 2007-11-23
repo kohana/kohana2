@@ -206,7 +206,14 @@ class Router_Core {
 					{
 						list ($key, $val) = array_pad(explode('=', $pair), 1, '');
 
-						$_GET[utf8::clean($key)] = utf8::clean($val);
+						if (class_exists('utf8', FALSE))
+						{
+							$_GET[utf8::clean($key)] = utf8::clean($val);
+						}
+						else
+						{
+							$_GET[$key] = $val;
+						}
 					}
 				}
 			}

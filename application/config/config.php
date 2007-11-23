@@ -1,17 +1,20 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * File: config.php
- *  This configuration file is unique to every application.
+ * Site-specific application configuration is done here. This configuration file
+ * does not extend any other configuration file. All of the items here are prefixed
+ * with "core", eg: core.index_page would fetch the index_page variable from the
+ * configuration array.
  *
  * Options:
  *  site_domain          - domain and installation directory
  *  site_protocol        - protocol used to access the site, usually HTTP
  *  index_page           - name of the front controller, can be removed with URL rewriting
  *  url_suffix           - an extension that will be added to all generated URLs
- *  allow_config_set     - enable or disable setting of Config items
+ *  enable_utf8          - enable or disable internal utf8 support
  *  global_xss_filtering - enable or disable XSS attack filtering on all user input
+ *  allow_config_set     - enable or disable setting of Config items
  *  extension_prefix     - filename prefix for library extensions
- *  include_paths        - extra Kohana resource paths, see <Kohana.find_file>
+ *  include_paths        - "module" support, additional resource paths that will be searched
  *  autoload             - libraries and models to be loaded with the controller
  */
 $config = array
@@ -20,21 +23,18 @@ $config = array
 	'site_protocol'        => 'http',
 	'index_page'           => 'index.php',
 	'url_suffix'           => '',
-	'allow_config_set'     => TRUE,
+	'enable_utf8'          => TRUE,
 	'global_xss_filtering' => FALSE,
+	'allow_config_set'     => FALSE,
 	'extension_prefix'     => 'MY_',
 	'include_paths'        => array
 	(
-		// 'modules/auth',
-		// 'modules/ikeafans',
-		// 'modules/user_guide',
-		// 'modules/orm',
-		'modules/kodoc',
-		// 'modules/mixnotify'
+		// To enable the demo module, uncomment the following line
+		// 'modules/demo',
 	),
 	'autoload'             => array
 	(
 		'libraries' => '',
 		'models'    => ''
-	)
+	),
 );
