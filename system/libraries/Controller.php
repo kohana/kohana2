@@ -29,8 +29,7 @@ class Controller_Core extends Kohana {
 	}
 
 	/**
-	 * Method: kohana_include_view
-	 *  Includes a View within the controller scope.
+	 * Includes a View within the controller scope.
 	 *
 	 * Parameters:
 	 *  kohana_view_filename - filename
@@ -39,7 +38,7 @@ class Controller_Core extends Kohana {
 	 * Returns:
 	 *  Output of view file
 	 */
-	public function kohana_include_view($kohana_view_filename, $kohana_input_data)
+	public function _kohana_load_view($kohana_view_filename, $kohana_input_data)
 	{
 		if ($kohana_view_filename == '')
 			return;

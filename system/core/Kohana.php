@@ -185,12 +185,10 @@ class Kohana {
 				// Set the method to _remap
 				Router::$method = '_remap';
 			}
-			elseif (isset($methods[Router::$method]) AND Router::$method != 'kohana_include_view')
+			elseif (isset($methods[Router::$method]) AND substr(Router::$method, 0, 1) != '_')
 			{
-				/**
-				 * Do nothing. Exciting! Honestly, I am surprised having only
-				 * a comment here works.
-				 */
+				// A valid route has been found, and nothing needs to be done.
+				// Amazing that having nothing inside the statment still works.
 			}
 			elseif (method_exists($controller, '_default'))
 			{
@@ -216,17 +214,43 @@ class Kohana {
 				'Please make sure Controller is defined with <tt>Controller_Core extends Kohana</tt>.'
 			);
 
-			// Call the controller method
-			if (is_array(Router::$arguments) AND ! empty(Router::$arguments))
+			// Run system.post_controller_constructor
+			Event::run('system.post_controller_constructor');
+
+			// Controller method name, used for calling
+			$method = Router::$method;
+
+			if (empty(Router::$arguments))
 			{
-				call_user_func_array(array($controller, Router::$method), Router::$arguments);
+				// Call the controller method with no arguments
+				$controller->$method();
 			}
 			else
 			{
-				call_user_func(array($controller, Router::$method));
+				// Manually call the controller for up to 4 arguments. Why? Because
+				// call_user_func_array is ~3 times slower than direct method calls.
+				switch(count(Router::$arguments))
+				{
+					case 1:
+						$controller->$method(Router::$arguments[0]);
+					break;
+					case 2:
+						$controller->$method(Router::$arguments[0], Router::$arguments[1]);
+					break;
+					case 3:
+						$controller->$method(Router::$arguments[0], Router::$arguments[1], Router::$arguments[2]);
+					break;
+					case 4:
+						$controller->$method(Router::$arguments[0], Router::$arguments[1], Router::$arguments[2], Router::$arguments[3]);
+					break;
+					default:
+						// Resort to using call_user_func_array for many segments
+						call_user_func_array(array($controller, $method), Router::$arguments);
+					break;
+				}
 			}
 
-			// Run system.pre_controller
+			// Run system.post_controller
 			Event::run('system.post_controller');
 		}
 
@@ -466,13 +490,13 @@ class Kohana {
 			break;
 			case 'Controller':
 				$type = 'controllers';
-				$file = substr($class, 0, -11);
+				// Lowercase filename
+				$file = strtolower(substr($class, 0, -11));
 			break;
 			case 'Model':
 				$type = 'models';
-				$file = substr($class, 0, -6);
-				// Models are always lowercase
-				$file = strtolower($file);
+				// Lowercase filename
+				$file = strtolower(substr($class, 0, -6));
 			break;
 			case 'Driver':
 				$type = 'libraries/drivers';
@@ -487,6 +511,7 @@ class Kohana {
 			break;
 		}
 
+		// Load the requested file
 		require_once self::find_file($type, $file, TRUE);
 
 		if ($type == 'libraries')
@@ -524,7 +549,7 @@ class Kohana {
 		static $found = array();
 
 		$search = $directory.'/'.$filename;
-		$hash   = md5($search);
+		$hash   = sha1($search);
 
 		if (isset($found[$hash]))
 			return $found[$hash];

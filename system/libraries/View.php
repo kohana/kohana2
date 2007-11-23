@@ -139,7 +139,7 @@ class View_Core {
 		if ($this->kohana_filetype === EXT)
 		{
 			// Load the view in the controller for access to $this
-			$output = Kohana::instance()->kohana_include_view($this->kohana_filename, $this->data);
+			$output = Kohana::instance()->_kohana_load_view($this->kohana_filename, $this->data);
 
 			// Pass the output through the user defined renderer
 			if ($renderer == TRUE AND is_callable($renderer, TRUE))

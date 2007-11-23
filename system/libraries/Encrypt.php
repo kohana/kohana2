@@ -39,7 +39,7 @@ class Encrypt_Core {
 		$this->module = mcrypt_module_open($config['cipher'], '', $config['mode'], '');
 
 		// Different random seeds must be used for Windows and UNIX
-		$rand = (strpos(PHP_OS, 'WIN') !== FALSE) ? MCRYPT_RAND : MCRYPT_DEV_RANDOM;
+		$rand = (strpos(PHP_OS, 'WIN') === FALSE) ? MCRYPT_DEV_RANDOM : MCRYPT_RAND;
 
 		// Create an initialization vector
 		$iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($this->module), $rand);

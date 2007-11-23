@@ -259,7 +259,7 @@ final class Event {
 	 */
 	public static function run($name, & $data = NULL)
 	{
-		if ($name == FALSE)
+		if ($name == FALSE OR empty(self::$events[$name]))
 			return FALSE;
 
 		// So callbacks can access Event::$data
