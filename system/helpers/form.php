@@ -42,7 +42,7 @@ class form {
 		{
 			$action = url::site($action);
 		}
-		
+
 		// Form opening tag
 		$form = '<form action="'.$action.'"'.self::attributes($attr).'>'."\n";
 
@@ -224,7 +224,7 @@ class form {
 		// Value is not part of the attributes
 		unset($data['value']);
 
-		return '<textarea'.self::attributes($data).'>'.html::specialchars($value).'</textarea>';
+		return '<textarea'.self::attributes($data).$extra.'>'.html::specialchars($value).'</textarea>';
 	}
 
 	/**
