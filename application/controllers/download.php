@@ -224,7 +224,7 @@ class Download_Controller extends Controller {
 			$return_dir = getcwd();
 
 			// Change to the trunk directory
-			chdir('kohana_trunk');
+			chdir(realpath(APPPATH.'../kohana_trunk'));
 
 			// Initialize a new archive
 			$archive = new Archive($this->validation->format);
