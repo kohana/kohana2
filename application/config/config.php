@@ -25,7 +25,7 @@ $config = array
 	'extension_prefix'     => 'MY_',
 	'include_paths'        => array
 	(
-		'kohana_trunk/modules/auth'
+		APPPATH.'../kohana_trunk/modules/auth'
 	),
 	'autoload'             => array
 	(
