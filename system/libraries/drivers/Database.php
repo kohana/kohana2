@@ -115,7 +115,52 @@ abstract class Database_Driver {
 	 * Returns:
 	 *  A WHERE portion of a query
 	 */
-	abstract public function where($key, $value, $type, $num_wheres, $quote);
+	public function where($key, $value, $type, $num_wheres, $quote)
+	{
+		$prefix = ($num_wheres == 0) ? '' : $type;
+
+		if ($quote === -1)
+		{
+			$value = '';
+		}
+		else
+		{
+			if ($value === NULL)
+			{
+				if ( ! $this->has_operator($key))
+				{
+					$key .= ' IS';
+				}
+
+				$value = ' NULL';
+			}
+			elseif (is_bool($value))
+			{
+				if ( ! $this->has_operator($key))
+				{
+					$key .= ' =';
+				}
+
+				$value = ($value == TRUE) ? ' 1' : ' 0';
+			}
+			else
+			{
+				if ( ! $this->has_operator($key))
+				{
+					$key = $this->escape_column($key).' =';
+				}
+				else
+				{
+					preg_match('/^(.+?)([<>!=]+|\bIS(?:\s+NULL))\s*$/i', $key, $matches);
+					$key = $this->escape_column(trim($matches[1])).' '.trim($matches[2]);
+				}
+
+				$value = ' '.(($quote == TRUE) ? $this->escape($value) : $value);
+			}
+		}
+
+		return $prefix.$key.$value;
+	}
 
 	/**
 	 * Method: like
