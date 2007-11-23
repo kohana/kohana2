@@ -45,6 +45,7 @@ class Download_Controller extends Controller {
 				'system/config/routes.php',
 				'system/config/session.php',
 				'system/config/user_agents.php',
+				'system/core',
 				'system/helpers',
 				'system/helpers/arr.php',
 				'system/helpers/cookie.php',
@@ -117,7 +118,7 @@ class Download_Controller extends Controller {
 		// Add core files
 		foreach(Kohana::list_files('core') as $file)
 		{
-			$groups['minimal'][] = substr($file, strlen(DOCROOT.'kohana_trunk/'));
+			$groups['minimal'][] = substr($file, strrpos($file, 'system/'));
 		}
 
 		// Standard should have all the files that minimal does
@@ -262,6 +263,9 @@ class Download_Controller extends Controller {
 				}
 			}
 
+			// Do this to prevent the template from trying to render and fucking up the download
+			$this->auto_render = FALSE;
+
 			// Force a download of the archive
 			$archive->download('Kohana_v'.KOHANA_VERSION.'_'.date('Y-m-d', $content->sync_date).'.zip');
 
@@ -269,10 +273,9 @@ class Download_Controller extends Controller {
 			chdir($return_dir);
 
 			// Increase the counter
-			file_put_contents('application/cache/counter.txt', $content->counter + 1);
+			file_put_contents(APPPATH.'cache/counter.txt', $content->counter + 1);
 
-			// Do this to prevent the template from trying to render and fucking up the download
-			$this->auto_render = FALSE;
+			// We're done here
 			return;
 		}
 
