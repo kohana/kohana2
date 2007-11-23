@@ -8,7 +8,7 @@
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
  */
-class Database_Mysql_Driver implements Database_Driver {
+class Database_Mysql_Driver extends Database_Driver {
 
 	// Database connection link
 	protected $link;
@@ -57,20 +57,6 @@ class Database_Mysql_Driver implements Database_Driver {
 	public function query($sql)
 	{
 		return new Mysql_Result(mysql_query($sql, $this->link), $this->link, $this->db_config['object'], $sql);
-	}
-
-	public function delete($table, $where)
-	{
-		return 'DELETE FROM '.$this->escape_table($table).' WHERE '.implode(' ', $where);
-	}
-
-	public function update($table, $values, $where)
-	{
-		foreach($values as $key => $val)
-		{
-			$valstr[] = $this->escape_column($key).' = '.$val;
-		}
-		return 'UPDATE '.$this->escape_table($table).' SET '.implode(', ', $valstr).' WHERE '.implode(' ',$where);
 	}
 
 	public function set_charset($charset)
@@ -171,28 +157,6 @@ class Database_Mysql_Driver implements Database_Driver {
 		return $prefix.$key.$value;
 	}
 
-	public function like($field, $match = '', $type = 'AND ', $num_likes)
-	{
-		$prefix = ($num_likes == 0) ? '' : $type;
-
-		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%') 
-		       ? $this->escape_str($match) 
-		       : '%'.$this->escape_str($match).'%';
-
-		return $prefix.' '.$this->escape_column($field).' LIKE \''.$match . '\'';
-	}
-
-	public function notlike($field, $match = '', $type = 'AND ', $num_likes)
-	{
-		$prefix = ($num_likes == 0) ? '' : $type;
-
-		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%') 
-		       ? $this->escape_str($match) 
-		       : '%'.$this->escape_str($match).'%';
-
-		return $prefix.' '.$this->escape_column($field).' NOT LIKE \''.$match.'\'';
-	}
-
 	public function regex($field, $match = '', $type = 'AND ', $num_regexs)
 	{
 		$prefix = ($num_regexs == 0) ? '' : $type;
@@ -205,16 +169,6 @@ class Database_Mysql_Driver implements Database_Driver {
 		$prefix = $num_regexs == 0 ? '' : $type;
 
 		return $prefix.' '.$this->escape_column($field).' NOT REGEXP \''.$this->escape_str($match) . '\'';
-	}
-
-	public function insert($table, $keys, $values)
-	{
-		// Escape the column names
-		foreach ($keys as $key => $value)
-		{
-			$keys[$key] = $this->escape_column($value);
-		}
-		return 'INSERT INTO '.$this->escape_table($table).' ('.implode(', ', $keys).') VALUES ('.implode(', ', $values).')';
 	}
 
 	public function limit($limit, $offset = 0)
@@ -270,29 +224,6 @@ class Database_Mysql_Driver implements Database_Driver {
 		}
 
 		return $sql;
-	}
-
-	public function has_operator($str)
-	{
-		return (bool) preg_match('/[<>!=]|\sIS\s+(?:NOT\s+)?NULL\b/i', trim($str));
-	}
-
-	public function escape($value)
-	{
-		switch (gettype($value))
-		{
-			case 'string':
-				$value = '\''.$this->escape_str($value).'\'';
-				break;
-			case 'boolean':
-				$value = (int) $value;
-			break;
-			default:
-				$value = ($value === NULL) ? 'NULL' : $value;
-			break;
-		}
-
-		return (string) $value;
 	}
 
 	public function escape_str($str)

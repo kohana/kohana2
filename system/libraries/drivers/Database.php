@@ -8,7 +8,7 @@
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
  */
-interface Database_Driver {
+abstract class Database_Driver {
 
 	/**
 	 * Method: connect
@@ -17,7 +17,7 @@ interface Database_Driver {
 	 * Returns:
 	 *  Database link on success or FALSE on failure
 	 */
-	public function connect();
+	abstract public function connect();
 
 	/**
 	 * Method: query
@@ -29,7 +29,7 @@ interface Database_Driver {
 	 * Returns:
 	 *  Database result object
 	 */
-	public function query($sql);
+	abstract public function query($sql);
 
 	/**
 	 * Method: delete
@@ -42,7 +42,10 @@ interface Database_Driver {
 	 * Returns:
 	 *  A DELETE sql query string
 	 */
-	public function delete($table, $where);
+	public function delete($table, $where)
+	{
+		return 'DELETE FROM '.$this->escape_table($table).' WHERE '.implode(' ', $where);
+	}
 
 	/**
 	 * Method: update
@@ -56,7 +59,14 @@ interface Database_Driver {
 	 * Returns:
 	 *  An UPDATE sql query string
 	 */
-	public function update($table, $val, $where);
+	public function update($table, $values, $where)
+	{
+		foreach($values as $key => $val)
+		{
+			$valstr[] = $this->escape_column($key).' = '.$val;
+		}
+		return 'UPDATE '.$this->escape_table($table).' SET '.implode(', ', $valstr).' WHERE '.implode(' ',$where);
+	}
 
 	/**
 	 * Method: set_charset
@@ -65,7 +75,7 @@ interface Database_Driver {
 	 * Parameters:
 	 *  charset - character set
 	 */
-	public function set_charset($charset);
+	abstract public function set_charset($charset);
 
 	/**
 	 * Method: escape_table
@@ -77,7 +87,7 @@ interface Database_Driver {
 	 * Returns:
 	 *  A string containing the escaped table name
 	 */
-	public function escape_table($table);
+	abstract public function escape_table($table);
 
 	/**
 	 * Method: escape_column
@@ -89,7 +99,7 @@ interface Database_Driver {
 	 * Returns:
 	 *  A string containing the escaped column name
 	 */
-	public function escape_column($column);
+	abstract public function escape_column($column);
 
 	/**
 	 * Method: where
@@ -105,7 +115,7 @@ interface Database_Driver {
 	 * Returns:
 	 *  A WHERE portion of a query
 	 */
-	public function where($key, $value, $type, $num_wheres, $quote);
+	abstract public function where($key, $value, $type, $num_wheres, $quote);
 
 	/**
 	 * Method: like
@@ -120,7 +130,16 @@ interface Database_Driver {
 	 * Returns:
 	 *  A LIKE portion of a query
 	 */
-	public function like($field, $match, $type, $num_likes);
+	public function like($field, $match = '', $type = 'AND ', $num_likes)
+	{
+		$prefix = ($num_likes == 0) ? '' : $type;
+
+		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%') 
+		       ? $this->escape_str($match) 
+		       : '%'.$this->escape_str($match).'%';
+
+		return $prefix.' '.$this->escape_column($field).' LIKE \''.$match . '\'';
+	}
 
 	/**
 	 * Method: notlike
@@ -135,7 +154,16 @@ interface Database_Driver {
 	 * Returns:
 	 *  A NOT LIKE portion of a query
 	 */
-	public function notlike($field, $match, $type, $num_likes);
+	public function notlike($field, $match = '', $type = 'AND ', $num_likes)
+	{
+		$prefix = ($num_likes == 0) ? '' : $type;
+
+		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%') 
+		       ? $this->escape_str($match) 
+		       : '%'.$this->escape_str($match).'%';
+
+		return $prefix.' '.$this->escape_column($field).' NOT LIKE \''.$match.'\'';
+	}
 
 	/**
 	 * Method: regex
@@ -150,7 +178,7 @@ interface Database_Driver {
 	 * Returns:
 	 *  A string containing the REGEXP query
 	 */
-	public function regex($field, $match, $type, $num_regexs);
+	abstract public function regex($field, $match, $type, $num_regexs);
 
 	/**
 	 * Method: notregex
@@ -165,9 +193,9 @@ interface Database_Driver {
 	 * Returns:
 	 *  A string containing the NOT REGEXP query
 	 */
-	public function notregex($field, $match, $type, $num_regexs);
+	abstract public function notregex($field, $match, $type, $num_regexs);
 
-	/*
+	/**
 	 * Method: insert
 	 *  Builds an INSERT query.
 	 *
@@ -179,7 +207,15 @@ interface Database_Driver {
 	 * Returns:
 	 *  A string containing the INSERT query
 	 */
-	public function insert($table, $keys, $values);
+	public function insert($table, $keys, $values)
+	{
+		// Escape the column names
+		foreach ($keys as $key => $value)
+		{
+			$keys[$key] = $this->escape_column($value);
+		}
+		return 'INSERT INTO '.$this->escape_table($table).' ('.implode(', ', $keys).') VALUES ('.implode(', ', $values).')';
+	}
 
 	/**
 	 * Method: limit
@@ -192,7 +228,7 @@ interface Database_Driver {
 	 * Returns:
 	 *  A string containing the LIMIT query
 	 */
-	public function limit($limit, $offset = 0);
+	abstract public function limit($limit, $offset = 0);
 
 	/**
 	 * Method: compile_select
@@ -206,7 +242,7 @@ interface Database_Driver {
 	 * Returns:
 	 *  A string containing the SELECT query
 	 */
-	public function compile_select($database);
+	abstract public function compile_select($database);
 
 	/**
 	 * Method: has_operator
@@ -218,7 +254,10 @@ interface Database_Driver {
 	 * Returns:
 	 *  TRUE if the string has an operator in it, FALSE otherwise
 	 */
-	public function has_operator($str);
+	public function has_operator($str)
+	{
+		return (bool) preg_match('/[<>!=]|\sIS\s+(?:NOT\s+)?NULL\b/i', trim($str));
+	}
 
 	/**
 	 * Method: escape
@@ -230,7 +269,23 @@ interface Database_Driver {
 	 * Returns:
 	 *  An escaped version of the value
 	 */
-	public function escape($value);
+	public function escape($value)
+	{
+		switch (gettype($value))
+		{
+			case 'string':
+				$value = '\''.$this->escape_str($value).'\'';
+				break;
+			case 'boolean':
+				$value = (int) $value;
+			break;
+			default:
+				$value = ($value === NULL) ? 'NULL' : $value;
+			break;
+		}
+
+		return (string) $value;
+	}
 
 	/**
 	 * Method: escape_str
@@ -242,7 +297,7 @@ interface Database_Driver {
 	 * Returns:
 	 *  An escaped version of the string
 	 */
-	public function escape_str($str);
+	abstract public function escape_str($str);
 
 	/**
 	 * Method: list_tables
@@ -251,7 +306,7 @@ interface Database_Driver {
 	 * Returns:
 	 *  An array of table names
 	 */
-	public function list_tables();
+	abstract public function list_tables();
 
 	/**
 	 * Method: show_error
@@ -260,7 +315,7 @@ interface Database_Driver {
 	 * Returns:
 	 *  A string containing the error
 	 */
-	public function show_error();
+	abstract public function show_error();
 
 	/**
 	 * Method: field_data
@@ -272,7 +327,7 @@ interface Database_Driver {
 	 * Returns:
 	 *  An array containing the field data or FALSE if the table doesn't exist.
 	 */
-	public function field_data($table);
+	abstract public function field_data($table);
 
 } // End Database Driver Interface
 
