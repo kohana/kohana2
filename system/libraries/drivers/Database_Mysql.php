@@ -124,6 +124,16 @@ class Database_Mysql_Driver extends Database_Driver {
 		return $prefix.' '.$this->escape_column($field).' NOT REGEXP \''.$this->escape_str($match) . '\'';
 	}
 
+	public function merge($table, $keys, $values)
+	{
+		// Escape the column names
+		foreach ($keys as $key => $value)
+		{
+			$keys[$key] = $this->escape_column($value);
+		}
+		return 'REPLACE INTO '.$this->escape_table($table).' ('.implode(', ', $keys).') VALUES ('.implode(', ', $values).')';
+	}
+
 	public function limit($limit, $offset = 0)
 	{
 		return 'LIMIT '.$offset.', '.$limit;

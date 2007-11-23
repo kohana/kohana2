@@ -870,6 +870,51 @@ class Database_Core {
 	}
 
 	/**
+	 * Method: merge
+	 *  Compiles an merge string and runs the <Database.query>.
+	 *
+	 * Parameters:
+	 *  table - table name
+	 *  set   - array of key/value pairs to merge
+	 *
+	 * Returns:
+	 *  <Database_Result> object
+	 */
+	public function merge($table = '', $set = NULL)
+	{
+		if ( ! is_null($set))
+		{
+			$this->set($set);
+		}
+
+		if ($this->set == NULL)
+		{
+			if ($this->config['show_errors'])
+				throw new Kohana_Database_Exception('database.must_use_set');
+			else
+				return FALSE;
+		}
+
+		if ($table == '')
+		{
+			if ( ! isset($this->from[0]))
+			{
+				if ($this->config['show_errors'])
+					throw new Kohana_Database_Exception('database.must_use_table');
+				else
+					return FALSE;
+			}
+
+			$table = $this->from[0];
+		}
+
+		$sql = $this->driver->merge($this->config['table_prefix'].$table, array_keys($this->set), array_values($this->set));
+
+		$this->reset_write();
+		return $this->query($sql);
+	}
+
+	/**
 	 * Method: update
 	 *  Compiles an update string and runs the <Database.query>.
 	 *

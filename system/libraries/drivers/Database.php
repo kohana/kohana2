@@ -263,6 +263,20 @@ abstract class Database_Driver {
 	}
 
 	/**
+	 * Method: merge
+	 *  Builds an MERGE query.
+	 *
+	 * Parameters:
+	 *  table  - table name
+	 *  keys   - array of keys
+	 *  values - array of values for the keys
+	 *
+	 * Returns:
+	 *  A string containing the MERGE query
+	 */
+	abstract public function merge($table, $keys, $values);
+
+	/**
 	 * Method: limit
 	 *  Builds a LIMIT portion of a query.
 	 *
