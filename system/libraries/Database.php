@@ -28,7 +28,7 @@ class Database_Core {
 
 	// Database driver object
 	protected $driver;
-	static    $links;
+	protected $link;
 
 	// Un-compiled parts of the SQL query
 	protected $select     = array();
@@ -85,12 +85,6 @@ class Database_Core {
 		// Make sure the connection is valid
 		if (strpos($this->config['connection'], '://') === FALSE)
 			throw new Kohana_Exception('database.invalid_dsn', $this->config['connection']);
-
-		$this->config['DSN'] = $this->config['connection'];
-		if (!isset(Database::$links[md5($this->config['DSN'])]))
-		{
-			Database::$links[md5($this->config['DSN'])] = FALSE;
-		}
 
 		// Parse the DSN, creating an array to hold the connection parameters
 		$db = array
@@ -186,9 +180,9 @@ class Database_Core {
 	 */
 	public function connect()
 	{
-		if ( ! is_resource(Database::$links[md5($this->config['DSN'])]))
+		if ( ! is_resource($this->link))
 		{
-			if ( ! is_resource(Database::$links[md5($this->config['DSN'])] = $this->driver->connect()))
+			if ( ! is_resource($this->link = $this->driver->connect()))
 				throw new Kohana_Exception('database.connection', $this->driver->show_error());
 		}
 	}
@@ -208,7 +202,7 @@ class Database_Core {
 		if ($sql == '') return FALSE;
 
 		// No link? Connect!
-		Database::$links[md5($this->config['DSN'])] or $this->connect();
+		$this->link or $this->connect();
 
 		// Start the benchmark
 		$start = microtime(TRUE);
@@ -390,7 +384,7 @@ class Database_Core {
 		{
 			$key           = (strpos($key, '.') !== FALSE) ? $this->config['table_prefix'].$key : $key;
 			$this->where[] = $this->driver->where($key, $value, 'OR ', count($this->where), $quote);
-		}		
+		}
 
 		return $this;
 	}
@@ -415,7 +409,7 @@ class Database_Core {
 			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
 			$this->where[] = $this->driver->like($field, $match, 'AND ', count($this->where));
 		}
-	
+
 		return $this;
 	}
 
@@ -439,8 +433,8 @@ class Database_Core {
 			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
 			$this->where[] = $this->driver->like($field, $match, 'OR ', count($this->where));
 		}
-	
-		return $this;	
+
+		return $this;
 	}
 
 	/**
@@ -463,7 +457,7 @@ class Database_Core {
 			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
 			$this->where[] = $this->driver->notlike($field, $match, 'AND ', count($this->where));
 		}
-	
+
 		return $this;
 	}
 
@@ -487,8 +481,8 @@ class Database_Core {
 			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
 			$this->where[] = $this->driver->notlike($field, $match, 'OR ', count($this->where));
 		}
-	
-		return $this;	
+
+		return $this;
 	}
 
 	/**
@@ -511,7 +505,7 @@ class Database_Core {
 			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
 			$this->where[] = $this->driver->regex($field, $match, 'AND ', count($this->where));
 		}
-	
+
 		return $this;
 	}
 
@@ -535,8 +529,8 @@ class Database_Core {
 			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
 			$this->where[] = $this->driver->regex($field, $match, 'OR ', count($this->where));
 		}
-	
-		return $this;	
+
+		return $this;
 	}
 
 	/**
@@ -559,7 +553,7 @@ class Database_Core {
 			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
 			$this->where[] = $this->driver->notregex($field, $match, 'AND ', count($this->where));
 		}
-	
+
 		return $this;
 	}
 
@@ -583,8 +577,8 @@ class Database_Core {
 			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
 			$this->where[] = $this->driver->notregex($field, $match, 'OR ', count($this->where));
 		}
-	
-		return $this;	
+
+		return $this;
 	}
 
 	/**
@@ -1099,7 +1093,7 @@ class Database_Core {
 	 */
 	public function list_tables()
 	{
-		Database::$links[md5($this->config['DSN'])] or $this->connect();
+		$this->link or $this->connect();
 
 		$this->reset_select();
 
@@ -1165,7 +1159,7 @@ class Database_Core {
 	 */
 	public function field_data($table ='')
 	{
-		Database::$links[md5($this->config['DSN'])] or $this->connect();
+		$this->link or $this->connect();
 
 		return $this->driver->field_data($this->config['table_prefix'].$table);
 	}
