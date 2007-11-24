@@ -40,7 +40,6 @@ class Database_Core {
 	protected $order      = array();
 	protected $groupby    = array();
 	protected $having     = array();
-	protected $regex      = array();
 	protected $distinct   = FALSE;
 	protected $limit      = FALSE;
 	protected $offset     = FALSE;
@@ -1067,7 +1066,6 @@ class Database_Core {
 		$this->orderby  = array();
 		$this->groupby  = array();
 		$this->having   = array();
-		$this->regex    = array();
 		$this->distinct = FALSE;
 		$this->limit    = FALSE;
 		$this->offset   = FALSE;
