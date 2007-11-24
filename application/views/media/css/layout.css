@@ -81,3 +81,9 @@ code { display: block; padding: 1em; margin: 1em 0 1em; background: #eee; border
 /* Footer */
 #footer { padding: 1em 4em; background: #83c018; text-transform: uppercase; text-align: right; color: #eee; font-size: 0.8em; }
 	#footer strong { float: left; font-weight: bold; }
+
+/* Flash Player */
+#flash { background: #222; text-align: center; font-size: 2em; color: #fff; }
+	#flash span { display: block; cursor: pointer; width: 8em; text-align: bottom; margin: 0 auto; padding: 6em 0.5em 1em; background: #2f2f2f; }
+	#flash .alt span { display: none; }
+	

@@ -8,23 +8,27 @@ class Tutorials_Controller extends Controller {
 	{
 		$titles = array
 		(
+			'Video Tutorials' => array
+			(
+				'video/hello_world' => 'Hello World Introduction'
+			),
 			'Security' => array
 			(
-				'xss'          => 'XSS Attack Filtering',
+				'xss' => 'XSS Attack Filtering',
 			),
 			'Static Content' => array
 			(
-				'page'             => 'Creating a Page Controller',
+				'page' => 'Creating a Page Controller',
 			),
 			'Forms and Validation' => array
 			(
 				'model_validation' => 'Built-in Model Validation',
-				'quick_forms'      => 'Quick Form Generation'
+				'quick_forms' => 'Quick Form Generation'
 			),
 			'Advanced Tutorials' => array
 			(
-				'remove_index'     => 'Removing index.php From URLs',
-				'multilingual'     => 'Setting Up a Multilingual Website'
+				'remove_index' => 'Removing index.php From URLs',
+				'multilingual' => 'Setting Up a Multilingual Website'
 			)
 		);
 
@@ -61,6 +65,21 @@ class Tutorials_Controller extends Controller {
 				'content' => new View('pages/tutorials/index', array('titles' => $titles))
 			));
 		}
+	}
+
+	public function video($name)
+	{
+		$player = new View('pages/tutorials/video');
+
+		$player->title = 'Hello World Introduction';
+		$player->author = 'Christophe Prudent';
+		$player->copyright = 2007;
+		$player->video = preg_replace('/\.html$/', '', url::site('media/video/'.$this->uri->segment(3).'.swf'));
+		$player->width = 776;
+		$player->height = 600;
+
+		$this->template->title  = $player->title;
+		$this->template->content = $player->render();
 	}
 
 	public function download($filename = FALSE)
