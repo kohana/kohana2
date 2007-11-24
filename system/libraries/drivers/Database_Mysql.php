@@ -33,6 +33,12 @@ class Database_Mysql_Driver extends Database_Driver {
 		// Import the connect variables
 		extract($this->db_config['connection']);
 
+		// See if we are already connected
+		if (is_resource(Database::$links[md5($this->db_config['DSN'])]))
+		{
+			$this->link = Database::$links[md5($this->db_config['DSN'])];
+			return Database::$links[md5($this->db_config['DSN'])];
+		}
 		// Persistent connections enabled?
 		$connect = ($this->db_config['persistent'] == TRUE) ? 'mysql_pconnect' : 'mysql_connect';
 
@@ -56,6 +62,7 @@ class Database_Mysql_Driver extends Database_Driver {
 
 	public function query($sql)
 	{
+		//die('<pre>'.print_r($this->link, true));
 		return new Mysql_Result(mysql_query($sql, $this->link), $this->link, $this->db_config['object'], $sql);
 	}
 

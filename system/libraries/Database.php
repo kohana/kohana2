@@ -28,7 +28,7 @@ class Database_Core {
 
 	// Database driver object
 	protected $driver;
-	protected $link;
+	static    $links;
 
 	// Un-compiled parts of the SQL query
 	protected $select     = array();
@@ -85,6 +85,12 @@ class Database_Core {
 		// Make sure the connection is valid
 		if (strpos($this->config['connection'], '://') === FALSE)
 			throw new Kohana_Exception('database.invalid_dsn', $this->config['connection']);
+
+		$this->config['DSN'] = $this->config['connection'];
+		if (!isset(Database::$links[md5($this->config['DSN'])]))
+		{
+			Database::$links[md5($this->config['DSN'])] = FALSE;
+		}
 
 		// Parse the DSN, creating an array to hold the connection parameters
 		$db = array
@@ -180,9 +186,9 @@ class Database_Core {
 	 */
 	public function connect()
 	{
-		if ( ! is_resource($this->link))
+		if ( ! is_resource(Database::$links[md5($this->config['DSN'])]))
 		{
-			if ( ! is_resource($this->link = $this->driver->connect()))
+			if ( ! is_resource(Database::$links[md5($this->config['DSN'])] = $this->driver->connect()))
 				throw new Kohana_Exception('database.connection', $this->driver->show_error());
 		}
 	}
@@ -202,7 +208,7 @@ class Database_Core {
 		if ($sql == '') return FALSE;
 
 		// No link? Connect!
-		$this->link or $this->connect();
+		Database::$links[md5($this->config['DSN'])] or $this->connect();
 
 		// Start the benchmark
 		$start = microtime(TRUE);
@@ -1093,7 +1099,7 @@ class Database_Core {
 	 */
 	public function list_tables()
 	{
-		$this->link or $this->connect();
+		Database::$links[md5($this->config['DSN'])] or $this->connect();
 
 		$this->reset_select();
 
@@ -1159,7 +1165,7 @@ class Database_Core {
 	 */
 	public function field_data($table ='')
 	{
-		$this->link or $this->connect();
+		Database::$links[md5($this->config['DSN'])] or $this->connect();
 
 		return $this->driver->field_data($this->config['table_prefix'].$table);
 	}
