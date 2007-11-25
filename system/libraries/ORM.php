@@ -19,13 +19,17 @@ class ORM_Core {
 	protected $class;
 	protected $table;
 
-	// This object
+	// SQL building status
+	protected $select = FALSE;
+	protected $where = FALSE;
+
+	// Currently loaded object
 	protected $object;
 
 	// Changed object keys
 	protected $changed = array();
 
-	// Relationships
+	// Object Relationships
 	protected $has_one = array();
 	protected $has_many = array();
 	protected $belongs_to = array();
@@ -45,10 +49,10 @@ class ORM_Core {
 
 			// Insert db into this object
 			self::$db = Kohana::instance()->db;
-		}
 
-		// Define ALL
-		defined('ALL') or define('ALL', 100);
+			// Define ALL
+			defined('ALL') or define('ALL', 100);
+		}
 
 		// Fetch table name
 		$this->class = strtolower(substr(get_class($this), 0, -6));
@@ -70,8 +74,17 @@ class ORM_Core {
 		}
 		else
 		{
-			// Load the object
-			$this->find($id);
+			if (empty($id))
+			{
+				// Load an empty object
+				$this->load_result(array());
+			}
+			else
+			{
+				// Query and load object
+				$this->where($id);
+				$this->find();
+			}
 		}
 	}
 
@@ -158,15 +171,21 @@ class ORM_Core {
 			// Construct a new model
 			$model = $this->load_model($table);
 
-			if (in_array($table, $this->has_and_belongs_to_many))
+			if (in_array($table, $this->has_one))
 			{
-				// Execute joins for many<>many
-				$this->related_join($table);
+				// Find one<>one relationships
+				$model->find(array($this->class.'_id' => $this->object->id));
+				return $model;
 			}
-			else
+			elseif (in_array($table, $this->has_many))
 			{
-				// Add this object id to WHERE
+				// Find one<>many relationships
 				self::$db->where($this->class.'_id', $this->object->id);
+			}
+			elseif (in_array($table, $this->has_and_belongs_to_many))
+			{
+				// Find many<>many relationships, via a JOIN
+				$this->related_join($table);
 			}
 
 			return $model->find_all();
@@ -275,6 +294,82 @@ class ORM_Core {
 	}
 
 	/**
+	 * Select 
+	 */
+	public function select()
+	{
+		// Return all the objects in the table
+		if (func_num_args() === 0)
+		{
+			self::$db->select($this->table.'.*');
+		}
+		else
+		{
+			$args = func_get_args();
+
+			if (count($args) === 1)
+			{
+				self::$db->select(current($args));
+			}
+			else
+			{
+				self::$db->select($args);
+			}
+		}
+
+		// SELECT has been set
+		$this->select = TRUE;
+
+		return $this;
+	}
+
+	/**
+	 * Method: where
+	 *  Generate a WHERE array.
+	 */
+	public function where()
+	{
+		switch(func_num_args())
+		{
+			case 1:
+				$id = func_get_arg(0);
+				if ( ! empty($id))
+				{
+					self::$db->where(is_array($id) ? $id : array('id' => $id));
+
+					// WHERE has been set
+					$this->where = TRUE;
+				}
+			break;
+			case 2:
+				$key = func_get_arg(0);
+				$val = func_get_arg(1);
+
+				if (is_array($key))
+				{
+					// Choose the OR method to use
+					$or = (strpos($val, '%') === FALSE) ? 'orwhere' : 'orlike';
+
+					foreach ($key as $k)
+					{
+						// Use OR WHERE/LIKE
+						self::$db->$or($k, $val);
+					}
+				}
+				else
+				{
+					self::$db->where(array($key => $val));
+				}
+
+				// WHERE has been set
+				$this->where = TRUE;
+			break;
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Method: find
 	 *  Find and load this object data.
 	 *
@@ -286,58 +381,22 @@ class ORM_Core {
 	 *  TRUE or FALSE
 	 *  Array of objects if where is an array
 	 */
-	public function find($where = FALSE, $limit = 1)
+	public function find($limit = 1, $offset = FALSE)
 	{
-		if ($limit === ALL OR is_array($where) OR $where = $this->where($where))
-		{
-			// Use limit
-			($limit === ALL) or self::$db->limit($limit);
+		// SELECT
+		($this->select == FALSE) and $this->select();
+		// WHERE
+		($this->where == FALSE) and $this->where();
+		// LIMIT
+		($limit !== ALL) and self::$db->limit($limit, $offset);
 
-			// Use where
-			empty($where) or self::$db->where($where);
+		// Perform the query
+		$query = self::$db
+			->from($this->table)
+			->get();
 
-			$query = self::$db
-				->select($this->table.'.*')
-				->from($this->table)
-				->get();
-
-			if ($limit > 1)
-			{
-				$model = get_class($this);
-
-				// Construct an array of objects
-				$objects = array();
-				foreach($query as $result)
-				{
-					$objects[] = new $model($result);
-				}
-				return $objects;
-			}
-
-			if (count($query) === 1)
-			{
-				// Fetch the first result
-				$this->object = $query->current();
-			}
-		}
-
-		if (empty($this->object))
-		{
-			// Create a new object
-			$this->object = new StdClass();
-
-			// Fill the fields
-			foreach(self::$fields[$this->table] as $field)
-			{
-				$this->object->$field = '';
-			}
-		}
-
-		// Reset changed
-		$this->changed = array();
-
-		// Return true if something was actually loaded
-		return ($this->object->id != 0);
+		// Load the query result
+		return $this->load_result($query);
 	}
 
 	/**
@@ -420,25 +479,57 @@ class ORM_Core {
 	}
 
 	/**
-	 * Method: where
-	 *  Generate a WHERE array.
+	 * Loads a database object result.
 	 *
 	 * Parameters:
-	 *  id - id or array of id's
+	 *  result - database result object
 	 *
-	 * Returns:
-	 *  FALSE or Array
+	 * Return:
+	 *  boolean - TRUE for single result, FALSE for an empty result
+	 *  array   - Multiple row result set
 	 */
-	protected function where($id)
+	protected function load_result($result)
 	{
-		if (empty($id))
-			return FALSE;
+		if (count($result) > 0)
+		{
+			if (count($result) > 1)
+			{
+				// Model class name
+				$class = get_class($this);
 
-		if (is_array($id))
-			return $id;
+				$array = array();
+				foreach($result as $row)
+				{
+					// Add object to the array
+					$array[] = new $class($row);
+				}
 
-		if (ctype_digit((string) $id))
-			return array('id' => $id);
+				// Return an array of all the objects
+				return $array;
+			}
+			else
+			{
+				// Clear the changed keys, a new object has been loaded
+				$this->changed = array();
+
+				// Fetch the first result
+				$this->object = $result->current();
+			}
+		}
+		else
+		{
+			// Create an empty object
+			$this->object = new StdClass();
+
+			// Empty the object
+			foreach(self::$fields[$this->table] as $field)
+			{
+				$this->object->$field = '';
+			}
+		}
+
+		// Return this object
+		return $this;
 	}
 
 	/**
