@@ -2,7 +2,7 @@
 
 $lang = array
 (
-	'required'       => 'Some required fields were not supplied: %s',
-	'gateway_connection_error' => 'An error occured connecting to the payment gateway. please contact the webmaster if this problem persists.',
-	'invalid_certificate' => 'The certificate file is invalid.'
+	'required'       => 'Alguns campos requisitados não foram informados: %s',
+	'gateway_connection_error' => 'Um erro ocorreu durante a conexão com o gateway de pagamento. Por favor, contate o webmaster caso o problema persista.',
+	'invalid_certificate' => 'O arquivo de certificado é inválido.'
 );
