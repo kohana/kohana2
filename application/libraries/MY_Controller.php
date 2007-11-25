@@ -98,11 +98,11 @@ class Controller extends Controller_Core {
 					}
 
 					// Require authorization
-					header('WWW-Authenticate: Basic realm="Kohana Developer Testing"');
+					header('WWW-Authenticate: Basic realm="Kohana Developer Login"');
 					header('HTTP/1.0 401 Unauthorized');
 
 					// If the user hits cancel
-					exit('Login required. Sorry asshole.');
+					exit('This section of the website is currently being limited to developer access only.');
 				}
 			}
 

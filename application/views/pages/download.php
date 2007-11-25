@@ -2,8 +2,7 @@
 
 <p>You are downloading Kohana v<?php echo KOHANA_VERSION ?>. Please use <?php echo html::anchor('http://trac.kohanaphp.com/newticket', 'Trac tickets') ?> to report any bugs you experience. <span style="font-size:0.8em;font-style:italic;">Download files were last synced on <?php echo date('F jS, Y', $sync_date) ?>.</span></p>
 
-<p><strong>November 20, 2007:</strong> This is the last update before 2.1. Our next release will have a complete changelog and the 2.1.x series of releases will be much more tightly controlled and tested. Thank you for your patience with our overzealous attempts to keep every as up to date as possible. Thanks for your support!</p>
-
+<p><strong>This is the final release of version 2.0.</strong> Barring severe bugs, this will be the last release before version 2.1. There is no current release date for 2.1, but we expect it to take less time than version 2.0.</p>
 
 <?php echo form::open('download', array('method' => 'get')) ?> 
 
