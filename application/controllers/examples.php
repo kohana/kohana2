@@ -32,11 +32,11 @@ class Examples_Controller extends Controller {
 			if ($method == __FUNCTION__)
 				continue;
 
-			echo "<li>".html::anchor('examples/'.$method, $method)."</li>\n";
+			echo '<li>'.html::anchor('examples/'.$method, $method)."</li>\n";
 		}
 
 		echo "</ul>\n";
-		echo "<p>".Kohana::lang('core.stats_footer')."</p>\n";
+		echo '<p>'.Kohana::lang('core.stats_footer')."</p>\n";
 	}
 
 	/**
@@ -82,11 +82,11 @@ class Examples_Controller extends Controller {
 		$this->load->database();
 		$s = new Session();
 
-		print "SESSID: <pre>".session_id()."</pre>\n";
+		print 'SESSID: <pre>'.session_id()."</pre>\n";
 
-		print "<pre>".print_r($_SESSION, TRUE)."</pre>\n";
+		print '<pre>'.print_r($_SESSION, TRUE)."</pre>\n";
 
-		print "<br/>{execution_time} seconds";
+		print '<br/>{execution_time} seconds';
 	}
 
 	/**
@@ -153,7 +153,7 @@ class Examples_Controller extends Controller {
 		print $this->validation->error_string;
 
 		// Yay!
-		print "{execution_time} ALL DONE!";
+		print '{execution_time} ALL DONE!';
 	}
 
 	/**
@@ -191,7 +191,7 @@ class Examples_Controller extends Controller {
 			{
 				echo '<p>'.$item->title.'</p>';
 			}
-			print "<h3>Numrows using count(): ".count($query)."</h3>";
+			print '<h3>Numrows using count(): '.count($query).'</h3>';
 			echo 'Table Listing:<pre>'.print_r($this->db->list_tables(), TRUE).'</pre>';
 
 			echo '<h3>Try Query Binding with objects:</h3>';
@@ -232,7 +232,7 @@ class Examples_Controller extends Controller {
 			echo 'NO! The '.$table.' table doesn\'t exist, so we can\'t continue =( ';
 		}
 		print "<br/><br/>\n";
-		print "done in {execution_time} seconds";
+		print 'done in {execution_time} seconds';
 	}
 
 	/**
@@ -241,9 +241,6 @@ class Examples_Controller extends Controller {
 	 */
 	function pagination()
 	{
-		// You HAVE TO use $this->pagination when initializing the Pagination library.
-		// This is because the pagination views call $this->pagination->url().
-		// Problem: what in case your page has multiple pagination areas? Hmm...
 		$this->pagination = new Pagination(array(
 			// 'base_url'    => 'welcome/pagination_example/page/', // base_url will default to current uri
 			'uri_segment'    => 'page', // pass a string as uri_segment to trigger former 'label' functionality
@@ -259,7 +256,7 @@ class Examples_Controller extends Controller {
 		echo '<hr />Digg style:     '.$this->pagination->create_links('digg');
 		echo '<hr />Extended style: '.$this->pagination->create_links('extended');
 		echo '<hr />PunBB style:    '.$this->pagination->create_links('punbb');
-		echo "done in {execution_time} seconds";
+		echo 'done in {execution_time} seconds';
 	}
 
 	/**
@@ -276,7 +273,7 @@ class Examples_Controller extends Controller {
 		}
 
 		print "<br/><br/>\n";
-		print "done in {execution_time} seconds";
+		print 'done in {execution_time} seconds';
 	}
 
 	/**
@@ -289,7 +286,7 @@ class Examples_Controller extends Controller {
 
 		// You can also pass the driver name to the library to use multiple ones:
 		$credit_card = new Payment('Paypal');
-		$credit_card = new Payment("Authorize");
+		$credit_card = new Payment('Authorize');
 		
 		// You can specify one parameter at a time:
 		$credit_card->login = 'this';
