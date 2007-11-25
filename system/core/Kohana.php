@@ -130,6 +130,9 @@ class Kohana {
 		// Enable Kohana controller initialization
 		Event::add('system.execute', array('Kohana', 'instance'));
 
+		// Enable Kohana 404 pages
+		Event::add('system.404', array('Kohana', 'show_404'));
+
 		// Enable Kohana output handling
 		Event::add('system.shutdown', array('Kohana', 'display'));
 
@@ -212,7 +215,8 @@ class Kohana {
 			}
 			else
 			{
-				Kohana::show_404();
+				// Method was not found, run the system.404 event
+				Event::run('system.404');
 			}
 
 			// Load the controller
@@ -926,7 +930,8 @@ class Kohana_404_Exception extends Kohana_Exception {
 	{
 		if ($page === FALSE)
 		{
-			$page = Router::$current_uri.Router::$query_string;
+			// Construct the page URI using Router properties
+			$page = Router::$current_uri.Router::$url_suffix.Router::$query_string;
 		}
 
 		// Prevent possible XSS attacks
