@@ -51,7 +51,7 @@ class ORM_Core {
 			self::$db = Kohana::instance()->db;
 
 			// Define ALL
-			defined('ALL') or define('ALL', 100);
+			defined('ALL') or define('ALL', -1);
 		}
 
 		// Fetch table name
@@ -77,13 +77,12 @@ class ORM_Core {
 			if (empty($id))
 			{
 				// Load an empty object
-				$this->load_result(array());
+				$this->load_result(FALSE);
 			}
 			else
 			{
 				// Query and load object
-				$this->where($id);
-				$this->find();
+				$this->where($id)->find();
 			}
 		}
 	}
@@ -142,7 +141,7 @@ class ORM_Core {
 		if ($method === 'find_all')
 		{
 			// Return an array of all objects
-			return $this->find(count($args) ? current($args) : FALSE, ALL);
+			return $this->find(ALL);
 		}
 
 		if (substr($method, 0, 8) === 'find_by_')
@@ -150,8 +149,8 @@ class ORM_Core {
 			$key = substr($method, 8);
 			$val = count($args) ? current($args) : FALSE;
 
-			// Find a single result
-			return $this->find(array($key => $val));
+			// Find via the requested key
+			return $this->where(array($key => $val))->find();
 		}
 
 		if (substr($method, 0, 12) === 'find_all_by_')
@@ -159,8 +158,8 @@ class ORM_Core {
 			$key = substr($method, 12);
 			$val = count($args) ? current($args) : FALSE;
 
-			// Find a all results
-			return $this->find(array($key => $val), ALL);
+			// Find all results matching a requested key
+			return $this->where(array($key => $val))->find(ALL);
 		}
 
 		if (substr($method, 0, 13) === 'find_related_')
@@ -171,16 +170,18 @@ class ORM_Core {
 			// Construct a new model
 			$model = $this->load_model($table);
 
+			// Remote reference to this object
+			$remote = array($this->class.'_id' => $this->object->id);
+
 			if (in_array($table, $this->has_one))
 			{
 				// Find one<>one relationships
-				$model->find(array($this->class.'_id' => $this->object->id));
-				return $model;
+				return $model->where($remote)->find();
 			}
 			elseif (in_array($table, $this->has_many))
 			{
 				// Find one<>many relationships
-				self::$db->where($this->class.'_id', $this->object->id);
+				$this->where($remote);
 			}
 			elseif (in_array($table, $this->has_and_belongs_to_many))
 			{
@@ -188,7 +189,7 @@ class ORM_Core {
 				$this->related_join($table);
 			}
 
-			return $model->find_all();
+			return $model->find(ALL);
 		}
 
 		if (preg_match('/^(has|add|remove)_/', $method, $action))
@@ -202,11 +203,11 @@ class ORM_Core {
 			// Get added data
 			$data = count($args) ? current($args) : FALSE;
 
-			// Load a new model
-			$model = is_object($data) ? $data : $this->load_model($table);
-
 			if (is_array($data) AND $action === 'add')
 			{
+				// Load the model by table name
+				$model = $this->load_model($table);
+
 				foreach($data as $key => $val)
 				{
 					// Set new object data
@@ -215,6 +216,12 @@ class ORM_Core {
 			}
 			else
 			{
+				if (is_object($data))
+				{
+					// Assign the model to the data
+					$model = $data;
+				}
+
 				// Load model data
 				$model->find(($data === $model) ? FALSE : $data);
 			}
@@ -294,43 +301,40 @@ class ORM_Core {
 	}
 
 	/**
-	 * Select 
+	 * Generates a SELECT statement for Database.
 	 */
 	public function select()
 	{
-		// Return all the objects in the table
-		if (func_num_args() === 0)
+		$count = func_num_args();
+
+		if ($count === 0)
 		{
-			self::$db->select($this->table.'.*');
+			$this->select = $this->table.'.*');
 		}
 		else
 		{
-			$args = func_get_args();
-
-			if (count($args) === 1)
-			{
-				self::$db->select(current($args));
-			}
-			else
-			{
-				self::$db->select($args);
-			}
+			$this->select = ($count === 1) ? func_get_arg(0) : func_get_args();
 		}
-
-		// SELECT has been set
-		$this->select = TRUE;
 
 		return $this;
 	}
 
 	/**
-	 * Method: where
-	 *  Generate a WHERE array.
+	 * Generate a WHERE array.
 	 */
 	public function where()
 	{
 		switch(func_num_args())
 		{
+			case 0:
+				if ($this->object->id > 0)
+				{
+					self::$db->where('id', $this->object->id);
+
+					// WHERE has been set
+					$this->where = TRUE;
+				}
+			break;
 			case 1:
 				$id = func_get_arg(0);
 				if ( ! empty($id))
@@ -390,13 +394,34 @@ class ORM_Core {
 		// LIMIT
 		($limit !== ALL) and self::$db->limit($limit, $offset);
 
-		// Perform the query
-		$query = self::$db
-			->from($this->table)
-			->get();
+		// Return an array if the limit is ALL or greater than 1
+		$array = ($limit === ALL OR $limit > 1) ? TRUE : FALSE;
 
-		// Load the query result
-		return $this->load_result($query);
+		// Load the result of the query
+		return $this->load_result(self::$db->from($this->table)->get(), $array);
+	}
+
+	public function find_all($where = FALSE)
+	{
+		// Do the select
+		empty($this->select) or $this->select();
+
+		// SELECT
+		self::$db->select($this->select);
+		// WHERE
+		empty($where) or self::$db->where($where);
+
+		return $this->load_result(self::$db->from($this->table)->get(), TRUE);
+	}
+
+	public function find_all_by($key, $val)
+	{
+		// SELECT
+		($this->select == FALSE)
+		// WHERE
+		self::$db->where($key, $val);
+
+		
 	}
 
 	/**
@@ -421,6 +446,7 @@ class ORM_Core {
 
 		if (empty($this->object->id))
 		{
+			// Perform an insert
 			$query = self::$db->insert($this->table, $data);
 
 			if (count($query) === 1)
@@ -431,10 +457,11 @@ class ORM_Core {
 		}
 		else
 		{
-			$query = self::$db
-				->set($data)
-				->where('id', $this->object->id)
-				->update($this->table);
+			// WHERE is this object
+			$this->where();
+
+			// Perform an update
+			$query = self::$db->update($this->table, $data);
 		}
 
 		if (count($query) === 1)
@@ -461,16 +488,16 @@ class ORM_Core {
 		if (empty($this->object->id))
 			return FALSE;
 
-		// Delete this object
-		$query = self::$db
-			->where('id', $this->object->id)
-			->delete($this->table);
+		// Where is this object
+		$this->where();
 
-		if (count($query))
+		// Delete this object
+		$query = self::$db->delete($this->table);
+
+		if (count($query) > 0)
 		{
 			// Reset the object
-			$this->object = NULL;
-			$this->find(FALSE);
+			$this->load_result(FALSE);
 
 			return TRUE;
 		}
@@ -483,16 +510,17 @@ class ORM_Core {
 	 *
 	 * Parameters:
 	 *  result - database result object
+	 *  array  - force the return to be an array
 	 *
 	 * Return:
 	 *  boolean - TRUE for single result, FALSE for an empty result
 	 *  array   - Multiple row result set
 	 */
-	protected function load_result($result)
+	protected function load_result($result, $array = FALSE)
 	{
-		if (count($result) > 0)
+		if ($result != FALSE AND count($result) > 0)
 		{
-			if (count($result) > 1)
+			if (count($result) > 1 OR $array == TRUE)
 			{
 				// Model class name
 				$class = get_class($this);
@@ -509,9 +537,6 @@ class ORM_Core {
 			}
 			else
 			{
-				// Clear the changed keys, a new object has been loaded
-				$this->changed = array();
-
 				// Fetch the first result
 				$this->object = $result->current();
 			}
@@ -527,6 +552,11 @@ class ORM_Core {
 				$this->object->$field = '';
 			}
 		}
+
+		// Clear the changed keys, a new object has been loaded
+		$this->changed = array();
+		$this->select = FALSE;
+		$this->where = FALSE;
 
 		// Return this object
 		return $this;
@@ -591,6 +621,9 @@ class ORM_Core {
 		// Primary and foreign keys
 		$primary = $this->class.'_id';
 		$foreign = inflector::singular($table).'_id';
+
+		// Where has been set
+		$this->where = TRUE;
 
 		// Execute the join
 		self::$db
