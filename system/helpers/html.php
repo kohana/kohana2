@@ -121,7 +121,7 @@ class html {
 	{
 		return
 		// Base URL + URI = full URL
-		'<a href="'.url::base(FALSE).$file.'"'
+		'<a href="'.url::base(FALSE, $protocol).$file.'"'
 		// Attributes empty? Use an empty string
 		.(empty($attributes) ? '' : self::attributes($attributes)).'>'
 		// Title empty? Use the filename part of the URI

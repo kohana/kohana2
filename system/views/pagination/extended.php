@@ -9,7 +9,7 @@
 <p class="pagination">
 	
 	<?php if ($previous_page): ?>
-		<a href="<?php echo $this->pagination->url($previous_page) ?>">&laquo;&nbsp;<?php echo Kohana::lang('pagination.previous') ?></a>
+		<a href="<?php echo str_replace('{page}', $previous_page, $base_url) ?>">&laquo;&nbsp;<?php echo Kohana::lang('pagination.previous') ?></a>
 	<?php else: ?>
 		&laquo;&nbsp;<?php echo Kohana::lang('pagination.previous') ?>
 	<?php endif; ?>
@@ -19,7 +19,7 @@
 	| <?php echo Kohana::lang('pagination.items') ?> <?php echo $current_first_item ?>&ndash;<?php echo $current_last_item ?> <?php echo Kohana::lang('pagination.of') ?> <?php echo $total_items ?>
 	
 	| <?php if ($next_page): ?>
-		<a href="<?php echo $this->pagination->url($next_page) ?>"><?php echo Kohana::lang('pagination.next') ?>&nbsp;&raquo;</a>
+		<a href="<?php echo str_replace('{page}', $next_page, $base_url) ?>"><?php echo Kohana::lang('pagination.next') ?>&nbsp;&raquo;</a>
 	<?php else: ?>
 		<?php echo Kohana::lang('pagination.next') ?>&nbsp;&raquo;
 	<?php endif; ?>

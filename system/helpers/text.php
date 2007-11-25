@@ -22,9 +22,10 @@ class text {
 	 * Returns:
 	 *  A word-limited string with the end character attached.
 	 */
-	public static function limit_words($str, $limit = 100, $end_char = '&#8230;')
+	public static function limit_words($str, $limit = 100, $end_char = NULL)
 	{
 		$limit = (int) $limit;
+		$end_char = ($end_char === NULL) ? '&#8230;' : $end_char;
 
 		if (trim($str) == '')
 			return $str;
@@ -140,11 +141,11 @@ class text {
 		}
 
 		$str = '';
-		$pool_size = utf8::strlen($pool);
+		$pool_size = (class_exists('utf8', FALSE)) ? utf8::strlen($pool) : strlen($pool);
 
 		for ($i = 0; $i < $length; $i++)
 		{
-			$str .= utf8::substr($pool, mt_rand(0, $pool_size - 1), 1);
+			$str .= (class_exists('utf8', FALSE)) ? utf8::substr($pool, mt_rand(0, $pool_size - 1), 1) : substr($pool, mt_rand(0, $pool_size - 1), 1);
 		}
 
 		return $str;
@@ -195,10 +196,11 @@ class text {
 
 		$regex = '!'.$regex.'!ui';
 
-		if (utf8::strlen($replacement) == 1)
+		$strlen = (class_exists('utf8', FALSE)) ? utf8::strlen($replacement) : strlen($replacement);
+		if ($strlen == 1)
 		{
 			$regex .= 'e';
-			return preg_replace($regex, 'str_repeat($replacement, utf8::strlen(\'$1\'))', $str);
+			return preg_replace($regex, 'str_repeat($replacement, (class_exists(\'utf8\', FALSE)) ? utf8::strlen(\'$1\') : strlen(\'$1\'))', $str);
 		}
 
 		return preg_replace($regex, $replacement, $str);

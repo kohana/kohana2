@@ -144,23 +144,6 @@ class Pagination_Core {
 	}
 
 	/**
-	 * Method: url
-	 *  Gets the base_url with the specified page number.
-	 *
-	 * Parameters:
-	 *  page - page number
-	 *
-	 * Returns:
-	 *  Base URL with specified page number.
-	 */
-	public function url($page = NULL)
-	{
-		$page = (int) (isset($page)) ? $page : $this->current_page;
-
-		return str_replace('{page}', $page, $this->base_url);
-	}
-
-	/**
 	 * Method: sql_offset
 	 *  Gets the SQL offset of the first row to return.
 	 *

@@ -11,7 +11,7 @@
 	<?php echo Kohana::lang('pagination.pages') ?>:
 
 	<?php if ($current_page > 3): ?>
-		<a href="<?php echo $this->pagination->url(1) ?>">1</a>
+		<a href="<?php echo str_replace('{page}', 1, $base_url) ?>">1</a>
 		<?php if ($current_page != 4) echo '&hellip;' ?>
 	<?php endif; ?>
 	
@@ -23,7 +23,7 @@
 		<?php if ($current_page == $i): ?>
 			<strong><?php echo $i ?></strong>
 		<?php else: ?>
-			<a href="<?php echo $this->pagination->url($i) ?>"><?php echo $i ?></a>
+			<a href="<?php echo str_replace('{page}', $i, $base_url) ?>"><?php echo $i ?></a>
 		<?php endif; ?>
 		
 	<?php endfor; ?>
@@ -31,7 +31,7 @@
 
 	<?php if ($current_page <= $total_pages - 3): ?>
 		<?php if ($current_page != $total_pages - 3) echo '&hellip;' ?>
-		<a href="<?php echo $this->pagination->url($total_pages) ?>"><?php echo $total_pages ?></a>
+		<a href="<?php echo str_replace('{page}', $total_pages, $base_url) ?>"><?php echo $total_pages ?></a>
 	<?php endif; ?>
 
 </p>
