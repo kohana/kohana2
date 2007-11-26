@@ -15,6 +15,9 @@ class ORM_Core {
 	// Database instance
 	protected static $db;
 
+	// Automatic saving on model destruction
+	protected $auto_save = FALSE;
+
 	// This table
 	protected $class;
 	protected $table;
@@ -88,7 +91,19 @@ class ORM_Core {
 	}
 
 	/**
-	 * Magic method for getting object keys.
+	 * Enables automatic saving of the object when the model is destroyed.
+	 */
+	public function __destruct()
+	{
+		if ($this->auto_save == TRUE)
+		{
+			// Automatically save the model
+			$this->save();
+		}
+	}
+
+	/**
+	 * Magic method for getting object and model keys.
 	 */
 	public function __get($key)
 	{
@@ -96,18 +111,25 @@ class ORM_Core {
 		{
 			return $this->object->$key;
 		}
-		elseif ($key === 'table_name')
+		else
 		{
-			return $this->table;
-		}
-		elseif ($key === 'class_name')
-		{
-			return $this->class;
+			switch($key)
+			{
+				case 'table_name':
+					return $this->table;
+				break;
+				case 'class_name':
+					return $this->class;
+				break;
+				case 'auto_save':
+					return $this->auto_save;
+				break;
+			}
 		}
 	}
 
 	/**
-	 * Magic method for setting object keys.
+	 * Magic method for setting object and model keys.
 	 */
 	public function __set($key, $value)
 	{
@@ -120,6 +142,15 @@ class ORM_Core {
 
 				// Data has changed
 				$this->changed[$key] = $key;
+			}
+		}
+		else
+		{
+			switch($key)
+			{
+				case 'auto_save':
+					$this->auto_save = (bool) $value;
+				break;
 			}
 		}
 	}
