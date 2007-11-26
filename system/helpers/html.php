@@ -228,9 +228,10 @@ class html {
 		}
 		else
 		{
-			$media = ($media == FALSE) ? '' : ' media="'.$media.'"';
-
-			$compiled = '<link rel="stylesheet" href="'.url::base((bool) $index).$style.'.css"'.$media.' />';
+			// Add the suffix only when it's not already present
+			$suffix   = (strpos($script, '.css') === FALSE) ? '.css' : '';
+			$media    = ($media == FALSE) ? '' : ' media="'.$media.'"';
+			$compiled = '<link rel="stylesheet" href="'.url::base((bool) $index).$style.$suffix.'"'.$media.' />';
 		}
 
 		return $compiled;
@@ -260,7 +261,9 @@ class html {
 		}
 		else
 		{
-			$compiled = '<script type="text/javascript" src="'.url::base((bool) $index).$script.'.js"></script>';
+			// Add the suffix only when it's not already present
+			$suffix   = (strpos($script, '.js') === FALSE) ? '.js' : '';
+			$compiled = '<script type="text/javascript" src="'.url::base((bool) $index).$script.$suffix.'"></script>';
 		}
 
 		return $compiled;
