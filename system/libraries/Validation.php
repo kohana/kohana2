@@ -528,6 +528,9 @@ class Validation_Core {
 		if (empty($allowed))
 			throw new Kohana_Exception('upload.set_allowed');
 
+		// Make sure that UPLOAD_ERR_EXTENSION is defined
+		defined('UPLOAD_ERR_EXTENSION') or define('UPLOAD_ERR_EXTENSION', 8);
+
 		// Fetch the real upload path
 		if (($upload_path = str_replace('\\', '/', realpath(Config::item('upload.upload_directory')))) == FALSE)
 		{
