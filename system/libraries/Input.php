@@ -106,17 +106,8 @@ class Input_Core {
 	 */
 	public function __call($global, $args = array())
 	{
-		// Array to be searched, assigned by reference later
+		// Array to be searched, assigned by reference
 		$array = array();
-
-		// Use XSS cleaning?
-		$xss_clean = isset($args[1]) ? (bool) $args[1] : FALSE;
-
-		// Array key and value
-		$key = isset($args[0]) ? $args[0] : FALSE;
-		$val = FALSE;
-
-		// Set the $array
 		switch(strtolower($global))
 		{
 			case 'get':    $array =& $_GET;    break;
@@ -127,27 +118,35 @@ class Input_Core {
 				throw new Kohana_Exception('core.invalid_method', $global, get_class($this));
 		}
 
-		if ($key == FALSE)
+		if (count($args) === 0)
 			return $array;
 
-		// XSS clean if the data has not already been cleaned.
-		if ($this->use_xss_clean == FALSE AND $xss_clean == TRUE AND ! empty($array[$key]))
+		// If the last argument is a boolean, it's the XSS clean flag
+		$xss_clean = is_bool(end($args)) ? array_pop($args) : FALSE;
+
+		// Reset the array pointer
+		reset($args);
+
+		// Multiple inputs require us to return an array
+		$return_array = (count($args) > 1) ? TRUE : FALSE;
+
+		// Compose the data to return
+		$data = array();
+		while ($key = array_shift($args))
 		{
-			if (is_array($array[$key]))
+			if (isset($array[$key]))
 			{
-				foreach($array[$key] as $sub_key => $sub_val)
-				{
-					$array[$key][$sub_key] = $this->xss_clean($sub_val);
-				}
+				// XSS clean if the data has not already been cleaned
+				$data[$key] = ($this->use_xss_clean == FALSE AND $xss_clean == TRUE) ? $this->xss_clean($array[$key]) : $array[$key];
 			}
 			else
 			{
-				$array[$key] = $this->xss_clean($array[$key]);
+				$data[$key] = NULL;
 			}
 		}
 
 		// Return the global value
-		return isset($array[$key]) ? $array[$key] : FALSE;
+		return $return_array ? $data : current($data);
 	}
 
 	/**
@@ -307,6 +306,10 @@ class Input_Core {
 	 */
 	public function xss_clean($string, $tool = '')
 	{
+		// Do not clean empty strings
+		if (trim($string) == '')
+			return $string;
+
 		$tool = ($tool != '') ? $tool : Config::item('core.global_xss_filtering');
 
 		switch ($tool)
