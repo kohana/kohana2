@@ -3,7 +3,7 @@
 $lang = array
 (
 	// Class errors
-	'error_format'  => 'Votre message d\'erreur doit contenir la chaîne {message}.',
+	'error_format'  => 'Votre message d\'erreur doit contenir la chaîne: {message}.',
 	'invalid_rule'  => 'La règle de validation %s est invalide',
 
 	// General errors
