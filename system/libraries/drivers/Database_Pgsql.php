@@ -420,7 +420,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 	public function list_fields()
 	{
-		throw new Kohana_Database_Exception('database.not_implimented', __FUNCTION__);
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
 	}
 	// End Interface
 
