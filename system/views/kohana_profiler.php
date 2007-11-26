@@ -42,6 +42,12 @@
 {
 	background-color: #F7FBFF;
 }
+#kohana-profiler .kp-totalrow td
+{
+	background-color: #FAFAFA;
+	border-top: 1px solid #D2DCE5;
+	font-weight: bold;
+}
 #kp-benchmarks th
 {
 	background-color: #FFE0E0;
@@ -136,8 +142,9 @@ else:
 
 	else:
 		text::alternate();
+		$total_time = 0;
 		foreach($queries as $query):
-
+			$total_time += $query['time'];
 ?>
 		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
 			<td><?php echo html::specialchars($query['query']) ?></td>
@@ -147,6 +154,14 @@ else:
 <?php
 
 		endforeach;
+?>
+		<tr class="kp-totalrow">
+			<td>Total</td>
+			<td class="kp-column kp-data"><?php echo number_format($total_time, 4) ?></td>
+			<td class="kp-column kp-data">&nbsp;</td>
+		</tr>
+<?php
+
 	endif;
 endif;
 
