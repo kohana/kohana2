@@ -380,11 +380,11 @@ class Validation_Core {
 			{
 				$this->result = $this->$rule($data, $params);
 			}
-			elseif (is_callable($rule, TRUE))
+			elseif (is_callable($rule))
 			{
 				if (strpos($rule, '::') !== FALSE)
 				{
-					$this->result = call_user_func(explode('::', $rule), $field);
+					$this->result = call_user_func(explode('::', $rule), $data);
 				}
 				else
 				{
