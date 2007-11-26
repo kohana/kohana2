@@ -22,7 +22,7 @@ class form {
 	 * Returns:
 	 *  An HTML form tag.
 	 */
-	public static function open($action = '', $attr = array(), $hidden = array())
+	public static function open($action, $attr = array(), $hidden = array())
 	{
 		// Make sure that the method is always set
 		$attr += array
@@ -67,7 +67,7 @@ class form {
 	 * Returns:
 	 *  An HTML form tag.
 	 */
-	public static function open_multipart($action = '', $attr = array(), $hidden = array())
+	public static function open_multipart($action, $attr = array(), $hidden = array())
 	{
 		// Set multi-part form type
 		$attr['enctype'] = 'multipart/form-data';
@@ -125,7 +125,7 @@ class form {
 	 * Returns:
 	 *  An HTML form input tag.
 	 */
-	public static function input($data = '', $value = '', $extra = '')
+	public static function input($data, $value = '', $extra = '')
 	{
 		if ( ! is_array($data))
 		{
@@ -143,6 +143,12 @@ class form {
 		if ( ! isset($data['id']))
 		{
 			$data['id'] = $data['name'];
+		}
+
+		if ( ! empty($extra))
+		{
+			// Make sure there is 1 space before extra
+			$extra = ' '.ltrim($extra);
 		}
 
 		// For safe form data
@@ -163,7 +169,7 @@ class form {
 	 * Returns:
 	 *  An HTML form password input tag.
 	 */
-	public static function password($data = '', $value = '', $extra = '')
+	public static function password($data, $value = '', $extra = '')
 	{
 		if ( ! is_array($data))
 		{
@@ -187,7 +193,7 @@ class form {
 	 * Returns:
 	 *  An HTML form upload tag.
 	 */
-	public static function upload($data = '', $value = '', $extra = '')
+	public static function upload($data, $value = '', $extra = '')
 	{
 		if ( ! is_array($data))
 		{
@@ -211,7 +217,7 @@ class form {
 	 * Returns:
 	 *  An HTML form textarea tag.
 	 */
-	public static function textarea($data = '', $value = '', $extra = '')
+	public static function textarea($data, $value = '', $extra = '')
 	{
 		if ( ! is_array($data))
 		{
@@ -223,6 +229,12 @@ class form {
 
 		// Value is not part of the attributes
 		unset($data['value']);
+
+		if ( ! empty($extra))
+		{
+			// Make sure there is 1 space before extra
+			$extra = ' '.ltrim($extra);
+		}
 
 		return '<textarea'.self::attributes($data).$extra.'>'.html::specialchars($value).'</textarea>';
 	}
@@ -240,11 +252,17 @@ class form {
 	 * Returns:
 	 *  An HTML form select tag, with options.
 	 */
-	public static function dropdown($data = '', $options = array(), $selected = '', $extra = '')
+	public static function dropdown($data, $options = array(), $selected = '', $extra = '')
 	{
 		if ( ! is_array($data))
 		{
 			$data = array('name' => $data);
+		}
+
+		if ( ! empty($extra))
+		{
+			// Make sure there is 1 space before extra
+			$extra = ' '.ltrim($extra);
 		}
 
 		$input = '<select '.self::attributes($data).$extra.'>'."\n";
@@ -272,7 +290,7 @@ class form {
 	 * Returns:
 	 *  An HTML form checkbox tag.
 	 */
-	public static function checkbox($data = '', $value = '', $checked = FALSE, $extra = '')
+	public static function checkbox($data, $value = '', $checked = FALSE, $extra = '')
 	{
 		if ( ! is_array($data))
 		{
@@ -380,6 +398,12 @@ class form {
 			$value = arr::remove('value', $data);
 		}
 
+		if ( ! empty($extra))
+		{
+			// Make sure there is 1 space before extra
+			$extra = ' '.ltrim($extra);
+		}
+
 		return '<button'.self::attributes($data).$extra.'>'.html::specialchars($value).'</button>';
 	}
 
@@ -423,6 +447,12 @@ class form {
 			(
 				'for' => $data
 			);
+		}
+
+		if ( ! empty($extra))
+		{
+			// Make sure there is 1 space before extra
+			$extra = ' '.ltrim($extra);
 		}
 
 		return '<label'.self::attributes($data).$extra.'>'.$text.'</label>';
