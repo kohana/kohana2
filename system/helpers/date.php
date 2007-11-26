@@ -156,36 +156,35 @@ class date {
 	 * Parameters:
 	 *  step - amount to increment each step by
 	 *  long - use 24-hour time
-	 *  start - the hour to start at (24-hour time probably wants a 0 here)
+	 *  start - the hour to start at
 	 *
 	 * Returns:
 	 *  A mirrored (foo => foo) array from start-12 or start-23.
 	 */
-	public static function hours($step = 1, $long = FALSE, $start = 1)
+	public static function hours($step = 1, $long = FALSE, $start = NULL)
 	{
-		static $hours;
-
 		// Default values
 		$step = (int) $step;
 		$long = (bool) $long;
+		$hours = array();
 
-		// Caching key
-		$cache = ($long == TRUE) ? '24hr' : '12hr';
-
-		if (empty($hours[$cache][$step]))
+		// Set the default start if none was specified.
+		if (is_null($start))
 		{
-			$hours[$cache][$step] = array();
-
-			// 24-hour time has 24 hours, instead of 12
-			$size = ($long == TRUE) ? 23 : 12;
-
-			for ($i = $start; $i <= $size; $i += $step)
-			{
-				$hours[$cache][$step][$i] = $i;
-			}
+			$start = ($long == FALSE) ? 1 : 0;
 		}
 
-		return $hours[$cache][$step];
+		$hours = array();
+
+		// 24-hour time has 24 hours, instead of 12
+		$size = ($long == TRUE) ? 23 : 12;
+
+		for ($i = $start; $i <= $size; $i += $step)
+		{
+			$hours[$i] = $i;
+		}
+
+		return $hours;
 	}
 
 	/**
