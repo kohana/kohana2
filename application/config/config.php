@@ -8,6 +8,7 @@
  *  site_protocol        - protocol used to access the site, usually HTTP
  *  index_page           - name of the front controller, can be removed with URL rewriting
  *  url_suffix           - an extension that will be added to all generated URLs
+ *  output_compression   - enable or disable gzip output compression
  *  allow_config_set     - enable or disable setting of Config items
  *  global_xss_filtering - enable or disable XSS attack filtering on all user input
  *  extension_prefix     - filename prefix for library extensions
@@ -20,6 +21,7 @@ $config = array
 	'site_protocol'        => 'http',
 	'index_page'           => 'index.php',
 	'url_suffix'           => '.html',
+	'output_compression'   => TRUE,
 	'allow_config_set'     => FALSE,
 	'global_xss_filtering' => FALSE,
 	'extension_prefix'     => 'MY_',
