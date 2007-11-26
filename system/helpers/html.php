@@ -229,7 +229,7 @@ class html {
 		else
 		{
 			// Add the suffix only when it's not already present
-			$suffix   = (strpos($script, '.css') === FALSE) ? '.css' : '';
+			$suffix   = (strpos($style, '.css') === FALSE) ? '.css' : '';
 			$media    = ($media == FALSE) ? '' : ' media="'.$media.'"';
 			$compiled = '<link rel="stylesheet" href="'.url::base((bool) $index).$style.$suffix.'"'.$media.' />';
 		}
