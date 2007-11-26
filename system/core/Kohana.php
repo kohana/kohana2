@@ -336,6 +336,15 @@ class Kohana {
 			self::$output
 		);
 
+		if (Config::item('core.output_compression') AND stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== FALSE)
+		{
+			// Enable gzip output compression
+			header('Content-Encoding: gzip');
+
+			// Compress output
+			self::$output = gzencode(self::$output);
+		}
+
 		print self::$output;
 	}
 
