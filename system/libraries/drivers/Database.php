@@ -399,16 +399,30 @@ abstract class Database_Driver {
 	 */
 	public function clear_cache($sql = NULL)
 	{
-		if (!is_null($sql))
-		{
-			$hash = sha1($sql);
-			unset(self::$query_cache[$hash]);
-		}
-		else
+		if (empty($sql))
 		{
 			self::$query_cache = array();
 		}
+		else
+		{
+			unset(self::$query_cache[$this->query_hash($sql)]);
+		}
+
+		Log::add('debug', 'Database cache cleared: '.get_class($this));
 	}
+
+	/**
+	 * Creates a hash for an SQL query string. Replaces newlines with spaces,
+	 * trims, and hashes.
+	 *
+	 * Returns:
+	 *  SHA1 hash
+	 */
+	protected function query_hash($sql)
+	{
+		return sha1(trim(str_replace("\n", ' ', $sql)));
+	}
+
 } // End Database Driver Interface
 
 /**

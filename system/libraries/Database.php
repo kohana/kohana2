@@ -1234,11 +1234,11 @@ class Database_Core {
 	 */
 	public function clear_cache($sql = NULL)
 	{
-		if ($sql == TRUE)
+		if ($sql === TRUE)
 		{
 			$this->driver->clear_cache($this->last_query);
 		}
-		else if (is_string($sql))
+		elseif (is_string($sql))
 		{
 			$this->driver->clear_cache($sql);
 		}

@@ -57,17 +57,20 @@ class Database_Mysql_Driver extends Database_Driver {
 	public function query($sql)
 	{
 		// Only cache if it's turned on, and only cache if it's not a write statement
-		if ($this->db_config['cache'] AND !preg_match('#\b(?:INSERT|UPDATE|REPLACE)\b#i', $sql))
+		if ($this->db_config['cache'] AND ! preg_match('#\b(?:INSERT|UPDATE|REPLACE|SET)\b#i', $sql))
 		{
-			$hash = sha1($sql);
-			if (isset(self::$query_cache[$hash]))
-				return self::$query_cache[$hash];
-			else
+			$hash = $this->query_hash($sql);
+
+			if ( ! isset(self::$query_cache[$hash]))
 			{
+				// Set the cached object
 				self::$query_cache[$hash] = new Mysql_Result(mysql_query($sql, $this->link), $this->link, $this->db_config['object'], $sql);
-				return self::$query_cache[$hash];
 			}
+
+			// Return the cached query
+			return self::$query_cache[$hash];
 		}
+
 		return new Mysql_Result(mysql_query($sql, $this->link), $this->link, $this->db_config['object'], $sql);
 	}
 
