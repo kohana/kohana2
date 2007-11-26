@@ -2,6 +2,8 @@
 
 class Kodoc_Controller extends Controller {
 
+	protected $kodoc;
+
 	public function index()
 	{
 		print new View('kodoc_menu');
@@ -21,8 +23,31 @@ class Kodoc_Controller extends Controller {
 				$file = substr($file, 0, -(strlen(EXT)));
 			}
 
-			// Get absolute path to file
-			$file = Kohana::find_file($type, $file);
+			if ($type === 'config')
+			{
+				if ($file === 'config')
+				{
+					// This file can only exist in one location
+					$file = APPPATH.$type.'/config'.EXT;
+				}
+				else
+				{
+					foreach(array_reverse(Config::include_paths()) as $path)
+					{
+						if (is_file($path.$type.'/'.$file.EXT))
+						{
+							// Found the file
+							$file = $path.$type.'/'.$file.EXT;
+							break;
+						}
+					}
+				}
+			}
+			else
+			{
+				// Get absolute path to file
+				$file = Kohana::find_file($type, $file);
+			}
 		}
 		else
 		{
@@ -32,8 +57,11 @@ class Kodoc_Controller extends Controller {
 
 		if (in_array($type, Kodoc::get_types()));
 		{
-			$docs = new Kodoc($type, $file);
-			print "Debug for $file: ".Kohana::debug($docs->get());
+			$this->kodoc = new Kodoc($type, $file);
+
+			$content = new View('kodoc_html');
+
+			print $content;
 		}
 
 		print Kohana::lang('core.stats_footer');

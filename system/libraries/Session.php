@@ -247,7 +247,7 @@ class Session_Core {
 
 		foreach($keys as $key => $val)
 		{
-			if(isset(self::$protect[$key]))
+			if (isset(self::$protect[$key]))
 				continue;
 
 			// Set the key
@@ -273,7 +273,7 @@ class Session_Core {
 			$keys = array($keys => $val);
 		}
 
-		foreach($keys as $key => $val)
+		foreach ($keys as $key => $val)
 		{
 			if ($key == FALSE)
 				continue;

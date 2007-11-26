@@ -4,12 +4,27 @@ class Role_Model extends ORM {
 
 	protected $belongs_to_many = array('users');
 
-	protected function where($id)
+	public function __construct($id = FALSE)
 	{
-		if (($where = parent::where($id)) !== NULL)
-			return $where;
+		if ($id != FALSE AND is_string($id))
+		{
+			// Search by name
+			$id = array('name' => $id);
+		}
 
-		return array('name' => $id);
+		parent::__construct($id);
+	}
+
+	public function where($id = NULL)
+	{
+		if (is_string($id) AND $id != '')
+		{
+			$this->where = array('name' => $id);
+
+			return $this;
+		}
+
+		return parent::where($id);
 	}
 
 	/**

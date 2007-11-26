@@ -77,19 +77,18 @@ class ORM_Core {
 			if (empty($id))
 			{
 				// Load an empty object
-				$this->load_result(FALSE);
+				$this->clear();
 			}
 			else
 			{
 				// Query and load object
-				$this->where($id)->find();
+				$this->find($id);
 			}
 		}
 	}
 
 	/**
-	 * Method: __get
-	 *  Magic method for getting data.
+	 * Magic method for getting object keys.
 	 */
 	public function __get($key)
 	{
@@ -108,8 +107,7 @@ class ORM_Core {
 	}
 
 	/**
-	 * Method: __set
-	 *  Magic method for setting data.
+	 * Magic method for setting object keys.
 	 */
 	public function __set($key, $value)
 	{
@@ -127,39 +125,63 @@ class ORM_Core {
 	}
 
 	/**
-	 * Method: __call
-	 *  Magic method for calling dynamic methods.
+	 * Magic method for calling ORM methods. This handles:
+	 *  - as_array
+	 *  - find_by_*
+	 *  - find_all_by_*
+	 *  - find_related_*
+	 *  - has_*
+	 *  - add_*
+	 *  - remove_*
 	 */
 	public function __call($method, $args)
 	{
 		if ($method === 'as_array')
 		{
-			// Return object data as an array
+			// Return all of the object data as an array
 			return (array) $this->object;
 		}
-
-		if ($method === 'find_all')
+		
+		if (substr($method, 0, 8) === 'find_by_' OR ($all = substr($method, 0, 12)) === 'find_all_by_')
 		{
-			// Return an array of all objects
-			return $this->find(ALL);
-		}
+			$method = isset($all) ? substr($method, 12) : substr($method, 8);
 
-		if (substr($method, 0, 8) === 'find_by_')
-		{
-			$key = substr($method, 8);
-			$val = count($args) ? current($args) : FALSE;
+			// WHERE is manually set
+			$this->where = TRUE;
 
-			// Find via the requested key
-			return $this->where(array($key => $val))->find();
-		}
+			if (is_array($keys = $this->find_keys($method)))
+			{
+				if (strpos($method, '_or_') === FALSE)
+				{
+					// Use AND WHERE
+					self::$db->where(array_combine($keys, $args));
+				}
+				else
+				{
+					if (count($args) === 1)
+					{
+						$val = current($args);
+						foreach($keys as $key)
+						{
+							// Use OR WHERE, with a single value
+							self::$db->orwhere(array($key => $val));
+						}
+					}
+					else
+					{
+						// Use OR WHERE, with multiple values
+						self::$db->orwhere(array_combine($keys, $args));
+					}
+				}
+			}
+			else
+			{
+				// Set WHERE
+				self::$db->where(array($keys => current($args)));
+			}
 
-		if (substr($method, 0, 12) === 'find_all_by_')
-		{
-			$key = substr($method, 12);
-			$val = count($args) ? current($args) : FALSE;
-
-			// Find all results matching a requested key
-			return $this->where(array($key => $val))->find(ALL);
+			// Find requested objects
+			return isset($all) ? $this->find_all() : $this->find();
 		}
 
 		if (substr($method, 0, 13) === 'find_related_')
@@ -181,7 +203,7 @@ class ORM_Core {
 			elseif (in_array($table, $this->has_many))
 			{
 				// Find one<>many relationships
-				$this->where($remote);
+				$model->where($remote);
 			}
 			elseif (in_array($table, $this->has_and_belongs_to_many))
 			{
@@ -189,68 +211,73 @@ class ORM_Core {
 				$this->related_join($table);
 			}
 
-			return $model->find(ALL);
+			return $model->find_all();
 		}
 
-		if (preg_match('/^(has|add|remove)_/', $method, $action))
+		if (preg_match('/^(has|add|remove)_(.+)/', $method, $matches))
 		{
-			// Action is always the first match
-			$action = $action[1];
+			$action = $matches[1];
+			$model  = is_object(current($args)) ? current($args) : $this->load_model($matches[2]);
 
-			// Get table name
-			$table = substr($method, strlen($action) + 1);
-
-			// Get added data
-			$data = count($args) ? current($args) : FALSE;
-
-			if (is_array($data) AND $action === 'add')
-			{
-				// Load the model by table name
-				$model = $this->load_model($table);
-
-				foreach($data as $key => $val)
-				{
-					// Set new object data
-					$model->$key = $val;
-				}
-			}
-			else
-			{
-				if (is_object($data))
-				{
-					// Assign the model to the data
-					$model = $data;
-				}
-
-				// Load model data
-				$model->find(($data === $model) ? FALSE : $data);
-			}
-
-			// Use model table name, instead of guessing with inflector
+			// Real foreign table name
 			$table = $model->table_name;
 
-			// Set primary and foreign keys
-			$primary = $this->class.'_id';
-			$foreign = $model->class_name.'_id';
-
-			if (in_array($table, $this->has_one) OR in_array($table, $this->has_many))
+			// Sanity check, make sure that this object has ownership
+			if (in_array($matches[2], $this->has_one))
 			{
-				// Set the primary key
-				$model->$primary = $this->object->id;
+				$ownership = 1;
+			}
+			elseif (in_array($table, $this->has_many))
+			{
+				$ownership = 2;
 			}
 			elseif (in_array($table, $this->has_and_belongs_to_many))
 			{
-				// Many-to-many relationship
+				$ownership = 3;
+			}
+			else
+			{
+				// Model does not have ownership, abort now
+				return FALSE;
+			}
+
+			// Primary key related to this object
+			$primary = $this->class.'_id';
+
+			// Related foreign key
+			$foreign = $model->class_name.'_id';
+
+			if ( ! is_object(current($args)))
+			{
+				if ($action === 'add' AND is_array(current($args)))
+				{
+					foreach(current($args) as $key => $val)
+					{
+						// Fill object with data from array
+						$model->$key = $val;
+					}
+				}
+				else
+				{
+					if ($ownership === 1 OR $ownership === 2)
+					{
+						// Make sure the related key matches this object id
+						self::$db->where($primary, $this->object->id);
+					}
+
+					// Load the related object
+					$model->find(current($args));
+				}
+			}
+
+			if ($ownership === 3)
+			{
+				// The many<>many relationship, via a joining table
 				$relationship = array
 				(
 					$primary => $this->object->id,
 					$foreign => $model->id
 				);
-			}
-			else
-			{
-				// This model does not have ownership
-				return FALSE;
 			}
 
 			switch($action)
@@ -258,8 +285,13 @@ class ORM_Core {
 				case 'add':
 					if (isset($relationship))
 					{
-						// Save the relationship
+						// Insert for many<>many relationship
 						self::$db->insert($this->related_table($table), $relationship);
+					}
+					else
+					{
+						// Set the related key to this object id
+						$model->$primary = $this->object->id;
 					}
 
 					return $model->save();
@@ -267,35 +299,40 @@ class ORM_Core {
 				case 'has':
 					if (isset($relationship))
 					{
-						// Find if the relationship exists, in the case of many<>many
-						return (bool) count(self::$db
+						// Find the many<>many relationship
+						return (bool) count
+						(
+							self::$db
 							->select($primary)
-							->from($this->related_table(inflector::plural($table)))
+							->from($this->related_table($table))
 							->where($relationship)
 							->limit(1)
-							->get());
+							->get()
+						);
 					}
 
-					// Return TRUE if the primary key of the model matches this objects id
 					return ($model->$primary === $this->object->id);
 				break;
 				case 'remove':
 					if (isset($relationship))
 					{
 						// Attempt to delete the many<>many relationship
-						return (bool) count(self::$db
-							->where($relationship)
-							->delete($this->related_table($table)));
+						return (bool) count(self::$db->delete($this->related_table($table), $relationship));
 					}
-
-					if (in_array($table, $this->has_one) OR in_array($table, $this->has_many))
+					elseif ($model->$primary === $this->object->id)
 					{
-						// Double check that the model has the same key as this object
-						return ($model->$primary === $this->object->id) ? $model->delete() : FALSE;
+						// Delete the related object
+						return $model->delete();
+					}
+					else
+					{
+						// Massive failure
+						return FALSE;
 					}
 				break;
 			}
 
+			// This should never be executed
 			return FALSE;
 		}
 	}
@@ -309,7 +346,7 @@ class ORM_Core {
 
 		if ($count === 0)
 		{
-			$this->select = $this->table.'.*');
+			$this->select = $this->table.'.*';
 		}
 		else
 		{
@@ -320,108 +357,58 @@ class ORM_Core {
 	}
 
 	/**
-	 * Generate a WHERE array.
+	 * Generate a WHERE statement for Database.
 	 */
-	public function where()
+	public function where($id = NULL)
 	{
-		switch(func_num_args())
+		if (empty($id))
 		{
-			case 0:
-				if ($this->object->id > 0)
-				{
-					self::$db->where('id', $this->object->id);
-
-					// WHERE has been set
-					$this->where = TRUE;
-				}
-			break;
-			case 1:
-				$id = func_get_arg(0);
-				if ( ! empty($id))
-				{
-					self::$db->where(is_array($id) ? $id : array('id' => $id));
-
-					// WHERE has been set
-					$this->where = TRUE;
-				}
-			break;
-			case 2:
-				$key = func_get_arg(0);
-				$val = func_get_arg(1);
-
-				if (is_array($key))
-				{
-					// Choose the OR method to use
-					$or = (strpos($val, '%') === FALSE) ? 'orwhere' : 'orlike';
-
-					foreach ($key as $k)
-					{
-						// Use OR WHERE/LIKE
-						self::$db->$or($k, $val);
-					}
-				}
-				else
-				{
-					self::$db->where(array($key => $val));
-				}
-
-				// WHERE has been set
-				$this->where = TRUE;
-			break;
+			if ( ! empty($this->object->id))
+			{
+				$this->where = array('id' => $this->object->id);
+			}
+		}
+		elseif (is_array($id))
+		{
+			$this->where = $id;
+		}
+		elseif (func_num_args() === 1)
+		{
+			$this->where = array('id' => $id);
+		}
+		elseif (func_num_args() === 2)
+		{
+			$this->where = array(func_get_arg(0) => func_get_arg(1));
 		}
 
 		return $this;
 	}
 
 	/**
-	 * Method: find
-	 *  Find and load this object data.
-	 *
-	 * Parameters:
-	 *  where - database where clause or array of clauses
-	 *  limit - maximum number of returned objects
+	 * Find and load data for this object.
 	 *
 	 * Returns:
-	 *  TRUE or FALSE
-	 *  Array of objects if where is an array
+	 *  $this object reference.
 	 */
-	public function find($limit = 1, $offset = FALSE)
+	public function find($id = FALSE)
 	{
-		// SELECT
-		($this->select == FALSE) and $this->select();
-		// WHERE
-		($this->where == FALSE) and $this->where();
-		// LIMIT
-		($limit !== ALL) and self::$db->limit($limit, $offset);
-
-		// Return an array if the limit is ALL or greater than 1
-		$array = ($limit === ALL OR $limit > 1) ? TRUE : FALSE;
+		// Generate WHERE
+		($this->where == FALSE) and $this->where($id);
 
 		// Load the result of the query
-		return $this->load_result(self::$db->from($this->table)->get(), $array);
+		return $this->load_result(FALSE);
 	}
 
-	public function find_all($where = FALSE)
+	/**
+	 * Find and load an array of objects.
+	 *
+	 * Returns:
+	 *  An array of objects.
+	 */
+	public function find_all()
 	{
-		// Do the select
-		empty($this->select) or $this->select();
-
-		// SELECT
-		self::$db->select($this->select);
-		// WHERE
-		empty($where) or self::$db->where($where);
-
-		return $this->load_result(self::$db->from($this->table)->get(), TRUE);
-	}
-
-	public function find_all_by($key, $val)
-	{
-		// SELECT
-		($this->select == FALSE)
-		// WHERE
-		self::$db->where($key, $val);
-
-		
+		// Return an array of objects
+		return $this->load_result(TRUE);
 	}
 
 	/**
@@ -444,7 +431,7 @@ class ORM_Core {
 			$data[$key] = $this->object->$key;
 		}
 
-		if (empty($this->object->id))
+		if ($this->object->id == '')
 		{
 			// Perform an insert
 			$query = self::$db->insert($this->table, $data);
@@ -457,11 +444,8 @@ class ORM_Core {
 		}
 		else
 		{
-			// WHERE is this object
-			$this->where();
-
 			// Perform an update
-			$query = self::$db->update($this->table, $data);
+			$query = self::$db->update($this->table, $data, array('id' => $this->object->id));
 		}
 
 		if (count($query) === 1)
@@ -492,33 +476,79 @@ class ORM_Core {
 		$this->where();
 
 		// Delete this object
-		$query = self::$db->delete($this->table);
+		$query = self::$db->delete($this->table, $this->where);
 
-		if (count($query) > 0)
+		// Reset this object
+		$this->clear();
+
+		// Will return TRUE if anything was deleted
+		return (count($query) > 0);
+	}
+
+	/**
+	 * Clears the current object by creating an empty object and assigning empty
+	 * values to each of the object fields. At the same time, the WHERE and
+	 * SELECT statements are cleared and the changed keys are reset.
+	 */
+	public function clear()
+	{
+		// Create an empty object
+		$this->object = new StdClass();
+
+		// Empty the object
+		foreach(self::$fields[$this->table] as $field)
 		{
-			// Reset the object
-			$this->load_result(FALSE);
-
-			return TRUE;
+			$this->object->$field = '';
 		}
 
-		return FALSE;
+		// Reset object status
+		$this->changed = array();
+		$this->select  = FALSE;
+		$this->where   = FALSE;
+	}
+
+	/**
+	 * Helper for __call, breaks a string into WHERE keys.
+	 */
+	protected function find_keys($keys)
+	{
+		if (strpos($keys, '_or_'))
+		{
+			$keys = explode('_or_', $keys);
+		}
+		elseif (strpos($keys, '_and_'))
+		{
+			$keys = explode('_and_', $keys);
+		}
+
+		return $keys;
 	}
 
 	/**
 	 * Loads a database object result.
 	 *
 	 * Parameters:
-	 *  result - database result object
 	 *  array  - force the return to be an array
 	 *
 	 * Return:
 	 *  boolean - TRUE for single result, FALSE for an empty result
 	 *  array   - Multiple row result set
 	 */
-	protected function load_result($result, $array = FALSE)
+	protected function load_result($array = FALSE)
 	{
-		if ($result != FALSE AND count($result) > 0)
+		// Make sure there is something to select
+		($this->select == FALSE) and $this->select();
+
+		// Execute WHERE, if it's not empty
+		is_bool($this->where) or self::$db->where($this->where);
+
+		// Fetch the query result
+		$result = self::$db
+			->select($this->select)
+			->from($this->table)
+			->get();
+
+		if (count($result) > 0)
 		{
 			if (count($result) > 1 OR $array == TRUE)
 			{
@@ -543,14 +573,14 @@ class ORM_Core {
 		}
 		else
 		{
-			// Create an empty object
-			$this->object = new StdClass();
-
-			// Empty the object
-			foreach(self::$fields[$this->table] as $field)
+			if ($array == TRUE)
 			{
-				$this->object->$field = '';
+				// Return an empty array when an array is requested
+				return array();
 			}
+
+			// Reset the object
+			$this->clear();
 		}
 
 		// Clear the changed keys, a new object has been loaded
@@ -608,8 +638,7 @@ class ORM_Core {
 	}
 
 	/**
-	 * Method: related_join
-	 *  Execute a join to a table.
+	 * Execute a join to a table.
 	 *
 	 * Parameters:
 	 *  table - table name

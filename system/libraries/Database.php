@@ -328,7 +328,7 @@ class Database_Core {
 		{
 			$cond = $this->driver->escape_column($this->config['table_prefix'].$where[1]).
 			        ' = '.
-			       $this->driver->escape_column($this->config['table_prefix'].$where[2]);
+			        $this->driver->escape_column($this->config['table_prefix'].$where[2]);
 		}
 
 		$this->join[] = $type.'JOIN '.$this->driver->escape_column($this->config['table_prefix'].$table).' ON '.$cond;

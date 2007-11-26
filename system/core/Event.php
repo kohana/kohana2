@@ -19,11 +19,14 @@
  *  event. Nothing is attached to this event by default.
  *
  * About: system.routing
- *  Processes the URL and does routing. Runs Router::setup() by default.
+ *  Processes the URL and does routing. Calls Router::setup() by default.
  *
  * About: system.execute
  *  Controller locating and initialization. A controller object will be created,
  *  as an instance of Kohana. Calls Kohana::instance() by default.
+ *
+ * About: system.404
+ *  Called when a page cannot be found. Calls Kohana::show_404() by default.
  *
  * About: system.pre_controller
  *  Called within system.execute, after the controller file is loaded, but

@@ -1,11 +1,15 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Provides self-generating documentation about Kohana.
+ * Kohana - The Swift PHP Framework
  *
- * Kohana Source Code:
+ *  License:
  *  author    - Kohana Team
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
+ */
+
+/**
+ * Provides self-generating documentation about Kohana.
  */
 class Kodoc_Core {
 
@@ -112,7 +116,7 @@ class Kodoc_Core {
 		$file = array
 		(
 			'type'      => $type,
-			'about'     => '',
+			'comment'   => '',
 			'file'      => self::remove_docroot($filename),
 			'classes'   => array()
 		);
@@ -120,8 +124,10 @@ class Kodoc_Core {
 		// Open the file for reading
 		$handle = fopen($filename, 'r');
 
-		// Do not start in a comment
+		// For comment handling
 		$in_comment = FALSE;
+		$end_comment = FALSE;
+		$skip_line = FALSE;
 
 		// Add first comment to the file info
 		$add_about = TRUE;
@@ -131,96 +137,61 @@ class Kodoc_Core {
 			switch(substr(trim($line), 0, 2))
 			{
 				case '/*':
-				case '//':
 					// Opening of a comment
 					$in_comment = TRUE;
+					continue;
+				case '//':
+					// Single line comment
+					$skip_line = TRUE;
 					continue;
 				break;
 				case '*/':
 					// Ending of a comment
-					$in_comment = FALSE;
-					// Stop adding to the about text after the end of the first comment
-					$add_about = FALSE;
+					$end_comment = TRUE;
 					continue;
 				break;
 			}
 
-			if ($in_comment)
+			if ($skip_line == TRUE)
+			{
+				// Skip single-line comments
+				$skip_line = FALSE;
+				continue;
+			}
+			elseif ($in_comment)
 			{
 				if ($add_about)
 				{
 					// Add info to the block
-					$file['about'] .= $line;
+					$file['comment'] .= $line;
+
+					if ($end_comment)
+					{
+						// Parse the about section
+						$file['comment'] = $this->parse_comment($file['comment']);
+					}
+				}
+
+				if ($end_comment)
+				{
+					// Reset comment handling
+					$in_comment = FALSE;
+					$add_about = FALSE;
+					$end_comment = FALSE;
 				}
 
 				// Keep ignoring comments...
 				continue;
 			}
 
-			if (strpos($line, 'class') !== FALSE AND preg_match('/(?:class|interface) ([a-zA-Z0-9_]+)/', $line, $matches))
+			if (strpos($line, 'class') !== FALSE AND preg_match('/(?:class|interface)\s+([a-z0-9_]+).+{$/i', $line, $matches))
 			{
 				// Include the file if it has not already been included
 				class_exists($matches[1], FALSE) or include_once $filename;
 
-				// Use reflection to find information
-				$reflection = new ReflectionClass($matches[1]);
-
-				// Class definition
-				$class = array
-				(
-					'name'       => $reflection->getName(),
-					'about'      => $reflection->getDocComment(),
-					'final'      => $reflection->isFinal(),
-					'abstract'   => $reflection->isAbstract(),
-					'interface'  => $reflection->isInterface(),
-					'extends'    => '',
-					'implements' => array(),
-					'methods'    => array()
-				);
-
-				if ($implements = $reflection->getInterfaces())
-				{
-					foreach($implements as $interface)
-					{
-						// Get implemented interfaces
-						$class['implements'][] = $interface->getName();
-					}
-				}
-
-				if ($parent = $reflection->getParentClass())
-				{
-					// Get parent class
-					$class['extends'] = $parent->getName();
-				}
-
-				if ($methods = $reflection->getMethods())
-				{
-					foreach($methods as $method)
-					{
-						// Don't try to document internal methods
-						if ($method->isInternal()) continue;
-
-						$class['methods'][] = array
-						(
-							'name'       => $method->getName(),
-							'about'      => $method->getDocComment(),
-							'final'      => $method->isFinal(),
-							'static'     => $method->isStatic(),
-							'abstract'   => $method->isAbstract(),
-							'visibility' => $this->visibility($method),
-							'parameters' => $this->parameters($method)
-						);
-					}
-				}
-
 				// Add class to file info
-				$file['classes'][] = $class;
+				$files['classes'][] = $this->parse_class($matches[1]);
 			}
-		}
-
-		if (count($file['classes']) > 0)
-		{
-			$file['about'] = '';
 		}
 
 		// Close the file
@@ -229,13 +200,161 @@ class Kodoc_Core {
 		return $file;
 	}
 
+	protected function parse_comment($block)
+	{
+		if (trim($block) == '')
+			return $block;
+
+		// Explode the lines into an array and trim them
+		$block = array_map('trim', explode("\n", $block));
+
+		if (current($block) === '/**')
+		{
+			// Remove comment opening
+			array_shift($block);
+		}
+
+		if (end($block) === '*/')
+		{
+			// Remove comment closing
+			array_pop($block);
+		}
+
+		// Start comment
+		$comment = array();
+
+		while ($line = array_shift($block))
+		{
+			// Remove comment * and trim
+			$line = trim(substr($line, 2));
+
+			if (preg_match('/^(?:class|file|method):\s+([a-z]+)/i', $line))
+			{
+				// Skip these lines
+				continue;
+			}
+
+			if (substr($line, 0, 1) === '$' AND substr($line, -1) === '$')
+			{
+				// Skip SVN property inserts
+				continue;
+			}
+
+			if (preg_match('/^(?:license):/i', $line))
+			{
+				if (empty($comment['license']))
+				{
+					// Create the license block
+					$comment['license'] = array();
+				}
+
+				// Setup the part
+				$part =& $comment['license'];
+
+				// End of part
+				$end = '';
+
+				// Do not add the license line
+				continue;
+			}
+
+			if (isset($part) AND isset($end))
+			{
+				if ($line === $end)
+				{
+					// This part is over, clear it
+					unset($part, $end);
+					continue;
+				}
+
+				if ($line === '')
+				{
+					$line = "\n";
+				}
+
+				// Append the line to the current part
+				$part[] = $line;
+			}
+			else
+			{
+				// Add the line to the comment
+				$comment['about'][] = $line;
+			}
+		}
+
+		foreach($comment as $key => $block)
+		{
+			// Implode each of the comment blocks
+			$comment[$key] = trim(implode("\n", $block));
+		}
+
+		return $comment;
+	}
+
+	protected function parse_class($class)
+	{
+		// Use reflection to find information
+		$reflection = new ReflectionClass($class);
+
+		// Class definition
+		$class = array
+		(
+			'name'       => $reflection->getName(),
+			'comment'    => $this->parse_comment($reflection->getDocComment()),
+			'final'      => $reflection->isFinal(),
+			'abstract'   => $reflection->isAbstract(),
+			'interface'  => $reflection->isInterface(),
+			'extends'    => '',
+			'implements' => array(),
+			'methods'    => array()
+		);
+
+		if ($implements = $reflection->getInterfaces())
+		{
+			foreach($implements as $interface)
+			{
+				// Get implemented interfaces
+				$class['implements'][] = $interface->getName();
+			}
+		}
+
+		if ($parent = $reflection->getParentClass())
+		{
+			// Get parent class
+			$class['extends'] = $parent->getName();
+		}
+
+
+		if ($methods = $reflection->getMethods())
+		{
+			foreach($methods as $method)
+			{
+				// Don't try to document internal methods
+				if ($method->isInternal()) continue;
+
+				$class['methods'][] = array
+				(
+					'name'       => $method->getName(),
+					'comment'    => $this->parse_comment($method->getDocComment()),
+					'final'      => $method->isFinal(),
+					'static'     => $method->isStatic(),
+					'abstract'   => $method->isAbstract(),
+					'visibility' => $this->visibility($method),
+					'parameters' => $this->parameters($method)
+				);
+			}
+		}
+
+		return $class;
+	}
+
 	/**
 	 * Finds the parameters for a ReflectionMethod.
 	 *
-	 * Parameters
+	 * Parameters:
 	 *  object: ReflectionMethod
 	 *
-	 * Returns
+	 * Returns:
 	 *  array: parameters
 	 */
 	protected function parameters(ReflectionMethod $method)

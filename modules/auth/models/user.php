@@ -59,10 +59,10 @@ class User_Model extends ORM {
 		// Don't mess with these calls, they are too complex
 		if (is_object($role))
 			return parent::has_role($role);
-
+	
 		// Make sure the role name is a string
 		$role = (string) $role;
-
+	
 		if (ctype_digit($role))
 		{
 			// Find by id
@@ -94,18 +94,16 @@ class User_Model extends ORM {
 		return $return;
 	}
 
-	protected function where($id)
+	public function where($id = NULL)
 	{
-		// Primary key
-		if (($where = parent::where($id)) !== NULL)
-			return $where;
+		if (is_string($id) AND $id != '')
+		{
+			$this->where = valid::email($id) ? array('email' => $id) : array('username' => $id);
 
-		// Email address
-		if (valid::email($id))
-			return array('email' => $id);
+			return $this;
+		}
 
-		// Username
-		return array('username' => $id);
+		return parent::where($id);
 	}
 
 } // End User_Model
