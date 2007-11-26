@@ -10,7 +10,6 @@
  *  site_protocol        - protocol used to access the site, usually HTTP
  *  index_page           - name of the front controller, can be removed with URL rewriting
  *  url_suffix           - an extension that will be added to all generated URLs
- *  enable_utf8          - enable or disable internal utf8 support
  *  global_xss_filtering - enable or disable XSS attack filtering on all user input
  *  allow_config_set     - enable or disable setting of Config items
  *  extension_prefix     - filename prefix for library extensions
@@ -23,7 +22,6 @@ $config = array
 	'site_protocol'        => 'http',
 	'index_page'           => 'index.php',
 	'url_suffix'           => '',
-	'enable_utf8'          => TRUE,
 	'global_xss_filtering' => FALSE,
 	'allow_config_set'     => FALSE,
 	'extension_prefix'     => 'MY_',

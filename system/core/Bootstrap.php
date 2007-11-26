@@ -18,6 +18,7 @@ require SYSPATH.'core/Benchmark'.EXT;
 Benchmark::start(SYSTEM_BENCHMARK.'_total_execution_time');
 
 Benchmark::start(SYSTEM_BENCHMARK.'_kohana_loading');
+require SYSPATH.'core/utf8'.EXT;
 require SYSPATH.'core/Config'.EXT;
 require SYSPATH.'core/Log'.EXT;
 require SYSPATH.'core/Event'.EXT;

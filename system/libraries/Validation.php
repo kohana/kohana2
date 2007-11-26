@@ -772,16 +772,8 @@ class Validation_Core {
 
 		if (ctype_digit($val))
 		{
-			if (class_exists('utf8', FALSE))
-			{
-				if (utf8::strlen($str) >= $val)
-					return TRUE;
-			}
-			else
-			{
-				if (strlen($str) >= $val)
-					return TRUE;
-			}
+			if (utf8::strlen($str) >= $val)
+				return TRUE;
 		}
 
 		$this->add_error('min_length', $this->current_field, (int) $val);
@@ -805,16 +797,8 @@ class Validation_Core {
 
 		if (ctype_digit($val))
 		{
-			if (class_exists('utf8', FALSE))
-			{
-				if (utf8::strlen($str) <= $val)
-					return TRUE;
-			}
-			else
-			{
-				if (strlen($str) <= $val)
-					return TRUE;
-			}
+			if (utf8::strlen($str) <= $val)
+				return TRUE;
 		}
 
 		$this->add_error('max_length', $this->current_field, (int) $val);
@@ -838,16 +822,8 @@ class Validation_Core {
 
 		if (ctype_digit($val))
 		{
-			if (class_exists('utf8', FALSE))
-			{
-				if (utf8::strlen($str) == $val)
-					return TRUE;
-			}
-			else
-			{
-				if (strlen($str) == $val)
-					return TRUE;
-			}
+			if (utf8::strlen($str) == $val)
+				return TRUE;
 		}
 
 		$this->add_error('exact_length', $this->current_field, (int) $val);

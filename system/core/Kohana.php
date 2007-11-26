@@ -114,9 +114,6 @@ class Kohana {
 		// magic_quotes_gpc later.
 		set_magic_quotes_runtime(0);
 
-		// Only include utf8 support if it's enabled
-		Config::item('core.enable_utf8') and require SYSPATH.'core/utf8'.EXT;
-
 		// Send default text/html UTF-8 header
 		header('Content-type: text/html; charset=UTF-8');
 
