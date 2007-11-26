@@ -161,7 +161,7 @@ class Kohana {
 		$run = TRUE;
 
 		// Stop the environment setup routine
-		Benchmark::start(SYSTEM_BENCHMARK.'_environment_setup');
+		Benchmark::stop(SYSTEM_BENCHMARK.'_environment_setup');
 	}
 
 	/**
