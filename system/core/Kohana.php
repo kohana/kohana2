@@ -640,18 +640,21 @@ class Kohana {
 		{
 			$path = rtrim($path, '/').'/';
 
-			foreach(glob($path.'*') as $index => $item)
+			if (is_readable($path))
 			{
-				$files[] = $item = str_replace('\\', '/', $item);
-
-				// Handle recursion
-				if (is_dir($item) AND $recursive == TRUE)
+				foreach(glob($path.'*') as $index => $item)
 				{
-					// Filename should only be the basename
-					$item = pathinfo($item, PATHINFO_BASENAME);
+					$files[] = $item = str_replace('\\', '/', $item);
 
-					// Append sub-directory search
-					$files = array_merge($files, self::list_files($directory, TRUE, $path.$item));
+					// Handle recursion
+					if (is_dir($item) AND $recursive == TRUE)
+					{
+						// Filename should only be the basename
+						$item = pathinfo($item, PATHINFO_BASENAME);
+
+						// Append sub-directory search
+						$files = array_merge($files, self::list_files($directory, TRUE, $path.$item));
+					}
 				}
 			}
 		}
@@ -920,7 +923,7 @@ class Kohana_404_Exception extends Kohana_Exception {
 	protected $code = E_PAGE_NOT_FOUND;
 
 	/**
-	 * Method: __construct
+	 * Creates a new 404 exception, which triggers a Kohana error page.
 	 *
 	 * Parameters:
 	 *  page     - URL of page
@@ -945,8 +948,7 @@ class Kohana_404_Exception extends Kohana_Exception {
 	}
 
 	/**
-	 * Method: sendHeaders
-	 *  Sends a Page Not Found header.
+	 * Sends "File Not Found" headers, to emulate server behavior.
 	 */
 	public function sendHeaders()
 	{
