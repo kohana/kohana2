@@ -212,9 +212,18 @@ class html {
 
 		if (is_array($style))
 		{
+			// Find default media type
+			$media_type = is_array($media) ? array_shift($media) : $media;
+
 			foreach($style as $name)
 			{
-				$compiled .= self::stylesheet($name, $media, $index)."\n";
+				$compiled .= self::stylesheet($name, $media_type, $index)."\n";
+
+				if (is_array($media))
+				{
+					// Advance the media type to the next type
+					$media_type = array_shift($media);
+				}
 			}
 		}
 		else
