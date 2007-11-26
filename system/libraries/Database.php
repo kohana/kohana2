@@ -1238,7 +1238,7 @@ class Database_Core {
 		{
 			$this->driver->clear_cache($this->last_query);
 		}
-		else if (!is_null($sql))
+		else if (is_string($sql))
 		{
 			$this->driver->clear_cache($sql);
 		}

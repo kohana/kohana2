@@ -396,9 +396,6 @@ abstract class Database_Driver {
 	 *
 	 * Parameters:
 	 *  sql - the sql command to clear, leave blank to clear entire cache
-	 *
-	 * Returns:
-	 *  An array containing the field data or FALSE if the table doesn't exist.
 	 */
 	public function clear_cache($sql = NULL)
 	{
