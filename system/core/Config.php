@@ -91,6 +91,9 @@ final class Config {
 		if (empty($key) OR $key == 'core.allow_config_set')
 			return FALSE;
 
+		// Do this to make sure that the config array is already loaded
+		Config::item($key);
+
 		// Convert dot-noted key string to an array
 		$keys = explode('.', rtrim($key, '.'));
 
