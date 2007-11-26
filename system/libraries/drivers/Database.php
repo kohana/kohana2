@@ -10,6 +10,8 @@
  */
 abstract class Database_Driver {
 
+	static $query_cache;
+
 	/**
 	 * Method: connect
 	 *  Connects to the database.
@@ -388,6 +390,28 @@ abstract class Database_Driver {
 	 */
 	abstract public function field_data($table);
 
+	/**
+	 * Method: clear_cache
+	 *  Clears the internal query cache
+	 *
+	 * Parameters:
+	 *  sql - the sql command to clear, leave blank to clear entire cache
+	 *
+	 * Returns:
+	 *  An array containing the field data or FALSE if the table doesn't exist.
+	 */
+	public function clear_cache($sql = NULL)
+	{
+		if (!is_null($sql))
+		{
+			$hash = sha1($sql);
+			unset(self::$query_cache[$hash]);
+		}
+		else
+		{
+			self::$query_cache = array();
+		}
+	}
 } // End Database Driver Interface
 
 /**

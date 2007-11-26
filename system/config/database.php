@@ -16,6 +16,7 @@
  *  character_set - Database character set
  *  table_prefix  - Database table prefix
  *  object        - Enable or disable object results
+ *  cache         - Enable or disable query caching
  */
 $config['default'] = array
 (
@@ -25,5 +26,6 @@ $config['default'] = array
 	'connection'    => 'mysql://dbuser:secret@localhost/kohana',
 	'character_set' => 'utf8',
 	'table_prefix'  => '',
-	'object'        => TRUE
+	'object'        => TRUE,
+	'cache'         => TRUE
 );

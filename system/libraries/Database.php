@@ -23,7 +23,8 @@ class Database_Core {
 		'connection'    => '',
 		'character_set' => 'utf8',
 		'table_prefix'  => '',
-		'object'        => TRUE
+		'object'        => TRUE,
+		'cache'         => TRUE
 	);
 
 	// Database driver object
@@ -1221,6 +1222,30 @@ class Database_Core {
 	public function table_prefix()
 	{
 		return $this->config['table_prefix'];
+	}
+
+	/**
+	 * Method: clear_cache
+	 *  Clears the query cache
+	 *
+	 * Parameters:
+	 *  sql - clear cache by SQL statement (TRUE for last query)
+	 *
+	 */
+	public function clear_cache($sql = NULL)
+	{
+		if ($sql == TRUE)
+		{
+			$this->driver->clear_cache($this->last_query);
+		}
+		else if (!is_null($sql))
+		{
+			$this->driver->clear_cache($sql);
+		}
+		else
+		{
+			$this->driver->clear_cache();
+		}
 	}
 
 } // End Database Class
