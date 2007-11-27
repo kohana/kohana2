@@ -128,7 +128,7 @@ class Kohana {
 		Event::add('system.404', array('Kohana', 'show_404'));
 
 		// Enable Kohana output handling
-		Event::add('system.shutdown', array('Kohana', 'display'));
+		Event::add('system.shutdown', array('Kohana', 'shutdown'));
 
 		if ($hooks = Config::item('hooks.enable'))
 		{
@@ -297,10 +297,10 @@ class Kohana {
 	}
 
 	/**
-	 * Method: display
-	 *  Displays the final rendered output
+	 * Triggers the shutdown of Kohana by closing the output buffer, running
+	 * the system.display event, 
 	 */
-	public static function display()
+	public static function shutdown()
 	{
 		// This will flush the Kohana buffer, which sets self::$output
 		(ob_get_level() === self::$buffer_level) and ob_end_clean();
@@ -308,6 +308,17 @@ class Kohana {
 		// Run the output event
 		Event::run('system.display', self::$output);
 
+		// Render the output
+		self::render(self::$output);
+	}
+
+	/**
+	 * Inserts global Kohana variables into the generated output and prints it.
+	 *
+	 * @param  string  final output that will displayed
+	 */
+	public static function render($output)
+	{
 		// Fetch memory usage in MB
 		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
 
@@ -315,7 +326,7 @@ class Kohana {
 		$benchmark = Benchmark::get(SYSTEM_BENCHMARK.'_total_execution');
 
 		// Replace the global template variables
-		self::$output = str_replace(
+		$output = str_replace(
 			array
 			(
 				'{kohana_version}',
@@ -330,7 +341,7 @@ class Kohana {
 				$benchmark['time'],
 				number_format($memory, 2).'MB'
 			),
-			self::$output
+			$output
 		);
 
 		if (Config::item('core.output_compression') AND stripos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== FALSE)
@@ -339,10 +350,10 @@ class Kohana {
 			header('Content-Encoding: gzip');
 
 			// Compress output
-			self::$output = gzencode(self::$output);
+			$output = gzencode($output);
 		}
 
-		print self::$output;
+		echo $output;
 	}
 
 	/**
