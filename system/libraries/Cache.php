@@ -1,76 +1,181 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Cache
+ * Provides a driver-based interface for finding, creating, and deleting cached
+ * resources. Caches are identified by a unique string. Tagging of caches is
+ * also supported, and caches can be found, and deleted, by id or tag.
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * @package    Cache
+ * @author     Kohana Team
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Cache_Core {
 
-	protected $groups;
+	protected $config;
 
 	protected $driver;
 
 	/**
-	 * Constructor: __construct
-	 *  Set up driver and get groups.
+	 * Loads the configured driver and validates it.
 	 *
-	 * Parameters:
-	 *  config - custom configuration
+	 * @param  array  custom configuration
+	 * @return void
 	 */
-	function __construct($config = array())
+	public function __construct($config = array())
 	{
-		$this->driver = new Driver();
-		
-		$this->groups = $this->get('kohana.groups');
+		// Load configuration
+		$this->config = empty($config) ? Config::item('cache') : $config;
+
+		try
+		{
+			$driver = 'Cache_'.ucfirst($this->config['driver']).'_Driver';
+
+			// Manually autoload so that exceptions can be caught
+			Kohana::auto_load($driver);
+		}
+		catch (Kohana_Exception $e)
+		{
+			throw new Kohana_Exception('cache.driver_not_supported', $this->config['driver']);
+		}
+
+		// Initialize the driver
+		$this->driver = new $driver($this->config['params']);
+
+		// Validate the driver
+		if ( ! in_array('Cache_Driver', class_implements($this->driver)))
+			throw new Kohana_Exception('cache.driver_not_supported', 'Cache drivers must use the Cache_Driver interface.');
+
+		Log::add('debug', 'Cache Library initialized.');
 	}
 
 	/**
-	 * Method: get
-	 *  Get data from cache.
+	 * Fetches a cache by id. Non-string cache items are automatically
+	 * unserialized before the cache is returned. NULL is returned when
+	 * a cache item is not found.
 	 *
-	 * Parameters:
-	 *  name - name of cache entry
-	 *
-	 * Returns:
-	 *   Cached data
+	 * @param  string  cache id
+	 * @return mixed
 	 */
-	function get($name)
+	public function get($id)
 	{
-		return $this->driver->get($name);
+		if (strpos($id, '/'))
+		{
+			// Change forward slashes to colons
+			$id = str_replace('/', ':', $id);
+		}
+
+		if ($data = $this->driver->get($id))
+		{
+			if (substr($data, 0, 14) === '<{serialized}>')
+			{
+				// Data has been serialize, unserialize now
+				$data = unserialize(substr($data, 14));
+			}
+		}
+
+		return $data;
 	}
 
 	/**
-	 * Method: set
-	 *  Save data into cache.
+	 * Fetches all of the caches for a given tag. An empty array will be
+	 * returned when no matching caches are found.
 	 *
-	 * Parameters:
-	 *  name - name of cache entry
-	 *  item - data to save
-	 *
-	 * Returns:
-	 *   TRUE or FALSE
+	 * @param  string  cache tag
+	 * @return array
 	 */
-	function set($name, $item)
+	public function find($tag)
 	{
-		return $this->driver->set($name, $item);
+		if ($ids = $this->driver->find($tag))
+		{
+			$data = array();
+			foreach($ids as $id)
+			{
+				// Load each cache item and add it to the array
+				if (($cache = $this->get($id)) !== NULL)
+				{
+					$data[$id] = $cache;
+				}
+			}
+			return $data;
+		}
+
+		return array();
 	}
 
 	/**
-	 * Method: del
-	 *  Delete cache entry.
+	 * Set a cache item by id. Tags may also be added and a custom lifetime
+	 * can be set. Non-string data is automatically serialized.
 	 *
-	 * Parameters:
-	 *  name - name of cache entry
-	 *
-	 * Returns:
-	 *   TRUE or FALSE
+	 * @param  string  unique cache id
+	 * @param  mixed   data to cache
+	 * @param  array   tags for this item
+	 * @param  integer number of seconds until the cache expires
+	 * @return bool
 	 */
-	function del($name)
+	function set($id, $data, $tags = NULL, $lifetime = NULL)
 	{
-		return $this->driver->del($name, $item);
+		if (is_resource($data))
+			throw new Kohana_Exception('cache.resources');
+
+		if (strpos($id, '/'))
+		{
+			// Change forward slashes to colons
+			$id = str_replace('/', ':', $id);
+		}
+
+		if ( ! is_string($data))
+		{
+			// Serialize all non-string data, so that types can be preserved
+			$data = '<{serialized}>'.serialize($data);
+		}
+
+		if (empty($tags))
+		{
+			$tags = array();
+		}
+		else
+		{
+			// Make sure that tags is an array
+			$tags = (array) $tags;
+		}
+
+		if (empty($lifetime))
+		{
+			$lifetime = $this->config['lifetime'];
+		}
+
+		// Remove old cache files
+		$this->driver->del($id);
+
+		return $this->driver->set($id, $data, $tags, time() + $lifetime);
+	}
+
+	/**
+	 * Delete a cache item by id.
+	 *
+	 * @param  string  cache id
+	 * @return bool
+	 */
+	function del($id)
+	{
+		if (strpos($id, '/'))
+		{
+			// Change forward slashes to colons
+			$id = str_replace('/', ':', $id);
+		}
+
+		return $this->driver->del($id);
+	}
+
+	/**
+	 * Delete all cache items with a given tag.
+	 *
+	 * @param  string  cache tag name
+	 * @return bool
+	 */
+	function del_tag($tag)
+	{
+		return $this->driver->del(FALSE, $tag);
 	}
 
 } // End Cache Class

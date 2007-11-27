@@ -1,0 +1,156 @@
+<?php defined('SYSPATH') or die('No direct script access.');
+/**
+ * File-based Cache driver.
+ *
+ * @package    Cache
+ * @author     Kohana Team
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
+class Cache_File_Driver implements Cache_Driver {
+
+	protected $directory = '';
+
+	/**
+	 * Tests that the storage location is a directory and is writable.
+	 */
+	public function __construct($directory)
+	{
+		// Find the real path to the directory
+		$directory = str_replace('\\', '/', realpath($directory)).'/';
+
+		if ( ! is_dir($directory) OR ! is_writable($directory))
+			throw new Kohana_Exception('cache.unwritable', $directory);
+
+		// Directory is valid
+		$this->directory = $directory;
+	}
+
+	/**
+	 * Finds an array of files matching the given id or tag.
+	 *
+	 * @param  string  cache id or tag
+	 * @param  bool    search for tags
+	 * @return array or NULL
+	 */
+	public function exists($id, $tag = FALSE)
+	{
+		// Find all the files matching the given id or tag
+		$files = ($tag == FALSE) ? glob($this->directory.$id.'*') : glob($this->directory.'*~*'.$id.'*');
+
+		return empty($files) ? NULL : $files;
+	}
+
+	/**
+	 * Sets a cache item to the given data, tags, and expiration.
+	 *
+	 * @param  string  cache id to set
+	 * @param  string  data in the cache
+	 * @param  array   cache tags
+	 * @param  integer timestamp
+	 * @return bool
+	 */
+	public function set($id, $data, $tags, $expiration)
+	{
+		$filename = $id.'~'.implode('+', $tags).'~'.$expiration;
+
+		// Write the file, appending the sha1 signature to the beginning of the data
+		return (bool) file_put_contents($this->directory.$filename, sha1($data).$data);
+	}
+
+	/**
+	 * Finds an array of ids for a given tag.
+	 *
+	 * @param  string  tag name
+	 * @return mixed
+	 */
+	public function find($tag)
+	{
+		if ($files = $this->exists($tag, TRUE))
+		{
+			// Length of directory name
+			$offset = strlen($this->directory);
+
+			// Find all the files with the given tag
+			$array = array();
+			foreach($files as $file)
+			{
+				// Get the id from the filename
+				$array[] = substr(current(explode('~', $file)), $offset);
+			}
+
+			return $array;
+		}
+
+		return FALSE;
+	}
+
+	/**
+	 * Fetches a cache item. This will delete the item if it is expired or if
+	 * the hash does not match the stored hash.
+	 *
+	 * @param  string  cache id
+	 * @return mixed
+	 */
+	public function get($id)
+	{
+		if ($file = $this->exists($id))
+		{
+			// Always process the first result
+			$file = current($file);
+
+			// Validate that the cache has not expired
+			if (end(explode('~', $file)) <= time())
+			{
+				// Remove this cache, it has expired
+				$this->del($id);
+			}
+			else
+			{
+				$data = file_get_contents($file);
+
+				// Find the hash of the data
+				$hash = substr($data, 0, 40);
+
+				// Remove the hash from the data
+				$data = substr($data, 40);
+
+				if ($hash !== sha1($data))
+				{
+					// Remove this cache, it doesn't validate
+					$this->del($id);
+
+					// Unset data to prevent it from being returned
+					unset($data);
+				}
+			}
+		}
+
+		// Return NULL if there is no data
+		return isset($data) ? $data : NULL;
+	}
+
+	/**
+	 * Deletes a cache item by id or tag.
+	 *
+	 * @param  string  cache id or tag
+	 * @param  bool    use tags
+	 * @return bool
+	 */
+	public function del($id, $tag = FALSE)
+	{
+		if ($files = $this->exists($id, $tag))
+		{
+			foreach($files as $file)
+			{
+				// Remove the cache file
+				unlink($file);
+			}
+
+			return TRUE;
+		}
+
+		return FALSE;
+	}
+
+} // End Cache File Driver
