@@ -22,7 +22,7 @@ class form {
 	 * Returns:
 	 *  An HTML form tag.
 	 */
-	public static function open($action, $attr = array(), $hidden = array())
+	public static function open($action = '', $attr = array(), $hidden = array())
 	{
 		// Make sure that the method is always set
 		$attr += array
