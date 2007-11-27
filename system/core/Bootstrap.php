@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
  * File: Bootstrap
- *  Kohana process control file, loaded by <index.php>. 
+ *  Kohana process control file, loaded by <index.php>.
  *
  * Kohana Source Code:
  *  author    - Kohana Team
@@ -15,7 +15,7 @@ define('KOHANA_CODENAME', 'Superlime');
 define('SYSTEM_BENCHMARK', uniqid(rand(1, 100)));
 
 require SYSPATH.'core/Benchmark'.EXT;
-Benchmark::start(SYSTEM_BENCHMARK.'_total_execution_time');
+Benchmark::start(SYSTEM_BENCHMARK.'_total_execution');
 
 Benchmark::start(SYSTEM_BENCHMARK.'_kohana_loading');
 require SYSPATH.'core/utf8'.EXT;

@@ -315,7 +315,7 @@ class Kohana {
 		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
 
 		// Fetch benchmark for page execution time
-		$benchmark = Benchmark::get(SYSTEM_BENCHMARK.'_total_execution_time');
+		$benchmark = Benchmark::get(SYSTEM_BENCHMARK.'_total_execution');
 
 		// Replace the global template variables
 		self::$output = str_replace(
@@ -627,7 +627,7 @@ class Kohana {
 	 *  directory - directory to search
 	 *  recursive - list all files to the maximum depth?
 	 *  path      - full path to search (used for recursion, *never* set this manually)
-	 * 
+	 *
 	 * Returns:
 	 *  An array of filenames and directories.
 	 */
@@ -675,7 +675,7 @@ class Kohana {
 	 * Parameters:
 	 *  key  - language key to fetch
 	 *  args - additional information to insert into the line
-	 * 
+	 *
 	 * Returns:
 	 *  A i18n language string, or the requested key if the i18n item is not found.
 	 */

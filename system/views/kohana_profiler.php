@@ -101,14 +101,15 @@ $benchmarks = array_slice($benchmarks, 1) + array_slice($benchmarks, 0, 1);
 
 foreach ($benchmarks as $name => $benchmark):
 
+	$class = ($name == 'total_execution') ? ' class="kp-totalrow"' : text::alternate('', ' class="kp-altrow"');
 	$name = ucwords(str_replace(array('_', '-'), ' ', $name));
 
 ?>
-			<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
-				<td><?php echo $name ?></td>
-				<td class="kp-column kp-data"><?php echo number_format($benchmark['time'], 4) ?></td>
-				<td class="kp-column kp-data"><?php echo number_format($benchmark['memory'] / 1024 / 1024, 2) ?> MB</td>
-			</tr>
+		<tr<?php echo $class ?>>
+			<td><?php echo $name ?></td>
+			<td class="kp-column kp-data"><?php echo number_format($benchmark['time'], 4) ?></td>
+			<td class="kp-column kp-data"><?php echo number_format($benchmark['memory'] / 1024 / 1024, 2) ?> MB</td>
+		</tr>
 <?php
 
 endforeach;
