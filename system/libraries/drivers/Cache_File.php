@@ -36,7 +36,7 @@ class Cache_File_Driver implements Cache_Driver {
 	public function exists($id, $tag = FALSE)
 	{
 		// Find all the files matching the given id or tag
-		$files = ($tag == FALSE) ? glob($this->directory.$id.'*') : glob($this->directory.'*~*'.$id.'*');
+		$files = ($tag == FALSE) ? glob($this->directory.$id.'~*') : glob($this->directory.'*~*'.$id.'*~*');
 
 		return empty($files) ? NULL : $files;
 	}
