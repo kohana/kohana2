@@ -58,7 +58,7 @@ class Cache_Core {
 	 */
 	public function get($id)
 	{
-		if (strpos($id, '/'))
+		if (strpos($id, '/') !== FALSE)
 		{
 			// Change forward slashes to colons
 			$id = str_replace('/', ':', $id);
@@ -117,7 +117,7 @@ class Cache_Core {
 		if (is_resource($data))
 			throw new Kohana_Exception('cache.resources');
 
-		if (strpos($id, '/'))
+		if (strpos($id, '/') !== FALSE)
 		{
 			// Change forward slashes to colons
 			$id = str_replace('/', ':', $id);
@@ -158,7 +158,7 @@ class Cache_Core {
 	 */
 	function del($id)
 	{
-		if (strpos($id, '/'))
+		if (strpos($id, '/') !== FALSE)
 		{
 			// Change forward slashes to colons
 			$id = str_replace('/', ':', $id);
