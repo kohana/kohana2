@@ -120,7 +120,7 @@ endforeach;
 <?php if (isset($queries)): ?>
 	<table id="kp-queries">
 		<tr>
-			<th><?php echo Kohana::lang('profiler.queries') ?> (<?php echo ($queries == FALSE ? '0' : count($queries)) ?>)</th>
+			<th><?php echo Kohana::lang('profiler.queries') ?></th>
 			<th class="kp-column">Time</th>
 			<th class="kp-column">Rows</th>
 		</tr>
@@ -156,7 +156,7 @@ else:
 		endforeach;
 ?>
 		<tr class="kp-totalrow">
-			<td>Total</td>
+			<td>Total: <?php echo count($queries) ?></td>
 			<td class="kp-column kp-data"><?php echo number_format($total_time, 4) ?></td>
 			<td class="kp-column kp-data">&nbsp;</td>
 		</tr>
