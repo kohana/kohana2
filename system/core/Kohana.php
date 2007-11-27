@@ -35,9 +35,6 @@ class Kohana {
 	// Output buffering level
 	private static $buffer_level = 0;
 
-	// Error codes
-	private static $error_codes = array();
-
 	// The final output that will displayed by Kohana
 	public static $output = '';
 
@@ -309,7 +306,7 @@ class Kohana {
 		(ob_get_level() === self::$buffer_level) and ob_end_clean();
 
 		// Run the output event
-		Event::run('system.display');
+		Event::run('system.display', self::$output);
 
 		// Fetch memory usage in MB
 		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
