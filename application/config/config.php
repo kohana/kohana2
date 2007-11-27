@@ -31,6 +31,9 @@ $config = array
 	(
 		// To enable the demo module, uncomment the following line
 		// 'modules/demo',
+
+		// To enable local API documentation at /kodoc/, uncomment the following line
+		// 'modules/kodoc',
 	),
 	'autoload'             => array
 	(

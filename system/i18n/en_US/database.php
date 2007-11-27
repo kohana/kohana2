@@ -12,4 +12,3 @@ $lang = array
 	'must_use_table'        => 'You must set a database table for your query.',
 	'not_implemented'       => 'The method you called, %s, is not supported by this driver.'
 );
-	

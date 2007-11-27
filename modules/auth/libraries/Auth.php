@@ -1,11 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Auth
+ * User authorization library. Handles user login and logout, as well as secure
+ * password hashing.
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * @package    User Management
+ * @depends    ORM
+ * @author     Kohana Team
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Auth_Core {
 
@@ -15,6 +17,9 @@ class Auth_Core {
 	// Configuration
 	protected $config;
 
+	/**
+	 * Loads Session and configuration options.
+	 */
 	public function __construct($config = NULL)
 	{
 		// Load libraries
@@ -33,16 +38,11 @@ class Auth_Core {
 	}
 
 	/**
-	 * Method: login
-	 *  Attempt a user login.
+	 * Attempt to log in a user by using an ORM object and plain-text password.
 	 *
-	 * Parameters:
-	 *  username - username to check
-	 *  password - password to check
-	 *  level    - minimum level
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param  object  user model
+	 * @param  string  plain-text password to check against
+	 * @return bool
 	 */
 	public function login($user, $password)
 	{
@@ -76,8 +76,7 @@ class Auth_Core {
 	}
 
 	/**
-	 * Method: logout
-	 *  Force a logout of a user.
+	 * Log out a user by removing the related session variables.
 	 *
 	 * Parameters:
 	 *  destroy - completely destroy the session

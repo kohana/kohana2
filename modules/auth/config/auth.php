@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Authentication configuration options.
+ * Authentication library configuration.
  *
  * Parameters:
  *  hash_method  - hash type used for passwords, see <http://php.net/hash_algos>

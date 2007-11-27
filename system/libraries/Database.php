@@ -162,7 +162,7 @@ class Database_Core {
 			// Initialize the driver
 			$this->driver = new $driver($this->config);
 		}
-		catch (Kohana_Exception $exception)
+		catch (Kohana_Exception $e)
 		{
 			throw new Kohana_Database_Exception('database.driver_not_supported', $this->config['connection']['type']);
 		}
@@ -1263,4 +1263,4 @@ class Kohana_Database_Exception extends Kohana_Exception {
 
 	protected $code = E_DATABASE_ERROR;
 
-}
+} // End Kohana Database Exception
