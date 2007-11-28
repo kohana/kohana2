@@ -108,21 +108,15 @@ class Router_Core {
 		self::$rsegments = explode('/', self::$rsegments);
 
 		// Validate segments to prevent malicious characters
-		if ( ! empty(self::$segments))
+		foreach(self::$segments as $key => $segment)
 		{
-			foreach(self::$segments as $key => $segment)
-			{
-				self::$segments[$key] = self::filter_uri($segment);
-			}
+			self::$segments[$key] = self::filter_uri($segment);
 		}
 
 		// Yah, routed segments too, even though it should never happen
-		if ( ! empty(self::$rsegments))
+		foreach(self::$rsegments as $key => $segment)
 		{
-			foreach(self::$rsegments as $key => $segment)
-			{
-				self::$rsegments[$key] = self::filter_uri($segment);
-			}
+			self::$rsegments[$key] = self::filter_uri($segment);
 		}
 
 		// Prepare for Controller search
@@ -133,10 +127,10 @@ class Router_Core {
 		// common path for controllers to be located at
 		if (is_file(APPPATH.'controllers/'.self::$rsegments[0].EXT))
 		{
-			self::$directory  = APPPATH.'controllers'.'/';
+			self::$directory  = APPPATH.'controllers/';
 			self::$controller = self::$rsegments[0];
-			self::$method     = isset(self::$rsegments[1]) ? self::$rsegments[1] : 'index';
-			self::$arguments  = isset(self::$rsegments[2]) ? array_slice(self::$rsegments, 2) : array();
+			self::$method     = (isset(self::$rsegments[1])) ? self::$rsegments[1] : 'index';
+			self::$arguments  = (isset(self::$rsegments[2])) ? array_slice(self::$rsegments, 2) : array();
 		}
 		else
 		{
@@ -248,7 +242,7 @@ class Router_Core {
 		}
 
 		// Remove extra slashes from the segments that could cause fucked up routing
-		self::$current_uri = trim(preg_replace('!//+!', '/', self::$current_uri), '/');
+		self::$current_uri = preg_replace('!//+!', '/', trim(self::$current_uri, '/'));
 	}
 
 	/**
