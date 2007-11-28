@@ -101,7 +101,7 @@ class User_Agent_Core {
 		{
 			return;
 		}
-		elseif (strpos('is_', $key) === 0)
+		elseif (strpos($key, 'is_') === 0)
 		{
 			$key = substr($key, 3);
 			return isset($this->$key) ? (bool) $this->$key : FALSE;
