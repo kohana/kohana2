@@ -46,18 +46,6 @@ class Router_Core {
 			$default_route = FALSE;
 		}
 
-		if ($suffix = Config::item('core.url_suffix') AND strpos(self::$current_uri, $suffix) !== FALSE)
-		{
-			// Remove the URL suffix
-			self::$current_uri = preg_replace('!'.preg_quote($suffix).'$!u', '', self::$current_uri);
-
-			// Set the URL suffix
-			self::$url_suffix = $suffix;
-		}
-
-		// Remove extra slashes from the segments that could cause fucked up routing
-		self::$current_uri = preg_replace('!//+!', '/', self::$current_uri);
-
 		// At this point, set the segments, rsegments, and current URI
 		// In many cases, all of these variables will match
 		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, '/');
@@ -249,6 +237,18 @@ class Router_Core {
 			self::$current_uri = substr(self::$current_uri, $offset);
 			self::$current_uri = trim(self::$current_uri, '/');
 		}
+
+		if ($suffix = Config::item('core.url_suffix') AND strpos(self::$current_uri, $suffix) !== FALSE)
+		{
+			// Remove the URL suffix
+			self::$current_uri = preg_replace('!'.preg_quote($suffix).'$!u', '', self::$current_uri);
+
+			// Set the URL suffix
+			self::$url_suffix = $suffix;
+		}
+
+		// Remove extra slashes from the segments that could cause fucked up routing
+		self::$current_uri = trim(preg_replace('!//+!', '/', self::$current_uri), '/');
 	}
 
 	/**
