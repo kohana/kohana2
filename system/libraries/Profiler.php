@@ -93,7 +93,7 @@ class Profiler_Core {
 		else
 		{
 			// Append the profiler data to the output
-			Kohana::$output .= $view;
+			Kohana::$output .= $view->render();
 		}
 	}
 
