@@ -29,11 +29,10 @@ class Kohana {
 	// The singleton instance of the controller
 	private static $instance = NULL;
 
-	// Library registery, to prevent multiple loads of libraries
-	private static $libraries = array();
-
 	// Output buffering level
 	private static $buffer_level = 0;
+
+	public static $has_error = FALSE;
 
 	// The final output that will displayed by Kohana
 	public static $output = '';
@@ -374,6 +373,9 @@ class Kohana {
 		// should not be displayed, as per PHP syntax.
 		if (error_reporting() === 0)
 			return;
+
+		// This is useful for hooks to determine if a page has an error
+		self::$has_error = TRUE;
 
 		// Error handling will use exactly 5 args, every time
 		if (func_num_args() === 5)
