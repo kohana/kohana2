@@ -298,14 +298,26 @@ class Input_Core {
 	 *  since it requires a fair amount of processing overhead.
 	 *
 	 * Parameters:
-	 *  string - string to clean
-	 *  tool   - xss_clean method to use ('htmlpurifier' or defaults to built in method)
+	 *  data - data to clean
+	 *  tool - xss_clean method to use ('htmlpurifier' or defaults to built in method)
 	 *
 	 * Returns:
-	 *  Cleaned string
+	 *  Cleaned data
 	 */
-	public function xss_clean($string, $tool = '')
+	public function xss_clean($data, $tool = '')
 	{
+		if (is_array($data))
+		{
+			foreach ($data as $key => $val)
+			{
+				$data[$key] = $this->xss_clean($val, $tool);
+			}
+			return $data;
+		}
+		
+		// It is a string
+		$string = $data;
+
 		// Do not clean empty strings
 		if (trim($string) == '')
 			return $string;
