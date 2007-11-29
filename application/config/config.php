@@ -1,43 +1,69 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/**
- * Site-specific application configuration is done here. This configuration file
- * does not extend any other configuration file. All of the items here are prefixed
- * with "core", eg: core.index_page would fetch the index_page variable from the
- * configuration array.
- *
- * Options:
- *  site_domain          - domain and installation directory
- *  site_protocol        - protocol used to access the site, usually HTTP
- *  index_page           - name of the front controller, can be removed with URL rewriting
- *  url_suffix           - an extension that will be added to all generated URLs
- *  output_compression   - enable or disable gzip output compression
- *  global_xss_filtering - enable or disable XSS attack filtering on all user input
- *  allow_config_set     - enable or disable setting of Config items
- *  extension_prefix     - filename prefix for library extensions
- *  include_paths        - "module" support, additional resource paths that will be searched
- *  autoload             - libraries and models to be loaded with the controller
+/*
+ * Domain name, with the installation directory. Example: example.com/kohana/
  */
-$config = array
-(
-	'site_domain'          => 'localhost/kohana/',
-	'site_protocol'        => 'http',
-	'index_page'           => 'index.php',
-	'url_suffix'           => '',
-	'output_compression'   => FALSE,
-	'global_xss_filtering' => FALSE,
-	'allow_config_set'     => FALSE,
-	'extension_prefix'     => 'MY_',
-	'include_paths'        => array
-	(
-		// To enable the demo module, uncomment the following line
-		// 'modules/demo',
+$config['site_domain'] = 'localhost/kohana/';
 
-		// To enable local API documentation at /kodoc/, uncomment the following line
-		// 'modules/kodoc',
-	),
-	'autoload'             => array
-	(
-		'libraries' => '',
-		'models'    => ''
-	),
+/**
+ * Default protocol used to access the website. Example: http
+ */
+$config['site_protocol'] = 'http';
+
+/**
+ * Name of the front controller for this application. Example: index.php
+ * This can be removed by using URL rewriting.
+ */
+$config['index_page'] = 'index.php';
+
+/**
+ * Fake file extension that will be added to all generated URLs. Example: .html
+ */
+$config['url_suffix'] = '';
+
+/**
+ * Enable or disable gzip output compression. This can dramatically decrease
+ * server bandwidth usage, at the cost of slightly higher CPU usage. Do not
+ * enable this option if you are using output compression in php.ini!
+ */
+$config['output_compression'] = FALSE;
+
+/**
+ * Enable or disable global XSS filtering of GET, POST, and SERVER data. This
+ * option also accepts a string to specify a specific XSS filtering tool.
+ */
+$config['global_xss_filtering'] = FALSE;
+
+/**
+ * Enable or disable dynamic setting of configuration options. By default, all
+ * configuration options are read-only.
+ */
+$config['allow_config_set'] = FALSE;
+
+/**
+ * Filename prefixed used to determine library extensions. For example, an
+ * extension to the Controller class would be named MY_Controller.php.
+ */
+$config['extension_prefix'] = 'MY_';
+
+/**
+ * Additional resource paths, or "modules". Each path can either be absolute
+ * or relative to the docroot. Modules can include any resource that can exist
+ * in your application directory, configuration files, controllers, views, etc.
+ */
+$config['include_paths'] = array
+(
+	// To enable the demo module; uncomment the following line
+	// 'modules/demo',
+	// To enable local API documentation at /kodoc/, uncomment the following line
+	// 'modules/kodoc',
+);
+
+/**
+ * Libraries and models to be automatically loaded into every controller. Use
+ * a comma-separated list to set multiple items.
+ */
+$config['autoload'] = array
+(
+	'libraries' => '',
+	'models'    => '',
 );

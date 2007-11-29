@@ -4,6 +4,8 @@
  * resources. Caches are identified by a unique string. Tagging of caches is
  * also supported, and caches can be found, and deleted, by id or tag.
  *
+ * $Id$
+ *
  * @package    Cache
  * @author     Kohana Team
  * @copyright  (c) 2007 Kohana Team
@@ -55,7 +57,7 @@ class Cache_Core {
 
 		if (self::$loaded != TRUE)
 		{
-			if (mt_rand(1, 100) <= $this->config['cleanup'])
+			if (mt_rand(0, (int) $this->config['requests']) === 1)
 			{
 				// Do garbage collection
 				$this->driver->delete_expired();
@@ -78,17 +80,14 @@ class Cache_Core {
 	 */
 	public function get($id)
 	{
-		if (strpos($id, '/') !== FALSE)
-		{
-			// Change forward slashes to colons
-			$id = str_replace('/', ':', $id);
-		}
+		// Change slashes to colons
+		$id = str_replace(array('/', '\\'), ':', $id);
 
 		if ($data = $this->driver->get($id))
 		{
 			if (substr($data, 0, 14) === '<{serialized}>')
 			{
-				// Data has been serialize, unserialize now
+				// Data has been serialized, unserialize now
 				$data = unserialize(substr($data, 14));
 			}
 		}
@@ -137,11 +136,8 @@ class Cache_Core {
 		if (is_resource($data))
 			throw new Kohana_Exception('cache.resources');
 
-		if (strpos($id, '/') !== FALSE)
-		{
-			// Change forward slashes to colons
-			$id = str_replace('/', ':', $id);
-		}
+		// Change slashes to colons
+		$id = str_replace(array('/', '\\'), ':', $id);
 
 		if ( ! is_string($data))
 		{
@@ -178,11 +174,8 @@ class Cache_Core {
 	 */
 	function del($id)
 	{
-		if (strpos($id, '/') !== FALSE)
-		{
-			// Change forward slashes to colons
-			$id = str_replace('/', ':', $id);
-		}
+		// Change slashes to colons
+		$id = str_replace(array('/', '\\'), ':', $id);
 
 		return $this->driver->del($id);
 	}
@@ -198,4 +191,4 @@ class Cache_Core {
 		return $this->driver->del(FALSE, $tag);
 	}
 
-} // End Cache Class
+} // End Cache

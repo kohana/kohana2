@@ -1,86 +1,107 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Encrypt
+ * The Encrypt library provides two-way encryption of text and binary strings
+ * using the MCrypt extension.
+ * @see http://php.net/mcrypt
  *
- * Note:
- *  Data encoded by the CodeIgniter version of this library cannot be decoded
- *  by this version. This is due to CI "double encoding" the data using it's
- *  own internal XOR encoding method. Sorry folks!
+ * $Id$
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Encrypt_Core {
 
-	// mcrypt module handle
-	protected $module;
+	// mcrypt rand type
+	protected static $rand;
 
 	/**
-	 * Constructor: __construct
-	 *  Initializes mcrypt.
+	 * Loads encryption configuration and validates the data.
+	 *
+	 * @throws Kohana_Exception
 	 */
 	public function __construct($config = array())
 	{
 		if ( ! defined('MCRYPT_ENCRYPT'))
 			throw new Kohana_Exception('encrypt.requires_mcrypt');
 
-		// Set config
+		// Append the default configuration options
 		$config += Config::item('encryption');
 
 		if (empty($config['key']))
 			throw new Kohana_Exception('encrypt.no_encryption_key');
 
-		// TODO: Handle modes other than "ECB"
-		($config['mode'] === MCRYPT_MODE_ECB) or die('Only ECB mode is currently supported for encryption');
+		// Find the max length of the key
+		$size = mcrypt_get_key_size($config['cipher'], $config['mode']);
 
-		// Open the encryption module
-		$this->module = mcrypt_module_open($config['cipher'], '', $config['mode'], '');
+		if (strlen($config['key']) > $size)
+		{
+			// Shorten the key so that it can be used by the mcrypt module
+			$config['key'] = substr($config['key'], 0, $size);
+		}
 
-		// Different random seeds must be used for Windows and UNIX
-		$rand = (strpos(PHP_OS, 'WIN') === FALSE) ? MCRYPT_DEV_RANDOM : MCRYPT_RAND;
-
-		// Create an initialization vector
-		$iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($this->module), $rand);
-
-		// Hash the key, for security, and trim it to the expected key length
-		$config['key'] = substr(hash('sha256', $config['key']), 0, mcrypt_enc_get_key_size($this->module));
-
-		// Initialize the module with the key and IV
-		mcrypt_generic_init($this->module, $config['key'], $iv);
+		// Cache the config in the object
+		$this->config = $config;
 
 		Log::add('debug', 'Encrypt Library initialized');
 	}
 
 	/**
-	 * Method: encode
-	 *  Encrypts a string.
+	 * Encrypts a string and returns an encrypted string that can be decoded.
 	 *
-	 * Parameters:
-	 *  data - string to be encrypted
-	 *
-	 * Returns:
-	 *  Encrypted string.
+	 * @param   string  data to be encrypted
+	 * @return  string  encrypted data
 	 */
 	public function encode($data)
 	{
-		return base64_encode(mcrypt_generic($this->module, $data));
+		// Set the rand type if it has not already been set
+		if (self::$rand === NULL)
+		{
+			if (defined('MCRYPT_DEV_URANDOM'))
+			{
+				// Use /dev/urandom
+				$config['rand'] = MCRYPT_DEV_URANDOM;
+			}
+			elseif (defined('MCRYPT_DEV_RANDOM'))
+			{
+				// Use /dev/random
+				$config['rand'] = MCRYPT_DEV_RANDOM;
+			}
+			else
+			{
+				// Use the system random number generator
+				$config['rand'] = MCRYPT_RAND;
+
+				// The system random number generator must always be seeded each
+				// time it is used, or it will not produce true random results
+				mt_srand();
+			}
+		}
+
+		// Create a random initialization vector of the proper size for the current cipher
+		$iv = mcrypt_create_iv(mcrypt_get_iv_size($this->config['cipher'], $this->config['mode']), self::$rand);
+
+		// Encrypt the data using the configured options and generated iv
+		$data = mcrypt_encrypt($this->config['cipher'], $this->config['key'], $data, $this->config['mode'], $iv);
+
+		// Use base64 encoding to convert to a string
+		return base64_encode($iv.'>>>iv>>>'.$data);
 	}
 
 	/**
-	 * Method: decode
-	 *  Decrypts an encrypted string.
+	 * Decrypts an encoded string back to it's original value.
 	 *
-	 * Parameters:
-	 *  data - string to be decrypted
-	 *
-	 * Returns:
-	 *  Plain-text string.
+	 * @param   string  encoded string to be decrypted
+	 * @return  string  decrypted data
 	 */
 	public function decode($data)
 	{
-		return rtrim(mdecrypt_generic($this->module, base64_decode($data)), "\0");
+		// Split the string back into initialization vector and data
+		list($iv, $data) = explode('>>>iv>>>', base64_decode($data), 2);
+
+		// Return the decrypted data, trimming the \0 padding bytes from the end of the data
+		return rtrim(mcrypt_decrypt($this->config['cipher'], $this->config['key'], $data, $this->config['mode'], $iv), "\0");
 	}
 
 } // End Encrypt

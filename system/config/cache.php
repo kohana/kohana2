@@ -1,17 +1,26 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Cache library configuration.
- *
- * Options:
- *  driver   - cache driver to use, "file" is supported by default
- *  params   - parameters for the driver, "file" uses a directory name
- *  lifetime - default lifetime for all cache items
- *  cleanup  - percentage chance that garbage collection will be done
+ * Cache backend driver. Kohana comes with file, database, and memcache drivers.
+ * - File cache is fast and reliable, but requires many filesystem lookups.
+ * - Database cache can be used to cache items remotely, but is slower.
+ * - Memcache is very high performance, but prevents cache tags from being used.
  */
-$config = array
-(
-	'driver'   => 'file',
-	'params'   => 'application/cache',
-	'lifetime' => 1800,
-	'cleanup'  => 3,
-);
+$config['driver'] = 'file';
+
+/**
+ * Driver parameters, specific to each driver.
+ */
+$config['params'] = 'application/cache';
+
+/**
+ * Default lifetime to of caches, seconds. By default, caches are stored for
+ * thirty minutes. Specific lifetime can also be set when creating a new cache.
+ */
+$config['lifetime'] = 1800;
+
+/**
+ * Average number of cache requests that will processed before all expired
+ * caches are deleted. This is commonly referred to as "garbage collection".
+ * Setting this to a negative number will disable automatic garbage collection.
+ */
+$config['requests'] = 1000;
