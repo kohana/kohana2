@@ -132,23 +132,23 @@ class Cache_File_Driver implements Cache_Driver {
 	}
 
 	/**
-	 * Deletes a cache item by id or tag.
+	 * Deletes a cache item by id or tag
 	 *
-	 * @param  string  cache id or tag
+	 * @param  string  cache id or tag, or TRUE for "all items"
 	 * @param  bool    use tags
 	 * @return bool
 	 */
 	public function del($id, $tag = FALSE)
 	{
-		if ($files = $this->exists($id, $tag))
-		{
-			foreach($files as $file)
-			{
-				// Remove the cache file
-				@unlink($file) or Log::add('error', 'Cache: Unable to delete cache file: '.$file);
-			}
+		$files = ($id === TRUE) ? glob($this->directory.'*~*~*') : $this->exists($id, $tag);
 
-			return TRUE;
+		if (empty($files))
+			return FALSE;
+
+		foreach($files as $file)
+		{
+			// Remove the cache file
+			@unlink($file) or Log::add('error', 'Cache: Unable to delete cache file: '.$file);
 		}
 
 		return FALSE;
