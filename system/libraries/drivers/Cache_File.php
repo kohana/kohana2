@@ -19,6 +19,7 @@ class Cache_File_Driver implements Cache_Driver {
 		// Find the real path to the directory
 		$directory = str_replace('\\', '/', realpath($directory)).'/';
 
+		// Make sure the cache directory is writable
 		if ( ! is_dir($directory) OR ! is_writable($directory))
 			throw new Kohana_Exception('cache.unwritable', $directory);
 
@@ -31,7 +32,7 @@ class Cache_File_Driver implements Cache_Driver {
 	 *
 	 * @param  string  cache id or tag
 	 * @param  bool    search for tags
-	 * @return array or NULL
+	 * @return array|NULL
 	 */
 	public function exists($id, $tag = FALSE)
 	{
@@ -62,7 +63,7 @@ class Cache_File_Driver implements Cache_Driver {
 	 * Finds an array of ids for a given tag.
 	 *
 	 * @param  string  tag name
-	 * @return mixed
+	 * @return array|FALSE
 	 */
 	public function find($tag)
 	{
@@ -90,7 +91,7 @@ class Cache_File_Driver implements Cache_Driver {
 	 * the hash does not match the stored hash.
 	 *
 	 * @param  string  cache id
-	 * @return mixed
+	 * @return mixed|NULL
 	 */
 	public function get($id)
 	{
@@ -144,13 +145,34 @@ class Cache_File_Driver implements Cache_Driver {
 			foreach($files as $file)
 			{
 				// Remove the cache file
-				unlink($file);
+				@unlink($file) or Log::add('error', 'Cache: Unable to delete cache file: '.$file);
 			}
 
 			return TRUE;
 		}
 
 		return FALSE;
+	}
+
+	/**
+	 * Deletes all cache files that are older than the current time.
+	 */
+	public function delete_expired()
+	{
+		if ($files = glob($this->directory.'*~*~*'))
+		{
+			// Current timestamp
+			$time = time();
+
+			foreach($files as $file)
+			{
+				if (end(explode('~', $file)) <= time())
+				{
+					// The cache file has already expired, delete it
+					@unlink($file) or Log::add('error', 'Cache: Unable to delete cache file: '.$file);
+				}
+			}
+		}
 	}
 
 } // End Cache File Driver

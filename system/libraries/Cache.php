@@ -11,8 +11,13 @@
  */
 class Cache_Core {
 
+	// For garbage collection
+	protected static $loaded;
+
+	// Configuration
 	protected $config;
 
+	// Driver object
 	protected $driver;
 
 	/**
@@ -35,6 +40,7 @@ class Cache_Core {
 		}
 		catch (Kohana_Exception $e)
 		{
+			// Driver was not found
 			throw new Kohana_Exception('cache.driver_not_supported', $this->config['driver']);
 		}
 
@@ -46,6 +52,20 @@ class Cache_Core {
 			throw new Kohana_Exception('cache.driver_not_supported', 'Cache drivers must use the Cache_Driver interface.');
 
 		Log::add('debug', 'Cache Library initialized.');
+
+		if (self::$loaded != TRUE)
+		{
+			if (mt_rand(1, 100) < $this->config['cleanup'])
+			{
+				// Do garbage collection
+				$this->driver->delete_expired();
+
+				Log::add('debug', 'Cache: Expired caches deleted.');
+			}
+
+			// Cache has been loaded once
+			self::$loaded = TRUE;
+		}
 	}
 
 	/**
@@ -54,7 +74,7 @@ class Cache_Core {
 	 * a cache item is not found.
 	 *
 	 * @param  string  cache id
-	 * @return mixed
+	 * @return mixed   cached data or NULL
 	 */
 	public function get($id)
 	{
@@ -81,7 +101,7 @@ class Cache_Core {
 	 * returned when no matching caches are found.
 	 *
 	 * @param  string  cache tag
-	 * @return array
+	 * @return array   all cache items matching the tag
 	 */
 	public function find($tag)
 	{

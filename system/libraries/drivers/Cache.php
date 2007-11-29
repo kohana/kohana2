@@ -30,4 +30,9 @@ interface Cache_Driver
 	 */
 	public function del($id, $tag = FALSE);
 
+	/**
+	 * Deletes all expired cache items.
+	 */
+	public function delete_expired();
+
 } // End Cache Driver
