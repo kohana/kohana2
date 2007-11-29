@@ -905,9 +905,6 @@ class Kohana_404_Exception extends Kohana_Exception {
 			$page = Router::$current_uri.Router::$url_suffix.Router::$query_string;
 		}
 
-		// Prevent possible XSS attacks
-		$page = html::specialchars($page);
-
 		$this->message = Kohana::lang('core.page_not_found', $page);
 		$this->file    = FALSE;
 		$this->line    = FALSE;
