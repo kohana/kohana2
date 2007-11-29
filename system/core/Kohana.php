@@ -720,7 +720,7 @@ class Kohana {
 	public static function key_string($keys, $array)
 	{
 		// No array to search
-		if ((empty($keys) AND is_array($keys)) OR (empty($array) AND is_array($array)))
+		if ((empty($keys) AND is_string($keys)) OR (empty($array) AND is_array($array)))
 			return;
 
 		// Prepare for loop
