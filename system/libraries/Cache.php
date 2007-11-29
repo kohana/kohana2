@@ -55,7 +55,7 @@ class Cache_Core {
 
 		if (self::$loaded != TRUE)
 		{
-			if (mt_rand(1, 100) < $this->config['cleanup'])
+			if (mt_rand(1, 100) <= $this->config['cleanup'])
 			{
 				// Do garbage collection
 				$this->driver->delete_expired();
