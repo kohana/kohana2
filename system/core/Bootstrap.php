@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana process control file, loaded by <index.php>.
+ * Kohana process control file, loaded by index.php.
  * 
  * $Id$
  *

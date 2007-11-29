@@ -17,8 +17,8 @@ final class Log {
 	/**
 	 * Add a log message.
 	 *
-	 * @param   string  $type     info, debug, or error
-	 * @param   string  $message  message to be logged
+	 * @param   string  info, debug, or error
+	 * @param   string  message to be logged
 	 * @return  void
 	 */
 	public static function add($type, $message)

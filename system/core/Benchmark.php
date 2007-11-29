@@ -17,7 +17,7 @@ final class Benchmark {
 	/**
 	 * Set a benchmark start point.
 	 *
-	 * @param   string  $name  benchmark name
+	 * @param   string  benchmark name
 	 * @return  void
 	 */
 	public static function start($name)
@@ -37,7 +37,7 @@ final class Benchmark {
 	/**
 	 * Set a benchmark stop point.
 	 *
-	 * @param   string  $name  benchmark name
+	 * @param   string  benchmark name
 	 * @return  void
 	 */
 	public static function stop($name)
@@ -52,8 +52,8 @@ final class Benchmark {
 	/**
 	 * Get the elapsed time between a start and stop.
 	 *
-	 * @param   string   $name      benchmark name, TRUE for all
-	 * @param   integer  $decimals  number of decimal places to count to (optional)
+	 * @param   string   benchmark name, TRUE for all
+	 * @param   integer  number of decimal places to count to (optional)
 	 * @return  array
 	 */
 	public static function get($name, $decimals = 4)

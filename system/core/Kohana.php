@@ -43,7 +43,7 @@ class Kohana {
 	 * Allows the controller to be a true singleton object. This method *must*
 	 * be called by all controllers.
 	 * 
-	 * @throws  Kohana_Exception  when a controller instance already exists
+	 * @throws  Kohana_Exception  controller instance already exists
 	 */
 	public function __construct()
 	{
@@ -275,7 +275,7 @@ class Kohana {
 	/**
 	 * Kohana output handler.
 	 *
-	 * @param   string  $output  current output buffer
+	 * @param   string  current output buffer
 	 * @return  string
 	 */
 	final public static function output_buffer($output)
@@ -355,10 +355,10 @@ class Kohana {
 	/**
 	 * Dual-purpose PHP error and exception handler. Uses the kohana_error_page View to display the message.
 	 *
-	 * @param   integer  $exception  object or error code
-	 * @param   string   $message    error message (optional)
-	 * @param   string   $file       filename (optional)
-	 * @param   integer  $line       line number (optional)
+	 * @param   integer  object or error code
+	 * @param   string   error message (optional)
+	 * @param   string   filename (optional)
+	 * @param   integer  line number (optional)
 	 * @return  void
 	 */
 	public static function exception_handler($exception, $message = FALSE, $file = FALSE, $line = FALSE)
@@ -464,8 +464,8 @@ class Kohana {
 	/**
 	 * Displays a 404 page.
 	 *
-	 * @param   string  $page      URI of page (optional)
-	 * @param   string  $template  custom template (optional)
+	 * @param   string  URI of page (optional)
+	 * @param   string  custom template (optional)
 	 * @throws  Kohana_404_Exception
 	 */
 	public static function show_404($page = FALSE, $template = FALSE)
@@ -476,9 +476,9 @@ class Kohana {
 	/**
 	 * Show a custom error message.
 	 *
-	 * @param   string  $title     error title
-	 * @param   string  $message   error message
-	 * @param   string  $template  custom template (optional)
+	 * @param   string  error title
+	 * @param   string  error message
+	 * @param   string  custom template (optional)
 	 * @throws  Kohana_User_Exception
 	 */
 	public static function show_error($title, $message, $template = FALSE)
@@ -489,7 +489,7 @@ class Kohana {
 	/**
 	 * Provides class auto-loading.
 	 *
-	 * @param   string  $class  name of class
+	 * @param   string  name of class
 	 * @return  void
 	 * @throws  Kohana_Exception
 	 */
@@ -553,13 +553,13 @@ class Kohana {
 	/**
 	 * Find a resource file in a given directory.
 	 *
-	 * @param   string   $directory  directory to search in
-	 * @param   string   $filename   filename to look for
-	 * @param   boolean  $required   is the file required? (optional)
-	 * @param   string   $ext        custom file extension (optional)
-	 * @return  array|string|FALSE   array of filenames for i18n/ or config/ files
-	 *                               filename if the file was found, FALSE if not
-	 * @throws  Kohana_Exception     file is required but not found
+	 * @param   string              directory to search in
+	 * @param   string              filename to look for
+	 * @param   boolean             is the file required? (optional)
+	 * @param   string              custom file extension (optional)
+	 * @return  array|string|FALSE  array of filenames for i18n/ or config/ files
+	 *                              filename if the file was found, FALSE if not
+	 * @throws  Kohana_Exception    file is required but not found
 	 */
 	public static function find_file($directory, $filename, $required = FALSE, $ext = FALSE)
 	{
@@ -610,10 +610,10 @@ class Kohana {
 	/**
 	 * Lists all files and directories in a resource path.
 	 *
-	 * @param   string   $directory  directory to search
-	 * @param   boolean  $recursive  list all files to the maximum depth? (optional)
-	 * @param   string   $path       full path to search (used for recursion, *never* set this manually) (optional)
-	 * @return  array                filenames and directories
+	 * @param   string   directory to search
+	 * @param   boolean  list all files to the maximum depth? (optional)
+	 * @param   string   full path to search (used for recursion, *never* set this manually) (optional)
+	 * @return  array    filenames and directories
 	 */
 	public static function list_files($directory, $recursive = FALSE, $path = FALSE)
 	{
@@ -655,9 +655,9 @@ class Kohana {
 	/**
 	 * Fetch an i18n language item.
 	 *
-	 * @param   string  $key   language key to fetch
-	 * @param   array   $args  additional information to insert into the line (optional)
-	 * @return  string         i18n language string, or the requested key if the i18n item is not found
+	 * @param   string  language key to fetch
+	 * @param   array   additional information to insert into the line (optional)
+	 * @return  string  i18n language string, or the requested key if the i18n item is not found
 	 */
 	public static function lang($key, $args = array())
 	{
@@ -713,9 +713,9 @@ class Kohana {
 	/**
 	 * Returns the value of a key, defined by a 'dot-noted' string, from an array.
 	 *
-	 * @param   string       $keys   dot-noted string, like 'foo.bar.one'
-	 * @param   array        $array  array to search
-	 * @return  string|NULL          value from array, or NULL
+	 * @param   string       dot-noted string, like 'foo.bar.one'
+	 * @param   array        array to search
+	 * @return  string|NULL  value from array, or NULL
 	 */
 	public static function key_string($keys, $array)
 	{
@@ -805,8 +805,8 @@ class Kohana_Exception extends Exception {
 	/**
 	 * Set exception message.
 	 * 
-	 * @param  string  $error  i18n language key for the message
-	 * @param  array   $args   addition line parameters (optional)
+	 * @param  string  i18n language key for the message
+	 * @param  array   addition line parameters (optional)
 	 */
 	function __construct($error)
 	{
@@ -867,9 +867,9 @@ class Kohana_User_Exception extends Kohana_Exception {
 	/**
 	 * Set exception title and message.
 	 * 
-	 * @param  string  $title     exception title string
-	 * @param  string  $message   exception message string
-	 * @param  string  $template  custom error template (optional)
+	 * @param  string  exception title string
+	 * @param  string  exception message string
+	 * @param  string  custom error template (optional)
 	 */
 	public function __construct($title, $message, $template = FALSE)
 	{
@@ -894,8 +894,8 @@ class Kohana_404_Exception extends Kohana_Exception {
 	/**
 	 * Set internal properties.
 	 * 
-	 * @param  string  $page      URL of page (optional)
-	 * @param  string  $template  custom error template (optional)
+	 * @param  string  URL of page (optional)
+	 * @param  string  custom error template (optional)
 	 */
 	public function __construct($page = FALSE, $template = FALSE)
 	{

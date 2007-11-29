@@ -20,9 +20,9 @@ final class Config {
 	/**
 	 * Get a config item or group.
 	 *
-	 * @param   string                $key       item name
-	 * @param   boolean               $slash     force a forward slash (/) at the end of the item (optional)
-	 * @param   boolean               $required  is the item required? (optional)
+	 * @param   string                item name
+	 * @param   boolean               force a forward slash (/) at the end of the item (optional)
+	 * @param   boolean               is the item required? (optional)
 	 * @return  string|array|boolean
 	 */
 	public static function item($key, $slash = FALSE, $required = TRUE)
@@ -70,8 +70,8 @@ final class Config {
 	/**
 	 * Sets a configuration item, if allowed.
 	 *
-	 * @param   string   $key    config key string
-	 * @param   string   $value  config value
+	 * @param   string   config key string
+	 * @param   string   config value
 	 * @return  boolean
 	 */
 	public static function set($key, $value)
@@ -124,8 +124,8 @@ final class Config {
 	/**
 	 * Get all include paths.
 	 *
-	 * @param   boolean  $process  re-process the include paths (optional)
-	 * @return  array              include paths, APPPATH first
+	 * @param   boolean  re-process the include paths (optional)
+	 * @return  array    include paths, APPPATH first
 	 */
 	public static function include_paths($process = FALSE)
 	{
@@ -153,9 +153,9 @@ final class Config {
 	/**
 	 * Load a config file.
 	 *
-	 * @param   string   $name      config filename, without extension
-	 * @param   boolean  $required  is the file required? (optional)
-	 * @return  array               config items in file
+	 * @param   string   config filename, without extension
+	 * @param   boolean  is the file required? (optional)
+	 * @return  array    config items in file
 	 */
 	public static function load($name, $required = TRUE)
 	{
