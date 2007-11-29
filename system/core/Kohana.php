@@ -104,6 +104,12 @@ class Kohana {
 		// Set exception handler
 		set_exception_handler(array('Kohana', 'exception_handler'));
 
+		if (Config::item('log.threshold') > 0)
+		{
+			// Enable log writing if the log threshold is above 0
+			register_shutdown_function(array('Log', 'write'));
+		}
+
 		// Disable magic_quotes_runtime. The Input library takes care of
 		// magic_quotes_gpc later.
 		set_magic_quotes_runtime(0);
@@ -127,28 +133,49 @@ class Kohana {
 		// Enable Kohana output handling
 		Event::add('system.shutdown', array('Kohana', 'shutdown'));
 
-		if ($hooks = Config::item('hooks.enable'))
+		if ($config = Config::item('hooks.enable'))
 		{
-			if ( ! is_array($hooks))
+			$hooks = array();
+
+			if ( ! is_array($config))
 			{
-				// All hooks are enabled, find them
+				// All of the hooks are enabled, so we use list_files
 				$hooks = Kohana::list_files('hooks');
 			}
-
-			foreach($hooks as $file)
+			else
 			{
-				// Log before loading, to make the logs clearer
-				Log::add('debug', 'Loading hook '.$file);
-
-				// Load the hook
-				include_once $file;
+				// Individual hooks need to be found
+				foreach($config as $name)
+				{
+					if ($hook = Kohana::find_file('hooks', $name, FALSE))
+					{
+						// Hook was found, add it to loaded hooks
+						$hooks[] = $hook;
+					}
+					else
+					{
+						// This should never happen
+						Log::add('error', 'Hook not found: '.$name);
+					}
+				}
 			}
-		}
 
-		if (Config::item('log.threshold') > 0)
-		{
-			// Enable log writing if the log threshold is above 0
-			register_shutdown_function(array('Log', 'write'));
+			// To validate the filename extension
+			$ext = -(strlen(EXT));
+
+			foreach($hooks as $hook)
+			{
+				if (substr($hook, $ext) === EXT)
+				{
+					// Hook was found, include it
+					include_once $hook;
+				}
+				else
+				{
+					// This should never happen
+					Log::add('error', 'Hook not found: '.$file);
+				}
+			}
 		}
 
 		// Setup is complete, prevent it from being run again
