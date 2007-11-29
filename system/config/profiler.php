@@ -1,18 +1,20 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * File: Profiler
- *  Profiler library configuration options.
- *
- * Options:
- *  benchmarks - Show benchmarks
- *  database   - Show database queries
- *  post       - Show POST data
- *  session    - Show session data
+ * Show benchmarks.
  */
-$config = array
-(
-	'benchmarks' => TRUE,
-	'database'   => TRUE,
-	'post'       => TRUE,
-	'session'    => TRUE
-);
+$config['benchmarks'] = TRUE;
+
+/**
+ * Show database queries.
+ */
+$config['database'] = TRUE;
+
+/**
+ * Show POST data.
+ */
+$config['post'] = TRUE;
+
+/**
+ * Show session data.
+ */
+$config['session'] = TRUE;

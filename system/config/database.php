@@ -1,12 +1,11 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * File: Database
- *  Database connection settings, defined as arrays, or "groups". If no group
- *  name is used when loading the database library, the group named "default"
- *  will be used.
+ * Database connection settings, defined as arrays, or "groups". If no group
+ * name is used when loading the database library, the group named "default"
+ * will be used.
  *  
- *  Each group can be connected to independantly, and multiple groups can be
- *  connected at once.
+ * Each group can be connected to independantly, and multiple groups can be
+ * connected at once.
  *
  * Group Options:
  *  show_errors   - Enable or disable database exceptions

@@ -1,14 +1,10 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 /**
- * File: Upload
- *  File uploading options.
- *
- * Options:
- *  upload_directory - Relative to your index file
- *  remove_space     - Remove spaces from filenames
+ * Relative to your index file.
  */
-$config = array
-(
-	'upload_directory' => '@upload',
-	'remove_spaces'    => TRUE
-);
+$config['upload_directory'] = '@upload';
+
+/**
+ * Remove spaces from filenames.
+ */
+$config['remove_spaces'] = TRUE;
