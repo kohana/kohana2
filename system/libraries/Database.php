@@ -1038,7 +1038,12 @@ class Database_Core {
 		if (count($this->from) < 1)
 		{
 			if ($table == FALSE)
-				return FALSE;
+			{
+				if ($this->config['show_errors'])
+					throw new Kohana_Database_Exception('database.must_use_table');
+				else
+					return FALSE;
+			}
 
 			$this->from($table);
 		}
@@ -1048,7 +1053,7 @@ class Database_Core {
 			$this->where($where);
 		}
 
-		$query = $this->select('COUNT(*)')->get();
+		$query = $this->select('COUNT(*)')->get()->result(TRUE);
 
 		$column = 'COUNT(*)';
 		return $query->current()->$column;
