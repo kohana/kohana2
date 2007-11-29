@@ -1,12 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * File: Bootstrap
- *  Kohana process control file, loaded by <index.php>.
+ * Kohana process control file, loaded by <index.php>.
+ * 
+ * $Id$
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 define('KOHANA_VERSION',  '2.0');
 define('KOHANA_CODENAME', 'Superlime');

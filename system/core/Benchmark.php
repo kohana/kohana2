@@ -1,14 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana
- *
- * copyright - (c) 2007 Kohana Team
- * license   - <http://kohanaphp.com/license.html>
- * revision  - $Id$
- */
-
-/**
  * Simple benchmarking.
+ * 
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 final class Benchmark {
 
@@ -16,11 +15,10 @@ final class Benchmark {
 	private static $marks;
 
 	/**
-	 * Method: start
-	 *  Set a benchmark start point.
+	 * Set a benchmark start point.
 	 *
-	 * Parameters:
-	 *  name - benchmark name
+	 * @param   string  $name  benchmark name
+	 * @return  void
 	 */
 	public static function start($name)
 	{
@@ -37,11 +35,10 @@ final class Benchmark {
 	}
 
 	/**
-	 * Method: stop
-	 *  Set a benchmark stop point.
+	 * Set a benchmark stop point.
 	 *
-	 * Parameters:
-	 *  name - benchmark name
+	 * @param   string  $name  benchmark name
+	 * @return  void
 	 */
 	public static function stop($name)
 	{
@@ -53,12 +50,11 @@ final class Benchmark {
 	}
 
 	/**
-	 * Method: get
-	 *  Get the elapsed time between a start and stop.
+	 * Get the elapsed time between a start and stop.
 	 *
-	 * Parameters:
-	 *  name     - benchmark name, TRUE for all
-	 *  decimals - number of decimal places to count to
+	 * @param   string   $name      benchmark name, TRUE for all
+	 * @param   integer  $decimals  number of decimal places to count to (optional)
+	 * @return  array
 	 */
 	public static function get($name, $decimals = 4)
 	{

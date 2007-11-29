@@ -1,12 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Config
- *  Loads configuration files and retrieves keys. This class is declared as final.
+ * Loads configuration files and retrieves keys. This class is declared as final.
+ * 
+ * $Id$
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 final class Config {
 
@@ -17,16 +18,12 @@ final class Config {
 	private static $include_paths;
 
 	/**
-	 * Method: item
-	 *  Get a config item or group.
+	 * Get a config item or group.
 	 *
-	 * Parameters:
-	 *  key      - item name
-	 *  slash    - force a forward slash (/) at the end of the item
-	 *  required - is the item required?
-	 *
-	 * Returns:
-	 *  The item defined by key. This can be a string, array, or boolean value.
+	 * @param   string                $key       item name
+	 * @param   boolean               $slash     force a forward slash (/) at the end of the item (optional)
+	 * @param   boolean               $required  is the item required? (optional)
+	 * @return  string|array|boolean
 	 */
 	public static function item($key, $slash = FALSE, $required = TRUE)
 	{
@@ -71,12 +68,11 @@ final class Config {
 	}
 
 	/**
-	 * Method: Set
-	 *  Sets a configuration item, if allowed.
+	 * Sets a configuration item, if allowed.
 	 *
-	 * Parameters:
-	 *  key   - config key string
-	 *  value - config value
+	 * @param   string   $key    config key string
+	 * @param   string   $value  config value
+	 * @return  boolean
 	 */
 	public static function set($key, $value)
 	{
@@ -126,14 +122,10 @@ final class Config {
 	}
 
 	/**
-	 * Method: include_paths
-	 *  Get all include paths.
+	 * Get all include paths.
 	 *
-	 * Parameters:
-	 *  process - Re-process the include paths
-	 *
-	 * Returns:
-	 *  Include paths as an array, APPPATH first.
+	 * @param   boolean  $process  re-process the include paths (optional)
+	 * @return  array              include paths, APPPATH first
 	 */
 	public static function include_paths($process = FALSE)
 	{
@@ -159,15 +151,11 @@ final class Config {
 	}
 
 	/**
-	 * Method: load
-	 *  Load a config file.
+	 * Load a config file.
 	 *
-	 * Parameters:
-	 *  name     - config filename, without extension
-	 *  required - is the file required?
-	 *
-	 * Returns:
-	 *  Array of config items in file.
+	 * @param   string   $name      config filename, without extension
+	 * @param   boolean  $required  is the file required? (optional)
+	 * @return  array               config items in file
 	 */
 	public static function load($name, $required = TRUE)
 	{

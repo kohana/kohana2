@@ -1,12 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Kohana
- *  Provides Kohana-specific helper functions. This is where the magic happens!
+ * Provides Kohana-specific helper functions. This is where the magic happens!
+ * 
+ * $Id$
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 
 // Define Kohana error constant
@@ -39,12 +40,10 @@ class Kohana {
 	public static $output = '';
 
 	/**
-	 * Constructor: __construct
-	 *  Allows the controller to be a true singleton object. This method *must*
-	 *  be called by all controllers.
-	 *
-	 * Throws:
-	 *  <Kohana_Exception> when a controller instance already exists.
+	 * Allows the controller to be a true singleton object. This method *must*
+	 * be called by all controllers.
+	 * 
+	 * @throws  Kohana_Exception  when a controller instance already exists
 	 */
 	public function __construct()
 	{
@@ -55,8 +54,7 @@ class Kohana {
 	}
 
 	/**
-	 * Method: __clone
-	 *  Protects the Kohana instance from being copied
+	 * Protects the Kohana instance from being copied
 	 */
 	final public function __clone()
 	{
@@ -64,12 +62,11 @@ class Kohana {
 	}
 
 	/**
-	 * Method: setup
-	 *  Sets up the PHP environment. Adds error/exception handling, output
-	 *  buffering, and adds an auto-loading method for loading classes.
+	 * Sets up the PHP environment. Adds error/exception handling, output
+	 * buffering, and adds an auto-loading method for loading classes.
+	 * Runs with the system.setup event.
 	 *
-	 * Event:
-	 *  system.setup
+	 * @return  void
 	 */
 	final public static function setup()
 	{
@@ -162,8 +159,9 @@ class Kohana {
 	}
 
 	/**
-	 * Method: instance
-	 *  Loads the controller and initializes it.
+	 * Loads the controller and initializes it.
+	 *
+	 * @return  Controller
 	 */
 	final public static function & instance()
 	{
@@ -275,14 +273,10 @@ class Kohana {
 	}
 
 	/**
-	 * Method: output_buffer
-	 *  Kohana output handler
+	 * Kohana output handler.
 	 *
-	 * Parameters:
-	 *  output - current output buffer string
-	 *
-	 * Returns:
-	 *  An empty string. Output is done in <Kohana.display>
+	 * @param   string  $output  current output buffer
+	 * @return  string
 	 */
 	final public static function output_buffer($output)
 	{
@@ -297,8 +291,9 @@ class Kohana {
 	}
 
 	/**
-	 * Triggers the shutdown of Kohana by closing the output buffer, running
-	 * the system.display event, 
+	 * Triggers the shutdown of Kohana by closing the output buffer, runs the system.display event.
+	 *
+	 * @return  void
 	 */
 	public static function shutdown()
 	{
@@ -315,7 +310,8 @@ class Kohana {
 	/**
 	 * Inserts global Kohana variables into the generated output and prints it.
 	 *
-	 * @param  string  final output that will displayed
+	 * @param   string  final output that will displayed
+	 * @return  void
 	 */
 	public static function render($output)
 	{
@@ -357,15 +353,13 @@ class Kohana {
 	}
 
 	/**
-	 * Method: exception handler
-	 *  Dual-purpose PHP error and exception handler. Uses the kohana_error_page
-	 *  View to display the message.
+	 * Dual-purpose PHP error and exception handler. Uses the kohana_error_page View to display the message.
 	 *
-	 * Parameters:
-	 *  exception - object or error code
-	 *  message   - error message
-	 *  file      - filename
-	 *  line      - line number
+	 * @param   integer  $exception  object or error code
+	 * @param   string   $message    error message (optional)
+	 * @param   string   $file       filename (optional)
+	 * @param   integer  $line       line number (optional)
+	 * @return  void
 	 */
 	public static function exception_handler($exception, $message = FALSE, $file = FALSE, $line = FALSE)
 	{
@@ -468,15 +462,11 @@ class Kohana {
 	}
 
 	/**
-	 * Method: show_404
-	 *  Displays a 404 page
+	 * Displays a 404 page.
 	 *
-	 * Parameters:
-	 *  page     - URI of page
-	 *  template - custom template
-	 *
-	 * Throws:
-	 *   <Kohana_404_Exception>
+	 * @param   string  $page      URI of page (optional)
+	 * @param   string  $template  custom template (optional)
+	 * @throws  Kohana_404_Exception
 	 */
 	public static function show_404($page = FALSE, $template = FALSE)
 	{
@@ -484,16 +474,12 @@ class Kohana {
 	}
 
 	/**
-	 * Method: show_error
-	 *  Show a custom error message
+	 * Show a custom error message.
 	 *
-	 * Parameters:
-	 *  title    - error title
-	 *  message  - error message
-	 *  template - custom template
-	 *
-	 * Throws:
-	 *  <Kohana_User_Exception>
+	 * @param   string  $title     error title
+	 * @param   string  $message   error message
+	 * @param   string  $template  custom template (optional)
+	 * @throws  Kohana_User_Exception
 	 */
 	public static function show_error($title, $message, $template = FALSE)
 	{
@@ -501,14 +487,11 @@ class Kohana {
 	}
 
 	/**
-	 * Method: auto_load
-	 *  Provides class auto-loading
+	 * Provides class auto-loading.
 	 *
-	 * Parameters:
-	 *  class - name of class
-	 *
-	 * Throws:
-	 *  <Kohana_Exception> if the class is not found.
+	 * @param   string  $class  name of class
+	 * @return  void
+	 * @throws  Kohana_Exception
 	 */
 	public static function auto_load($class)
 	{
@@ -568,21 +551,15 @@ class Kohana {
 	}
 
 	/**
-	 * Method: find_file
-	 *  Find a resource file in a given directory
+	 * Find a resource file in a given directory.
 	 *
-	 * Parameters:
-	 *  directory - directory to search in
-	 *  filename  - filename to look for
-	 *  required  - is the file required?
-	 *  ext       - custom file extension
-	 *
-	 * Returns:
-	 *  An array of filenames for i18n/ or config/ files. Filename if the file
-	 *  was found, or FALSE.
-	 *
-	 * Throws:
-	 *  <Kohana_Exception> if the file is required and not found.
+	 * @param   string   $directory  directory to search in
+	 * @param   string   $filename   filename to look for
+	 * @param   boolean  $required   is the file required? (optional)
+	 * @param   string   $ext        custom file extension (optional)
+	 * @return  array|string|FALSE   array of filenames for i18n/ or config/ files
+	 *                               filename if the file was found, FALSE if not
+	 * @throws  Kohana_Exception     file is required but not found
 	 */
 	public static function find_file($directory, $filename, $required = FALSE, $ext = FALSE)
 	{
@@ -631,16 +608,12 @@ class Kohana {
 	}
 
 	/**
-	 * Method: list_files
-	 *  Lists all files and directories in a resource path
+	 * Lists all files and directories in a resource path.
 	 *
-	 * Parameters:
-	 *  directory - directory to search
-	 *  recursive - list all files to the maximum depth?
-	 *  path      - full path to search (used for recursion, *never* set this manually)
-	 *
-	 * Returns:
-	 *  An array of filenames and directories.
+	 * @param   string   $directory  directory to search
+	 * @param   boolean  $recursive  list all files to the maximum depth? (optional)
+	 * @param   string   $path       full path to search (used for recursion, *never* set this manually) (optional)
+	 * @return  array                filenames and directories
 	 */
 	public static function list_files($directory, $recursive = FALSE, $path = FALSE)
 	{
@@ -680,15 +653,11 @@ class Kohana {
 	}
 
 	/**
-	 * Method: lang
-	 *  Fetch a i18n language item
+	 * Fetch an i18n language item.
 	 *
-	 * Parameters:
-	 *  key  - language key to fetch
-	 *  args - additional information to insert into the line
-	 *
-	 * Returns:
-	 *  A i18n language string, or the requested key if the i18n item is not found.
+	 * @param   string  $key   language key to fetch
+	 * @param   array   $args  additional information to insert into the line (optional)
+	 * @return  string         i18n language string, or the requested key if the i18n item is not found
 	 */
 	public static function lang($key, $args = array())
 	{
@@ -742,20 +711,16 @@ class Kohana {
 	}
 
 	/**
-	 * Method: key_string
-	 *  Returns the value of a key, defined by a 'dot-noted' string, from an array.
+	 * Returns the value of a key, defined by a 'dot-noted' string, from an array.
 	 *
-	 * Parameters:
-	 *  keys  - dot-noted string, like 'foo.bar.one'
-	 *  array - array to search
-	 *
-	 * Returns:
-	 *  Value from array, or NULL.
+	 * @param   string       $keys   dot-noted string, like 'foo.bar.one'
+	 * @param   array        $array  array to search
+	 * @return  string|NULL          value from array, or NULL
 	 */
 	public static function key_string($keys, $array)
 	{
 		// No array to search
-		if ((empty($keys) AND is_array($keys)) OR (empty($array) AND is_array($array)))
+		if (empty($keys) OR (empty($array) AND is_array($array)))
 			return;
 
 		// Prepare for loop
@@ -795,14 +760,9 @@ class Kohana {
 	}
 
 	/**
-	 * Method: debug
-	 *  Quick debugging of any variable.
+	 * Quick debugging of any variable. Any number of parameters can be set.
 	 *
-	 * Parameters:
-	 *  Variables you want debugged.
-	 *
-	 * Returns:
-	 *  HTML output string.
+	 * @return  string  HTML output
 	 */
 	public static function debug()
 	{
@@ -824,8 +784,7 @@ class Kohana {
 } // End Kohana
 
 /**
- * Class: Kohana_Exception
- *  Creates a generic i18n exception.
+ * Creates a generic i18n exception.
  */
 class Kohana_Exception extends Exception {
 
@@ -844,11 +803,10 @@ class Kohana_Exception extends Exception {
 	protected $line = FALSE;
 
 	/**
-	 * Method: __construct
-	 *
-	 * Parameters:
-	 *  error - i18n language key for the message
-	 *  args  - addition line parameters
+	 * Set exception message.
+	 * 
+	 * @param  string  $error  i18n language key for the message
+	 * @param  array   $args   addition line parameters (optional)
 	 */
 	function __construct($error)
 	{
@@ -869,11 +827,9 @@ class Kohana_Exception extends Exception {
 	}
 
 	/**
-	 * Method: __toString
-	 *  Magic method for converting an object to a string.
+	 * Magic method for converting an object to a string.
 	 *
-	 * Returns:
-	 *  Exception message string.
+	 * @return  string  i18n message
 	 */
 	public function __toString()
 	{
@@ -881,11 +837,9 @@ class Kohana_Exception extends Exception {
 	}
 
 	/**
-	 * Method: getTemplate
-	 *  Fetch the template name.
+	 * Fetch the template name.
 	 *
-	 * Returns:
-	 *  Template name string.
+	 * @return  string
 	 */
 	public function getTemplate()
 	{
@@ -893,8 +847,9 @@ class Kohana_Exception extends Exception {
 	}
 
 	/**
-	 * Method: sendHeaders()
-	 *  Sends a Internal Server Error header.
+	 * Sends an Internal Server Error header.
+	 *
+	 * @return  void
 	 */
 	public function sendHeaders()
 	{
@@ -905,18 +860,16 @@ class Kohana_Exception extends Exception {
 } // End Kohana Exception
 
 /**
- * Class: Kohana_User_Exception
- *  Creates a custom exception.
+ * Creates a custom exception.
  */
 class Kohana_User_Exception extends Kohana_Exception {
 
 	/**
-	 * Method: __construct
-	 *
-	 * Parameters:
-	 *  title    - exception title string
-	 *  message  - exception message string
-	 *  template - custom error template
+	 * Set exception title and message.
+	 * 
+	 * @param  string  $title     exception title string
+	 * @param  string  $message   exception message string
+	 * @param  string  $template  custom error template (optional)
 	 */
 	public function __construct($title, $message, $template = FALSE)
 	{
@@ -932,19 +885,17 @@ class Kohana_User_Exception extends Kohana_Exception {
 } // End Kohana PHP Exception
 
 /**
- * Class: Kohana_404_Exception
- *  Creates a Page Not Found exception.
+ * Creates a Page Not Found exception.
  */
 class Kohana_404_Exception extends Kohana_Exception {
 
 	protected $code = E_PAGE_NOT_FOUND;
 
 	/**
-	 * Creates a new 404 exception, which triggers a Kohana error page.
-	 *
-	 * Parameters:
-	 *  page     - URL of page
-	 *  template - custom error template
+	 * Set internal properties.
+	 * 
+	 * @param  string  $page      URL of page (optional)
+	 * @param  string  $template  custom error template (optional)
 	 */
 	public function __construct($page = FALSE, $template = FALSE)
 	{
@@ -966,6 +917,8 @@ class Kohana_404_Exception extends Kohana_Exception {
 
 	/**
 	 * Sends "File Not Found" headers, to emulate server behavior.
+	 *
+	 * @return void
 	 */
 	public function sendHeaders()
 	{

@@ -1,12 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Log
- *  Message file logging class.
+ * Message file logging class.
+ * 
+ * $Id$
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 final class Log {
 
@@ -14,12 +15,11 @@ final class Log {
 	private static $messages = array();
 
 	/**
-	 * Method: add
-	 *  Add a log message.
+	 * Add a log message.
 	 *
-	 * Parameters:
-	 *  type    - info, debug, or error
-	 *  message - message to be logged
+	 * @param   string  $type     info, debug, or error
+	 * @param   string  $message  message to be logged
+	 * @return  void
 	 */
 	public static function add($type, $message)
 	{
@@ -31,8 +31,9 @@ final class Log {
 	}
 
 	/**
-	 * Method: write
-	 *  Write the current log to a file.
+	 * Write the current log to a file.
+	 *
+	 * @return  void
 	 */
 	public static function write()
 	{
