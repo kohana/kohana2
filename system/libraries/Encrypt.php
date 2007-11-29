@@ -61,22 +61,25 @@ class Encrypt_Core {
 			if (defined('MCRYPT_DEV_URANDOM'))
 			{
 				// Use /dev/urandom
-				$config['rand'] = MCRYPT_DEV_URANDOM;
+				self::$rand = MCRYPT_DEV_URANDOM;
 			}
 			elseif (defined('MCRYPT_DEV_RANDOM'))
 			{
 				// Use /dev/random
-				$config['rand'] = MCRYPT_DEV_RANDOM;
+				self::$rand = MCRYPT_DEV_RANDOM;
 			}
 			else
 			{
 				// Use the system random number generator
-				$config['rand'] = MCRYPT_RAND;
-
-				// The system random number generator must always be seeded each
-				// time it is used, or it will not produce true random results
-				mt_srand();
+				self::$rand = MCRYPT_RAND;
 			}
+		}
+
+		if (self::$rand === MCRYPT_RAND)
+		{
+			// The system random number generator must always be seeded each
+			// time it is used, or it will not produce true random results
+			mt_srand();
 		}
 
 		// Create a random initialization vector of the proper size for the current cipher
