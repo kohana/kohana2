@@ -2,7 +2,7 @@
 /**
  * Provides a driver-based interface for finding, creating, and deleting cached
  * resources. Caches are identified by a unique string. Tagging of caches is
- * also supported, and caches can be found, and deleted, by id or tag.
+ * also supported, and caches can be found and deleted by id or tag.
  *
  * $Id$
  *

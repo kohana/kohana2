@@ -259,7 +259,7 @@ class Router_Core {
 	{
 		$str = trim($str);
 
-		if ($str != '' AND ($allowed = Config::item('core.permitted_uri_chars')) != '')
+		if ($str != '' AND ($allowed = Config::item('routes._allowed')) != '')
 		{
 			if ( ! preg_match('|^['.preg_quote($allowed).']+$|iu', $str))
 			{

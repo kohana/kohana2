@@ -41,6 +41,9 @@ class Encrypt_Core {
 			$config['key'] = substr($config['key'], 0, $size);
 		}
 
+		// Find the initialization vector size
+		$config['iv_size'] = mcrypt_get_iv_size($config['cipher'], $config['mode']);
+
 		// Cache the config in the object
 		$this->config = $config;
 
@@ -83,13 +86,13 @@ class Encrypt_Core {
 		}
 
 		// Create a random initialization vector of the proper size for the current cipher
-		$iv = mcrypt_create_iv(mcrypt_get_iv_size($this->config['cipher'], $this->config['mode']), self::$rand);
+		$iv = mcrypt_create_iv($this->config['iv_size'], self::$rand);
 
 		// Encrypt the data using the configured options and generated iv
 		$data = mcrypt_encrypt($this->config['cipher'], $this->config['key'], $data, $this->config['mode'], $iv);
 
 		// Use base64 encoding to convert to a string
-		return base64_encode($iv.'>>>iv>>>'.$data);
+		return base64_encode($iv.$data);
 	}
 
 	/**
@@ -100,8 +103,14 @@ class Encrypt_Core {
 	 */
 	public function decode($data)
 	{
-		// Split the string back into initialization vector and data
-		list($iv, $data) = explode('>>>iv>>>', base64_decode($data), 2);
+		// Convert the data back to binary
+		$data = base64_decode($data);
+
+		// Extract the initialization vector from the data
+		$iv = substr($data, 0, $this->config['iv_size']);
+
+		// Remove the iv from the data
+		$data = substr($data, $this->config['iv_size']);
 
 		// Return the decrypted data, trimming the \0 padding bytes from the end of the data
 		return rtrim(mcrypt_decrypt($this->config['cipher'], $this->config['key'], $data, $this->config['mode'], $iv), "\0");
