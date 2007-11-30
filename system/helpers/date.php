@@ -112,22 +112,17 @@ class date {
 	 */
 	public static function seconds($step = 1, $start = 0, $end = 60)
 	{
-		static $seconds;
-
 		// Always integer
 		$step = (int) $step;
 
-		if (empty($seconds[$step]))
-		{
-			$seconds[$step] = array();
+		$seconds = array();
 
-			for ($i = $start; $i < $end; $i += $step)
-			{
-				$seconds[$step][$i] = $i;
-			}
+		for ($i = $start; $i < $end; $i += $step)
+		{
+			$seconds[$i] = ($i < 10) ? '0'.$i : $i;
 		}
 
-		return $seconds[$step];
+		return $seconds;
 	}
 
 	/**
@@ -270,29 +265,21 @@ class date {
 	 */
 	public static function years($start = FALSE, $end = FALSE)
 	{
-		static $years;
-
 		// Default values
 		$start = ($start == FALSE) ? date('Y') - 5 : (int) $start;
 		$end   = ($end   == FALSE) ? date('Y') + 5 : (int) $end;
 
-		// Cache key
-		$cache = $start.$end;
+		$years = array();
 
-		if (empty($years[$cache]))
+		// Add one, so that "less than" works
+		$end += 1;
+
+		for ($i = $start; $i < $end; $i++)
 		{
-			$years[$cache] = array();
-
-			// Add one, so that "less than" works
-			$end += 1;
-
-			for ($i = $start; $i < $end; $i++)
-			{
-				$years[$cache][$i] = $i;
-			}
+			$years[$i] = $i;
 		}
 
-		return $years[$cache];
+		return $years;
 	}
 
 	/**
