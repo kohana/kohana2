@@ -9,6 +9,6 @@ $lang = array
 	'invalid_dsn'           => 'Die von Ihnen angegebene DSN ist ungültig: %s',
 	'must_use_set'          => 'Sie müssen SET in Ihrem Query benutzen.',
 	'must_use_where'        => 'Sie müssen WHERE in Ihrem Query benutzen.',
-	'must_use_table'        => 'Sie müssen eine Datenbanktabelle für Ihren Query angeben.',
+	'must_use_table'        => 'Sie müssen eine Tabelle für Ihren Query angeben.',
 	'not_implemented'       => 'Die von Ihnen aufgerufene Methode, %s, wird von diesem Treiber nicht unterstützt.'
 );
