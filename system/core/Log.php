@@ -26,7 +26,7 @@ final class Log {
 		self::$messages[strtolower($type)][] = array
 		(
 			date(Config::item('log.format')),
-			$message
+			strip_tags($message)
 		);
 	}
 

@@ -43,7 +43,7 @@ $config['global_xss_filtering'] = FALSE;
 $config['allow_config_set'] = FALSE;
 
 /**
- * Filename prefixed used to determine library extensions. For example, an
+ * Filename prefixed used to determine extensions. For example, an
  * extension to the Controller class would be named MY_Controller.php.
  */
 $config['extension_prefix'] = 'MY_';

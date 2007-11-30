@@ -463,16 +463,17 @@ class Kohana {
 			// Exception class
 			$type = get_class($exception);
 
-			if ( ! headers_sent() AND method_exists($exception, 'sendHeaders'))
+			if (method_exists($exception, 'sendHeaders'))
 			{
-				$exception->sendHeaders();
+				// Send the headers if they have not already been sent
+				headers_sent() or $exception->sendHeaders();
 			}
 		}
 
 		// Log the error
 		if (Config::item('log.threshold') >= $level)
 		{
-			Log::add('error', Kohana::lang('core.uncaught_exception', $type, strip_tags($message), $file, $line));
+			Log::add('error', Kohana::lang('core.uncaught_exception', $type, $message, $file, $line));
 		}
 
 		// Load the error
@@ -558,10 +559,20 @@ class Kohana {
 			break;
 		}
 
-		// Load the requested file
-		require_once self::find_file($type, $file, TRUE);
+		if ($filepath = self::find_file($type, $file))
+		{
+			// Load the requested file
+			require_once $filepath;
+		}
+		else
+		{
+			// Manually log these errors, because exceptions cannot be thrown
+			// inside of autoloaders. PHP: Why can't I throw exceptions here? Why?!
+			Log::add('error', Kohana::lang('core.resource_not_found', inflector::singular($type), $file));
+			return;
+		}
 
-		if ($type == 'libraries' OR $type === 'helpers')
+		if ($type === 'libraries' OR $type === 'helpers')
 		{
 			if ($extension = self::find_file($type, Config::item('core.extension_prefix').$class))
 			{
@@ -608,7 +619,7 @@ class Kohana {
 
 			// If required and nothing was found, throw an exception
 			if ($required == TRUE AND $fnd === array())
-				throw new Kohana_Exception('core.resource_not_found', $directory, $filename);
+				throw new Kohana_Exception('core.resource_not_found', inflector::singular($directory), $filename);
 
 			return $found[$hash] = $fnd;
 		}
@@ -626,7 +637,7 @@ class Kohana {
 
 			// If the file is required, throw an exception
 			if ($required == TRUE)
-				throw new Kohana_Exception('core.resource_not_found', $directory, $filename);
+				throw new Kohana_Exception('core.resource_not_found', inflector::singular($directory), $filename);
 
 			return $found[$hash] = FALSE;
 		}
