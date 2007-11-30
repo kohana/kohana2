@@ -46,6 +46,10 @@ class Kodoc_Core {
 				// Remove the dirs from the filename
 				$file = preg_replace('!^.+'.$type.'/(.+)'.EXT.'$!', '$1', $file);
 
+				// Skip utf8 function files
+				if ($type === 'core' AND substr($file, 0, 5) === 'utf8/')
+					continue;
+
 				if ($type === 'libraries' AND substr($file, 0, 8) === 'drivers/')
 				{
 					// Remove the drivers directory from the file
@@ -83,6 +87,47 @@ class Kodoc_Core {
 		return preg_replace('!^'.preg_quote(DOCROOT, '!').'!', '', $file);
 	}
 
+	public static function humanize_type($types)
+	{
+		$types = is_array($types) ? $types : explode('|', $types);
+
+		$output = array();
+		while ($t = array_shift($types))
+		{
+			$output[] = '<tt>'.trim($t).'</tt>';
+		}
+
+		return implode(' or ', $output);
+	}
+
+	public static function humanize_value($value)
+	{
+		if ($value === NULL)
+		{
+			return 'NULL';
+		}
+		elseif (is_bool($value))
+		{
+			return $value ? 'TRUE' : 'FALSE';
+		}
+		elseif (is_string($value))
+		{
+			return 'string '.$value;
+		}
+		elseif (is_numeric($value))
+		{
+			return (is_int($value) ? 'int' : 'float').' '.$value;
+		}
+		elseif (is_array($value))
+		{
+			return 'array';
+		}
+		elseif (is_object($value))
+		{
+			return 'object '.get_class($value);
+		}
+	}
+
 	// All files to be parsed
 	protected $file = array();
 
@@ -118,91 +163,76 @@ class Kodoc_Core {
 			'type'      => $type,
 			'comment'   => '',
 			'file'      => self::remove_docroot($filename),
-			'classes'   => array()
 		);
 
-		// Open the file for reading
-		$handle = fopen($filename, 'r');
+		// Read the entire file into an array
+		$data = file($filename);
 
-		// For comment handling
-		$in_comment = FALSE;
-		$end_comment = FALSE;
-		$skip_line = FALSE;
-
-		// Add first comment to the file info
-		$add_about = TRUE;
-
-		while ($line = fgets($handle))
+		foreach($data as $line)
 		{
-			switch(substr(trim($line), 0, 2))
-			{
-				case '/*':
-					// Opening of a comment
-					$in_comment = TRUE;
-					continue;
-				case '//':
-					// Single line comment
-					$skip_line = TRUE;
-					continue;
-				break;
-				case '*/':
-					// Ending of a comment
-					$end_comment = TRUE;
-					continue;
-				break;
-			}
-
-			if ($skip_line == TRUE)
-			{
-				// Skip single-line comments
-				$skip_line = FALSE;
-				continue;
-			}
-			elseif ($in_comment)
-			{
-				if ($add_about)
-				{
-					// Add info to the block
-					$file['comment'] .= $line;
-
-					if ($end_comment)
-					{
-						// Parse the about section
-						$file['comment'] = $this->parse_comment($file['comment']);
-					}
-				}
-
-				if ($end_comment)
-				{
-					// Reset comment handling
-					$in_comment = FALSE;
-					$add_about = FALSE;
-					$end_comment = FALSE;
-				}
-
-				// Keep ignoring comments...
-				continue;
-			}
-
 			if (strpos($line, 'class') !== FALSE AND preg_match('/(?:class|interface)\s+([a-z0-9_]+).+{$/i', $line, $matches))
 			{
 				// Include the file if it has not already been included
 				class_exists($matches[1], FALSE) or include_once $filename;
 
 				// Add class to file info
-				$files['classes'][] = $this->parse_class($matches[1]);
+				$file['classes'][] = $this->parse_class($matches[1]);
 			}
 		}
 
-		// Close the file
-		fclose($handle);
+		if (empty($file['classes']))
+		{
+			$block  = NULL;
+			$source = NULL;
+
+			foreach($data as $line)
+			{
+				switch(substr(trim($line), 0, 2))
+				{
+					case '/*':
+						$block = '';
+						continue 2;
+					break;
+					case '*/':
+						$source = TRUE;
+						continue 2;
+					break;
+				}
+
+				if ($source === TRUE)
+				{
+					if (preg_match('/\$config\[\'(.+?)\'\]\s+=\s+([^;].+)/', $line, $matches))
+					{
+						$source = array
+						(
+							$matches[1],
+							$matches[2]
+						);
+					}
+					else
+					{
+						$source = array();
+					}
+
+					$file['comments'][] = array_merge($this->parse_comment($block), array('source' => $source));
+
+					$block  = NULL;
+					$source = FALSE;
+				}
+				elseif (is_string($block))
+				{
+					$block .= $line;
+				}
+			}
+
+		}
 
 		return $file;
 	}
 
 	protected function parse_comment($block)
 	{
-		if (trim($block) == '')
+		if (($block = trim($block)) == '')
 			return $block;
 
 		// Explode the lines into an array and trim them
@@ -225,14 +255,8 @@ class Kodoc_Core {
 
 		while ($line = array_shift($block))
 		{
-			// Remove comment * and trim
+			// Remove * from the line
 			$line = trim(substr($line, 2));
-
-			if (preg_match('/^(?:class|file|method):\s+([a-z]+)/i', $line))
-			{
-				// Skip these lines
-				continue;
-			}
 
 			if (substr($line, 0, 1) === '$' AND substr($line, -1) === '$')
 			{
@@ -240,55 +264,96 @@ class Kodoc_Core {
 				continue;
 			}
 
-			if (preg_match('/^(?:license):/i', $line))
+			if (substr($line, 0, 1) === '@')
 			{
-				if (empty($comment['license']))
+				if (preg_match('/^@(.+?)\s+(.+)$/', $line, $matches))
 				{
-					// Create the license block
-					$comment['license'] = array();
+					$comment[$matches[1]][] = $matches[2];
 				}
-
-				// Setup the part
-				$part =& $comment['license'];
-
-				// End of part
-				$end = '';
-
-				// Do not add the license line
-				continue;
-			}
-
-			if (isset($part) AND isset($end))
-			{
-				if ($line === $end)
-				{
-					// This part is over, clear it
-					unset($part, $end);
-					continue;
-				}
-
-				if ($line === '')
-				{
-					$line = "\n";
-				}
-
-				// Append the line to the current part
-				$part[] = $line;
 			}
 			else
 			{
-				// Add the line to the comment
 				$comment['about'][] = $line;
 			}
 		}
 
-		foreach($comment as $key => $block)
+		if ( ! empty($comment['about']))
 		{
-			// Implode each of the comment blocks
-			$comment[$key] = trim(implode("\n", $block));
+			$token = '';
+			$block = '';
+			$about = '';
+
+			foreach($comment['about'] as $line)
+			{
+				if (strpos($line, '`') !== FALSE)
+				{
+					$line = preg_replace('/`([^`].+?)`/', '<tt>$1</tt>', $line);
+				}
+
+				if (substr($line, 0, 2) === '- ')
+				{
+					if ($token !== 'ul')
+					{
+						$about .= $this->comment_block($token, $block);
+						$block  = '';
+					}
+
+					$token = 'ul';
+					$line  = '<li>'.trim(substr($line, 2)).'</li>'."\n";
+				}
+				elseif (preg_match('/(.+?)\s+-\s+(.+)/', $line, $matches))
+				{
+					if ($token !== 'dl')
+					{
+						$about .= $this->comment_block($token, $block);
+						$block  = '';
+					}
+
+					$token = 'dl';
+					$line = '<dt>'.$matches[1].'</dt>'."\n".'<dd>'.$matches[2].'</dd>'."\n";
+				}
+				else
+				{
+					$token = 'p';
+					$line .= ' ';
+				}
+
+				if (trim($line) === '')
+				{
+					$about .= $this->comment_block($token, $block);
+					$block = '';
+				}
+				else
+				{
+					$block .= $line;
+				}
+			}
+
+			if ( ! empty($block))
+			{
+				$about .= $this->comment_block($token, $block);
+			}
+
+			$comment['about'] = $about;
 		}
 
 		return $comment;
+	}
+
+	protected function comment_block($token, $block)
+	{
+		if (empty($token) OR empty($block))
+			return '';
+
+		$block = trim($block);
+
+		if (substr($block, 0, 1) === '<')
+		{
+			// Insert newlines before and after the block
+			$block = "\n".$block."\n";
+		}
+
+		return '<'.$token.'>'.$block.'</'.$token.'>'."\n";
 	}
 
 	protected function parse_class($class)
@@ -324,7 +389,6 @@ class Kodoc_Core {
 			$class['extends'] = $parent->getName();
 		}
 
-
 		if ($methods = $reflection->getMethods())
 		{
 			foreach($methods as $method)
@@ -336,6 +400,7 @@ class Kodoc_Core {
 				(
 					'name'       => $method->getName(),
 					'comment'    => $this->parse_comment($method->getDocComment()),
+					'class'      => $class['name'],
 					'final'      => $method->isFinal(),
 					'static'     => $method->isStatic(),
 					'abstract'   => $method->isAbstract(),
@@ -351,11 +416,8 @@ class Kodoc_Core {
 	/**
 	 * Finds the parameters for a ReflectionMethod.
 	 *
-	 * Parameters:
-	 *  object: ReflectionMethod
-	 *
-	 * Returns:
-	 *  array: parameters
+	 * @param   object   ReflectionMethod
+	 * @return  array
 	 */
 	protected function parameters(ReflectionMethod $method)
 	{
@@ -387,11 +449,8 @@ class Kodoc_Core {
 	/**
 	 * Finds the visibility of a ReflectionMethod.
 	 *
-	 * Parameters:
-	 *  object: ReflectionMethod
-	 *
-	 * Returns:
-	 *  string: visibility of method
+	 * @param   object   ReflectionMethod
+	 * @return  string
 	 */
 	protected function visibility(ReflectionMethod $method)
 	{

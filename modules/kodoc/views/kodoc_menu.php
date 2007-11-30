@@ -1,10 +1,11 @@
+<div id="menu">
+<ul>
 <?php
 
 foreach(Kodoc::get_files() as $group => $files):
 
 ?>
-<h4><?php echo ucfirst($group) ?></h4>
-<ul>
+<li class="first<?php echo ($active == $group) ? ' active': '' ?>"><?php echo ucfirst($group) ?><ul>
 <?php
 
 foreach($files as $name => $drivers):
@@ -16,7 +17,7 @@ foreach($files as $name => $drivers):
 if (is_array($drivers)):
 
 ?>
-<ul>
+<ul class="expanded">
 <?php
 
 foreach($drivers as $driver):
@@ -42,9 +43,11 @@ endif;
 endforeach;
 
 ?>
-</ul>
+</ul></li>
 <?php
 
 endforeach;
 
 ?>
+<div style="clear:both;"></div>
+</div>
