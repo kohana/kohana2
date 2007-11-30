@@ -51,14 +51,14 @@ class Session_Core {
 
 					// Manually call auto-loading, for proper exception handling
 					Kohana::auto_load($driver);
-
-					// Initialize the driver
-					self::$driver = new $driver();
 				}
 				catch (Kohana_Exception $e)
 				{
 					throw new Kohana_Exception('session.driver_not_supported', self::$config['driver']);
 				}
+
+				// Initialize the driver
+				self::$driver = new $driver();
 
 				// Validate the driver
 				if ( ! in_array('Session_Driver', class_implements(self::$driver)))
