@@ -67,11 +67,15 @@ if ( ! empty($parameters)):
 
 	endforeach;
 
+	if (isset($comment['param']))
+	{
+		// Remove parameter information from the comment
+		unset($comment['param']);
+	}
+
 ?>
 </dl>
 <?php
-	// Remove parameter information from the comment
-	unset($comment['param']);
 
 endif;
 if ( ! empty($comment)):

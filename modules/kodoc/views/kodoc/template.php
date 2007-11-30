@@ -28,7 +28,7 @@ h2, h3, h4, h5 { padding: 0.2em 0 0.5em; }
 p { padding: 0.5em 0; }
 hr { margin: 1em 0; border-bottom: solid 2px #ccc; }
 
-ul ul { padding-left: 1em; }
+ul { margin-left: 1.5em; }
 
 dt { float: left; clear: left; display: block; width: 12em; font-weight: bold; }
 dt tt { display: inline-block; display: -moz-inline-box; width: 5em;}
