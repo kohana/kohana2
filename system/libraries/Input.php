@@ -199,8 +199,15 @@ class Input_Core {
 	 */
 	protected function clean_input_keys($str)
 	{
-		// A-Za-z added to work around a bug in PHP 5.1.6
-		if ( ! preg_match('#^[\pLA-Za-z0-9:_/-]+$#uD', $str))
+		static $chars;
+
+		if ($chars === NULL)
+		{
+			// Test to see if PCRE is UTF-8 aware
+			$chars = (@preg_match('/\pL/u', 'a') === 1) ? '\pL' : 'a-zA-Z';
+		}
+
+		if ( ! preg_match('#^['.$chars.'0-9:_/-]+$#uD', $str))
 		{
 			exit('Disallowed key characters in global data.');
 		}
