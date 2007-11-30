@@ -101,7 +101,7 @@ class Cache_File_Driver implements Cache_Driver {
 			$file = current($file);
 
 			// Validate that the cache has not expired
-			if (end(explode('~', $file)) <= time())
+			if ($this->expired($file))
 			{
 				// Remove this cache, it has expired
 				$this->del($id);
@@ -166,13 +166,25 @@ class Cache_File_Driver implements Cache_Driver {
 
 			foreach($files as $file)
 			{
-				if (end(explode('~', $file)) <= time())
+				if ($this->expired($file))
 				{
 					// The cache file has already expired, delete it
 					@unlink($file) or Log::add('error', 'Cache: Unable to delete cache file: '.$file);
 				}
 			}
 		}
+	}
+
+	/**
+	 * Check if a cache file has expired by filename.
+	 */
+	protected function expired($file)
+	{
+		// Get the expiration time
+		$expires = (int) end(explode('~', $file));
+
+		// Expirations of 0 are "never expire"
+		return ($expires !== 0 AND $exipires <= time());
 	}
 
 } // End Cache File Driver

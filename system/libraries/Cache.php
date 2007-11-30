@@ -155,15 +155,22 @@ class Cache_Core {
 			$tags = (array) $tags;
 		}
 
-		if (empty($lifetime))
+		if ($lifetime === NULL)
 		{
+			// Get the default lifetime
 			$lifetime = $this->config['lifetime'];
+		}
+
+		if ($lifetime !== 0)
+		{
+			// Lifetime is the current timestamp + the lifetime in seconds
+			$lifetime += time();
 		}
 
 		// Remove old cache files
 		$this->driver->del($id);
 
-		return $this->driver->set($id, $data, $tags, time() + $lifetime);
+		return $this->driver->set($id, $data, $tags, $lifetime);
 	}
 
 	/**
