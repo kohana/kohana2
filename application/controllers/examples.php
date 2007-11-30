@@ -68,9 +68,9 @@ class Examples_Controller extends Controller {
 		$feed = feed::parse('http://codeigniter.com/feeds/atom/news/');
 
 		// Show debug info
-		print Kohana::debug($feed);
+		echo Kohana::debug($feed);
 
-		print Kohana::lang('core.stats_footer');
+		echo Kohana::lang('core.stats_footer');
 	}
 
 	/**
@@ -82,11 +82,11 @@ class Examples_Controller extends Controller {
 		$this->load->database();
 		$s = new Session();
 
-		print 'SESSID: <pre>'.session_id()."</pre>\n";
+		echo 'SESSID: <pre>'.session_id()."</pre>\n";
 
-		print '<pre>'.print_r($_SESSION, TRUE)."</pre>\n";
+		echo '<pre>'.print_r($_SESSION, TRUE)."</pre>\n";
 
-		print '<br/>{execution_time} seconds';
+		echo '<br/>{execution_time} seconds';
 	}
 
 	/**
@@ -97,24 +97,24 @@ class Examples_Controller extends Controller {
 	{
 		$this->load->library('validation');
 
-		print form::open('', array('enctype' => 'multipart/form-data'));
+		echo form::open('', array('enctype' => 'multipart/form-data'));
 
-		print form::label('imageup', 'Image Uploads').':<br/>';
-		print form::upload('imageup[]').'<br/>';
-		print form::upload('imageup[]').'<br/>';
-		print form::upload('imageup[]').'<br/>';
-		print form::submit('upload', 'Upload!');
+		echo form::label('imageup', 'Image Uploads').':<br/>';
+		echo form::upload('imageup[]').'<br/>';
+		echo form::upload('imageup[]').'<br/>';
+		echo form::upload('imageup[]').'<br/>';
+		echo form::submit('upload', 'Upload!');
 
-		print form::close();
+		echo form::close();
 
 		if ( ! empty($_POST))
 		{
 			$this->validation->set_rules('imageup', 'required|upload[gif,png,jpg,500K]', 'Image Upload');
-			print '<p>validation result: '.var_export($this->validation->run(), TRUE).'</p>';
+			echo '<p>validation result: '.var_export($this->validation->run(), TRUE).'</p>';
 		}
 
-		print Kohana::debug($this->validation);
-		print Kohana::lang('core.stats_footer');
+		echo Kohana::debug($this->validation);
+		echo Kohana::lang('core.stats_footer');
 	}
 
 	/**
@@ -150,10 +150,10 @@ class Examples_Controller extends Controller {
 		$this->validation->run();
 
 		// Same syntax, but dynamcially generated wth __get()
-		print $this->validation->error_string;
+		echo $this->validation->error_string;
 
 		// Yay!
-		print '{execution_time} ALL DONE!';
+		echo '{execution_time} ALL DONE!';
 	}
 
 	/**
@@ -191,7 +191,7 @@ class Examples_Controller extends Controller {
 			{
 				echo '<p>'.$item->title.'</p>';
 			}
-			print '<h3>Numrows using count(): '.count($query).'</h3>';
+			echo '<h3>Numrows using count(): '.count($query).'</h3>';
 			echo 'Table Listing:<pre>'.print_r($this->db->list_tables(), TRUE).'</pre>';
 
 			echo '<h3>Try Query Binding with objects:</h3>';
@@ -231,8 +231,8 @@ class Examples_Controller extends Controller {
 		{
 			echo 'NO! The '.$table.' table doesn\'t exist, so we can\'t continue =( ';
 		}
-		print "<br/><br/>\n";
-		print 'done in {execution_time} seconds';
+		echo "<br/><br/>\n";
+		echo 'done in {execution_time} seconds';
 	}
 
 	/**
@@ -269,11 +269,11 @@ class Examples_Controller extends Controller {
 
 		foreach(array('agent', 'browser', 'version') as $key)
 		{
-			print $key.': '.$this->user_agent->$key.'<br/>'."\n";
+			echo $key.': '.$this->user_agent->$key.'<br/>'."\n";
 		}
 
-		print "<br/><br/>\n";
-		print 'done in {execution_time} seconds';
+		echo "<br/><br/>\n";
+		echo 'done in {execution_time} seconds';
 	}
 
 	/**

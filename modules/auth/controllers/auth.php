@@ -71,7 +71,7 @@ class Auth_Controller extends Controller {
 		}
 
 		// Display the form
-		print $form->build();
+		echo $form->build();
 	}
 
 	function login()
@@ -101,13 +101,13 @@ class Auth_Controller extends Controller {
 				// Attempt a login
 				if ($this->auth->login($user, $form->data('password')))
 				{
-					print "<h4>Login Success!</h4>";
-					print "<p>Your roles are:</p>";
-					print Kohana::debug($this->session->get('roles'));
+					echo "<h4>Login Success!</h4>";
+					echo "<p>Your roles are:</p>";
+					echo Kohana::debug($this->session->get('roles'));
 				}
 				else
 				{
-					print "<h4>Login Failed!</h4>";
+					echo "<h4>Login Failed!</h4>";
 				}
 			}
 		}
@@ -128,7 +128,7 @@ class Auth_Controller extends Controller {
 		}
 
 		// Display the form
-		print $form->build();
+		echo $form->build();
 	}
 
 	function logout()

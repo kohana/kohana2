@@ -1,16 +1,17 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /*
- * Domain name, with the installation directory. Example: example.com/kohana/
+ * Domain name, with the installation directory. Default: localhost/kohana/
  */
 $config['site_domain'] = 'localhost/kohana/';
 
 /**
- * Default protocol used to access the website. Example: http
+ * Default protocol used to access the website. Default: http
  */
 $config['site_protocol'] = 'http';
 
 /**
- * Name of the front controller for this application. Example: index.php
+ * Name of the front controller for this application. Default: index.php
+ *
  * This can be removed by using URL rewriting.
  */
 $config['index_page'] = 'index.php';
@@ -22,8 +23,10 @@ $config['url_suffix'] = '';
 
 /**
  * Enable or disable gzip output compression. This can dramatically decrease
- * server bandwidth usage, at the cost of slightly higher CPU usage. Do not
- * enable this option if you are using output compression in php.ini!
+ * server bandwidth usage, at the cost of slightly higher CPU usage. Set to
+ * the compression level (1-9) that you want to use, or FALSE to disable.
+ *
+ * @note Do not enable this option if you are using output compression in php.ini!
  */
 $config['output_compression'] = FALSE;
 

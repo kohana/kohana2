@@ -8,7 +8,7 @@
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
  */
-class inflector {
+class inflector_Core {
 
 	/**
 	 * Method: uncountable

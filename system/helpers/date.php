@@ -8,7 +8,7 @@
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
  */
-class date {
+class date_Core {
 
 	/**
 	 * Method: unix2dos

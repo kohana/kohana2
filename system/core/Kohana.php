@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Provides Kohana-specific helper functions. This is where the magic happens!
- * 
+ *
  * $Id$
  *
  * @package    Core
@@ -26,7 +26,7 @@ class Kohana {
 	/**
 	 * Allows the controller to be a true singleton object. This method *must*
 	 * be called by all controllers.
-	 * 
+	 *
 	 * @throws  Kohana_Exception  controller instance already exists
 	 */
 	public function __construct()
@@ -48,9 +48,9 @@ class Kohana {
 	/**
 	 * Sets up the PHP environment. Adds error/exception handling, output
 	 * buffering, and adds an auto-loading method for loading classes.
-	 * Runs with the system.setup event.
 	 *
-	 * @return  void
+	 * This method is run immediately when this file is loaded, and is
+	 * benchmarked as environment_setup.
 	 */
 	final public static function setup()
 	{
@@ -170,9 +170,13 @@ class Kohana {
 	}
 
 	/**
-	 * Loads the controller and initializes it.
+	 * Loads the controller and initializes it. Runs the pre_controller,
+	 * post_controller_constructor, and post_controller events. Triggers
+	 * a system.404 event when the route cannot be mapped to a controller.
 	 *
-	 * @return  Controller
+	 * This method is benchmarked as controller_setup and controller_execution.
+	 *
+	 * @return  object  instance of controller
 	 */
 	final public static function & instance()
 	{
@@ -225,11 +229,11 @@ class Kohana {
 			// Load the controller
 			$controller = new $controller();
 
-			// Make sure the controller extends this class
+			// Make sure the controller extends the Kohana class
 			is_subclass_of($controller, __CLASS__) or exit
 			(
 				'Kohana controllers must have the Kohana class as an ancestor. '."\n".
-				'Please make sure Controller is defined with <tt>Controller_Core extends Kohana</tt>.'
+				'Please make sure Controller is defined with: Controller_Core extends Kohana.'
 			);
 
 			// Run system.post_controller_constructor
@@ -277,6 +281,7 @@ class Kohana {
 			// Run system.post_controller
 			Event::run('system.post_controller');
 
+			// Stop the controller execution benchmark
 			Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
 		}
 
@@ -351,26 +356,34 @@ class Kohana {
 			$output
 		);
 
-		if (Config::item('core.output_compression') AND stripos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== FALSE)
+		if (($level = Config::item('core.output_compression')) AND stripos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== FALSE)
 		{
-			// Enable gzip output compression
-			header('Content-Encoding: gzip');
+			if ($level < 1 OR $level > 9)
+			{
+				// Normalize the level to be an integer between 1 and 9. This
+				// step must be done to prevent gzencode from triggering an error
+				$level = max(1, min($level, 9));
+			}
 
 			// Compress output
-			$output = gzencode($output);
+			$output = gzencode($output, $level);
+
+			// Enable gzip output compression
+			header('Content-Encoding: gzip');
+			header('Content-Length: '.strlen($output));
 		}
 
 		echo $output;
 	}
 
 	/**
-	 * Dual-purpose PHP error and exception handler. Uses the kohana_error_page View to display the message.
+	 * Dual-purpose PHP error and exception handler. Uses the kohana_error_page
+	 * view to display the message.
 	 *
-	 * @param   integer|object  object or error code
+	 * @param   integer|object  exception object or error code
 	 * @param   string          error message
 	 * @param   string          filename
 	 * @param   integer         line number
-	 * @return  void
 	 */
 	public static function exception_handler($exception, $message = NULL, $file = NULL, $line = NULL)
 	{
@@ -548,9 +561,9 @@ class Kohana {
 		// Load the requested file
 		require_once self::find_file($type, $file, TRUE);
 
-		if ($type == 'libraries')
+		if ($type == 'libraries' OR $type === 'helpers')
 		{
-			if ($extension = self::find_file('libraries', Config::item('core.extension_prefix').$class))
+			if ($extension = self::find_file($type, Config::item('core.extension_prefix').$class))
 			{
 				require $extension;
 			}
@@ -816,7 +829,7 @@ class Kohana_Exception extends Exception {
 
 	/**
 	 * Set exception message.
-	 * 
+	 *
 	 * @param  string  i18n language key for the message
 	 * @param  array   addition line parameters
 	 */
@@ -878,7 +891,7 @@ class Kohana_User_Exception extends Kohana_Exception {
 
 	/**
 	 * Set exception title and message.
-	 * 
+	 *
 	 * @param  string  exception title string
 	 * @param  string  exception message string
 	 * @param  string  custom error template
@@ -905,7 +918,7 @@ class Kohana_404_Exception extends Kohana_Exception {
 
 	/**
 	 * Set internal properties.
-	 * 
+	 *
 	 * @param  string  URL of page
 	 * @param  string  custom error template
 	 */

@@ -8,7 +8,7 @@
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
  */
-class cookie {
+class cookie_Core {
 
 	/**
 	 * Method: set
