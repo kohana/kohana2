@@ -21,8 +21,8 @@ final class Config {
 	 * Get a config item or group.
 	 *
 	 * @param   string                item name
-	 * @param   boolean               force a forward slash (/) at the end of the item (optional)
-	 * @param   boolean               is the item required? (optional)
+	 * @param   boolean               force a forward slash (/) at the end of the item
+	 * @param   boolean               is the item required?
 	 * @return  string|array|boolean
 	 */
 	public static function item($key, $slash = FALSE, $required = TRUE)
@@ -124,7 +124,7 @@ final class Config {
 	/**
 	 * Get all include paths.
 	 *
-	 * @param   boolean  re-process the include paths (optional)
+	 * @param   boolean  re-process the include paths
 	 * @return  array    include paths, APPPATH first
 	 */
 	public static function include_paths($process = FALSE)
@@ -154,7 +154,7 @@ final class Config {
 	 * Load a config file.
 	 *
 	 * @param   string   config filename, without extension
-	 * @param   boolean  is the file required? (optional)
+	 * @param   boolean  is the file required?
 	 * @return  array    config items in file
 	 */
 	public static function load($name, $required = TRUE)

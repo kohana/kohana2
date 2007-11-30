@@ -59,6 +59,7 @@ $config = array
 	'php'   => array('application/x-httpd-php'),
 	'php3'  => array('application/x-httpd-php'),
 	'php4'  => array('application/x-httpd-php'),
+	'php5'  => array('application/x-httpd-php'),
 	'phps'  => array('application/x-httpd-php-source'),
 	'phtml' => array('application/x-httpd-php'),
 	'png'   => array('image/png', 'image/x-png'),

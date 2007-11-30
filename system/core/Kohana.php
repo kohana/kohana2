@@ -9,22 +9,6 @@
  * @copyright  (c) 2007 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-
-// Define Kohana error constant
-defined('E_KOHANA') or define('E_KOHANA', 33042);
-
-// Define 404 error constant
-defined('E_PAGE_NOT_FOUND') or define('E_PAGE_NOT_FOUND', 33043);
-
-// Define database error constant
-defined('E_DATABASE_ERROR') or define('E_DATABASE_ERROR', 33044);
-
-// Define extra E_RECOVERABLE_ERROR for PHP < 5.2
-defined('E_RECOVERABLE_ERROR') or define('E_RECOVERABLE_ERROR', 4096);
-
-// Insert Kohana setup
-Event::add('system.setup', array('Kohana', 'setup'));
-
 class Kohana {
 
 	// The singleton instance of the controller
@@ -382,13 +366,13 @@ class Kohana {
 	/**
 	 * Dual-purpose PHP error and exception handler. Uses the kohana_error_page View to display the message.
 	 *
-	 * @param   integer  object or error code
-	 * @param   string   error message (optional)
-	 * @param   string   filename (optional)
-	 * @param   integer  line number (optional)
+	 * @param   integer|object  object or error code
+	 * @param   string          error message
+	 * @param   string          filename
+	 * @param   integer         line number
 	 * @return  void
 	 */
-	public static function exception_handler($exception, $message = FALSE, $file = FALSE, $line = FALSE)
+	public static function exception_handler($exception, $message = NULL, $file = NULL, $line = NULL)
 	{
 		// If error_reporting() returns 0, it means the error was supressed by
 		// using the @ prefix, e.g. print @$var_does_not_exist. These errors
@@ -491,8 +475,8 @@ class Kohana {
 	/**
 	 * Displays a 404 page.
 	 *
-	 * @param   string  URI of page (optional)
-	 * @param   string  custom template (optional)
+	 * @param   string  URI of page
+	 * @param   string  custom template
 	 * @throws  Kohana_404_Exception
 	 */
 	public static function show_404($page = FALSE, $template = FALSE)
@@ -505,7 +489,7 @@ class Kohana {
 	 *
 	 * @param   string  error title
 	 * @param   string  error message
-	 * @param   string  custom template (optional)
+	 * @param   string  custom template
 	 * @throws  Kohana_User_Exception
 	 */
 	public static function show_error($title, $message, $template = FALSE)
@@ -580,13 +564,14 @@ class Kohana {
 	/**
 	 * Find a resource file in a given directory.
 	 *
-	 * @param   string              directory to search in
-	 * @param   string              filename to look for
-	 * @param   boolean             is the file required? (optional)
-	 * @param   string              custom file extension (optional)
-	 * @return  array|string|FALSE  array of filenames for i18n/ or config/ files
-	 *                              filename if the file was found, FALSE if not
-	 * @throws  Kohana_Exception    file is required but not found
+	 * @param   string   directory to search in
+	 * @param   string   filename to look for
+	 * @param   boolean  is the file required?
+	 * @param   string   custom file extension
+	 * @return  array    if the type is i18n or config
+	 * @return  string   if the file is found
+	 * @return  FALSE    if the file is not found
+	 * @throws  Kohana_Exception  file is required and not found
 	 */
 	public static function find_file($directory, $filename, $required = FALSE, $ext = FALSE)
 	{
@@ -638,8 +623,8 @@ class Kohana {
 	 * Lists all files and directories in a resource path.
 	 *
 	 * @param   string   directory to search
-	 * @param   boolean  list all files to the maximum depth? (optional)
-	 * @param   string   full path to search (used for recursion, *never* set this manually) (optional)
+	 * @param   boolean  list all files to the maximum depth?
+	 * @param   string   full path to search (used for recursion, *never* set this manually)
 	 * @return  array    filenames and directories
 	 */
 	public static function list_files($directory, $recursive = FALSE, $path = FALSE)
@@ -683,7 +668,7 @@ class Kohana {
 	 * Fetch an i18n language item.
 	 *
 	 * @param   string  language key to fetch
-	 * @param   array   additional information to insert into the line (optional)
+	 * @param   array   additional information to insert into the line
 	 * @return  string  i18n language string, or the requested key if the i18n item is not found
 	 */
 	public static function lang($key, $args = array())
@@ -833,7 +818,7 @@ class Kohana_Exception extends Exception {
 	 * Set exception message.
 	 * 
 	 * @param  string  i18n language key for the message
-	 * @param  array   addition line parameters (optional)
+	 * @param  array   addition line parameters
 	 */
 	function __construct($error)
 	{
@@ -896,7 +881,7 @@ class Kohana_User_Exception extends Kohana_Exception {
 	 * 
 	 * @param  string  exception title string
 	 * @param  string  exception message string
-	 * @param  string  custom error template (optional)
+	 * @param  string  custom error template
 	 */
 	public function __construct($title, $message, $template = FALSE)
 	{
@@ -921,8 +906,8 @@ class Kohana_404_Exception extends Kohana_Exception {
 	/**
 	 * Set internal properties.
 	 * 
-	 * @param  string  URL of page (optional)
-	 * @param  string  custom error template (optional)
+	 * @param  string  URL of page
+	 * @param  string  custom error template
 	 */
 	public function __construct($page = FALSE, $template = FALSE)
 	{
@@ -951,3 +936,8 @@ class Kohana_404_Exception extends Kohana_Exception {
 	}
 
 } // End Kohana 404 Exception
+
+/**
+ * Run Kohana setup to prepare the environment.
+ */
+Kohana::setup();

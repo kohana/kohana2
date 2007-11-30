@@ -53,7 +53,7 @@ final class Benchmark {
 	 * Get the elapsed time between a start and stop.
 	 *
 	 * @param   string   benchmark name, TRUE for all
-	 * @param   integer  number of decimal places to count to (optional)
+	 * @param   integer  number of decimal places to count to
 	 * @return  array
 	 */
 	public static function get($name, $decimals = 4)

@@ -215,7 +215,7 @@ final class Event {
 	 * Clear some or all callbacks from an event.
 	 *
 	 * @param   string  event name
-	 * @param   array   specific callback to remove, FALSE for all callbacks (optional)
+	 * @param   array   specific callback to remove, FALSE for all callbacks
 	 * @return  void
 	 */
 	public static function clear($name, $callback = FALSE)
@@ -243,7 +243,7 @@ final class Event {
 	 * Execute all of the callbacks attached to an event.
 	 *
 	 * @param   string   event name
-	 * @param   array    data can be processed as Event::$data by the callbacks (optional)
+	 * @param   array    data can be processed as Event::$data by the callbacks
 	 * @return  boolean
 	 */
 	public static function run($name, & $data = NULL)

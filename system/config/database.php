@@ -3,7 +3,7 @@
  * Database connection settings, defined as arrays, or "groups". If no group
  * name is used when loading the database library, the group named "default"
  * will be used.
- *  
+ *
  * Each group can be connected to independantly, and multiple groups can be
  * connected at once.
  *

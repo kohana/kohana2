@@ -4,7 +4,9 @@
  * should never be used for a production website.
  *
  * For best security, your encryption key should be at least 16 characters
- * long and contain letters, numbers, and symbols. DO NOT USE HASHES!
+ * long and contain letters, numbers, and symbols.
+ *
+ * @note Do not a hash as your key. This significantly lowers encryption entropy.
  */
 $config['key'] = 'K0H@NA+PHP_7hE-SW!FtFraM3w0R|<';
 
@@ -17,8 +19,8 @@ $config['key'] = 'K0H@NA+PHP_7hE-SW!FtFraM3w0R|<';
 $config['mode'] = MCRYPT_MODE_NOFB;
 
 /**
- * MCrypt encryption cipher. By default, MCRYPT_RIJNDAEL_128 (AES) is used.
- * AES is used worldwide and has been extensively analyzed.
+ * MCrypt encryption cipher. By default, the MCRYPT_RIJNDAEL_128 cipher is used.
+ * This is also known as 128-bit AES.
  * @see http://php.net/mcrypt
  */
 $config['cipher'] = MCRYPT_RIJNDAEL_128;

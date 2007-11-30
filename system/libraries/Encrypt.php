@@ -32,12 +32,12 @@ class Encrypt_Core {
 		if (empty($config['key']))
 			throw new Kohana_Exception('encrypt.no_encryption_key');
 
-		// Find the max length of the key
+		// Find the max length of the key, based on cipher and mode
 		$size = mcrypt_get_key_size($config['cipher'], $config['mode']);
 
 		if (strlen($config['key']) > $size)
 		{
-			// Shorten the key so that it can be used by the mcrypt module
+			// Shorten the key to the maximum size
 			$config['key'] = substr($config['key'], 0, $size);
 		}
 
