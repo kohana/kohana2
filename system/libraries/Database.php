@@ -1161,7 +1161,7 @@ class Database_Core {
 	 * Returns:
 	 *  Array containing the field data
 	 */
-	public function field_data($table ='')
+	public function field_data($table = '')
 	{
 		$this->link or $this->connect();
 
@@ -1178,13 +1178,11 @@ class Database_Core {
 	 * Returns:
 	 *  Array containing the field data
 	 */
-	public function list_fields($table ='')
+	public function list_fields($table = '')
 	{
-		static $tables;
+		$this->link or $this->connect();
 
-		$query = $this->query($this->driver->list_fields($this->config['table_prefix'].$table));
-
-		return $this->driver->list_fields($this->config['table_prefix'].$table, $query);
+		return $this->driver->list_fields($table);
 	}
 
 	/**

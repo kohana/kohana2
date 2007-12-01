@@ -230,26 +230,20 @@ class Database_Mysql_Driver extends Database_Driver {
 		return mysql_error($this->link);
 	}
 
-	public function list_fields($table, $query = FALSE)
+	public function list_fields($table)
 	{
 		static $tables;
 
-		if (is_object($query))
+		if (empty($tables[$table]))
 		{
-			if (empty($tables[$table]))
+			foreach($this->field_data($table) as $row)
 			{
-				$tables[$table] = array();
-
-				foreach($query as $row)
-				{
-					$tables[$table][] = $row->Field;
-				}
+				// Make an associative array
+				$tables[$table][$row->Field] = $this->sql_type($row->Type);
 			}
-
-			return $tables[$table];
 		}
 
-		return 'DESCRIBE '.$this->escape_table($table);
+		return $tables[$table];
 	}
 
 	public function field_data($table)
@@ -257,16 +251,12 @@ class Database_Mysql_Driver extends Database_Driver {
 		if ( ! in_array($table, $this->list_tables()))
 			return FALSE;
 
-		$query  = mysql_query('SELECT * FROM '.$this->escape_table($table).' LIMIT 1', $this->link);
-		$fields = mysql_num_fields($query);
-		$table  = array();
+		$query  = mysql_query('SHOW COLUMNS FROM '.$this->escape_table($table), $this->link);
 
-		for ($i=0; $i < $fields; $i++)
+		$table  = array();
+		while ($row = mysql_fetch_object($query))
 		{
-			$table[$i]['type']  = mysql_field_type($query, $i);
-			$table[$i]['name']  = mysql_field_name($query, $i);
-			$table[$i]['len']   = mysql_field_len($query, $i);
-			$table[$i]['flags'] = mysql_field_flags($query, $i);
+			$table[] = $row;
 		}
 
 		return $table;

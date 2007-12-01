@@ -391,6 +391,63 @@ abstract class Database_Driver {
 	abstract public function field_data($table);
 
 	/**
+	 * Fetches SQL type information about a field, in a generic format.
+	 */
+	protected function sql_type($str)
+	{
+		static $sql_types;
+
+		if ($sql_types === NULL)
+		{
+			// Load SQL data types
+			$sql_types = Config::item('sql_types');
+		}
+
+		$str = strtolower(trim($str));
+
+		if (($open  = strpos($str, '(')) !== FALSE)
+		{
+			// Find closing bracket
+			$close = strpos($str, ')', $open) - 1;
+
+			// Find the type without the size
+			$type = substr($str, 0, $open);
+		}
+		else
+		{
+			// No length
+			$type = $str;
+		}
+
+		empty($sql_types[$type]) and exit
+		(
+			'Unknown field type: '.$type.'. '.
+			'Please report this: http://trac.kohanaphp.com/newticket'
+		);
+
+		// Fetch the field definition
+		$field = $sql_types[$type];
+
+		switch($field['type'])
+		{
+			case 'string':
+			case 'float':
+				if (isset($close))
+				{
+					// Add the length to the field info
+					$field['length'] = substr($str, $open + 1, $close - $open);
+				}
+			break;
+			case 'int':
+				// Add unsigned value
+				$field['unsigned'] = (strpos($str, 'unsigned') !== FALSE);
+			break;
+		}
+
+		return $field;
+	}
+
+	/**
 	 * Method: clear_cache
 	 *  Clears the internal query cache
 	 *
