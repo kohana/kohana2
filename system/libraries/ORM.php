@@ -588,7 +588,7 @@ class ORM_Core {
 				$class = get_class($this);
 
 				$array = array();
-				foreach($result as $row)
+				foreach($result->result_array() as $row)
 				{
 					// Add object to the array
 					$array[] = new $class($row);
