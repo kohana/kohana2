@@ -370,8 +370,10 @@ class Kohana {
 
 			// Enable gzip output compression
 			header('Content-Encoding: gzip');
-			header('Content-Length: '.strlen($output));
 		}
+
+		// Send the content length
+		header('Content-Length: '.strlen($output));
 
 		echo $output;
 	}
