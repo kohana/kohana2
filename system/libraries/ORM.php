@@ -2,12 +2,16 @@
  /**
  * Object Relational Mapping (ORM) is a method of abstracting database
  * access to standard PHP calls. All table rows are represented as a model.
- * 
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * @see http://en.wikipedia.org/wiki/Active_record
+ * @see http://en.wikipedia.org/wiki/Object-relational_mapping
+ * 
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class ORM_Core {
 
@@ -671,14 +675,10 @@ class ORM_Core {
 	}
 
 	/**
-	 * Method: related_table
-	 *  Finds the many<>many relationship table.
+	 * Finds the many<>many relationship table.
 	 *
-	 * Parameters:
-	 *  table - table name
-	 *
-	 * Returns:
-	 *  Table name
+	 * @param  string  table name
+	 * @return string
 	 */
 	protected function related_table($table)
 	{
@@ -699,8 +699,8 @@ class ORM_Core {
 	/**
 	 * Execute a join to a table.
 	 *
-	 * Parameters:
-	 *  table - table name
+	 * @param  string  table name
+	 * @return void
 	 */
 	protected function related_join($table)
 	{
