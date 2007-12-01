@@ -34,6 +34,8 @@ dt { float: left; clear: left; display: block; width: 12em; font-weight: bold; }
 dt tt { display: inline-block; display: -moz-inline-box; width: 5em;}
 dd { display: block; padding-left: 1em; }
 
+code { white-space: pre; display: none; }
+
 #container { position: relative; margin: 0 16em 2em 1em; border: solid 0 #e7f5d7; border-width: 0 0.2em 0.3em 0.2em; }
 
 #menu { position: fixed; top: 0; right: 1.5em; width: 14em; padding: 0.2em 0; }

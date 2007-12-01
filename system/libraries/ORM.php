@@ -172,7 +172,7 @@ class ORM_Core {
 			// Return all of the object data as an array
 			return (array) $this->object;
 		}
-		
+
 		if (substr($method, 0, 8) === 'find_by_' OR ($all = substr($method, 0, 12)) === 'find_all_by_')
 		{
 			$method = isset($all) ? substr($method, 12) : substr($method, 8);
@@ -366,53 +366,47 @@ class ORM_Core {
 			// This should never be executed
 			return FALSE;
 		}
-	}
 
-	/**
-	 * Generates a SELECT statement for Database.
-	 */
-	public function select()
-	{
-		$count = func_num_args();
-
-		if ($count === 0)
+		if (method_exists(self::$db, $method))
 		{
-			$this->select = $this->table.'.*';
-		}
-		else
-		{
-			$this->select = ($count === 1) ? func_get_arg(0) : func_get_args();
-		}
+			// Do not allow query methods
+			if (preg_match('/query|get|list_fields|field_data/', $method))
+				return $this;
 
-		return $this;
-	}
-
-	/**
-	 * Generate a WHERE statement for Database.
-	 */
-	public function where($id = NULL)
-	{
-		if (empty($id))
-		{
-			if ( ! empty($this->object->id))
+			if ($method === 'select')
 			{
-				$this->where = array('id' => $this->object->id);
+				$this->select = TRUE;
 			}
-		}
-		elseif (is_array($id))
-		{
-			$this->where = $id;
-		}
-		elseif (func_num_args() === 1)
-		{
-			$this->where = array('id' => $id);
-		}
-		elseif (func_num_args() === 2)
-		{
-			$this->where = array(func_get_arg(0) => func_get_arg(1));
-		}
+			elseif (preg_match('/like|regex/', $method))
+			{
+				$this->where = TRUE;
+			}
 
-		return $this;
+			// Pass through to Database, manually calling up to 2 args, for speed.
+			switch(count($args))
+			{
+				case 1:
+					self::$db->$method(current($args));
+				break;
+				case 2:
+					self::$db->$method(current($args), next($args));
+				break;
+				default:
+					call_user_func_array(array(self::$db, $method), $args);
+				break;
+			}
+
+			return $this;
+		}
+	}
+
+	/**
+	 * Finds the key for a WHERE statement. Usually this should be overloaded
+	 * in the model, if you want to do: new Foo_Model('name') or similar.
+	 */
+	protected function where_key($id = NULL)
+	{
+		return 'id';
 	}
 
 	/**
@@ -424,7 +418,10 @@ class ORM_Core {
 	public function find($id = FALSE)
 	{
 		// Generate WHERE
-		($this->where == FALSE) and $this->where($id);
+		$this->where or self::$db->where($this->where_key($id), $id);
+
+		// Only one result will be returned
+		self::$db->limit(1);
 
 		// Load the result of the query
 		return $this->load_result(FALSE);
@@ -568,14 +565,10 @@ class ORM_Core {
 	protected function load_result($array = FALSE)
 	{
 		// Make sure there is something to select
-		($this->select == FALSE) and $this->select();
-
-		// Execute WHERE, if it's not empty
-		is_bool($this->where) or self::$db->where($this->where);
+		($this->select == FALSE) and self::$db->select($this->table.'.*');
 
 		// Fetch the query result
 		$result = self::$db
-			->select($this->select)
 			->from($this->table)
 			->get()
 			->result(TRUE);

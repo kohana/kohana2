@@ -15,16 +15,17 @@ class Role_Model extends ORM {
 		parent::__construct($id);
 	}
 
-	public function where($id = NULL)
+	/**
+	 * Allows finding roles by name.
+	 */
+	public function where_key($id = NULL)
 	{
 		if (is_string($id) AND $id != '')
 		{
-			$this->where = array('name' => $id);
-
-			return $this;
+			return 'name';
 		}
 
-		return parent::where($id);
+		return parent::where_key($id);
 	}
 
 	/**

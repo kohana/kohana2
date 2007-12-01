@@ -5,8 +5,7 @@
  *
  * For best security, your encryption key should be at least 16 characters
  * long and contain letters, numbers, and symbols.
- *
- * @note Do not a hash as your key. This significantly lowers encryption entropy.
+ * @note Do not use a hash as your key. This significantly lowers encryption entropy.
  */
 $config['key'] = 'K0H@NA+PHP_7hE-SW!FtFraM3w0R|<';
 

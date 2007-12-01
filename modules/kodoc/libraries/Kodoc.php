@@ -519,7 +519,7 @@ class Kodoc_xCore {
 	{
 		if (isset(self::$php_visibility[0]))
 		{
-			self::$php_visibility = array_combine(self::$php_visibility, self::$php_visibility);
+			self::$php_visibility = array_flip(self::$php_visibility);
 		}
 
 		foreach($this->files as $type => $files)

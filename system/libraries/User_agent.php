@@ -7,7 +7,7 @@
  *  copyright - Copyright (c) 2006, EllisLab, Inc.
  *  license   - <http://www.codeigniter.com/user_guide/license.html>
  */
-class User_Agent_Core {
+class User_agent_Core {
 
 	public static $agent = NULL;
 
@@ -62,15 +62,13 @@ class User_Agent_Core {
 		// Set the accepted languages
 		if (empty(self::$languages) AND ! empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
 		{
-			self::$languages = explode(',', preg_replace('/;q=.+/i', '', trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])));
-			array_map('trim', self::$languages);
+			self::$languages = preg_split('/, ?/', preg_replace('/;q=.+/i', '', trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])));
 		}
 
 		// Set the accepted charsets
 		if (empty(self::$charsets) AND ! empty($_SERVER['HTTP_ACCEPT_CHARSET']))
 		{
-			self::$charsets = explode(',', preg_replace('/;q=.+/i', '', trim($_SERVER['HTTP_ACCEPT_CHARSET'])));
-			array_map('trim', self::$languages);
+			self::$charsets = preg_split('/, ?/', preg_replace('/;q=.+/i', '', trim($_SERVER['HTTP_ACCEPT_CHARSET'])));
 		}
 
 		// Set the referrer
