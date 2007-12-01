@@ -199,7 +199,7 @@ class Router_Core {
 		{
 			self::$current_uri = current(array_keys($_GET));
 
-			// Fixes really stange handling of a suffix in a GET string
+			// Fixes really strange handling of a suffix in a GET string
 			if ($suffix = Config::item('core.url_suffix') AND substr(self::$current_uri, -(strlen($suffix))) === '_'.substr($suffix, 1))
 			{
 				self::$current_uri = substr(self::$current_uri, 0, -(strlen($suffix)));

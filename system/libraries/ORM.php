@@ -577,7 +577,8 @@ class ORM_Core {
 		$result = self::$db
 			->select($this->select)
 			->from($this->table)
-			->get();
+			->get()
+			->result(TRUE);
 
 		if (count($result) > 0)
 		{

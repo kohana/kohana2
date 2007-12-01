@@ -89,7 +89,7 @@ class Session_Database_Driver implements Session_Driver {
 
 	public function read($id)
 	{
-		$query = $this->db->from($this->group_name)->where('session_id', $id)->get();
+		$query = $this->db->from($this->group_name)->where('session_id', $id)->get()->result(TRUE);
 
 		if (count($query) > 0)
 		{
