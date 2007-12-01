@@ -63,10 +63,10 @@ class ORM_Core {
 
 		if (empty(self::$fields[$this->table]))
 		{
-			foreach(self::$db->list_fields($this->table) as $field)
+			foreach(self::$db->list_fields($this->table) as $field => $data)
 			{
 				// Cache the column names
-				self::$fields[$this->table][$field] = $field;
+				self::$fields[$this->table][$field] = $data;
 			}
 		}
 
@@ -527,7 +527,7 @@ class ORM_Core {
 		$this->object = new StdClass();
 
 		// Empty the object
-		foreach(self::$fields[$this->table] as $field)
+		foreach(self::$fields[$this->table] as $field => $data)
 		{
 			$this->object->$field = '';
 		}
