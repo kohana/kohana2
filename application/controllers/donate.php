@@ -105,7 +105,7 @@ class Donate_Controller extends Controller {
 
 	public function donation_list()
 	{
-		$payments = new Payments_Model();
+		$payments = new Payment_Model();
 		$payment_list = $payments->find_all();
 
 		$this->template->set(array
