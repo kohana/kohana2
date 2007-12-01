@@ -21,13 +21,13 @@ class Database_Pgsql_Driver extends Database_Driver {
 		Log::add('debug', 'PgSQL Database Driver Initialized');
 	}
 
-	public function connect($config)
+	public function connect()
 	{
 		// Import the connect variables
-		extract($config['connection']);
+		extract($this->db_config['connection']);
 
 		// Persistent connections enabled?
-		$connect = ($config['persistent'] == TRUE) ? 'pg_pconnect' : 'pg_connect';
+		$connect = ($this->db_config['persistent'] == TRUE) ? 'pg_pconnect' : 'pg_connect';
 
 		// Build the connection info
 		$port = (isset($port)) ? 'port=\''.$port.'\'' : '';
@@ -37,7 +37,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 		// Make the connection and select the database
 		if ($this->link = $connect($connection_string))
 		{
-			if ($charset = $config['character_set'])
+			if ($charset = $this->db_config['character_set'])
 			{
 				echo $this->set_charset($charset);
 			}
@@ -50,7 +50,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 
 	public function query($sql)
 	{
-		return new Pgsql_Result(pg_query($sql, $this->link), $this->link, $this->db_config['object'], $sql);
+		return new Pgsql_Result(pg_query($this->link, $sql), $this->link, $this->db_config['object'], $sql);
 	}
 
 	public function set_charset($charset)
