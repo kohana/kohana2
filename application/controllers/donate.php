@@ -105,13 +105,12 @@ class Donate_Controller extends Controller {
 
 	public function donation_list()
 	{
-		$payments = new Payment_Model();
-		$payment_list = $payments->find_all();
+		$donation = new Donation_Model();
 
 		$this->template->set(array
 		(
 			'title'   => 'Donation List',
-			'content' => new View('pages/donate/list', array('donation_list' => $payment_list))
+			'content' => new View('pages/donate/list', array('donation_list' => $donation->find_all()))
 		));
 	}
 
