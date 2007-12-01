@@ -56,7 +56,7 @@ class Payment_Paypal_Driver
 		$this->paypal_values['CANCELURL'] = $config['CANCELURL'];
 		$this->paypal_values['CURRENCYCODE'] = $config['CURRENCYCODE'];
 		$this->paypal_values['API_Endpoint'] = ($config['test_mode']) ? 'https://api.sandbox.paypal.com/nvp' : 'https://api-3t.paypal.com/nvp';
-		$this->paypal_url = ($config['test_mode']) ? 'https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=' : 'https://www.paypal.com/webscr&cmd=%20express-checkout&token=';
+		$this->paypal_url = ($config['test_mode']) ? 'https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=' : 'https://www.paypal.com/webscr&cmd=_express-checkout&token=';
 
 		$this->required_fields['API_UserName'] = !empty($config['API_UserName']);
 		$this->required_fields['API_Password'] = !empty($config['API_Password']);
