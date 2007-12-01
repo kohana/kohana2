@@ -184,7 +184,7 @@ class Payment_Paypal_Driver
 			Log::add('debug', Kohana::debug($reply));
 			url::redirect($this->error_url);
 		}
-		die('<h3>You should not be here. Please email jeremy.bush@kohanaphp.com and include what you did right before seeing this.</h3>')
+		die('<h3>You should not be here. Please email jeremy.bush@kohanaphp.com and include what you did right before seeing this.</h3>');
 	}
 
 	/**
