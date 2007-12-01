@@ -135,18 +135,18 @@ class Payment_Paypal_Driver
 		if (!$this->session->get('paypal_token'))
 		{
 			$this->paypal_login();
-			exit; //Just in case
+			return FALSE;
 		}
 
 		//post data for submitting to server
 		$data="&TOKEN=".$this->session->get('paypal_token').
-		        "&PAYERID=".$this->paypal_values['payerid'].
-		        "&IPADDRESS=".urlencode($_SERVER['SERVER_NAME']).
-		        "&Amt=".$this->paypal_values['Amt'].
-		        "&PAYMENTACTION=".$this->paypal_values['PAYMENTACTION'].
-		        "&ReturnUrl=".$this->paypal_values['ReturnUrl'].
-		        "&CANCELURL=".$this->paypal_values['CANCELURL'] .
-		        "&CURRENCYCODE=".$this->paypal_values['CURRENCYCODE']."&COUNTRYCODE=US";
+		      "&PAYERID=".$this->paypal_values['payerid'].
+		      "&IPADDRESS=".urlencode($_SERVER['SERVER_NAME']).
+		      "&Amt=".$this->paypal_values['Amt'].
+		      "&PAYMENTACTION=".$this->paypal_values['PAYMENTACTION'].
+		      "&ReturnUrl=".$this->paypal_values['ReturnUrl'].
+		      "&CANCELURL=".$this->paypal_values['CANCELURL'] .
+		      "&CURRENCYCODE=".$this->paypal_values['CURRENCYCODE']."&COUNTRYCODE=US";
 
 		$response = $this->contact_paypal('DoExpressCheckoutPayment', $data);
 		$nvpResArray = $this->deformatNVP($response);
@@ -181,9 +181,10 @@ class Payment_Paypal_Driver
 		}
 		else // Something went terribly wrong...
 		{
-			echo '<pre>'.print_r($reply, true);die;
+			Log::add('debug', Kohana::debug($reply));
 			url::redirect($this->error_url);
 		}
+		die('<h3>You should not be here. Please email jeremy.bush@kohanaphp.com and include what you did right before seeing this.</h3>')
 	}
 
 	/**
