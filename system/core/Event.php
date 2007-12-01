@@ -1,8 +1,8 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- *  Process queuing/execution class. Allows an unlimited number of callbacks
- *  to be added to 'events'. Events can be run multiple times, and can also
- *  process event-specific data. By default, Kohana has several system events.
+ * Process queuing/execution class. Allows an unlimited number of callbacks
+ * to be added to 'events'. Events can be run multiple times, and can also
+ * process event-specific data. By default, Kohana has several system events.
  *
  * $Id$
  *
@@ -10,47 +10,7 @@
  * @author     Kohana Team
  * @copyright  (c) 2007 Kohana Team
  * @license    http://kohanaphp.com/license.html
- * 
- * About: system.setup
- *  Without modification to Kohana, it is not possible to attach to this event.
- *  Runs Kohana::setup() by default.
- *
- * About: system.ready
- *  Called immediately after hooks are loaded. This is the earliest attachable
- *  event. Nothing is attached to this event by default.
- *
- * About: system.routing
- *  Processes the URL and does routing. Calls Router::setup() by default.
- *
- * About: system.execute
- *  Controller locating and initialization. A controller object will be created,
- *  as an instance of Kohana. Calls Kohana::instance() by default.
- *
- * About: system.404
- *  Called when a page cannot be found. Calls Kohana::show_404() by default.
- *
- * About: system.pre_controller
- *  Called within system.execute, after the controller file is loaded, but
- *  before an object is created.
- *
- * About: system.post_controller
- *  Called within system.execute, after the controller object is created.
- *  Kohana::instance() will return the controller at this point, and views can
- *  be loaded.
- *
- * About: system.send_headers
- *  Called just before the global output buffer is closed, before any content
- *  is displayed. Writing cookies is not possible after this point, and
- *  <Session> data will not be saved.
- *
- * About: system.display
- *  Displays the output that Kohana has generated. Views can be loaded, but
- *  headers have already been sent. The rendered output, Kohana::$output, can
- *  be manipulated.
- *
- * About: system.shutdown
- *  Last event to run, just before PHP starts to shut down. Calls Log::write()
- *  by default.
+ * @link       http://doc.kohanaphp.com/core/event
  */
 final class Event {
 
@@ -244,7 +204,7 @@ final class Event {
 	 *
 	 * @param   string   event name
 	 * @param   array    data can be processed as Event::$data by the callbacks
-	 * @return  boolean
+	 * @return  void
 	 */
 	public static function run($name, & $data = NULL)
 	{
@@ -265,8 +225,6 @@ final class Event {
 
 		// The event has been run!
 		self::$has_run[$name] = $name;
-
-		return TRUE;
 	}
 
 	/**
