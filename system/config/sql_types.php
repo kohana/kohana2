@@ -16,7 +16,7 @@ $config = array
 	'time'         => array('type' => 'string', 'format' => '00:00:00'),
 	'date'         => array('type' => 'string', 'format' => '0000-00-00'),
 	'year'         => array('type' => 'string', 'format' => '0000'),
-	'datetime'     => array('type' => 'string', 'format' => '00-00-00 00:00:00'),
+	'datetime'     => array('type' => 'string', 'format' => '0000-00-00 00:00:00'),
 	'char'         => array('type' => 'string', 'exact' => TRUE),
 	'binary'       => array('type' => 'string', 'binary' => TRUE, 'exact' => TRUE),
 	'varchar'      => array('type' => 'string'),
