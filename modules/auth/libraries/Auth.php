@@ -25,14 +25,14 @@ class Auth_Core {
 		// Load libraries
 		$this->session = new Session();
 
-		if (empty($config))
-		{
-			// Fetch configuration
-			$this->config = Config::item('auth');
+		// Append default auth configuration
+		$config += Config::item('auth');
 
-			// Clean up the salt pattern
-			$this->config['salt_pattern'] = array_map('trim', explode(',', Config::item('auth.salt_pattern')));
-		}
+		// Clean up the salt pattern and split it into an array
+		$config['salt_pattern'] = preg_split('/, ?/', Config::item('auth.salt_pattern'));
+
+		// Save the config in the object
+		$this->config = $config;
 
 		Log::add('debug', 'Auth Library loaded');
 	}
