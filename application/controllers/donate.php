@@ -36,13 +36,12 @@ class Donate_Controller extends Controller {
 
 			// Set the amount and send em to PayPal
 			$this->payment->amount = $amount;
-			if ($status = $this->payment->process() === FALSE)
-			{
-				// Something went wrong, so delete the session data and make em start over again.
-				$this->session->set_flash('donate_status', '<p style="color: red;">There was a problem processing your donation. Please try again.</p>');
-				$this->session->del('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token');
-				url::redirect('donate');
-			}
+			$status = $this->payment->process();
+			
+			// Something went wrong, so delete the session data and make em start over again.
+			$this->session->set_flash('donate_status', '<p style="color: red;">There was a problem processing your donation. Please try again.</p>');
+			$this->session->del('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token');
+			url::redirect('donate');
 		}
 		else if ($amount = $this->session->get('donate_amount') AND $payerid = $this->input->get('PayerID')) // They are returning from paypal
 		{
@@ -73,7 +72,8 @@ class Donate_Controller extends Controller {
 			$insert = array('name'   => ($this->session->get('donate_name') == '') ? 'Anonymous' : $this->session->get('donate_name'),
 			                'email'  => $this->session->get('donate_email'),
 			                'amount' => $this->session->get('donate_amount'),
-			                'date'   => time());
+			                'date'   => time(),
+			                'type'   => 'PayPal');
 
 			$this->db->insert('donations', $insert);
 
@@ -99,6 +99,11 @@ class Donate_Controller extends Controller {
 	}
 
 	public function credit_card()
+	{
+		
+	}
+
+	public function view_payments()
 	{
 		
 	}
