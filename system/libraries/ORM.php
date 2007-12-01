@@ -1,6 +1,8 @@
 <?php defined('SYSPATH') or die('No direct script access.');
  /**
- * Class: ORM
+ * Object Relational Mapping (ORM) is a method of abstracting database
+ * access to standard PHP calls. All table rows are represented as a model.
+ * 
  *
  * Kohana Source Code:
  *  author    - Kohana Team
@@ -40,8 +42,9 @@ class ORM_Core {
 	protected $has_and_belongs_to_many = array();
 
 	/**
-	 * Constructor: __construct
-	 *  Initialize database, setup internal variables.
+	 * Initialize database, setup internal variables, find requested object.
+     *
+	 * @return void
 	 */
 	public function __construct($id = FALSE)
 	{
@@ -92,6 +95,8 @@ class ORM_Core {
 
 	/**
 	 * Enables automatic saving of the object when the model is destroyed.
+	 *
+	 * @return void
 	 */
 	public function __destruct()
 	{
@@ -104,6 +109,9 @@ class ORM_Core {
 
 	/**
 	 * Magic method for getting object and model keys.
+	 *
+	 * @param   string  key name
+	 * @return  mixed
 	 */
 	public function __get($key)
 	{
@@ -130,6 +138,10 @@ class ORM_Core {
 
 	/**
 	 * Magic method for setting object and model keys.
+	 *
+	 * @param   string  key name
+	 * @param   mixed   value to set
+	 * @return  void
 	 */
 	public function __set($key, $value)
 	{
@@ -403,6 +415,8 @@ class ORM_Core {
 	/**
 	 * Finds the key for a WHERE statement. Usually this should be overloaded
 	 * in the model, if you want to do: new Foo_Model('name') or similar.
+	 *
+	 * @return  string  name of key for the id
 	 */
 	protected function where_key($id = NULL)
 	{
@@ -410,13 +424,18 @@ class ORM_Core {
 	}
 
 	/**
-	 * Find and load data for this object.
+	 * Find and load data for the current object.
 	 *
-	 * Returns:
-	 *  $this object reference.
+	 * @param   string  id of the object to find, or ALL
+	 * @return  object  current object
+	 * @return  array   if ALL is used
 	 */
 	public function find($id = FALSE)
 	{
+		// Allows the use of find(ALL)
+		if ($id === ALL)
+			return $this->find_all();
+
 		// Generate WHERE
 		$this->where or self::$db->where($this->where_key($id), $id);
 
@@ -430,8 +449,7 @@ class ORM_Core {
 	/**
 	 * Find and load an array of objects.
 	 *
-	 * Returns:
-	 *  An array of objects.
+	 * @return  array  all objects in a simple array
 	 */
 	public function find_all()
 	{
@@ -440,11 +458,9 @@ class ORM_Core {
 	}
 
 	/**
-	 * Method: save
-	 *  Saves this object data.
+	 * Saves the current object.
 	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @return  bool
 	 */
 	public function save()
 	{
@@ -488,35 +504,53 @@ class ORM_Core {
 	}
 
 	/**
-	 * Method: delete
-	 *  Deletes this object.
+	 * Deletes this object, or all objects in this table.
 	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   int   use ALL to delete all rows in the table
+	 * @return  bool  FALSE if the object cannot be deleted
+	 * @return  int   number of rows deleted
 	 */
-	public function delete()
+	public function delete($all = FALSE)
 	{
-		// Can't delete something that does not exist
-		if (empty($this->object->id))
-			return FALSE;
+		if ($all === ALL)
+		{
+			// WHERE for ALL: "WHERE 1" (h4x)
+			$where = TRUE;
+		}
+		else
+		{
+			// Can't delete something that does not exist
+			if (empty($this->object->id))
+				return FALSE;
 
-		// Where is this object
-		$this->where();
+			// WHERE for this object
+			$where = array('id' => $this->object->id);
+		}
 
-		// Delete this object
-		$query = self::$db->delete($this->table, $this->where);
-
-		// Reset this object
+		// Clear this object
 		$this->clear();
 
-		// Will return TRUE if anything was deleted
-		return (count($query) > 0);
+		// Return the number of rows deleted
+		return count(self::$db->delete($this->table, $where));
+	}
+
+	/**
+	 * Delete all rows in the table.
+	 *
+	 * @return  int   number of rows deleted
+	 */
+	public function delete_all()
+	{
+		// Proxy to delete(ALL)
+		return $this->delete(ALL);
 	}
 
 	/**
 	 * Clears the current object by creating an empty object and assigning empty
 	 * values to each of the object fields. At the same time, the WHERE and
 	 * SELECT statements are cleared and the changed keys are reset.
+	 *
+	 * @return void
 	 */
 	public function clear()
 	{
