@@ -27,7 +27,7 @@ class inflector_Core {
 		if ($uncountables === NULL)
 		{
 			// Makes a mirrored array, eg: foo => foo
-			$uncountables = array_combine(Kohana::lang('inflector'), Kohana::lang('inflector'));
+			$uncountables = array_flip(Kohana::lang('inflector'));
 		}
 
 		return isset($uncountables[$str]);
@@ -45,7 +45,24 @@ class inflector_Core {
 	 */
 	public static function singular($str)
 	{
+		static $cache;
+
 		$str = trim($str);
+
+		if ($cache === NULL)
+		{
+			// Initialize the cache
+			$cache = array();
+		}
+		else
+		{
+			// Already pluralized
+			if (isset($cache[$str]))
+				return $cache[$str];
+		}
+
+		// Set the key name
+		$key = $str;
 
 		// We can just return uncountable words
 		if (self::uncountable($str))
@@ -66,7 +83,7 @@ class inflector_Core {
 			$str = substr($str, 0, strlen($str) - 1);
 		}
 
-		return $str;
+		return $cache[$key] = $str;
 	}
 
 	/**
@@ -81,11 +98,28 @@ class inflector_Core {
 	 */
 	public static function plural($str)
 	{
+		static $cache;
+
 		$str = trim($str);
 
 		// We can just return uncountable words
 		if (self::uncountable($str))
 			return $str;
+
+		if ($cache === NULL)
+		{
+			// Initialize the cache
+			$cache = array();
+		}
+		else
+		{
+			// Already pluralized
+			if (isset($cache[$str]))
+				return $cache[$str];
+		}
+
+		// Set the key name
+		$key = $str;
 
 		$end = substr($str, -1);
 		$low = (strcmp($end, strtolower($end)) === 0) ? TRUE : FALSE;
@@ -107,7 +141,8 @@ class inflector_Core {
 			$str .= ($low == FALSE) ? strtoupper($end) : $end;
 		}
 
-		return $str;
+		// Set the cache and return
+		return $cache[$key] = $str;
 	}
 
 	/**
