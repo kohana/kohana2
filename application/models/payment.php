@@ -1,3 +1,3 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Payment_Model extends ORM {}
+class Donation_Model extends ORM {}
