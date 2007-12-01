@@ -72,7 +72,8 @@ class Donate_Controller extends Controller {
 			// Store the payment
 			$insert = array('name'   => ($this->session->get('donate_name') == '') ? 'Anonymous' : $this->session->get('donate_name'),
 			                'email'  => $this->session->get('donate_email'),
-			                'amount' => $this->session->get('donate_amount'));
+			                'amount' => $this->session->get('donate_amount'),
+			                'date'   => time());
 
 			$this->db->insert('donations', $insert);
 
