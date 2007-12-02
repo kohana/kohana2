@@ -1,30 +1,29 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: utf8
- *  A port of phputf8 to a unified file/class. This single file will check PHP
- *  to ensure that UTF-8 support is available and normalize global variables to
- *  UTF-8. It also provides multi-byte aware replacement string functions. These
- *  functions have been adapted from phputf8 to be optimized and fit our needs.
+ * A port of phputf8 to a unified file/class. Checks PHP status to ensure that
+ * UTF-8 support is available and normalize global variables to UTF-8. It also
+ * provides multi-byte aware replacement string functions.
  *
- * Server Requirements:
- *  - PCRE needs to be compiled with UTF-8 support.
- *    <http://php.net/manual/reference.pcre.pattern.modifiers.php>
- *  - UTF-8 conversion will be much more reliable if the iconv extension is loaded.
- *    <http://php.net/iconv>
- *  - The mbstring extension is highly recommended but must not be overloading string functions.
- *    <http://php.net/mbstring>
+ * This file is licensed differently from the rest of Kohana. As a port of
+ * phputf8, which is LGPL software, this file is released under the LGPL.
  *
- * Note:
- *  This file is licensed differently from the rest of Kohana. As a port of
- *  phputf8, which is LGPL software, this file is released under the LGPL.
+ * PCRE needs to be compiled with UTF-8 support.
+ * @see http://php.net/manual/reference.pcre.pattern.modifiers.php
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt>
+ * UTF-8 conversion will be much more reliable if the iconv extension is loaded.
+ * @see http://php.net/iconv
  *
- * Credits:
- *  phputf8 - UTF-8 functions <http://phputf8.sourceforge.net> (c) 2005 Harry Fuecks
+ * The mbstring extension is highly recommended, but must not be overloading
+ * string functions.
+ * @see http://php.net/mbstring
+ *
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007 Kohana Team
+ * @copyright  (c) 2005 Harry Fuecks
+ * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
  */
 
 if (preg_match('/^.$/u', 'ñ') !== 1)
@@ -86,16 +85,12 @@ if (PHP_SAPI == 'cli')
 final class utf8 {
 
 	/**
-	 * Method: clean
-	 *  Recursively cleans arrays, objects, and strings. Removes ASCII control
-	 *  codes and converts to UTF-8 while silently discarding incompatible
-	 *  UTF-8 characters.
+	 * Recursively cleans arrays, objects, and strings. Removes ASCII control
+	 * codes and converts to UTF-8 while silently discarding incompatible
+	 * UTF-8 characters.
 	 *
-	 * Parameters:
-	 *  str - string to clean
-	 *
-	 * Returns:
-	 *  Clean UTF-8 string.
+	 * @param   string  string to clean
+	 * @return  string
 	 */
 	public static function clean($str)
 	{
@@ -121,15 +116,11 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: is_ascii
-	 *  Tests whether a string contains only 7bit ASCII bytes. This is used to
-	 *  determine when to use native functions or UTF-8 functions.
+	 * Tests whether a string contains only 7bit ASCII bytes. This is used to
+	 * determine when to use native functions or UTF-8 functions.
 	 *
-	 * Parameters:
-	 *  str - string to check
-	 *
-	 * Returns:
-	 *  TRUE or FALSE, whether the string is ASCII.
+	 * @param   string  string to check
+	 * @return  bool
 	 */
 	public static function is_ascii($str)
 	{
@@ -137,14 +128,10 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: strip_ascii_ctrl
-	 *  Strips out device control codes in the ASCII range.
+	 * Strips out device control codes in the ASCII range.
 	 *
-	 * Parameters:
-	 *  str - string to clean
-	 *
-	 * Returns:
-	 *  Clean UTF-8 string.
+	 * @param   string  string to clean
+	 * @return  string
 	 */
 	public static function strip_ascii_ctrl($str)
 	{
@@ -152,14 +139,10 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: strip_non_ascii
-	 *  Strips out all non-7bit ASCII bytes.
+	 * Strips out all non-7bit ASCII bytes.
 	 *
-	 * Parameters:
-	 *  str - string to clean
-	 *
-	 * Returns:
-	 *  Clean UTF-8 string.
+	 * @param   string  string to clean
+	 * @return  string
 	 */
 	public static function strip_non_ascii($str)
 	{
@@ -167,16 +150,13 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: transliterate_to_ascii
-	 *  Replaces special/accented UTF-8 characters by ASCII-7 'equivalents'.
-	 *  Original function (accents_to_ascii) written by Andreas Gohr <andi@splitbrain.org> for phputf8.
+	 * Replaces special/accented UTF-8 characters by ASCII-7 'equivalents'.
 	 *
-	 * Parameters:
-	 *  str  - string to transliterate
-	 *  case - -1 lowercase only, +1 uppercase only, 0 both cases
-	 *
-	 * Returns:
-	 *  String with only ASCII characters.
+	 * @author  Andreas Gohr <andi@splitbrain.org>
+     *
+	 * @param   string   string to transliterate
+	 * @param   integer  -1 lowercase only, +1 uppercase only, 0 both cases
+	 * @return  string
 	 */
 	public static function transliterate_to_ascii($str, $case = 0)
 	{
@@ -185,14 +165,11 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: strlen
-	 *  Returns the length of the given string.
+	 * Returns the length of the given string.
+	 * @see http://php.net/strlen
 	 *
-	 * Parameters:
-	 *  str - string being measured for length
-	 *
-	 * Returns:
-	 *  Length of the given string.
+	 * @param   string   string being measured for length
+	 * @return  integer
 	 */
 	public static function strlen($str)
 	{
@@ -201,17 +178,16 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: strpos
-	 *  Finds position of first occurrence of a UTF-8 string.
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
+	 * Finds position of first occurrence of a UTF-8 string.
+	 * @see http://php.net/strlen
 	 *
-	 * Parameters:
-	 *  str    - haystack
-	 *  search - needle
-	 *  offset - allows you to specify from which character in haystack to start searching
+	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
-	 * Returns:
-	 *  The position as an integer. If needle is not found, FALSE will be returned.
+	 * @param   string   haystack
+	 * @param   string   needle
+	 * @param   integer  offset from which character in haystack to start searching
+	 * @return  integer  position of needle
+	 * @return  boolean  FALSE if the needle is not found
 	 */
 	public static function strpos($str, $search, $offset = 0)
 	{
@@ -220,17 +196,16 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: strrpos
-	 *  Finds position of last occurrence of a char in a UTF-8 string.
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
+	 * Finds position of last occurrence of a char in a UTF-8 string.
+	 * @see http://php.net/strrpos
 	 *
-	 * Parameters:
-	 *  str    - haystack
-	 *  search - needle
-	 *  offset - allows you to specify from which character in haystack to start searching
+	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
-	 * Returns:
-	 *  The position as an integer. If needle is not found, FALSE will be returned.
+	 * @param   string   haystack
+	 * @param   string   needle
+	 * @param   integer  offset from which character in haystack to start searching
+	 * @return  integer  position of needle
+	 * @return  boolean  FALSE if the needle is not found
 	 */
 	public static function strrpos($str, $search, $offset = 0)
 	{
@@ -239,17 +214,15 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: substr
-	 *  Returns part of a UTF-8 string.
-	 *  Original function written by Chris Smith <chris@jalakai.co.uk> for phputf8.
+	 * Returns part of a UTF-8 string.
+	 * @see http://php.net/substr
 	 *
-	 * Parameters:
-	 *  str    - input string
-	 *  offset - start
-	 *  length - 
+	 * @author  Chris Smith <chris@jalakai.co.uk>
 	 *
-	 * Returns:
-	 *  The portion of string specified by the start and length parameters or FALSE on failure.
+	 * @param   string   input string
+	 * @param   integer  offset
+	 * @param   integer  length limit
+	 * @return  string
 	 */
 	public static function substr($str, $offset, $length = NULL)
 	{
@@ -258,18 +231,15 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: substr_replace
-	 *  Replaces text within a portion of a UTF-8 string.
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
+	 * Replaces text within a portion of a UTF-8 string.
+	 * @see http://php.net/substr_replace
 	 *
-	 * Parameters:
-	 *  str         - input string
-	 *  replacement - replacement string
-	 *  offset      - start
-	 *  length      - 
+	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
-	 * Returns:
-	 *  The result string is returned.
+	 * @param   string   input string
+	 * @param   string   replacement string
+	 * @param   integer  offset
+	 * @return  string
 	 */
 	public static function substr_replace($str, $replacement, $offset, $length = NULL)
 	{
@@ -278,15 +248,13 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: strtolower
-	 *  Makes a UTF-8 string lowercase.
-	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8.
+	 * Makes a UTF-8 string lowercase.
+	 * @see http://php.net/strtolower
 	 *
-	 * Parameters:
-	 *  str - input string
+	 * @author  Andreas Gohr <andi@splitbrain.org>
 	 *
-	 * Returns:
-	 *  Lowercase UTF-8 string.
+	 * @param   string   mixed case string
+	 * @return  string
 	 */
 	public static function strtolower($str)
 	{
@@ -295,15 +263,13 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: strtoupper
-	 *  Makes a UTF-8 string uppercase.
-	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8.
+	 * Makes a UTF-8 string uppercase.
+	 * @see http://php.net/strtoupper
 	 *
-	 * Parameters:
-	 *  str - input string
+	 * @author  Andreas Gohr <andi@splitbrain.org>
 	 *
-	 * Returns:
-	 *  Uppercase UTF-8 string.
+	 * @param   string   mixed case string
+	 * @return  string
 	 */
 	public static function strtoupper($str)
 	{
@@ -312,15 +278,13 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: ucfirst
-	 *  Makes a UTF-8 string's first character uppercase.
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
+	 * Makes a UTF-8 string's first character uppercase.
+	 * @see http://php.net/ucfirst
 	 *
-	 * Parameters:
-	 *  str - input string
+	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
-	 * Returns:
-	 *  UTF-8 string with first character in uppercase.
+	 * @param   string   mixed case string
+	 * @return  string
 	 */
 	public static function ucfirst($str)
 	{
@@ -329,15 +293,13 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: ucwords
-	 *  Makes the first character of every word in a UTF-8 string uppercase.
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
+	 * Makes the first character of every word in a UTF-8 string uppercase.
+	 * @see http://php.net/ucwords
 	 *
-	 * Parameters:
-	 *  str - input string
+	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
-	 * Returns:
-	 *  UTF-8 string with first character of every word in uppercase.
+	 * @param   string   mixed case string
+	 * @return  string
 	 */
 	public static function ucwords($str)
 	{
@@ -346,16 +308,16 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: strcasecmp
-	 *  Case-insensitive UTF-8 string comparison.
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
+	 * Case-insensitive UTF-8 string comparison.
+	 * @see http://php.net/strcasecmp
 	 *
-	 * Parameters:
-	 *  str1 - first string
-	 *  str2 - second string
+	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
-	 * Returns:
-	 *  integer < 0 if str1 is less than str2; > 0 if str1 is greater than str2, and 0 if they are equal.
+	 * @param   string   string to compare
+	 * @param   string   string to compare
+	 * @return  integer  less than 0 if str1 is less than str2
+	 * @return  integer  greater than 0 if str1 is greater than str2
+	 * @return  integer  0 if they are equal
 	 */
 	public static function strcasecmp($str1, $str2)
 	{
@@ -364,20 +326,19 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: str_ireplace
-	 *  Returns a string or an array with all occurrences of search in subject (ignoring case).
-	 *  replaced with the given replace value.
-	 *  Note: it's not fast and gets slower if $search and/or $replace are arrays.
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
+	 * Returns a string or an array with all occurrences of search in subject (ignoring case).
+	 * replaced with the given replace value.
+	 * @see     http://php.net/str_ireplace
 	 *
-	 * Parameters:
-	 *  search  - string or array with text to replace
-	 *  replace - string or array with replacement text
-	 *  str     - string or array with subject text
-	 *  count   - number of matched and replaced needles will be returned via this parameter which is passed by reference
+	 * @note    It's not fast and gets slower if $search and/or $replace are arrays.
+	 * @author  Harry Fuecks <hfuecks@gmail.com
 	 *
-	 * Returns:
-	 *  A string or an array of replacements.
+	 * @param   string|array  text to replace
+	 * @param   string|array  replacement text
+	 * @param   string|array  subject text
+	 * @param   integer       number of matched and replaced needles will be returned via this parameter which is passed by reference
+	 * @return  string        if the input was a string
+	 * @return  array         if the input was an array
 	 */
 	public static function str_ireplace($search, $replace, $str, & $count = NULL)
 	{
@@ -386,17 +347,16 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: stristr
-	 *  Case-insenstive UTF-8 version of strstr. Returns all of input string
-	 *  from the first occurrence of needle to the end.
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
+	 * Case-insenstive UTF-8 version of strstr. Returns all of input string
+	 * from the first occurrence of needle to the end.
+	 * @see http://php.net/stristr
 	 *
-	 * Parameters:
-	 *  str    - input string
-	 *  search - needle
+	 * @author Harry Fuecks <hfuecks@gmail.com>
 	 *
-	 * Returns:
-	 *  The matched substring. If search is not found, FALSE is returned.
+	 * @param   string   input string
+	 * @param   string   needle
+	 * @return  string   matched substring if found
+	 * @return  boolean  FALSE if the substring was not found
 	 */
 	public static function stristr($str, $search)
 	{
@@ -405,19 +365,16 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: strspn
-	 *  Finds the length of the initial segment matching mask.
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
+	 * Finds the length of the initial segment matching mask.
+	 * @see http://php.net/strspn
 	 *
-	 * Parameters:
-	 *  str    - input string
-	 *  mask   - mask for search
-	 *  offset - optional integer: start position of the string to examine
-	 *  length - optional integer: length of the string to examine
+	 * @author Harry Fuecks <hfuecks@gmail.com>
 	 *
-	 * Returns:
-	 *  The length (int) of the initial segment of str
-	 *  which consists entirely of characters in mask.
+	 * @param   string   input string
+	 * @param   string   mask for search
+	 * @param   integer  start position of the string to examine
+	 * @param   integer  length of the string to examine
+	 * @return  integer  length of the initial segment that contains characters in the mask
 	 */
 	public static function strspn($str, $mask, $offset = NULL, $length = NULL)
 	{
@@ -426,19 +383,16 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: strcspn
-	 *  Finds the length of the initial segment not matching mask.
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
+	 * Finds the length of the initial segment not matching mask.
+	 * @see http://php.net/strcspn
 	 *
-	 * Parameters:
-	 *  str    - input string
-	 *  mask   - negative mask for search
-	 *  offset - optional integer: start position of the string to examine
-	 *  length - optional integer: length of the string to examine
+	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
-	 * Returns:
-	 *  The length (int) of the initial segment of str
-	 *  which does not contain any of the characters in mask.
+	 * @param   string   input string
+	 * @param   string   mask for search
+	 * @param   integer  start position of the string to examine
+	 * @param   integer  length of the string to examine
+	 * @return  integer  length of the initial segment that contains characters not in the mask
 	 */
 	public static function strcspn($str, $mask, $offset = NULL, $length = NULL)
 	{
@@ -447,18 +401,16 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: str_pad
-	 *  Pads a UTF-8 string to a certain length with another string.
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
+	 * Pads a UTF-8 string to a certain length with another string.
+	 * @see http://php.net/str_pad
 	 *
-	 * Parameters:
-	 *  str              - input string
-	 *  final_str_length - desired string length after padding
-	 *  pad_str          - string to use as padding
-	 *  pad_type         - STR_PAD_RIGHT, STR_PAD_LEFT, or STR_PAD_BOTH
+	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
-	 * Returns:
-	 *  The padded string.
+	 * @param   string   input string
+	 * @param   integer  desired string length after padding
+	 * @param   string   string to use as padding
+	 * @param   string   padding type: STR_PAD_RIGHT, STR_PAD_LEFT, or STR_PAD_BOTH
+	 * @return  string
 	 */
 	public static function str_pad($str, $final_str_length, $pad_str = ' ', $pad_type = STR_PAD_RIGHT)
 	{
@@ -467,16 +419,14 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: str_split
-	 *  Converts a UTF-8 string to an array.
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
+	 * Converts a UTF-8 string to an array.
+	 * @see http://php.net/str_split
 	 *
-	 * Parameters:
-	 *  str          - input string
-	 *  split_length - maximum length of each chunk (default = 1 char)
+	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
-	 * Returns:
-	 *  An array with str chunks, or FALSE if split_length is less than 1.
+	 * @param   string   input string
+	 * @param   integer  maximum length of each chunk
+	 * @return  array
 	 */
 	public static function str_split($str, $split_length = 1)
 	{
@@ -485,15 +435,13 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: strrev
-	 *  Reverses a UTF-8 string.
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
+	 * Reverses a UTF-8 string.
+	 * @see http://php.net/strrev
 	 *
-	 * Parameters:
-	 *  str - string to be reversed
+	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
-	 * Returns:
-	 *  The reversed string.
+	 * @param   string   string to be reversed
+	 * @return  string
 	 */
 	public static function strrev($str)
 	{
@@ -502,17 +450,14 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: trim
-	 *  Strips whitespace (or other UTF-8 characters)
-	 *  from the beginning and end of a string.
-	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8.
+	 * Strips whitespace (or other UTF-8 characters) from the beginning and
+	 * end of a string.
 	 *
-	 * Parameters:
-	 *  str      - input string
-	 *  charlist - string of characters that need to be stripped
+	 * @author  Andreas Gohr <andi@splitbrain.org>
 	 *
-	 * Returns:
-	 *  The trimmed string.
+	 * @param   string   input string
+	 * @param   string   string of characters to remove
+	 * @return  string
 	 */
 	public static function trim($str, $charlist = NULL)
 	{
@@ -521,16 +466,13 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: ltrim
-	 *  Strips whitespace (or other UTF-8 characters) from the beginning of a string.
-	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8.
+	 * Strips whitespace (or other UTF-8 characters) from the beginning of a string.
 	 *
-	 * Parameters:
-	 *  str      - input string
-	 *  charlist - string of characters that need to be stripped
+	 * @author  Andreas Gohr <andi@splitbrain.org>
 	 *
-	 * Returns:
-	 *  The left trimmed string.
+	 * @param   string   input string
+	 * @param   string   string of characters to remove
+	 * @return  string
 	 */
 	public static function ltrim($str, $charlist = NULL)
 	{
@@ -539,16 +481,13 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: rtrim
-	 *  Strips whitespace (or other UTF-8 characters) from the end of a string.
-	 *  Original function written by Andreas Gohr <andi@splitbrain.org> for phputf8.
+	 * Strips whitespace (or other UTF-8 characters) from the end of a string.
 	 *
-	 * Parameters:
-	 *  str      - input string
-	 *  charlist - string of characters that need to be stripped
+	 * @author  Andreas Gohr <andi@splitbrain.org>
 	 *
-	 * Returns:
-	 *  The right trimmed string.
+	 * @param   string   input string
+	 * @param   string   string of characters to remove
+	 * @return  string
 	 */
 	public static function rtrim($str, $charlist = NULL)
 	{
@@ -557,15 +496,12 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: ord
-	 *  Returns the unicode ordinal for a character.
-	 *  Original function written by Harry Fuecks <hfuecks@gmail.com> for phputf8.
+	 * Returns the unicode ordinal for a character.
 	 *
-	 * Parameters:
-	 *  chr - a UTF-8 encoded character
+	 * @author Harry Fuecks <hfuecks@gmail.com>
 	 *
-	 * Returns:
-	 *  The unicode ordinal for the given character.
+	 * @param   string   UTF-8 encoded character
+	 * @return  integer
 	 */
 	public static function ord($chr)
 	{
@@ -574,22 +510,19 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: to_unicode
-	 *  Takes an UTF-8 string and returns an array of ints representing the Unicode characters.
-	 *  Astral planes are supported i.e. the ints in the output can be > 0xFFFF.
-	 *  Occurrances of the BOM are ignored. Surrogates are not allowed.
+	 * Takes an UTF-8 string and returns an array of ints representing the Unicode characters.
+	 * Astral planes are supported i.e. the ints in the output can be > 0xFFFF.
+	 * Occurrances of the BOM are ignored. Surrogates are not allowed.
 	 *
-	 *  The Original Code is Mozilla Communicator client code.
-	 *  The Initial Developer of the Original Code is Netscape Communications Corporation.
-	 *  Portions created by the Initial Developer are Copyright (C) 1998 the Initial Developer.
-	 *  Ported to PHP by Henri Sivonen <hsivonen@iki.fi>, see http://hsivonen.iki.fi/php-utf8/.
-	 *  Slight modifications to fit with phputf8 library by Harry Fuecks <hfuecks@gmail.com>.
+	 * The Original Code is Mozilla Communicator client code.
+	 * The Initial Developer of the Original Code is Netscape Communications Corporation.
+	 * Portions created by the Initial Developer are Copyright (C) 1998 the Initial Developer.
+	 * Ported to PHP by Henri Sivonen <hsivonen@iki.fi>, see http://hsivonen.iki.fi/php-utf8/.
+	 * Slight modifications to fit with phputf8 library by Harry Fuecks <hfuecks@gmail.com>.
 	 *
-	 * Parameters:
-	 *  str - a UTF-8 encoded string
-	 *
-	 * Returns:
-	 *  Array of unicode code points or FALSE if UTF-8 invalid.
+	 * @param   string   UTF-8 encoded string
+	 * @return  array    unicode code points
+	 * @return  boolean  FALSE if the string is invalid
 	 */
 	public static function to_unicode($str)
 	{
@@ -598,22 +531,19 @@ final class utf8 {
 	}
 
 	/**
-	 * Method: from_unicode
-	 *  Takes an array of ints representing the Unicode characters and returns a UTF-8 string.
-	 *  Astral planes are supported i.e. the ints in the input can be > 0xFFFF.
-	 *  Occurrances of the BOM are ignored. Surrogates are not allowed.
+	 * Takes an array of ints representing the Unicode characters and returns a UTF-8 string.
+	 * Astral planes are supported i.e. the ints in the input can be > 0xFFFF.
+	 * Occurrances of the BOM are ignored. Surrogates are not allowed.
 	 *
-	 *  The Original Code is Mozilla Communicator client code.
-	 *  The Initial Developer of the Original Code is Netscape Communications Corporation.
-	 *  Portions created by the Initial Developer are Copyright (C) 1998 the Initial Developer.
-	 *  Ported to PHP by Henri Sivonen <hsivonen@iki.fi>, see http://hsivonen.iki.fi/php-utf8/.
-	 *  Slight modifications to fit with phputf8 library by Harry Fuecks <hfuecks@gmail.com>.
+	 * The Original Code is Mozilla Communicator client code.
+	 * The Initial Developer of the Original Code is Netscape Communications Corporation.
+	 * Portions created by the Initial Developer are Copyright (C) 1998 the Initial Developer.
+	 * Ported to PHP by Henri Sivonen <hsivonen@iki.fi>, see http://hsivonen.iki.fi/php-utf8/.
+	 * Slight modifications to fit with phputf8 library by Harry Fuecks <hfuecks@gmail.com>.
 	 *
-	 * Parameters:
-	 *  arr - array of unicode code points representing a string
-	 *
-	 * Returns:
-	 *  UTF-8 string or FALSE if array contains invalid code points.
+	 * @param   array    unicode code points representing a string
+	 * @return  string   utf8 string of characters
+	 * @return  boolean  FALSE if a code point cannot be found
 	 */
 	public static function from_unicode($arr)
 	{
