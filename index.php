@@ -51,19 +51,16 @@ define('EXT', '.php');
 // $Id$
 //
 
-// Find the docroot path information
-$docroot = pathinfo(str_replace('\\', '/', realpath(__FILE__)));
-
 // Define the front controller name and docroot
-define('KOHANA',  $docroot['basename']);
-define('DOCROOT', $docroot['dirname'].'/');
+define('DOCROOT', getcwd().'/');
+define('KOHANA',  substr(__FILE__, strlen(DOCROOT)));
 
 // Define application and system paths
 define('APPPATH', str_replace('\\', '/', realpath($kohana_application)).'/');
 define('SYSPATH', str_replace('\\', '/', realpath($kohana_system)).'/');
 
 // Clean up
-unset($docroot, $kohana_application, $kohana_system);
+unset($kohana_application, $kohana_system);
 
 (is_dir(APPPATH) AND is_dir(APPPATH.'/config')) or die
 (
