@@ -52,7 +52,7 @@ define('EXT', '.php');
 //
 
 // Define the front controller name and docroot
-define('DOCROOT', getcwd().'/');
+define('DOCROOT', getcwd().DIRECTORY_SEPARATOR);
 define('KOHANA',  substr(__FILE__, strlen(DOCROOT)));
 
 // Define application and system paths
