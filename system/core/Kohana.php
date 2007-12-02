@@ -479,7 +479,7 @@ class Kohana {
 
 		if ($line != FALSE)
 		{
-			$trace = $PHP_ERROR ? debug_backtrace() : $exception->getLine();
+			$trace = $PHP_ERROR ? debug_backtrace() : $exception->getTrace();
 
 			// Remove the first entry of the backtrace, it the exception
 			$trace = self::backtrace($trace);
