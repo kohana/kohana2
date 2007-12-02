@@ -452,6 +452,7 @@ final class utf8 {
 	/**
 	 * Strips whitespace (or other UTF-8 characters) from the beginning and
 	 * end of a string.
+	 * @see http://php.net/trim
 	 *
 	 * @author  Andreas Gohr <andi@splitbrain.org>
 	 *
@@ -467,6 +468,7 @@ final class utf8 {
 
 	/**
 	 * Strips whitespace (or other UTF-8 characters) from the beginning of a string.
+	 * @see http://php.net/ltrim
 	 *
 	 * @author  Andreas Gohr <andi@splitbrain.org>
 	 *
@@ -482,6 +484,7 @@ final class utf8 {
 
 	/**
 	 * Strips whitespace (or other UTF-8 characters) from the end of a string.
+	 * @see http://php.net/rtrim
 	 *
 	 * @author  Andreas Gohr <andi@splitbrain.org>
 	 *
@@ -497,6 +500,7 @@ final class utf8 {
 
 	/**
 	 * Returns the unicode ordinal for a character.
+	 * @see http://php.net/ord
 	 *
 	 * @author Harry Fuecks <hfuecks@gmail.com>
 	 *
@@ -551,4 +555,4 @@ final class utf8 {
 		return _from_unicode($arr);
 	}
 
-} // End utf8 class
+} // End utf8
