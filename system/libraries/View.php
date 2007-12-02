@@ -1,11 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
- /**
- * Class: View
+/**
+ * Loads and displays Kohana view files. Can also handle output of some binary
+ * files, such as image, Javascript, and CSS files.
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class View_Core {
 
@@ -17,11 +20,11 @@ class View_Core {
 	protected $data = array();
 
 	/**
-	 * Constructor: __construct
+	 * Attempts to load a view and pre-load view data.
 	 *
-	 * Parameters:
-	 *  name - view filename string
-	 *  data - view data
+	 * @param   string  view name
+	 * @param   array   pre-load data
+	 * @return  void
 	 */
 	public function __construct($name, $data = NULL)
 	{
@@ -47,19 +50,15 @@ class View_Core {
 			$this->data = array_merge($this->data, $data);
 		}
 
-		Log::add('debug', 'View Class Initialized ['.str_replace(DOCROOT, '', $this->kohana_filename).']');
+		Log::add('debug', 'View Class Initialized ['.$name.']');
 	}
 
 	/**
-	 * Method: set
-	 *  Sets a view variable.
+	 * Sets a view variable.
 	 *
-	 * Parameters:
-	 *  name  - variable name
-	 *  value - variable contents
-	 * 
-	 * Returns:
-	 *  View object
+	 * @param   string|array  name of variable or an array of variables
+	 * @param   value         value when using a named variable
+	 * @return  object
 	 */
 	public function set($name, $value = NULL)
 	{
@@ -78,12 +77,11 @@ class View_Core {
 	}
 
 	/**
-	 * Method: __set
-	 *  Magically sets a view variable.
+	 * Magically sets a view variable.
 	 *
-	 * Parameters:
-	 *  key   - variable name
-	 *  value - variable contents
+	 * @param   string   variable key
+	 * @param   string   variable value
+	 * @return  void
 	 */
 	public function __set($key, $value)
 	{
@@ -94,14 +92,11 @@ class View_Core {
 	}
 
 	/**
-	 * Method: __get
-	 *  Magically gets a view variable.
+	 * Magically gets a view variable.
 	 *
-	 * Parameters:
-	 *  key - variable name
-	 * 
-	 * Returns:
-	 *  The variable contents or NULL if the variable does not exist
+	 * @param  string  variable key
+	 * @return mixed   variable value if the key is found
+	 * @return void    if the key is not found
 	 */
 	public function __get($key)
 	{
@@ -112,11 +107,9 @@ class View_Core {
 	}
 
 	/**
-	 * Method: __toString
-	 *  Magically converts view object to string.
+	 * Magically converts view object to string.
 	 *
-	 * Returns:
-	 *  The rendered view
+	 * @return  string
 	 */
 	public function __toString()
 	{
@@ -124,15 +117,12 @@ class View_Core {
 	}
 
 	/**
-	 * Method: render
-	 *  Renders a view.
+	 * Renders a view.
 	 *
-	 * Parameters:
-	 *  print    - echo the output instead of returning it
-	 *  renderer - user defined renderer callback
-	 * 
-	 * Returns:
-	 *  The rendered view if print is set to FALSE
+	 * @param   boolean   set to TRUE to echo the output instead of returning it
+	 * @param   callback  special renderer to pass the output through
+	 * @return  string    if print is FALSE
+	 * @return  void      if print is TRUE
 	 */
 	public function render($print = FALSE, $renderer = FALSE)
 	{
@@ -178,4 +168,4 @@ class View_Core {
 		return $output;
 	}
 
-} // End View Class
+} // End View
