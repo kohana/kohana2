@@ -25,7 +25,7 @@ class View_Core {
 	 */
 	public function __construct($name, $data = NULL)
 	{
-		if (preg_match('/\.(?:gif|jpe?g|png|css|js|tiff?|swf)$/Di', $name, $type))
+		if (preg_match('/\.(?:gif|jpe?g|png|css|js|tiff?|swf|pdf)$/Di', $name, $type))
 		{
 			$type = substr($type[0], 1);
 
