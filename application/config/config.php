@@ -43,6 +43,12 @@ $config['global_xss_filtering'] = FALSE;
 $config['allow_config_set'] = FALSE;
 
 /**
+ * Enable or display displaying of Kohana error pages. This will not affect
+ * logging. Turning this off will disable ALL error pages.
+ */
+$config['display_errors'] = TRUE;
+
+/**
  * Filename prefixed used to determine extensions. For example, an
  * extension to the Controller class would be named MY_Controller.php.
  */

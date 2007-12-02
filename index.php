@@ -11,31 +11,32 @@
  */
 
 /**
- * Set the error reporting level. By default, Kohana will ignore E_NOTICE
- * messages. Unless you have a special need, E_ALL is a good level for
- * error reporting.
- */
-error_reporting(E_ALL);
-
-/**
- * Enable or disable error display. During development, it is very helpful
- * to display errors. However, errors can give away information about your
- * application. For greater security, it is recommended that you disable
- * the displaying of errors in production.
- */
-ini_set('display_errors', TRUE);
-
-/**
  * Kohana website application directory. This directory should contain your
  * application configuration, controllers, models, views, and other resources.
+ *
+ * This path can be absolute or relative to this file.
  */
 $kohana_application = 'application';
 
 /**
  * Kohana package files. This directory should contain the core/ directory, and
  * the resources you included in your download of Kohana.
+ *
+ * This path can be absolute or relative to this file.
  */
 $kohana_system = 'system';
+
+/**
+ * Set the error reporting level. Unless you have a special need, E_ALL is a
+ * good level for error reporting.
+ */
+error_reporting(E_ALL & ~E_STRICT);
+
+/**
+ * Turning off display_errors will effectively disable Kohana error display
+ * and logging. You can turn off Kohana errors in application/config/config.php
+ */
+ini_set('display_errors', TRUE);
 
 /**
  * If you rename all of your .php files to a different extension, set the new
@@ -45,7 +46,7 @@ $kohana_system = 'system';
 define('EXT', '.php');
 
 //
-// DO NOT EDIT BELOW THIS LINE, UNLESS YOU FULLY UNDERSTAND WHAT YOU ARE CHANGING.
+// DO NOT EDIT BELOW THIS LINE, UNLESS YOU FULLY UNDERSTAND THE IMPLICATIONS.
 // ----------------------------------------------------------------------------
 // $Id$
 //

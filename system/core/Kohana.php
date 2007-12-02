@@ -386,36 +386,36 @@ class Kohana {
 	 * @param   string          error message
 	 * @param   string          filename
 	 * @param   integer         line number
+	 * @return  void
 	 */
 	public static function exception_handler($exception, $message = NULL, $file = NULL, $line = NULL)
 	{
-		// If error_reporting() returns 0, it means the error was supressed by
-		// using the @ prefix, e.g. print @$var_does_not_exist. These errors
-		// should not be displayed, as per PHP syntax.
-		if (error_reporting() === 0)
+		// PHP errors have 5 args, always
+		$PHP_ERROR = (func_num_args() === 5);
+
+		// Test to see if errors should be displayed
+		if ($PHP_ERROR AND (error_reporting() & $exception) === 0)
 			return;
 
 		// This is useful for hooks to determine if a page has an error
 		self::$has_error = TRUE;
 
 		// Error handling will use exactly 5 args, every time
-		if (func_num_args() === 5)
+		if ($PHP_ERROR)
 		{
 			$code     = $exception;
+			$type     = 'PHP Error';
 			$template = 'kohana_error_page';
 		}
 		else
 		{
-			// Error message, filename, and line number
 			$code     = $exception->getCode();
+			$type     = get_class($exception);
 			$message  = $exception->getMessage();
 			$file     = $exception->getFile();
 			$line     = $exception->getLine();
 			$template = method_exists($exception, 'getTemplate') ? $exception->getTemplate() : 'kohana_error_page';
 		}
-
-		// Do not display E_STRICT notices, they are garbage
-		if ($code == E_STRICT) return FALSE;
 
 		if (is_numeric($code))
 		{
@@ -428,7 +428,7 @@ class Kohana {
 			else
 			{
 				$level = 1;
-				$error = (func_num_args() === 5) ? 'Unknown Error' : get_class($exception);
+				$error = $PHP_ERROR ? 'Unknown Error' : get_class($exception);
 				$description = '';
 			}
 		}
@@ -444,6 +444,30 @@ class Kohana {
 		$file = str_replace('\\', '/', realpath($file));
 		$file = preg_replace('|^'.preg_quote(DOCROOT).'|', '', $file);
 
+		if (Config::item('log.threshold') >= $level)
+		{
+			// Log the error
+			Log::add('error', Kohana::lang('core.uncaught_exception', $type, $message, $file, $line));
+		}
+
+		// Test if display_errors is off
+		if (Config::item('core.display_errors') == FALSE)
+			return;
+
+		if ($PHP_ERROR)
+		{
+			$description = Kohana::lang('errors.'.E_RECOVERABLE_ERROR);
+			$description = $description[2];
+		}
+		else
+		{
+			if (method_exists($exception, 'sendHeaders'))
+			{
+				// Send the headers if they have not already been sent
+				headers_sent() or $exception->sendHeaders();
+			}
+		}
+
 		if (ob_get_level() >= self::$buffer_level)
 		{
 			// Flush the entire buffer here, to ensure the error is displayed
@@ -453,38 +477,11 @@ class Kohana {
 			ob_clean();
 		}
 
-		if (func_num_args() === 5)
-		{
-			$type = 'Kohana_PHP_Error';
-
-			$description = Kohana::lang('errors.'.E_RECOVERABLE_ERROR);
-			$description = $description[2];
-		}
-		else
-		{
-			// Exception class
-			$type = get_class($exception);
-
-			if (method_exists($exception, 'sendHeaders'))
-			{
-				// Send the headers if they have not already been sent
-				headers_sent() or $exception->sendHeaders();
-			}
-		}
-
-		// Log the error
-		if (Config::item('log.threshold') >= $level)
-		{
-			Log::add('error', Kohana::lang('core.uncaught_exception', $type, $message, $file, $line));
-		}
-
 		// Load the error
 		include self::find_file('views', empty($template) ? 'kohana_error_page' : $template);
 
 		// Run the system.shutdown event
 		Event::has_run('system.shutdown') or Event::run('system.shutdown');
-
-		// Prevent further output
 		exit;
 	}
 
