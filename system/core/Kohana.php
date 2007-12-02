@@ -414,6 +414,7 @@ class Kohana {
 			$message  = $exception->getMessage();
 			$file     = $exception->getFile();
 			$line     = $exception->getLine();
+			$trace    = $exception->getTrace();			
 			$template = method_exists($exception, 'getTemplate') ? $exception->getTemplate() : 'kohana_error_page';
 		}
 

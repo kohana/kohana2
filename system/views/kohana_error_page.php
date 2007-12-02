@@ -11,6 +11,7 @@
 * {padding:0;margin:0;border:0;}
 body {background:#eee;font-family:sans-serif;font-size:85%;}
 h1 {margin-bottom:0.3em;padding:0.2em 0;border-bottom:solid 1px #ccc;font-size:2em;color:#911;}
+h2 {margin-bottom:0.3em;padding:0.2em 0;border-bottom:solid 1px #ccc;font-size:1.5em;color:#911;}
 p,pre {margin-bottom:0.5em;}
 strong {color:#700;}
 #wrap {width:600px;margin:2em auto;padding:0.5em 1em;background:#fff;border:solid 1px #ddd;border-bottom:solid 2px #aaa;}
@@ -31,9 +32,29 @@ strong {color:#700;}
 <h1><?php echo $error ?></h1>
 <p><?php echo $description ?></p>
 <p class="message"><?php echo $message ?></p>
-<?php if ($line != FALSE AND $file != FALSE): ?>
+<?php if ( ! isset($trace) AND $line != FALSE AND $file != FALSE): ?>
 <p class="detail"><?php echo Kohana::lang('core.error_message', $line, $file) ?></p>
 <?php endif; ?>
+<?php
+if (isset($trace))
+{
+	if(isset($trace[0]['file']) AND ($trace[0]['file'] != $file OR $trace[0]['line'] != $line)) 
+	{
+		$trace = array_merge(array(array('file' => $file, 'line' => $line)), $trace);
+	}
+
+	echo "<h2>".Kohana::lang('core.stack_trace')."</h2>";
+
+	foreach ($trace as $entry) {
+		if(isset($entry['file'])) { echo "<strong>" . $entry['file'] . "</strong>"; }
+		else { echo "Unknown file" ; }
+
+		if(isset($entry['line'])) { echo " <strong>(line: " .$entry['line'] .')</strong>'; }
+		else { echo "(Unknown line)"; }
+		echo "<br />";
+	}
+}
+?>
 <p id="stats"><?php echo Kohana::lang('core.stats_footer') ?></p>
 </div>
 </body>
