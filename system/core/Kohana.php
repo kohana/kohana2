@@ -27,7 +27,7 @@ class Kohana {
 	 * Allows the controller to be a true singleton object. This method *must*
 	 * be called by all controllers.
 	 *
-	 * @throws  Kohana_Exception  controller instance already exists
+	 * @throws  Kohana_Exception  if controller instance already exists
 	 */
 	public function __construct()
 	{
@@ -51,6 +51,8 @@ class Kohana {
 	 *
 	 * This method is run immediately when this file is loaded, and is
 	 * benchmarked as environment_setup.
+	 *
+	 * @return  void
 	 */
 	final public static function setup()
 	{
@@ -496,9 +498,10 @@ class Kohana {
 	/**
 	 * Displays a 404 page.
 	 *
+	 * @throws  Kohana_404_Exception
 	 * @param   string  URI of page
 	 * @param   string  custom template
-	 * @throws  Kohana_404_Exception
+	 * @return  void
 	 */
 	public static function show_404($page = FALSE, $template = FALSE)
 	{
@@ -508,10 +511,11 @@ class Kohana {
 	/**
 	 * Show a custom error message.
 	 *
+	 * @throws  Kohana_User_Exception
 	 * @param   string  error title
 	 * @param   string  error message
 	 * @param   string  custom template
-	 * @throws  Kohana_User_Exception
+	 * @return  void
 	 */
 	public static function show_error($title, $message, $template = FALSE)
 	{
@@ -521,9 +525,9 @@ class Kohana {
 	/**
 	 * Provides class auto-loading.
 	 *
+	 * @throws  Kohana_Exception
 	 * @param   string  name of class
 	 * @return  void
-	 * @throws  Kohana_Exception
 	 */
 	public static function auto_load($class)
 	{
@@ -595,6 +599,7 @@ class Kohana {
 	/**
 	 * Find a resource file in a given directory.
 	 *
+	 * @throws  Kohana_Exception  if file is required and not found
 	 * @param   string   directory to search in
 	 * @param   string   filename to look for
 	 * @param   boolean  is the file required?
@@ -602,7 +607,6 @@ class Kohana {
 	 * @return  array    if the type is i18n or config
 	 * @return  string   if the file is found
 	 * @return  FALSE    if the file is not found
-	 * @throws  Kohana_Exception  file is required and not found
 	 */
 	public static function find_file($directory, $filename, $required = FALSE, $ext = FALSE)
 	{
@@ -756,9 +760,10 @@ class Kohana {
 	/**
 	 * Returns the value of a key, defined by a 'dot-noted' string, from an array.
 	 *
-	 * @param   string       dot-noted string, like 'foo.bar.one'
-	 * @param   array        array to search
-	 * @return  string|NULL  value from array, or NULL
+	 * @param   string  dot-noted string: foo.bar.baz
+	 * @param   array   array to search
+	 * @return  string  if the key is found
+	 * @return  void    if the key is not found
 	 */
 	public static function key_string($keys, $array)
 	{
@@ -805,7 +810,7 @@ class Kohana {
 	/**
 	 * Quick debugging of any variable. Any number of parameters can be set.
 	 *
-	 * @return  string  HTML output
+	 * @return  string
 	 */
 	public static function debug()
 	{
@@ -971,9 +976,9 @@ class Kohana_User_Exception extends Kohana_Exception {
 	/**
 	 * Set exception title and message.
 	 *
-	 * @param  string  exception title string
-	 * @param  string  exception message string
-	 * @param  string  custom error template
+	 * @param   string  exception title string
+	 * @param   string  exception message string
+	 * @param   string  custom error template
 	 */
 	public function __construct($title, $message, $template = FALSE)
 	{

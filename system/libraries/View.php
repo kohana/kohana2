@@ -22,14 +22,15 @@ class View_Core {
 	/**
 	 * Attempts to load a view and pre-load view data.
 	 *
+	 * @throws  Kohana_Exception  if the requested view cannot be found
 	 * @param   string  view name
 	 * @param   array   pre-load data
-	 * @return  void
 	 */
 	public function __construct($name, $data = NULL)
 	{
 		if (preg_match('/\.(?:gif|jpe?g|png|css|js|tiff?|swf|pdf)$/Di', $name, $type))
 		{
+			// Removes the period from the beginning of the type
 			$type = substr($type[0], 1);
 
 			$this->kohana_filename = Kohana::find_file('views', $name, TRUE, $type);
@@ -137,10 +138,10 @@ class View_Core {
 				$output = call_user_func($renderer, $output);
 			}
 
-			// Display the output
 			if ($print == TRUE)
 			{
-				print $output;
+				// Display the output
+				echo $output;
 				return;
 			}
 		}
@@ -149,11 +150,11 @@ class View_Core {
 			// Overwrite the content-type header
 			header('Content-type: '.$this->kohana_filetype);
 
-			// Display the output
 			if ($print == TRUE)
 			{
 				if ($file = fopen($this->kohana_filename, 'rb'))
 				{
+					// Display the output
 					fpassthru($file);
 					fclose($file);
 				}
@@ -164,7 +165,6 @@ class View_Core {
 			$output = file_get_contents($this->kohana_filename);
 		}
 
-		// Output has not been printed, return it
 		return $output;
 	}
 
