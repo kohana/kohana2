@@ -1,14 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * File: to_unicode
- *  Kohana utf8 file, loaded by <utf8.php>. 
+ * utf8::to_unicode
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007 Kohana Team
+ * @copyright  (c) 2005 Harry Fuecks
+ * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
  */
-
 function _to_unicode($str)
 {
 	$mState = 0; // cached expected number of octets after the current octet until the beginning of the next UTF8 character sequence
