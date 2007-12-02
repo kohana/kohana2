@@ -843,17 +843,42 @@ class Kohana {
 		{
 			if (isset($entry['file']))
 			{
+				// Remove docroot from filename
+				$file = preg_replace('!^'.preg_quote(DOCROOT, '!').'!', '', $entry['file']);
+
+				// Function args
+				$args = '';
+
+				if (is_array($entry['args']))
+				{
+					// Separator starts as nothing
+					$sep = '';
+
+					while ($arg = array_shift($entry['args']))
+					{
+						if (is_string($arg) AND is_file($arg))
+						{
+							// Remove docroot from filename
+							$arg = preg_replace('!^'.preg_quote(DOCROOT, '!').'!', '', $arg);
+						}
+
+						// Add the arg to the args
+						$args .= $sep.var_export($arg, TRUE);
+
+						// Change separator to a comma
+						$sep = ', ';
+					}
+				}
+
 				$output[] = '<li>'.
 					// Add file
-					'<strong>'.preg_replace('!^'.preg_quote(DOCROOT, '!').'!', '', $entry['file']).'</strong>'.
+					'<strong>'.$file.'</strong>'.
 					// Add line
 					' ['.$entry['line'].']: '.
-					// Add function name
-					$entry['function'].' ( '.
-					// Add args (this isn't pretty, but it works)
-					print_r($entry['args'], TRUE).
-					// End of line
-					' )</tt></li>';
+					// Add class and type
+					(isset($entry['class']) ? $entry['class'].' '.$entry['type'].' ' : '').
+					// Add method/function
+					$entry['function'].' ( '.$args.' )</li>';
 			}
 		}
 
