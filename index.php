@@ -65,13 +65,13 @@ unset($kohana_application, $kohana_system);
 (is_dir(APPPATH) AND is_dir(APPPATH.'/config')) or die
 (
 	'Your <code>$kohana_application</code> directory does not exist. '.
-	'Set a valid <code>$kohana_application</code> in <tt>index.php</tt> and refresh the page.'
+	'Set a valid <code>$kohana_application</code> in <tt>'.KOHANA.'</tt> and refresh the page.'
 );
 
 (is_dir(SYSPATH) AND file_exists(SYSPATH.'/core/'.'Bootstrap'.EXT)) or die
 (
 	'Your <code>$kohana_system</code> directory does not exist. '.
-	'Set a valid <code>$kohana_system</code> in <tt>index.php</tt> and refresh the page.'
+	'Set a valid <code>$kohana_system</code> in <tt>'.KOHANA.'</tt> and refresh the page.'
 );
 
 require SYSPATH.'core/Bootstrap'.EXT;
