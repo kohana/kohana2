@@ -38,7 +38,6 @@ strong {color:#700;}
 <p class="detail"><?php echo Kohana::lang('core.error_message', $line, $file) ?></p>
 <?php endif; ?>
 <?php if (isset($trace)): ?>
-<hr/>
 <h2><?php echo Kohana::lang('core.stack_trace') ?></h2>
 <?php echo $trace ?>
 <?php endif; ?>
