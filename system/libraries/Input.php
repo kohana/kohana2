@@ -311,7 +311,7 @@ class Input_Core {
 	 * Returns:
 	 *  Cleaned data
 	 */
-	public function xss_clean($data, $tool = '')
+	public function xss_clean($data, $tool = NULL)
 	{
 		if (is_array($data))
 		{
@@ -329,7 +329,15 @@ class Input_Core {
 		if (trim($string) == '')
 			return $string;
 
-		$tool = ($tool != '') ? $tool : Config::item('core.global_xss_filtering');
+		if ( ! is_string($tool))
+		{
+			// Fetch the configured tool
+			if (($tool = Config::item('core.global_xss_filtering')) === TRUE)
+			{
+				// Make sure that the default tool is used
+				$tool = 'default';
+			}
+		}
 
 		switch ($tool)
 		{
