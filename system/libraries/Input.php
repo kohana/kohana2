@@ -332,7 +332,7 @@ class Input_Core {
 		if ( ! is_string($tool))
 		{
 			// Fetch the configured tool
-			if (($tool = Config::item('core.global_xss_filtering')) === TRUE)
+			if (is_bool($tool = Config::item('core.global_xss_filtering')))
 			{
 				// Make sure that the default tool is used
 				$tool = 'default';
