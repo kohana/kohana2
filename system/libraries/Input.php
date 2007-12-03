@@ -22,6 +22,9 @@ class Input_Core {
 	 */
 	public function __construct()
 	{
+		// Use XSS clean?
+		$this->use_xss_clean = (bool) Config::item('core.global_xss_filtering');
+
 		if (self::$instances === 0)
 		{
 			// Clean $_GET data
@@ -86,9 +89,6 @@ class Input_Core {
 		}
 
 		self::$instances++;
-
-		// Use XSS clean?
-		$this->use_xss_clean = (bool) Config::item('core.global_xss_filtering');
 
 		Log::add('debug', 'Input Library initialized');
 	}
