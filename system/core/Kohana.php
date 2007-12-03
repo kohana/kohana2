@@ -882,13 +882,13 @@ class Kohana {
 
 				$output[] = '<li>'.
 					// Add file
-					'<strong>'.$file.'</strong>'.
+					'<strong>'.$file.
 					// Add line
-					' ['.$entry['line'].']: '.
+					' ['.$entry['line'].']:</strong><pre>'.
 					// Add class and type
 					(isset($entry['class']) ? $entry['class'].' '.$entry['type'].' ' : '').
 					// Add method/function
-					$entry['function'].' ( '.$args.' )</li>';
+					$entry['function'].' ( '.$args.' )</pre></li>';
 			}
 		}
 

@@ -20,6 +20,7 @@ strong {color:#700;}
 .message {margin:1em;padding:0.5em;background:#dfdfdf;border:solid 1px #999;}
 .detail {text-align:center;}
 .backtrace { margin: 0 2em 1em; }
+.backtrace pre { background:#eeeeee; }
 /* ]]> */
 </style>
 <!--
