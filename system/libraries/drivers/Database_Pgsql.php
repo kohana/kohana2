@@ -11,9 +11,16 @@
 class Database_Pgsql_Driver extends Database_Driver {
 
 	// Database connection link
-	private $link;
-	private $db_config;
-
+	protected $link;
+	protected $db_config;
+	
+	/**
+	 * Constructor: __construct
+	 *  Sets up the config for the class.
+	 *
+	 * Parameters:
+	 *  config - database configuration
+	 */
 	public function __construct($config)
 	{
 		$this->db_config = $config;
@@ -33,7 +40,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 		$port = (isset($port)) ? 'port=\''.$port.'\'' : '';
 		$host = (isset($host)) ? 'host=\''.$host.'\' '.$port : ''; // if no host, connect with the socket
 		
-		$connection_string = $host.' dbname=\''.$database.'\' user=\''.$user.'\' pass=\''.$pass.'\'';
+		$connection_string = $host.' dbname=\''.$database.'\' user=\''.$user.'\' password=\''.$pass.'\'';
 		// Make the connection and select the database
 		if ($this->link = $connect($connection_string))
 		{
@@ -50,6 +57,20 @@ class Database_Pgsql_Driver extends Database_Driver {
 
 	public function query($sql)
 	{
+		// Only cache if it's turned on, and only cache if it's not a write statement
+		if ($this->db_config['cache'] AND ! preg_match('#\b(?:INSERT|UPDATE|SET)\b#i', $sql))
+		{
+			$hash = $this->query_hash($sql);
+
+			if ( ! isset(self::$query_cache[$hash]))
+			{
+				// Set the cached object
+				self::$query_cache[$hash] = new Pgsql_Result(pg_query($this->link, $sql), $this->link, $this->db_config['object'], $sql);
+			}
+			
+			return self::$query_cache[$hash];
+		}
+		
 		return new Pgsql_Result(pg_query($this->link, $sql), $this->link, $this->db_config['object'], $sql);
 	}
 
@@ -60,16 +81,16 @@ class Database_Pgsql_Driver extends Database_Driver {
 
 	public function escape_table($table)
 	{
-		return '\''.str_replace('.', '\'.\'', $table).'\'';
+		return '"'.str_replace('.', '"."', $table).'"';
 	}
 
-public function escape_column($column)
+	public function escape_column($column)
 	{
 		if (strtolower($column) == 'count(*)' OR $column == '*')
 			return $column;
 
 		// This matches any modifiers we support to SELECT.
-		if ( ! preg_match('/\b(?:rand|all|distinct(?:row)?|high_priority|sql_(?:small_result|b(?:ig_result|uffer_result)|no_cache|ca(?:che|lc_found_rows)))\s/i', $column))
+		if ( ! preg_match('/\b(?:all|distinct)\s/i', $column))
 		{
 			if (stripos($column, ' AS ') !== FALSE)
 			{
@@ -83,7 +104,7 @@ public function escape_column($column)
 				return implode(' AS ', $column);
 			}
 		
-			return preg_replace('/[^.*]+/', '\'$0\'', $column);
+			return preg_replace('/[^.*]+/', '"$0"', $column);
 		}
 
 		$parts = explode(' ', $column);
@@ -94,7 +115,7 @@ public function escape_column($column)
 			// The column is always last
 			if ($i == ($c - 1))
 			{
-				$column .= preg_replace('/[^.*]+/', '\'$0\'', $parts[$i]);
+				$column .= preg_replace('/[^.*]+/', '"$0"', $parts[$i]);
 			}
 			else // otherwise, it's a modifier
 			{
@@ -118,6 +139,11 @@ public function escape_column($column)
 		return $prefix.' '.$this->escape_column($field).' NOT REGEXP \''.$this->escape_str($match) . '\'';
 	}
 
+	public function merge($table, $keys, $values)
+	{
+		// Merge function here
+	}
+	
 	public function limit($limit, $offset = 0)
 	{
 		return 'LIMIT '.$limit.' OFFSET '.$offset;
@@ -255,9 +281,6 @@ ORDER BY pg_attribute.attnum';
 	public function field_data($table)
 	{
 		// TODO: This whole function needs to be debugged.
-		if ( ! in_array($table, $this->list_tables()))
-			return FALSE;
-
 		$query  = pg_query('SELECT * FROM '.$this->escape_table($table).' LIMIT 1', $this->link);
 		$fields = pg_num_fields($query);
 		$table  = array();

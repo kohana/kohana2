@@ -248,9 +248,6 @@ class Database_Mysql_Driver extends Database_Driver {
 
 	public function field_data($table)
 	{
-		if ( ! in_array($table, $this->list_tables()))
-			return FALSE;
-
 		$query  = mysql_query('SHOW COLUMNS FROM '.$this->escape_table($table), $this->link);
 
 		$table  = array();
