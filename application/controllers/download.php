@@ -15,6 +15,9 @@ class Download_Controller extends Controller {
 		// Load content
 		$content = new View('pages/download');
 
+		// Kohana trunk
+		$kohana_trunk = '/usr/home/wgilk/svn_checkout/kohana_trunk/';
+
 		// Counter
 		$content->counter = file_get_contents(APPPATH.'cache/counter.txt');
 
@@ -116,7 +119,7 @@ class Download_Controller extends Controller {
 		);
 
 		// Add core files
-		foreach(Kohana::list_files('core') as $file)
+		foreach(glob($kohana_trunk.'system/core/*') as $file)
 		{
 			$groups['minimal'][] = substr($file, strrpos($file, 'system/'));
 		}
@@ -225,7 +228,7 @@ class Download_Controller extends Controller {
 			$return_dir = getcwd();
 
 			// Change to the trunk directory
-			chdir(realpath(APPPATH.'../kohana_trunk'));
+			chdir($kohana_trunk);
 
 			// Initialize a new archive
 			$archive = new Archive($this->validation->format);
