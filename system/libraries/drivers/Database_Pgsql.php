@@ -141,7 +141,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 
 	public function merge($table, $keys, $values)
 	{
-		// Merge function here
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
 	}
 	
 	public function limit($limit, $offset = 0)
