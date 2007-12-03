@@ -184,7 +184,7 @@ class Cache_File_Driver implements Cache_Driver {
 		$expires = (int) end(explode('~', $file));
 
 		// Expirations of 0 are "never expire"
-		return ($expires !== 0 AND $exipires <= time());
+		return ($expires !== 0 AND $expires <= time());
 	}
 
 } // End Cache File Driver
