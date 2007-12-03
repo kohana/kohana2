@@ -31,7 +31,7 @@ class Cache_Core {
 	public function __construct($config = array())
 	{
 		// Load configuration
-		$this->config = array_merge(Config::item('cache'), (array) $config);
+		$this->config = (array) $config + Config::item('cache');
 
 		try
 		{

@@ -37,7 +37,7 @@ class Pagination_Core {
 	public function __construct($config = array())
 	{
 		// Load configuration
-		$config = array_merge(Config::item('pagination', FALSE, FALSE), (array) $config);
+		$config += Config::item('pagination', FALSE, FALSE);
 
 		$this->initialize($config);
 
