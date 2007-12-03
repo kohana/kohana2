@@ -69,8 +69,16 @@ class Tutorials_Controller extends Controller {
 
 	public function video($name)
 	{
+		$this->auto_render = FALSE;
 		$player = new View('pages/tutorials/video');
 
+		$profiler = new Profiler;
+
+		$video = new Video_tutorial_Model($name);
+
+
+		echo Kohana::debug($video);
+		return;
 		$player->title = 'Hello World Introduction';
 		$player->author = 'Christophe Prudent';
 		$player->copyright = 2007;

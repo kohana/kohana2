@@ -46,7 +46,7 @@ $kohana_application = 'application';
  *  Kohana core resources, includes libraries, drivers, language files, helpers,
  *  and library-related views.
  */
-$kohana_system = 'kohana_trunk/system';
+$kohana_system = 'system';
 
 /*
  * About: Filename Extension
