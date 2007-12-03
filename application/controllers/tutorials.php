@@ -10,7 +10,8 @@ class Tutorials_Controller extends Controller {
 		(
 			'Video Tutorials' => array
 			(
-				'video/hello_world' => 'Hello World Introduction'
+				'video/hello_world' => 'Hello World Introduction',
+				'video/hello_world_part_2' => 'Hello World, Part 2'
 			),
 			'Security' => array
 			(
@@ -69,24 +70,15 @@ class Tutorials_Controller extends Controller {
 
 	public function video($name)
 	{
-		$this->auto_render = FALSE;
-		$player = new View('pages/tutorials/video');
+		$video = new Video_Tutorial_Model($this->uri->segment(3));
 
-		$profiler = new Profiler;
+		// Change the video to a real URL
+		$video->video = url::base('video/'.$video->video.'.swf';
 
-		$video = new Video_tutorial_Model($name);
+		// Set the video contents to the player
+		$player = new View('pages/tutorials/video', $video->as_array());
 
-
-		echo Kohana::debug($video);
-		return;
-		$player->title = 'Hello World Introduction';
-		$player->author = 'Christophe Prudent';
-		$player->copyright = 2007;
-		$player->video = preg_replace('/\.html$/', '', url::site('media/video/'.$this->uri->segment(3).'.swf'));
-		$player->width = 776;
-		$player->height = 600;
-
-		$this->template->title  = $player->title;
+		$this->template->title   = $video->title;
 		$this->template->content = $player->render();
 	}
 

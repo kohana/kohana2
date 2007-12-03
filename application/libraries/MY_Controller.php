@@ -58,54 +58,6 @@ class Controller extends Controller_Core {
 			// Load database
 			$this->db = new Database('website');
 
-			// Check for required authorization areas
-			if ($role = $this->auth_required)
-			{
-				if ($id = $this->session->get('user_id'))
-				{
-					// Load the user by id
-					$user = new User_Model($id);
-
-					if ( ! $user->has_role($role))
-					{
-						// Destroy the session
-						$this->session->destroy();
-
-						// Return to the home page
-						url::redirect('home');
-					}
-				}
-				else
-				{
-					// Get the basic username and password
-					if ($username = $this->input->server('PHP_AUTH_USER') AND $password = $this->input->server('PHP_AUTH_PW'))
-					{
-						// Load the user by username
-						$user = new User_Model($username);
-
-						// Make sure the user exists and has the required role
-						if ($user->id AND $user->has_role($role))
-						{
-							// Load auth
-							$auth = new Auth();
-
-							if ($auth->login($user, $password))
-							{
-								// Login was successful
-								url::redirect($this->uri->string());
-							}
-						}
-					}
-
-					// Require authorization
-					header('WWW-Authenticate: Basic realm="Kohana Developer Login"');
-					header('HTTP/1.0 401 Unauthorized');
-
-					// If the user hits cancel
-					exit('This section of the website is currently being limited to developer access only.');
-				}
-			}
-
 			// Load the template
 			$this->template = new View($this->template);
 

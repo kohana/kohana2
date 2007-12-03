@@ -22,12 +22,14 @@ $config = array
 	'index_page'           => 'index.php',
 	'url_suffix'           => '.html',
 	'output_compression'   => TRUE,
+	'display_errors'       => TRUE,
 	'allow_config_set'     => FALSE,
 	'global_xss_filtering' => FALSE,
 	'extension_prefix'     => 'MY_',
 	'include_paths'        => array
 	(
-		APPPATH.'../kohana_trunk/modules/auth'
+		'modules/kodoc',
+		'modules/auth',
 	),
 	'autoload'             => array
 	(
