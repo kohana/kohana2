@@ -20,7 +20,7 @@ class Auth_Core {
 	/**
 	 * Loads Session and configuration options.
 	 */
-	public function __construct($config = NULL)
+	public function __construct($config = array())
 	{
 		// Load libraries
 		$this->session = new Session();

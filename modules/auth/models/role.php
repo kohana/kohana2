@@ -4,17 +4,6 @@ class Role_Model extends ORM {
 
 	protected $belongs_to_many = array('users');
 
-	public function __construct($id = FALSE)
-	{
-		if ($id != FALSE AND is_string($id))
-		{
-			// Search by name
-			$id = array('name' => $id);
-		}
-
-		parent::__construct($id);
-	}
-
 	/**
 	 * Allows finding roles by name.
 	 */

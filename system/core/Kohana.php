@@ -195,8 +195,13 @@ class Kohana {
 			// Set controller class name
 			$controller = ucfirst(Router::$controller).'_Controller';
 
-			// Controller methods
-			$methods = get_class_methods($controller);
+			// Find the unique controller methods
+			$methods = array_diff(get_class_methods($controller), get_class_methods(__CLASS__));
+
+			// If there are no methods in the controller, it's invalid
+			empty($methods) and Event::run('system.404');
+
+			// Combine the methods
 			$methods = array_combine($methods, $methods);
 
 			if (isset($methods['_remap']))
