@@ -122,6 +122,52 @@ class valid_Core {
 	}
 
 	/**
+	 * Validates a credit card number using the Luhn (mod10) formula. Make sure
+	 * to remove all non-digit characters from the number before using validating
+	 * the card number or it will fail.
+	 * @see http://en.wikipedia.org/wiki/Luhn_algorithm
+	 *
+	 * @param   integer  credit card number (13-16 digits)
+	 * @param   integer  expiration date (4 digits)
+	 * @return  boolean
+	 */
+	public static function creditcard($number)
+	{
+		// Make sure the number and expiration are not empty and consist of only numbers
+		if (empty($number) OR ! ctype_digit((string) $number))
+			return FALSE;
+
+		/**
+		 * @todo validate card types, visa, etc
+		 * @see http://www.beachnet.com/~hstiles/cardtype.html
+		 */
+
+		// Card number length
+		$length = 16;
+
+		// Checksum of the card number
+		$checksum = 0;
+
+		for ($i = $length - 1; $i >= 0; $i -= 2)
+		{
+			// Add up every 2nd digit, starting from the right
+			$checksum += substr($number, $i, 1);
+		}
+
+		for ($i = $length - 2; $i >= 0; $i -= 2)
+		{
+			// Add up every 2nd digit doubled, starting from the right
+			$double = substr($number, $i, 1) * 2;
+
+			// Subtract 9 from the double where value is greater than 10
+			$checksum += ($double >= 10) ? $double - 9 : $double;
+		}
+
+		// If the checksum is a multiple of 10, the number is valid
+		return ($checksum % 10 === 0);
+	}
+
+	/**
 	 * Method: alpha
 	 *  Checks whether a string consists of alphabetical characters only
 	 *
