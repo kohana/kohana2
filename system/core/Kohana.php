@@ -421,7 +421,7 @@ class Kohana {
 			$message  = $exception->getMessage();
 			$file     = $exception->getFile();
 			$line     = $exception->getLine();
-			$template = method_exists($exception, 'getTemplate') ? $exception->getTemplate() : 'kohana_error_page';
+			$template = ($exception instanceof Kohana_Exception) ? $exception->getTemplate() : 'kohana_error_page';
 		}
 
 		if (is_numeric($code))
