@@ -36,8 +36,8 @@ class Pagination_Core {
 	 */
 	public function __construct($config = array())
 	{
-		// Merge all pagination config values
-		$config = array_merge(Config::load('pagination', FALSE), (array) $config);
+		// Load configuration
+		$config = array_merge(Config::item('pagination', FALSE, FALSE), (array) $config);
 
 		$this->initialize($config);
 

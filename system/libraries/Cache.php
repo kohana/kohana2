@@ -31,7 +31,7 @@ class Cache_Core {
 	public function __construct($config = array())
 	{
 		// Load configuration
-		$this->config = empty($config) ? Config::item('cache') : $config;
+		$this->config = array_merge(Config::item('cache'), (array) $config);
 
 		try
 		{
@@ -53,7 +53,7 @@ class Cache_Core {
 		if ( ! in_array('Cache_Driver', class_implements($this->driver)))
 			throw new Kohana_Exception('cache.driver_not_supported', 'Cache drivers must use the Cache_Driver interface.');
 
-		Log::add('debug', 'Cache Library initialized.');
+		Log::add('debug', 'Cache Library initialized');
 
 		if (self::$loaded != TRUE)
 		{
