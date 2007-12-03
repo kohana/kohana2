@@ -1182,7 +1182,7 @@ class Database_Core {
 	{
 		$this->link or $this->connect();
 
-		return $this->driver->list_fields($table);
+		return $this->driver->list_fields($this->config['table_prefix'].$table);
 	}
 
 	/**
