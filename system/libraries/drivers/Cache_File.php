@@ -36,8 +36,21 @@ class Cache_File_Driver implements Cache_Driver {
 	 */
 	public function exists($id, $tag = FALSE)
 	{
-		// Find all the files matching the given id or tag
-		$files = ($tag == FALSE) ? glob($this->directory.$id.'~*') : glob($this->directory.'*~*'.$id.'*~*');
+		// Find all the files
+		if ($id === TRUE)
+		{
+			$files = glob($this->directory.'*~*~*');
+		}
+		// Find all the files matching the given tag
+		elseif ($id === FALSE)
+		{
+			$files = glob($this->directory.'*~*'.$id.'*~*');
+		}
+		// Find all the files matching the given id
+		else
+		{
+			$files = glob($this->directory.$id.'~*');
+		}
 
 		return empty($files) ? NULL : $files;
 	}
@@ -140,7 +153,7 @@ class Cache_File_Driver implements Cache_Driver {
 	 */
 	public function del($id, $tag = FALSE)
 	{
-		$files = ($id === TRUE) ? glob($this->directory.'*~*~*') : $this->exists($id, $tag);
+		$files = $this->exists($id, $tag);
 
 		if (empty($files))
 			return FALSE;
