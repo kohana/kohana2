@@ -73,7 +73,7 @@ class Tutorials_Controller extends Controller {
 		$video = new Video_Tutorial_Model($this->uri->segment(3));
 
 		// Change the video to a real URL
-		$video->video = url::base('video/'.$video->video.'.swf';
+		$video->video = url::base(FALSE).'video/'.$video->video.'.swf';
 
 		// Set the video contents to the player
 		$player = new View('pages/tutorials/video', $video->as_array());
