@@ -854,7 +854,7 @@ class Kohana {
 			if (isset($entry['file']))
 			{
 				// Remove docroot from filename
-				$file = preg_replace('!^'.preg_quote(DOCROOT, '!').'!', '', $entry['file']);
+				$file = preg_replace('!^'.preg_quote(DOCROOT).'!', '', $entry['file']);
 
 				// Function args
 				$args = '';
@@ -869,7 +869,7 @@ class Kohana {
 						if (is_string($arg) AND is_file($arg))
 						{
 							// Remove docroot from filename
-							$arg = preg_replace('!^'.preg_quote(DOCROOT, '!').'!', '', $arg);
+							$arg = preg_replace('!^'.preg_quote(DOCROOT).'!', '', $arg);
 						}
 
 						// Add the arg to the args
