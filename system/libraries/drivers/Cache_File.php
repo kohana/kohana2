@@ -44,7 +44,7 @@ class Cache_File_Driver implements Cache_Driver {
 		// Find all the files matching the given tag
 		elseif ($id === FALSE)
 		{
-			$files = glob($this->directory.'*~*'.$id.'*~*');
+			$files = glob($this->directory.'*~*'.$tag.'*~*');
 		}
 		// Find all the files matching the given id
 		else
