@@ -47,10 +47,17 @@ class Cache_File_Driver implements Cache_Driver {
 				// Find all tags matching the given tag
 				foreach($files as $i => $file)
 				{
-					// Find the file tags... tricky, tricky!
-					$tags = explode('+', next(explode('~', $file)));
+					// Split the files
+					$tags = preg_split('/~/', $file);
 
-					if (empty($tags) OR ! in_array($tag, $tags))
+					// Find valid tags
+					if (count($tags) !== 3 OR empty($tags[1]))
+						continue;
+
+					// Split the tags by plus signs, used to separate tags
+					$tags = preg_split('/\+/', $tags[1]);
+
+					if ( ! in_array($tag, $tags))
 					{
 						// This entry does not match the tag
 						unset($files[$i]);
