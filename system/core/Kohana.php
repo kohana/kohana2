@@ -159,7 +159,7 @@ class Kohana {
 				else
 				{
 					// This should never happen
-					Log::add('error', 'Hook not found: '.$file);
+					Log::add('error', 'Hook not found: '.$hook);
 				}
 			}
 		}
@@ -594,7 +594,7 @@ class Kohana {
 			{
 				require $extension;
 			}
-			elseif (substr($class, -5) !== '_Core')
+			elseif (substr($class, -5) !== '_Core' AND class_exists($class.'_Core', TRUE))
 			{
 				eval('class '.$class.' extends '.$class.'_Core { }');
 			}
