@@ -54,10 +54,20 @@ class Form_Model extends Model {
 		$rules = array();
 		foreach($inputs as $name => $data)
 		{
+			if (strpos($name, '[') !== FALSE)
+			{
+				// I love POST arrays, but I hate accounting for them in PHP
+				$key = preg_replace('/\[(?:.+)?\]/', '', $name);
+			}
+			else
+			{
+				$key = $name;
+			}
+
 			if (isset($data['rules']))
 			{
 				// Remove the rules from the input data
-				$rules[$name] = arr::remove('rules', $data);
+				$rules[$key] = arr::remove('rules', $data);
 
 				// Reset current item
 				$inputs[$name] = $data;
