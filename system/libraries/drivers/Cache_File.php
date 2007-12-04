@@ -36,19 +36,30 @@ class Cache_File_Driver implements Cache_Driver {
 	 */
 	public function exists($id, $tag = FALSE)
 	{
-		// Find all the files
-		if ($id === TRUE)
+		if (is_bool($id))
 		{
+			// Find all the files
 			$files = glob($this->directory.'*~*~*');
+
+			if ($tag == TRUE)
+			{
+				foreach($files as $i => $file)
+				{
+					// Find the file tags... tricky, tricky!
+					$tags = explode('+', next(explode('~', $file)));
+
+					if (empty($tags) OR ! in_array($tag, $tags))
+					{
+						// This entry does not match the tag
+						unset($files[$i]);
+						continue;
+					}
+				}
+			}
 		}
-		// Find all the files matching the given tag
-		elseif ($id === FALSE)
-		{
-			$files = glob($this->directory.'*~*'.$tag.'*~*');
-		}
-		// Find all the files matching the given id
 		else
 		{
+			// Find all the files matching the given id
 			$files = glob($this->directory.$id.'~*');
 		}
 
