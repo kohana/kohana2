@@ -126,7 +126,7 @@ class Kohana {
 			if ( ! is_array($config))
 			{
 				// All of the hooks are enabled, so we use list_files
-				$hooks = Kohana::list_files('hooks');
+				$hooks = Kohana::list_files('hooks', TRUE);
 			}
 			else
 			{
