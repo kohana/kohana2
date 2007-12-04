@@ -384,6 +384,7 @@ class Input_Core {
 				//   * Made capturing parentheses non-capturing where possible
 				//   * Removed parentheses where possible
 				//   * Split up alternation alternatives
+				//
 
 				$string = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $string);
 				// fix &entitiy\n;

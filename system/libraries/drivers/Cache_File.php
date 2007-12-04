@@ -37,31 +37,33 @@ class Cache_File_Driver implements Cache_Driver {
 	 */
 	public function exists($id, $tag = FALSE)
 	{
-		if ($id === TRUE OR $tag == TRUE)
+		if ($id === TRUE)
 		{
 			// Find all the files
 			$files = glob($this->directory.'*~*~*');
+		}
+		elseif ($tag == TRUE)
+		{
+			// Find all the files that have the tag name
+			$files = glob($this->directory.'*~*'.$id.'*~*');
 
-			if ($tag == TRUE)
+			// Find all tags matching the given tag
+			foreach($files as $i => $file)
 			{
-				// Find all tags matching the given tag
-				foreach($files as $i => $file)
+				// Split the files
+				$tags = preg_split('/~/', $file);
+
+				// Find valid tags
+				if (count($tags) !== 3 OR empty($tags[1]))
+					continue;
+
+				// Split the tags by plus signs, used to separate tags
+				$tags = preg_split('/\+/', $tags[1]);
+
+				if ( ! in_array($tag, $tags))
 				{
-					// Split the files
-					$tags = preg_split('/~/', $file);
-
-					// Find valid tags
-					if (count($tags) !== 3 OR empty($tags[1]))
-						continue;
-
-					// Split the tags by plus signs, used to separate tags
-					$tags = preg_split('/\+/', $tags[1]);
-
-					if ( ! in_array($tag, $tags))
-					{
-						// This entry does not match the tag
-						unset($files[$i]);
-					}
+					// This entry does not match the tag
+					unset($files[$i]);
 				}
 			}
 		}
@@ -191,7 +193,7 @@ class Cache_File_Driver implements Cache_Driver {
 	 */
 	public function delete_expired()
 	{
-		if ($files = glob($this->directory.'*~*~*'))
+		if ($files = $this->exists(TRUE))
 		{
 			// Current timestamp
 			$time = time();

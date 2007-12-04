@@ -132,9 +132,9 @@ class View_Core {
 			// Load the view in the controller for access to $this
 			$output = Kohana::instance()->_kohana_load_view($this->kohana_filename, $this->data);
 
-			// Pass the output through the user defined renderer
 			if ($renderer == TRUE AND is_callable($renderer, TRUE))
 			{
+				// Pass the output through the user defined renderer
 				$output = call_user_func($renderer, $output);
 			}
 
