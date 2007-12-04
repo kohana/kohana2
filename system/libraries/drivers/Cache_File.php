@@ -32,17 +32,19 @@ class Cache_File_Driver implements Cache_Driver {
 	 *
 	 * @param  string  cache id or tag
 	 * @param  bool    search for tags
-	 * @return array|NULL
+	 * @return array   of filenames matching the id or tag
+	 * @return void    if no matching files are found
 	 */
 	public function exists($id, $tag = FALSE)
 	{
-		if (is_bool($id))
+		if ($id === TRUE OR $tag == TRUE)
 		{
 			// Find all the files
 			$files = glob($this->directory.'*~*~*');
 
 			if ($tag == TRUE)
 			{
+				// Find all tags matching the given tag
 				foreach($files as $i => $file)
 				{
 					// Find the file tags... tricky, tricky!
@@ -52,7 +54,6 @@ class Cache_File_Driver implements Cache_Driver {
 					{
 						// This entry does not match the tag
 						unset($files[$i]);
-						continue;
 					}
 				}
 			}
@@ -69,11 +70,11 @@ class Cache_File_Driver implements Cache_Driver {
 	/**
 	 * Sets a cache item to the given data, tags, and expiration.
 	 *
-	 * @param  string  cache id to set
-	 * @param  string  data in the cache
-	 * @param  array   cache tags
-	 * @param  integer timestamp
-	 * @return bool
+	 * @param   string   cache id to set
+	 * @param   string   data in the cache
+	 * @param   array    cache tags
+	 * @param   integer  timestamp
+	 * @return  bool
 	 */
 	public function set($id, $data, $tags, $expiration)
 	{
@@ -87,7 +88,7 @@ class Cache_File_Driver implements Cache_Driver {
 	 * Finds an array of ids for a given tag.
 	 *
 	 * @param  string  tag name
-	 * @return array|FALSE
+	 * @return array   of ids that match the tag
 	 */
 	public function find($tag)
 	{
