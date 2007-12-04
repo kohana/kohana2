@@ -195,6 +195,18 @@ class Router_Core {
 				}
 			}
 		}
+		elseif (isset($_SERVER['PATH_INFO']) AND $_SERVER['PATH_INFO'])
+		{
+			self::$current_uri = $_SERVER['PATH_INFO'];
+		}
+		elseif (isset($_SERVER['ORIG_PATH_INFO']) AND $_SERVER['ORIG_PATH_INFO'])
+		{
+			self::$current_uri = $_SERVER['ORIG_PATH_INFO'];
+		}
+		elseif (isset($_SERVER['PHP_SELF']) AND $_SERVER['PHP_SELF'])
+		{
+			self::$current_uri = $_SERVER['PHP_SELF'];
+		}
 		elseif (count($_GET) === 1 AND current($_GET) == '')
 		{
 			self::$current_uri = current(array_keys($_GET));
@@ -207,18 +219,6 @@ class Router_Core {
 
 			// Destroy GET
 			$_GET = array();
-		}
-		elseif (isset($_SERVER['PATH_INFO']) AND $_SERVER['PATH_INFO'])
-		{
-			self::$current_uri = $_SERVER['PATH_INFO'];
-		}
-		elseif (isset($_SERVER['ORIG_PATH_INFO']) AND $_SERVER['ORIG_PATH_INFO'])
-		{
-			self::$current_uri = $_SERVER['ORIG_PATH_INFO'];
-		}
-		elseif (isset($_SERVER['PHP_SELF']) AND $_SERVER['PHP_SELF'])
-		{
-			self::$current_uri = $_SERVER['PHP_SELF'];
 		}
 
 		// Find the URI string based on the location of the front controller
