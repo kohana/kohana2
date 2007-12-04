@@ -379,9 +379,6 @@ class Kohana {
 			header('Content-Encoding: gzip');
 		}
 
-		// Send the content length
-		header('Content-Length: '.strlen($output));
-
 		echo $output;
 	}
 
