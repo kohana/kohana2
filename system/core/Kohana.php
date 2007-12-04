@@ -873,7 +873,7 @@ class Kohana {
 						}
 
 						// Add the arg to the args
-						$args .= $sep.var_export($arg, TRUE);
+						$args .= $sep.print_r($arg, TRUE);
 
 						// Change separator to a comma
 						$sep = ', ';
