@@ -51,14 +51,14 @@ class Cache_File_Driver implements Cache_Driver {
 			foreach($files as $i => $file)
 			{
 				// Split the files
-				$tags = preg_split('/~/', $file);
+				$tags = explode('~', $file);
 
 				// Find valid tags
 				if (count($tags) !== 3 OR empty($tags[1]))
 					continue;
 
 				// Split the tags by plus signs, used to separate tags
-				$tags = preg_split('/\+/', $tags[1]);
+				$tags = explode('+', $tags[1]);
 
 				if ( ! in_array($tag, $tags))
 				{
