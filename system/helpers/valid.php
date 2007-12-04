@@ -128,22 +128,69 @@ class valid_Core {
 	 * @see http://en.wikipedia.org/wiki/Luhn_algorithm
 	 *
 	 * @param   integer  credit card number (13-16 digits)
-	 * @param   integer  expiration date (4 digits)
+	 * @param   string   card type
 	 * @return  boolean
 	 */
-	public static function creditcard($number)
+	public static function creditcard($number, $type = 'default')
 	{
 		// Make sure the number and expiration are not empty and consist of only numbers
 		if (empty($number) OR ! ctype_digit((string) $number))
 			return FALSE;
 
-		/**
-		 * @todo validate card types, visa, etc
-		 * @see http://www.beachnet.com/~hstiles/cardtype.html
-		 */
+		// Card types based on http://en.wikipedia.org/wiki/Credit_card_number
+		$cards = array
+		(
+			'default' => array
+			(
+				'length' => '13,14,15,16,17,18,19',
+				'prefix' => '',
+				'luhn'   => TRUE
+			),
+			'american express' => array
+			(
+				'length' => '15',
+				'prefix' => '3[47]',
+				'luhn'   => TRUE
+			),
+			'visa' => array
+			(
+				'length' => '13,16',
+				'prefix' => '4',
+				'luhn'   => TRUE
+			),
+			'maestro' => array
+			(
+				'length' => '16,18',
+				'prefix' => '50(?:20|38)|6(?:304|759)',
+				'luhn'   => TRUE
+			),
+			'mastercard' => array
+			(
+				'length' => '16',
+				'prefix' => '5[1-5]',
+				'luhn'   => TRUE
+			),
+		);
 
-		// Card number length
-		$length = 16;
+		// Check card type
+		$type = strtolower($type);
+
+		if ( ! isset($cards[$type]))
+			return FALSE;
+
+		// Check card number length
+		$length = strlen($number);
+
+		if ( ! preg_match('/\b'.$length.'\b/', $cards[$type]['length']))
+			return FALSE;
+
+		// Check card number prefix
+		if ( ! preg_match('/^'.$cards[$type]['prefix'].'/', $number))
+			return FALSE;
+
+		// No Luhn check required
+		if ($cards[$type]['luhn'] == FALSE)
+			return TRUE;
 
 		// Checksum of the card number
 		$checksum = 0;
