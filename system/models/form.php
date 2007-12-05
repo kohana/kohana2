@@ -6,7 +6,7 @@ class Form_Model extends Model {
 	protected $action = '';
 
 	// Title attribute
-	protected $title  = '';
+	protected $title = '';
 
 	// Input data
 	protected $inputs = array();
@@ -17,13 +17,22 @@ class Form_Model extends Model {
 	// Validation status
 	protected $status;
 
-	public function __construct()
+	public function __construct($title = NULL, $action = NULL, $inputs = NULL)
 	{
 		// Uncomment the following line if you want the database loaded:
 		// parent::__construct
 
 		// Load validation
 		$this->validation = new Validation();
+
+		// Set title
+		is_null($title) or $this->title($title);
+
+		// Set action
+		is_null($action) or $this->action($action);
+
+		// Set inputs
+		is_array($inputs) and $this->inputs($inputs);
 	}
 
 	/**

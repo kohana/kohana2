@@ -393,7 +393,7 @@ class ORM_Core {
 			{
 				$this->select = TRUE;
 			}
-			elseif (preg_match('/like|regex/', $method))
+			elseif (preg_match('/where|like|regex/', $method))
 			{
 				$this->where = TRUE;
 			}
@@ -519,7 +519,7 @@ class ORM_Core {
 		if ($all === ALL)
 		{
 			// WHERE for ALL: "WHERE 1" (h4x)
-			$where = TRUE;
+			$where = ($this->where === TRUE) ? NULL : TRUE;
 		}
 		else
 		{

@@ -92,9 +92,9 @@ class Pagination_Core {
 				}
 			}
 
-			// Create a generic base_url with {page} placeholder
+			// Create a generic base_url with {page} and {query_string} placeholders
 			$this->base_url[$this->uri_segment - 1] = '{page}';
-			$this->base_url = url::site(implode('/', $this->base_url));
+			$this->base_url = url::site(implode('/', $this->base_url)).Router::$query_string;
 		}
 
 		// Core pagination values
