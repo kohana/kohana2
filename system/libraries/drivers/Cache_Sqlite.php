@@ -16,15 +16,21 @@ class Cache_Sqlite_Driver implements Cache_Driver {
 	protected $error;
 
 	/**
+	 * Logs an SQLite error.
+	 */
+	protected static function log_error($code)
+	{
+		// Log an error
+		Log::add('error', 'Cache: SQLite error: '.sqlite_error_string($error));
+	}
+
+	/**
 	 * Tests that the storage location is a directory and is writable.
 	 */
 	public function __construct($filename)
 	{
 		// Find the real path to the directory
 		$filename = str_replace('\\', '/', realpath($filename));
-
-		if ( ! is_file($filename) OR ! is_writable($filename))
-			throw new Kohana_Exception('cache.unwritable', $filename);
 
 		// Get the filename from the directory
 		$directory = substr($filename, 0, strrpos($filename, '/') + 1);
@@ -33,15 +39,27 @@ class Cache_Sqlite_Driver implements Cache_Driver {
 		if ( ! is_dir($directory) OR ! is_writable($directory))
 			throw new Kohana_Exception('cache.unwritable', $directory);
 
-		// Open the database
-		$this->db = sqlite_factory($filename, '0666', $error);
+		// Open up an instance of the database
+		$this->db = new SQLiteDatabase($filename, '0666', $error);
 
 		// Throw an exception if there's an error
 		if ( ! empty($error))
 			throw new Kohana_Exception('cache.driver_error', sqlite_error_string($error));
 
-		// Directory is valid
-		$this->directory = $directory;
+		$query  = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'caches'";
+		$tables = $this->db->query($query, SQLITE_BOTH, $error);
+
+		// Throw an exception if there's an error
+		if ( ! empty($error))
+			throw new Kohana_Exception('cache.driver_error', sqlite_error_string($error));
+
+		if ($tables->numRows() == 0)
+		{
+			Log::add('error', 'Cache: Initializing new SQLite cache database');
+
+			// Issue a CREATE TABLE command
+			$this->db->unbufferedQuery(Config::item('cache_sqlite.schema'));
+		}
 	}
 
 	/**
@@ -53,9 +71,9 @@ class Cache_Sqlite_Driver implements Cache_Driver {
 	public function exists($id)
 	{
 		// Find the id that matches
-		$query = $this->db->query('SELECT id FROM caches WHERE id = "'.$id.'"', SQLITE_BOTH, $error);
+		$query = "SELECT id FROM caches WHERE id = '$id'";
 
-		return ($query->numRows() > 0);
+		return ($this->db->query($query)->numRows() > 0);
 	}
 
 	/**
@@ -78,17 +96,14 @@ class Cache_Sqlite_Driver implements Cache_Driver {
 		// Escape the tags
 		$tags = sqlite_escape_string(implode(',', $tags));
 
-		if ($this->exists($id))
-		{
-			$this->db->unbufferedQuery("UPDATE caches SET hash = '$hash', tags = '$tags', expiration = '$expiration', data = '$data' WHERE id = '$id'", SQLITE_BOTH, $error);
-		}
-		else
-		{
-			$this->db->unbufferedQuery("INSERT INTO caches VALUES('$id', '$hash', '$tags', '$expiration', '$data')", SQLITE_BOTH, $error);
-		}
+		$query = $this->exists($id)
+			? "UPDATE caches SET hash = '$hash', tags = '$tags', expiration = '$expiration', cache = '$data' WHERE id = '$id'"
+			: "INSERT INTO caches VALUES('$id', '$hash', '$tags', '$expiration', '$data')";
 
-		// Log errors
-		empty($error) or Log::add('error', 'Cache: unable to write '.$id.' to cache database');
+		// Run the query
+		$this->db->unbufferedQuery($query, SQLITE_BOTH, $error);
+
+		empty($error) or self::log_error($error);
 
 		return empty($error);
 	}
@@ -101,7 +116,10 @@ class Cache_Sqlite_Driver implements Cache_Driver {
 	 */
 	public function find($tag)
 	{
-		$query = $this->db->query("SELECT id FROM caches WHERE tags LIKE '%$tag%'", SQLITE_BOTH, $error);
+		$query = "SELECT id FROM caches WHERE tags LIKE '%{$tag}%'";
+		$query = $this->db->query($query, SQLITE_BOTH, $error);
+
+		empty($error) or self::log_error($error);
 
 		if (empty($error) AND $query->numRows() > 0)
 		{
@@ -126,25 +144,28 @@ class Cache_Sqlite_Driver implements Cache_Driver {
 	 */
 	public function get($id)
 	{
-		$query = $this->db->unbufferedQuery("SELECT id, hash, expiration, data FROM caches WHERE id = '$id' LIMIT 1", SQLITE_BOTH, $error);
+		$query = "SELECT id, hash, expiration, cache FROM caches WHERE id = '{$id}' LIMIT 0, 1";
+		$query = $this->db->query($query, SQLITE_BOTH, $error);
+
+		empty($error) or self::log_error($error);
 
 		if (empty($error) AND $cache = $query->fetchObject())
 		{
 			// Make sure the expiration is valid and that the hash matches
-			if (($cache->expiration != 0 AND $cache->expiration <= time()) OR $cache->hash !== sha1($cache->data))
+			if (($cache->expiration != 0 AND $cache->expiration <= time()) OR $cache->hash !== sha1($cache->cache))
 			{
-				// Cache is not valid
+				// Cache is not valid, delete it now
 				$this->del($cache->id);
-				return NULL;
+			}
+			else
+			{
+				// Return the valid cache data
+				return $cache->cache;
 			}
 		}
-		else
-		{
-			// Nothing found
-			return NULL;
-		}
 
-		return $cache->data;
+		// No valid cache foud
+		return NULL;
 	}
 
 	/**
@@ -159,21 +180,22 @@ class Cache_Sqlite_Driver implements Cache_Driver {
 		if ($id === TRUE)
 		{
 			// Delete all caches
-			$this->db->unbufferedQuery('DELETE FROM caches WHERE 1', SQLITE_BOTH, $error);
+			$where = '1';
 		}
 		elseif ($tag == FALSE)
 		{
 			// Delete by id
-			$this->db->unbufferedQuery('DELETE FROM caches WHERE id = "'.$id.'"', SQLITE_BOTH, $error);
+			$where = "id = '{$id}'";
 		}
 		else
 		{
-			// Delete by tags
-			$this->db->unbufferedQuery("DELETE FROM caches WHERE tags LIKE '%$tag%'", SQLITE_BOTH, $error);
+			// Delete by tag
+			$where = "tags LIKE '%{$tag}%'";
 		}
 
-		// Log errors
-		empty($error) or Log::add('error', 'Cache: Unable to delete cache: '.$id);
+		$this->db->unbufferedQuery('DELETE FROM caches WHERE '.$where, SQLITE_BOTH, $error);
+
+		empty($error) or self::log_error($error);
 
 		return empty($error);
 	}
@@ -184,7 +206,9 @@ class Cache_Sqlite_Driver implements Cache_Driver {
 	public function delete_expired()
 	{
 		// Delete all expired caches
-		$this->db->unbufferedQuery('DELETE FROM caches WHERE expiration != 0 AND expiration <= '.time(), SQLITE_BOTH, $error);
+		$query = 'DELETE FROM caches WHERE expiration != 0 AND expiration <= '.time();
+
+		$this->db->unbufferedQuery($query);
 
 		return TRUE;
 	}
