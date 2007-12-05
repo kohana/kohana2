@@ -51,7 +51,7 @@ class User_Model extends Model
 		{
 			$this->validation->set_rules(array($key => $value), $this->rules[$key][\'rules\'], $this->rules[$key][\'name\']);
 			if (!$this->validation->run())
-				return FALSE;
+				return;
 
 			// You win at life!
 			$this->$key = $val;
@@ -62,14 +62,14 @@ class User_Model extends Model
 			{
 				// If anything isnt validated, just return success
 				if ($rule[\'valid\'] == FALSE)
-					return TRUE;
+					return;
 			}
 			// Otherwise set validated and return
 			$this->validated = TRUE;
-			return TRUE;
+			return;
 		}
 
-		return FALSE;
+		return;
 	}
 	
 	public function __get($key)
@@ -133,7 +133,7 @@ class User_Model extends Model
 		if (count($query) > 1)
 		{
 			// Make the results copies of this object...w00t!
-			$query->result(TRUE, __CLASSNAME__);
+			$query->result(TRUE, __CLASS__);
 			return $query;
 		}
 		else if (count($query) == 1)// Assign the results to $this
