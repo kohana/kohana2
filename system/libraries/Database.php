@@ -1053,10 +1053,9 @@ class Database_Core {
 			$this->where($where);
 		}
 
-		$query = $this->select('COUNT(*)')->get()->result(TRUE);
+		$query = $this->select('COUNT(*) AS records_found')->get()->result(TRUE);
 
-		$column = 'COUNT(*)';
-		return $query->current()->$column;
+		return $query->current()->records_found;
 	}
 
 	/**
