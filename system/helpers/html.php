@@ -231,7 +231,7 @@ class html_Core {
 			// Add the suffix only when it's not already present
 			$suffix   = (strpos($style, '.css') === FALSE) ? '.css' : '';
 			$media    = ($media == FALSE) ? '' : ' media="'.$media.'"';
-			$compiled = '<link rel="stylesheet" href="'.url::base((bool) $index).$style.$suffix.'"'.$media.' />';
+			$compiled = '<link rel="stylesheet" type="text/css" href="'.url::base((bool) $index).$style.$suffix.'"'.$media.' />';
 		}
 
 		return $compiled;
