@@ -167,9 +167,6 @@ class Cache_Core {
 			$lifetime += time();
 		}
 
-		// Remove old cache files
-		$this->driver->del($id);
-
 		return $this->driver->set($id, $data, $tags, $lifetime);
 	}
 

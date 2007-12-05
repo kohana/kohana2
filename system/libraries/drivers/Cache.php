@@ -6,11 +6,6 @@ interface Cache_Driver
 {
 
 	/**
-	 * Test if a cache exists by id or tag.
-	 */
-	public function exists($id, $tag = FALSE);
-
-	/**
 	 * Set a cache item.
 	 */
 	public function set($id, $data, $tags, $expiration);

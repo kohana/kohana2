@@ -87,6 +87,10 @@ class Cache_File_Driver implements Cache_Driver {
 	 */
 	public function set($id, $data, $tags, $expiration)
 	{
+		// Remove old cache files
+		$this->del($id);
+
+		// Construct the filename
 		$filename = $id.'~'.implode('+', $tags).'~'.$expiration;
 
 		// Write the file, appending the sha1 signature to the beginning of the data
