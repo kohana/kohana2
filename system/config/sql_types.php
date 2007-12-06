@@ -6,7 +6,8 @@
  */
 $config = array
 (
-	'smallint'     => array('type' => 'int', 'max' => 127),
+	'tinyint'      => array('type' => 'int', 'max' => 127),
+	'smallint'     => array('type' => 'int', 'max' => 32767),
 	'mediumint'    => array('type' => 'int', 'max' => 8388607),
 	'int'          => array('type' => 'int', 'max' => 2147483647),
 	'integer'      => array('type' => 'int', 'max' => 2147483647),
