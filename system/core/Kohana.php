@@ -856,7 +856,7 @@ class Kohana {
 				// Function args
 				$args = '';
 
-				if (is_array($entry['args']))
+				if (isset($entry['args']) AND is_array($entry['args']))
 				{
 					// Separator starts as nothing
 					$sep = '';
