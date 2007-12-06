@@ -182,7 +182,7 @@ class Validation_Core {
 	{
 		if ( ! is_array($func))
 		{
-			$func = array($func, $message);
+			$func = array($func => $message);
 		}
 
 		foreach($func as $name => $message)
