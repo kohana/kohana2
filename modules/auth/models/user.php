@@ -3,7 +3,6 @@
 class User_Model extends ORM {
 
 	// Relationships
-	protected $has_many = array('posts');
 	protected $has_and_belongs_to_many = array('roles');
 
 	// User roles
@@ -96,7 +95,7 @@ class User_Model extends ORM {
 
 	protected function where_key($id = NULL)
 	{
-		if (is_string($id) AND $id != '')
+		if (is_string($id) AND ! is_numeric($id))
 		{
 			return valid::email($id) ? 'email' : 'username';
 		}
