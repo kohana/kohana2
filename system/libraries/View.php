@@ -18,6 +18,7 @@ class View_Core {
 
 	// Set variables
 	protected $data = array();
+	protected static $global_data = array();
 
 	/**
 	 * Attempts to load a view and pre-load view data.
@@ -78,6 +79,28 @@ class View_Core {
 	}
 
 	/**
+	 * Sets a view global variable.
+	 *
+	 * @param   string|array  name of variable or an array of variables
+	 * @param   value         value when using a named variable
+	 * @return  object
+	 */
+	public function set_global($name, $value = NULL)
+	{
+		if ( ! is_array($name))
+		{
+			$name = array($name => $value);
+		}
+
+		foreach ($name as $key => $value)
+		{
+			self::$global_data[$key] = $value;
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Magically sets a view variable.
 	 *
 	 * @param   string   variable key
@@ -129,8 +152,11 @@ class View_Core {
 	{
 		if ($this->kohana_filetype === EXT)
 		{
+			// Merge global and local data, local overrides global with the same name
+			$data = array_merge(self::$global_data, $this->data);
+
 			// Load the view in the controller for access to $this
-			$output = Kohana::instance()->_kohana_load_view($this->kohana_filename, $this->data);
+			$output = Kohana::instance()->_kohana_load_view($this->kohana_filename, $data);
 
 			if ($renderer == TRUE AND is_callable($renderer, TRUE))
 			{
