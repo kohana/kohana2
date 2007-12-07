@@ -33,7 +33,8 @@ class Form_Dateselect_Core extends Form_input{
 		       form::dropdown($name.'[day]', date::days(12), date('d', $date)).' '.
 		       form::dropdown($name.'[year]', date::years(), date('Y', $date)).' @ '.
 		       form::dropdown($name.'[hour]', date::hours(), date('g', $date)).':'.
-		       form::dropdown($name.'[minute]', date::minutes(), date('i', $date));
+		       form::dropdown($name.'[minute]', date::minutes(), date('i', $date)).' '.
+		       form::dropdown($name.'[am_pm]', array('AM' => 'AM', 'PM' => 'PM'), date('A', $date));
 	}
 
 	protected function load_value()
@@ -42,8 +43,9 @@ class Form_Dateselect_Core extends Form_input{
 			return;
 
 		$time = self::$input->post($this->name);
+		$am_pm = $time['am_pm'];
 
-		$this->data['value'] = mktime($time['hour'], $time['minute'], 0, $time['month'], $time['day'], $time['year']);
+		$this->data['value'] = mktime(($am_pm == 'PM') ? $time['hour']+12 : $time['hour'], $time['minute'], 0, $time['month'], $time['day'], $time['year']);
 	}
 
 } // End Form Dateselect
