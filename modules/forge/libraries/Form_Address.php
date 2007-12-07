@@ -35,16 +35,16 @@ class Form_Address_Core extends Form_Input {
 
 		// Address line 1
 		$line1['name']  .= '[line1]';
-		$line1['value']  = array_shift($value);
+		$line1['value']  = current($value);
 
 		// Address line 2
 		$line2['name']  .= '[line2]';
-		$line2['value']  = array_shift($value);
+		$line2['value']  = next($value);
 		$line2['class'] .= '-2';
 
 		// Address unit
 		$unit['name']  .= '[unit]';
-		$unit['value']  = array_shift($value);
+		$unit['value']  = next($value);
 		$unit['class'] .= '-unit';
 
 		return

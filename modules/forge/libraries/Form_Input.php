@@ -192,9 +192,9 @@ class Form_Input_Core {
 				// Force args to be an array
 				$args = is_array($args) ? $args : array();
 
-				array_unshift($args, isset($this->data['label'])
-					? strtolower($this->data['label'])
-					: $this->data['name']);
+				array_unshift($args, $this->label
+					? strtolower($this->label)
+					: $this->name);
 
 				// Fetch an i18n error message
 				$error = Kohana::lang('validation.'.$func, $args);
