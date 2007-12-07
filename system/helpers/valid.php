@@ -215,6 +215,28 @@ class valid_Core {
 	}
 
 	/**
+	 * Checks if a phone number is valid.
+	 *
+	 * @todo  This function is not l10n-compatible.
+	 *
+	 * @param   string   phone number to check
+	 * @return  boolean
+	 */
+	public static function phone($number)
+	{
+		$number = preg_replace('/[^0-9]/', '', $number);
+
+		if (strlen($number) > 10 AND substr($number, 0, 1) === '1')
+		{
+			// Remove the "1" prefix from the number
+			$number = substr($number, 1);
+		}
+
+		// If the length is not 10, it's not a valid number
+		return (strlen($number) === 10);
+	}
+
+	/**
 	 * Method: alpha
 	 *  Checks whether a string consists of alphabetical characters only
 	 *
