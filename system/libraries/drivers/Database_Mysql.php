@@ -28,6 +28,14 @@ class Database_Mysql_Driver extends Database_Driver {
 		Log::add('debug', 'MySQL Database Driver Initialized');
 	}
 
+	/**
+	 * Closes the database connection.
+	 */
+	public function __destruct()
+	{
+		is_resource($this->link) and mysql_close($this->link);
+	}
+
 	public function connect()
 	{
 		// Import the connect variables
