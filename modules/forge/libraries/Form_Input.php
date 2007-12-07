@@ -53,8 +53,8 @@ class Form_Input_Core {
 			}
 			else
 			{
-				// Default action is replace
-				$action = '=';
+				// Default action is append
+				$action = '';
 			}
 
 			$this->add_rules(explode('|', $rules), $action);
@@ -129,7 +129,7 @@ class Form_Input_Core {
 		return form::input($data);
 	}
 
-	protected function add_rules( array $rules, $action = '=')
+	protected function add_rules( array $rules, $action)
 	{
 		if ($action === '=')
 		{
