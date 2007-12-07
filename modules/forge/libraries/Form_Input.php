@@ -107,7 +107,7 @@ class Form_Input_Core {
 		}
 		else
 		{
-			$this->label = ($val === TRUE) ? inflector::humanize($this->name) : $val;
+			$this->label = ($val === TRUE) ? ucwords(inflector::humanize($this->name)) : $val;
 			return $this;
 		}
 	}
@@ -214,7 +214,14 @@ class Form_Input_Core {
 
 		if ($value = self::$input->post($this->name))
 		{
+			// Load POSTed value
 			$this->data['value'] = $value;
+		}
+
+		if (is_string($this->data['value']))
+		{
+			// Trim string values
+			$this->data['value'] = trim($this->data['value']);
 		}
 	}
 
