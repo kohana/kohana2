@@ -23,15 +23,31 @@ class Form_Checkbox_Core extends Form_Input {
 		return parent::__get($key);
 	}
 
+	public function label($val = NULL)
+	{
+		if ($val === NULL)
+		{
+			return '';
+		}
+		else
+		{
+			$this->data['label'] = ($val === TRUE) ? ucwords(inflector::humanize($this->name)) : $val;
+			return $this;
+		}
+	}
+
 	protected function html_element()
 	{
-		// Get the 
+		// Import the data
 		$data = $this->data;
 
-		// Remove label
-		unset($data['label']);
+		if ($label = arr::remove('label', $data))
+		{
+			// There must be one space before the text
+			$label = ' '.ltrim($label);
+		}
 
-		return form::checkbox($data);
+		return '<label>'.form::checkbox($data).$label.'</label>';
 	}
 
 	protected function load_value()
