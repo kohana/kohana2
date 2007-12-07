@@ -16,8 +16,9 @@ class Form_Input_Core {
 	// Protected data keys
 	protected $protect = array();
 
-	// Validtion rules and callbacks
+	// Validation rules, matches, and callbacks
 	protected $rules = array();
+	protected $matches = array();
 	protected $callbacks = array();
 
 	// Validation check
@@ -80,14 +81,22 @@ class Form_Input_Core {
 
 	public function matches($input)
 	{
-		if ($this->validate() AND $input->validate() AND $this->value != $input->value)
+		if ( ! in_array($input, $this->matches))
 		{
-			$this->is_valid = FALSE;
-
-			$this->errors['matches'] = array($input->name, $this->name);
+			$this->matches[] = $input;
 		}
 
-		return $this->is_valid;
+		return $this;
+	}
+
+	public function callback($callback)
+	{
+		if ( ! in_array($callback, $this->callbacks))
+		{
+			$this->callbacks[] = $callback;
+		}
+
+		return $this;
 	}
 
 	public function label($val = NULL)
@@ -98,7 +107,7 @@ class Form_Input_Core {
 		}
 		else
 		{
-			$this->label = ($val === TRUE) ? ucwords(str_replace('_', ' ', $this->name)) : $val;
+			$this->label = ($val === TRUE) ? ucfirst($this->name) : $val;
 			return $this;
 		}
 	}
@@ -156,6 +165,16 @@ class Form_Input_Core {
 		}
 	}
 
+	public function add_error($key, $val)
+	{
+		if ( ! isset($this->errors[$key]))
+		{
+			$this->errors[$key] = $val;
+		}
+
+		return $this;
+	}
+
 	protected function error_message()
 	{
 		// Make sure validation runs
@@ -164,18 +183,27 @@ class Form_Input_Core {
 		$message = '';
 		foreach($this->errors as $func => $args)
 		{
-			if ( ! is_array($args))
+			if (is_string($args))
 			{
-				$args = array();
+				$error = $args;
+			}
+			else
+			{
+				// Force args to be an array
+				$args = is_array($args) ? $args : array();
+
+				array_unshift($args, isset($this->data['label'])
+					? strtolower($this->data['label'])
+					: $this->data['name']);
+
+				// Fetch an i18n error message
+				$error = Kohana::lang('validation.'.$func, $args);
 			}
 
-			array_unshift($args, isset($this->data['label']) 
-				? strtolower($this->data['label']) 
-				: $this->data['name']);
-
 			// Make the error into HTML
-			$message .= '<p class="error">'.Kohana::lang('validation.'.$func, $args).'</p>';
+			$message .= '<p class="error">'.$error.'</p>';
 		}
+
 		return $message;
 	}
 
@@ -204,7 +232,7 @@ class Form_Input_Core {
 		$this->load_value();
 
 		// No rules to validate
-		if (count($this->rules) == 0)
+		if (count($this->rules) == 0 AND count($this->matches) == 0 AND count($this->callbacks) == 0)
 			return $this->is_valid = TRUE;
 
 		if ( ! empty($this->rules))
@@ -263,6 +291,31 @@ class Form_Input_Core {
 				{
 					throw new Kohana_Exception('validation.invalid_rule', $rule);
 				}
+
+				// Stop when an error occurs
+				if ( ! empty($this->errors))
+					break;
+			}
+		}
+
+		if ( ! empty($this->matches))
+		{
+			foreach($this->matches as $input)
+			{
+				if ($this->value != $input->value)
+				{
+					// Field does not match
+					$this->errors['matches'] = array($input->name);
+					break;
+				}
+			}
+		}
+
+		if ( ! empty($this->callbacks))
+		{
+			foreach($this->callbacks as $callback)
+			{
+				call_user_func($callback, $this);
 
 				// Stop when an error occurs
 				if ( ! empty($this->errors))
