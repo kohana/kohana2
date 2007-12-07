@@ -192,9 +192,8 @@ class Form_Input_Core {
 				// Force args to be an array
 				$args = is_array($args) ? $args : array();
 
-				array_unshift($args, $this->label
-					? strtolower($this->label)
-					: $this->name);
+				// Add the label or name to the beginning of the args
+				array_unshift($args, $this->label ? strtolower($this->label) : $this->name);
 
 				// Fetch an i18n error message
 				$error = Kohana::lang('validation.'.$func, $args);
@@ -259,7 +258,7 @@ class Form_Input_Core {
 				{
 					$func = substr($rule, 6);
 
-					if ( ! valid::$func($this->value))
+					if ($this->value AND ! valid::$func($this->value))
 					{
 						$this->errors[$rule] = TRUE;
 					}

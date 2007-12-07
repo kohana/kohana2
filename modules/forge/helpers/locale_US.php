@@ -2,11 +2,6 @@
 
 class locale_US {
 
-	public function months()
-	{
-		return array();
-	}
-
 	public function states()
 	{
 		return array
