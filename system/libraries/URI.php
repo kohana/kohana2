@@ -125,6 +125,36 @@ class URI_Core extends Router {
 	}
 
 	/**
+	 * Method: rsegment_array
+	 *  Returns an array containing all the re-routed URI segments.
+	 *
+	 * Parameters:
+	 *  offset      - rsegment offset
+	 *  associative - return an associative array
+	 *
+	 * Returns:
+	 *   Array of re-routed URI segments
+	 */
+	public function rsegment_array($offset = 0, $associative = FALSE)
+	{
+		$segment_array = self::$rsegments;
+		array_unshift($segment_array, 0);
+		$segment_array = array_slice($segment_array, $offset + 1, $this->total_segments(), TRUE);
+
+		if ( ! $associative)
+			return $segment_array;
+
+		$segment_array_assoc = array();
+
+		foreach (array_chunk($segment_array, 2) as $pair)
+		{
+			$segment_array_assoc[$pair[0]] = isset($pair[1]) ? $pair[1] : '';
+		}
+
+		return $segment_array_assoc;
+	}
+
+	/**
 	 * Method: string
 	 *  Returns the complete URI as a string.
 	 *
@@ -135,7 +165,14 @@ class URI_Core extends Router {
 	{
 		return self::$current_uri;
 	}
-	
+
+	/**
+	 * Method: __toString
+	 *  Magic method for converting an object to a string.
+	 *
+	 * Returns:
+	 *  Full URI as string
+	 */	
 	public function __toString()
 	{
 		return $this->string();
@@ -154,6 +191,18 @@ class URI_Core extends Router {
 	}
 
 	/**
+	 * Method: total_rsegments
+	 *  Returns the total number of re-routed URI segments.
+	 *
+	 * Returns:
+	 *   Total number of re-routed URI segments
+	 */
+	public function total_rsegments()
+	{
+		return count(self::$rsegments);
+	}
+
+	/**
 	 * Method: last_segment
 	 *  Returns the last URI segment.
 	 *
@@ -166,6 +215,21 @@ class URI_Core extends Router {
 			return $default;
 		
 		return end(self::$segments);
+	}
+
+	/**
+	 * Method: last_rsegment
+	 *  Returns the last re-routed URI segment.
+	 *
+	 * Returns:
+	 *   Last re-routed URI segment
+	 */
+	public function last_rsegment($default = FALSE)
+	{
+		if ($this->total_rsegments() < 1)
+			return $default;
+		
+		return end(self::$rsegments);
 	}
 
 } // End URI Class

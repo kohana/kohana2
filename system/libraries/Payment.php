@@ -16,10 +16,12 @@ class Payment_Core {
 		// The driver string
 		'driver'      => NULL,
 		// Curl config, see http://us.php.net/manual/en/function.curl-setopt.php for details
-		'curl_config' => array(CURLOPT_HEADER => FALSE,
-                               CURLOPT_RETURNTRANSFER => TRUE,
-                               CURLOPT_SSL_VERIFYPEER => FALSE
-                              ),
+		'curl_config' => array
+		(
+			CURLOPT_HEADER         => FALSE,
+			CURLOPT_RETURNTRANSFER => TRUE,
+			CURLOPT_SSL_VERIFYPEER => FALSE
+		),
 		// Test mode is set to true by default
 		'test_mode'   => TRUE,
 	);
@@ -68,7 +70,7 @@ class Payment_Core {
 			// Load the default group
 			$config = Config::item('payment.default');
 		}
-		else if (is_string($config))
+		elseif (is_string($config))
 		{
 			$this->config['driver'] = $config;
 		}

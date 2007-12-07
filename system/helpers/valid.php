@@ -152,12 +152,6 @@ class valid_Core {
 				'prefix' => '3[47]',
 				'luhn'   => TRUE
 			),
-			'visa' => array
-			(
-				'length' => '13,16',
-				'prefix' => '4',
-				'luhn'   => TRUE
-			),
 			'maestro' => array
 			(
 				'length' => '16,18',
@@ -168,6 +162,18 @@ class valid_Core {
 			(
 				'length' => '16',
 				'prefix' => '5[1-5]',
+				'luhn'   => TRUE
+			),
+			'visa' => array
+			(
+				'length' => '13,16',
+				'prefix' => '4',
+				'luhn'   => TRUE
+			),
+			'visa electron' => array
+			(
+				'length' => '16',
+				'prefix' => '4(?:17500|91[37]|508|844)',
 				'luhn'   => TRUE
 			),
 		);
@@ -224,7 +230,7 @@ class valid_Core {
 	 */
 	public static function phone($number)
 	{
-		$number = preg_replace('/[^0-9]/', '', $number);
+		$number = preg_replace('/\D+/', '', $number);
 
 		if (strlen($number) > 10 AND substr($number, 0, 1) === '1')
 		{
