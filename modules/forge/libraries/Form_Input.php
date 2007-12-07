@@ -41,7 +41,22 @@ class Form_Input_Core {
 	{
 		if ($method == 'rules')
 		{
-			$this->add_rules(explode('|', $args[0]));
+			// Set rules and action
+			$rules  = $args[0];
+			$action = substr($rules, 0, 1);
+
+			if (in_array($action, array('-', '+', '=')))
+			{
+				// Remove the action from the rules
+				$rules = substr($rules, 1);
+			}
+			else
+			{
+				// Default action is replace
+				$action = '=';
+			}
+
+			$this->add_rules(explode('|', $rules), $action);
 		}
 		elseif ($method == 'name')
 		{
@@ -105,13 +120,38 @@ class Form_Input_Core {
 		return form::input($data);
 	}
 
-	protected function add_rules( array $rules)
+	protected function add_rules( array $rules, $action = '=')
 	{
+		if ($action === '=')
+		{
+			// Just replace the rules
+			$this->rules = $rules;
+			return;
+		}
+
 		foreach($rules as $rule)
 		{
-			if ( ! in_array($rule, $this->rules))
+			if ($action === '-')
 			{
-				$this->rules[] = $rule;
+				if ($key = array_search($rule, $this->rules))
+				{
+					// Remove the rule
+					unset($this->rules[$key]);
+				}
+			}
+			else
+			{
+				if ( ! in_array($rule, $this->rules))
+				{
+					if ($action == '+')
+					{
+						array_unshift($this->rules, $rule);
+					}
+					else
+					{
+						$this->rules[] = $rule;
+					}
+				}
 			}
 		}
 	}
@@ -244,8 +284,9 @@ class Form_Input_Core {
 
 	protected function rule_length($min, $max = NULL)
 	{
-		// Get the length
-		$length = strlen($this->value);
+		// Get the length, return if zero
+		if (($length = strlen($this->value)) === 0)
+			return;
 
 		if ($max == NULL)
 		{
