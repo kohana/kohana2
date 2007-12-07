@@ -98,7 +98,7 @@ class Form_Input_Core {
 		}
 		else
 		{
-			$this->label = ($val === TRUE) ? ucfirst($this->name) : $val;
+			$this->label = ($val === TRUE) ? ucwords(str_replace('_', ' ', $this->name)) : $val;
 			return $this;
 		}
 	}
