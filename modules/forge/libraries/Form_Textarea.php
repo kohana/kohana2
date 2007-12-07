@@ -19,4 +19,4 @@ class Form_Textarea_Core extends Form_Input {
 		return form::textarea($data);
 	}
 
-} // End Form Password
+} // End Form Textarea

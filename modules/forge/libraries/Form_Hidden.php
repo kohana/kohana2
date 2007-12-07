@@ -19,4 +19,4 @@ class Form_Hidden_Core extends Form_Input {
 		return form::hidden($data);
 	}
 
-} // End Form Password
+} // End Form Hidden
