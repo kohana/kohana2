@@ -5,7 +5,8 @@ class Form_Password_Core extends Form_Input {
 	protected $data = array
 	(
 		'type'  => 'password',
-		'class' => 'password'
+		'class' => 'password',
+		'value' => '',
 	);
 
 	protected $protect = array('type');

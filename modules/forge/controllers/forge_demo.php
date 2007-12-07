@@ -13,11 +13,21 @@ class Forge_demo_Controller extends Controller {
 			'cookies (checked)' => TRUE);
 
 		$form = new Forge(NULL, 'New User');
-		$form->input('username')->label(TRUE)->rules('required');
-		$form->password('password')->label(TRUE)->rules('required');
+
+		// Create each input, following this format:
+		//
+		//   type($name)->attr(..)->attr(..);
+		//
+		$form->input('email')->label(TRUE)->rules('required|valid_email');
+		$form->input('username')->label(TRUE)->rules('required|length[5,32]');
+		$form->password('password')->label(TRUE)->rules('required|length[5,32]');
+		$form->password('confirm')->label(TRUE);
+		$form->checkbox('remember')->label('Remember Me');
 		$form->checklist('foods')->label('Favorite Foods')->options($foods)->rules('required');
 		$form->dropdown('state')->label('Home State')->options(locale_US::states())->rules('required');
 		$form->submit('Save');
+
+		$form->confirm->matches($form->password);
 
 		if ($form->validate())
 		{

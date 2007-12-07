@@ -9,14 +9,16 @@ class Form_Input_Core {
 	protected $data = array
 	(
 		'type'  => 'text',
-		'class' => 'textbox'
+		'class' => 'textbox',
+		'value' => '',
 	);
 
 	// Protected data keys
 	protected $protect = array();
 
-	// Validtion rules
+	// Validtion rules and callbacks
 	protected $rules = array();
+	protected $callbacks = array();
 
 	// Validation check
 	protected $is_valid;
@@ -28,6 +30,7 @@ class Form_Input_Core {
 	{
 		if (self::$input === NULL)
 		{
+			// Load the Input library
 			self::$input = new Input;
 		}
 
@@ -42,7 +45,7 @@ class Form_Input_Core {
 		}
 		elseif ($method == 'name')
 		{
-			// Yup, do nothing. The name should stay static once it is set.
+			// Do nothing. The name should stay static once it is set.
 		}
 		else
 		{
@@ -58,6 +61,18 @@ class Form_Input_Core {
 		{
 			return $this->data[$key];
 		}
+	}
+
+	public function matches($input)
+	{
+		if ($this->validate() AND $input->validate() AND $this->value != $input->value)
+		{
+			$this->is_valid = FALSE;
+
+			$this->errors['matches'] = array($input->name, $this->name);
+		}
+
+		return $this->is_valid;
 	}
 
 	public function label($val = NULL)
@@ -76,15 +91,18 @@ class Form_Input_Core {
 	public function html()
 	{
 		// Make sure validation runs
-		$this->is_valid;
+		$this->validate();
 
-		// Import locally to prevent tampering
+		return $this->html_element().$this->error_message();
+	}
+
+	protected function html_element()
+	{
 		$data = $this->data;
 
-		// Remove the label
-		unset($data['label'], $data['options'], $data['default']);
+		unset($data['label']);
 
-		return form::input($data).$this->error_message();
+		return form::input($data);
 	}
 
 	protected function add_rules( array $rules)
@@ -104,16 +122,28 @@ class Form_Input_Core {
 		is_null($this->is_valid) and $this->validate();
 
 		$message = '';
-		foreach($this->errors as $error)
+		foreach($this->errors as $func => $args)
 		{
+			if ( ! is_array($args))
+			{
+				$args = array();
+			}
+
+			array_unshift($args, isset($this->data['label']) 
+				? strtolower($this->data['label']) 
+				: $this->data['name']);
+
 			// Make the error into HTML
-			$message .= '<p class="error">'.$error.'</p>';
+			$message .= '<p class="error">'.Kohana::lang('validation.'.$func, $args).'</p>';
 		}
 		return $message;
 	}
 
 	protected function load_value()
 	{
+		if (is_bool($this->is_valid))
+			return;
+
 		if ($value = self::$input->post($this->name))
 		{
 			$this->data['value'] = $value;
@@ -150,36 +180,53 @@ class Form_Input_Core {
 					$rule = substr($rule, 0, $offset);
 				}
 
-				if ( ! method_exists($this, 'rule_'.$rule))
-					throw new Kohana_Exception('forge.invalid_rule', $rule);
-
-				// The rule function is always prefixed with rule_
-				$rule = 'rule_'.$rule;
-
-				if (isset($args))
+				if (substr($rule, 0, 6) === 'valid_' AND method_exists('valid', substr($rule, 6)))
 				{
-					// Manually call up to 2 args for speed
-					switch(count($args))
+					$func = substr($rule, 6);
+
+					if ( ! valid::$func($this->value))
 					{
-						case 1:
-							$this->$rule($args[0]);
-						break;
-						case 2:
-							$this->$rule($args[0], $args[1]);
-						break;
-						default:
-							call_user_func_array(array($this, $rule), $args);
-						break;
+						$this->errors[$rule] = TRUE;
 					}
+				}
+				elseif (method_exists($this, 'rule_'.$rule))
+				{
+					// The rule function is always prefixed with rule_
+					$rule = 'rule_'.$rule;
+
+					if (isset($args))
+					{
+						// Manually call up to 2 args for speed
+						switch(count($args))
+						{
+							case 1:
+								$this->$rule($args[0]);
+							break;
+							case 2:
+								$this->$rule($args[0], $args[1]);
+							break;
+							default:
+								call_user_func_array(array($this, $rule), $args);
+							break;
+						}
+					}
+					else
+					{
+						// Just call the rule
+						$this->$rule();
+					}
+
+					// Prevent args from being re-used
+					unset($args);
 				}
 				else
 				{
-					// Just call the rule
-					$this->$rule();
+					throw new Kohana_Exception('validation.invalid_rule', $rule);
 				}
 
-				// Prevent args from being re-used
-				unset($args);
+				// Stop when an error occurs
+				if ( ! empty($this->errors))
+					break;
 			}
 		}
 
@@ -189,32 +236,33 @@ class Form_Input_Core {
 
 	protected function rule_required()
 	{
-		if ($this->value == NULL)
+		if ($this->value == FALSE)
 		{
-			$this->errors[] = 'This field is required.';
+			$this->errors['required'] = TRUE;
 		}
 	}
 
 	protected function rule_length($min, $max = NULL)
 	{
-		if (empty($this->data['value']))
-			return;
-
 		// Get the length
-		$length = strlen($this->data['value']);
+		$length = strlen($this->value);
 
 		if ($max == NULL)
 		{
 			if ($length != $min)
 			{
-				$this->errors[] = 'This field must be exactly '.$min.' characters long.';
+				$this->errors['exact_length'] = array($min);
 			}
 		}
 		else
 		{
-			if ($length < $min OR $length > $max)
+			if ($length < $min)
 			{
-				$this->errors[] = 'This field must be between '.$min.' and '.$max.' characters long.';
+				$this->errors['min_length'] = array($min);
+			}
+			elseif($length > $max)
+			{
+				$this->errors['max_length'] = array($max);
 			}
 		}
 	}

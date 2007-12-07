@@ -14,25 +14,25 @@ class Form_Dropdown_Core extends Form_input{
 	{
 		if ($key == 'value')
 		{
-			return $this->default;
+			return $this->selected;
 		}
 
 		return parent::__get($key);
 	}
 
-	public function html()
+	public function html_element()
 	{
 		// Import base data
 		$base_data = $this->data;
 
 		// Get the options and default selection
 		$options = arr::remove('options', $base_data);
-		$default = arr::remove('default', $base_data);
+		$selected = arr::remove('selected', $base_data);
 
 		// Add an empty option to the beginning of the options
 		arr::unshift_assoc($options, '', '--');
 
-		return form::dropdown($base_data, $options, $default).$this->error_message();
+		return form::dropdown($base_data, $options, $selected);
 	}
 
 	protected function load_value()
@@ -40,10 +40,7 @@ class Form_Dropdown_Core extends Form_input{
 		if (empty($_POST))
 			return;
 
-		if ($default = self::$input->post($this->name))
-		{
-			$this->data['default'] = $default;
-		}
+		$this->data['selected'] = self::$input->post($this->name);
 	}
 
 } // End Form Dropdown
