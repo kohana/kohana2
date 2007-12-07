@@ -5,38 +5,16 @@ class Form_Dropdown_Core extends Form_input{
 	protected $data = array
 	(
 		'name'  => '',
-		'type'  => 'dropdown',
 		'class' => 'dropdown',
 	);
 
-	protected $protect = array('name', 'type');
-
-	// Name of the list
-	protected $list_name = '';
-
-	// Associative array of options: value => checked
-	protected $list_options = array();
-
-	// List input data
-	protected $list_data = array();
-
-	public function __construct($name, $data)
-	{
-		$this->list_name = $this->data['name'] = $name;
-
-		$this->list_options = arr::remove('options', $data);
-
-		foreach($data as $key => $val)
-		{
-			$this->$key = $val;
-		}
-	}
+	protected $protect = array('type');
 
 	public function __get($key)
 	{
 		if ($key == 'value')
 		{
-			return isset($_POST[$this->list_name]) ? $_POST[$this->list_name] : array();
+			return $this->default;
 		}
 
 		return parent::__get($key);
@@ -44,14 +22,17 @@ class Form_Dropdown_Core extends Form_input{
 
 	public function html()
 	{
-		// Load the submitted value
-		$this->load_value();
-
-		// Import base data and options
+		// Import base data
 		$base_data = $this->data;
-		$options = $this->list_options;
 
-		return form::dropdown(arr::remove('name', $base_data), $options, arr::remove('default', $base_data));
+		// Get the options and default selection
+		$options = arr::remove('options', $base_data);
+		$default = arr::remove('default', $base_data);
+
+		// Add an empty option to the beginning of the options
+		arr::unshift_assoc($options, '', '--');
+
+		return form::dropdown($base_data, $options, $default).$this->error_message();
 	}
 
 	protected function load_value()
@@ -59,16 +40,10 @@ class Form_Dropdown_Core extends Form_input{
 		if (empty($_POST))
 			return;
 
-		foreach($this->list_options as $val => $checked)
+		if ($default = self::$input->post($this->name))
 		{
-			if (empty($_POST[$this->list_name]))
-			{
-				$this->list_options[$val] = FALSE;
-			}
-			else
-			{
-				$this->list_options[$val] = in_array($val, $_POST[$this->list_name]);
-			}
+			$this->data['default'] = $default;
 		}
 	}
+
 } // End Form Dropdown

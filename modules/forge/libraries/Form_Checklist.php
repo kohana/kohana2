@@ -11,32 +11,17 @@ class Form_Checklist_Core extends Form_input{
 
 	protected $protect = array('name', 'type');
 
-	// Name of the list
-	protected $list_name = '';
-
-	// Associative array of options: value => checked
-	protected $list_options = array();
-
-	// List input data
-	protected $list_data = array();
-
-	public function __construct($name, $data)
+	public function __construct($name)
 	{
-		$this->list_name = $this->data['name'] = $name;
-
-		$this->list_options = arr::remove('options', $data);
-
-		foreach($data as $key => $val)
-		{
-			$this->$key = $val;
-		}
+		$this->data['name'] = $name;
 	}
 
 	public function __get($key)
 	{
 		if ($key == 'value')
 		{
-			return isset($_POST[$this->list_name]) ? $_POST[$this->list_name] : array();
+			// Return the currently checked values
+			return array_keys($this->data['options'], TRUE);
 		}
 
 		return parent::__get($key);
@@ -44,23 +29,22 @@ class Form_Checklist_Core extends Form_input{
 
 	public function html()
 	{
-		// Load the submitted value
-		$this->load_value();
-
 		// Import base data
 		$base_data = $this->data;
+
+		// Make it an array
+		$base_data['name'] .= '[]';
 
 		// Newline
 		$nl = "\n";
 
 		$checklist = '<ul class="'.arr::remove('class', $base_data).'">'.$nl;
-		foreach($this->list_options as $val => $checked)
+		foreach(arr::remove('options', $base_data) as $val => $checked)
 		{
 			// New set of input data
 			$data = $base_data;
 
 			// Set the name, value, and checked status
-			$data['name']    = $this->list_name.'[]';
 			$data['value']   = $val;
 			$data['checked'] = $checked;
 
@@ -68,7 +52,7 @@ class Form_Checklist_Core extends Form_input{
 		}
 		$checklist .= '</ul>';
 
-		return $checklist;
+		return $checklist.$this->error_message();
 	}
 
 	protected function load_value()
@@ -76,15 +60,15 @@ class Form_Checklist_Core extends Form_input{
 		if (empty($_POST))
 			return;
 
-		foreach($this->list_options as $val => $checked)
+		foreach($this->data['options'] as $val => $checked)
 		{
-			if (empty($_POST[$this->list_name]))
+			if (empty($_POST[$this->data['name']]))
 			{
-				$this->list_options[$val] = FALSE;
+				$this->data['options'][$val] = FALSE;
 			}
 			else
 			{
-				$this->list_options[$val] = in_array($val, $_POST[$this->list_name]);
+				$this->data['options'][$val] = in_array($val, $_POST[$this->data['name']]);
 			}
 		}
 	}

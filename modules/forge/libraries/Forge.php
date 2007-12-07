@@ -22,28 +22,26 @@ class Forge_Core {
 
 	public function __get($key)
 	{
-		if ($key == 'validated')
+		if (isset($this->inputs[$key]))
 		{
-			foreach($this->inputs as $input)
-			{
-				if ( ! $input->is_valid)
-					return FALSE;
-			}
-			return TRUE;
-		}
-		elseif (isset($this->inputs[$key]))
-		{
-			return $this->inputs[$key]->value;
+			return $this->inputs[$key];
 		}
 	}
 
-	public function add($input)
+	public function __call($method, $args)
 	{
+		// Class name
+		$input = 'Form_'.ucfirst($method);
+
+		// Create the input
+		$input = new $input(empty($args) ? NULL : current($args));
+
 		if ( ! ($input instanceof Form_Input))
 			throw new Kohana_Exception('forge.invalid_input');
 
 		if ($name = $input->name)
 		{
+			// Assign by name
 			$this->inputs[$name] = $input;
 		}
 		else
@@ -51,10 +49,24 @@ class Forge_Core {
 			$this->inputs[] = $input;
 		}
 
-		return $this;
+		return $input;
 	}
 
-	public function data()
+	public function validate()
+	{
+		$status = TRUE;
+		foreach($this->inputs as $input)
+		{
+			if ($input->validate() == FALSE)
+			{
+				$status = FALSE;
+			}
+		}
+
+		return $status;
+	}
+
+	public function as_array()
 	{
 		if (empty($_POST))
 			return;

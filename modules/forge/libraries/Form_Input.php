@@ -2,7 +2,10 @@
 
 class Form_Input_Core {
 
-	// Input data
+	// Input instance
+	protected static $input;
+
+	// Element data
 	protected $data = array
 	(
 		'type'  => 'text',
@@ -13,7 +16,7 @@ class Form_Input_Core {
 	protected $protect = array();
 
 	// Validtion rules
-	protected $rules = '';
+	protected $rules = array();
 
 	// Validation check
 	protected $is_valid;
@@ -21,64 +24,52 @@ class Form_Input_Core {
 	// Errors
 	protected $errors = array();
 
-	public function __construct($name, $data = array())
+	public function __construct($name)
 	{
-		if ( ! is_array($data))
+		if (self::$input === NULL)
 		{
-			// Set the data to the value
-			$data = array('value' => $data);
+			self::$input = new Input;
 		}
 
-		if ( ! empty($name))
-		{
-			// Set the name
-			$data['name'] = $name;
-		}
-
-		if ($rules = arr::remove('rules', $data))
-		{
-			// Set the rules
-			$this->rules = $rules;
-		}
-
-		foreach($data as $key => $val)
-		{
-			// Load the data using __set, for protection
-			$this->$key = $val;
-		}
-
-		// Load the value
-		$this->load_value();
+		$this->data['name'] = $name;
 	}
 
-	public function __set($key, $val)
+	public function __call($method, $args)
 	{
-		if ( ! in_array($key, $this->protect))
+		if ($method == 'rules')
 		{
-			$this->data[$key] = $val;
+			$this->add_rules(explode('|', $args[0]));
 		}
+		elseif ($method == 'name')
+		{
+			// Yup, do nothing. The name should stay static once it is set.
+		}
+		else
+		{
+			$this->data[$method] = $args[0];
+		}
+
+		return $this;
 	}
 
 	public function __get($key)
 	{
-		if ($key === 'is_valid')
-		{
-			// Make sure validation runs
-			is_null($this->is_valid) and $this->validate();
-
-			return $this->is_valid;
-		}
-		elseif (isset($this->data[$key]))
+		if (isset($this->data[$key]))
 		{
 			return $this->data[$key];
 		}
 	}
 
-	public function label()
+	public function label($val = NULL)
 	{
-		if ($this->label != '')
+		if ($val === NULL)
 		{
 			return form::label($this->name, $this->label);
+		}
+		else
+		{
+			$this->label = ($val === TRUE) ? ucfirst($this->name) : $val;
+			return $this;
 		}
 	}
 
@@ -91,9 +82,20 @@ class Form_Input_Core {
 		$data = $this->data;
 
 		// Remove the label
-		unset($data['label']);
+		unset($data['label'], $data['options'], $data['default']);
 
 		return form::input($data).$this->error_message();
+	}
+
+	protected function add_rules( array $rules)
+	{
+		foreach($rules as $rule)
+		{
+			if ( ! in_array($rule, $this->rules))
+			{
+				$this->rules[] = $rule;
+			}
+		}
 	}
 
 	protected function error_message()
@@ -112,16 +114,13 @@ class Form_Input_Core {
 
 	protected function load_value()
 	{
-		if ($name = $this->name)
+		if ($value = self::$input->post($this->name))
 		{
-			if (isset($_POST[$name]))
-			{
-				$this->data['value'] = $_POST[$name];
-			}
+			$this->data['value'] = $value;
 		}
 	}
 
-	protected function validate()
+	public function validate()
 	{
 		// Validation has already run
 		if (is_bool($this->is_valid))
@@ -140,7 +139,7 @@ class Form_Input_Core {
 
 		if ( ! empty($this->rules))
 		{
-			foreach(explode('|', $this->rules) as $rule)
+			foreach($this->rules as $rule)
 			{
 				if (($offset = strpos($rule, '[')) !== FALSE)
 				{
@@ -190,7 +189,7 @@ class Form_Input_Core {
 
 	protected function rule_required()
 	{
-		if (empty($this->data['value']))
+		if ($this->value == NULL)
 		{
 			$this->errors[] = 'This field is required.';
 		}
