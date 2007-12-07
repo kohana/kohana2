@@ -12,6 +12,7 @@ class Forge_Core {
 	);
 
 	protected $inputs = array();
+	protected $hidden = array();
 
 	public function __construct($action = '', $title = '', $method = 'post')
 	{
@@ -30,6 +31,11 @@ class Forge_Core {
 
 	public function __call($method, $args)
 	{
+		if ($method == 'hidden')
+		{
+			$this->hidden[$args[0]] = $args[1];
+			return;
+		}
 		// Class name
 		$input = 'Form_'.ucfirst($method);
 
@@ -89,7 +95,7 @@ class Forge_Core {
 		$form = new View($template, $this->template);
 
 		// Set the form open and close
-		$form->open  = form::open($form->action);
+		$form->open  = form::open($form->action, array('method' => 'post'), $this->hidden);
 		$form->close = form::close();
 
 		// Set the inputs
