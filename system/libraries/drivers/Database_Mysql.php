@@ -312,7 +312,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 			if ($result == FALSE)
 			{
 				// SQL error
-				throw new Kohana_Database_Exception('database.error', mysql_error().' - '.$sql);
+				throw new Kohana_Database_Exception('database.error', mysql_error($link).' - '.$sql);
 			}
 			else
 			{
