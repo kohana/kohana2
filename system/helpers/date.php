@@ -297,7 +297,7 @@ class date_Core {
 	public static function timespan($time1, $time2 = FALSE, $output = 'years,months,weeks,days,hours,minutes,seconds')
 	{
 		// Default values
-		$time1  = max(0, (int) $time);
+		$time1  = max(0, (int) $time1);
 		$time2  = ($time2 === FALSE) ? time() : max(0, (int) $time2);
 
 		// Calculate timespan (seconds)

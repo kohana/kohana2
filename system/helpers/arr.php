@@ -23,7 +23,7 @@ class arr_Core {
 	 * Returns:
 	 *  The transformed array
 	 */
-	function rotate($source_array, $keep_keys = TRUE)
+	public function rotate($source_array, $keep_keys = TRUE)
 	{
 		$new_array = array();
 		foreach ($source_array as $key => $value)
@@ -49,7 +49,7 @@ class arr_Core {
 	 * Returns:
 	 *  The value of the requested array key
 	 */
-	function remove($key, & $array)
+	public function remove($key, & $array)
 	{
 		if ( ! isset($array[$key]))
 			return NULL;
@@ -59,4 +59,22 @@ class arr_Core {
 
 		return $val;
 	}
-}
+
+	/**
+	 * Because PHP does not have this function.
+	 *
+	 * @param   array   array to unshift
+	 * @param   string  key to unshift
+	 * @param   mixed   value to unshift
+	 * @return  array
+	 */
+	public function unshift_assoc( array & $array, $key, $val)
+	{
+		$array = array_reverse($array, TRUE);
+		$array[$key] = $val;
+		$array = array_reverse($array, TRUE);
+
+		return $array;
+	}
+
+} // End arr

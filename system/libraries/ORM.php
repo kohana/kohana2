@@ -228,7 +228,7 @@ class ORM_Core {
 			}
 
 			// Find requested objects
-			return isset($all) ? $this->find_all() : $this->find();
+			return isset($all) ? $this->load_result(TRUE) : $this->find();
 		}
 
 		if (substr($method, 0, 13) === 'find_related_')
@@ -258,7 +258,7 @@ class ORM_Core {
 				$this->related_join($table);
 			}
 
-			return $model->find_all();
+			return $model->load_result(TRUE);
 		}
 
 		if (preg_match('/^(has|add|remove)_(.+)/', $method, $matches))
@@ -618,8 +618,10 @@ class ORM_Core {
 				// Model class name
 				$class = get_class($this);
 
+				$result = $result->result_array();
+
 				$array = array();
-				foreach($result->result_array() as $row)
+				foreach($result as $row)
 				{
 					// Add object to the array
 					$array[] = new $class($row);

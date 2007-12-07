@@ -392,12 +392,18 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 			}
 		}
 
-		while ($row = $fetch($this->result, $type))
+		if (mysql_num_rows($this->result))
 		{
-			$rows[] = $row;
+			// Reset the pointer location to make sure things work properly
+			mysql_data_seek($this->result, 0);
+
+			while ($row = $fetch($this->result, $type))
+			{
+				$rows[] = $row;
+			}
 		}
 
-		return $rows;
+		return isset($rows) ? $rows : array();
 	}
 
 	public function insert_id()
@@ -475,7 +481,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	public function offsetGet($offset)
 	{
 		// Check to see if the requested offset exists.
-		if (!$this->offsetExists($offset))
+		if ( ! $this->offsetExists($offset))
 			return FALSE;
 
 		// Go to the offset

@@ -140,7 +140,7 @@ class form_Core {
 		);
 
 		// Form elements should have the same id as name
-		if ( ! isset($data['id']))
+		if ( ! isset($data['id']) AND strpos($data['name'], '[') === FALSE)
 		{
 			$data['id'] = $data['name'];
 		}
@@ -443,10 +443,7 @@ class form_Core {
 				$data = preg_replace('/\[.*\]/', '', $data);
 			}
 
-			$data = array
-			(
-				'for' => $data
-			);
+			$data = empty($data) ? array() : array('for' => $data);
 		}
 
 		if ( ! empty($extra))
