@@ -76,12 +76,12 @@ class Router_Core {
 					);
 
 					// Does this route match the current URI?
-					if (preg_match('!^'.$key.'$!u', self::$segments))
+					if (preg_match('#^'.$key.'$#u', self::$segments))
 					{
 						// If the regex contains a valid callback, we'll use it
 						if (strpos($val, '$') !== FALSE AND strpos($key, '(') !== FALSE)
 						{
-							self::$rsegments = preg_replace('!^'.$key.'$!u', $val, self::$segments);
+							self::$rsegments = preg_replace('#^'.$key.'$#u', $val, self::$segments);
 						}
 						else
 						{
