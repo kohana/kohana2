@@ -399,7 +399,7 @@ class Kohana {
 				break;
 				case 'deflate':
 					// Compress output using zlib (HTTP deflate)
-					exit(gzcompress($output, $level));
+					exit(gzdeflate($output, $level));
 				break;
 			}
 		}
