@@ -81,7 +81,7 @@ class Cache_Core {
 	public function get($id)
 	{
 		// Change slashes to colons
-		$id = str_replace(array('/', '\\'), ':', $id);
+		$id = str_replace(array('/', '\\'), '=', $id);
 
 		if ($data = $this->driver->get($id))
 		{
@@ -137,7 +137,7 @@ class Cache_Core {
 			throw new Kohana_Exception('cache.resources');
 
 		// Change slashes to colons
-		$id = str_replace(array('/', '\\'), ':', $id);
+		$id = str_replace(array('/', '\\'), '=', $id);
 
 		if ( ! is_string($data))
 		{
@@ -179,7 +179,7 @@ class Cache_Core {
 	public function del($id)
 	{
 		// Change slashes to colons
-		$id = str_replace(array('/', '\\'), ':', $id);
+		$id = str_replace(array('/', '\\'), '=', $id);
 
 		return $this->driver->del($id);
 	}
