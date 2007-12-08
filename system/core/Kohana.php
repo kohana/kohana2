@@ -384,6 +384,18 @@ class Kohana {
 
 		if (isset($compress) AND $level > 0)
 		{
+			switch($compress)
+			{
+				case 'gzip':
+					// Compress output using gzip
+					$output = gzencode($output, $level);
+				break;
+				case 'deflate':
+					// Compress output using zlib (HTTP deflate)
+					$output = gzdeflate($output, $level);
+				break;
+			}
+
 			// This header must be sent with compressed content to prevent
 			// browser caches from breaking
 			header('Vary: Accept-Encoding');
@@ -391,16 +403,10 @@ class Kohana {
 			// Send the content encoding header
 			header('Content-Encoding: '.$compress);
 
-			switch($compress)
+			// Sending Content-Length in CGI can result in unexpected behavior
+			if (stripos(PHP_SAPI, 'cgi') === FALSE)
 			{
-				case 'gzip':
-					// Compress output using gzip
-					exit(gzencode($output, $level));
-				break;
-				case 'deflate':
-					// Compress output using zlib (HTTP deflate)
-					exit(gzdeflate($output, $level));
-				break;
+				header('Content-Length: '.strlen($output));
 			}
 		}
 
