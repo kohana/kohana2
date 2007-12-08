@@ -38,9 +38,14 @@ class Form_Dateselect_Core extends Form_input{
 
 	protected function time_array($timestamp)
 	{
-		return array_combine(
+		$time = array_combine(
 			array('month', 'day', 'year', 'hour', 'minute', 'am_pm'), 
 			explode('--', date('n--j--Y--g--i--A', $timestamp)));
+
+		// Minutes should always be in 5 minute increments
+		$time['minute'] = num::round($time['minute'], 5);
+
+		return $time;
 	}
 
 	protected function load_value()
