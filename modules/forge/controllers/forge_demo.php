@@ -26,7 +26,7 @@ class Forge_demo_Controller extends Controller {
 		$form->checkbox('remember')->label('Remember Me');
 		$form->checklist('foods')->label('Favorite Foods')->options($foods)->rules('required');
 		$form->dropdown('state')->label('Home State')->options(locale_US::states())->rules('required');
-		$form->dateselect('birthday')->label(TRUE)->minutes(5);
+		$form->dateselect('birthday')->label(TRUE)->minutes(15)->years(1950, date('Y'));
 		$form->submit('Save');
 
 		if ($form->validate())

@@ -13,14 +13,14 @@ class Form_Dateselect_Core extends Form_input{
 	// Precision for the parts, you can use @ to insert a literal @ symbol
 	protected $parts = array
 	(
-		'month'   => NULL,
-		'day'     => 1,
-		'year'    => NULL,
+		'month'   => array(),
+		'day'     => array(1),
+		'year'    => array(),
 		' @ ',
-		'hour'    => NULL,
+		'hour'    => array(),
 		':',
-		'minute'  => 5,
-		'am_pm'   => NULL,
+		'minute'  => array(5),
+		'am_pm'   => array(),
 	);
 
 	public function __construct($name)
@@ -37,7 +37,7 @@ class Form_Dateselect_Core extends Form_input{
 		if (isset($this->parts[substr($method, 0, -1)]))
 		{
 			// Set options for date generation
-			$this->parts[substr($method, 0, -1)] = $args[0];
+			$this->parts[substr($method, 0, -1)] = $args;
 			return $this;
 		}
 
@@ -56,12 +56,12 @@ class Form_Dateselect_Core extends Form_input{
 		unset($data['label']);
 
 		$input = '';
-		foreach($this->parts as $type => $option)
+		foreach($this->parts as $type => $val)
 		{
 			if (is_int($type))
 			{
 				// Just add the separators
-				$input .= $option;
+				$input .= $val;
 				continue;
 			}
 
@@ -82,7 +82,7 @@ class Form_Dateselect_Core extends Form_input{
 				$type .= 's';
 
 				// Use the date helper to generate the options
-				$options = ($option === NULL) ? date::$type() : date::$type($option);
+				$options = empty($val) ? date::$type() : call_user_func_array(array('date', $type), $val);
 			}
 
 			$input .= form::dropdown($data, $options, $selected);
@@ -100,7 +100,7 @@ class Form_Dateselect_Core extends Form_input{
 		);
 
 		// Minutes should always be in 5 minute increments
-		$time['minute'] = num::round($time['minute'], $this->parts['minute']);
+		$time['minute'] = num::round($time['minute'], current($this->parts['minute']));
 
 		return $time;
 	}
