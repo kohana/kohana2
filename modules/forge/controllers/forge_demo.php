@@ -18,6 +18,7 @@ class Forge_demo_Controller extends Controller {
 		//
 		//   type($name)->attr(..)->attr(..);
 		//
+		$form->hidden('hideme')->value('hiddenz!');
 		$form->input('email')->label(TRUE)->rules('required|valid_email');
 		$form->input('username')->label(TRUE)->rules('required|length[5,32]');
 		$form->password('password')->label(TRUE)->rules('required|length[5,32]');

@@ -27,28 +27,42 @@ class Forge_Core {
 		{
 			return $this->inputs[$key];
 		}
+		elseif (isset($this->hidden[$key]))
+		{
+			return $this->hidden[$key];
+		}
 	}
 
 	public function __call($method, $args)
 	{
-		if ($method == 'hidden')
-		{
-			$this->hidden[$args[0]] = $args[1];
-			return;
-		}
 		// Class name
 		$input = 'Form_'.ucfirst($method);
 
 		// Create the input
-		$input = new $input(empty($args) ? NULL : current($args));
+		switch(count($args))
+		{
+			case 1:
+				$input = new $input($args[0]);
+			break;
+			case 2:
+				$input = new $input($args[0], $args[1]);
+			break;
+		}
 
 		if ( ! ($input instanceof Form_Input))
-			throw new Kohana_Exception('forge.invalid_input');
+			throw new Kohana_Exception('forge.invalid_input', get_class($input));
 
 		if ($name = $input->name)
 		{
-			// Assign by name
-			$this->inputs[$name] = $input;
+			if ($method == 'hidden')
+			{
+				$this->hidden[$name] = $input;
+			}
+			else
+			{
+				// Assign by name
+				$this->inputs[$name] = $input;
+			}
 		}
 		else
 		{
@@ -78,7 +92,7 @@ class Forge_Core {
 			return;
 
 		$data = array();
-		foreach($this->inputs as $input)
+		foreach(array_merge($this->hidden, $this->inputs) as $input)
 		{
 			if ($name = $input->name)
 			{
@@ -94,8 +108,17 @@ class Forge_Core {
 		// Load template with current template vars
 		$form = new View($template, $this->template);
 
+		$hidden = array();
+		if ( ! empty($this->hidden))
+		{
+			foreach($this->hidden as $input)
+			{
+				$hidden[$input->name] = $input->value;
+			}
+		}
+
 		// Set the form open and close
-		$form->open  = form::open($form->action, array('method' => 'post'), $this->hidden);
+		$form->open  = form::open($form->action, array('method' => 'post'), $hidden);
 		$form->close = form::close();
 
 		// Set the inputs
