@@ -10,14 +10,13 @@ class Form_Dateselect_Core extends Form_input{
 
 	protected $protect = array('type');
 
-	public function __get($key)
+	public function __construct($name)
 	{
-		if ($key == 'value')
-		{
-			return $this->selected;
-		}
+		// Set name
+		$this->data['name'] = $name;
 
-		return parent::__get($key);
+		// Default to the current time
+		$this->data['value'] = time();
 	}
 
 	public function html_element()
@@ -27,14 +26,21 @@ class Form_Dateselect_Core extends Form_input{
 		$name = $base_data['name'];
 
 		// Get the options and default selection
-		$date = arr::remove('value', $base_data);
+		$time = $this->time_array(arr::remove('value', $base_data));
 
-		return form::dropdown($name.'[month]', date::months(), date('m', $date)).' '.
-		       form::dropdown($name.'[day]', date::days(12), date('d', $date)).' '.
-		       form::dropdown($name.'[year]', date::years(), date('Y', $date)).' @ '.
-		       form::dropdown($name.'[hour]', date::hours(), date('g', $date)).':'.
-		       form::dropdown($name.'[minute]', date::minutes(), date('i', $date)).' '.
-		       form::dropdown($name.'[am_pm]', array('AM' => 'AM', 'PM' => 'PM'), date('A', $date));
+		return form::dropdown($name.'[month]', date::months(), $time['month']).' '.
+		       form::dropdown($name.'[day]', date::days(date('m')), $time['day']).' '.
+		       form::dropdown($name.'[year]', date::years(), $time['year']).' @ '.
+		       form::dropdown($name.'[hour]', date::hours(), $time['hour']).':'.
+		       form::dropdown($name.'[minute]', date::minutes(), $time['minute']).' '.
+		       form::dropdown($name.'[am_pm]', array('AM' => 'AM', 'PM' => 'PM'), $time['am_pm']);
+	}
+
+	protected function time_array($timestamp)
+	{
+		return array_combine(
+			array('month', 'day', 'year', 'hour', 'minute', 'am_pm'), 
+			explode('--', date('n--j--Y--g--i--A', $timestamp)));
 	}
 
 	protected function load_value()
@@ -43,9 +49,19 @@ class Form_Dateselect_Core extends Form_input{
 			return;
 
 		$time = self::$input->post($this->name);
-		$am_pm = $time['am_pm'];
 
-		$this->data['value'] = mktime(($am_pm == 'PM') ? $time['hour']+12 : $time['hour'], $time['minute'], 0, $time['month'], $time['day'], $time['year']);
+		// Make sure all the required inputs keys are set
+		$time += $this->time_array(time());
+
+		$this->data['value'] = mktime
+		(
+			// If the time is PM, add 12 hours for 24 hour time
+			($time['am_pm'] == 'PM') ? $time['hour'] + 12  : $time['hour'],
+			$time['minute'],
+			0,
+			$time['month'],
+			$time['day'],
+			$time['year']);
 	}
 
 } // End Form Dateselect
