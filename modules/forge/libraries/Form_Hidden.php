@@ -4,6 +4,7 @@ class Form_Hidden_Core extends Form_Input {
 
 	protected $data = array
 	(
+		'type'  => 'hidden',
 		'class' => 'hidden',
 		'value' => '',
 	);
