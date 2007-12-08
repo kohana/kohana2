@@ -103,7 +103,10 @@ class Form_Input_Core {
 	{
 		if ($val === NULL)
 		{
-			return form::label($this->name, $this->label);
+			if ($name = $this->name)
+			{
+				return form::label($name, $this->label);
+			}
 		}
 		else
 		{

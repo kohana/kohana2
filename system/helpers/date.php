@@ -201,6 +201,33 @@ class date_Core {
 	}
 
 	/**
+	 * Adjusts a non-24-hour number into a 24-hour number.
+	 *
+	 * @param   integer  hour to adjust
+	 * @param   string   AM or PM
+	 * @return  string
+	 */
+	public static function adjust($hour, $ampm)
+	{
+		$hour = (int) $hour;
+		$ampm = strtolower($ampm);
+
+		switch($ampm)
+		{
+			case 'am':
+				if ($hour == 12)
+					$hour = 0;
+			break;
+			case 'pm':
+				if ($hour < 12)
+					$hour += 12;
+			break;
+		}
+
+		return sprintf('%02s', $hour);
+	}
+
+	/**
 	 * Method: days
 	 *  Number of days in month.
 	 *

@@ -10,6 +10,19 @@ class Form_Dateselect_Core extends Form_input{
 
 	protected $protect = array('type');
 
+	// Precision for the parts, you can use @ to insert a literal @ symbol
+	protected $parts = array
+	(
+		'month'   => NULL,
+		'day'     => 1,
+		'year'    => NULL,
+		' @ ',
+		'hour'    => NULL,
+		':',
+		'minute'  => 5,
+		'am_pm'   => NULL,
+	);
+
 	public function __construct($name)
 	{
 		// Set name
@@ -19,31 +32,75 @@ class Form_Dateselect_Core extends Form_input{
 		$this->data['value'] = time();
 	}
 
+	public function __call($method, $args)
+	{
+		if (isset($this->parts[substr($method, 0, -1)]))
+		{
+			// Set options for date generation
+			$this->parts[substr($method, 0, -1)] = $args[0];
+			return $this;
+		}
+
+		return parent::__call($method, $args);
+	}
+
 	public function html_element()
 	{
 		// Import base data
-		$base_data = $this->data;
-		$name = $base_data['name'];
+		$data = $this->data;
 
 		// Get the options and default selection
-		$time = $this->time_array(arr::remove('value', $base_data));
+		$time = $this->time_array(arr::remove('value', $data));
 
-		return form::dropdown($name.'[month]', date::months(), $time['month']).' '.
-		       form::dropdown($name.'[day]', date::days(date('m')), $time['day']).' '.
-		       form::dropdown($name.'[year]', date::years(), $time['year']).' @ '.
-		       form::dropdown($name.'[hour]', date::hours(), $time['hour']).':'.
-		       form::dropdown($name.'[minute]', date::minutes(), $time['minute']).' '.
-		       form::dropdown($name.'[am_pm]', array('AM' => 'AM', 'PM' => 'PM'), $time['am_pm']);
+		// No labels or values
+		unset($data['label']);
+
+		$input = '';
+		foreach($this->parts as $type => $option)
+		{
+			if (is_int($type))
+			{
+				// Just add the separators
+				$input .= $option;
+				continue;
+			}
+
+			// Set this input name
+			$data['name'] = $this->data['name'].'['.$type.']';
+
+			// Set the selected option
+			$selected = $time[$type];
+
+			if ($type == 'am_pm')
+			{
+				// Options are static
+				$options = array('AM' => 'AM', 'PM' => 'PM');
+			}
+			else
+			{
+				// Minute(s), Hour(s), etc
+				$type .= 's';
+
+				// Use the date helper to generate the options
+				$options = ($option === NULL) ? date::$type() : date::$type($option);
+			}
+
+			$input .= form::dropdown($data, $options, $selected);
+		}
+
+		return $input;
 	}
 
 	protected function time_array($timestamp)
 	{
-		$time = array_combine(
+		$time = array_combine
+		(
 			array('month', 'day', 'year', 'hour', 'minute', 'am_pm'), 
-			explode('--', date('n--j--Y--g--i--A', $timestamp)));
+			explode('--', date('n--j--Y--g--i--A', $timestamp))
+		);
 
 		// Minutes should always be in 5 minute increments
-		$time['minute'] = num::round($time['minute'], 5);
+		$time['minute'] = num::round($time['minute'], $this->parts['minute']);
 
 		return $time;
 	}
@@ -60,13 +117,13 @@ class Form_Dateselect_Core extends Form_input{
 
 		$this->data['value'] = mktime
 		(
-			// If the time is PM, add 12 hours for 24 hour time
-			($time['am_pm'] == 'PM') ? $time['hour'] + 12  : $time['hour'],
+			date::adjust($time['hour'], $time['am_pm']),
 			$time['minute'],
 			0,
 			$time['month'],
 			$time['day'],
-			$time['year']);
+			$time['year']
+		);
 	}
 
 } // End Form Dateselect
