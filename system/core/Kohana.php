@@ -363,7 +363,7 @@ class Kohana {
 			$output
 		);
 
-		if (($level = Config::item('core.output_compression')) AND )
+		if ($level = Config::item('core.output_compression'))
 		{
 			if ($level < 1 OR $level > 9)
 			{
@@ -374,23 +374,37 @@ class Kohana {
 
 			if (stripos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== FALSE)
 			{
-				// Compress output using gzip
-				$output = gzencode($output, $level);
-
-				// Enable gzip output compression
-				header('Content-Encoding: gzip');
+				$compress = 'gzip';
 			}
 			elseif (stripos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'deflate') !== FALSE)
 			{
-				// Compress output using zlib (HTTP deflate)
-				$output = gzcompress($output, $level);
-
-				// Enable deflate output compression
-				header('Content-Encoding: deflate');
+				$compress = 'deflate';
 			}
 		}
 
-		echo $output;
+		if (isset($compress) AND $level > 0)
+		{
+			// This header must be sent with compressed content to prevent
+			// browser caches from breaking
+			header('Vary: Accept-Encoding');
+
+			// Send the content encoding header
+			header('Content-Encoding: '.$compress);
+
+			switch($compress)
+			{
+				case 'gzip':
+					// Compress output using gzip
+					exit(gzencode($output, $level));
+				break;
+				case 'deflate':
+					// Compress output using zlib (HTTP deflate)
+					exit(gzcompress($output, $level));
+				break;
+			}
+		}
+
+		exit($output);
 	}
 
 	/**
