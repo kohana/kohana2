@@ -110,7 +110,7 @@ class Form_Input_Core {
 		}
 		else
 		{
-			$this->label = ($val === TRUE) ? ucwords(inflector::humanize($this->name)) : $val;
+			$this->data['label'] = ($val === TRUE) ? ucwords(inflector::humanize($this->name)) : $val;
 			return $this;
 		}
 	}

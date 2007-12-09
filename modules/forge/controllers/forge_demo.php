@@ -49,10 +49,8 @@ class Forge_demo_Controller extends Controller {
 		{
 			echo Kohana::debug('user edited!', $form->as_array());
 		}
-		else
-		{
-			echo $form;
-		}
+
+		echo $form;
 	}
 
 	public function bench()

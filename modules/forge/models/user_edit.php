@@ -16,60 +16,50 @@ class User_Edit_Model extends User_Model {
 		// Create the form
 		$this->form = new Forge($action, $title);
 
-		foreach(self::$fields[$this->table] as $field => $meta)
+		$this->form->input('username')->label(TRUE)->rules('required|length[5,32]')->value($this->object->username);
+		$this->form->input('email')->label(TRUE)->rules('required|length[5,127]|valid_email')->value($this->object->email);
+		$this->form->password('password')->label(TRUE)->rules('length[5,64]');
+		$this->form->password('confirm')->label(TRUE)->matches($this->form->password);
+
+		// Make sure that the username does not already exist
+		$this->form->username->callback(array($this, 'is_existing_user'));
+
+		if ($this->object->id == 0)
 		{
-			// User id and login data is not editable
-			if (substr($field, -2) == 'id' or $field == 'logins')
-				continue;
-
-			if ($field == 'password')
-			{
-				// Add password and confirm password fields
-				$this->form->password($field)->label(TRUE)->rules('length[5,32]');
-				$this->form->password('confirm')->label(TRUE)->matches($this->form->password);
-
-				if ($this->object->id == 0)
-				{
-					// Password fields are required for new users
-					$this->form->password->rules('+required');
-				}
-			}
-			else
-			{
-				// All fields are required by default
-				$rules = 'required';
-
-				if (isset($meta['length']))
-				{
-					$rules .= '|length['.(empty($meta['exact']) ? '1,' : '').$meta['length'].']';
-				}
-
-				if ($field == 'email')
-				{
-					$rules .= '|valid_email';
-				}
-
-				// Add an input for this field with the value of the field
-				$this->form->input($field)->label(TRUE)->rules($rules)->value($this->object->$field);
-			}
+			// Password fields are required for new users
+			$this->form->password->rules('+required');
 		}
 
-		// Find all roles
-		$roles = new Role_Model();
-		$roles = $roles->find(ALL);
-
-		$options = array();
-		foreach($roles as $role)
-		{
-			// Add each role to the options
-			$options[$role->name] = isset($this->roles[$role->id]);
-		}
-
-		// Create a checklist of roles
-		$this->form->checklist('roles')->options($options)->label(TRUE);
+		// // Find all roles
+		// $roles = new Role_Model();
+		// $roles = $roles->find(ALL);
+		// 
+		// $options = array();
+		// foreach($roles as $role)
+		// {
+		// 	// Add each role to the options
+		// 	$options[$role->name] = isset($this->roles[$role->id]);
+		// }
+		// 
+		// // Create a checklist of roles
+		// $this->form->checklist('roles')->options($options)->label(TRUE);
 
 		// Add the save button
 		$this->form->submit('Save');
+	}
+
+	public function is_existing_user($input)
+	{
+		if ($this->object->username == $input->value)
+			return TRUE;
+
+		if (self::$db->count_records($this->table, array('username' => $input->value)) > 0)
+		{
+			$input->add_error(__FUNCTION__, 'The username <strong>'.$input->value.'</strong> is already in use.');
+			return FALSE;
+		}
+
+		return TRUE;
 	}
 
 	public function save()
@@ -86,7 +76,7 @@ class User_Edit_Model extends User_Model {
 			$new_user = ($this->object->id == 0);
 
 			// Remove the roles from data
-			$roles = arr::remove('roles', $data);
+			isset($data['roles']) and $roles = arr::remove('roles', $data);
 
 			foreach($data as $field => $val)
 			{
@@ -96,28 +86,28 @@ class User_Edit_Model extends User_Model {
 
 			if ($status = parent::save())
 			{
-				if ($new_user)
-				{
-					foreach($roles as $role)
-					{
-						// Add the user roles
-						$this->add_role($role);
-					}
-				}
-				else
-				{
-					foreach(array_diff($this->roles, $roles) as $role)
-					{
-						// Remove roles that were deactivated
-						$this->remove_role($role);
-					}
-
-					foreach(array_diff($roles, $this->roles) as $role)
-					{
-						// Add new roles
-						$this->add_role($role);
-					}
-				}
+				// if ($new_user)
+				// {
+				// 	foreach($roles as $role)
+				// 	{
+				// 		// Add the user roles
+				// 		$this->add_role($role);
+				// 	}
+				// }
+				// else
+				// {
+				// 	foreach(array_diff($this->roles, $roles) as $role)
+				// 	{
+				// 		// Remove roles that were deactivated
+				// 		$this->remove_role($role);
+				// 	}
+				// 
+				// 	foreach(array_diff($roles, $this->roles) as $role)
+				// 	{
+				// 		// Add new roles
+				// 		$this->add_role($role);
+				// 	}
+				// }
 			}
 
 			// Return the save status
@@ -139,4 +129,4 @@ class User_Edit_Model extends User_Model {
 		return $this->form->html();
 	}
 
-}
+} // End User Edit Model
