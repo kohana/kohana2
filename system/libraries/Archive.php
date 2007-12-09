@@ -23,8 +23,10 @@ class Archive_Core {
 	 *
 	 * Throws: Kohana_Exception
 	 */
-	public function __construct($type = 'zip')
+	public function __construct($type)
 	{
+		$type = empty($type) ? 'zip' : $type;
+
 		try
 		{
 			// Set driver name
