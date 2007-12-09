@@ -23,7 +23,7 @@ class Archive_Core {
 	 *
 	 * Throws: Kohana_Exception
 	 */
-	public function __construct($type)
+	public function __construct($type = NULL)
 	{
 		$type = empty($type) ? 'zip' : $type;
 
