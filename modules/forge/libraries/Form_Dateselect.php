@@ -78,7 +78,7 @@ class Form_Dateselect_Core extends Form_input{
 			}
 			else
 			{
-				// Minute(s), Hour(s), etc
+				// minute(s), hour(s), etc
 				$type .= 's';
 
 				// Use the date helper to generate the options

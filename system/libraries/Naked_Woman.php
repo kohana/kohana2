@@ -16,7 +16,7 @@ class Naked_Woman_Core {
 		throw new Kohana_User_Exception
 		(
 			'cash::generate(), plz?', 
-			'There are no naked women or cash generators in Kohana. Sorry.'
+			'There are no naked women or cash generators in Kohana. Sorry! ;)'
 		);
 	}
 

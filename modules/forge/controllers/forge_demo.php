@@ -29,12 +29,30 @@ class Forge_demo_Controller extends Controller {
 		$form->dateselect('birthday')->label(TRUE)->minutes(15)->years(1950, date('Y'));
 		$form->submit('Save');
 
+		echo Kohana::debug(headers_list());exit;
+
 		if ($form->validate())
 		{
 			echo Kohana::debug($form->as_array());
 		}
 
 		echo $form->html();
+	}
+
+	public function edit_user($id = FALSE)
+	{
+		$profiler = new Profiler;
+
+		$form = new User_Edit_Model(NULL, 'Edit User', $id);
+
+		if ($form->save())
+		{
+			echo Kohana::debug('user edited!', $form->as_array());
+		}
+		else
+		{
+			echo $form;
+		}
 	}
 
 	public function bench()

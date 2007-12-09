@@ -65,8 +65,8 @@ class ORM_Core {
 		}
 
 		// Fetch table name
-		$this->class = strtolower(substr(get_class($this), 0, -6));
-		$this->table = inflector::plural($this->class);
+		empty($this->class) and $this->class = strtolower(substr(get_class($this), 0, -6));
+		empty($this->table) and $this->table = inflector::plural($this->class);
 
 		if (empty(self::$fields[$this->table]))
 		{
