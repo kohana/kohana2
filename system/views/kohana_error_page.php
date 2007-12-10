@@ -19,8 +19,8 @@ strong {color:#700;}
 #stats {margin:0;padding-top: 0.5em;border-top:solid 1px #ccc;font-size:0.8em;text-align:center;color:#555;}
 .message {margin:1em;padding:0.5em;background:#dfdfdf;border:solid 1px #999;}
 .detail {text-align:center;}
-.backtrace { margin: 0 2em 1em; }
-.backtrace pre { background:#eeeeee; }
+.backtrace {margin:0 2em 1em;}
+.backtrace pre {background:#eee;}
 /* ]]> */
 </style>
 <!--

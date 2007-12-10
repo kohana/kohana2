@@ -514,9 +514,10 @@ class Kohana {
 
 		if ($line != FALSE)
 		{
-			$trace = $PHP_ERROR ? debug_backtrace() : $exception->getTrace();
+			// Remove the first entry of debug_backtrace(), it is the exception_handler call
+			$trace = $PHP_ERROR ? array_slice(debug_backtrace(), 1) : $exception->getTrace();
 
-			// Remove the first entry of the backtrace, it the exception
+			// Beautify backtrace
 			$trace = self::backtrace($trace);
 		}
 
@@ -879,45 +880,51 @@ class Kohana {
 
 		foreach($trace as $entry)
 		{
+			$temp = '<li>';
+
 			if (isset($entry['file']))
 			{
-				// Remove docroot from filename
-				$file = preg_replace('!^'.preg_quote(DOCROOT).'!', '', $entry['file']);
-
-				// Function args
-				$args = '';
-
-				if (isset($entry['args']) AND is_array($entry['args']))
-				{
-					// Separator starts as nothing
-					$sep = '';
-
-					while ($arg = array_shift($entry['args']))
-					{
-						if (is_string($arg) AND is_file($arg))
-						{
-							// Remove docroot from filename
-							$arg = preg_replace('!^'.preg_quote(DOCROOT).'!', '', $arg);
-						}
-
-						// Add the arg to the args
-						$args .= $sep.print_r($arg, TRUE);
-
-						// Change separator to a comma
-						$sep = ', ';
-					}
-				}
-
-				$output[] = '<li>'.
-					// Add file
-					'<strong>'.$file.
-					// Add line
-					' ['.$entry['line'].']:</strong><pre>'.
-					// Add class and type
-					(isset($entry['class']) ? $entry['class'].' '.$entry['type'].' ' : '').
-					// Add method/function
-					$entry['function'].' ( '.$args.' )</pre></li>';
+				// Add file (without docroot)
+				$temp .= '<strong>'.preg_replace('!^'.preg_quote(DOCROOT).'!', '', $entry['file']);
+				// Add line
+				$temp .= ' ['.$entry['line'].']:</strong>';
 			}
+
+			$temp .= '<pre>';
+
+			if (isset($entry['class']))
+			{
+				// Add class and call type
+				$temp .= $entry['class'].$entry['type'];
+			}
+
+			// Add function
+			$temp .= $entry['function'].'( ';
+
+			// Add function args
+			if (isset($entry['args']) AND is_array($entry['args']))
+			{
+				// Separator starts as nothing
+				$sep = '';
+            
+				while ($arg = array_shift($entry['args']))
+				{
+					if (is_string($arg) AND is_file($arg))
+					{
+						// Remove docroot from filename
+						$arg = preg_replace('!^'.preg_quote(DOCROOT).'!', '', $arg);
+					}
+            
+					$temp .= $sep.print_r($arg, TRUE);
+            
+					// Change separator to a comma
+					$sep = ', ';
+				}
+			}
+
+			$temp .= ' )</pre></li>';
+
+			$output[] = $temp;
 		}
 
 		return '<ul class="backtrace">'.implode("\n", $output).'</ul>';

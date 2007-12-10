@@ -85,7 +85,7 @@ class Input_Core {
 				$_COOKIE = array();
 			}
 
-			Log::add('debug', 'Global POST and COOKIE data sanitized');
+			Log::add('debug', 'Global GET, POST and COOKIE data sanitized');
 		}
 
 		self::$instances++;
