@@ -11,6 +11,9 @@ class Controller extends Controller_Core {
 	// Main template
 	protected $template = 'layout';
 
+	// Cache instance
+	protected $cache;
+
 	// RSS feeds
 	protected $feeds = array
 	(
@@ -38,22 +41,13 @@ class Controller extends Controller_Core {
 			url::redirect('home');
 		}
 
-		// Cache location
-		$cache = APPPATH.'cache/';
-
-		if ( ! is_writable($cache))
-		{
-			throw new Kohana_User_Exception
-			(
-				'Cache Unwritable',
-				'Please make the application/cache directory writable!'
-			);
-		}
-
 		if ($this->auto_render == TRUE)
 		{
+			// Load cache
+			$this->cache = new Cache;
+
 			// Load session
-			$this->session = new Session();
+			$this->session = new Session;
 
 			// Load database
 			$this->db = new Database('website');
@@ -69,29 +63,19 @@ class Controller extends Controller_Core {
 				'tutorials'  => 'Tutorials',
 				// External links
 				'http://forum.kohanaphp.com/' => 'Forum',
-				'http://api.kohanaphp.com/'   => 'API Manual'
+				'http://doc.kohanaphp.com/' => 'User Guide',
+				// 'http://api.kohanaphp.com/'   => 'API Manual',
 			);
 
 			// Sidebar
 			$this->template->sidebar = new View('sidebar');
 
-			if ( ! extension_loaded('curl') AND ! @dl((strpos(PHP_OS, 'WIN') !== FALSE) ? 'curl.dll' : 'curl.so'))
-			{
-				throw new Kohana_User_Exception
-				(
-					'Cannot Fetch Remote Content',
-					'Your PHP installation does not have the cURL extension ('.html::anchor('http://php.net/curl').') loaded. '.
-					'This is required for remote feed fetching. Please enable it, then refresh the page.'
-				);
-			}
-
 			// Feed caching
 			foreach($this->feeds as $name => $data)
 			{
-				$filename = $cache.$name.'.xml';
+				$cache_id = 'feed--'.$name;
 
-				// Cache the feed for 30 minutes, 60 (one minute) * 30 = 1800
-				if ( ! file_exists($filename) OR (time() - 1800) > filemtime($filename))
+				if (($feed = $this->cache->get($cache_id)) == FALSE)
 				{
 					// Initialize cURL
 					$curl = curl_init();
@@ -103,24 +87,21 @@ class Controller extends Controller_Core {
 					curl_setopt($curl, CURLOPT_TIMEOUT, 3);         // Five second timeout
 
 					// Fetch the remote feed
-					$feed_content = curl_exec($curl);
+					$feed = curl_exec($curl);
 
 					if (curl_errno($curl) === CURLE_OK)
 					{
 						// Cache the content if there was no error
-						file_put_contents($filename, $feed_content);
+						$this->cache->set($cache_id, $feed, array('feed'));
 					}
 					else
 					{
 						// Log fetching errors
 						Log::add('error', 'Error fetching remote feed ('.$data['url'].'): '.curl_error($curl));
 					}
-
-					// Close cURL
-					curl_close($curl);
 				}
 
-				$this->feeds[$name]['items'] = feed::parse($filename, 3);
+				$this->feeds[$name]['items'] = feed::parse($feed, 3);
 			}
 
 			// Add the feeds to the sidebar

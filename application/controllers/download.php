@@ -225,62 +225,69 @@ class Download_Controller extends Controller {
 
 		if ( ! empty($_GET) AND $this->validation->run())
 		{
-			// Get current directory for return
-			$return_dir = getcwd();
+			// Set the cache id
+			$cache_id = 'dl--'.sha1(serialize($_GET));
 
-			// Change to the trunk directory
-			chdir($kohana_trunk);
-
-			// Initialize a new archive
-			$archive = new Archive($this->validation->format);
-
-			// Add group files
-			foreach($groups[$this->validation->group] as $path)
+			// Attempt to fetch the archive from cache
+			if (($cache = $this->cache->get($cache_id)) == FALSE)
 			{
-				$archive->add($path, FALSE);
-			}
+				// Get current directory for return
+				$return_dir = getcwd();
 
-			// Add language dirs
-			foreach($this->validation->languages as $lang)
-			{
-				$archive->add('system/i18n/'.$lang, FALSE);
-			}
+				// Change to the trunk directory
+				chdir($kohana_trunk);
 
-			// Add language files
-			foreach($group_langs[$this->validation->group] as $file)
-			{
+				// Initialize a new archive
+				$archive = new Archive($this->validation->format);
+
+				// Add group files
+				foreach($groups[$this->validation->group] as $path)
+				{
+					$archive->add($path, FALSE);
+				}
+
+				// Add language dirs
 				foreach($this->validation->languages as $lang)
 				{
-					$archive->add('system/i18n/'.$lang.'/'.$file.EXT, FALSE);
+					$archive->add('system/i18n/'.$lang, FALSE);
 				}
-			}
 
-			if ($vendor_files = $this->validation->vendor)
-			{
-				// Add vendor directory
-				$archive->add('system/vendor', FALSE);
-
-				foreach($vendor_files as $name)
+				// Add language files
+				foreach($group_langs[$this->validation->group] as $file)
 				{
-					// Add vendor files
-					$archive->add('system/vendor/'.$content->vendors[$name]['file']);
+					foreach($this->validation->languages as $lang)
+					{
+						$archive->add('system/i18n/'.$lang.'/'.$file.EXT, FALSE);
+					}
 				}
+
+				if ($vendor_files = $this->validation->vendor)
+				{
+					// Add vendor directory
+					$archive->add('system/vendor', FALSE);
+
+					foreach($vendor_files as $name)
+					{
+						// Add vendor files
+						$archive->add('system/vendor/'.$content->vendors[$name]['file']);
+					}
+				}
+
+				// Create the archive and cache it
+				$this->cache->set($cache_id, $cache = $archive->create(), array('download'));
+
+				// Return to the original directory
+				chdir($return_dir);
 			}
+
+			// Increase the counter
+			file_put_contents(APPPATH.'cache/counter.txt', $content->counter + 1);
 
 			// Do this to prevent the template from trying to render and fucking up the download
 			$this->auto_render = FALSE;
 
 			// Force a download of the archive
-			$archive->download('Kohana_v'.KOHANA_VERSION.'_'.date('Y-m-d', $content->sync_date).'.zip');
-
-			// Return to the original directory
-			chdir($return_dir);
-
-			// Increase the counter
-			file_put_contents(APPPATH.'cache/counter.txt', $content->counter + 1);
-
-			// We're done here
-			return;
+			return download::force('Kohana_v'.KOHANA_VERSION.'_'.date('Y-m-d', $content->sync_date).'.zip', $cache);
 		}
 
 		// Set page title and content
