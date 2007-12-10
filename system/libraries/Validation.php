@@ -859,7 +859,7 @@ class Validation_Core {
 		if (valid::url($url, $scheme))
 			return TRUE;
 
-		$this->add_error('valid_url', $this->current_field, $scheme, $url);
+		$this->add_error('valid_url', $this->current_field, $url);
 		return FALSE;
 	}
 
