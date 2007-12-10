@@ -81,7 +81,7 @@ class Form_Input_Core {
 
 	public function matches($input)
 	{
-		if ( ! in_array($input, $this->matches))
+		if ( ! in_array($input, $this->matches, TRUE))
 		{
 			$this->matches[] = $input;
 		}
@@ -91,7 +91,7 @@ class Form_Input_Core {
 
 	public function callback($callback)
 	{
-		if ( ! in_array($callback, $this->callbacks))
+		if ( ! in_array($callback, $this->callbacks, TRUE))
 		{
 			$this->callbacks[] = $callback;
 		}

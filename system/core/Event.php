@@ -41,7 +41,7 @@ final class Event {
 			self::$events[$name] = array();
 		}
 
-		if ( ! in_array($callback, self::$events[$name]))
+		if ( ! in_array($callback, self::$events[$name], TRUE))
 		{
 			// Add the event if it does not already exist in the queue
 			self::$events[$name][] = $callback;
@@ -139,11 +139,10 @@ final class Event {
 		if (empty($name) OR empty($existing) OR empty($callback) OR empty(self::$events[$name]))
 			return FALSE;
 
-		// If the existing event does not exist, or the 
-		if (($key = array_search($existing, self::$events[$name])) === FALSE)
+		if (($key = array_search($existing, self::$events[$name], TRUE)) === FALSE)
 			return FALSE;
 
-		if ( ! in_array($callback, self::$events[$name]))
+		if ( ! in_array($callback, self::$events[$name], TRUE))
 		{
 			// Replace the exisiting event with the new event
 			self::$events[$name][$key] = $callback;

@@ -75,4 +75,4 @@ class Forge_demo_Controller extends Controller {
 		echo $form;
 	}
 
-} // End
+} // End Forge Demo Controller
