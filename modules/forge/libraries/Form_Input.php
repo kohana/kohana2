@@ -145,7 +145,7 @@ class Form_Input_Core {
 		{
 			if ($action === '-')
 			{
-				if ($key = array_search($rule, $this->rules))
+				if (($key = array_search($rule, $this->rules)) !== FALSE)
 				{
 					// Remove the rule
 					unset($this->rules[$key]);
