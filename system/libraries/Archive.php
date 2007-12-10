@@ -18,10 +18,11 @@ class Archive_Core {
 	protected $driver;
 
 	/**
-	 * Constructor: __construct
-	 *  Loads the archive driver.
+	 * Loads the archive driver.
 	 *
-	 * Throws: Kohana_Exception
+	 * @throws  Kohana_Exception
+	 * @param   string   type of archive to create
+	 * @return  void
 	 */
 	public function __construct($type = NULL)
 	{
@@ -51,14 +52,10 @@ class Archive_Core {
 	}
 
 	/**
-	 * Method: add
-	 *  Adds files or directories, recursively, to an archive.
+	 * Adds files or directories, recursively, to an archive.
 	 *
-	 * Parameters:
-	 *  path - file or directory to add
-	 *
-	 * Returns:
-	 *  Archive object
+	 * @param   string   file or directory to add
+	 * @return  object
 	 */
 	public function add($path, $recursive = TRUE)
 	{
@@ -97,16 +94,11 @@ class Archive_Core {
 	}
 
 	/**
-	 * Method: save
-	 *  Creates an archive and saves it into a file.
+	 * Creates an archive and saves it into a file.
 	 *
-	 * Parameters:
-	 *  filename - archive filename
-	 *
-	 * Throws: Kohana_Exception
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @throws  Kohana_Exception
+	 * @param   string   archive filename
+	 * @return  boolean
 	 */
 	public function save($filename)
 	{
@@ -130,11 +122,21 @@ class Archive_Core {
 	}
 
 	/**
+	 * Creates a raw archive file and returns it.
+	 *
+	 * @return  string
+	 */
+	public function create()
+	{
+		return $this->driver->create($this->paths);
+	}
+
+	/**
 	 * Method: download
 	 *  Forces a download of a created archive.
 	 *
-	 * Parameters:
-	 *  filename - name of the file that will be downloaded
+	 * @param   string   name of the file that will be downloaded
+	 * @return  void
 	 */
 	public function download($filename)
 	{

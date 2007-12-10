@@ -27,7 +27,18 @@ class feed_Core {
 		$limit = (int) $limit;
 
 		// Create a DOM parser
-		$parser = DOMDocument::load($feed);
+		$parser = new DOMDocument;
+
+		if (is_file($feed))
+		{
+			// Load by file
+			$parser->load($feed);
+		}
+		else
+		{
+			// Load XML in the string
+			$parser->loadXML($feed);
+		}
 
 		// Reset the feed to an empty array
 		$feed = array();
