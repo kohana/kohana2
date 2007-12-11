@@ -52,6 +52,11 @@ class Kohana {
 	 * This method is run immediately when this file is loaded, and is
 	 * benchmarked as environment_setup.
 	 *
+	 * For security, this function also destroys the $_REQUEST global variable.
+	 * Using the proper global, GET, POST, COOKIE, etc is inherently more secure.
+	 * The recommended way to fetch a global variable is using the Input library.
+	 * @see http://www.php.net/globals
+	 *
 	 * @return  void
 	 */
 	final public static function setup()
@@ -64,6 +69,9 @@ class Kohana {
 
 		// Start the environment setup benchmark
 		Benchmark::start(SYSTEM_BENCHMARK.'_environment_setup');
+
+		// Destroy the REQUEST global
+		$_REQUEST = array();
 
 		if (function_exists('date_default_timezone_set'))
 		{
