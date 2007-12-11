@@ -46,8 +46,21 @@ class ORM_Core {
 	protected $has_and_belongs_to_many = array();
 
 	/**
+	 * Factory method. Creates an instance of an ORM model and returns it.
+	 *
+	 * @param   string   model name
+	 * @param   mixed    id to load
+	 * @return  object
+	 */
+	public static function instance($model = FALSE, $id = FALSE)
+	{
+		$model = empty($model) ? __CLASS__ : ucfirst($model).'_Model';
+		return new $model($id);
+	}
+
+	/**
 	 * Initialize database, setup internal variables, find requested object.
-     *
+	 *
 	 * @return void
 	 */
 	public function __construct($id = FALSE)
@@ -256,6 +269,11 @@ class ORM_Core {
 			{
 				// Find many<>many relationships, via a JOIN
 				$this->related_join($table);
+			}
+			else
+			{
+				// This table does not have ownership
+				return FALSE;
 			}
 
 			return $model->load_result(TRUE);
