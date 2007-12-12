@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Form_Checklist_Core extends Form_input{
+class Form_Checklist_Core extends Form_Input {
 
 	protected $data = array
 	(
