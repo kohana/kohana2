@@ -80,20 +80,6 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 		return mysqli_real_escape_string($str, $this->link);
 	}
 
-	public function list_tables()
-	{
-		$sql    = 'SHOW TABLES FROM `'.$this->db_config['connection']['database'].'`';
-		$result = $this->query($sql)->result(FALSE, MYSQLI_ASSOC);
-
-		$retval = array();
-		foreach($result as $row)
-		{
-			$retval[] = current($row);
-		}
-
-		return $retval;
-	}
-
 	public function show_error()
 	{
 		return mysqli_error($this->link);
@@ -472,4 +458,4 @@ class Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Countable
 		return $this->offsetExists($this->current_row);
 	}
 	// End Interface
-} // End Mysql_Result Class
+} // End Mysqli_Result Class
