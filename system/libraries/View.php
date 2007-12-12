@@ -29,7 +29,7 @@ class View_Core {
 	 */
 	public function __construct($name, $data = NULL)
 	{
-		if (preg_match('/\.(?:gif|jpe?g|png|css|js|tiff?|swf|pdf)$/Di', $name, $type))
+		if (preg_match('/\.(?:html?|gif|jpe?g|png|css|js|tiff?|swf|pdf)$/Di', $name, $type))
 		{
 			// Removes the period from the beginning of the type
 			$type = substr($type[0], 1);
