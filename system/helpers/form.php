@@ -268,9 +268,21 @@ class form_Core {
 		$input = '<select '.self::attributes($data).$extra.'>'."\n";
 		foreach ($options as $key => $val)
 		{
-			$sel = ($selected == $key) ? ' selected="selected"' : '';
-
-			$input .= '<option value="'.$key.'"'.$sel.'>'.$val.'</option>'."\n";
+			if (is_array($val))
+			{
+				$input .= '<optgroup label="'.$key.'">'."\n";
+				foreach ($val as $inner_key => $inner_val)
+				{
+					$sel = ($selected == $inner_key) ? ' selected="selected"' : '';
+					$input .= '<option value="'.$inner_key.'"'.$sel.'>'.$inner_val.'</option>'."\n";
+				}
+				$input .= '</optgroup>'."\n";
+			}
+			else
+			{
+				$sel = ($selected == $key) ? ' selected="selected"' : '';
+				$input .= '<option value="'.$key.'"'.$sel.'>'.$val.'</option>'."\n";
+			}
 		}
 		$input .= '</select>';
 
