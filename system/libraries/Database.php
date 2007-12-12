@@ -180,9 +180,11 @@ class Database_Core {
 	 */
 	public function connect()
 	{
-		if ( ! is_resource($this->link))
+		// A link can be a resource or an object
+		if ( ! is_resource($this->link) AND ! is_object($this->link))
 		{
-			if ( ! is_resource($this->link = $this->driver->connect()))
+			$this->link = $this->driver->connect();
+			if ( ! is_resource($this->link) AND ! is_object($this->link))
 				throw new Kohana_Exception('database.connection', $this->driver->show_error());
 		}
 	}
