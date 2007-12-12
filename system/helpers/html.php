@@ -195,6 +195,32 @@ class html_Core {
 	}
 
 	/**
+	 * Generate a "breadcrumb" list of anchors representing the URI.
+	 *
+	 * @param 
+	 * @return string
+	 */
+	public static function breadcrumb($segments = NULL)
+	{
+		empty($segments) and $segments = Router::$segments;
+
+		$array = array();
+		while ($segment = array_pop($segments))
+		{
+			$array[] = self::anchor
+			(
+				// Complete URI for the URL
+				implode('/', $segments).'/'.$segment, 
+				// Title for the current segment
+				ucwords(inflector::humanize($segment))
+			);
+		}
+
+		// Retrun the array of all the segments
+		return array_reverse($array);
+	}
+
+	/**
 	 * Method: stylesheet
 	 *  Creates a stylesheet link.
 	 *
