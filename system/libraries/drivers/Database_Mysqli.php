@@ -63,7 +63,7 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 			if ( ! isset(self::$query_cache[$hash]))
 			{
 				// Set the cached object
-				self::$query_cache[$hash] = new Mysql_Result($this->link, $this->db_config['object'], $sql);
+				self::$query_cache[$hash] = new Mysqli_Result($this->link, $this->db_config['object'], $sql);
 			}
 
 			// Return the cached query
@@ -77,7 +77,7 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 	{
 		is_object($this->link) or $this->connect($this->db_config);
 
-		return mysqli_real_escape_string($str, $this->link);
+		return mysqli_real_escape_string($this->link, $str);
 	}
 
 	public function show_error()
@@ -109,7 +109,7 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
  */
-class Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Countable {
+class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Countable {
 
 	// Result resource
 	protected $result = NULL;
