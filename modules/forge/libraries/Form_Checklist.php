@@ -4,9 +4,10 @@ class Form_Checklist_Core extends Form_Input {
 
 	protected $data = array
 	(
-		'name'  => '',
-		'type'  => 'checkbox',
-		'class' => 'checklist',
+		'name'    => '',
+		'type'    => 'checkbox',
+		'class'   => 'checklist',
+		'options' => array(),
 	);
 
 	protected $protect = array('name', 'type');
@@ -21,7 +22,13 @@ class Form_Checklist_Core extends Form_Input {
 		if ($key == 'value')
 		{
 			// Return the currently checked values
-			return array_keys($this->data['options'], TRUE);
+			$array = array();
+			foreach($this->data['options'] as $id => $opt)
+			{
+				// Return the options that are checked
+				($opt[1] == TRUE) and $array[] = $id;
+			}
+			return $array;
 		}
 
 		return parent::__get($key);
@@ -39,16 +46,19 @@ class Form_Checklist_Core extends Form_Input {
 		$nl = "\n";
 
 		$checklist = '<ul class="'.arr::remove('class', $base_data).'">'.$nl;
-		foreach(arr::remove('options', $base_data) as $val => $checked)
+		foreach(arr::remove('options', $base_data) as $val => $opt)
 		{
 			// New set of input data
 			$data = $base_data;
+
+			// Get the title and checked status
+			list ($title, $checked) = $opt;
 
 			// Set the name, value, and checked status
 			$data['value']   = $val;
 			$data['checked'] = $checked;
 
-			$checklist .= '<li><label>'.form::checkbox($data).' '.$val.'</label></li>'.$nl;
+			$checklist .= '<li><label>'.form::checkbox($data).' '.$title.'</label></li>'.$nl;
 		}
 		$checklist .= '</ul>';
 
@@ -64,11 +74,11 @@ class Form_Checklist_Core extends Form_Input {
 		{
 			if (empty($_POST[$this->data['name']]))
 			{
-				$this->data['options'][$val] = FALSE;
+				$this->data['options'][$val][1] = FALSE;
 			}
 			else
 			{
-				$this->data['options'][$val] = in_array($val, $_POST[$this->data['name']]);
+				$this->data['options'][$val][1] = in_array($val, $_POST[$this->data['name']]);
 			}
 		}
 	}
