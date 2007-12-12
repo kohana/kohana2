@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Form_Dropdown_Core extends Form_input{
+class Form_Dropdown_Core extends Form_Input {
 
 	protected $data = array
 	(
@@ -28,9 +28,6 @@ class Form_Dropdown_Core extends Form_input{
 		// Get the options and default selection
 		$options = arr::remove('options', $base_data);
 		$selected = arr::remove('selected', $base_data);
-
-		// Add an empty option to the beginning of the options
-		arr::unshift_assoc($options, '', '--');
 
 		return form::dropdown($base_data, $options, $selected);
 	}

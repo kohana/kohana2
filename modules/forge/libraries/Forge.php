@@ -14,8 +14,11 @@ class Forge_Core {
 	protected $inputs = array();
 	protected $hidden = array();
 
-	public function __construct($action = '', $title = '', $method = 'post')
+	public function __construct($action = '', $title = '', $method = NULL, $class = NULL)
 	{
+		empty($method) and $method = 'post';
+		empty($class)  and $class  = 'form';
+
 		// Set action
 		$this->template['action'] = $action;
 		$this->template['title']  = $title;
@@ -103,6 +106,12 @@ class Forge_Core {
 		return $data;
 	}
 
+	/**
+	 * Creates the form HTML
+	 *
+	 * @param   string   form view template name
+	 * @return  string
+	 */
 	public function html($template = 'forge_template')
 	{
 		// Load template with current template vars
@@ -125,6 +134,14 @@ class Forge_Core {
 		$form->inputs = $this->inputs;
 
 		return $form->render();
+	}
+
+	/**
+	 * Returns the form HTML
+	 */
+	public function __toString()
+	{
+		return $this->html();
 	}
 
 } // End Forge
