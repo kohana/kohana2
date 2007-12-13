@@ -176,4 +176,49 @@ final class Config {
 		return $configuration;
 	}
 
+	/**
+	 * Emulates array_merge_recursive, but appends numeric keys and replaces
+	 * associative keys.
+	 *
+	 * @param   array   any number of arrays
+	 * @return  array
+	 */
+	public static function merge()
+	{
+		$arrays = func_get_args();
+		$result = array();
+
+		foreach($arrays as $array)
+		{
+			foreach($array as $key => $val)
+			{
+				if (isset($result[$key]))
+				{
+					if (is_array($val))
+					{
+						// Arrays are merged recursively
+						$result[$key] = self::merge($result[$key], $val);
+					}
+					elseif (is_int($key))
+					{
+						// Simple arrays are appended
+						array_push($result, $val);
+					}
+					else
+					{
+						// Associative arrays are replaced
+						$result[$key] = $val;
+					}
+				}
+				else
+				{
+					// New values are added
+					$result[$key] = $val;
+				}
+			}
+		}
+
+		return $result;
+	}
+
 } // End Config
