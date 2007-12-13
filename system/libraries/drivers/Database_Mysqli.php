@@ -458,4 +458,5 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 		return $this->offsetExists($this->current_row);
 	}
 	// End Interface
+
 } // End Mysqli_Result Class
