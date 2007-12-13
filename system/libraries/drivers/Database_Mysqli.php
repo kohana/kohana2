@@ -49,7 +49,7 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 		{
 			return $this->link;
 		}
-		
+
 		return FALSE;
 	}
 
@@ -69,7 +69,7 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 			// Return the cached query
 			return self::$query_cache[$hash];
 		}
-		
+
 		return new Kohana_Mysqli_Result($this->link, $this->db_config['object'], $sql);
 	}
 
@@ -139,7 +139,7 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 	public function __construct($link, $object = TRUE, $sql)
 	{
 		$this->link = $link;
-		
+
 		if ( ! $this->link->multi_query($sql))
 		{
 			// SQL error
@@ -148,7 +148,7 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 		else
 		{
 			$this->result = $this->link->store_result();
-			
+
 			// If the query is an object, it was a SELECT, SHOW, DESCRIBE, EXPLAIN query
 			if (is_object($this->result))
 			{
@@ -168,11 +168,11 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 				$this->total_rows = $this->link->affected_rows;
 			}
 		}
-		
+
 		// Set result type
 		$this->result($object);
 	}
-	
+
 	/**
 	 * Destructor: __destruct
 	 *  Magic __destruct function, frees the result.
@@ -186,7 +186,7 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 			// this is kinda useless, but needs to be done to avoid the "Commands out of sync; you
 			// can't run this command now" error. Basically, we get all results after the first one
 			// (the one we actually need) and free them.
-			if ($this->link->more_results)
+			if ($this->link->more_results())
 			{
 				do
 				{
@@ -263,7 +263,7 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 				$rows[] = $row;
 			}
 		}
-		
+
 		return isset($rows) ? $rows : array();
 	}
 
