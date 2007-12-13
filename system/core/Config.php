@@ -185,12 +185,12 @@ final class Config {
 	 */
 	public static function merge()
 	{
-		$arrays = func_get_args();
-		$result = array();
+		$total = func_num_args();
 
-		foreach($arrays as $array)
+		$result = array();
+		for($i = 0; $i < $total; $i++)
 		{
-			foreach($array as $key => $val)
+			foreach(func_get_arg($i) as $key => $val)
 			{
 				if (isset($result[$key]))
 				{
