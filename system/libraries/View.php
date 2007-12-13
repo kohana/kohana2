@@ -27,23 +27,23 @@ class View_Core {
 	 * @param   string  view name
 	 * @param   array   pre-load data
 	 */
-	public function __construct($name, $data = NULL)
+	public function __construct($name, $data = NULL, $type = NULL)
 	{
-		if (preg_match('/\.(?:html?|gif|jpe?g|png|css|js|tiff?|swf|pdf)$/Di', $name, $type))
+		if (empty($type))
 		{
-			// Removes the period from the beginning of the type
-			$type = substr($type[0], 1);
-
-			$this->kohana_filename = Kohana::find_file('views', $name, TRUE, $type);
-			$this->kohana_filetype = current(Config::item('mimes.'.$type));
-
-			// Clear output Events to be safe
-			Event::clear('system.display');
+			// Load the filename and set the content type
+			$this->kohana_filename = Kohana::find_file('views', $name, TRUE);
+			$this->kohana_filetype = EXT;
 		}
 		else
 		{
-			$this->kohana_filename = Kohana::find_file('views', $name, TRUE);
-			$this->kohana_filetype = EXT;
+			// Check if the filetype is allowed by the configuration
+			if ( ! in_array($type, Config::item('view.allowed_filetypes')))
+				throw new Kohana_Exception('core.invalid_filetype', $type);
+
+			// Load the filename and set the content type
+			$this->kohana_filename = Kohana::find_file('views', $name.'.'.$type, TRUE, $type);
+			$this->kohana_filetype = Config::item('mimes.'.$type);
 		}
 
 		if (is_array($data) AND ! empty($data))
@@ -173,8 +173,9 @@ class View_Core {
 		}
 		else
 		{
-			// Overwrite the content-type header
-			header('Content-type: '.$this->kohana_filetype);
+			// Set the content type and size
+			header('Content-Type: '.$this->kohana_filetype[0]);
+			header('Content-Length: '.filesize($this->kohana_filename));
 
 			if ($print == TRUE)
 			{
