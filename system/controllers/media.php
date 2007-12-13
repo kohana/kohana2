@@ -22,14 +22,11 @@ class Media_Controller extends Controller {
 	{
 		try
 		{
-			// Find the full filename
-			$filename = $this->uri->string();
-
-			// Find the offset of the extension
-			$offset = strrpos($filename, '.');
+			// Find the filename and extension based on the URI
+			list ($file, $type) = preg_split('/\.(?=[^.]+$)/', $this->uri->string());
 
 			// Attempt to load the resource using a view
-			echo new View(substr($filename, 0, $offset), NULL, substr($filename, $offset + 1));
+			echo new View($file, NULL, $type);
 		}
 		catch (Kohana_Exception $e)
 		{
