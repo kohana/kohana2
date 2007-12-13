@@ -2,7 +2,7 @@
 /*
  * Domain name, with the installation directory. Default: localhost/kohana/
  */
-$config['site_domain'] = 'localhost/kohana_222/';
+$config['site_domain'] = 'localhost/kohana/';
 
 /**
  * Default protocol used to access the website. Default: http
@@ -28,7 +28,7 @@ $config['url_suffix'] = '';
  *
  * @note Do not enable this option if you are using output compression in php.ini!
  */
-$config['output_compression'] = 3;
+$config['output_compression'] = FALSE;
 
 /**
  * Enable or disable global XSS filtering of GET, POST, and SERVER data. This
