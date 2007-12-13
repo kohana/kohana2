@@ -23,7 +23,7 @@ class Media_Controller extends Controller {
 		try
 		{
 			// Find the filename and extension based on the URI
-			list ($file, $type) = preg_split('/\.(?=[^.]+$)/', $this->uri->string());
+			list ($file, $type) = preg_split('/\.(?=[^.]++$)/', $this->uri->string());
 
 			// Attempt to load the resource using a view
 			echo new View($file, NULL, $type);
