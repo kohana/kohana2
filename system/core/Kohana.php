@@ -15,7 +15,7 @@ class Kohana {
 	private static $instance = NULL;
 
 	// Output buffering level
-	private static $buffer_level = 0;
+	public static $buffer_level = 0;
 
 	// Will be set to TRUE when an exception is caught
 	public static $has_error = FALSE;

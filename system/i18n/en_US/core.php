@@ -7,6 +7,7 @@ $lang = array
 	'invalid_method'        => 'Invalid method <tt>%s</tt> called in <tt>%s</tt>.',
 	'cannot_write_log'      => 'Your log.directory config setting does not point to a writable directory.',
 	'resource_not_found'    => 'The requested %s, <tt>%s</tt>, could not be found.',
+	'invalid_filetype'      => 'The requested filetype, <tt>.%s</tt>, is not allowed in your view configuration file.',
 	'no_default_route'      => 'Please set a default route in <tt>config/routes.php</tt>.',
 	'no_controller'         => 'Kohana was not able to determine a controller to process this request: %s',
 	'page_not_found'        => 'The page you requested, <tt>%s</tt>, could not be found.',
