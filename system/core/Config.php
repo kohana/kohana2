@@ -164,11 +164,12 @@ final class Config {
 		// Find all the configuartion files matching the name
 		foreach(Kohana::find_file('config', $name, $required) as $filename)
 		{
+			// Import the config
 			include $filename;
 
-			// Merge in configuration
 			if (isset($config) AND is_array($config))
 			{
+				// Merge in configuration
 				$configuration = array_merge($configuration, $config);
 			}
 		}
@@ -178,7 +179,7 @@ final class Config {
 
 	/**
 	 * Emulates array_merge_recursive, but appends numeric keys and replaces
-	 * associative keys.
+	 * associative keys, instead of appending all keys.
 	 *
 	 * @param   array   any number of arrays
 	 * @return  array
@@ -201,7 +202,7 @@ final class Config {
 					}
 					elseif (is_int($key))
 					{
-						// Simple arrays are appended
+						// Indexed arrays are appended
 						array_push($result, $val);
 					}
 					else
