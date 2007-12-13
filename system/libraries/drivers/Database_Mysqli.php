@@ -33,7 +33,7 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 	 */
 	public function __destruct()
 	{
-		is_object($this->link) and mysqli_close($this->link);
+		is_object($this->link) and $this->link->close();
 	}
 
 	public function connect()
@@ -45,7 +45,7 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 		$host = (isset($host)) ? $host : $socket;
 
 		// Make the connection and select the database
-		if ($this->link = mysqli_connect($host, $user, $pass, $database))
+		if ($this->link = new mysqli($host, $user, $pass, $database))
 		{
 			return $this->link;
 		}
@@ -70,27 +70,27 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 			return self::$query_cache[$hash];
 		}
 		
-		return new Mysqli_Result($this->link, $this->db_config['object'], $sql);
+		return new Kohana_Mysqli_Result($this->link, $this->db_config['object'], $sql);
 	}
 
 	public function escape_str($str)
 	{
 		is_object($this->link) or $this->connect($this->db_config);
 
-		return mysqli_real_escape_string($this->link, $str);
+		return $this->link->real_escape_string($str);
 	}
 
 	public function show_error()
 	{
-		return mysqli_error($this->link);
+		return $this->link->error;
 	}
 
 	public function field_data($table)
 	{
-		$query  = mysqli_query('SHOW COLUMNS FROM '.$this->escape_table($table), $this->link);
+		$query  = $this->link->query('SHOW COLUMNS FROM '.$this->escape_table($table), $this->link);
 
 		$table  = array();
-		while ($row = mysqli_fetch_object($query))
+		while ($row = $query->fetch_object())
 		{
 			$table[] = $row;
 		}
@@ -140,32 +140,32 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 	{
 		$this->link = $link;
 		
-		if ( ! mysqli_multi_query($this->link, $sql))
+		if ( ! $this->link->multi_query($sql))
 		{
 			// SQL error
-			throw new Kohana_Database_Exception('database.error', mysqli_error($this->link).' - '.$sql);
+			throw new Kohana_Database_Exception('database.error', $this->link->error.' - '.$sql);
 		}
 		else
 		{
-			$this->result = mysqli_store_result($this->link);
+			$this->result = $this->link->store_result();
 			
 			// If the query is an object, it was a SELECT, SHOW, DESCRIBE, EXPLAIN query
 			if (is_object($this->result))
 			{
 				$this->current_row = 0;
-				$this->total_rows  = mysqli_num_rows($this->result);
-				$this->fetch_type = ($object === TRUE) ? 'mysqli_fetch_object' : 'mysqli_fetch_array';
+				$this->total_rows  = $this->result->num_rows;
+				$this->fetch_type = ($object === TRUE) ? 'fetch_object' : 'fetch_array';
 			}
-			elseif (mysqli_error($this->link))
+			elseif ($this->link->error)
 			{
 				// SQL error
-				throw new Kohana_Database_Exception('database.error', mysqli_error($this->link).' - '.$sql);
+				throw new Kohana_Database_Exception('database.error', $this->link->error.' - '.$sql);
 			}
 			else
 			{
 				// Its an DELETE, INSERT, REPLACE, or UPDATE query
-				$this->insert_id  = mysqli_insert_id($this->link);
-				$this->total_rows = mysqli_affected_rows($this->link);
+				$this->insert_id  = $this->link->insert_id;
+				$this->total_rows = $this->link->affected_rows;
 			}
 		}
 		
@@ -181,33 +181,33 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 	{
 		if (is_object($this->result))
 		{
-			mysqli_free_result($this->result);
-			
+			$this->result->free_result();
+
 			// this is kinda useless, but needs to be done to avoid the "Commands out of sync; you
 			// can't run this command now" error. Basically, we get all results after the first one
 			// (the one we actually need) and free them.
-			if (mysqli_more_results($this->link))
+			if ($this->link->more_results)
 			{
 				do
 				{
-					if ($result = mysqli_store_result($this->link))
+					if ($result = $this->link->store_result())
 					{
-						mysqli_free_result($result);
+						$result->free_result();
 					}
-				} while (mysqli_next_result($this->link));
+				} while ($this->link->next_result());
 			}
 		}
 	}
 
 	public function result($object = TRUE, $type = MYSQLI_ASSOC)
 	{
-		$this->fetch_type = ((bool) $object) ? 'mysqli_fetch_object' : 'mysqli_fetch_array';
+		$this->fetch_type = ((bool) $object) ? 'fetch_object' : 'fetch_array';
 
 		// This check has to be outside the previous statement, because we do not
 		// know the state of fetch_type when $object = NULL
 		// NOTE - The class set by $type must be defined before fetching the result,
 		// autoloading is disabled to save a lot of stupid overhead.
-		if ($this->fetch_type == 'mysqli_fetch_object')
+		if ($this->fetch_type == 'fetch_object')
 		{
 			$this->return_type = class_exists($type, FALSE) ? $type : 'stdClass';
 		}
@@ -231,7 +231,7 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 		{
 			if ($object === TRUE)
 			{
-				$fetch = 'mysqli_fetch_object';
+				$fetch = 'fetch_object';
 
 				// NOTE - The class set by $type must be defined before fetching the result,
 				// autoloading is disabled to save a lot of stupid overhead.
@@ -239,7 +239,7 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 			}
 			else
 			{
-				$fetch = 'mysqli_fetch_array';
+				$fetch = 'fetch_array';
 			}
 		}
 		else
@@ -247,18 +247,18 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 			// Use the default config values
 			$fetch = $this->fetch_type;
 
-			if ($fetch == 'mysqli_fetch_object')
+			if ($fetch == 'fetch_object')
 			{
 				$type = class_exists($type, FALSE) ? $type : 'stdClass';
 			}
 		}
 
-		if (mysqli_num_rows($this->result))
+		if ($this->result->num_rows)
 		{
 			// Reset the pointer location to make sure things work properly
-			mysqli_data_seek($this->result, 0);
+			$this->result->data_seek(0);
 
-			while ($row = $fetch($this->result, $type))
+			while ($row = $this->result->$fetch($type))
 			{
 				$rows[] = $row;
 			}
@@ -275,7 +275,7 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 	public function list_fields()
 	{
 		$field_names = array();
-		while ($field = mysqli_fetch_field($this->result))
+		while ($field = $this->result->fetch_field())
 		{
 			$field_names[] = $field->name;
 		}
@@ -346,11 +346,11 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 			return FALSE;
 
 		// Go to the offset
-		mysqli_data_seek($this->result, $offset);
+		$this->result->data_seek($offset);
 
 		// Return the row
 		$fetch = $this->fetch_type;
-		return $fetch($this->result, $this->return_type);
+		return $this->result->$fetch($this->return_type);
 	}
 
 	/**
