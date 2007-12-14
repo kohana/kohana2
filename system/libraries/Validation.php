@@ -341,11 +341,9 @@ class Validation_Core {
 		}
 		else
 		{
-			if ($rule === 'trim' OR $rule === 'sha1' OR $rule === 'md5')
+			if (strpos($rule, '=') === 0)
 			{
-				/**
-				 * @todo safe_form_data
-				 */
+				$rule 				= substr($rule, 1);
 				$this->data[$field] = $rule($data);
 				return;
 			}
