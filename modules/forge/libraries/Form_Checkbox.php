@@ -17,7 +17,7 @@ class Form_Checkbox_Core extends Form_Input {
 		if ($key == 'value')
 		{
 			// Return the value if the checkbox is checked
-			return $this->data['checked'] ? $this->data['value'] : NULL;
+			return $this->data['checked'] ? $this->data['value'] : FALSE;
 		}
 
 		return parent::__get($key);
