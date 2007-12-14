@@ -10,36 +10,11 @@
 class URI_Core extends Router {
 
 	/**
-	 * Constructor: __construct
-	 *  Detects current query string.
+	 * Constructor.
 	 */
 	public function __construct()
 	{
-		if ( ! empty($_GET))
-		{
-			self::$query_string = '?';
-
-			foreach($_GET as $key => $val)
-			{
-				if (is_array($val))
-				{
-					foreach($val as $sub_key => $sub_val)
-					{
-						// Integer subkeys are numerically indexed arrays
-						$sub_key = is_int($sub_key) ? '[]' : '['.$sub_key.']';
-
-						self::$query_string .= $key.rawurlencode($sub_key).'='.rawurlencode($sub_val).'&';
-					}
-				}
-				else
-				{
-					self::$query_string .= $key.'='.rawurlencode($val).'&';
-				}
-			}
-
-			// Remove the ending ampersand
-			self::$query_string = rtrim(self::$query_string, '&');
-		}
+		Log::add('debug', 'URI library initialized.');
 	}
 
 	/**

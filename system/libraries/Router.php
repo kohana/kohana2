@@ -49,7 +49,7 @@ class Router_Core {
 		if ( ! empty($_SERVER['QUERY_STRING']))
 		{
 			// Set the query string to the current query string
-			self::$query_string = $_SERVER['QUERY_STRING'];
+			self::$query_string = trim($_SERVER['QUERY_STRING'], '&');
 		}
 
 		// At this point, set the segments, rsegments, and current URI
@@ -201,6 +201,21 @@ class Router_Core {
 				}
 			}
 		}
+		elseif (count($_GET) === 1 AND current($_GET) == '' AND substr($_SERVER['QUERY_STRING'], -1) !== '=')
+		{
+			// The URI is the array key, eg: ?this/is/the/uri
+			self::$current_uri = key($_GET);
+
+			// Fixes really strange handling of a suffix in a GET string
+			if ($suffix = Config::item('core.url_suffix') AND substr(self::$current_uri, -(strlen($suffix))) === '_'.substr($suffix, 1))
+			{
+				self::$current_uri = substr(self::$current_uri, 0, -(strlen($suffix)));
+			}
+
+			// Destroy GET
+			$_GET = array();
+			$_SERVER['QUERY_STRING'] = '';
+		}
 		elseif (isset($_SERVER['PATH_INFO']) AND $_SERVER['PATH_INFO'])
 		{
 			self::$current_uri = $_SERVER['PATH_INFO'];
@@ -212,19 +227,6 @@ class Router_Core {
 		elseif (isset($_SERVER['PHP_SELF']) AND $_SERVER['PHP_SELF'])
 		{
 			self::$current_uri = $_SERVER['PHP_SELF'];
-		}
-		elseif (count($_GET) === 1 AND current($_GET) == '')
-		{
-			self::$current_uri = current(array_keys($_GET));
-
-			// Fixes really strange handling of a suffix in a GET string
-			if ($suffix = Config::item('core.url_suffix') AND substr(self::$current_uri, -(strlen($suffix))) === '_'.substr($suffix, 1))
-			{
-				self::$current_uri = substr(self::$current_uri, 0, -(strlen($suffix)));
-			}
-
-			// Destroy GET
-			$_GET = array();
 		}
 
 		// Find the URI string based on the location of the front controller
