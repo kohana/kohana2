@@ -545,6 +545,18 @@ class ORM_Core {
 			if (empty($this->object->id))
 				return FALSE;
 
+			if ( ! empty($this->has_any_belongs_to_many))
+			{
+				// Foreign WHERE for this object
+				$where = array($this->class.'_id' => $this->object->id);
+
+				foreach($this->has_and_belongs_to_many as $table)
+				{
+					// Delete all many<>many relationships for this object
+					self::$db->delete($this->table_name.'_'.$table, $where);
+				}
+			}
+
 			// WHERE for this object
 			$where = array('id' => $this->object->id);
 		}

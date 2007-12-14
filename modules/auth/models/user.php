@@ -75,27 +75,11 @@ class User_Model extends ORM {
 	}
 
 	/**
-	 * Removes all roles for this user when the object is deleted.
+	 * Allows a model to be loaded by username or email address.
 	 */
-	public function delete()
-	{
-		$where = array($this->class.'_id' => $this->object->id);
-		$table = $this->related_table('roles');
-
-		if ($return = parent::delete())
-		{
-			// Remove users<>roles relationships
-			self::$db
-				->where($where)
-				->delete($table);
-		}
-
-		return $return;
-	}
-
 	protected function where_key($id = NULL)
 	{
-		if (is_string($id) AND ! is_numeric($id))
+		if ( ! empty($id) AND is_string($id) AND ! ctype_digit($id))
 		{
 			return valid::email($id) ? 'email' : 'username';
 		}
