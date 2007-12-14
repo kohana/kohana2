@@ -21,11 +21,25 @@ class View_Core {
 	protected static $global_data = array();
 
 	/**
+	 * Creates a new View using the given parameters.
+	 *
+	 * @param   string  view name
+	 * @param   array   pre-load data
+	 * @param   string  type of file: html, css, js, etc.
+	 */
+	public static function instance($name, $data = NULL, $type = NULL)
+	{
+		return new View($name, $data, $type);
+	}
+
+	/**
 	 * Attempts to load a view and pre-load view data.
 	 *
 	 * @throws  Kohana_Exception  if the requested view cannot be found
 	 * @param   string  view name
 	 * @param   array   pre-load data
+	 * @param   string  type of file: html, css, js, etc.
+	 * @return  void
 	 */
 	public function __construct($name, $data = NULL, $type = NULL)
 	{
