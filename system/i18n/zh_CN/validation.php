@@ -20,7 +20,7 @@ $lang = array
 	'valid_type'    => '栏位 %s  只可以包含 %s 字符.',
 	'range'         => '栏位 %s  越界指定范围.',
 	'regex'         => '栏位 %s  与给定输入模式不匹配.',
-	'depend_on'     => '栏位 %s  依赖于 %s 栏位.',
+	'depends_on'    => '栏位 %s  依赖于 %s 栏位.',
 
 	// Upload errors
 	'user_aborted'  => '文件 %s  上传中被中断.',

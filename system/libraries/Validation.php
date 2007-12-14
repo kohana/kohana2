@@ -372,7 +372,7 @@ class Validation_Core {
 
 				$this->result = Kohana::instance()->$callback($data, $params);
 			}
-			elseif ($rule === 'matches' OR $rule === 'depend_on')
+			elseif ($rule === 'matches' OR $rule === 'depends_on')
 			{
 				$this->result = $this->$rule($field, $params);
 			}
@@ -1136,8 +1136,8 @@ class Validation_Core {
 	 * Method: depends_on
 	 *
 	 * Parameters:
-	 *  field     - first field
-	 *  depend_on - field which the first field is depend on it
+	 *  field      - first field
+	 *  depends_on - field which the first field is depend on it
 	 *
 	 * Returns:
 	 *  TRUE or FALSE
