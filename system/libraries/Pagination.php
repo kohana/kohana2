@@ -10,16 +10,17 @@
 class Pagination_Core {
 
 	// Config values
-	protected $base_url       = '';
-	protected $directory      = 'pagination';
-	protected $style          = 'classic';
-	protected $uri_segment    = 3;
+	private   $base_url       = '';
+	private   $directory      = 'pagination';
+	private   $style          = 'classic';
+	private   $uri_segment    = 3;
 	protected $items_per_page = 10;
+	protected $total_items    = 0;
 
-	// Automatically calculated values
+	// Automatically generated values
+	protected $url;
 	protected $current_page;
 	protected $total_pages;
-	protected $total_items;
 	protected $current_first_item;
 	protected $current_last_item;
 	protected $first_page;
@@ -65,37 +66,27 @@ class Pagination_Core {
 		// Clean view directory
 		$this->directory = trim($this->directory, '/').'/';
 
-		// Don't bother about full base_urls
-		if (strpos($this->base_url, '://') === FALSE)
+		// Start building a generic URL
+		$this->url = ($this->base_url == '') ? Router::$segments : $this->url = explode('/', trim($this->base_url, '/'));
+
+		// Convert uri 'label' to corresponding integer if needed
+		if (is_string($this->uri_segment))
 		{
-			// Default base_url
-			if ($this->base_url == '')
+			if (($key = array_search($this->uri_segment, $this->url)) === FALSE)
 			{
-				$this->base_url = url::current();
+				// If uri 'label' is not found, auto add it to base_url
+				$this->url[] = $this->uri_segment;
+				$this->uri_segment = count($this->url) + 1;
 			}
-
-			// Explode base_url into segments
-			$this->base_url = explode('/', trim($this->base_url, '/'));
-
-			// Convert uri 'label' to corresponding integer if needed
-			if (is_string($this->uri_segment))
+			else
 			{
-				if (($key = array_search($this->uri_segment, $this->base_url)) === FALSE)
-				{
-					// If uri 'label' is not found, auto add it to base_url
-					$this->base_url[] = $this->uri_segment;
-					$this->uri_segment = count($this->base_url) + 1;
-				}
-				else
-				{
-					$this->uri_segment = $key + 2;
-				}
+				$this->uri_segment = $key + 2;
 			}
-
-			// Create a generic base_url including query string and a {page} placeholder
-			$this->base_url[$this->uri_segment - 1] = '{page}';
-			$this->base_url = url::site(implode('/', $this->base_url)).Router::$query_string;
 		}
+        
+		// Create a generic URL with query string and {page} number placeholder
+		$this->url[$this->uri_segment - 1] = '{page}';
+		$this->url = url::site(implode('/', $this->url)).Router::$query_string;
 
 		// Core pagination values
 		$this->total_items        = (int) max(0, $this->total_items);
