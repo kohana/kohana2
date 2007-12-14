@@ -67,7 +67,7 @@ class Pagination_Core {
 		$this->directory = trim($this->directory, '/').'/';
 
 		// Start building a generic URL
-		$this->url = ($this->base_url == '') ? Router::$segments : $this->url = explode('/', trim($this->base_url, '/'));
+		$this->url = ($this->base_url == '') ? Router::$segments : explode('/', trim($this->base_url, '/'));
 
 		// Convert uri 'label' to corresponding integer if needed
 		if (is_string($this->uri_segment))
@@ -83,7 +83,7 @@ class Pagination_Core {
 				$this->uri_segment = $key + 2;
 			}
 		}
-        
+
 		// Create a generic URL with query string and {page} number placeholder
 		$this->url[$this->uri_segment - 1] = '{page}';
 		$this->url = url::site(implode('/', $this->url)).Router::$query_string;
@@ -117,7 +117,6 @@ class Pagination_Core {
 	public function create_links($style = NULL)
 	{
 		$style = (isset($style)) ? $style : $this->style;
-
 		$view = new View($this->directory.$style, get_object_vars($this));
 		return $view->render();
 	}
