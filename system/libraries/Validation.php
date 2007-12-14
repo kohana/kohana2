@@ -347,6 +347,7 @@ class Validation_Core {
 				 * @todo safe_form_data
 				 */
 				$this->data[$field] = $rule($data);
+				return;
 			}
 
 			// Handle callback rules
