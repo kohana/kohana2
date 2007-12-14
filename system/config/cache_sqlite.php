@@ -2,8 +2,8 @@
 
 $config['schema'] =
 'CREATE TABLE caches(
-	id varchar(127),
-	hash char(40),
+	id varchar(127) PRIMARY KEY,
+	hash char(40) NOT NULL,
 	tags varchar(255),
 	expiration int,
 	cache blob);';
