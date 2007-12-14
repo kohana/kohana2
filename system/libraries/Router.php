@@ -46,6 +46,12 @@ class Router_Core {
 			$default_route = FALSE;
 		}
 
+		if ( ! empty($_SERVER['QUERY_STRING']))
+		{
+			// Set the query string to the current query string
+			self::$query_string = $_SERVER['QUERY_STRING'];
+		}
+
 		// At this point, set the segments, rsegments, and current URI
 		// In many cases, all of these variables will match
 		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, '/');
