@@ -49,7 +49,7 @@ class Router_Core {
 		if ( ! empty($_SERVER['QUERY_STRING']))
 		{
 			// Set the query string to the current query string
-			self::$query_string = trim($_SERVER['QUERY_STRING'], '&');
+			self::$query_string = '?'.trim($_SERVER['QUERY_STRING'], '&');
 		}
 
 		// At this point, set the segments, rsegments, and current URI
