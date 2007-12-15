@@ -11,8 +11,8 @@ class Forge_Core {
 		'class'  => 'form'
 	);
 
-	protected $inputs = array();
-	protected $hidden = array();
+	public $inputs = array();
+	public $hidden = array();
 
 	public function __construct($action = '', $title = '', $method = NULL, $class = NULL)
 	{
@@ -52,7 +52,7 @@ class Forge_Core {
 			break;
 		}
 
-		if ( ! ($input instanceof Form_Input))
+		if ( ! ($input instanceof Form_Input) AND ! ($input instanceof Forge))
 			throw new Kohana_Exception('forge.invalid_input', get_class($input));
 
 		if ($name = $input->name)
