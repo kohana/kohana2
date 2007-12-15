@@ -91,9 +91,6 @@ class Forge_Core {
 
 	public function as_array()
 	{
-		if (empty($_POST))
-			return;
-
 		$data = array();
 		foreach(array_merge($this->hidden, $this->inputs) as $input)
 		{
