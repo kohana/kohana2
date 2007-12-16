@@ -8,9 +8,9 @@ class Form_Input_Core {
 	// Element data
 	protected $data = array
 	(
-		'type'  => 'text',
-		'class' => 'textbox',
-		'value' => '',
+		'type'    => 'text',
+		'class'   => 'textbox',
+		'value'   => ''
 	);
 
 	// Protected data keys
@@ -26,6 +26,7 @@ class Form_Input_Core {
 
 	// Errors
 	protected $errors = array();
+	protected $error_messages;
 
 	public function __construct($name)
 	{
@@ -42,6 +43,9 @@ class Form_Input_Core {
 	{
 		if ($method == 'rules')
 		{
+			if (empty($args))
+				return $this->rules;
+
 			// Set rules and action
 			$rules  = $args[0];
 			$action = substr($rules, 0, 1);
@@ -103,14 +107,29 @@ class Form_Input_Core {
 	{
 		if ($val === NULL)
 		{
-			if ($name = $this->name)
+			if (isset($this->data['name']) AND isset($this->data['label']))
 			{
-				return form::label($name, $this->label);
+				return form::label($this->data['name'], $this->data['label']);
 			}
+			return FALSE;
 		}
 		else
 		{
 			$this->data['label'] = ($val === TRUE) ? ucwords(inflector::humanize($this->name)) : $val;
+			return $this;
+		}
+	}
+
+	public function message($val = NULL)
+	{
+		if ($val === NULL)
+		{
+			if (isset($this->data['message']))
+				return $this->data['message'];
+		}
+		else
+		{
+			$this->data['message'] = $val;
 			return $this;
 		}
 	}
@@ -120,7 +139,7 @@ class Form_Input_Core {
 		// Make sure validation runs
 		$this->validate();
 
-		return $this->html_element().$this->error_message();
+		return $this->html_element();
 	}
 
 	protected function html_element()
@@ -128,6 +147,7 @@ class Form_Input_Core {
 		$data = $this->data;
 
 		unset($data['label']);
+		unset($data['message']);
 
 		return form::input($data);
 	}
@@ -178,12 +198,40 @@ class Form_Input_Core {
 		return $this;
 	}
 
-	protected function error_message()
+	public function error_messages($func = NULL, $message = NULL)
 	{
+		// Set custom error messages
+		if ( ! empty($func))
+		{
+			if (is_array($func))
+			{
+				// Replace all
+				$this->error_messages = $func;
+			}
+			else
+			{
+				if (empty($message))
+				{
+					// Single error, replaces all others
+					$this->error_messages = $func;
+				}
+				else
+				{
+					// Add custom error
+					$this->error_messages[$func] = $message;
+				}
+			}
+			return $this;
+		}
+
 		// Make sure validation runs
 		is_null($this->is_valid) and $this->validate();
 
-		$message = '';
+		// Return single error
+		if ( ! is_array($this->error_messages))
+			return array($this->error_messages);
+
+		$messages = array();
 		foreach($this->errors as $func => $args)
 		{
 			if (is_string($args))
@@ -198,15 +246,23 @@ class Form_Input_Core {
 				// Add the label or name to the beginning of the args
 				array_unshift($args, $this->label ? strtolower($this->label) : $this->name);
 
-				// Fetch an i18n error message
-				$error = Kohana::lang('validation.'.$func, $args);
+				if (isset($this->error_messages[$func]))
+				{
+					// Use custom error message
+					$error = vsprintf($this->error_messages[$func], $args);
+				}
+				else
+				{
+					// Fetch an i18n error message
+					$error = Kohana::lang('validation.'.$func, $args);
+				}
 			}
 
-			// Make the error into HTML
-			$message .= '<p class="error">'.$error.'</p>';
+			// Add error to list
+			$messages[] = $error;
 		}
 
-		return $message;
+		return $messages;
 	}
 
 	protected function load_value()
@@ -214,11 +270,8 @@ class Form_Input_Core {
 		if (is_bool($this->is_valid))
 			return;
 
-		if ($value = self::$input->post($this->name))
-		{
-			// Load POSTed value
-			$this->data['value'] = $value;
-		}
+		// Load POSTed value
+		$this->data['value'] = self::$input->post($this->name);
 
 		if (is_string($this->data['value']))
 		{

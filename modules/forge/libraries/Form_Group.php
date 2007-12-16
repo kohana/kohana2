@@ -6,7 +6,8 @@ class Form_Group_Core extends Forge {
 	(
 		'type'  => 'group',
 		'class' => 'group',
-		'label' => ''
+		'label' => '',
+		'message' => ''
 	);
 
 	public function __construct($class = 'group')
@@ -35,6 +36,19 @@ class Form_Group_Core extends Forge {
 		else
 		{
 			$this->data['label'] = ($val === TRUE) ? ucwords(inflector::humanize($this->data['label'])) : $val;
+			return $this;
+		}
+	}
+
+	public function message($val = NULL)
+	{
+		if ($val === NULL)
+		{
+			return $this->data['message'];
+		}
+		else
+		{
+			$this->data['message'] = $val;
 			return $this;
 		}
 	}

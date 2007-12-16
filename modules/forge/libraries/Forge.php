@@ -22,6 +22,7 @@ class Forge_Core {
 		// Set action
 		$this->template['action'] = $action;
 		$this->template['title']  = $title;
+		$this->template['class']  = $class;
 	}
 
 	public function __get($key)
