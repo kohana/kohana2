@@ -78,9 +78,9 @@ class url_Core {
 	 * Returns:
 	 *  The current URI string.
 	 */
-	public static function current()
+	public static function current($qs = FALSE)
 	{
-		return Router::$current_uri;
+		return Router::$current_uri.($qs === TRUE ? Router::$query_string : '');
 	}
 
 	/**
