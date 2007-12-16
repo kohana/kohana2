@@ -1174,18 +1174,10 @@ class Validation_Core {
 			// Only one regex validation per field
 			$regex = current($regex);
 
-			// Find a usable delimiter
-			foreach (str_split('~#|!:;,./=-+*?\'"$', 1) as $delim)
+			if (preg_match($regex, $str))
 			{
-				if (strpos($regex, $delim) === FALSE)
-				{
-					if (preg_match($delim.$regex.$delim, $str))
-					{
-						// Regex matches, return
-						return TRUE;
-					}
-					break;
-				}
+				// Regex matches, return
+				return TRUE;
 			}
 		}
 
