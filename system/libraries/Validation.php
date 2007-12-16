@@ -360,7 +360,8 @@ class Validation_Core {
 			if (preg_match('/([^\[]*+)\[(.+)\]/', $rule, $match))
 			{
 				$rule   = $match[1];
-				$params = explode(',', $match[2]);
+				$params = preg_split('/(?<!\\\\)(\,)/', $match[2]);
+				$params = str_replace('\,', ',', $params);
 			}
 
 			// Process this field with the rule
