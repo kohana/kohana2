@@ -12,10 +12,17 @@ if ($input->type == 'group'):
 <tr>
 <th colspan="2"><?php echo $input->label() ?></th>
 </tr>
+<?php
+
+	if ($message = $input->message()):
+
+?>
 <tr>
-<td colspan="2"><p class="group_message"><?php echo $input->message() ?></p></td>
+<td colspan="2"><p class="group_message"><?php echo $message ?></p></td>
 </tr>
 <?php
+
+	endif;
 
 else:
 	$sub_inputs = array($input);	

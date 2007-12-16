@@ -228,7 +228,7 @@ class Form_Input_Core {
 		is_null($this->is_valid) and $this->validate();
 
 		// Return single error
-		if ( ! is_array($this->error_messages))
+		if ( ! is_array($this->error_messages) AND ! empty($this->errors))
 			return array($this->error_messages);
 
 		$messages = array();
