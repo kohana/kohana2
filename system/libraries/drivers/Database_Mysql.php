@@ -1,25 +1,37 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Database_Mysql_Driver
- *  Provides specific database items for MySQL.
- *
  * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ *
+ * @author Kohana Team
+ * @copyright (c) 2007 Kohana Team
+ * @license http://kohanaphp.com/license.html
+ */
+
+
+/**
+ * Database_Mysql_Driver
+ *
  */
 class Database_Mysql_Driver extends Database_Driver {
 
-	// Database connection link
+	/**
+	 * Database connection link
+	 *
+	 * @var resource
+	 */
 	protected $link;
+
+	/**
+	 * Database configuration
+	 *
+	 * @var array
+	 */
 	protected $db_config;
 
 	/**
-	 * Constructor: __construct
-	 *  Sets up the config for the class.
+	 * Construction, sets the config for the class.
 	 *
-	 * Parameters:
-	 *  config - database configuration
+	 * @param array $config
 	 */
 	public function __construct($config)
 	{
@@ -29,13 +41,19 @@ class Database_Mysql_Driver extends Database_Driver {
 	}
 
 	/**
-	 * Closes the database connection.
+	 * Destruction, closes the database connection.
 	 */
 	public function __destruct()
 	{
 		is_resource($this->link) and mysql_close($this->link);
 	}
 
+	/**
+	 * Connect to our database
+	 * Returns FALSE on failure or a MySQL resource
+	 *
+	 * @return mixed
+	 */
 	public function connect()
 	{
 		// Import the connect variables
@@ -62,6 +80,12 @@ class Database_Mysql_Driver extends Database_Driver {
 		return FALSE;
 	}
 
+	/**
+	 * Perform a query based on a manually written query
+	 *
+	 * @param  string $sql
+	 * @return Mysql_Result
+	 */
 	public function query($sql)
 	{
 		// Only cache if it's turned on, and only cache if it's not a write statement
@@ -82,16 +106,33 @@ class Database_Mysql_Driver extends Database_Driver {
 		return new Mysql_Result(mysql_query($sql, $this->link), $this->link, $this->db_config['object'], $sql);
 	}
 
+	/**
+	 * Set the charset using 'SET NAMES <charset>'
+	 *
+	 * @param string $charset
+	 */
 	public function set_charset($charset)
 	{
 		$this->query('SET NAMES '.$this->escape_str($charset));
 	}
 
+	/**
+	 * Wrap the tablename in backticks, has support for: table.field syntax.
+	 *
+	 * @param  string $table
+	 * @return string
+	 */
 	public function escape_table($table)
 	{
 		return '`'.str_replace('.', '`.`', $table).'`';
 	}
 
+	/**
+	 * Escape a column/field name, has support for special commands.
+	 *
+	 * @param  string $column
+	 * @return string
+	 */
 	public function escape_column($column)
 	{
 		if (strtolower($column) == 'count(*)' OR $column == '*')
@@ -133,6 +174,15 @@ class Database_Mysql_Driver extends Database_Driver {
 		return $column;
 	}
 
+	/**
+	 * MySQL command 'REGEXP'
+	 *
+	 * @param  string  $field
+	 * @param  string  $match
+	 * @param  string  $type
+	 * @param  integer $num_regexs
+	 * @return string
+	 */
 	public function regex($field, $match = '', $type = 'AND ', $num_regexs)
 	{
 		$prefix = ($num_regexs == 0) ? '' : $type;
@@ -140,6 +190,15 @@ class Database_Mysql_Driver extends Database_Driver {
 		return $prefix.' '.$this->escape_column($field).' REGEXP \''.$this->escape_str($match).'\'';
 	}
 
+	/**
+	 * MySQL command 'NOT REGEXP'
+	 *
+	 * @param  string  $field
+	 * @param  string  $match
+	 * @param  string  $type
+	 * @param  integer $num_regexs
+	 * @return string
+	 */
 	public function notregex($field, $match = '', $type = 'AND ', $num_regexs)
 	{
 		$prefix = $num_regexs == 0 ? '' : $type;
@@ -147,6 +206,14 @@ class Database_Mysql_Driver extends Database_Driver {
 		return $prefix.' '.$this->escape_column($field).' NOT REGEXP \''.$this->escape_str($match) . '\'';
 	}
 
+	/**
+	 * MySQL command 'REPLACE INTO ..'
+	 *
+	 * @param  string $table
+	 * @param  array  $keys
+	 * @param  array  $values
+	 * @return string
+	 */
 	public function merge($table, $keys, $values)
 	{
 		// Escape the column names
@@ -157,11 +224,24 @@ class Database_Mysql_Driver extends Database_Driver {
 		return 'REPLACE INTO '.$this->escape_table($table).' ('.implode(', ', $keys).') VALUES ('.implode(', ', $values).')';
 	}
 
+	/**
+	 * MySQL command 'LIMIT'
+	 *
+	 * @param  integer $limit
+	 * @param  integer $offset
+	 * @return string
+	 */
 	public function limit($limit, $offset = 0)
 	{
 		return 'LIMIT '.$offset.', '.$limit;
 	}
 
+	/**
+	 * Compile our select statement into a ready SQL query
+	 *
+	 * @param  array  $database
+	 * @return string
+	 */
 	public function compile_select($database)
 	{
 		$sql = ($database['distinct'] == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
@@ -212,6 +292,12 @@ class Database_Mysql_Driver extends Database_Driver {
 		return $sql;
 	}
 
+	/**
+	 * Input escape, using mysql_real_escape_string()
+	 *
+	 * @param  mixed $str but most likely string
+	 * @return mixed but most likely string
+	 */
 	public function escape_str($str)
 	{
 		is_resource($this->link) or $this->connect($this->db_config);
@@ -219,6 +305,11 @@ class Database_Mysql_Driver extends Database_Driver {
 		return mysql_real_escape_string($str, $this->link);
 	}
 
+	/**
+	 * MySQL command 'SHOW TABLES FROM ..'
+	 *
+	 * @return array
+	 */
 	public function list_tables()
 	{
 		$sql    = 'SHOW TABLES FROM `'.$this->db_config['connection']['database'].'`';
@@ -233,11 +324,22 @@ class Database_Mysql_Driver extends Database_Driver {
 		return $retval;
 	}
 
+	/**
+	 * Return the last error reported by mysql_error()
+	 *
+	 * @return string
+	 */
 	public function show_error()
 	{
 		return mysql_error($this->link);
 	}
 
+	/**
+	 * return a list of fields from $table
+	 *
+	 * @param  string $table
+	 * @return array
+	 */
 	public function list_fields($table)
 	{
 		static $tables;
@@ -254,6 +356,12 @@ class Database_Mysql_Driver extends Database_Driver {
 		return $tables[$table];
 	}
 
+	/**
+	 * MySQL command 'SHOW COLUMNS FROM ..'
+	 *
+	 * @param  string $table
+	 * @return array
+	 */
 	public function field_data($table)
 	{
 		$query  = mysql_query('SHOW COLUMNS FROM '.$this->escape_table($table), $this->link);
@@ -269,40 +377,62 @@ class Database_Mysql_Driver extends Database_Driver {
 
 } // End Database_Mysql_Driver Class
 
+
 /**
- * Class: Mysql_Result
- *  The result class for MySQL queries.
+ * Mysql_Result
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
  */
 class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable {
 
-	// Result resource
+	/**
+	 * Result resource
+	 *
+	 * @var resource
+	 */
 	protected $result = NULL;
 
-	// Total rows and current row
+	/**
+	 * Total rows
+	 *
+	 * @var integer
+	 */
 	protected $total_rows  = FALSE;
+
+	/**
+	 * Current row
+	 *
+	 * @var integer
+	 */
 	protected $current_row = FALSE;
 
-	// Insert id
+	/**
+	 * Last insterted ID
+	 *
+	 * @var integer
+	 */
 	protected $insert_id = FALSE;
 
-	// Data fetching types
+	/**
+	 * Fetch type
+	 *
+	 * @var string
+	 */
 	protected $fetch_type  = 'mysql_fetch_object';
+
+	/**
+	 * Return type
+	 *
+	 * @var integer
+	 */
 	protected $return_type = MYSQL_ASSOC;
 
 	/**
-	 * Constructor: __construct
-	 *  Sets up the class.
+	 * Construct, sets up the class.
 	 *
-	 * Parameters:
-	 *  result - result resource
-	 *  link   - database resource link
-	 *  object - return objects or arrays
-	 *  sql    - sql query that was run
+	 * @param resource $result
+	 * @param resource $link
+	 * @param boolean  $object
+	 * @param string   $sql
 	 */
 	public function __construct($result, $link, $object = TRUE, $sql)
 	{
@@ -335,8 +465,8 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	}
 
 	/**
-	 * Destructor: __destruct
-	 *  Magic __destruct function, frees the result.
+	 * Destruct, the cleanup crew!
+	 *
 	 */
 	public function __destruct()
 	{
@@ -346,6 +476,13 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		}
 	}
 
+	/**
+	 * result
+	 *
+	 * @param  boolean $object
+	 * @param  integer $type (using MYSQL_ constants)
+	 * @return Mysql_Result
+	 */
 	public function result($object = TRUE, $type = MYSQL_ASSOC)
 	{
 		$this->fetch_type = ((bool) $object) ? 'mysql_fetch_object' : 'mysql_fetch_array';
@@ -366,6 +503,13 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		return $this;
 	}
 
+	/**
+	 * result_array
+	 *
+	 * @param  mixed $object
+	 * @param  mixed $type
+	 * @return array
+	 */
 	public function result_array($object = NULL, $type = MYSQL_ASSOC)
 	{
 		$rows = array();
@@ -414,11 +558,21 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		return isset($rows) ? $rows : array();
 	}
 
+	/**
+	 * last inserted id
+	 *
+	 * @return integer
+	 */
 	public function insert_id()
 	{
 		return $this->insert_id;
 	}
 
+	/**
+	 * using mysql_fetch_field
+	 *
+	 * @return array
+	 */
 	public function list_fields()
 	{
 		$field_names = array();
@@ -431,19 +585,24 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	}
 	// End Interface
 
+
 	// Interface: Countable
 	/**
-	 * Method: count
-	 *  Counts the number of rows in the result set.
+	 * Counts the number of rows in the result set.
 	 *
-	 * Returns:
-	 *  The number of rows in the result set
+	 * @return integer The number of rows in the result set
 	 */
 	public function count()
 	{
 		return $this->total_rows;
 	}
 
+	/**
+	 * Counts the number of rows in the result set.
+	 *
+	 * @return     integer The number of rows in the result set
+	 * @deprecated Depricated, use count()
+	 */
 	public function num_rows()
 	{
 		Log::add('error', 'You should really be using "count($result)" instead of "$result->num_rows()". Fix your code!');
@@ -452,16 +611,13 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	}
 	// End Interface
 
+
 	// Interface: ArrayAccess
 	/**
-	 * Method: offsetExists
-	 *  Determines if the requested offset of the result set exists.
+	 * Determines if the requested offset of the result set exists.
 	 *
-	 * Parameters:
-	 *  offset - offset id
-	 *
-	 * Returns:
-	 *  TRUE if the offset exists, FALSE otherwise
+	 * @param  integer $offset
+	 * @return boolean TRUE if exists, FALSE otherwise
 	 */
 	public function offsetExists($offset)
 	{
@@ -477,14 +633,10 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	}
 
 	/**
-	 * Method: offsetGet
-	 *  Retreives the requested query result offset.
+	 * Retreives the requested query result offset.
 	 *
-	 * Parameters:
-	 *  offset - offset id
-	 *
-	 * Returns:
-	 *  The query row
+	 * @param  integer $offset
+	 * @return mixed the query row
 	 */
 	public function offsetGet($offset)
 	{
@@ -501,15 +653,11 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	}
 
 	/**
-	 * Method: offsetSet
-	 *  Sets the offset with the provided value. Since you can't modify query result sets, this function just throws an exception.
+	 * Sets the offset with the provided value. Since you can't modify query result sets, this function just throws an exception.
 	 *
-	 * Parameters:
-	 *  offset - offset id
-	 *  value  - value to set
-	 *
-	 * Returns:
-	 *  <Kohana_Database_Exception> object
+	 * @param  integer $offset
+	 * @param  integer $value
+	 * @throws Kohana_Database_Exception
 	 */
 	public function offsetSet($offset, $value)
 	{
@@ -517,14 +665,10 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	}
 
 	/**
-	 * Method: offsetUnset
-	 *  Unsets the offset. Since you can't modify query result sets, this function just throws an exception.
+	 * Unsets the offset. Since you can't modify query result sets, this function just throws an exception.
 	 *
-	 * Parameters:
-	 *  offset - offset id
-	 *
-	 * Returns:
-	 *  <Kohana_Database_Exception> object
+	 * @param  integer $offset
+	 * @throws Kohana_Database_Exception
 	 */
 	public function offsetUnset($offset)
 	{
@@ -534,11 +678,9 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 	// Interface: Iterator
 	/**
-	 * Method: current
-	 *  Retreives the current result set row.
+	 * Retreives the current result set row.
 	 *
-	 * Returns:
-	 *  The current result row (type based on <Mysql_result.result>)
+	 * @return integer The current result row (type based on <Mysql_result.result>)
 	 */
 	public function current()
 	{
@@ -546,11 +688,9 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	}
 
 	/**
-	 * Method: key
-	 *  Retreives the current row id.
+	 * Retreives the current row id.
 	 *
-	 * Returns:
-	 *  The current result row id
+	 * @return integer The current result row number
 	 */
 	public function key()
 	{
@@ -558,11 +698,9 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	}
 
 	/**
-	 * Method: next
-	 *  Moves the result pointer ahead one.
+	 * Moves the result pointer ahead one step.
 	 *
-	 * Returns:
-	 *  The next row id
+	 * @return integer The next row number
 	 */
 	public function next()
 	{
@@ -570,11 +708,9 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	}
 
 	/**
-	 * Method: next
-	 *  Moves the result pointer back one.
+	 * Moves the result pointer back one step.
 	 *
-	 * Returns:
-	 *  The previous row id
+	 * @return integer The previous row number
 	 */
 	public function prev()
 	{
@@ -582,11 +718,9 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	}
 
 	/**
-	 * Method: rewind
-	 *  Moves the result pointer to the beginning of the result set.
+	 * Moves the result pointer to the beginning of the result set.
 	 *
-	 * Returns:
-	 *  0
+	 * @return integer 0
 	 */
 	public function rewind()
 	{
@@ -594,11 +728,9 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	}
 
 	/**
-	 * Method: valid
-	 *  Determines if the current result pointer is valid.
+	 * Determines if the current result pointer is valid.
 	 *
-	 * Returns:
-	 *  TRUE if the pointer is valid, FALSE otherwise
+	 * @return boolean
 	 */
 	public function valid()
 	{
