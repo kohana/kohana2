@@ -62,7 +62,7 @@ class Form_Checklist_Core extends Form_Input {
 		}
 		$checklist .= '</ul>';
 
-		return $checklist.$this->error_message();
+		return $checklist;
 	}
 
 	protected function load_value()

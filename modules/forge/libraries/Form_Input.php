@@ -270,8 +270,11 @@ class Form_Input_Core {
 		if (is_bool($this->is_valid))
 			return;
 
-		// Load POSTed value
-		$this->data['value'] = self::$input->post($this->name);
+		if ($name = $this->name)
+		{
+			// Load POSTed value, but only for named inputs
+			$this->data['value'] = self::$input->post($name);
+		}
 
 		if (is_string($this->data['value']))
 		{
