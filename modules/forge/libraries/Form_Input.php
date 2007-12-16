@@ -26,7 +26,7 @@ class Form_Input_Core {
 
 	// Errors
 	protected $errors = array();
-	protected $error_messages;
+	protected $error_messages = array();
 
 	public function __construct($name)
 	{
