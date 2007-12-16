@@ -153,7 +153,7 @@ class text_Core {
 
 	/**
 	 * Method: reduce_slashes
-	 *  Reduce multiple slashes in a string to single slashes.
+	 *  Reduces multiple slashes in a string to single slashes.
 	 *
 	 * Parameters:
 	 *  str - string to reduce slashes of
@@ -207,7 +207,7 @@ class text_Core {
 
 	/**
 	 * Method: bytes
-	 *  Return human readable sizes.
+	 *  Returns human readable sizes.
 	 *  Based on original functions written by:
 	 *  - Aidan Lister: http://aidanlister.com/repos/v/function.size_readable.php
 	 *  - Quentin Zervaas: http://www.phpriot.com/d/code/strings/filesize-format/
@@ -246,6 +246,30 @@ class text_Core {
 		}
 
 		return sprintf($format, $bytes / pow($mod, $power), $units[$power]);
+	}
+
+	/**
+	 * Method: widont
+	 *  Prevents widow words by inserting a non-breaking space between the last two words.
+	 *  See: http://www.shauninman.com/archive/2006/08/22/widont_wordpress_plugin
+	 *
+	 * Parameters:
+	 *  str - string to remove widows from
+	 *
+	 * Returns:
+	 *  String with non-breaking space between the last two words.
+	 */
+	public function widont($str)
+	{
+		$str = rtrim($str);
+		$space = strrpos($str, ' ');
+
+		if ($space !== FALSE)
+		{
+			$str = substr($str, 0, $space).'&nbsp;'.substr($str, $space + 1);
+		}
+
+		return $str;
 	}
 
 } // End text
