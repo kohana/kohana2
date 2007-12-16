@@ -13,36 +13,27 @@ abstract class Database_Driver {
 	static $query_cache;
 
 	/**
-	 * Method: connect
-	 *  Connects to the database.
+	 * Connect to our database
+	 * Returns FALSE on failure or a MySQL resource
 	 *
-	 * Returns:
-	 *  Database link on success or FALSE on failure
+	 * @return mixed
 	 */
 	abstract public function connect();
 
 	/**
-	 * Method: query
-	 *  Executes a query.
+	 * Perform a query based on a manually written query
 	 *
-	 * Parameters:
-	 *  sql - query to execute
-	 * 
-	 * Returns:
-	 *  Database result object
+	 * @param  string $sql
+	 * @return Mysql_Result
 	 */
 	abstract public function query($sql);
 
 	/**
-	 * Method: delete
-	 *  Builds a DELETE query.
+	 * Builds a DELETE query.
 	 *
-	 * Parameters:
-	 *  table - table name
-	 *  where - WHERE clause
-	 * 
-	 * Returns:
-	 *  A DELETE sql query string
+	 * @param  string $table
+	 * @param  array $where
+	 * @return string
 	 */
 	public function delete($table, $where)
 	{
@@ -50,16 +41,12 @@ abstract class Database_Driver {
 	}
 
 	/**
-	 * Method: update
-	 *  Builds an UPDATE query.
+	 * Builds an UPDATE query.
 	 *
-	 * Parameters:
-	 *  table  - table name
-	 *  values - associative array of values
-	 *  where  - WHERE clause
-	 * 
-	 * Returns:
-	 *  An UPDATE sql query string
+	 * @param  string $table
+	 * @param  array $values
+	 * @param  array $where
+	 * @return string
 	 */
 	public function update($table, $values, $where)
 	{
@@ -71,51 +58,37 @@ abstract class Database_Driver {
 	}
 
 	/**
-	 * Method: set_charset
-	 *  Sets the character set for future queries.
+	 * Set the charset using 'SET NAMES <charset>'
 	 *
-	 * Parameters:
-	 *  charset - character set
+	 * @param string $charset
 	 */
 	abstract public function set_charset($charset);
 
 	/**
-	 * Method: escape_table
-	 *  Escape the passed table name.
+	 * Wrap the tablename in backticks, has support for: table.field syntax.
 	 *
-	 * Parameters:
-	 *  table - table name
-	 *
-	 * Returns:
-	 *  A string containing the escaped table name
+	 * @param  string $table
+	 * @return string
 	 */
 	abstract public function escape_table($table);
 
 	/**
-	 * Method: escape_column
-	 *  Escape the passed column name.
+	 * Escape a column/field name, has support for special commands.
 	 *
-	 * Parameters:
-	 *  column - column name
-	 *
-	 * Returns:
-	 *  A string containing the escaped column name
+	 * @param  string $column
+	 * @return string
 	 */
 	abstract public function escape_column($column);
 
 	/**
-	 * Method: where
-	 *  Builds a WHERE portion of a query.
+	 * Builds a WHERE portion of a query.
 	 *
-	 * Parameters:
-	 *  key        - key name or array of key => value pairs
-	 *  value      - value to match with key
-	 *  type       - operator to join multiple wheres with (AND/OR)
-	 *  num_wheres - number of existing WHERE clauses
-	 *  quote      - disable quoting of WHERE clause
-	 *
-	 * Returns:
-	 *  A WHERE portion of a query
+	 * @param  mixed  $key
+	 * @param  string $value
+	 * @param  string $type
+	 * @param  int    $num_wheres
+	 * @param  bool   $quote
+	 * @return string
 	 */
 	public function where($key, $value, $type, $num_wheres, $quote)
 	{
@@ -165,17 +138,13 @@ abstract class Database_Driver {
 	}
 
 	/**
-	 * Method: like
-	 *  Builds a LIKE portion of a query.
+	 * Builds a LIKE portion of a query.
 	 *
-	 * Parameters:
-	 *  field     - field name or array of field => match pairs
-	 *  match     - like value to match with field
-	 *  type      - operator to join multiple likes with (AND/OR)
-	 *  num_likes - number of existing WHERE clauses
-	 *
-	 * Returns:
-	 *  A LIKE portion of a query
+	 * @param  mixed  $field
+	 * @param  string $match
+	 * @param  string $type
+	 * @param  int    $num_likes
+	 * @return string
 	 */
 	public function like($field, $match = '', $type = 'AND ', $num_likes)
 	{
@@ -189,17 +158,13 @@ abstract class Database_Driver {
 	}
 
 	/**
-	 * Method: notlike
-	 *  Builds a NOT LIKE portion of a query.
+	 * Builds a NOT LIKE portion of a query.
 	 *
-	 * Parameters:
-	 *  field     - field name or array of field => match pairs
-	 *  match     - like value to match with field
-	 *  type      - operator to join multiple likes with (AND/OR)
-	 *  num_likes - number of existing WHERE clauses
-	 *
-	 * Returns:
-	 *  A NOT LIKE portion of a query
+	 * @param  mixed  $field
+	 * @param  string $match
+	 * @param  string $type
+	 * @param  int    $num_likes
+	 * @return string
 	 */
 	public function notlike($field, $match = '', $type = 'AND ', $num_likes)
 	{
@@ -213,46 +178,34 @@ abstract class Database_Driver {
 	}
 
 	/**
-	 * Method: regex
-	 *  Builds a REGEXP portion of a query.
+	 * Builds a REGEX portion of a query
 	 *
-	 * Parameters:
-	 *  field     - field name or array of field => match pairs
-	 *  match     - like value to match with field
-	 *  type      - operator to join multiple likes with (AND/OR)
-	 *  num_regexs - number of existing WHERE clauses
-	 *
-	 * Returns:
-	 *  A string containing the REGEXP query
+	 * @param  string  $field
+	 * @param  string  $match
+	 * @param  string  $type
+	 * @param  integer $num_regexs
+	 * @return string
 	 */
 	abstract public function regex($field, $match, $type, $num_regexs);
 
 	/**
-	 * Method: notregex
-	 *  Builds a NOT REGEXP portion of a query.
+	 * Builds a NOT REGEX portion of a query
 	 *
-	 * Parameters:
-	 *  field     - field name or array of field => match pairs
-	 *  match     - like value to match with field
-	 *  type      - operator to join multiple likes with (AND/OR)
-	 *  num_regexs - number of existing WHERE clauses
-	 *
-	 * Returns:
-	 *  A string containing the NOT REGEXP query
+	 * @param  string  $field
+	 * @param  string  $match
+	 * @param  string  $type
+	 * @param  integer $num_regexs
+	 * @return string
 	 */
 	abstract public function notregex($field, $match, $type, $num_regexs);
 
 	/**
-	 * Method: insert
-	 *  Builds an INSERT query.
+	 * Builds an INSERT query.
 	 *
-	 * Parameters:
-	 *  table  - table name
-	 *  keys   - array of keys
-	 *  values - array of values for the keys
-	 *
-	 * Returns:
-	 *  A string containing the INSERT query
+	 * @param  string  $table
+	 * @param  array   $keys
+	 * @param  array   $values
+	 * @return string
 	 */
 	public function insert($table, $keys, $values)
 	{
@@ -265,55 +218,39 @@ abstract class Database_Driver {
 	}
 
 	/**
-	 * Method: merge
-	 *  Builds an MERGE query.
+	 * Builds a MERGE portion of a query.
 	 *
-	 * Parameters:
-	 *  table  - table name
-	 *  keys   - array of keys
-	 *  values - array of values for the keys
-	 *
-	 * Returns:
-	 *  A string containing the MERGE query
+	 * @param  string $table
+	 * @param  array  $keys
+	 * @param  array  $values
+	 * @return string
 	 */
 	abstract public function merge($table, $keys, $values);
 
 	/**
-	 * Method: limit
-	 *  Builds a LIMIT portion of a query.
+	 * Builds a LIMIT portion of a query.
 	 *
-	 * Parameters:
-	 *  limit  - number of rows to limit result to
-	 *  offset - offset in result to start returning rows from
-	 *
-	 * Returns:
-	 *  A string containing the LIMIT query
+	 * @param  integer $limit
+	 * @param  integer $offset
+	 * @return string
 	 */
 	abstract public function limit($limit, $offset = 0);
 
 	/**
-	 * Method: compile_select
 	 *  Compiles the SELECT statement.
 	 *  Generates a query string based on which functions were used.
 	 *  Should not be called directly, the get() function calls it.
 	 *
-	 * Parameters:
-	 *  database - all the query parts set from the database library
-	 *
-	 * Returns:
-	 *  A string containing the SELECT query
+	 * @param  array  $database
+	 * @return string
 	 */
 	abstract public function compile_select($database);
 
 	/**
-	 * Method: has_operator
-	 *  Determines if the string has an arithmetic operator in it.
+	 * Determines if the string has an arithmetic operator in it.
 	 *
-	 * Parameters:
-	 *  str - string to test
-	 *
-	 * Returns:
-	 *  TRUE if the string has an operator in it, FALSE otherwise
+	 * @param  string $str
+	 * @return boolean
 	 */
 	public function has_operator($str)
 	{
@@ -321,14 +258,10 @@ abstract class Database_Driver {
 	}
 
 	/**
-	 * Method: escape
-	 *  Escapes a value for a query.
+	 * Escapes any input value
 	 *
-	 * Parameters:
-	 *  value - value to escape
-	 *
-	 * Returns:
-	 *  An escaped version of the value
+	 * @param  mixed $value
+	 * @return string
 	 */
 	public function escape($value)
 	{
@@ -349,49 +282,40 @@ abstract class Database_Driver {
 	}
 
 	/**
-	 * Method: escape_str
-	 *  Escapes a string for a query.
+	 * Escapes a string for a query
 	 *
-	 * Parameters:
-	 *  str - string to escape
-	 *
-	 * Returns:
-	 *  An escaped version of the string
+	 * @param  mixed $str but most likely string
+	 * @return mixed but most likely string
 	 */
 	abstract public function escape_str($str);
 
 	/**
-	 * Method: list_tables
-	 *  List all tables in the database.
+	 * Lists all tables in the database
 	 *
-	 * Returns:
-	 *  An array of table names
+	 * @return array
 	 */
 	abstract public function list_tables();
 
 	/**
-	 * Method: show_error
-	 *  Shows the last database error.
+	 * Returns the last database error
 	 *
-	 * Returns:
-	 *  A string containing the error
+	 * @return string
 	 */
 	abstract public function show_error();
 
 	/**
-	 * Method: field_data
-	 *  Returns field data about a table.
+	 * Returns field data about a table.
 	 *
-	 * Parameters:
-	 *  table - table name
-	 *
-	 * Returns:
-	 *  An array containing the field data or FALSE if the table doesn't exist.
+	 * @param  string $table
+	 * @return array
 	 */
 	abstract public function field_data($table);
 
 	/**
 	 * Fetches SQL type information about a field, in a generic format.
+	 *
+	 * @param  string $str
+	 * @return array
 	 */
 	protected function sql_type($str)
 	{
@@ -448,11 +372,9 @@ abstract class Database_Driver {
 	}
 
 	/**
-	 * Method: clear_cache
-	 *  Clears the internal query cache
+	 * Clears the internal query cache
 	 *
-	 * Parameters:
-	 *  sql - the sql command to clear, leave blank to clear entire cache
+	 * @param  string $sql
 	 */
 	public function clear_cache($sql = NULL)
 	{
@@ -472,8 +394,8 @@ abstract class Database_Driver {
 	 * Creates a hash for an SQL query string. Replaces newlines with spaces,
 	 * trims, and hashes.
 	 *
-	 * Returns:
-	 *  SHA1 hash
+	 * @param  string $sql
+	 * @return string
 	 */
 	protected function query_hash($sql)
 	{
@@ -483,57 +405,40 @@ abstract class Database_Driver {
 } // End Database Driver Interface
 
 /**
- * Interface: Database_Result
- *  Database Result API driver
+ * Database_Result
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
  */
 interface Database_Result {
 
 	/**
-	 * Method: result
-	 *  Prepares the query result.
+	 * Prepares the query result.
 	 *
-	 * Parameters:
-	 *  object - return objects or arrays
-	 *  type   - array type to use (if using arrays) or class name (if using objects)
-	 * 
-	 * Returns:
-	 *  Database result object
+	 * @param  bool  $object
+	 * @param  mixed $type
+	 * @return object
 	 */
 	public function result($object = TRUE, $type = FALSE);
 
 	/**
-	 * Method: result_array
-	 *  Builds an array of query results.
+	 * Builds an array of query results.
 	 *
-	 * Parameters:
-	 *  object - return objects or arrays
-	 *  type   - array type to use (if using arrays) or class name (if using objects)
-	 * 
-	 * Returns:
-	 *  Database result object
+	 * @param  bool  $object
+	 * @param  mixed $type
+	 * @return array
 	 */
 	public function result_array($object = NULL, $type = FALSE);
 
 	/**
-	 * Method: insert_id
-	 *  Gets the id of an INSERT statement.
-	 * 
-	 * Returns:
-	 *  The insert id number
+	 * gets the ID of the last insert statement
+	 *
+	 * @return int
 	 */
 	public function insert_id();
 
 	/**
-	 * Method: list_fields
-	 *  Gets the fields of an already run query
-	 * 
-	 * Returns:
-	 *  an array containing the fields
+	 * Gets the fields of an already run query
+	 *
+	 * @return array
 	 */
 	public function list_fields();
 

@@ -48,12 +48,6 @@ class Database_Mysql_Driver extends Database_Driver {
 		is_resource($this->link) and mysql_close($this->link);
 	}
 
-	/**
-	 * Connect to our database
-	 * Returns FALSE on failure or a MySQL resource
-	 *
-	 * @return mixed
-	 */
 	public function connect()
 	{
 		// Import the connect variables
@@ -80,12 +74,6 @@ class Database_Mysql_Driver extends Database_Driver {
 		return FALSE;
 	}
 
-	/**
-	 * Perform a query based on a manually written query
-	 *
-	 * @param  string $sql
-	 * @return Mysql_Result
-	 */
 	public function query($sql)
 	{
 		// Only cache if it's turned on, and only cache if it's not a write statement
@@ -106,33 +94,16 @@ class Database_Mysql_Driver extends Database_Driver {
 		return new Mysql_Result(mysql_query($sql, $this->link), $this->link, $this->db_config['object'], $sql);
 	}
 
-	/**
-	 * Set the charset using 'SET NAMES <charset>'
-	 *
-	 * @param string $charset
-	 */
 	public function set_charset($charset)
 	{
 		$this->query('SET NAMES '.$this->escape_str($charset));
 	}
 
-	/**
-	 * Wrap the tablename in backticks, has support for: table.field syntax.
-	 *
-	 * @param  string $table
-	 * @return string
-	 */
 	public function escape_table($table)
 	{
 		return '`'.str_replace('.', '`.`', $table).'`';
 	}
 
-	/**
-	 * Escape a column/field name, has support for special commands.
-	 *
-	 * @param  string $column
-	 * @return string
-	 */
 	public function escape_column($column)
 	{
 		if (strtolower($column) == 'count(*)' OR $column == '*')
@@ -174,15 +145,6 @@ class Database_Mysql_Driver extends Database_Driver {
 		return $column;
 	}
 
-	/**
-	 * MySQL command 'REGEXP'
-	 *
-	 * @param  string  $field
-	 * @param  string  $match
-	 * @param  string  $type
-	 * @param  integer $num_regexs
-	 * @return string
-	 */
 	public function regex($field, $match = '', $type = 'AND ', $num_regexs)
 	{
 		$prefix = ($num_regexs == 0) ? '' : $type;
@@ -190,15 +152,6 @@ class Database_Mysql_Driver extends Database_Driver {
 		return $prefix.' '.$this->escape_column($field).' REGEXP \''.$this->escape_str($match).'\'';
 	}
 
-	/**
-	 * MySQL command 'NOT REGEXP'
-	 *
-	 * @param  string  $field
-	 * @param  string  $match
-	 * @param  string  $type
-	 * @param  integer $num_regexs
-	 * @return string
-	 */
 	public function notregex($field, $match = '', $type = 'AND ', $num_regexs)
 	{
 		$prefix = $num_regexs == 0 ? '' : $type;
@@ -206,14 +159,6 @@ class Database_Mysql_Driver extends Database_Driver {
 		return $prefix.' '.$this->escape_column($field).' NOT REGEXP \''.$this->escape_str($match) . '\'';
 	}
 
-	/**
-	 * MySQL command 'REPLACE INTO ..'
-	 *
-	 * @param  string $table
-	 * @param  array  $keys
-	 * @param  array  $values
-	 * @return string
-	 */
 	public function merge($table, $keys, $values)
 	{
 		// Escape the column names
@@ -224,24 +169,11 @@ class Database_Mysql_Driver extends Database_Driver {
 		return 'REPLACE INTO '.$this->escape_table($table).' ('.implode(', ', $keys).') VALUES ('.implode(', ', $values).')';
 	}
 
-	/**
-	 * MySQL command 'LIMIT'
-	 *
-	 * @param  integer $limit
-	 * @param  integer $offset
-	 * @return string
-	 */
 	public function limit($limit, $offset = 0)
 	{
 		return 'LIMIT '.$offset.', '.$limit;
 	}
 
-	/**
-	 * Compile our select statement into a ready SQL query
-	 *
-	 * @param  array  $database
-	 * @return string
-	 */
 	public function compile_select($database)
 	{
 		$sql = ($database['distinct'] == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
@@ -292,12 +224,6 @@ class Database_Mysql_Driver extends Database_Driver {
 		return $sql;
 	}
 
-	/**
-	 * Input escape, using mysql_real_escape_string()
-	 *
-	 * @param  mixed $str but most likely string
-	 * @return mixed but most likely string
-	 */
 	public function escape_str($str)
 	{
 		is_resource($this->link) or $this->connect($this->db_config);
@@ -305,11 +231,6 @@ class Database_Mysql_Driver extends Database_Driver {
 		return mysql_real_escape_string($str, $this->link);
 	}
 
-	/**
-	 * MySQL command 'SHOW TABLES FROM ..'
-	 *
-	 * @return array
-	 */
 	public function list_tables()
 	{
 		$sql    = 'SHOW TABLES FROM `'.$this->db_config['connection']['database'].'`';
@@ -324,11 +245,6 @@ class Database_Mysql_Driver extends Database_Driver {
 		return $retval;
 	}
 
-	/**
-	 * Return the last error reported by mysql_error()
-	 *
-	 * @return string
-	 */
 	public function show_error()
 	{
 		return mysql_error($this->link);
@@ -356,12 +272,6 @@ class Database_Mysql_Driver extends Database_Driver {
 		return $tables[$table];
 	}
 
-	/**
-	 * MySQL command 'SHOW COLUMNS FROM ..'
-	 *
-	 * @param  string $table
-	 * @return array
-	 */
 	public function field_data($table)
 	{
 		$query  = mysql_query('SHOW COLUMNS FROM '.$this->escape_table($table), $this->link);
@@ -476,13 +386,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		}
 	}
 
-	/**
-	 * result
-	 *
-	 * @param  boolean $object
-	 * @param  integer $type (using MYSQL_ constants)
-	 * @return Mysql_Result
-	 */
 	public function result($object = TRUE, $type = MYSQL_ASSOC)
 	{
 		$this->fetch_type = ((bool) $object) ? 'mysql_fetch_object' : 'mysql_fetch_array';
@@ -503,13 +406,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		return $this;
 	}
 
-	/**
-	 * result_array
-	 *
-	 * @param  mixed $object
-	 * @param  mixed $type
-	 * @return array
-	 */
 	public function result_array($object = NULL, $type = MYSQL_ASSOC)
 	{
 		$rows = array();
@@ -558,21 +454,11 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		return isset($rows) ? $rows : array();
 	}
 
-	/**
-	 * last inserted id
-	 *
-	 * @return integer
-	 */
 	public function insert_id()
 	{
 		return $this->insert_id;
 	}
 
-	/**
-	 * using mysql_fetch_field
-	 *
-	 * @return array
-	 */
 	public function list_fields()
 	{
 		$field_names = array();
