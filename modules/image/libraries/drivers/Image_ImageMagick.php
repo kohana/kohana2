@@ -89,6 +89,52 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		return TRUE;
 	}
 
+	public function crop($prop)
+	{
+		list($width, $height) = $this->properties();
+
+		// Width and height cannot exceed current image size
+		$prop['width']  = min($prop['width'], $width);
+		$prop['height'] = min($prop['height'], $height);
+
+		switch($prop['top'])
+		{
+			case 'center':
+				$prop['top'] = floor(($height / 2) - ($prop['height'] / 2));
+			break;
+			case 'top':
+				$prop['top'] = 0;
+			break;
+			case 'bottom':
+				$prop['top'] = $height - $prop['height'];
+			break;
+		}
+		switch($prop['left'])
+		{
+			case 'center':
+				$prop['left'] = floor(($width / 2) - ($prop['width'] / 2));
+			break;
+			case 'left':
+				$prop['left'] = 0;
+			break;
+			case 'right':
+				$prop['left'] = $width - $prop['height'];
+			break;
+		}
+
+		// Set the IM geometry based on the properties
+		$geometry = escapeshellarg($prop['width'].'x'.$prop['height'].'+'.$prop['left'].'+'.$prop['top']);
+
+
+		if ($error = exec(escapeshellcmd($this->dir.'convert').' -crop '.$geometry.' '.$this->cmd_image.' '.$this->cmd_image))
+		{
+			$this->errors[] = $error;
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+
 	public function flip($direction)
 	{
 		// Convert the direction into a IM command
@@ -101,6 +147,12 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		}
 
 		return TRUE;
+	}
+
+	protected function properties()
+	{
+		// Return the width and height as an array. Use with list()
+		return explode(' ', exec(escapeshellcmd($this->dir.'identify').' -format '.escapeshellarg('%w %h').' '.$this->cmd_image));
 	}
 
 }
