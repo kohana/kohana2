@@ -47,7 +47,9 @@ abstract class Image_Driver {
 		}
 	}
 
-	public function process($image, $actions, $new_file)
+	abstract public function process($image, $actions, $dir, $file);
+
+	public function execute($actions)
 	{
 		foreach($actions as $func => $args)
 		{

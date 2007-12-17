@@ -7,8 +7,8 @@ class Image_demo_Controller extends Controller {
 		$dir = str_replace('\\', '/', realpath(dirname(__FILE__).'/../upload')).'/';
 
 		$image = new Image($dir.'good-omen-cat.jpg');
-		$image->resize(85, 85, Image::HEIGHT);
-		$image->save($dir.'good_cat.gif');
+		$image->resize(100, 100)->flip(Image::HORIZONTAL);
+		$image->save();
 
 		echo Kohana::debug($image);
 	}

@@ -83,7 +83,7 @@ class Image_Core {
 
 		if ($master === NULL)
 		{
-			// Use auto
+			// Maintain the aspect ratio by default
 			$master = self::AUTO;
 		}
 		elseif ( ! $this->valid_size('master', $master))
@@ -157,10 +157,7 @@ class Image_Core {
 		if ($direction !== self::HORIZONTAL AND $direction !== self::VERTICAL)
 			throw new Kohana_Exception('image.invalid_flip');
 
-		$this->actions['flip'] = array
-		(
-			'direction' => $direction,
-		);
+		$this->actions['flip'] = $direction;
 
 		return $this;
 	}
@@ -174,18 +171,20 @@ class Image_Core {
 
 	public function save($new_image = FALSE)
 	{
-		if ( ! empty($new_image))
-		{
-			list($dir, $file) = array_values(pathinfo($new_image));
+		// If no new image is defined, use the current image
+		empty($new_image) and $new_image = $this->image;
 
-			$dir = str_replace('\\', '/', realpath($dir)).'/';
+		// Separate the directory and filename
+		$dir  = pathinfo($new_image, PATHINFO_DIRNAME);
+		$file = pathinfo($new_image, PATHINFO_BASENAME);
 
-			if ( ! is_writable($dir))
-				throw new Kohana_Exception('image.directory_unwritable', $dir);
+		// Normalize the path
+		$dir = str_replace('\\', '/', realpath($dir)).'/';
 
-			$new_image = $dir.$file;
-		}
-		$this->driver->process($this->image, $this->actions, $new_image);
+		if ( ! is_writable($dir))
+			throw new Kohana_Exception('image.directory_unwritable', $dir);
+
+		$this->driver->process($this->image, $this->actions, $dir, $file);
 	}
 
 	protected function valid_size($type, & $value)
