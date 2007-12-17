@@ -71,4 +71,12 @@ abstract class Image_Driver {
 	 */
 	abstract public function rotate($amount);
 
+	/**
+	 * Sharpen and image. Valid amounts are 1 to 100.
+	 *
+	 * @param   integer  amount to sharpen
+	 * @return  boolean
+	 */
+	abstract public function sharpen($amount);
+
 } // End Image Driver

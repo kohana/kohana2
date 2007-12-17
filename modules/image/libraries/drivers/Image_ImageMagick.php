@@ -74,40 +74,11 @@ class Image_ImageMagick_Driver extends Image_Driver {
 
 	public function crop($prop)
 	{
-		list($width, $height) = $this->properties();
-
-		// Width and height cannot exceed current image size
-		$prop['width']  = min($prop['width'], $width);
-		$prop['height'] = min($prop['height'], $height);
-
-		switch($prop['top'])
-		{
-			case 'center':
-				$prop['top'] = floor(($height / 2) - ($prop['height'] / 2));
-			break;
-			case 'top':
-				$prop['top'] = 0;
-			break;
-			case 'bottom':
-				$prop['top'] = $height - $prop['height'];
-			break;
-		}
-		switch($prop['left'])
-		{
-			case 'center':
-				$prop['left'] = floor(($width / 2) - ($prop['width'] / 2));
-			break;
-			case 'left':
-				$prop['left'] = 0;
-			break;
-			case 'right':
-				$prop['left'] = $width - $prop['height'];
-			break;
-		}
+		// Sanitize and normalize the properties into geometry
+		$this->sanitize_geometry($prop);
 
 		// Set the IM geometry based on the properties
 		$geometry = escapeshellarg($prop['width'].'x'.$prop['height'].'+'.$prop['left'].'+'.$prop['top']);
-
 
 		if ($error = exec(escapeshellcmd($this->dir.'convert').' -crop '.$geometry.' '.$this->cmd_image.' '.$this->cmd_image))
 		{
@@ -171,10 +142,84 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		return TRUE;
 	}
 
+	public function sharpen($amount)
+	{
+		// Set the sigma, radius, and amount. The amount formula allows a nice
+		// spread between 1 and 100 without pixelizing the image badly.
+		$sigma  = 0.5;
+		$radius = $sigma * 2;
+		$amount = round(($amount / 80) * 3.14, 2);
+
+		// Convert the amount to an IM command
+		$sharpen = escapeshellarg($radius.'x'.$sigma.'+'.$amount.'+0');
+
+		if ($error = exec(escapeshellcmd($this->dir.'convert').' -unsharp '.$sharpen.' '.$this->cmd_image.' '.$this->cmd_image))
+		{
+			$this->errors[] = $error;
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+
+	/**
+	 * Return the current width and height of the temporary image. This is mainly
+	 * needed for sanitizing the geometry.
+	 *
+	 * @return  array  width, height
+	 */
 	protected function properties()
 	{
 		// Return the width and height as an array. Use with list()
-		return explode(' ', exec(escapeshellcmd($this->dir.'identify').' -format '.escapeshellarg('%w %h').' '.$this->cmd_image));
+		return explode(',', exec(escapeshellcmd($this->dir.'identify').' -format '.escapeshellarg('%w,%h').' '.$this->cmd_image));
+	}
+
+	/**
+	 * Sanitize and normalize a geometry array based on the temporary image
+	 * width and height. Valid properties are: width, height, top, left.
+	 *
+	 * @param   array  geometry properties
+	 * @return  void
+	 */
+	protected function sanitize_geometry( & $geometry)
+	{
+		list($width, $height) = $this->properties();
+
+		// Turn off error reporting
+		$reporting = error_reporting(0);
+
+		// Width and height cannot exceed current image size
+		$geometry['width']  = min($geometry['width'], $width);
+		$geometry['height'] = min($geometry['height'], $height);
+
+		switch($geometry['top'])
+		{
+			case 'center':
+				$geometry['top'] = floor(($height / 2) - ($geometry['height'] / 2));
+			break;
+			case 'top':
+				$geometry['top'] = 0;
+			break;
+			case 'bottom':
+				$geometry['top'] = $height - $geometry['height'];
+			break;
+		}
+
+		switch($geometry['left'])
+		{
+			case 'center':
+				$geometry['left'] = floor(($width / 2) - ($geometry['width'] / 2));
+			break;
+			case 'left':
+				$geometry['left'] = 0;
+			break;
+			case 'right':
+				$geometry['left'] = $width - $geometry['height'];
+			break;
+		}
+
+		// Restore error reporting
+		error_reporting($reporting);
 	}
 
 }

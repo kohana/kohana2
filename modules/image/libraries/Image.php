@@ -188,6 +188,13 @@ class Image_Core {
 		return $this;
 	}
 
+	public function sharpen($amount)
+	{
+		$this->actions['sharpen'] = max(1, min($amount, 100));
+
+		return $this;
+	}
+
 	public function save($new_image = FALSE)
 	{
 		// If no new image is defined, use the current image
