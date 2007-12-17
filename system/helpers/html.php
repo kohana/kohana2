@@ -234,34 +234,49 @@ class html_Core {
 	 */
 	public static function stylesheet($style, $media = FALSE, $index = TRUE)
 	{
+		return self::link($style, 'stylesheet', 'text/css', '.css', $media, $index);
+	}
+
+	/**
+	 * Method: link
+	 *  Creates a link tag.
+	 *
+	 * Parameters:
+	 *  href   - filename
+     *  rel    - relationship
+     *  type   - mimetype
+     *  suffix - specifies suffix of the file
+	 *  media  - specifies on what device the document will be displayed
+	 *  index  - include the index_page in the link
+	 *
+	 * Returns:
+	 *  An HTML stylesheet link.
+	 */
+	public static function link($href, $rel, $type, $suffix = FALSE, $media = FALSE, $index = TRUE)
+	{
 		$compiled = '';
 
-		if (is_array($style))
+		if (is_array($href))
 		{
-			// Find default media type
-			$media_type = is_array($media) ? array_shift($media) : $media;
-
-			foreach($style as $name)
+			foreach($href as $_href)
 			{
-				$compiled .= self::stylesheet($name, $media_type, $index)."\n";
+	   			$_rel   = is_array($rel) ? array_shift($rel) : $rel;
+				$_type  = is_array($type) ? array_shift($type) : $type;
+				$_media = is_array($media) ? array_shift($media) : $media;
 
-				if (is_array($media))
-				{
-					// Advance the media type to the next type
-					$media_type = array_shift($media);
-				}
+				$compiled .= self::link($_href, $_rel, $_type, $suffix, $_media, $index)."\n";
 			}
 		}
 		else
 		{
 			// Add the suffix only when it's not already present
-			$suffix   = (strpos($style, '.css') === FALSE) ? '.css' : '';
-			$media    = ($media == FALSE) ? '' : ' media="'.$media.'"';
-			$compiled = '<link rel="stylesheet" type="text/css" href="'.url::base((bool) $index).$style.$suffix.'"'.$media.' />';
+			$suffix   = ( ! empty($suffix) AND strpos($href, $suffix) === FALSE) ? $suffix : '';
+			$media    = empty($media) ? '' : ' media="'.$media.'"';
+			$compiled = '<link rel="'.$rel.'" type="'.$type.'" href="'.url::base((bool) $index).$href.$suffix.'"'.$media.' />';
 		}
 
 		return $compiled;
-	}
+	}    
 
 	/**
 	 * Method: script
