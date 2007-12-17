@@ -23,7 +23,7 @@ $lang = array
 	'depends_on'    => 'Das Feld %s hängt vom Feld %s ab.',
 
 	// Upload errors
-	'user_aborted'  => 'Die Datei %s wurde beim Hochladen abgebrochen.',
+	'user_aborted'  => 'Das Hochladen der Datei %s wurde abgebrochen.',
 	'invalid_type'  => 'Die Datei %s entspricht nicht den erlaubten Dateitypen.',
 	'max_size'      => 'Die Datei %s ist zu groß. Die maximale Größe beträgt %s.',
 	'max_width'     => 'Die Datei %s überschreitet die maximal erlaubte Breite von %spx.',
