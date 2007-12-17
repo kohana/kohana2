@@ -1,14 +1,27 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+/**
+ * Manipulate images using standard methods such as resize, crop, rotate, etc.
+ * This class must be re-initialized for every image you wish to manipulate.
+ * 
+ * $Id: Config.php 1514 2007-12-13 16:39:36Z Shadowhand $
+ *
+ * @package    Image
+ * @author     Kohana Team
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
 class Image_Core {
 
+	// Master Dimension
 	const NONE = 1;
 	const AUTO = 2;
 	const HEIGHT = 3;
-	const WIDTH  = 4;
+	const WIDTH = 4;
+	// Flip Directions
 	const HORIZONTAL = 5;
 	const VERTICAL = 6;
 
+	// Allowed image types
 	public static $allowed_types = array
 	(
 		IMAGETYPE_GIF => 'gif',
@@ -18,11 +31,14 @@ class Image_Core {
 		IMAGETYPE_TIFF_MM => 'tiff',
 	);
 
-	protected $image = '';
-
+	// Driver instance
 	protected $driver;
 
+	// Driver actions
 	protected $actions = array();
+
+	// Reference to the current image filename
+	protected $image = '';
 
 	/**
 	 * Creates a new image editor instance.
@@ -32,13 +48,24 @@ class Image_Core {
 	 * @param   array    non-default configurations
 	 * @return  void
 	 */
-	public function __construct($image, $config = array())
+	public function __construct($image, $config = NULL)
 	{
 		// Load configuration
 		$this->config = (array) $config + Config::item('image');
 
+		// Check to make sure the image exists
+		if ( ! file_exists($image))
+			throw new Kohana_Exception('image.file_not_found', $image);
+
+		// Check to make sure the image type is allowed
+		if (($type = exif_imagetype($image)) == FALSE OR ! isset(Image::$allowed_types[$type]))
+			throw new Kohana_Exception('image.type_not_allowed', $image);
+
+		$this->image = str_replace('\\', '/', realpath($image));
+
 		try
 		{
+			// Create the driver class name
 			$driver = 'Image_'.ucfirst($this->config['driver']).'_Driver';
 
 			// Manually autoload so that exceptions can be caught
@@ -53,13 +80,8 @@ class Image_Core {
 		// Initialize the driver
 		$this->driver = new $driver($this->config['params']);
 
-		if ( ! file_exists($image))
-			throw new Kohana_Exception('image.file_not_found', $image);
-
-		if (($type = exif_imagetype($image)) == FALSE OR ! isset(Image::$allowed_types[$type]))
-			throw new Kohana_Exception('image.type_not_allowed', $image);
-
-		$this->image = str_replace('\\', '/', realpath($image));
+		if ( ! ($this->driver instanceof Image_Driver))
+			throw new Kohana_Exception('image.invalid_driver', $driver);
 	}
 
 	/**
@@ -68,6 +90,7 @@ class Image_Core {
 	 * wish to use height as master dim, set $image->master_dim = Image::HEIGHT
 	 * This method is chainable.
 	 *
+	 * @throws  Kohana_Exception
 	 * @param   integer  width
 	 * @param   integer  height
 	 * @param   integer  one of: Image::NONE, Image::AUTO, Image::WIDTH, Image::HEIGHT
@@ -84,7 +107,7 @@ class Image_Core {
 		if ($master === NULL)
 		{
 			// Maintain the aspect ratio by default
-			$master = self::AUTO;
+			$master = Image::AUTO;
 		}
 		elseif ( ! $this->valid_size('master', $master))
 			throw new Kohana_Exception('image.invalid_master');
@@ -104,6 +127,7 @@ class Image_Core {
 	 * and left offset.
 	 * This method is chainable.
 	 *
+	 * @throws  Kohana_Exception
 	 * @param   integer  width
 	 * @param   integer  height
 	 * @param   integer  top offset, pixel value or one of: top, center, bottom
@@ -137,7 +161,6 @@ class Image_Core {
 
 	/**
 	 * Allows rotation of an image by 180 degrees clockwise or counter clockwise.
-	 * This method is chainable.
 	 *
 	 * @param   integer  degrees
 	 * @return  object
@@ -171,6 +194,13 @@ class Image_Core {
 		return $this;
 	}
 
+	/**
+	 * Flip an image horizontally or vertically.
+	 *
+	 * @throws  Kohana_Exception
+	 * @param   integer  direction
+	 * @return  object
+	 */
 	public function flip($direction)
 	{
 		if ($direction !== self::HORIZONTAL AND $direction !== self::VERTICAL)
@@ -181,6 +211,12 @@ class Image_Core {
 		return $this;
 	}
 
+	/**
+	 * Change the quality of an image.
+	 *
+	 * @param   integer  quality as a percentage
+	 * @return  object
+	 */
 	public function quality($value)
 	{
 		$this->actions['quality'] = $value;
@@ -188,6 +224,12 @@ class Image_Core {
 		return $this;
 	}
 
+	/**
+	 * Sharpen an image.
+	 *
+	 * @param   integer  amount to sharpen, usually ~20 is ideal
+	 * @return  object
+	 */
 	public function sharpen($amount)
 	{
 		$this->actions['sharpen'] = max(1, min($amount, 100));
@@ -195,6 +237,13 @@ class Image_Core {
 		return $this;
 	}
 
+	/**
+	 * Save the image to a new image or overwrite this image.
+	 *
+	 * @throws  Kohana_Exception
+	 * @param   string  new image filename
+	 * @return  object
+	 */
 	public function save($new_image = FALSE)
 	{
 		// If no new image is defined, use the current image
@@ -210,9 +259,22 @@ class Image_Core {
 		if ( ! is_writable($dir))
 			throw new Kohana_Exception('image.directory_unwritable', $dir);
 
-		$this->driver->process($this->image, $this->actions, $dir, $file);
+		// Process the image with the driver
+		$status = $this->driver->process($this->image, $this->actions, $dir, $file);
+
+		// Reset the actions
+		$this->actions = array();
+
+		return $status;
 	}
 
+	/**
+	 * Sanitize a given value type.
+	 *
+	 * @param   string   type of property
+	 * @param   mixed    property value
+	 * @return  boolean
+	 */
 	protected function valid_size($type, & $value)
 	{
 		if (is_null($value))
@@ -227,6 +289,7 @@ class Image_Core {
 			case 'height':
 				if (is_string($value) AND ! ctype_digit($value))
 				{
+					// Only numbers and percent signs
 					if ( ! preg_match('/[0-9]+%$/', $value))
 						return FALSE;
 				}
@@ -258,10 +321,14 @@ class Image_Core {
 				}
 			break;
 			case 'master':
-				if ($value !== self::NONE AND $value !== self::AUTO AND $value !== self::WIDTH AND $value !== self::HEIGHT)
+				if ($value !== self::NONE AND
+				    $value !== self::AUTO AND
+				    $value !== self::WIDTH AND
+				    $value !== self::HEIGHT)
 					return FALSE;
 			break;
 		}
+
 		return TRUE;
 	}
 
