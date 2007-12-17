@@ -224,6 +224,11 @@ class form_Core {
 			$data = array('name' => $data);
 		}
 
+		if ( ! empty($data['name']))
+		{
+			$data['id'] = $data['name'];
+		}
+
 		// Use the value from $data if possible, or use $value
 		$value = isset($data['value']) ? $data['value'] : $value;
 
@@ -259,13 +264,18 @@ class form_Core {
 			$data = array('name' => $data);
 		}
 
+		if ( ! empty($data['name']))
+		{
+			$data['id'] = $data['name'];
+		}
+
 		if ( ! empty($extra))
 		{
 			// Make sure there is 1 space before extra
 			$extra = ' '.ltrim($extra);
 		}
 
-		$input = '<select '.self::attributes($data).$extra.'>'."\n";
+		$input = '<select'.self::attributes($data).$extra.'>'."\n";
 		foreach ($options as $key => $val)
 		{
 			if (is_array($val))
@@ -376,6 +386,11 @@ class form_Core {
 			$data = array('name' => $data);
 		}
 
+		if ( ! empty($data['name']))
+		{
+			$data['id'] = $data['name'];
+		}
+
 		$data['type'] = 'submit';
 
 		return self::input($data, $value, $extra);
@@ -398,6 +413,11 @@ class form_Core {
 		if ( ! is_array($data))
 		{
 			$data = array('name' => $data);
+		}
+
+		if ( ! empty($data['name']))
+		{
+			$data['id'] = $data['name'];
 		}
 
 		$data += array
