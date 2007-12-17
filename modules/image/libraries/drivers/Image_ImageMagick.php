@@ -11,6 +11,13 @@ class Image_ImageMagick_Driver extends Image_Driver {
 	// Processing errors
 	protected $errors = array();
 
+	/**
+	 * Attempts to detect the ImageMagick installation directory.
+	 *
+	 * @throws  Kohana_Exception
+	 * @param   array   configuration
+	 * @return  void
+	 */
 	public function __construct($config)
 	{
 		if (empty($config['directory']))
@@ -26,6 +33,10 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		$this->dir = str_replace('\\', '/', realpath($config['directory'])).'/';
 	}
 
+	/**
+	 * Creates a temporary image and executes the given actions. By creating a
+	 * temporary copy of the image before manipulating it, this process is atomic.
+	 */
 	public function process($image, $actions, $dir, $file)
 	{
 		// Unique temporary filename
@@ -59,34 +70,6 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		unlink($this->tmp_image);
 
 		return $status;
-	}
-
-	public function resize($properties)
-	{
-		switch($properties['master'])
-		{
-			case Image::WIDTH: // Wx
-				$dim = escapeshellarg($properties['width'].'x');
-			break;
-			case Image::HEIGHT: // xH
-				$dim = escapeshellarg('x'.$properties['height']);
-			break;
-			case Image::AUTO: // WxH
-				$dim = escapeshellarg($properties['width'].'x'.$properties['height']);
-			break;
-			case Image::NONE: // WxH!
-				$dim = escapeshellarg($properties['width'].'x'.$properties['height'].'!');
-			break;
-		}
-
-		// Use "convert" to change the width and height
-		if ($error = exec(escapeshellcmd($this->dir.'convert').' -resize '.$dim.' '.$this->cmd_image.' '.$this->cmd_image))
-		{
-			$this->errors[] = $error;
-			return FALSE;
-		}
-
-		return TRUE;
 	}
 
 	public function crop($prop)
@@ -135,12 +118,51 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		return TRUE;
 	}
 
-	public function flip($direction)
+	public function flip($dir)
 	{
 		// Convert the direction into a IM command
-		$direction = ($direction === Image::HORIZONTAL) ? '-flop' : '-flip';
+		$dir = ($dir === Image::HORIZONTAL) ? '-flop' : '-flip';
 
-		if ($error = exec(escapeshellcmd($this->dir.'convert').' '.$direction.' '.$this->cmd_image.' '.$this->cmd_image))
+		if ($error = exec(escapeshellcmd($this->dir.'convert').' '.$dir.' '.$this->cmd_image.' '.$this->cmd_image))
+		{
+			$this->errors[] = $error;
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+
+	public function resize($prop)
+	{
+		switch($prop['master'])
+		{
+			case Image::WIDTH:  // Wx
+				$dim = escapeshellarg($prop['width'].'x');
+			break;
+			case Image::HEIGHT: // xH
+				$dim = escapeshellarg('x'.$prop['height']);
+			break;
+			case Image::AUTO:   // WxH
+				$dim = escapeshellarg($prop['width'].'x'.$prop['height']);
+			break;
+			case Image::NONE:   // WxH!
+				$dim = escapeshellarg($prop['width'].'x'.$prop['height'].'!');
+			break;
+		}
+
+		// Use "convert" to change the width and height
+		if ($error = exec(escapeshellcmd($this->dir.'convert').' -resize '.$dim.' '.$this->cmd_image.' '.$this->cmd_image))
+		{
+			$this->errors[] = $error;
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+
+	public function rotate($amt)
+	{
+		if ($error = exec(escapeshellcmd($this->dir.'convert').' -rotate '.escapeshellarg($amt).' '.$this->cmd_image.' '.$this->cmd_image))
 		{
 			$this->errors[] = $error;
 			return FALSE;

@@ -144,10 +144,29 @@ class Image_Core {
 	 */
 	public function rotate($degrees)
 	{
-		$this->actions['rotate'] = array
-		(
-			'degrees' => ($degrees < 0) ? max(-180, min(0, $degrees)) : max(0, min($degrees, 180)),
-		);
+		$degrees = (int) $degrees;
+
+		if ($degrees > 180)
+		{
+			do
+			{
+				// Keep subtracting full circles until the degrees have normalized
+				$degrees -= 360;
+			}
+			while($degrees > 180);
+		}
+
+		if ($degrees < -180)
+		{
+			do
+			{
+				// Keep adding full circles until the degrees have normalized
+				$degrees += 360;
+			}
+			while($degrees < -180);
+		}
+
+		$this->actions['rotate'] = $degrees;
 
 		return $this;
 	}
