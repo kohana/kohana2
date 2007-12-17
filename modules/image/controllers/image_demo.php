@@ -6,10 +6,9 @@ class Image_demo_Controller extends Controller {
 	{
 		$dir = str_replace('\\', '/', realpath(dirname(__FILE__).'/../upload')).'/';
 
-		$image = new Image($dir.'moo.jpg');
-		$image->resize(200, NULL);
-		$image->crop(150, 150, 'center', 'center');
-		$image->rotate(-400);
+		$image = new Image($dir.'good-omen-cat.jpg');
+		$image->resize(85, 85, Image::NONE);
+		$image->save($dir.'good_cat.gif');
 
 		echo Kohana::debug($image);
 	}

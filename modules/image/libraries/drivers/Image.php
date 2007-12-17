@@ -2,6 +2,8 @@
 
 abstract class Image_Driver {
 
+	protected $image;
+
 	public function calculate_offset($width, $height, $top, $left)
 	{
 		if (is_string($top))
@@ -43,6 +45,17 @@ abstract class Image_Driver {
 				break;
 			}
 		}
+	}
+
+	public function process($image, $actions, $new_file)
+	{
+		foreach($actions as $func => $args)
+		{
+			if ( ! $this->$func($args))
+				return FALSE;
+		}
+
+		return TRUE;
 	}
 
 }

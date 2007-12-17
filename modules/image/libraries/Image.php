@@ -2,8 +2,12 @@
 
 class Image_Core {
 
-	const HEIGHT = 1;
-	const WIDTH  = 2;
+	const NONE = 1;
+	const AUTO = 2;
+	const HEIGHT = 3;
+	const WIDTH  = 4;
+	const HORIZONTAL = 5;
+	const VERTICAL = 6;
 
 	public static $allowed_types = array
 	(
@@ -14,51 +18,111 @@ class Image_Core {
 		IMAGETYPE_TIFF_MM => 'tiff',
 	);
 
+	protected $image = '';
+
+	protected $driver;
+
 	protected $actions = array();
 
-	protected $image_file = '';
-	protected $image_type = '';
-
-	public $master_dim;
-
-	public function __construct($image)
+	/**
+	 * Creates a new image editor instance.
+	 *
+	 * @throws  Kohana_Exception
+	 * @param   string   filename of image
+	 * @param   array    non-default configurations
+	 * @return  void
+	 */
+	public function __construct($image, $config = array())
 	{
+		// Load configuration
+		$this->config = (array) $config + Config::item('image');
+
+		try
+		{
+			$driver = 'Image_'.ucfirst($this->config['driver']).'_Driver';
+
+			// Manually autoload so that exceptions can be caught
+			Kohana::auto_load($driver);
+		}
+		catch (Kohana_Exception $e)
+		{
+			// Driver was not found
+			throw new Kohana_Exception('cache.driver_not_supported', $this->config['driver']);
+		}
+
+		// Initialize the driver
+		$this->driver = new $driver($this->config['params']);
+
 		if ( ! file_exists($image))
 			throw new Kohana_Exception('image.file_not_found', $image);
 
 		if (($type = exif_imagetype($image)) == FALSE OR ! isset(Image::$allowed_types[$type]))
 			throw new Kohana_Exception('image.type_not_allowed', $image);
 
-		$this->image_file = str_replace('\\', '/', realpath($image));
-		$this->image_type = $type;
-
-		$this->master_dim = Image::WIDTH;
+		$this->image = str_replace('\\', '/', realpath($image));
 	}
 
-	public function resize($width, $height, $force = FALSE)
+	/**
+	 * Resize an image to a specific width and height. By default, Kohana will
+	 * maintain the aspect ratio using the width as the master dimension. If you
+	 * wish to use height as master dim, set $image->master_dim = Image::HEIGHT
+	 * This method is chainable.
+	 *
+	 * @param   integer  width
+	 * @param   integer  height
+	 * @param   integer  one of: Image::NONE, Image::AUTO, Image::WIDTH, Image::HEIGHT
+	 * @return  object
+	 */
+	public function resize($width, $height, $master = NULL)
 	{
-		$this->actions['resize'] = array('width' => $width, 'height' => $height, 'force' => (bool) $force);
+		if ( ! $this->valid_size('width', $width))
+			throw new Kohana_Exception('image.invalid_width', $width);
+
+		if ( ! $this->valid_size('height', $height))
+			throw new Kohana_Exception('image.invalid_height', $height);
+
+		if ($master === NULL)
+		{
+			// Use auto
+			$master = self::AUTO;
+		}
+		elseif ( ! $this->valid_size('master', $master))
+			throw new Kohana_Exception('image.invalid_master');
+
+		$this->actions['resize'] = array
+		(
+			'width'  => $width,
+			'height' => $height,
+			'master' => $master,
+		);
 
 		return $this;
 	}
 
+	/**
+	 * Crop an image to a specific width and height. You may also set the top
+	 * and left offset.
+	 * This method is chainable.
+	 *
+	 * @param   integer  width
+	 * @param   integer  height
+	 * @param   integer  top offset, pixel value or one of: top, center, bottom
+	 * @param   integer  left offset, pixel value or one of: left, center, right
+	 * @return  object
+	 */
 	public function crop($width, $height, $top = 'center', $left = 'center')
 	{
-		if (is_string($top))
-		{
-			if ( ! in_array($top, array('top', 'bottom', 'center')))
-			{
-				$top = 0;
-			}
-		}
+		if ( ! $this->valid_size('width', $width))
+			throw new Kohana_Exception('image.invalid_width', $width);
 
-		if (is_string($left))
-		{
-			if ( ! in_array($top, array('left', 'right', 'center')))
-			{
-				$left = 0;
-			}
-		}
+		if ( ! $this->valid_size('height', $height))
+			throw new Kohana_Exception('image.invalid_height', $height);
+
+		if ( ! $this->valid_size('top', $top))
+			throw new Kohana_Exception('image.invalid_top', $top);
+
+		if ( ! $this->valid_size('left', $left))
+			throw new Kohana_Exception('image.invalid_left', $left);
 
 		$this->actions['crop'] = array
 		(
@@ -71,14 +135,109 @@ class Image_Core {
 		return $this;
 	}
 
+	/**
+	 * Allows rotation of an image by 180 degrees clockwise or counter clockwise.
+	 * This method is chainable.
+	 *
+	 * @param   integer  degrees
+	 * @return  object
+	 */
 	public function rotate($degrees)
 	{
 		$this->actions['rotate'] = array
 		(
-			'degrees' => ($degrees < 0) ? max(-360, min(0, $degrees)) : max(0, min($degrees, 360)),
+			'degrees' => ($degrees < 0) ? max(-180, min(0, $degrees)) : max(0, min($degrees, 180)),
 		);
 
 		return $this;
+	}
+
+	public function flip($direction)
+	{
+		if ($direction !== self::HORIZONTAL AND $direction !== self::VERTICAL)
+			throw new Kohana_Exception('image.invalid_flip');
+
+		$this->actions['flip'] = array
+		(
+			'direction' => $direction,
+		);
+
+		return $this;
+	}
+
+	public function quality($value)
+	{
+		$this->actions['quality'] = $value;
+
+		return $this;
+	}
+
+	public function save($new_image = FALSE)
+	{
+		if ( ! empty($new_image))
+		{
+			list($dir, $file) = array_values(pathinfo($new_image));
+
+			$dir = str_replace('\\', '/', realpath($dir)).'/';
+
+			if ( ! is_writable($dir))
+				throw new Kohana_Exception('image.directory_unwritable', $dir);
+
+			$new_image = $dir.$file;
+		}
+		$this->driver->process($this->image, $this->actions, $new_image);
+	}
+
+	protected function valid_size($type, & $value)
+	{
+		if (is_null($value))
+			return TRUE;
+
+		if ( ! is_scalar($value))
+			return FALSE;
+
+		switch($type)
+		{
+			case 'width':
+			case 'height':
+				if (is_string($value) AND ! ctype_digit($value))
+				{
+					if ( ! preg_match('/[0-9]+%$/', $value))
+						return FALSE;
+				}
+				else
+				{
+					$value = (int) $value;
+				}
+			break;
+			case 'top':
+				if (is_string($value) AND ! ctype_digit($value))
+				{
+					if ( ! in_array($value, array('top', 'bottom', 'center')))
+						return FALSE;
+				}
+				else
+				{
+					$value = (int) $value;
+				}
+			break;
+			case 'left':
+				if (is_string($value) AND ! ctype_digit($value))
+				{
+					if ( ! in_array($value, array('left', 'right', 'center')))
+						return FALSE;
+				}
+				else
+				{
+					$value = (int) $value;
+				}
+			break;
+			case 'master':
+				if ($value !== self::NONE AND $value !== self::AUTO AND $value !== self::WIDTH AND $value !== self::HEIGHT)
+					return FALSE;
+			break;
+		}
+		return TRUE;
 	}
 
 }
