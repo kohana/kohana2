@@ -321,10 +321,10 @@ class Image_Core {
 				}
 			break;
 			case 'master':
-				if ($value !== self::NONE AND
-				    $value !== self::AUTO AND
-				    $value !== self::WIDTH AND
-				    $value !== self::HEIGHT)
+				if ($value !== Image::NONE AND
+				    $value !== Image::AUTO AND
+				    $value !== Image::WIDTH AND
+				    $value !== Image::HEIGHT)
 					return FALSE;
 			break;
 		}
