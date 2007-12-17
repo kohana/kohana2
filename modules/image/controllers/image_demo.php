@@ -8,13 +8,12 @@ class Image_demo_Controller extends Controller {
 
 		$dir = str_replace('\\', '/', realpath(dirname(__FILE__).'/../upload')).'/';
 
-		$image = new Image($dir.'moo.jpg');
-
-		$image->resize(400, NULL)->crop(400, 350, 'top')->sharpen(20);
-
-		$image->save($dir.'super-cow-crop.jpg');
-
-		echo Kohana::debug($image);
+		for ($i = 0; $i < 1000; $i++)
+		{
+			$img = new Image($dir.'moo.jpg');
+			$img->crop(200, 200, 'center', 'center');
+			$img->resize(200, 150);
+		}
 	}
 
 } // End
