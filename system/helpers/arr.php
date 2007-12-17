@@ -102,7 +102,7 @@ class arr_Core {
 			}
 		}
 
-		if ($high == count($haystack) || $haystack[$high] != $needle)
+		if ($high == count($haystack) OR $haystack[$high] != $needle)
 			return ($return) ? floor($low) : FALSE;
 		else
 			return $high;
