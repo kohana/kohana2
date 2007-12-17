@@ -77,7 +77,14 @@ class arr_Core {
 		return $array;
 	}
 
-	public function binary_search($needle, $haystack)
+	/**
+	 * Binary search algorithm.
+	 *
+	 * @param   mixed  the value to search for
+	 * @param   array  an array of values to search in
+	 * @return  integer
+	 */
+	public function binary_search($needle, $haystack, $return = FALSE)
 	{
 		$high = count($haystack);
 		$low = 0;
@@ -96,7 +103,7 @@ class arr_Core {
 		}
 
 		if ($high == count($haystack) || $haystack[$high] != $needle)
-			return floor($low);
+			return ($return) ? floor($low) : FALSE;
 		else
 			return $high;
 	}
