@@ -334,11 +334,13 @@ class html_Core {
 	 */
 	public static function attributes($attrs)
 	{
+		if (empty($attrs))
+			return '';
+
 		if (is_string($attrs))
-			return ($attrs == FALSE) ? '' : ' '.$attrs;
+			return ' '.$attrs;
 
 		$compiled = '';
-
 		foreach($attrs as $key => $val)
 		{
 			$compiled .= ' '.$key.'="'.$val.'"';
