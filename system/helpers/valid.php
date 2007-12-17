@@ -329,4 +329,19 @@ class valid_Core {
 		return (is_numeric($str) AND preg_match('/^[-0-9.]+$/', $str));
 	}
 
+	/**
+	 * Method: numeric
+	 *  Checks whether a string is a valid text
+	 *
+	 * Parameters:
+	 *  str  - input string
+	 *
+	 * Returns:
+	 *  TRUE if string is a valid text, FALSE if not.
+	 */	
+	public static function standard_text($str)
+	{
+		return preg_match('/^[-\pL\pN\pZs_]+$/uD', (string) $str);
+	}
+
 } // End valid
