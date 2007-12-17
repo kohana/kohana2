@@ -477,7 +477,7 @@ class FTP_Core {
 			// Recursively read the local directory
 			while (($file = readdir($fp)) !== FALSE)
 			{
-				if (@is_dir($locpath.$file) && substr($file, 0, 1) != '.')
+				if (@is_dir($locpath.$file) AND substr($file, 0, 1) != '.')
 				{
 					$this->mirror($locpath.$file."/", $rempath.$file."/");
 				}
