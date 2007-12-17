@@ -77,4 +77,27 @@ class arr_Core {
 		return $array;
 	}
 
+	public function binary_search($needle, $haystack)
+	{
+		$high = count($haystack);
+		$low = 0;
+
+		while ($high - $low > 1)
+		{
+			$probe = ($high + $low) / 2;
+			if ($haystack[$probe] < $needle)
+			{
+				$low = $probe;
+			}
+			else
+			{
+				$high = $probe;
+			}
+		}
+
+		if ($high == count($haystack) || $haystack[$high] != $needle)
+			return floor($low);
+		else
+			return $high;
+	}
 } // End arr
