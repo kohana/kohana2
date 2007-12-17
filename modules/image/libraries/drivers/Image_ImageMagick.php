@@ -5,15 +5,14 @@ class Image_ImageMagick_Driver extends Image_Driver {
 	protected $dir = '';
 	protected $tmp = '';
 
-	protected $output = array();
+	protected $errors = array();
 
 	public function __construct($config)
 	{
 		if (empty($config['directory']))
 		{
-			$path = trim(exec('which convert'));
-
-			if ( ! is_file($path))
+			// Attempt to locate IM by using "which"
+			if ( ! is_file($path = exec('which convert')))
 				throw new Kohana_Exception('image.imagemagick.not_found');
 
 			$config['directory'] = dirname($path);
@@ -48,10 +47,17 @@ class Image_ImageMagick_Driver extends Image_Driver {
 			// Delete the existing file
 			is_file($new_file) and unlink($new_file);
 
+			// Escape the filenames
+			$tmp_file = escapeshellarg($this->tmp_image);
+			$new_file = escapeshellarg($new_file);
+
 			// Use convert to change the image into it's final version. This is
 			// done to allow the file type to change correctly, and to handle
 			// the quality conversion in the most effective way possible.
-			$this->output[__FUNCTION__] = exec(escapeshellcmd($this->dir.'convert').' -quality '.$quality.' '.escapeshellarg($this->tmp_image).' '.escapeshellarg($new_file));
+			if ($error = exec(escapeshellcmd($this->dir.'convert').' -quality '.$quality.' '.$tmp_file.' '.$new_file))
+			{
+				$this->errors[] = $error;
+			}
 		}
 
 		// Remove the temporary image
@@ -65,10 +71,10 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		switch($properties['master'])
 		{
 			case Image::WIDTH:
-				$dim = escapeshellarg('x'.$properties['width']);
+				$dim = escapeshellarg($properties['width'].'x');
 			break;
 			case Image::HEIGHT:
-				$dim = escapeshellarg($properties['height'].'x');
+				$dim = escapeshellarg('x'.$properties['height']);
 			break;
 			case Image::AUTO:
 				$dim = escapeshellarg($properties['width'].'x'.$properties['height']);
@@ -82,7 +88,10 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		$file = escapeshellarg($this->tmp_image);
 
 		// Use "convert" to change the width and height
-		$this->output[__FUNCTION__] = exec(escapeshellcmd($this->dir.'convert').' -resize '.$dim.' '.$file.' '.$file);
+		if ($error = exec(escapeshellcmd($this->dir.'convert').' -resize '.$dim.' '.$file.' '.$file))
+		{
+			$this->errors[] = $error;
+		}
 
 		return TRUE;
 	}
