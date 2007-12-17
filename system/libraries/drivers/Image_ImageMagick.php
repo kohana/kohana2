@@ -29,6 +29,10 @@ class Image_ImageMagick_Driver extends Image_Driver {
 			$config['directory'] = dirname($path);
 		}
 
+		// Check to make sure the provided path is correct
+		if ( ! file_exists(realpath($config['directory']).'/convert'))
+			throw new Kohana_Exception('image.imagemagick.not_found');
+
 		// Set the installation directory
 		$this->dir = str_replace('\\', '/', realpath($config['directory'])).'/';
 	}
