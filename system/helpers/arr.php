@@ -112,7 +112,7 @@ class arr_Core {
 			$high_distance = $haystack[ceil($low)] - $needle;
 			$low_distance = $needle - $haystack[floor($low)];
 
-			return ($high_distance > $low_distance) ? $haystack[ceil($low)] : $haystack[floor($low)];
+			return ($high_distance >= $low_distance) ? $haystack[ceil($low)] : $haystack[floor($low)];
 		}
 		else
 			return $high;
