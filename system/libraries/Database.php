@@ -212,7 +212,7 @@ class Database_Core {
 		if (func_num_args() > 1) //if we have more than one argument ($sql)
 		{
 			$argv = func_get_args();
-			$binds = (is_array(next($argv))) ? current($argv) : $argv;
+			$binds = (is_array(next($argv))) ? current($argv) : array_slice($argv, 1);
 		}
 
 		// Compile binds if needed
