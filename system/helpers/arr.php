@@ -80,11 +80,12 @@ class arr_Core {
 	/**
 	 * Binary search algorithm.
 	 *
-	 * @param   mixed  the value to search for
-	 * @param   array  an array of values to search in
-	 * @return  integer
+	 * @param  mixed    the value to search for
+	 * @param  array    an array of values to search in
+	 * @param  boolean  return false, or the nearest value
+	 * @return integer
 	 */
-	public function binary_search($needle, $haystack, $return = FALSE)
+	public function binary_search($needle, $haystack, $nearest = FALSE)
 	{
 		$high = count($haystack);
 		$low = 0;
@@ -103,7 +104,16 @@ class arr_Core {
 		}
 
 		if ($high == count($haystack) OR $haystack[$high] != $needle)
-			return ($return) ? floor($low) : FALSE;
+		{
+			if ($nearest == FALSE)
+				return FALSE;
+
+			// return the nearest value
+			$high_distance = $haystack[ceil($low)] - $needle;
+			$low_distance = $needle - $haystack[floor($low)];
+
+			return ($high_distance > $low_distance) ? $haystack[ceil($low)] : $haystack[floor($low)];
+		}
 		else
 			return $high;
 	}
