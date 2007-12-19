@@ -124,8 +124,18 @@ class Forge_Core {
 			}
 		}
 
+		$form_type = 'open';
+		// See if we need a multipart form
+		foreach ($this->inputs as $input)
+		{
+			if ($input instanceof Form_Upload)
+			{
+				$form_type = 'open_multipart';
+				break;
+			}
+		}
 		// Set the form open and close
-		$form->open  = form::open($form->action, array('method' => 'post'), $hidden);
+		$form->open  = form::$form_type($form->action, array('method' => 'post'), $hidden);
 		$form->close = form::close();
 
 		// Set the inputs
