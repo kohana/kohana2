@@ -164,7 +164,7 @@ class ORM_Core {
 	{
 		if ($key != 'id' AND isset($this->object->$key))
 		{
-			if ($this->object->$key !== $value)
+			if ($this->object->$key != $value)
 			{
 				// Set new value
 				$this->object->$key = $value;
@@ -545,7 +545,7 @@ class ORM_Core {
 			if (empty($this->object->id))
 				return FALSE;
 
-			if ( ! empty($this->has_any_belongs_to_many))
+			if ( ! empty($this->has_and_belongs_to_many))
 			{
 				// Foreign WHERE for this object
 				$where = array($this->class.'_id' => $this->object->id);
