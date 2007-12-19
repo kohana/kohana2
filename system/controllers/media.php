@@ -30,7 +30,7 @@ class Media_Controller extends Controller {
 		}
 		catch (Kohana_Exception $e)
 		{
-			// View file was not found, trigger a 404
+			// View file was not found, trigger a 404!
 			Event::run('system.404');
 		}
 	}
