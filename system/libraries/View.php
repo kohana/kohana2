@@ -58,6 +58,7 @@ class View_Core {
 			// Load the filename and set the content type
 			$this->kohana_filename = Kohana::find_file('views', $name.'.'.$type, TRUE, $type);
 			$this->kohana_filetype = Config::item('mimes.'.$type);
+			$this->kohana_filetype = empty($this->kohana_filetype) ? $type : $this->kohana_filetype;		
 		}
 
 		if (is_array($data) AND ! empty($data))
@@ -164,7 +165,7 @@ class View_Core {
 	 */
 	public function render($print = FALSE, $renderer = FALSE)
 	{
-		if ($this->kohana_filetype === EXT)
+		if (is_string($this->kohana_filetype))
 		{
 			// Merge global and local data, local overrides global with the same name
 			$data = array_merge(self::$global_data, $this->data);
