@@ -105,7 +105,7 @@ class ORM_Core {
 			else
 			{
 				// Query and load object
-				$this->find($id);
+				$this->find($id, FALSE);
 			}
 		}
 	}
@@ -448,11 +448,12 @@ class ORM_Core {
 	/**
 	 * Find and load data for the current object.
 	 *
-	 * @param   string  id of the object to find, or ALL
-	 * @return  object  current object
-	 * @return  array   if ALL is used
+	 * @param   string   id of the object to find, or ALL
+	 * @param   boolean  return the result, or load it into the current object
+	 * @return  object   object instance
+	 * @return  array    if ALL is used
 	 */
-	public function find($id = FALSE)
+	public function find($id = FALSE, $return = TRUE)
 	{
 		// Allows the use of find(ALL)
 		if ($id === ALL)
@@ -465,7 +466,7 @@ class ORM_Core {
 		self::$db->limit(1);
 
 		// Load the result of the query
-		return $this->load_result(FALSE);
+		return $this->load_result(FALSE, $return);
 	}
 
 	/**
@@ -476,7 +477,7 @@ class ORM_Core {
 	public function find_all()
 	{
 		// Return an array of objects
-		return $this->load_result(TRUE);
+		return $this->load_result(TRUE, TRUE);
 	}
 
 	/**
@@ -630,7 +631,7 @@ class ORM_Core {
 	 *  boolean - TRUE for single result, FALSE for an empty result
 	 *  array   - Multiple row result set
 	 */
-	protected function load_result($array = FALSE)
+	protected function load_result($array = FALSE, $return = FALSE)
 	{
 		// Make sure there is something to select
 		($this->select == FALSE) and self::$db->select($this->table.'.*');
@@ -662,7 +663,13 @@ class ORM_Core {
 			}
 			else
 			{
-				// Fetch the first result
+				if ($return === TRUE)
+				{
+					// Return the first result
+					return ORM::instance($this->class, $result->current());
+				}
+
+				// Load the first result
 				$this->object = $result->current();
 			}
 		}
