@@ -140,11 +140,6 @@ class form_Core {
 		);
 
 		// Form elements should have the same id as name
-		if ( ! isset($data['id']) AND strpos($data['name'], '[') === FALSE)
-		{
-			$data['id'] = $data['name'];
-		}
-
 		if ( ! empty($extra))
 		{
 			// Make sure there is 1 space before extra
@@ -224,11 +219,6 @@ class form_Core {
 			$data = array('name' => $data);
 		}
 
-		if ( ! empty($data['name']))
-		{
-			$data['id'] = $data['name'];
-		}
-
 		// Use the value from $data if possible, or use $value
 		$value = isset($data['value']) ? $data['value'] : $value;
 
@@ -262,11 +252,6 @@ class form_Core {
 		if ( ! is_array($data))
 		{
 			$data = array('name' => $data);
-		}
-
-		if ( ! empty($data['name']))
-		{
-			$data['id'] = $data['name'];
 		}
 
 		if ( ! empty($extra))
@@ -386,11 +371,6 @@ class form_Core {
 			$data = array('name' => $data);
 		}
 
-		if ( ! empty($data['name']))
-		{
-			$data['id'] = $data['name'];
-		}
-
 		$data['type'] = 'submit';
 
 		return self::input($data, $value, $extra);
@@ -413,11 +393,6 @@ class form_Core {
 		if ( ! is_array($data))
 		{
 			$data = array('name' => $data);
-		}
-
-		if ( ! empty($data['name']))
-		{
-			$data['id'] = $data['name'];
 		}
 
 		$data += array
@@ -500,6 +475,11 @@ class form_Core {
 	 */
 	public static function attributes($attr)
 	{
+		if ( ! empty($attr['name']) AND empty($attr['id']))
+		{
+			$attr['id'] = $attr['name'];
+		}
+
 		$order = array
 		(
 			'type',
