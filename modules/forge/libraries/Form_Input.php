@@ -2,8 +2,8 @@
 
 class Form_Input_Core {
 
-	// Input instance
-	protected static $input;
+	// Input method
+	public $method;
 
 	// Element data
 	protected $data = array
@@ -30,12 +30,6 @@ class Form_Input_Core {
 
 	public function __construct($name)
 	{
-		if (self::$input === NULL)
-		{
-			// Load the Input library
-			self::$input = new Input;
-		}
-
 		$this->data['name'] = $name;
 	}
 
@@ -265,6 +259,22 @@ class Form_Input_Core {
 		return $messages;
 	}
 
+	protected function input_value()
+	{
+		static $input, $method;
+
+		if ($input === NULL)
+		{
+			// Load the Input library
+			$input = new Input;
+		}
+
+		// Fetch the method for this object
+		$method = $this->method;
+
+		return (func_num_args() > 0) ? $input->$method(func_get_arg(0)) : $input->$method();
+	}
+
 	protected function load_value()
 	{
 		if (is_bool($this->is_valid))
@@ -273,7 +283,7 @@ class Form_Input_Core {
 		if ($name = $this->name)
 		{
 			// Load POSTed value, but only for named inputs
-			$this->data['value'] = self::$input->post($name);
+			$this->data['value'] = $this->input_value($name);
 		}
 
 		if (is_string($this->data['value']))
@@ -290,7 +300,7 @@ class Form_Input_Core {
 			return $this->is_valid;
 
 		// No data to validate
-		if (empty($_POST))
+		if ($this->input_value() == FALSE)
 			return $this->is_valid = FALSE;
 
 		// Load the submitted value

@@ -34,7 +34,7 @@ class Form_Dropdown_Core extends Form_Input {
 
 	protected function load_value()
 	{
-		if (empty($_POST))
+		if (is_bool($this->valid))
 			return;
 
 		$this->data['selected'] = self::$input->post($this->name);

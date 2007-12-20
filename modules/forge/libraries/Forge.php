@@ -2,27 +2,31 @@
 
 class Forge_Core {
 
+	// Template variables
 	protected $template = array
 	(
-		'action' => '',
-		'title'  => '',
-		'open'   => '',
-		'close'  => '',
-		'class'  => 'form'
+		'title' => '',
+		'class' => '',
+		'open'  => '',
+		'close' => '',
 	);
 
+	// Form attributes
+	protected $attr = array();
+
+	// Form inputs and hidden inputs
 	public $inputs = array();
 	public $hidden = array();
 
-	public function __construct($action = '', $title = '', $method = NULL, $class = NULL)
+	public function __construct($action = '', $title = '', $method = NULL, $class = 'form')
 	{
-		empty($method) and $method = 'post';
-		empty($class)  and $class  = 'form';
+		// Set form attributes
+		$this->attr['action'] = $action;
+		$this->attr['method'] = empty($method) ? 'post' : $method;
 
-		// Set action
-		$this->template['action'] = $action;
-		$this->template['title']  = $title;
-		$this->template['class']  = $class;
+		// Set template variables
+		$this->template['title'] = $title;
+		$this->template['class'] = $class;
 	}
 
 	public function __get($key)
@@ -56,20 +60,23 @@ class Forge_Core {
 		if ( ! ($input instanceof Form_Input) AND ! ($input instanceof Forge))
 			throw new Kohana_Exception('forge.invalid_input', get_class($input));
 
+		$input->method = $this->attr['method'];
+
 		if ($name = $input->name)
 		{
+			// Assign by name
 			if ($method == 'hidden')
 			{
 				$this->hidden[$name] = $input;
 			}
 			else
 			{
-				// Assign by name
 				$this->inputs[$name] = $input;
 			}
 		}
 		else
 		{
+			// No name, these are unretrievable
 			$this->inputs[] = $input;
 		}
 
@@ -134,8 +141,9 @@ class Forge_Core {
 				break;
 			}
 		}
+
 		// Set the form open and close
-		$form->open  = form::$form_type($form->action, array('method' => 'post'), $hidden);
+		$form->open  = form::$form_type(arr::remove('action', $this->attr), $this->attr, $hidden);
 		$form->close = form::close();
 
 		// Set the inputs

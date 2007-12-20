@@ -107,10 +107,10 @@ class Form_Dateselect_Core extends Form_Input {
 
 	protected function load_value()
 	{
-		if (empty($_POST))
+		if (is_bool($this->valid))
 			return;
 
-		$time = self::$input->post($this->name);
+		$time = $this->input_value($this->name);
 
 		// Make sure all the required inputs keys are set
 		$time += $this->time_array(time());

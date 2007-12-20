@@ -52,11 +52,11 @@ class Form_Checkbox_Core extends Form_Input {
 
 	protected function load_value()
 	{
-		if (empty($_POST))
+		if (is_bool($this->valid))
 			return;
 
 		// Makes the box checked if the value from POST is the same as the current value
-		$this->data['checked'] = (self::$input->post($this->name) == $this->data['value']);
+		$this->data['checked'] = ($this->input_value($this->name) == $this->data['value']);
 	}
 
 } // End Form Checkbox

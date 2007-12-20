@@ -26,7 +26,7 @@ class Form_Checklist_Core extends Form_Input {
 			foreach($this->data['options'] as $id => $opt)
 			{
 				// Return the options that are checked
-				($opt[1] == TRUE) and $array[] = $id;
+				($opt[1] === TRUE) and $array[] = $id;
 			}
 			return $array;
 		}
@@ -67,18 +67,15 @@ class Form_Checklist_Core extends Form_Input {
 
 	protected function load_value()
 	{
-		if (empty($_POST))
-			return;
-
 		foreach($this->data['options'] as $val => $checked)
 		{
-			if (empty($_POST[$this->data['name']]))
+			if ($input = $this->input_value($this->data['name']))
 			{
-				$this->data['options'][$val][1] = FALSE;
+				$this->data['options'][$val][1] = in_array($val, $input);
 			}
 			else
 			{
-				$this->data['options'][$val][1] = in_array($val, $_POST[$this->data['name']]);
+				$this->data['options'][$val][1] = FALSE;
 			}
 		}
 	}
