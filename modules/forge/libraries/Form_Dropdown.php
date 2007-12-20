@@ -37,7 +37,7 @@ class Form_Dropdown_Core extends Form_Input {
 		if (is_bool($this->valid))
 			return;
 
-		$this->data['selected'] = self::$input->post($this->name);
+		$this->data['selected'] = $this->input_value($this->name);
 	}
 
 } // End Form Dropdown
