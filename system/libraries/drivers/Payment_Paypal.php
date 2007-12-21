@@ -15,33 +15,29 @@
  */
 class Payment_Paypal_Driver {
 
-	private $required_fields = array( 
-									  'API_UserName'  => FALSE,
-									  'API_Password'  => FALSE,
-									  'API_Signature' => FALSE,
-									  'API_Endpoint'  => TRUE,
-									  'version'       => TRUE,
-									  'Amt'           => FALSE,
-									  'PAYMENTACTION' => TRUE,
-									  'ReturnUrl'     => FALSE,
-									  'CANCELURL'     => FALSE,
-									  'CURRENCYCODE'  => TRUE
-									);
+	private $required_fields = array('API_UserName'  => FALSE,
+	                                 'API_Password'  => FALSE,
+	                                 'API_Signature' => FALSE,
+	                                 'API_Endpoint'  => TRUE,
+	                                 'version'       => TRUE,
+	                                 'Amt'           => FALSE,
+	                                 'PAYMENTACTION' => TRUE,
+	                                 'ReturnUrl'     => FALSE,
+	                                 'CANCELURL'     => FALSE,
+	                                 'CURRENCYCODE'  => TRUE);
 
-	private $paypal_values = array( 
-									'API_UserName'  => '',
-									'API_Password'  => '',
-									'API_Signature' => '',
-									'API_Endpoint'  => 'https://api-3t.paypal.com/nvp',
-									'version'       => '3.0',
-									'Amt'           => 0,
-									'PAYMENTACTION' => 'Sale',
-									'ReturnUrl'     => '',
-									'CANCELURL'     => '',
-									'error_url'     => '',
-									'CURRENCYCODE'  => 'USD',
-									'payerid'       => ''
-								  );
+	private $paypal_values = array('API_UserName'  => '',
+	                               'API_Password'  => '',
+	                               'API_Signature' => '',
+	                               'API_Endpoint'  => 'https://api-3t.paypal.com/nvp',
+	                               'version'       => '3.0',
+	                               'Amt'           => 0,
+	                               'PAYMENTACTION' => 'Sale',
+	                               'ReturnUrl'     => '',
+	                               'CANCELURL'     => '',
+	                               'error_url'     => '',
+	                               'CURRENCYCODE'  => 'USD',
+	                               'payerid'       => '');
 
 	private $paypal_url = '';
 
@@ -63,8 +59,8 @@ class Payment_Paypal_Driver {
 		$this->paypal_values['API_Endpoint']  = ($config['test_mode']) ? 'https://api.sandbox.paypal.com/nvp' : 'https://api-3t.paypal.com/nvp';
 
 		$this->paypal_url = ($config['test_mode']) 
-						  ? 'https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=' 
-						  : 'https://www.paypal.com/webscr&cmd=_express-checkout&token=';
+		                  ? 'https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=' 
+		                  : 'https://www.paypal.com/webscr&cmd=_express-checkout&token=';
 
 		$this->required_fields['API_UserName']  = !empty($config['API_UserName']);
 		$this->required_fields['API_Password']  = !empty($config['API_Password']);
@@ -103,7 +99,7 @@ class Payment_Paypal_Driver {
 			}
 
 			$this->paypal_values[$key] = $value;
-			
+
 			if (array_key_exists($key, $this->required_fields) AND !empty($value))
 			{
 				$this->required_fields[$key] = TRUE;
@@ -220,10 +216,10 @@ class Payment_Paypal_Driver {
 	function contact_paypal($method, $data)
 	{
 		$final_data = 'METHOD='.urlencode($method).
-		        	  '&VERSION='.urlencode($this->paypal_values['version']).
-		        	  '&PWD='.urlencode($this->paypal_values['API_Password']).
-		        	  '&USER='.urlencode($this->paypal_values['API_UserName']).
-		        	  'SIGNATURE='.urlencode($this->paypal_values['API_Signature']).$data;
+		              '&VERSION='.urlencode($this->paypal_values['version']).
+		              '&PWD='.urlencode($this->paypal_values['API_Password']).
+		              '&USER='.urlencode($this->paypal_values['API_UserName']).
+		              'SIGNATURE='.urlencode($this->paypal_values['API_Signature']).$data;
 
 		$ch = curl_init($this->paypal_values['API_Endpoint']);
 
@@ -287,4 +283,4 @@ class Payment_Paypal_Driver {
 
 		return $nvpArray;
 	}
-}
+} // End Payment_Paypal_Driver Class

@@ -126,4 +126,4 @@ class Payment_Trustcommerce_Driver
 		else
 			return Kohana::lang('payment.error', Kohana::lang('payment.errors.Trustcommerce.'.$result['status'].'.'.$result['error']));
 	}
-}
+} // End Payment_Trustcommerce_Driver Class

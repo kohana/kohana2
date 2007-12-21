@@ -15,19 +15,11 @@ class Payment_Core {
 	(
 		// The driver string
 		'driver'      => NULL,
-		// Curl config, see http://us.php.net/manual/en/function.curl-setopt.php for details
-		'curl_config' => array
-		(
-			CURLOPT_HEADER         => FALSE,
-			CURLOPT_RETURNTRANSFER => TRUE,
-			CURLOPT_SSL_VERIFYPEER => FALSE
-		),
 		// Test mode is set to true by default
 		'test_mode'   => TRUE,
 	);
 
 	protected $driver = NULL;
-	private $fields = array();
 
 	/**
 	 * Constructor: __construct
@@ -120,7 +112,7 @@ class Payment_Core {
 	 */
 	public function set_fields($fields)
 	{
-		$this->driver->set_fields(array_merge($this->fields, (array) $fields));
+		$this->driver->set_fields((array) $fields);
 		
 		return $this;
 	}
@@ -134,7 +126,6 @@ class Payment_Core {
 	 */
 	public function process()
 	{
-		$this->set_fields($this->fields);
 		return $this->driver->process();
 	}
 }

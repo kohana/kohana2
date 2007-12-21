@@ -82,7 +82,7 @@ class Payment_Authorize_Driver
 			throw new Kohana_Exception('payment.required', implode(', ', $fields));
 		}
 
-		$fields = "";
+		$fields = '';
 		foreach( $this->authnet_values as $key => $value )
 		{
 			$fields .= $key.'='.urlencode($value).'&';
@@ -91,26 +91,28 @@ class Payment_Authorize_Driver
 		$post_url = ($this->config['test_mode']) ? 
 					'https://certification.authorize.net/gateway/transact.dll' : // Test mode URL
 					'https://secure.authorize.net/gateway/transact.dll'; // Live URL
-		
+
 		$ch = curl_init($post_url); 
-		
+
 		// Set custom curl options
 		curl_setopt_array($ch, $this->curl_config);
 
 		// Set the curl POST fields
-		curl_setopt($ch, CURLOPT_POSTFIELDS, rtrim( $fields, "& " ));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, rtrim($fields, '& '));
 
 		//execute post and get results
 		$resp = curl_exec($ch);
 		curl_close ($ch);
+		if (!$resp)
+			throw new Kohana_Exception('payment.gateway_connection_error');
 
 		// This could probably be done better, but it's taken right from the Authorize.net manual
 		// Need testing to opimize probably
-		$h = substr_count($resp, "|");
-		
+		$h = substr_count($resp, '|');
+
 		for($j=1; $j <= $h; $j++)
 		{
-			$p = strpos($resp, "|");
+			$p = strpos($resp, '|');
 
 			if ($p !== FALSE)
 			{
@@ -118,7 +120,7 @@ class Payment_Authorize_Driver
 
 				$pstr_trimmed = substr($pstr, 0, -1); // removes "|" at the end
 
-				if($pstr_trimmed=="")
+				if($pstr_trimmed=='')
 				{
 					throw new Kohana_Exception('payment.gateway_connection_error');
 				}
@@ -136,7 +138,7 @@ class Payment_Authorize_Driver
 			}
 		}
 	}
-}
+} // End Payment_Authorize_Driver Class
 
 /**
  * 	A normal transaction array looks like this (for reference):
