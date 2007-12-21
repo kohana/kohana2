@@ -1,15 +1,23 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Settings related to the CreditCard library.
+ * This file has settings for each driver.
+ * You should copy the 'default' and the specific
+ * driver you are working with to your application/config/creditcard.php file.
  *
  * Options:
  *  driver - default driver to use
  *  test_mode - Turn TEST MODE on or off
+ *  curl_settings - Set any custom cURL settings here. These defaults usualy work well.
+ *                  see http://us.php.net/manual/en/function.curl-setopt.php for details
  */
 $config['default'] = array
 (
 	'driver'        => 'Authorize',
-	'test_mode'     => TRUE
+	'test_mode'     => TRUE,
+	'curl_config'   => array(CURLOPT_HEADER         => FALSE,
+	                         CURLOPT_RETURNTRANSFER => TRUE,
+	                         CURLOPT_SSL_VERIFYPEER => FALSE)
 );
 
 /**
@@ -47,6 +55,19 @@ $config['Trustcommerce'] = array
 	'password' => '',
 	'media' => 'cc',
 	'tclink_library' => './path/to/library.so'
+);
+
+/**
+ * TridentGateway Options:
+ *  profile_id - the profile ID assigned to you by Merchant e-Services
+ *  profile_key - the profile password assigned to you by Merchant e-Services
+ *  transaction_type - D=Sale, C=Credit, P=Pre-Auth, O=Offline, V-Void, S=Settle Pre-Auth, U=Refund, T= Store card data., X=Delete Card Store Data
+ */
+$config['Trident'] = array
+(
+	'profile_id' => '',
+	'profile_key' => '',
+	'transaction_type' => 'D'
 );
 
 /**
