@@ -117,6 +117,6 @@ class Payment_Trident_Driver
 			$response[$temp[0]] = $temp[1];
 		}
 
-		return ($response['error_code'] == '000') ? TRUE : Kohana::lang('payment.error', 'payment_Trident.'.$result[$result['error_code']]);
+		return ($response['error_code'] == '000') ? TRUE : Kohana::lang('payment.error', Kohana::lang('payment_Trident.'.$response['error_code']));
 	}
 } // End Payment_Trident_Driver Class
