@@ -71,7 +71,7 @@ class Payment_Yourpay_Driver
 					break;
 			}
 
-			$this->authnet_values[$key] = $value;
+			$this->fields[$key] = $value;
 			if (array_key_exists($key, $this->required_fields) and !empty($value)) $this->required_fields[$key] = TRUE;
 		}
 	}
