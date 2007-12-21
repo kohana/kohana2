@@ -51,7 +51,7 @@ class arr_Core {
 	 */
 	public function remove($key, & $array)
 	{
-		if ( ! isset($array[$key]))
+		if ( ! array_key_exists($key, $array))
 			return NULL;
 
 		$val = $array[$key];
