@@ -92,9 +92,9 @@ class Payment_Trident_Driver
 			$fields .= $key.'='.urlencode($value).'&';
 		}
 
-		$post_url = ($this->config['test_mode']) ? 
-					'https://test.merchante-solutions.com/mes-api/tridentApi' : // Test mode URL
-					''; // Live URL
+		$post_url = ($this->test_mode) ?
+		             'https://test.merchante-solutions.com/mes-api/tridentApi' : // Test mode URL
+		             ''; // Live URL
 
 		$ch = curl_init($post_url); 
 
@@ -111,7 +111,12 @@ class Payment_Trident_Driver
 			throw new Kohana_Exception('payment.gateway_connection_error');
 
 		$response = explode('&', $response);
+		foreach ($response as $code)
+		{
+			$temp = explode('=', $code);
+			$response[$temp[0]] = $temp[1];
+		}
 
-		return ($response['error_code'] == '000') ? TRUE : Kohana::lang('payment.error', 'payment.errors.Trident.'.$result[$result['error_code']]);
+		return ($response['error_code'] == '000') ? TRUE : Kohana::lang('payment.error', 'payment_Trident.'.$result[$result['error_code']]);
 	}
 } // End Payment_Trident_Driver Class

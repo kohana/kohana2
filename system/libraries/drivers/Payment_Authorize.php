@@ -88,7 +88,7 @@ class Payment_Authorize_Driver
 			$fields .= $key.'='.urlencode($value).'&';
 		}
 
-		$post_url = ($this->config['test_mode']) ? 
+		$post_url = ($this->test_mode) ? 
 					'https://certification.authorize.net/gateway/transact.dll' : // Test mode URL
 					'https://secure.authorize.net/gateway/transact.dll'; // Live URL
 

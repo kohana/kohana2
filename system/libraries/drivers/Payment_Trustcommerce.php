@@ -122,8 +122,8 @@ class Payment_Trustcommerce_Driver
 		if ($result['status'] == 'approved')
 			return TRUE;
 		elseif ($result['status'] == 'decline')
-			return Kohana::lang('payment.error', 'payment.errors.Trustcommerce.decline.'.$result[$result['status'].'type']);
+			return Kohana::lang('payment.error', 'payment_Trustcommerce.decline.'.$result[$result['status'].'type']);
 		else
-			return Kohana::lang('payment.error', Kohana::lang('payment.errors.Trustcommerce.'.$result['status'].'.'.$result['error']));
+			return Kohana::lang('payment.error', Kohana::lang('payment_Trustcommerce.'.$result['status'].'.'.$result['error']));
 	}
 } // End Payment_Trustcommerce_Driver Class
