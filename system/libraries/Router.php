@@ -99,6 +99,9 @@ class Router_Core {
 					}
 				}
 			}
+
+			// Check router one more time to do some magic
+			self::$rsegments = isset(self::$routes[self::$rsegments]) ? self::$routes[self::$rsegments] : self::$rsegments;
 		}
 
 		// Explode the segments by slashes
