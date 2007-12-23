@@ -650,7 +650,7 @@ class Kohana {
 	 * @return  string   if the file is found
 	 * @return  FALSE    if the file is not found
 	 */
-	public static function find_file($directory, $filename, $required = FALSE, $ext = FALSE)
+	public static function find_file($directory, $filename, $required = FALSE, $ext = EXT)
 	{
 		static $found = array();
 
@@ -678,9 +678,6 @@ class Kohana {
 		}
 		else
 		{
-			// Users can define their own extensions, .css, etc
-			$ext = ($ext == FALSE) ? EXT : '';
-
 			// Find the file and return its filename
 			foreach (Config::include_paths() as $path)
 			{
@@ -914,7 +911,7 @@ class Kohana {
 			{
 				// Separator starts as nothing
 				$sep = '';
-            
+
 				while ($arg = array_shift($entry['args']))
 				{
 					if (is_string($arg) AND is_file($arg))
@@ -922,9 +919,9 @@ class Kohana {
 						// Remove docroot from filename
 						$arg = preg_replace('!^'.preg_quote(DOCROOT).'!', '', $arg);
 					}
-            
+
 					$temp .= $sep.print_r($arg, TRUE);
-            
+
 					// Change separator to a comma
 					$sep = ', ';
 				}
