@@ -191,7 +191,7 @@ else:
 		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
 			<td class="kp-name"><?php echo $name ?></td>
 			<td>
-				<?php echo is_array($value) ? '<pre>'.html::specialchars(print_r($value, TRUE)).'</pre>' : html::specialchars($value) ?>
+				<?php echo (is_array($value)) ? '<pre>'.html::specialchars(print_r($value, TRUE)).'</pre>' : html::specialchars($value) ?>
 			</td>
 		</tr>
 <?php
@@ -224,7 +224,7 @@ else:
 		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
 			<td class="kp-name"><?php echo $name ?></td>
 			<td>
-				<?php echo is_array($value) ? '<pre>'.html::specialchars(print_r($value, TRUE)).'</pre>' : html::specialchars($value) ?>
+				<?php echo (is_array($value) OR is_object($value)) ? '<pre>'.html::specialchars(print_r($value, TRUE)).'</pre>' : html::specialchars($value) ?>
 			</td>
 		</tr>
 <?php
