@@ -1,19 +1,45 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+/**
+ * Calendar creation library.
+ *
+ * $Id: Archive.php 1481 2007-12-10 06:02:50Z Shadowhand $
+ *
+ * @package    Calendar
+ * @author     Kohana Team
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
 class Calendar_Core {
 
+	// Month and year to use for calendaring
 	protected $month;
 	protected $year;
 
+	/**
+	 * Create a new Calendar instance. A month and year can be specified.
+	 * By default, the current month and year are used.
+	 *
+	 * @param   integer  month number
+	 * @param   integer  year number
+	 * @return  void
+	 */
 	public function __construct($month = NULL, $year = NULL)
 	{
 		empty($month) and $month = date('n'); // Current month
 		empty($year)  and $year  = date('Y'); // Current year
 
-		$this->month = $month;
-		$this->year  = $year;
+		// Set the month and year
+		$this->month = (int) $month;
+		$this->year  = (int) $year;
 	}
 
+	/**
+	 * Returns an array for use with a view. The array contains an array for
+	 * each week. Each week contains 7 arrays, with a day number and status:
+	 * TRUE if the day is in the month, FALSE if it is padding.
+	 *
+	 * @return  array
+	 */
 	public function weeks()
 	{
 		// First day of the month as a timestamp
@@ -39,7 +65,7 @@ class Calendar_Core {
 			// i = number of day, t = number of days to pad
 			for($i = $n - $w, $t = $w; $t > 0; $t--, $i++)
 			{
-				// Add the previous months padding days
+				// Add previous month padding days
 				$week[] = array($i, FALSE);
 				$days++;
 			}
@@ -65,7 +91,7 @@ class Calendar_Core {
 			// i = number of day, t = number of days to pad
 			for ($i = 1, $t = 6 - $w; $t > 0; $t--, $i++)
 			{
-				// Add next months padding days
+				// Add next month padding days
 				$week[] = array($i, FALSE);
 			}
 
@@ -75,6 +101,11 @@ class Calendar_Core {
 		return $month;
 	}
 
+	/**
+	 * Convert the calendar to HTML using the kohana_calendar view.
+	 *
+	 * @return  string
+	 */
 	public function render()
 	{
 		$view =  new View('kohana_calendar', array
@@ -87,6 +118,11 @@ class Calendar_Core {
 		return $view->render();
 	}
 
+	/**
+	 * Magically convert this object to a string, the rendered calendar.
+	 *
+	 * @return  string
+	 */
 	public function __toString()
 	{
 		return $this->render();

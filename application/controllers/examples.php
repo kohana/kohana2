@@ -310,6 +310,15 @@ class Examples_Controller extends Controller {
 		echo ($response = $credit_card->process() == TRUE) ? 'YES!' : $response;
 	}*/
 
+	function calendar()
+	{
+		$profiler = new Profiler;
+
+		$cal = new Calendar(5, 2007);
+
+		echo $cal->render();
+	}
+
 	function image()
 	{
 		$profiler = new Profiler;

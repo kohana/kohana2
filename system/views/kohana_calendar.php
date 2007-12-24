@@ -25,7 +25,16 @@ table.calendar td.prev-next { background: #fff; color: #666; }
 <?php foreach ($weeks as $week): ?>
 <tr>
 <?php foreach ($week as $day): ?>
-<td<?php if ($day[1] == FALSE): ?> class="prev-next"<?php endif ?>><?php echo $day[0] ?></td>
+<?php if ($day[1] === FALSE): ?>
+<td class="prev-next"><?php echo $day[0] ?></td>
+<?php else: ?>
+<?php
+/**
+ * @todo Need to add assignable stuff to this. For example, making certain dates into links.
+ */
+?>
+<td><?php echo $day[0] ?></td>
+<?php endif; ?>
 <?php endforeach ?>
 </tr>
 <?php endforeach ?>
