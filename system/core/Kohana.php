@@ -643,9 +643,9 @@ class Kohana {
 	 *
 	 * @throws  Kohana_Exception  if file is required and not found
 	 * @param   string   directory to search in
-	 * @param   string   filename to look for
+	 * @param   string   filename to look for (including extension only if 4th parameter is TRUE)
 	 * @param   boolean  is the file required?
-	 * @param   string   custom file extension
+	 * @param   boolean  use custom file extension?
 	 * @return  array    if the type is i18n or config
 	 * @return  string   if the file is found
 	 * @return  FALSE    if the file is not found
