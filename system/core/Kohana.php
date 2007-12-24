@@ -650,7 +650,7 @@ class Kohana {
 	 * @return  string   if the file is found
 	 * @return  FALSE    if the file is not found
 	 */
-	public static function find_file($directory, $filename, $required = FALSE, $ext = EXT)
+	public static function find_file($directory, $filename, $required = FALSE, $ext = FALSE)
 	{
 		static $found = array();
 
@@ -678,6 +678,9 @@ class Kohana {
 		}
 		else
 		{
+			// Users can define their own extensions, .css, etc
+			$ext = ($ext == FALSE) ? EXT : '';
+
 			// Find the file and return its filename
 			foreach (Config::include_paths() as $path)
 			{
