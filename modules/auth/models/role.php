@@ -9,7 +9,7 @@ class Role_Model extends ORM {
 	 */
 	public function where_key($id = NULL)
 	{
-		if (is_string($id) AND $id != '')
+		if ( ! empty($id) AND is_string($id) AND ! ctype_digit($id))
 		{
 			return 'name';
 		}
