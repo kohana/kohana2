@@ -13,7 +13,6 @@ class Session_Database_Driver implements Session_Driver {
 	CREATE TABLE `kohana_session` (
 		`session_id` VARCHAR( 40 ) NOT NULL ,
 		`last_activity` INT( 11 ) NOT NULL ,
-		`total_hits` INT( 10 ) NOT NULL ,
 		`data` TEXT NOT NULL ,
 		PRIMARY KEY ( `session_id` )
 	);
