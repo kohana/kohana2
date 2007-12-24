@@ -2,7 +2,7 @@
 /**
  * Calendar creation library.
  *
- * $Id: Archive.php 1481 2007-12-10 06:02:50Z Shadowhand $
+ * $Id$
  *
  * @package    Calendar
  * @author     Kohana Team
@@ -128,4 +128,4 @@ class Calendar_Core {
 		return $this->render();
 	}
 
-} // End
+} // End Calendar
