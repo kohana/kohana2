@@ -15,6 +15,12 @@ class Calendar_Core {
 	protected $month;
 	protected $year;
 
+	// Start the calendar on Sunday by default
+	public $week_start = 3;
+
+	// Event data
+	public $events;
+
 	/**
 	 * Create a new Calendar instance. A month and year can be specified.
 	 * By default, the current month and year are used.
@@ -23,7 +29,7 @@ class Calendar_Core {
 	 * @param   integer  year number
 	 * @return  void
 	 */
-	public function __construct($month = NULL, $year = NULL)
+	public function __construct($month = NULL, $year = NULL, $start_monday = NULL)
 	{
 		empty($month) and $month = date('n'); // Current month
 		empty($year)  and $year  = date('Y'); // Current year
@@ -31,6 +37,17 @@ class Calendar_Core {
 		// Set the month and year
 		$this->month = (int) $month;
 		$this->year  = (int) $year;
+
+		// Some locales start the week on Monday, not Sunday.
+		($start_monday === TRUE) and $this->week_start = 1;
+	}
+
+	public function events()
+	{
+		if (func_num_args() === 0)
+			return;
+
+		$this->events = func_get_args();
 	}
 
 	/**
@@ -57,13 +74,13 @@ class Calendar_Core {
 		// Number of days added. When this reaches 7, start a new month
 		$days = 0;
 
-		if (($w = (int) date('w', $first)) > 0)
+		if (($w = (int) date('w', $first)) > $this->week_start)
 		{
 			// Number of days in the previous month
 			$n = (int) date('t', mktime(1, 0, $this->month - 1, 1, $this->year));
 
 			// i = number of day, t = number of days to pad
-			for($i = $n - $w, $t = $w; $t > 0; $t--, $i++)
+			for($i = $n - $w, $t = $w - $this->week_start; $t > 0; $t--, $i++)
 			{
 				// Add previous month padding days
 				$week[] = array($i, FALSE);
@@ -86,7 +103,7 @@ class Calendar_Core {
 			$days++;
 		}
 
-		if (($w = (int) date('w', $last)) < 6)
+		if (($w = (int) date('w', $last) - $this->week_start) < 6 )
 		{
 			// i = number of day, t = number of days to pad
 			for ($i = 1, $t = 6 - $w; $t > 0; $t--, $i++)
@@ -110,9 +127,10 @@ class Calendar_Core {
 	{
 		$view =  new View('kohana_calendar', array
 		(
-			'month' => $this->month,
-			'year'  => $this->year,
-			'weeks' => $this->weeks(),
+			'month'  => $this->month,
+			'year'   => $this->year,
+			'weeks'  => $this->weeks(),
+			'events' => $this->events,
 		));
 
 		return $view->render();
