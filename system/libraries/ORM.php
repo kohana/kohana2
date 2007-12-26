@@ -331,7 +331,7 @@ class ORM_Core {
 					}
 
 					// Load the related object
-					$model->find(current($args));
+					$model->find(current($args), FALSE);
 				}
 			}
 
