@@ -1,6 +1,8 @@
 <?php echo $open; ?>
 <table class="<?php echo $class ?>">
+<?php if ($title != ''): ?>
 <caption><?php echo $title ?></caption>
+<?php endif ?>
 <?php
 foreach($inputs as $input):
 
