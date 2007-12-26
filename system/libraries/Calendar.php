@@ -72,7 +72,7 @@ class Calendar_Core {
 		}
 
 		// i = number of day
-		for($i = 1; $i <= $total; $i++)
+		for ($i = 1; $i <= $total; $i++)
 		{
 			if ($days % 7 === 0)
 			{

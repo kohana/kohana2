@@ -16,7 +16,7 @@ table.calendar td.prev-next { background: #fff; color: #666; }
 </style>
 
 <table class="calendar">
-<caption><?php echo date('F Y', mktime(1, 0, 0, $month, 1, $year)) ?></caption>
+<caption><?php echo strftime('%B %Y', mktime(1, 0, 0, $month, 1, $year)) ?></caption>
 <tr>
 <?php foreach ($headings as $day): ?>
 <th><?php echo $day ?></th>
@@ -34,7 +34,7 @@ table.calendar td.prev-next { background: #fff; color: #666; }
  */
 ?>
 <td><?php echo $day[0] ?></td>
-<?php endif; ?>
+<?php endif ?>
 <?php endforeach ?>
 </tr>
 <?php endforeach ?>

@@ -12,7 +12,7 @@
 		<a href="<?php echo str_replace('{page}', $previous_page, $url) ?>">&laquo;&nbsp;<?php echo Kohana::lang('pagination.previous') ?></a>
 	<?php else: ?>
 		&laquo;&nbsp;<?php echo Kohana::lang('pagination.previous') ?>
-	<?php endif; ?>
+	<?php endif ?>
 	
 	| <?php echo Kohana::lang('pagination.page') ?> <?php echo $current_page ?> <?php echo Kohana::lang('pagination.of') ?> <?php echo $total_pages ?>
 	
@@ -22,6 +22,6 @@
 		<a href="<?php echo str_replace('{page}', $next_page, $url) ?>"><?php echo Kohana::lang('pagination.next') ?>&nbsp;&raquo;</a>
 	<?php else: ?>
 		<?php echo Kohana::lang('pagination.next') ?>&nbsp;&raquo;
-	<?php endif; ?>
+	<?php endif ?>
 	
 </p>

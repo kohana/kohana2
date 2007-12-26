@@ -12,7 +12,7 @@
 		<a href="<?php echo str_replace('{page}', $previous_page, $url) ?>">&laquo;&nbsp;<?php echo Kohana::lang('pagination.previous') ?></a>
 	<?php else: ?>
 		&laquo;&nbsp;<?php echo Kohana::lang('pagination.previous') ?>
-	<?php endif; ?>
+	<?php endif ?>
 	
 
 	<?php if ($total_pages < 13): /* « Previous  1 2 3 4 5 6 7 8 9 10 11 12  Next » */ ?>
@@ -22,8 +22,8 @@
 				<strong><?php echo $i ?></strong>
 			<?php else: ?>
 				<a href="<?php echo str_replace('{page}', $i, $url) ?>"><?php echo $i ?></a>
-			<?php endif; ?>
-		<?php endfor; ?>
+			<?php endif ?>
+		<?php endfor ?>
 	
 	<?php elseif ($current_page < 9): /* « Previous  1 2 3 4 5 6 7 8 9 10 … 25 26  Next » */ ?>
 	
@@ -32,8 +32,8 @@
 				<strong><?php echo $i ?></strong>
 			<?php else: ?>
 				<a href="<?php echo str_replace('{page}', $i, $url) ?>"><?php echo $i ?></a>
-			<?php endif; ?>
-		<?php endfor; ?>
+			<?php endif ?>
+		<?php endfor ?>
 	
 		&hellip;
 		<a href="<?php echo str_replace('{page}', $total_pages - 1, $url) ?>"><?php echo $total_pages - 1 ?></a>
@@ -50,8 +50,8 @@
 				<strong><?php echo $i ?></strong>
 			<?php else: ?>
 				<a href="<?php echo str_replace('{page}', $i, $url) ?>"><?php echo $i ?></a>
-			<?php endif; ?>
-		<?php endfor; ?>
+			<?php endif ?>
+		<?php endfor ?>
 	
 	<?php else: /* « Previous  1 2 … 5 6 7 8 9 10 11 12 13 14 … 25 26  Next » */ ?>
 	
@@ -64,20 +64,20 @@
 				<strong><?php echo $i ?></strong>
 			<?php else: ?>
 				<a href="<?php echo str_replace('{page}', $i, $url) ?>"><?php echo $i ?></a>
-			<?php endif; ?>
-		<?php endfor; ?>
+			<?php endif ?>
+		<?php endfor ?>
 	
 		&hellip;
 		<a href="<?php echo str_replace('{page}', $total_pages - 1, $url) ?>"><?php echo $total_pages - 1 ?></a>
 		<a href="<?php echo str_replace('{page}', $total_pages, $url) ?>"><?php echo $total_pages ?></a>
 
-	<?php endif; ?>
+	<?php endif ?>
 	
 	
 	<?php if ($next_page): ?>
 		<a href="<?php echo str_replace('{page}', $next_page, $url) ?>"><?php echo Kohana::lang('pagination.next') ?>&nbsp;&raquo;</a>
 	<?php else: ?>
 		<?php echo Kohana::lang('pagination.next') ?>&nbsp;&raquo;
-	<?php endif; ?>
+	<?php endif ?>
 
 </p>

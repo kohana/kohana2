@@ -269,9 +269,12 @@ abstract class Database_Driver {
 		{
 			case 'string':
 				$value = '\''.$this->escape_str($value).'\'';
-				break;
+			break;
 			case 'boolean':
 				$value = (int) $value;
+			break;
+			case 'double':
+				$value = sprintf('%F', $value);
 			break;
 			default:
 				$value = ($value === NULL) ? 'NULL' : $value;
