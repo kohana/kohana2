@@ -16,7 +16,6 @@ echo html::script(array
 ))
 
 ?>
-<?php echo html::script('kodoc/media/js/effects') ?>
 
 <style type="text/css">
 
