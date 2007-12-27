@@ -24,8 +24,17 @@ class Kodoc_Controller extends Template_Controller {
 
 	public function media()
 	{
+		if (isset($this->profiler)) $this->profiler->disable();
+
 		// Get the filename
 		$file = implode('/', $this->uri->segment_array(1));
+		$ext = strrchr($file, '.');
+
+		if ($ext !== FALSE)
+		{
+			$file = substr($file, 0, -strlen($ext));
+			$ext = substr($ext, 1);
+		}
 
 		// Disable auto-rendering
 		$this->auto_render = FALSE;
@@ -33,7 +42,7 @@ class Kodoc_Controller extends Template_Controller {
 		try
 		{
 			// Attempt to display the output
-			echo new View('kodoc/'.$file);
+			echo new View('kodoc/'.$file, NULL, $ext);
 		}
 		catch (Kohana_Exception $e)
 		{
