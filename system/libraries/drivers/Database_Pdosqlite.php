@@ -70,20 +70,6 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 		return new Pdosqlite_Result($sth, $this->link, $this->db_config['object'], $sql);
 	}
 
-	public function delete($table, $where)
-	{
-		return 'DELETE FROM '.$this->escape_table($table).' WHERE '.implode(' ', $where);
-	}
-
-	public function update($table, $values, $where)
-	{
-		foreach($values as $key => $val)
-		{
-			$valstr[] = $this->escape_column($key)." = ".$val;
-		}
-		return 'UPDATE '.$this->escape_table($table).' SET '.implode(', ', $valstr).' WHERE '.implode(' ',$where);
-	}
-
 	public function set_charset($charset)
 	{
 		$this->link->query('PRAGMA encoding = '.$this->escape_str($charset));
@@ -182,17 +168,6 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 		return $prefix.$key.$value;
 	}
 
-	public function like($field, $match = '', $type = 'AND ', $num_likes)
-	{
-		$prefix = $num_likes == 0 ? '' : $type;
-
-		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%')
-			   ? $this->escape_str($match)
-			   : '%'.$this->escape_str($match).'%';
-
-		return $prefix." ".$this->escape_column($field)." LIKE '".$match . "'";
-	}
-	
 	public function regex($field, $match = '', $type = 'AND ', $num_regexs)
 	{
 		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
@@ -208,16 +183,6 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
 	}
 	
-	public function insert($table, $keys, $values)
-	{
-		// Escape the column names
-		foreach ($keys as $key => $value)
-		{
-			$keys[$key] = $this->escape_column($value);
-		}
-		return 'INSERT INTO '.$this->escape_table($table).' ('.implode(', ', $keys).') VALUES ('.implode(', ', $values).')';
-	}
-
 	public function limit($limit, $offset = 0)
 	{
 		return 'LIMIT '.$offset.', '.$limit;
@@ -271,11 +236,6 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 		}
 
 		return $sql;
-	}
-
-	public function has_operator($str)
-	{
-		return (bool) preg_match('/[<>!=]|\sIS\s+(?:NOT\s+)?NULL\b/i', trim($str));
 	}
 
 	public function escape($value)
@@ -429,7 +389,7 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 			throw new Kohana_Database_Exception('database.error', $link->errorInfo().' - '.$sql);
 		}
 		// Set result type
-		//$this->result($object);
+		$this->result($object);
 	}
 
 	/*
@@ -460,31 +420,6 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 			$this->return_type = $type;
 		}
 		return $this;
-		try {
-			//Log::add('debug', 'fetch_type->'.$this->fetch_type);
-			$rows = $this->result->fetchAll($this->fetch_type);
-		} catch(PDOException $e) {
-			throw new Kohana_Database_Exception('database.error', $e->getMessage());
-			return FALSE;
-    	}
-		/**
-		*PHP manual for PDO nom_rows :
-		* "For most databases, PDOStatement::rowCount() does not return the number of rows affected by
-		*a SELECT statement. Instead, use PDO::query() to issue a SELECT COUNT(*) statement with the
-		*same predicates as your intended SELECT statement, then use PDOStatement::fetchColumn() to
-		*retrieve the number of rows that will be returned.
-		*
-		*/
-		Log::add('debug','rowCount:'.$this->result->rowCount());
-		if($this->fetch_type==PDO::FETCH_BOTH)
-		{
-			$this->total_rows = sizeof($rows)/2;
-		}
-		else
-		{
-			$this->total_rows = sizeof($rows);
-		}
-		return $rows;
 	}
 
 	public function result_array($object = NULL, $type = PDO::FETCH_ASSOC)
@@ -520,15 +455,18 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 				$type = class_exists($type, FALSE) ? $type : 'stdClass';
 			}
 		}
-		try {
+		try
+		{
 			while ($row = $this->result->fetch($fetch))
 			{
 				$rows[] = $row;
 			}
-		} catch(PDOException $e) {
+		}
+		catch(PDOException $e)
+		{
 			throw new Kohana_Database_Exception('database.error', $e->getMessage());
 			return FALSE;
-    	}
+		}
 		return $rows;
 	}
 
@@ -617,12 +555,15 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 	public function offsetGet($offset)
 	{
 		$row = array();
-		try {
-			$row = $this->result->fetch(PDO::FETCH_OBJ, PDO::FETCH_ORI_NEXT, $offset);
-		} catch(PDOException $e) {
+		try
+		{
+			$row = $this->result->fetch(PDO::$this->fetch_type, PDO::FETCH_ORI_NEXT, $offset);
+		}
+		catch(PDOException $e)
+		{
 			throw new Kohana_Database_Exception('database.error', $e->getMessage());
 			return FALSE;
-    	}
+		}
 		return $row;
 	}
 
