@@ -241,7 +241,7 @@ class ORM_Core {
 			}
 
 			// Find requested objects
-			return isset($all) ? $this->load_result(TRUE) : $this->find(NULL, TRUE);
+			return isset($all) ? $this->load_result(TRUE) : $this->find(NULL, FALSE);
 		}
 
 		if (substr($method, 0, 13) === 'find_related_')
