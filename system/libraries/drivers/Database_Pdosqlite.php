@@ -37,10 +37,11 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 		// Import the connect variables
 		extract($this->db_config['connection']);
 
-		try {
+		try
+		{
 			$this->link = ($this->db_config['persistent'] == TRUE)
-						? new PDO ('sqlite:'.$socket.$database, $user, $pass, array(PDO::ATTR_PERSISTENT => true))
-						: new PDO ('sqlite:'.$socket.$database, $user, $pass);
+			            ? new PDO ('sqlite:'.$socket.$database, $user, $pass, array(PDO::ATTR_PERSISTENT => true))
+			            : new PDO ('sqlite:'.$socket.$database, $user, $pass);
 			$this->link->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
 			$this->link->query('PRAGMA count_changes=1;');
 
@@ -48,11 +49,10 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 			{
 				$this->set_charset($charset);
 			}
-		} catch (PDOException $e) {
-			throw new Kohana_Database_Exception('database.error', $e->getMessage());
 		}
-		if ( $this->link ) {
-			Log::add('debug','connection ok');
+		catch (PDOException $e)
+		{
+			throw new Kohana_Database_Exception('database.error', $e->getMessage());
 		}
 
 		return $this->link;
@@ -60,12 +60,13 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 
 	public function query($sql)
 	{
-		//Log::add('debug','query:'.$sql);
-		try {
+		try
+		{
 			$sth = $this->link->query($sql);
-		} catch (PDOException $e) {
+		}
+		catch (PDOException $e)
+		{
 			throw new Kohana_Database_Exception('database.error', $e->getMessage());
-			return FALSE;
 		}
 		return new Pdosqlite_Result($sth, $this->link, $this->db_config['object'], $sql);
 	}
@@ -119,53 +120,6 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 			}
 		}
 		return $column;
-	}
-
-	public function where($key, $value, $type, $num_wheres, $quote)
-	{
-		$prefix = ($num_wheres == 0) ? '' : $type;
-
-		if ($quote === -1)
-		{
-			$value = '';
-		}
-		else
-		{
-			if ($value === NULL)
-			{
-				if ( ! $this->has_operator($key))
-				{
-					$key .= ' IS';
-				}
-
-				$value = ' NULL';
-			}
-			elseif (is_bool($value))
-			{
-				if ( ! $this->has_operator($key))
-				{
-					$key .= ' =';
-				}
-
-				$value = ($value == TRUE) ? ' 1' : ' 0';
-			}
-			else
-			{
-				if ( ! $this->has_operator($key))
-				{
-					$key = $this->escape_column($key).' =';
-				}
-				else
-				{
-					preg_match('/^(.+?)([<>!=]+|\bIS(?:\s+NULL))\s*$/i', $key, $matches);
-					$key = $this->escape_column(trim($matches[1])).' '.trim($matches[2]);
-				}
-
-				$value = ' '.(($quote == TRUE) ? $this->escape($value) : $value);
-			}
-		}
-
-		return $prefix.$key.$value;
 	}
 
 	public function regex($field, $match = '', $type = 'AND ', $num_regexs)
@@ -238,29 +192,14 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 		return $sql;
 	}
 
-	public function escape($value)
-	{
-		switch (gettype($value))
-		{
-			case 'string':
-				$value = "'".$this->escape_str($value)."'";
-				break;
-			case 'boolean':
-				$value = (int) $value;
-			break;
-			default:
-				$value = ($value === NULL) ? 'NULL' : $value;
-			break;
-		}
-
-		return (string) $value;
-	}
-
 	public function escape_str($str)
 	{
-		if(function_exists('sqlite_escape_string')) {
+		if(function_exists('sqlite_escape_string'))
+		{
 			$res = sqlite_escape_string($str);
-		} else {
+		}
+		else
+		{
 			$res = str_replace("'", "''", $str);
 		}
 		return $res;
@@ -269,16 +208,18 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 	public function list_tables()
 	{
 		$sql = "SELECT `name` FROM `sqlite_master` WHERE `type`='table' ORDER BY `name`;";
-		try{
+		try
+		{
 			$result = $this->query($sql)->result(FALSE, PDO::FETCH_ASSOC);
 			$retval = array();
 			foreach($result as $row)
 			{
 				$retval[] = current($row);
 			}
-		} catch (PDOException $e) {
+		}
+		catch (PDOException $e)
+		{
 			throw new Kohana_Database_Exception('database.error', $e->getMessage());
-			return FALSE;
 		}
 		return $retval;
 	}
@@ -286,7 +227,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 	public function show_error()
 	{
 		$err = $this->link->errorInfo();
-		return isset($err[2]) ? $err[2] : 'Unknow error!';
+		return isset($err[2]) ? $err[2] : 'Unknown error!';
 	}
 
 	public function list_fields($table, $query = FALSE)
@@ -557,7 +498,7 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 		$row = array();
 		try
 		{
-			$row = $this->result->fetch(PDO::$this->fetch_type, PDO::FETCH_ORI_NEXT, $offset);
+			$row = $this->result->fetch($this->fetch_type, PDO::FETCH_ORI_NEXT, $offset);
 		}
 		catch(PDOException $e)
 		{
