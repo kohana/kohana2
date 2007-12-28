@@ -112,7 +112,7 @@ final class Config {
 			}
 		}
 
-		if ($key == 'core.include_paths')
+		if ($key == 'core.modules')
 		{
 			// Reprocess the include paths
 			self::include_paths(TRUE);
@@ -135,7 +135,7 @@ final class Config {
 			self::$include_paths = array(APPPATH);
 
 			// Normalize all paths to be absolute and have a trailing slash
-			foreach(self::item('core.include_paths') as $path)
+			foreach(self::item('core.modules') as $path)
 			{
 				if (($path = str_replace('\\', '/', realpath($path))) == '')
 					continue;
