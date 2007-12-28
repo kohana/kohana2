@@ -45,6 +45,12 @@ ini_set('display_errors', TRUE);
  */
 define('EXT', '.php');
 
+/**
+ * Test to make sure that Kohana is running on PHP 5.1.3 or newer. Once you are
+ * sure that your environment is compatible with Kohana, you can disable this.
+ */
+version_compare(PHP_VERSION, '5.1.3', '<') and exit('Kohana requires PHP 5.1.3 or newer.');
+
 //
 // DO NOT EDIT BELOW THIS LINE, UNLESS YOU FULLY UNDERSTAND THE IMPLICATIONS.
 // ----------------------------------------------------------------------------
