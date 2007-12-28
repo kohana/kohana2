@@ -9,12 +9,26 @@
  */
 class Input_Core {
 
-	protected static $instances = 0;
+	protected static $instance;
 
 	protected $use_xss_clean = FALSE;
 
 	public $ip_address = FALSE;
 	public $user_agent = FALSE;
+
+	/**
+	 * Retrieve a singleton instance of Input. This will always be the first
+	 * created instance of this class.
+	 *
+	 * @return  object
+	 */
+	public static function instance()
+	{
+		// Create an instance if none exists
+		empty(self::$instance) and new Input;
+
+		return self::$instance;
+	}
 
 	/**
 	 * Constructor: __construct
@@ -25,20 +39,42 @@ class Input_Core {
 		// Use XSS clean?
 		$this->use_xss_clean = (bool) Config::item('core.global_xss_filtering');
 
-		if (self::$instances === 0)
+		if (self::$instance === NULL)
 		{
-			// Clean $_GET data
+			if (ini_get('register_globals'))
+			{
+				// Prevent GLOBALS override attacks
+				isset($_REQUEST['GLOBALS']) and exit('Global variable overload attack.');
+
+				// Destroy the REQUEST global
+				$_REQUEST = array();
+
+				// These globals are standard and should not be removed
+				$preserve = array('GLOBALS', '_REQUEST', '_GET', '_POST', '_FILES', '_COOKIE', '_SERVER', '_ENV', '_SESSION');
+
+				// This loop has the same effect as disabling register_globals
+				foreach($GLOBALS as $key => $val)
+				{
+					if ( ! in_array($key, $preserve))
+					{
+						// NULL-ify the global variable
+						global $$key;
+						$$key = NULL;
+						// Unset the global variable
+						unset($GLOBALS[$key]);
+						unset($$key);
+					}
+				}
+
+				// Warn the developer about register globals
+				Log::add('debug', 'Register globals is enabled. To save resources, disable register_globals in php.ini');
+			}
+
 			if (is_array($_GET) AND count($_GET) > 0)
 			{
 				foreach($_GET as $key => $val)
 				{
-					// Unset the global string
-					if (isset($GLOBALS[$key]))
-					{
-						global $$key;
-						$$key = NULL;
-					}
-
+					// Sanitize $_GET
 					$_GET[$this->clean_input_keys($key)] = $this->clean_input_data($val);
 				}
 			}
@@ -47,17 +83,11 @@ class Input_Core {
 				$_GET = array();
 			}
 
-			// Clean $_POST data
 			if (is_array($_POST) AND count($_POST) > 0)
 			{
 				foreach($_POST as $key => $val)
 				{
-					if (isset($GLOBALS[$key]))
-					{
-						global $$key;
-						$$key = NULL;
-					}
-
+					// Sanitize $_POST
 					$_POST[$this->clean_input_keys($key)] = $this->clean_input_data($val);
 				}
 			}
@@ -66,17 +96,11 @@ class Input_Core {
 				$_POST = array();
 			}
 
-			// Clean $_COOKIE data
 			if (is_array($_COOKIE) AND count($_COOKIE) > 0)
 			{
 				foreach($_COOKIE as $key => $val)
 				{
-					if (isset($GLOBALS[$key]))
-					{
-						global $$key;
-						$$key = NULL;
-					}
-
+					// Sanitize $_COOKIE
 					$_COOKIE[$this->clean_input_keys($key)] = $this->clean_input_data($val);
 				}
 			}
@@ -85,10 +109,11 @@ class Input_Core {
 				$_COOKIE = array();
 			}
 
+			// Create a singleton
+			self::$instance = $this;
+
 			Log::add('debug', 'Global GET, POST and COOKIE data sanitized');
 		}
-
-		self::$instances++;
 
 		Log::add('debug', 'Input Library initialized');
 	}

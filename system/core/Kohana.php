@@ -70,9 +70,6 @@ class Kohana {
 		// Start the environment setup benchmark
 		Benchmark::start(SYSTEM_BENCHMARK.'_environment_setup');
 
-		// Destroy the REQUEST global
-		$_REQUEST = array();
-
 		if (function_exists('date_default_timezone_set'))
 		{
 			// Set default timezone, due to increased validation of date settings
