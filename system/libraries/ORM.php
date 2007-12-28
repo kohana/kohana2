@@ -209,6 +209,7 @@ class ORM_Core {
 			// WHERE is manually set
 			$this->where = TRUE;
 
+			// split method name into $keys array by "_and_" or "_or_"
 			if (is_array($keys = $this->find_keys($method)))
 			{
 				if (strpos($method, '_or_') === FALSE)
@@ -241,7 +242,17 @@ class ORM_Core {
 			}
 
 			// Find requested objects
-			return isset($all) ? $this->load_result(TRUE) : $this->find(NULL, FALSE);
+			if (isset($all)) 
+			{
+				// return array of results
+				return $this->load_result(TRUE); 
+			}
+			else
+			{
+				$this->find(NULL, FALSE);
+				// maintain chainability
+				return $this;
+			}
 		}
 
 		if (substr($method, 0, 13) === 'find_related_')
