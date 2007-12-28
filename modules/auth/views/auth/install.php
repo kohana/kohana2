@@ -28,6 +28,17 @@ CREATE TABLE IF NOT EXISTS `users_roles` (
   `role_id` int(10) unsigned NOT NULL,
   PRIMARY KEY  (`user_id`,`role_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `user_tokens` (
+  `id` int(11) unsigned NOT NULL auto_increment,
+  `user_id` int(11) unsigned NOT NULL,
+  `user_agent` varchar(40) NOT NULL,
+  `token` varchar(32) NOT NULL,
+  `created` int(10) unsigned NOT NULL,
+  `expires` int(10) unsigned NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `uniq_token` (`token`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 </pre>
 
 <p>After the tables have been installed, <?php echo html::anchor('auth/create', 'create a user') ?>.</p>

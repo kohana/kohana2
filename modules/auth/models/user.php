@@ -3,6 +3,7 @@
 class User_Model extends ORM {
 
 	// Relationships
+	protected $has_many = array('tokens');
 	protected $has_and_belongs_to_many = array('roles');
 
 	// User roles

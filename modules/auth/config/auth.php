@@ -6,36 +6,6 @@
  *
  * In order to log a user in, a user must have the `login` role. You may create
  * and assign any other role to your users.
- *
- * Database table schemas:
- * <code sql>
- * CREATE TABLE IF NOT EXISTS `users` (
- *   `id` int(11) unsigned NOT NULL auto_increment,
- *   `email` varchar(127) NOT NULL,
- *   `username` varchar(32) NOT NULL default '',
- *   `password` char(50) NOT NULL,
- *   `logins` int(10) unsigned NOT NULL default '0',
- *   PRIMARY KEY  (`id`),
- *   UNIQUE KEY `uniq_username` (`username`),
- *   UNIQUE KEY `uniq_email` (`email`)
- * ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
- *
- * CREATE TABLE IF NOT EXISTS `roles` (
- *   `id` int(11) unsigned NOT NULL auto_increment,
- *   `name` varchar(32) NOT NULL,
- *   `description` varchar(255) NOT NULL,
- *   PRIMARY KEY  (`id`),
- *   UNIQUE KEY `uniq_name` (`name`)
- * ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
- *
- * INSERT INTO `roles` (`id`, `name`, `description`) VALUES (1, 'login', 'Login access privileges');
- *
- * CREATE TABLE IF NOT EXISTS `users_roles` (
- *   `user_id` int(10) unsigned NOT NULL,
- *   `role_id` int(10) unsigned NOT NULL,
- *   PRIMARY KEY  (`user_id`,`role_id`)
- * ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
- * </code>
  */
 
 /**
@@ -48,6 +18,13 @@
 $config['hash_method'] = 'sha1';
 
 /**
- * Defines the hash offsets to
+ * Defines the hash offsets to insert the salt at. The password hash length
+ * will be increased by the total number of offsets.
  */
 $config['salt_pattern'] = '1, 3, 5, 9, 14, 15, 20, 21, 28, 30';
+
+/**
+ * Set the auto-login (remember me) cookie lifetime, in seconds. The default
+ * lifetime is two weeks.
+ */
+$config['lifetime'] = 1209600;

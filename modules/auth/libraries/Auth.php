@@ -18,12 +18,22 @@ class Auth_Core {
 	protected $config;
 
 	/**
+	 * Create an instance of Auth.
+	 *
+	 * @return  object
+	 */
+	public static function factory($config = array())
+	{
+		return new Auth($config);
+	}
+
+	/**
 	 * Loads Session and configuration options.
 	 */
 	public function __construct($config = array())
 	{
 		// Load libraries
-		$this->session = new Session();
+		$this->session = Session::instance();
 
 		// Append default auth configuration
 		$config += Config::item('auth');
@@ -40,13 +50,14 @@ class Auth_Core {
 	/**
 	 * Attempt to log in a user by using an ORM object and plain-text password.
 	 *
-	 * @param  object  user model
-	 * @param  string  plain-text password to check against
-	 * @return bool
+	 * @param   object  user model object
+	 * @param   string  plain-text password to check against
+	 * @param   bool    to allow auto-login, or "remember me" feature
+	 * @return  bool
 	 */
-	public function login($user, $password)
+	public function login(User_Model $user, $password, $remember = FALSE)
 	{
-		if ( ! is_object($user) OR empty($password))
+		if (empty($password))
 			return FALSE;
 
 		// Create a hashed password using the salt from the stored password
@@ -55,21 +66,62 @@ class Auth_Core {
 		// If the user has the "login" role and the passwords match, perform a login
 		if ($user->has_role('login') AND $user->password === $password)
 		{
-			// Update the number of logins
-			$user->logins += 1;
+			if ($remember == TRUE)
+			{
+				// Create a new autologin token
+				$token = new User_Token_Model;
 
-			// Save the user
-			$user->save();
+				// Set token data
+				$token->user_id = $user->id;
+				$token->expires = time() + $this->config['lifetime'];
+				$token->save();
 
-			// Store session data
-			$this->session->set(array
-			(
-				'user_id'  => $user->id,
-				'username' => $user->username,
-				'roles'    => $user->roles
-			));
+				// Set the autologin cookie
+				cookie::set('autologin', $token->token, $this->config['lifetime']);
+			}
+
+			// Finish the login
+			$this->complete_login($user);
 
 			return TRUE;
+		}
+
+		return FALSE;
+	}
+
+	/**
+	 * Attempt to automatically log a user in by using tokens.
+	 *
+	 * @return  bool
+	 */
+	public function auto_login()
+	{
+		if ($token = cookie::get('autologin'))
+		{
+			// Load the token and user
+			$token = new User_Token_Model($token);
+			$user = new User_Model($token->user_id);
+
+			if ($token->id != 0 AND $user->id != 0)
+			{
+				if ($token->user_agent === sha1(Kohana::$user_agent))
+				{
+					// Save the token to create a new unique token
+					$token->save();
+
+					// Set the new token
+					cookie::set('autologin', $token->token, $token->expires - time());
+
+					// Complete the login with the found data
+					$this->complete_login($user);
+
+					// Automatic login was successful
+					return TRUE;
+				}
+
+				// Token is invalid
+				$token->delete();
+			}
 		}
 
 		return FALSE;
@@ -176,6 +228,30 @@ class Auth_Core {
 		}
 
 		return $salt;
+	}
+
+	/**
+	 * Complete the login for a user by incrementing the logins and setting
+	 * session data: user_id, username, roles
+	 *
+	 * @param   object   user model object
+	 * @return  void
+	 */
+	protected function complete_login(User_Model $user)
+	{
+		// Update the number of logins
+		$user->logins += 1;
+
+		// Save the user
+		$user->save();
+
+		// Store session data
+		$this->session->set(array
+		(
+			'user_id'  => $user->id,
+			'username' => $user->username,
+			'roles'    => $user->roles
+		));
 	}
 
 } // End Auth
