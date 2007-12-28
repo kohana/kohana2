@@ -52,7 +52,7 @@ class ORM_Core {
 	 * @param   mixed    id to load
 	 * @return  object
 	 */
-	public static function instance($model = FALSE, $id = FALSE)
+	public static function factory($model = FALSE, $id = FALSE)
 	{
 		$model = empty($model) ? __CLASS__ : ucfirst($model).'_Model';
 		return new $model($id);
