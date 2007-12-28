@@ -9,8 +9,8 @@
  */
 class Session_Core {
 
-	// Number of instances of Session object
-	private static $instances = 0;
+	// Session singleton
+	private static $instance;
 
 	// Protected key names (cannot be set by the user)
 	protected static $protect = array('session_id', 'user_agent', 'last_activity', 'ip_address', 'total_hits', '_kf_flash_');
@@ -26,6 +26,17 @@ class Session_Core {
 	protected $input;
 
 	/**
+	 * Singleton instance of Session.
+	 */
+	public static function instance()
+	{
+		// Create the instance if it does not exist
+		empty(self::$instance) and new Session;
+
+		return self::$instance;
+	}
+
+	/**
 	 * Constructor: __construct
 	 *  On first session instance creation, sets up the driver and creates session.
 	 */
@@ -34,7 +45,7 @@ class Session_Core {
 		$this->input = new Input();
 
 		// This part only needs to be run once
-		if (self::$instances === 0)
+		if (self::$instance === NULL)
 		{
 			// Load config
 			self::$config = Config::item('session');
@@ -77,10 +88,10 @@ class Session_Core {
 			// Close the session just before sending the headers, so that
 			// the session cookie can be written
 			Event::add('system.send_headers', 'session_write_close');
-		}
 
-		// New instance
-		self::$instances += 1;
+			// Singleton instance
+			self::$instance = $this;
+		}
 
 		Log::add('debug', 'Session Library initialized');
 	}
@@ -132,7 +143,7 @@ class Session_Core {
 		// Set defaults
 		if ( ! isset($_SESSION['_kf_flash_']))
 		{
-			$_SESSION['user_agent'] = $this->input->user_agent();
+			$_SESSION['user_agent'] = Kohana::$user_agent;
 			$_SESSION['ip_address'] = $this->input->ip_address();
 			$_SESSION['_kf_flash_'] = array();
 			$_SESSION['total_hits'] = 0;
