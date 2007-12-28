@@ -9,7 +9,7 @@
  */
 class User_agent_Core {
 
-	public static $agent = NULL;
+	public static $agent;
 
 	protected static $referrer  = '';
 	protected static $languages = array();
@@ -27,15 +27,11 @@ class User_agent_Core {
 	 */
 	public function __construct()
 	{
-		if (is_null(self::$agent) AND isset($_SERVER['HTTP_USER_AGENT']))
-		{
-			self::$agent = trim($_SERVER['HTTP_USER_AGENT']);
-		}
-
-		if (self::$agent == '')
+		// Make sure the user agent is set
+		if (empty(self::$agent) AND (self::$agent = Kohana::$user_agent) === '')
 		{
 			Log::add('debug', 'Could not determine user agent type.');
-			return FALSE;
+			return;
 		}
 
 		// Set the user agent data

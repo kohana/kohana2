@@ -23,6 +23,9 @@ class Kohana {
 	// The final output that will displayed by Kohana
 	public static $output = '';
 
+	// The current user agent
+	public static $user_agent = '';
+
 	/**
 	 * Allows the controller to be a true singleton object. This method *must*
 	 * be called by all controllers.
@@ -70,15 +73,23 @@ class Kohana {
 		// Start the environment setup benchmark
 		Benchmark::start(SYSTEM_BENCHMARK.'_environment_setup');
 
+		// Disable error reporting
+		$ER = error_reporting(0);
+
+		// Set the user agent
+		self::$user_agent = trim($_SERVER['HTTP_USER_AGENT']);
+
 		if (function_exists('date_default_timezone_set'))
 		{
+			$timezone = Config::item('locale.timezone');
+
 			// Set default timezone, due to increased validation of date settings
 			// which cause massive amounts of E_NOTICEs to be generated in PHP 5.2+
-			$timezone = Config::item('locale.timezone');
-			$timezone = ($timezone == FALSE) ? @date_default_timezone_get() : $timezone;
-
-			date_default_timezone_set($timezone);
+			date_default_timezone_set(empty($timezone) ? date_default_timezone_get() : $timezone);
 		}
+
+		// Restore error reporting
+		error_reporting($ER);
 
 		// Start output buffering
 		ob_start(array('Kohana', 'output_buffer'));
