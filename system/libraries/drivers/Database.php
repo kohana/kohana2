@@ -237,6 +237,33 @@ abstract class Database_Driver {
 	abstract public function limit($limit, $offset = 0);
 
 	/**
+	 * Initiates a prepared statement.
+	 *
+	 * @param  string $sql
+	 * @param  string $label
+	 * @return boolean
+	 */
+	abstract public function stmt_prepare($sql = '', $label);
+
+	/**
+	 * Executes a prepared statement.
+	 *
+	 * @param  string $sql
+	 * @param  string $label
+	 * @return boolean
+	 */
+	abstract public function stmt_execute($vals = array(), $label);
+
+	/**
+	 * Destroys a prepared statement.
+	 *
+	 * @param  string $sql
+	 * @param  string $label
+	 * @return boolean
+	 */
+	abstract public function stmt_clear($label);
+
+	/**
 	 *  Compiles the SELECT statement.
 	 *  Generates a query string based on which functions were used.
 	 *  Should not be called directly, the get() function calls it.

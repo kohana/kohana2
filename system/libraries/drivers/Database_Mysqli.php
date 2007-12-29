@@ -13,6 +13,7 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 	// Database connection link
 	protected $link;
 	protected $db_config;
+	protected $statements = array();
 
 	/**
 	 * Constructor: __construct
@@ -71,6 +72,46 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 		}
 
 		return new Kohana_Mysqli_Result($this->link, $this->db_config['object'], $sql);
+	}
+
+	public function stmt_prepare($sql = '', $label)
+	{
+		$this->statements[$label] = $this->link->stmt_init();
+		if ($stmt->prepare($sql))
+			return TRUE;
+
+		return FALSE;
+	}
+
+	public function stmt_execute($vals = array(), $label)
+	{
+		$bind_types = '';
+		$i = 0;
+		foreach ($vals as $val)
+		{
+			if (is_int($val))
+			{
+				$bind_typs .= 'i';
+			}
+			elseif (is_float($val))
+			{
+				$bind_types .= 'd'
+			}
+			else
+			{
+				$bind_types .= 's';
+			}
+		}
+		call_user_func_array(array($this->statements[$label], 'bind_param'), array_combine($bind_types, $vals));
+		$this->statements[$label]->execute();
+	}
+
+	public function stmt_clear($label)
+	{
+		if (isset($this->statments[$label] && is_ibject($this->statments[$label])))
+			return $this->statments[$label]->close();
+
+		return FALSE;
 	}
 
 	public function escape_str($str)

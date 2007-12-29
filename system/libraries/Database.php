@@ -1252,19 +1252,19 @@ class Database_Core {
 		}
 	}
 
-	public function stmt_prepare($sql)
+	public function stmt_prepare($sql, $label)
 	{
-		
+		$this->driver->stmt_prepare($sql, $label);
 	}
 
-	public function stmt_execute($vals = array())
+	public function stmt_execute($vals = array(), $label)
 	{
-		
+		$this->driver->stmt_execute($vals, $label);
 	}
 
-	public function stmt_clear($vals = array())
+	public function stmt_clear($label)
 	{
-
+		$this->driver->stmt_clear($label);
 	}
 
 } // End Database Class
