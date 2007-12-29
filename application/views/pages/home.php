@@ -39,7 +39,7 @@
 <li><strong>GET, POST, COOKIE, <em>and</em> SESSION arrays all work as expected.</strong> Kohana does not limit your access to global data, but offers  filtering and <abbr title="Cross Site Scripting">XSS</abbr> protection.</li>
 <li><strong>True auto-loading of classes.</strong> True on-demand loading of classes, as they are requested in your application.</li>
 <li><strong>No namespace conflicts.</strong> All classes are suffixed to allow similar names between components, for a more coherent API.</li>
-<li><strong>Cascading resources offer unparalleled extensibility.</strong> Almost every part of Kohana can be overloading or extended without editing source files. Modules allow multi-file plugins to be added to your application, transparently.</li>
+<li><strong>Cascading resources offer unparalleled extensibility.</strong> Almost every part of Kohana can be overloaded or extended without editing core system files. Modules allow multi-file plugins to be added to your application, transparently.</li>
 <li><strong>Library drivers and API consistency.</strong> Libraries can use different "drivers" to handle different external <abbr title="Application Programming Interface">API</abbr>s transparently. For example, multiple session storage options are available (database, cookie, and native), but the same interface is used for all of them. This allows new drivers to be developed for existing libraries, which keeps the API consistent and transparent.</li>
 <li><strong>Powerful event handler.</strong> Observer-style event handlers allow for extreme levels of customization potential.</li>
 <li><strong>Rapid development cycle.</strong> Rapid development results in faster response to user bugs and requests.</li>
