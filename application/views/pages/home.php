@@ -30,17 +30,17 @@
 
 <h3 style="clear:both;padding-top:1em;">How is Kohana Different?</h3>
 
-<p>The most commonly asked question about Kohana is "What's the difference between Kohana and CodeIgniter?". Although this is a large topic, we have attempted to outline some of the primary differences and similarities:</p>
+<p>Although Kohana reuses many common design patterns and concepts, there are some things that make Kohana stand out:</p>
 
 <ol>
+<li><strong>Community, not company, driven.</strong> Kohana development is driven by a team of dedicated people that need a framework for fast, powerful solutions.</li>
 <li><strong>Strict PHP5 <abbr title="Object Oriented Programming">OOP</abbr>.</strong> Offers many benefits: visibility protection, automatic class loading, overloading, interfaces, abstracts, and singletons.</li>
-<li><strong>Continues CodeIgniter design patterns.</strong> Anyone who has used CodeIgniter will quickly understand Kohana's structure and design patterns.</li>
-<li><strong>Community, not company, driven.</strong> Kohana is driven by community discussion, ideas, and code. Kohana developers are from all around the world, each with their own talents. This allows a rapid and flexible development cycle that can respond to bugs and requests within hours, instead of days or months.</li>
-<li><strong>GET, POST, COOKIE, <em>and</em> SESSION arrays all work as expected.</strong> Kohana does not limit your access to global data, but offers the same filtering and <abbr title="Cross Site Scripting">XSS</abbr> protection that CodeIgniter does.</li>
-<li><strong>Cascading resources, modules, and inheritance.</strong> Controllers, models, libraries, helpers, and views can be loaded from any location within your <tt>system</tt>, <tt>application</tt>, or <strong>module paths</strong>. Configuration options are inherited and can by dynamically overwritten by each application.</li>
-<li><strong>No namespace conflicts.</strong> Class suffixes, like <tt>_Controller</tt>, are used to prevent namespace conflicts. This allows a Users controller and Users model to both be loaded at the same time.</li>
-<li><strong>True auto-loading of classes.</strong> This includes libraries, controllers, models, and helpers. This is <strong>not</strong> pre-loading, but true dynamic loading of classes, as they are requested.</li>
-<li><strong>Helpers are static classes, not functions.</strong> For example, instead of using <tt>form_open()</tt>, you would use <tt>form::open()</tt>.</li>
+<li><strong>Extremely lightweight.</strong> Kohana has no dependencies on PECL extensions or PEAR libraries. Large, monolithic libraries are avoided in favor of optimized solutions.</li>
+<li><strong>GET, POST, COOKIE, <em>and</em> SESSION arrays all work as expected.</strong> Kohana does not limit your access to global data, but offers  filtering and <abbr title="Cross Site Scripting">XSS</abbr> protection.</li>
+<li><strong>True auto-loading of classes.</strong> True on-demand loading of classes, as they are requested in your application.</li>
+<li><strong>No namespace conflicts.</strong> All classes are suffixed to allow similar names between components, for a more coherent API.</li>
+<li><strong>Cascading resources offer unparalleled extensibility.</strong> Almost every part of Kohana can be overloading or extended without editing source files. Modules allow multi-file plugins to be added to your application, transparently.</li>
 <li><strong>Library drivers and API consistency.</strong> Libraries can use different "drivers" to handle different external <abbr title="Application Programming Interface">API</abbr>s transparently. For example, multiple session storage options are available (database, cookie, and native), but the same interface is used for all of them. This allows new drivers to be developed for existing libraries, which keeps the API consistent and transparent.</li>
-<li><strong>Powerful event handler.</strong> Kohana events can by dynamically added to, replaced, or even removed completely. This allows many changes to Kohana execution process, without modification to existing system code.</li>
+<li><strong>Powerful event handler.</strong> Observer-style event handlers allow for extreme levels of customization potential.</li>
+<li><strong>Rapid development cycle.</strong> Rapid development results in faster response to user bugs and requests.</li>
 </ol>

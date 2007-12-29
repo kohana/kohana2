@@ -81,10 +81,10 @@ class Controller extends Controller_Core {
 					$curl = curl_init();
 
 					// Set cURL options
-					curl_setopt($curl, CURLOPT_URL, $data['url']); // Remote feed location
+					curl_setopt($curl, CURLOPT_URL, $data['url']);  // Remote feed location
 					curl_setopt($curl, CURLOPT_HEADER, 0);          // No headers in fetched page
 					curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  // Return the fetched page, instead of printing it
-					curl_setopt($curl, CURLOPT_TIMEOUT, 3);         // Five second timeout
+					curl_setopt($curl, CURLOPT_TIMEOUT, 5);         // Five second timeout
 
 					// Fetch the remote feed
 					$feed = curl_exec($curl);
@@ -101,7 +101,7 @@ class Controller extends Controller_Core {
 					}
 				}
 
-				$this->feeds[$name]['items'] = feed::parse($feed, 3);
+				$this->feeds[$name]['items'] = empty($feed) ? array() : feed::parse($feed, 3);
 			}
 
 			// Add the feeds to the sidebar

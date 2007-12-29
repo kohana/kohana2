@@ -6,13 +6,15 @@ class Tutorials_Controller extends Controller {
 
 	public function _default()
 	{
-		$titles = array
+		$videos = new Video_Tutorial_Model;
+		foreach($videos->select('video', 'title')->find(ALL) as $video)
+		{
+			// Add each video the the list
+			$titles['Video Tutorials']['video/'.$video->video] = $video->title;
+		}
+
+		$titles = array_merge($titles, array
 		(
-			'Video Tutorials' => array
-			(
-				'video/hello_world' => 'Hello World Introduction',
-				'video/hello_world_part_2' => 'Hello World, Part 2'
-			),
 			'Security' => array
 			(
 				'xss' => 'XSS Attack Filtering',
@@ -31,7 +33,7 @@ class Tutorials_Controller extends Controller {
 				'remove_index' => 'Removing index.php From URLs',
 				'multilingual' => 'Setting Up a Multilingual Website'
 			)
-		);
+		));
 
 		// Include Geshi syntax highlighter
 		include Kohana::find_file('vendor', 'geshi/geshi');

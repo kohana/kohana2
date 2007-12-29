@@ -79,87 +79,47 @@ class Admin_Controller extends Controller {
 
 	public function dashboard()
 	{
+		$this->template->title = 'Dashboard';
+		$this->template->content = html::anchor('admin/add_video_tutorial', 'Add Video Tutorial').$this->session->get_once('message');
+	}
+
+	public function add_video_tutorial()
+	{
 		// User must be logged in
-		is_object($this->user) or url::redirect('admin/login');
+		is_object($this->user) and $this->user->has_role('developer') or url::redirect('admin/login');
 
-		if ($this->user->has_role('developer'))
+		$form = new Forge(NULL, $this->template->title = 'Create Tutorial');
+		$form->input('title')->label(TRUE)->rules('required|length[4,64]');
+		$form->input('author')->label(TRUE)->rules('required|length[4,64]');
+		$form->input('copyright')->label(TRUE)->rules('required|length[4]|valid_digit');
+		$form->input('video')->label('File')->rules('required|length[2,127]');
+		$form->input('width')->label(TRUE)->rules('required|length[2,3]|valid_digit');
+		$form->input('height')->label(TRUE)->rules('required|length[2,3]|valid_digit');
+		$form->submit('Save');
+
+		if ($form->validate())
 		{
-			// Set title
-			$this->template->title = 'Create Tutorial';
+			// Create new object
+			$tutorial = new Video_Tutorial_Model;
 
-			// Form
-			$form = new Form_Model();
-			$form
-				->title($this->template->title)
-				->action('')
-				->inputs(array
-				(
-					'title' => array
-					(
-						'label' => 'Title',
-						'rules' => 'trim|required[4,64]',
-					),
-					'author' => array
-					(
-						'label' => 'Author',
-						'rules' => 'trim|required[4,64]',
-					),
-					'copyright' => array
-					(
-						'label' => 'Copyright',
-						'rules' => 'trim|required[4]|digit',
-					),
-					'video' => array
-					(
-						'label' => 'File',
-						'rules' => 'trim|required[2,127]',
-					),
-					'width' => array
-					(
-						'label' => 'Width',
-						'rules' => 'trim|required[2,3]|digit',
-					),
-					'height' => array
-					(
-						'label' => 'Height',
-						'rules' => 'trim|required[2,3]|digit'
-					),
-					'save' => array
-					(
-						'type'  => 'submit',
-						'value' => 'Save Tutorial'
-					)
-				));
-
-			if ($form->validate())
+			foreach($form->as_array() as $key => $val)
 			{
-				// Create new object
-				$tutorial = new Video_Tutorial_Model();
-
-				foreach($form->data() as $key => $val)
-				{
-					// Set object data
-					$tutorial->$key = $val;
-				}
-
-				if ($tutorial->save())
-				{
-					// Set the message
-					$this->session->set_flash('message', '<p><strong>Success!</strong> New tutorial has been created.</p>');
-				}
-
-				// Go back to dashboard
-				url::redirect('admin/dashboard');
+				// Set object data
+				$tutorial->$key = $val;
 			}
 
-			// Set content
-			$this->template->content = $this->session->get('message').$form->build();
+			if ($tutorial->save())
+			{
+				// Set the message
+				$this->session->set_flash('message', '<p><strong>Success!</strong> New tutorial has been created.</p>');
+			}
+
+			// Go back to dashboard
+			url::redirect('admin/dashboard');
 		}
-		else
-		{
-			// ha
-			url::redirect('admin/login');
-		}
+
+		// Set content
+		$this->template->content = $form->html();
 	}
 
 } // End Admin
