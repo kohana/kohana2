@@ -1252,6 +1252,21 @@ class Database_Core {
 		}
 	}
 
+	public function stmt_prepare($sql)
+	{
+		
+	}
+
+	public function stmt_execute($vals = array())
+	{
+		
+	}
+
+	public function stmt_clear($vals = array())
+	{
+
+	}
+
 } // End Database Class
 
 /**
