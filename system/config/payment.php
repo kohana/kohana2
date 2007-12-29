@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Settings related to the CreditCard library.
+ * Settings related to the Payment library.
  * This file has settings for each driver.
  * You should copy the 'default' and the specific
- * driver you are working with to your application/config/creditcard.php file.
+ * driver you are working with to your application/config/payment.php file.
  *
  * Options:
  *  driver - default driver to use
