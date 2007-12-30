@@ -207,20 +207,20 @@ final class Event {
 	 */
 	public static function run($name, & $data = NULL)
 	{
-		if ($name == FALSE OR empty(self::$events[$name]))
-			return FALSE;
-
-		// So callbacks can access Event::$data
-		self::$data =& $data;
-
-		foreach(self::get($name) as $callback)
+		if ( ! empty(self::$events[$name]))
 		{
-			call_user_func($callback);
-		}
+			// So callbacks can access Event::$data
+			self::$data =& $data;
 
-		// Do this to prevent data from getting 'stuck'
-		$clear_data = '';
-		self::$data =& $clear_data;
+			foreach(self::get($name) as $callback)
+			{
+				call_user_func($callback);
+			}
+
+			// Do this to prevent data from getting 'stuck'
+			$clear_data = '';
+			self::$data =& $clear_data;
+		}
 
 		// The event has been run!
 		self::$has_run[$name] = $name;
