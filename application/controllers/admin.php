@@ -101,18 +101,26 @@ class Admin_Controller extends Controller {
 		{
 			$this->template->title = 'Manage Users';
 
-			$users = array();
-			foreach (ORM::factory('user')->find(ALL) as $user)
-			{
-				// Create a list of all users
-				$users[$user->username] = $user->username;
-			}
-
 			$this->template->content = View::factory('admin/edit_list')
-				->set('new', 'Add a new user')
-				->set('items', $users)
 				->set('edit_action', 'admin/manage_users')
-				->set('delete_action', 'admin/delete_user');
+				->set('delete_action', 'admin/delete_user')
+				->bind('items', $items);
+
+			if ($this->user->has_role('admin'))
+			{
+				$this->template->content->set('new', 'Add a new user');
+
+				foreach (ORM::factory('user')->find(ALL) as $user)
+				{
+					// Create a list of all users
+					$items[$user->username] = $user->username;
+				}
+			}
+			else
+			{
+				// Show only this user
+				$items[$this->user->username] = $this->user->username;
+			}
 		}
 		else
 		{
@@ -144,6 +152,12 @@ class Admin_Controller extends Controller {
 				$form->password->rules('+required');
 			}
 
+			if ( ! $this->user->has_role('admin'))
+			{
+				// Only admins are allowed to change user roles
+				$form->roles->disabled(TRUE);
+			}
+
 			if ($form->validate() AND $data = $form->as_array())
 			{
 				// Extract the roles from the data
@@ -164,16 +178,20 @@ class Admin_Controller extends Controller {
 				// Save the user and set the message
 				$user->save() and $this->session->set_flash('message', '<p><strong>Success!</strong> User saved successfully.</p>');
 
-				foreach (array_diff($user->roles, $set_roles) as $role)
+				// Only admins are allowed to change user roles
+				if ($this->user->has_role('admin'))
 				{
-					// Remove roles that were unchecked
-					$user->remove_role($role);
-				}
+					foreach (array_diff($user->roles, $set_roles) as $role)
+					{
+						// Remove roles that were unchecked
+						$user->remove_role($role);
+					}
 
-				foreach (array_diff($set_roles, $user->roles) as $role)
-				{
-					// Add new roles
-					$user->add_role($role);
+					foreach (array_diff($set_roles, $user->roles) as $role)
+					{
+						// Add new roles
+						$user->add_role($role);
+					}
 				}
 
 				// Redirect the the dashboard
@@ -192,7 +210,7 @@ class Admin_Controller extends Controller {
 		// Load the user
 		$user = new User_Model($id);
 
-		if ($confirm === 'no' OR $user->id == 0)
+		if (! $this->user->has_role('admin') OR $confirm === 'no' OR $user->id == 0)
 		{
 			// Go back the to the management page
 			url::redirect('admin/manage_users');
