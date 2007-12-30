@@ -13,13 +13,19 @@ class Admin_Controller extends Controller {
 		if ($user = $this->session->get('user_id'))
 		{
 			// Fetch the user object
-			$this->user = new User_Model((int) $user);
+			$this->user = new User_Model($user);
 
 			if ($this->user->id AND $this->user->has_role('developer'))
 			{
 				// Load profiler
 				$profiler = new Profiler;
 			}
+		}
+
+		if ($this->uri->segment(2) !== 'login')
+		{
+			// User must be logged in
+			is_object($this->user) and $this->user->has_role('developer') or url::redirect('admin/login');
 		}
 	}
 
@@ -31,63 +37,169 @@ class Admin_Controller extends Controller {
 
 	public function login()
 	{
-		$this->template->title = 'Developer Login';
+		// Create the login form
+		$form = new Forge(NULL, $this->template->title = 'Developer Login');
+		$form->input('username')->label(TRUE)->rules('required|length[2,32]');
+		$form->password('password')->label(TRUE)->rules('required|length[2,64]');
+		$form->submit('Login');
 
-		$content = new Form_Model();
-		$content
-			->title($this->template->title)
-			->action('admin/login')
-			->inputs(array
-			(
-				'user' => array
-				(
-					'rules' => array('username', 'trim|required[2,32]'),
-				),
-				'pass' => array
-				(
-					'type'  => 'password',
-					'rules' => array('password', 'trim|required[2,64]'),
-				),
-				'go' => array
-				(
-					'type' => 'submit',
-					'value' => 'Login'
-				)
-			));
-
-		// Load content
-		$this->template->set('content', $content->build());
-
-		// Set username and password
-		$username = $this->input->post('user');
-		$password = $this->input->post('pass');
-
-		if ($username AND $password)
+		if ($form->validate() AND $data = $form->as_array())
 		{
-			// Load auth and the user
+			// Load Auth and the user
 			$auth = new Auth;
-			$user = new User_Model($username);
+			$user = new User_Model($data['username']);
 
-			// Attempt to log the user in
-			if ($user->id AND $auth->login($user, $password))
+			// Make sure the user is valid and attempt a login
+			if ($user->id AND $auth->login($user, $data['password']))
 			{
 				// Hooray!
 				url::redirect('admin/dashboard');
 			}
 		}
+
+		// Load content
+		$this->template->content = $form->html();
+	}
+
+	public function log_out()
+	{
+		$auth = new Auth;
+		$auth->logout(TRUE);
+
+		url::redirect('admin/login');
 	}
 
 	public function dashboard()
 	{
 		$this->template->title = 'Dashboard';
-		$this->template->content = html::anchor('admin/add_video_tutorial', 'Add Video Tutorial').$this->session->get_once('message');
+
+		$content = new View('admin/menu');
+		$content->actions = array
+		(
+			'manage_users',
+			'manage_video_tutorials',
+			'log_out',
+		);
+
+		$this->template->content = $this->session->get_once('message').$content->render();
+	}
+
+	public function manage_users($id = FALSE)
+	{
+		if ($id === FALSE)
+		{
+			$this->template->title = 'Manage Users';
+
+			$users = array();
+			foreach (ORM::factory('user')->find(ALL) as $user)
+			{
+				// Create a list of all users
+				$users[$user->id] = $user->username;
+			}
+
+			$this->template->content = View::factory('admin/user_list')->set('users', $users);
+		}
+		else
+		{
+			// Reset the id for new users
+			($id === 'new') and $id = FALSE;
+
+			// Load the user
+			$user = new User_Model($id);
+
+			$roles = array();
+			foreach (ORM::factory('role')->find(ALL) as $role)
+			{
+				// Create a checklist option array
+				$roles[$role->name] = array($role->name, $user->has_role($role->id));
+			}
+
+			// Create user editing form
+			$form = new Forge(NULL, $this->template->title = ($user->username ? 'Edit '.$user->username : 'New User'));
+			$form->input('username')->label(TRUE)->rules('required|length[2,32]')->value($user->username);
+			$form->input('email')->label(TRUE)->rules('required|length[4,127]|valid_email')->value($user->email);
+			$form->password('password')->label(TRUE)->rules('length[4,64]');
+			$form->password('passconf')->label('Confirm')->matches($form->password);
+			$form->checklist('roles')->label(TRUE)->options($roles);
+			$form->submit('Save');
+
+			if ($id === FALSE)
+			{
+				// New users must have a password
+				$form->password->rules('+required');
+			}
+
+			if ($form->validate() AND $data = $form->as_array())
+			{
+				// Extract the roles from the data
+				$set_roles = arr::remove('roles', $data);
+
+				if (empty($data['passconf']))
+				{
+					// Do not reset the password to nothing
+					unset($data['password'], $data['passconf']);
+				}
+
+				foreach ($data as $key => $val)
+				{
+					// Set new values
+					$user->$key = $val;
+				}
+
+				// Save the user and set the message
+				$user->save() and $this->session->set_flash('message', '<p><strong>Success!</strong> User saved successfully.</p>');
+
+				foreach (array_diff($user->roles, $set_roles) as $role)
+				{
+					// Remove roles that were unchecked
+					$user->remove_role($role);
+				}
+
+				foreach (array_diff($set_roles, $user->roles) as $role)
+				{
+					// Add new roles
+					$user->add_role($role);
+				}
+
+				// Redirect the the dashboard
+				url::redirect('admin/dashboard');
+			}
+
+			$this->template->content = $form->html();
+		}
+	}
+
+	public function delete_user($id = FALSE)
+	{
+		// Confirmation
+		$confirm = $this->input->get('confirm');
+
+		// Load the user
+		$user = new User_Model($id);
+
+		if ($confirm === 'no' OR $user->id == 0)
+		{
+			// Go back the to the management page
+			url::redirect('admin/manage_users');
+		}
+
+		// Set the template title
+		$this->template->title = 'Delete '.$user->username.'?';
+
+		if ($user->id AND $confirm === 'yes')
+		{
+			// Delete the user
+			$user->delete();
+
+			// Go back to the user management
+			url::redirect('admin/manage_users');
+		}
+
+		$this->template->content = View::factory('admin/confirm')->set('action', 'admin/delete_user/'.$id);
 	}
 
 	public function add_video_tutorial()
 	{
-		// User must be logged in
-		is_object($this->user) and $this->user->has_role('developer') or url::redirect('admin/login');
-
 		$form = new Forge(NULL, $this->template->title = 'Create Tutorial');
 		$form->input('title')->label(TRUE)->rules('required|length[4,64]');
 		$form->input('author')->label(TRUE)->rules('required|length[4,64]');
