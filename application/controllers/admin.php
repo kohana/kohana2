@@ -22,7 +22,7 @@ class Admin_Controller extends Controller {
 			}
 		}
 
-		if ($this->uri->segment(2) !== 'login')
+		if ($this->uri->segment(2) !== 'login' AND $this->uri->segment(2) !== 'log_out')
 		{
 			// User must be logged in
 			is_object($this->user) and $this->user->has_role('developer') or url::redirect('admin/login');
