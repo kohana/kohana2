@@ -26,13 +26,24 @@ class Admin_Controller extends Controller {
 		{
 			// User must be logged in
 			is_object($this->user) and $this->user->has_role('developer') or url::redirect('admin/login');
+
+			Event::add_before('system.post_controller', array($this, '_display'), array($this, '_add_breadcrumb'));
 		}
+	}
+
+	public function _add_breadcrumb()
+	{
+		$crumbs = View::factory('admin/breadcrumb')
+			->set('crumbs', html::breadcrumb())
+			->render();
+
+		$this->template->content = $crumbs.$this->template->content;
 	}
 
 	public function index()
 	{
 		// Send them to the right page
-		url::redirect('admin/login');
+		url::redirect('admin/dashboard');
 	}
 
 	public function login()
@@ -94,10 +105,14 @@ class Admin_Controller extends Controller {
 			foreach (ORM::factory('user')->find(ALL) as $user)
 			{
 				// Create a list of all users
-				$users[$user->id] = $user->username;
+				$users[$user->username] = $user->username;
 			}
 
-			$this->template->content = View::factory('admin/user_list')->set('users', $users);
+			$this->template->content = View::factory('admin/edit_list')
+				->set('new', 'Add a new user')
+				->set('items', $users)
+				->set('edit_action', 'admin/manage_users')
+				->set('delete_action', 'admin/delete_user');
 		}
 		else
 		{
@@ -198,40 +213,63 @@ class Admin_Controller extends Controller {
 		$this->template->content = View::factory('admin/confirm')->set('action', 'admin/delete_user/'.$id);
 	}
 
-	public function add_video_tutorial()
+	public function manage_video_tutorials($id = FALSE)
 	{
-		$form = new Forge(NULL, $this->template->title = 'Create Tutorial');
-		$form->input('title')->label(TRUE)->rules('required|length[4,64]');
-		$form->input('author')->label(TRUE)->rules('required|length[4,64]');
-		$form->input('copyright')->label(TRUE)->rules('required|length[4]|valid_digit');
-		$form->input('video')->label('File')->rules('required|length[2,127]');
-		$form->input('width')->label(TRUE)->rules('required|length[2,3]|valid_digit');
-		$form->input('height')->label(TRUE)->rules('required|length[2,3]|valid_digit');
-		$form->submit('Save');
-
-		if ($form->validate())
+		if ($id === FALSE)
 		{
-			// Create new object
-			$tutorial = new Video_Tutorial_Model;
+			$this->template->title = 'Manage Users';
 
-			foreach($form->as_array() as $key => $val)
+			$list = View::factory('admin/edit_list')
+				->set('new', 'Add a new video')
+				->set('edit_action', 'admin/manage_video_tutorials')
+				->set('delete_action', 'admin/delete_video_tutorial')
+				->bind('items', $items);
+
+			foreach (ORM::factory('video_tutorial')->find(ALL) as $tutorial)
 			{
-				// Set object data
-				$tutorial->$key = $val;
+				// Create a list of all tutorials
+				$items[$tutorial->video] = $tutorial->title;
 			}
 
-			if ($tutorial->save())
-			{
-				// Set the message
-				$this->session->set_flash('message', '<p><strong>Success!</strong> New tutorial has been created.</p>');
-			}
-
-			// Go back to dashboard
-			url::redirect('admin/dashboard');
+			$this->template->content = $list->render();
 		}
+		else
+		{
+			($id === 'new') and $id = FALSE;
 
-		// Set content
-		$this->template->content = $form->html();
+			// Load tutorial
+			$tutorial = new Video_Tutorial_Model($id);
+
+			$form = new Forge(NULL, $this->template->title = ($tutorial->id ? 'Update Tutorial' : 'New Tutorial'));
+			$form->input('title')->label(TRUE)->rules('required|length[4,64]')->value($tutorial->title);
+			$form->input('author')->label(TRUE)->rules('required|length[4,64]')->value($tutorial->author);
+			$form->input('copyright')->label(TRUE)->rules('required|length[4]|valid_digit')->value($tutorial->copyright);
+			$form->input('video')->label('File')->rules('required|length[2,127]')->value($tutorial->video);
+			$form->input('width')->label(TRUE)->rules('required|length[2,3]|valid_digit')->value($tutorial->width);
+			$form->input('height')->label(TRUE)->rules('required|length[2,3]|valid_digit')->value($tutorial->height);
+			$form->submit('Save');
+
+			if ($form->validate())
+			{
+				foreach($form->as_array() as $key => $val)
+				{
+					// Set object data
+					$tutorial->$key = $val;
+				}
+
+				if ($tutorial->save())
+				{
+					// Set the message
+					$this->session->set_flash('message', '<p><strong>Success!</strong> Tutorial was saved successfully.</p>');
+				}
+
+				// Go back to dashboard
+				url::redirect('admin/dashboard');
+			}
+
+			// Set content
+			$this->template->content = $form->html();
+		}
 	}
 
 } // End Admin

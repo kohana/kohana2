@@ -15,7 +15,7 @@ class Video_tutorial_Model extends ORM {
 
 	protected function where_key($id)
 	{
-		if (is_string($id) AND ! empty($id))
+		if ( ! empty($id) AND is_string($id) AND ! ctype_digit($id))
 		{
 			// Allow searches by video
 			return 'video';
