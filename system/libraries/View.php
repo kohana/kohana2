@@ -74,7 +74,7 @@ class View_Core {
 	 * Sets a view variable.
 	 *
 	 * @param   string|array  name of variable or an array of variables
-	 * @param   value         value when using a named variable
+	 * @param   mixed         value when using a named variable
 	 * @return  object
 	 */
 	public function set($name, $value = NULL)
@@ -94,10 +94,24 @@ class View_Core {
 	}
 
 	/**
+	 * Sets a bound variable by reference.
+	 *
+	 * @param   string   name of variable
+	 * @param   mixed    variable to assign by reference
+	 * @return  object
+	 */
+	public function bind($name, & $var)
+	{
+		$this->data[$name] =& $var;
+
+		return $this;
+	}
+
+	/**
 	 * Sets a view global variable.
 	 *
 	 * @param   string|array  name of variable or an array of variables
-	 * @param   value         value when using a named variable
+	 * @param   mixed         value when using a named variable
 	 * @return  object
 	 */
 	public function set_global($name, $value = NULL)
