@@ -703,7 +703,7 @@ class Validation_Core {
 				list ($min, $max) = $length;
 
 				// Change length to the length of the string
-				$length = strlen($str);
+				$length = utf8::strlen($str);
 
 				// Test min length
 				if ($length < $min)
