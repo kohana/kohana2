@@ -105,7 +105,7 @@ class ORM_Core {
 			else
 			{
 				// Query and load object
-				$this->find($id, FALSE);
+				$this->find($id);
 			}
 		}
 	}
@@ -241,17 +241,15 @@ class ORM_Core {
 				self::$db->where(array($keys => current($args)));
 			}
 
-			// Find requested objects
-			if (isset($all)) 
+			if (isset($all))
 			{
-				// return array of results
+				// Array of results
 				return $this->load_result(TRUE); 
 			}
 			else
 			{
-				$this->find(NULL, FALSE);
-				// maintain chainability
-				return $this;
+				// Allow chains
+				return $this->find();
 			}
 		}
 
@@ -342,7 +340,7 @@ class ORM_Core {
 					}
 
 					// Load the related object
-					$model->find(current($args), FALSE);
+					$model->find(current($args));
 				}
 			}
 
@@ -464,7 +462,7 @@ class ORM_Core {
 	 * @return  object   object instance
 	 * @return  array    if ALL is used
 	 */
-	public function find($id = FALSE, $return = TRUE)
+	public function find($id = FALSE, $return = FALSE)
 	{
 		// Allows the use of find(ALL)
 		if ($id === ALL)
@@ -645,13 +643,10 @@ class ORM_Core {
 	protected function load_result($array = FALSE, $return = FALSE)
 	{
 		// Make sure there is something to select
-		($this->select == FALSE) and self::$db->select($this->table.'.*');
+		$this->select or self::$db->select($this->table.'.*');
 
 		// Fetch the query result
-		$result = self::$db
-			->from($this->table)
-			->get()
-			->result(TRUE);
+		$result = self::$db->get($this->table)->result(TRUE);
 
 		if (count($result) > 0)
 		{
@@ -717,11 +712,8 @@ class ORM_Core {
 	 */
 	protected function load_model($table)
 	{
-		// Get model name
-		$model= ucfirst(inflector::singular($table)).'_Model';
-
-		// Create a new model
-		return new $model();
+		// Create and return the object
+		return ORM::factory(inflector::singular($table));
 	}
 
 	/**
@@ -754,7 +746,7 @@ class ORM_Core {
 	 */
 	protected function related_join($table)
 	{
-		$join_table = $this->related_table($table);
+		$join = $this->related_table($table);
 
 		// Primary and foreign keys
 		$primary = $this->class.'_id';
@@ -764,9 +756,7 @@ class ORM_Core {
 		$this->where = TRUE;
 
 		// Execute the join
-		self::$db
-			->where("$join_table.$primary", $this->object->id)
-			->join($join_table, "$join_table.$foreign = $table.id");
+		self::$db->where("$join.$primary", $this->object->id)->join($join, "$join.$foreign = $table.id");
 	}
 
 } // End ORM
