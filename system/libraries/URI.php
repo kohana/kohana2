@@ -68,6 +68,33 @@ class URI_Core extends Router {
 
 		return isset(self::$rsegments[$index]) ? self::$rsegments[$index] : $default;
 	}
+	
+	/**
+	 * Method: argument
+	 *  Retrieve a specific URI argument. This is the part of the segments that does not indicate controller
+	 *  or method
+	 *
+	 * Parameters:
+	 *  index   - argument number or label
+	 *  default - default value returned if segment does not exist
+	 *
+	 * Returns:
+	 *   Value of segment
+	 */
+	public function argument($index = 1, $default = FALSE)
+	{
+		if (is_string($index))
+		{
+			if (($key = array_search($index, self::$arguments)) === FALSE)
+				return $default;
+
+			$index = $key + 2;
+		}
+
+		$index = (int) $index - 1;
+
+		return isset(self::$arguments[$index]) ? self::$arguments[$index] : $default;
+	}
 
 	/**
 	 * Method: segment_array
@@ -128,7 +155,37 @@ class URI_Core extends Router {
 
 		return $segment_array_assoc;
 	}
+	
+	/**
+	 * Method: argument_array
+	 *  Returns an array containing all the URI arguments.
+	 *
+	 * Parameters:
+	 *  offset      - segment offset
+	 *  associative - return an associative array
+	 *
+	 * Returns:
+	 *   Array of URI segment arguments
+	 */
+	public function argument_array($offset = 0, $associative = FALSE)
+	{
+		$argument_array = self::$arguments;
+		array_unshift($argument_array, 0);
+		$argument_array = array_slice($argument_array, $offset + 1, $this->total_arguments(), TRUE);
 
+		if ( ! $associative)
+			return $argument_array;
+
+		$argument_array_assoc = array();
+
+		foreach (array_chunk($argument_array, 2) as $pair)
+		{
+			$argument_array_assoc[$pair[0]] = isset($pair[1]) ? $pair[1] : '';
+		}
+
+		return $argument_array_assoc;
+	}
+	
 	/**
 	 * Method: string
 	 *  Returns the complete URI as a string.
@@ -175,6 +232,18 @@ class URI_Core extends Router {
 	public function total_rsegments()
 	{
 		return count(self::$rsegments);
+	}
+	
+	/**
+	 * Method: total_arguments
+	 *  Returns the total number of URI arguments.
+	 *
+	 * Returns:
+	 *   Total number of URI arguments
+	 */
+	public function total_arguments()
+	{
+		return count(self::$arguments);
 	}
 
 	/**
