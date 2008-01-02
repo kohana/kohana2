@@ -45,7 +45,7 @@ class Forge_demo_Controller extends Controller {
 
 		$form = new Forge;
 		$form->input('hello')->label(TRUE);
-		$form->upload('file')->label(TRUE)->rules('required|allow[jpg,png,gif]|size[2M]');
+		$form->upload('file')->label(TRUE)->rules('required|size[100KB]|allow[jpg,png,gif]');
 		$form->submit('Upload');
 
 		if ($form->validate())

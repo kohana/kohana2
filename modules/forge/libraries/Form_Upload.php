@@ -10,7 +10,10 @@ class Form_Upload_Core extends Form_Input {
 
 	protected $protect = array('type', 'label', 'value');
 
+	// Upload data
 	protected $upload;
+
+	// Upload directory
 	protected $directory;
 
 	public function __construct($name)
@@ -48,7 +51,7 @@ class Form_Upload_Core extends Form_Input {
 
 		// Make sure the upload director is valid and writable
 		if ($dir === '/' OR ! is_dir($dir) OR ! is_writable($dir))
-			throw new Kohana_Exception('forge.upload.unwritable', $dir);
+			throw new Kohana_Exception('upload.not_writable', $dir);
 
 		$this->directory = $dir;
 	}
@@ -58,26 +61,26 @@ class Form_Upload_Core extends Form_Input {
 		// The upload directory must always be set
 		empty($this->directory) and $this->directory();
 
-		if ($status = parent::validate())
+		// By default, there is no uploaded file
+		$filename = '';
+
+		if ($status = parent::validate() AND $this->upload['error'] === UPLOAD_ERR_OK)
 		{
-			// No filename means an invalid upload
-			$filename = '';
+			// Set the filename to the original name
+			$filename = $this->upload['name'];
 
-			if ($this->upload['error'] === UPLOAD_ERR_OK)
+			if (Config::item('upload.remove_spaces'))
 			{
-				// Set the filename to the original name
-				$filename = $this->upload['name'];
-
-				if (Config::item('upload.remove_spaces'))
-				{
-					// Remove spaces, due to global upload configuration
-					$filename = preg_replace('/\s+/', '_', $this->data['value']);
-				}
-
-				// Move the uploaded file to the upload directory
-				move_uploaded_file($this->upload['tmp_name'], $filename = $this->directory.$filename);
+				// Remove spaces, due to global upload configuration
+				$filename = preg_replace('/\s+/', '_', $this->data['value']);
 			}
 
+			// Move the uploaded file to the upload directory
+			move_uploaded_file($this->upload['tmp_name'], $filename = $this->directory.$filename);
+		}
+
+		if ( ! empty($_POST[$this->data['name']]))
+		{
 			// Reset the POST value to the new filename
 			$this->data['value'] = $_POST[$this->data['name']] = $filename;
 		}
@@ -95,7 +98,7 @@ class Form_Upload_Core extends Form_Input {
 
 	public function rule_allow()
 	{
-		if (empty($this->upload['tmp_name']))
+		if (empty($this->upload['tmp_name']) OR count($types = func_get_args()) == 0)
 			return;
 
 		if (defined('FILEINFO_MIME'))
@@ -121,7 +124,7 @@ class Form_Upload_Core extends Form_Input {
 		// Allow nothing by default
 		$allow = FALSE;
 
-		foreach (func_get_args() as $type)
+		foreach ($types as $type)
 		{
 			if (in_array($mime, Config::item('mimes.'.$type)))
 			{
@@ -133,7 +136,7 @@ class Form_Upload_Core extends Form_Input {
 
 		if ($allow === FALSE)
 		{
-			$this->errors['allow'] = TRUE;
+			$this->errors['invalid_type'] = TRUE;
 		}
 	}
 
@@ -141,20 +144,21 @@ class Form_Upload_Core extends Form_Input {
 	{
 		$bytes = (int) $size;
 
-		switch (substr($size, -1))
+		switch (substr($size, -2))
 		{
-			case 'G': $bytes *= 1024;
-			case 'M': $bytes *= 1024;
-			default:  $bytes *= 1024;
+			case 'GB': $bytes *= 1024;
+			case 'MB': $bytes *= 1024;
+			case 'KB': $bytes *= 1024;
+			default: break;
 		}
 
 		if (empty($this->upload['size']) OR $this->upload['size'] > $bytes)
 		{
-			$this->errors['size'] = $size;
+			$this->errors['max_size'] = array($size);
 		}
 	}
 
-	public function html()
+	protected function html_element()
 	{
 		return form::upload($this->data);
 	}
