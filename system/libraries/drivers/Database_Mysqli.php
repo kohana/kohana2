@@ -48,6 +48,11 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 		// Make the connection and select the database
 		if ($this->link = new mysqli($host, $user, $pass, $database))
 		{
+			if ($charset = $this->db_config['character_set'])
+			{
+				$this->set_charset($charset);
+			}
+
 			return $this->link;
 		}
 
