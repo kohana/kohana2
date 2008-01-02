@@ -101,6 +101,17 @@ class Database_Mysql_Driver extends Database_Driver {
 
 	public function escape_table($table)
 	{
+		if (stripos($table, ' AS ') !== FALSE)
+		{
+			// Force 'AS' to uppercase
+			$table = str_ireplace(' AS ', ' AS ', $table);
+
+			// Runs escape_table on both sides of an AS statement
+			$table = array_map(array($this, __FUNCTION__), explode(' AS ', $table));
+
+			// Re-create the AS statement
+			return implode(' AS ', $table);
+		}
 		return '`'.str_replace('.', '`.`', $table).'`';
 	}
 
