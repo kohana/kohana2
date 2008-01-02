@@ -44,12 +44,13 @@ class Forge_demo_Controller extends Controller {
 		$profiler = new Profiler;
 
 		$form = new Forge;
-		$form->upload('file')->label(TRUE)->rules('allow[jpg,png,gif]|size[2M]');
+		$form->input('hello')->label(TRUE);
+		$form->upload('file')->label(TRUE)->rules('required|allow[jpg,png,gif]|size[2M]');
 		$form->submit('Upload');
 
 		if ($form->validate())
 		{
-
+			echo Kohana::debug($form->as_array());
 		}
 
 		echo $form->html();

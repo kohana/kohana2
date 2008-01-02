@@ -2,7 +2,7 @@
 /**
  * Relative to your index file.
  */
-$config['upload_directory'] = '@upload';
+$config['upload_directory'] = 'upload';
 
 /**
  * Remove spaces from filenames.
