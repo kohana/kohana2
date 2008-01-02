@@ -95,7 +95,7 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 			}
 			elseif (is_float($val))
 			{
-				$bind_types .= 'd'
+				$bind_types .= 'd';
 			}
 			else
 			{
@@ -108,7 +108,7 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 
 	public function stmt_clear($label)
 	{
-		if (isset($this->statments[$label] && is_ibject($this->statments[$label])))
+		if (isset($this->statments[$label]) AND is_object($this->statments[$label]))
 			return $this->statments[$label]->close();
 
 		return FALSE;
