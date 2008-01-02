@@ -8,7 +8,7 @@
 /**
  * Permitted URI characters.
  */
-$config['_allowed'] = 'a-z 0-9~%.:_-';
+$config['_allowed'] = 'a-z 0-9~%.,:_-';
 
 /**
  * Default route when no URI segments are found.

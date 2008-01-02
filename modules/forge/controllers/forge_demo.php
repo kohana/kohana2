@@ -6,11 +6,13 @@ class Forge_demo_Controller extends Controller {
 	{
 		$profiler = new Profiler;
 
-		$foods = array(
-			'taco' => FALSE,
-			'burger' => FALSE,
-			'spaghetti (checked)' => TRUE,
-			'cookies (checked)' => TRUE);
+		$foods = array
+		(
+			'tacos' => array('tacos', FALSE),
+			'burgers' => array('burgers', FALSE),
+			'spaghetti' => array('spaghetti (checked)', TRUE),
+			'cookies' => array('cookies (checked)', TRUE),
+		);
 
 		$form = new Forge(NULL, 'New User');
 
@@ -37,42 +39,20 @@ class Forge_demo_Controller extends Controller {
 		echo $form->html();
 	}
 
-	public function edit_user($id = FALSE)
+	public function upload()
 	{
 		$profiler = new Profiler;
-		$cache = new Cache;
 
-		// Cache id for the current empty editing form
-		$cache_id = 'form--'.url::current();
+		$form = new Forge;
+		$form->upload('file')->label(TRUE)->rules('allow[jpg,png,gif]|size[2M]');
+		$form->submit('Upload');
 
-		if (empty($_POST))
+		if ($form->validate())
 		{
-			// Attempt to get the HTML from cache
-			if ($form = $cache->get($cache_id))
-			{
-				echo $form;
-				return;
-			}
+
 		}
 
-		// Create a new user editing form
-		$form = new User_Edit_Model(NULL, 'Edit User', $id);
-
-		if ($form->save())
-		{
-			// Cache information is no longer valid
-			$cache->del($cache_id);
-
-			echo Kohana::debug('user edited!', $form->as_array());
-		}
-
-		if (empty($_POST))
-		{
-			// Cache the form HTML
-			$cache->set($cache_id, $form = $form->html());
-		}
-
-		echo $form;
+		echo $form->html();
 	}
 
 } // End Forge Demo Controller
