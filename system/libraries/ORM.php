@@ -677,7 +677,7 @@ class ORM_Core {
 				if ($return === TRUE)
 				{
 					// Return the first result
-					return ORM::instance($this->class, $result->current());
+					return ORM::factory($this->class, $result->current());
 				}
 
 				// Load the first result
