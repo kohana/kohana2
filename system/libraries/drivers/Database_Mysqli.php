@@ -82,7 +82,7 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 	public function set_charset($charset)
 	{
 		if ($this->link->set_charset($charset) === FALSE)
-			throw new Kohana_Database_Exception('database.error', 'Could not set the charset to '.$charset);;
+			throw new Kohana_Database_Exception('database.error', $this->show_error());
 	}
 
 	public function stmt_prepare($sql = '', $label)

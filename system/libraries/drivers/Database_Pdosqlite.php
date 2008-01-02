@@ -525,7 +525,7 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 		$row = array();
 		try
 		{
-			$row = $this->result->fetch($this->fetch_type, PDO::FETCH_ORI_NEXT, $offset);
+			$row = $this->result->fetch($this->fetch_type, PDO::FETCH_ORI_ABS, $offset);
 		}
 		catch(PDOException $e)
 		{
