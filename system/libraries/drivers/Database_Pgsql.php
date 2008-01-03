@@ -149,6 +149,21 @@ class Database_Pgsql_Driver extends Database_Driver {
 		return 'LIMIT '.$limit.' OFFSET '.$offset;
 	}
 
+	public function stmt_prepare($sql = '', $label)
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
+
+	public function stmt_execute($vals = array(), $label)
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
+
+	public function stmt_clear($label)
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
+
 	public function compile_select($database)
 	{
 		$sql = ($database['distinct'] == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
