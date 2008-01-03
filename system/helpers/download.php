@@ -53,7 +53,7 @@ class download_Core {
 
 			// Try to determine if the filename includes a file extension.
 			// We need it in order to set the MIME type
-			if ($data == '' OR $extension === $filename)
+			if (empty($data) OR $extension === $filename)
 				return FALSE;
 
 			// Set filesize

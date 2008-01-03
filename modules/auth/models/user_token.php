@@ -62,7 +62,7 @@ class User_Token_Model extends ORM {
 	}
 
 	/**
-	 * Allow loading by token string.
+	 * Allows loading by token string.
 	 */
 	protected function where_key($id)
 	{

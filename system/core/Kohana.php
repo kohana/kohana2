@@ -620,18 +620,12 @@ class Kohana {
 			break;
 		}
 
-		if ($filepath = self::find_file($type, $file))
-		{
-			// Load the requested file
-			require_once $filepath;
-		}
-		else
-		{
-			// Manually log these errors, because exceptions cannot be thrown
-			// inside of autoloaders. PHP: Why can't I throw exceptions here? Why?!
-			Log::add('error', Kohana::lang('core.resource_not_found', inflector::singular($type), $file));
+		// If the file doesn't exist, just return
+		if (($filepath = self::find_file($type, $file)) === FALSE)
 			return;
-		}
+
+		// Load the requested file
+		require_once $filepath;
 
 		if ($type === 'libraries' OR $type === 'helpers')
 		{

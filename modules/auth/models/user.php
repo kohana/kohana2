@@ -32,7 +32,7 @@ class User_Model extends ORM {
 		return parent::__get($key);
 	}
 
-	public function __set($key, $value = NULL)
+	public function __set($key, $value)
 	{
 		static $auth;
 
