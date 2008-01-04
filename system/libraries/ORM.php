@@ -648,24 +648,14 @@ class ORM_Core {
 		// Fetch the query result
 		$result = self::$db->get($this->table)->result(TRUE);
 
-		if (count($result) > 0)
+		if ($count = $result->count())
 		{
-			if (count($result) > 1 OR $array == TRUE)
+			if ($count > 1 OR $array == TRUE)
 			{
 				// Model class name
 				$class = get_class($this);
 
-				$result = $result->result_array();
-
-				$array = array();
-				foreach($result as $row)
-				{
-					// Add object to the array
-					$array[] = new $class($row);
-				}
-
-				// Return an array of all the objects
-				return $array;
+				return new ORM_Iterator($class, $result);
 			}
 			else
 			{
@@ -760,3 +750,89 @@ class ORM_Core {
 	}
 
 } // End ORM
+
+/**
+ * ORM iterator.
+ */
+class ORM_Iterator implements Iterator, Countable {
+
+	// ORM class name
+	protected $class;
+
+	// Database result object
+	protected $result;
+
+	public function __construct($class, $result)
+	{
+		$this->class = $class;
+		$this->result = $result;
+	}
+
+	/**
+	 * Returns an array of all the 
+	 */
+	public function as_array()
+	{
+		// Import class name
+		$class = $this->class;
+
+		$array = array();
+		foreach ($this->result->result_array(TRUE) as $obj)
+		{
+			$array[] = new $class($obj);
+		}
+		return $array;
+	}
+
+	/**
+	 * Iterator: current
+	 */
+	public function current()
+	{
+		// Import class name
+		$class = $this->class;
+
+		return ($row = $this->result->current()) ? new $class($row) : FALSE;
+	}
+
+	/**
+	 * Iterator: key
+	 */
+	public function key()
+	{
+		return $this->result->key();
+	}
+
+	/**
+	 * Iterator: next
+	 */
+	public function next()
+	{
+		return $this->result->next();
+	}
+
+	/**
+	 * Iterator: rewind
+	 */
+	public function rewind()
+	{
+		$this->result->rewind();
+	}
+
+	/**
+	 * Iterator: valid
+	 */
+	public function valid()
+	{
+		return $this->result->valid();
+	}
+
+	/**
+	 * Countable: count
+	 */
+	public function count()
+	{
+		return $this->result->count();
+	}
+
+} // End ORM Iterator
