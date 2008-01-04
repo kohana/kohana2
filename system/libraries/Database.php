@@ -1250,6 +1250,8 @@ class Database_Core {
 		{
 			$this->driver->clear_cache();
 		}
+
+		return $this;
 	}
 
 	public function stmt_prepare($sql, $label)
