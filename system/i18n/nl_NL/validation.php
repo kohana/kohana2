@@ -28,4 +28,10 @@ $lang = array
 	'max_size'      => 'Het %s bestand dat je wilde uploaden is te groot. De maximum toegelaten grootte is %s.',
 	'max_width'     => 'Het %s bestand heeft een maximum toegelaten breedte van %spx.',
 	'max_height'    => 'Het %s bestand heeft een maximum toegelaten hoogte van %spx.',
+
+	// Field types
+	'alpha'         => 'alfabetisch',
+	'alpha_dash'    => 'alfabetisch, streepje, en underscore',
+	'digit'         => 'cijfers',
+	'numeric'       => 'getal',
 );

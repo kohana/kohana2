@@ -171,7 +171,7 @@ class Input_Core {
 		}
 
 		// Return the global value
-		return $return_array ? $data : current($data);
+		return ($return_array) ? $data : current($data);
 	}
 
 	/**
@@ -346,7 +346,7 @@ class Input_Core {
 			}
 			return $data;
 		}
-		
+
 		// It is a string
 		$string = $data;
 

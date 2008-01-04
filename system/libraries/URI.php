@@ -68,7 +68,7 @@ class URI_Core extends Router {
 
 		return isset(self::$rsegments[$index]) ? self::$rsegments[$index] : $default;
 	}
-	
+
 	/**
 	 * Method: argument
 	 *  Retrieve a specific URI argument. This is the part of the segments that does not indicate controller
@@ -155,7 +155,7 @@ class URI_Core extends Router {
 
 		return $segment_array_assoc;
 	}
-	
+
 	/**
 	 * Method: argument_array
 	 *  Returns an array containing all the URI arguments.
@@ -185,7 +185,7 @@ class URI_Core extends Router {
 
 		return $argument_array_assoc;
 	}
-	
+
 	/**
 	 * Method: string
 	 *  Returns the complete URI as a string.
@@ -233,7 +233,7 @@ class URI_Core extends Router {
 	{
 		return count(self::$rsegments);
 	}
-	
+
 	/**
 	 * Method: total_arguments
 	 *  Returns the total number of URI arguments.
@@ -257,7 +257,7 @@ class URI_Core extends Router {
 	{
 		if ($this->total_segments() < 1)
 			return $default;
-		
+
 		return end(self::$segments);
 	}
 
@@ -272,7 +272,7 @@ class URI_Core extends Router {
 	{
 		if ($this->total_rsegments() < 1)
 			return $default;
-		
+
 		return end(self::$rsegments);
 	}
 

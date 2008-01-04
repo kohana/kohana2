@@ -935,7 +935,7 @@ class Validation_Core {
 		if (valid::alpha($str))
 			return TRUE;
 
-		$this->add_error('valid_type', $this->current_field, 'alphabetical');
+		$this->add_error('valid_type', $this->current_field, Kohana::lang('validation.alpha'));
 		return FALSE;
 	}
 
@@ -954,7 +954,7 @@ class Validation_Core {
 		if (valid::alpha($str, TRUE))
 			return TRUE;
 
-		$this->add_error('valid_type', $this->current_field, 'alphabetical');
+		$this->add_error('valid_type', $this->current_field, Kohana::lang('validation.alpha'));
 		return FALSE;
 	}
 
@@ -973,7 +973,7 @@ class Validation_Core {
 		if (valid::alpha_numeric($str))
 			return TRUE;
 
-		$this->add_error('valid_type', $this->current_field, 'alphabetical');
+		$this->add_error('valid_type', $this->current_field, Kohana::lang('validation.alpha'));
 		return FALSE;
 	}
 
@@ -992,7 +992,7 @@ class Validation_Core {
 		if (valid::alpha_numeric($str, TRUE))
 			return TRUE;
 
-		$this->add_error('valid_type', $this->current_field, 'alphabetical');
+		$this->add_error('valid_type', $this->current_field, Kohana::lang('validation.alpha'));
 		return FALSE;
 	}
 
@@ -1011,7 +1011,7 @@ class Validation_Core {
 		if (valid::alpha_dash($str))
 			return TRUE;
 
-		$this->add_error('valid_type', $this->current_field, 'alphabetical, dash, and underscore');
+		$this->add_error('valid_type', $this->current_field, Kohana::lang('validation.alpha_dash'));
 		return FALSE;
 	}
 
@@ -1030,7 +1030,7 @@ class Validation_Core {
 		if (valid::alpha_dash($str, TRUE))
 			return TRUE;
 
-		$this->add_error('valid_type', $this->current_field, 'alphabetical, dash, and underscore');
+		$this->add_error('valid_type', $this->current_field, Kohana::lang('validation.alpha_dash'));
 		return FALSE;
 	}
 
@@ -1049,7 +1049,7 @@ class Validation_Core {
 		if (valid::digit($str))
 			return TRUE;
 
-		$this->add_error('valid_type', $this->current_field, 'digit');
+		$this->add_error('valid_type', $this->current_field, Kohana::lang('validation.digit'));
 		return FALSE;
 	}
 
@@ -1068,7 +1068,7 @@ class Validation_Core {
 		if (valid::digit($str, TRUE))
 			return TRUE;
 
-		$this->add_error('valid_type', $this->current_field, 'digit');
+		$this->add_error('valid_type', $this->current_field, Kohana::lang('validation.digit'));
 		return FALSE;
 	}
 
@@ -1087,7 +1087,7 @@ class Validation_Core {
 		if (valid::numeric($str))
 		    return TRUE;
 
-		$this->add_error('valid_type', $this->current_field, 'numeric');
+		$this->add_error('valid_type', $this->current_field, Kohana::lang('validation.numeric'));
 		return FALSE;
 	}
 

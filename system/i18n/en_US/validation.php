@@ -28,4 +28,10 @@ $lang = array
 	'max_size'      => 'The %s file you uploaded was too large. The maximum size allowed is %s.',
 	'max_width'     => 'The %s file has a maximum allowed width of %s is %spx.',
 	'max_height'    => 'The %s file has a maximum allowed image height of %s is %spx.',
+
+	// Field types
+	'alpha'         => 'alphabetical',
+	'alpha_dash'    => 'alphabetical, dash, and underscore',
+	'digit'         => 'digit',
+	'numeric'       => 'numeric',
 );
