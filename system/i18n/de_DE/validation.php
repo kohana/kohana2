@@ -17,7 +17,7 @@ $lang = array
 	'valid_url'     => 'Das Feld %s muss eine gültige URL beinhalten.',
 	'valid_email'   => 'Das Feld %s muss eine gültige E-Mailadresse beinhalten.',
 	'valid_ip'      => 'Das Feld %s muss eine gültige IP-Adresse beinhalten.',
-	'valid_type'    => 'Das Feld %s darf nur aus %s Zeichen bestehen.',
+	'valid_type'    => 'Das Feld %s darf nur %s beinhalten.',
 	'range'         => 'Das Feld %s muss zwischen festgelegten Bereichen sein.',
 	'regex'         => 'Das Feld %s entspricht nicht einer akzeptierten Eingabe.',
 	'depends_on'    => 'Das Feld %s hängt vom Feld %s ab.',
@@ -28,4 +28,10 @@ $lang = array
 	'max_size'      => 'Die Datei %s ist zu groß. Die maximale Größe beträgt %s.',
 	'max_width'     => 'Die Datei %s überschreitet die maximal erlaubte Breite von %spx.',
 	'max_height'    => 'Die Datei %s überschreitet die maximal erlaubte Höhe von %spx.',
+
+	// Field types
+	'alpha'         => 'alphabetische Zeichen',
+	'alpha_dash'    => 'alphabetische Zeichen, Trennstriche und Unterstriche',
+	'digit'         => 'Zahlen',
+	'numeric'       => 'Nummern',
 );
