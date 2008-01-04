@@ -16,7 +16,7 @@ class Calendar_Core {
 	protected $year;
 
 	// Start the calendar on Sunday by default
-	public $week_start = 3;
+	public $week_start = 0;
 
 	// Event data
 	public $events;

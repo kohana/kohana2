@@ -122,61 +122,20 @@ class valid_Core {
 	}
 
 	/**
-	 * Validates a credit card number using the Luhn (mod10) formula. Make sure
-	 * to remove all non-digit characters from the number before using validating
-	 * the card number or it will fail.
+	 * Validates a credit card number using the Luhn (mod10) formula.
 	 * @see http://en.wikipedia.org/wiki/Luhn_algorithm
 	 *
-	 * @param   integer  credit card number (13-16 digits)
+	 * @param   integer  credit card number
 	 * @param   string   card type
 	 * @return  boolean
 	 */
-	public static function creditcard($number, $type = 'default')
+	public static function credit_card($number, $type = 'default')
 	{
-		// Make sure the number and expiration are not empty and consist of only numbers
-		if (empty($number) OR ! ctype_digit((string) $number))
+		// Remove all non-digit characters from the number
+		if (($number = preg_replace('/[^0-9]/', '', $number)) === '')
 			return FALSE;
 
-		// Card types based on http://en.wikipedia.org/wiki/Credit_card_number
-		$cards = array
-		(
-			'default' => array
-			(
-				'length' => '13,14,15,16,17,18,19',
-				'prefix' => '',
-				'luhn'   => TRUE
-			),
-			'american express' => array
-			(
-				'length' => '15',
-				'prefix' => '3[47]',
-				'luhn'   => TRUE
-			),
-			'maestro' => array
-			(
-				'length' => '16,18',
-				'prefix' => '50(?:20|38)|6(?:304|759)',
-				'luhn'   => TRUE
-			),
-			'mastercard' => array
-			(
-				'length' => '16',
-				'prefix' => '5[1-5]',
-				'luhn'   => TRUE
-			),
-			'visa' => array
-			(
-				'length' => '13,16',
-				'prefix' => '4',
-				'luhn'   => TRUE
-			),
-			'visa electron' => array
-			(
-				'length' => '16',
-				'prefix' => '4(?:17500|91[37]|508|844)',
-				'luhn'   => TRUE
-			),
-		);
+		$cards = Config::item('credit_cards');
 
 		// Check card type
 		$type = strtolower($type);
@@ -187,6 +146,7 @@ class valid_Core {
 		// Check card number length
 		$length = strlen($number);
 
+		// Validate the card length by the card type
 		if ( ! preg_match('/\b'.$length.'\b/', $cards[$type]['length']))
 			return FALSE;
 
