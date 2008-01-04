@@ -13,8 +13,27 @@
  */
 class Encrypt_Core {
 
-	// mcrypt rand type
+	// OS-dependant RAND type to use
 	protected static $rand;
+
+	// Configuration
+	protected $config;
+
+	/**
+	 * Returns a singleton instance of Encrypt.
+	 *
+	 * @param   array    configuration options
+	 * @return  object
+	 */
+	public static function instance($config = NULL)
+	{
+		static $instance;
+
+		// Create the singleton
+		empty($instance) and $instance = new Encrypt((array) $config);
+
+		return $instance;
+	}
 
 	/**
 	 * Loads encryption configuration and validates the data.

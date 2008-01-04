@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
+ * @package  Cache
+ *
  * Cache backend driver. Kohana comes with file, database, and memcache drivers.
  * - File cache is fast and reliable, but requires many filesystem lookups.
  * - Database cache can be used to cache items remotely, but is slower.

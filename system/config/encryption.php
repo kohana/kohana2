@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
+ * @package  Encrypt
+ *
  * Encryption key used to do encryption and decryption. The default option
  * should never be used for a production website.
  *

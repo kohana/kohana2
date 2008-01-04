@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 /**
+ * @package Session
+ *
  * Session driver name.
  */
 $config['driver'] = 'cookie';

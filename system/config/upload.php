@@ -1,10 +1,12 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 /**
- * Relative to your index file.
+ * @package  Core
+ *
+ * This path is relative to your index file. Absolute paths are also supported.
  */
 $config['upload_directory'] = 'upload';
 
 /**
- * Remove spaces from filenames.
+ * Remove spaces from uploaded filenames.
  */
 $config['remove_spaces'] = TRUE;

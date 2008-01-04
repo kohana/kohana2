@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 /**
+ * @package  Pagination
+ *
  * Views folder in which your pagination style templates reside.
  */
 $config['directory'] = 'pagination';

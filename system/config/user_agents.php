@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 /**
+ * @package  Core
+ *
  * This file contains four arrays of user agent data.  It is used by the
  * User Agent library to help identify browser, platform, robot, and
  * mobile device data. The array keys are used to identify the device
@@ -7,7 +9,7 @@
  */
 $config['platform'] = array
 (
-	'windows nt 6.0' => 'Windows Longhorn',
+	'windows nt 6.0' => 'Windows Vista',
 	'windows nt 5.2' => 'Windows 2003',
 	'windows nt 5.0' => 'Windows 2000',
 	'windows nt 5.1' => 'Windows XP',
@@ -21,9 +23,10 @@ $config['platform'] = array
 	'win95'          => 'Windows 95',
 	'windows'        => 'Unknown Windows OS',
 	'os x'           => 'Mac OS X',
+	'intel mac'      => 'Intel Mac',
 	'ppc mac'        => 'Power PC Mac',
-	'freebsd'        => 'FreeBSD',
 	'ppc'            => 'Macintosh',
+	'freebsd'        => 'FreeBSD',
 	'linux'          => 'Linux',
 	'debian'         => 'Debian',
 	'sunos'          => 'Sun Solaris',

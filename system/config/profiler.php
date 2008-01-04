@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
+ * @package  Profiler
+ *
  * Show benchmarks.
  */
 $config['benchmarks'] = TRUE;

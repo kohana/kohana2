@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
+ * @package  Database
+ *
  * SQL data types. If there are missing values, please report them:
  *
  * @link  http://trac.kohanaphp.com/newticket

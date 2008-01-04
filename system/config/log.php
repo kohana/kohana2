@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
+ * @package  Core
+ *
  * Message logging is a very useful debugging tool for production websites, as
  * well as a useful tool during development to see what files are being loaded
  * in what order.

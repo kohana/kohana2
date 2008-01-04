@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
+ * @package  Core
+ *
  * Prefix, used to avoid collisions between cookie names.
  */
 $config['prefix'] = '';

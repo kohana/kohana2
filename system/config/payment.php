@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
+ * @package  Payment
+ *
  * Settings related to the Payment library.
  * This file has settings for each driver.
  * You should copy the 'default' and the specific
