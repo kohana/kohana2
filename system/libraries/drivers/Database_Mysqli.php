@@ -85,44 +85,10 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 			throw new Kohana_Database_Exception('database.error', $this->show_error());
 	}
 
-	public function stmt_prepare($sql = '', $label)
+	public function stmt_prepare($sql = '')
 	{
-		$this->statements[$label] = $this->link->stmt_init();
-		if ($stmt->prepare($sql))
-			return TRUE;
-
-		return FALSE;
-	}
-
-	public function stmt_execute($vals = array(), $label)
-	{
-		$bind_types = '';
-		$i = 0;
-		foreach ($vals as $val)
-		{
-			if (is_int($val))
-			{
-				$bind_typs .= 'i';
-			}
-			elseif (is_float($val))
-			{
-				$bind_types .= 'd';
-			}
-			else
-			{
-				$bind_types .= 's';
-			}
-		}
-		call_user_func_array(array($this->statements[$label], 'bind_param'), array_combine($bind_types, $vals));
-		$this->statements[$label]->execute();
-	}
-
-	public function stmt_clear($label)
-	{
-		if (isset($this->statments[$label]) AND is_object($this->statments[$label]))
-			return $this->statments[$label]->close();
-
-		return FALSE;
+		is_object($this->link) or $this->connect($this->db_config);
+		return new Kohana_Mysqli_Statement($sql, $this->link);
 	}
 
 	public function escape_str($str)
@@ -498,3 +464,42 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 	// End Interface
 
 } // End Mysqli_Result Class
+
+class Kohana_Mysqli_Statement {
+
+	protected $link = NULL;
+	protected $stmt;
+
+	public function __construct($sql, $link)
+	{
+		$this->link = $link;
+
+		$this->stmt = $this->link->prepare($sql);
+
+		return $this;
+	}
+
+	public function __destruct()
+	{
+		$this->stmt->close();
+	}
+
+	// Sets the bind parameters
+	public function bind_params()
+	{
+		$argv = func_get_args();
+		return $this;
+	}
+
+	// sets the statement values to the bound parameters
+	public function set_vals()
+	{
+		return $this;
+	}
+
+	// Runs the statement
+	public function execute()
+	{
+		return $this;
+	}
+}

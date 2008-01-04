@@ -149,19 +149,10 @@ class Database_Pgsql_Driver extends Database_Driver {
 		return 'LIMIT '.$limit.' OFFSET '.$offset;
 	}
 
-	public function stmt_prepare($sql = '', $label)
+	public function stmt_prepare($sql = '')
 	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
-	}
-
-	public function stmt_execute($vals = array(), $label)
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
-	}
-
-	public function stmt_clear($label)
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+		is_object($this->link) or $this->connect($this->db_config);
+		return new Kohana_Mysqli_Statement($sql, $this->link);
 	}
 
 	public function compile_select($database)
@@ -637,3 +628,42 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	}
 	// End Interface
 } // End Pgsql_Result Class
+
+class Kohana_Pgsql_Statement {
+
+	protected $link = NULL;
+	protected $stmt;
+
+	public function __construct($sql, $link)
+	{
+		$this->link = $link;
+
+		$this->stmt = $this->link->prepare($sql);
+
+		return $this;
+	}
+
+	public function __destruct()
+	{
+		$this->stmt->close();
+	}
+
+	// Sets the bind parameters
+	public function bind_params()
+	{
+		$argv = func_get_args();
+		return $this;
+	}
+
+	// sets the statement values to the bound parameters
+	public function set_vals()
+	{
+		return $this;
+	}
+
+	// Runs the statement
+	public function execute()
+	{
+		return $this;
+	}
+}

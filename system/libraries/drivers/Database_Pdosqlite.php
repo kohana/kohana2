@@ -142,17 +142,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 		return 'LIMIT '.$offset.', '.$limit;
 	}
 
-	public function stmt_prepare($sql = '', $label)
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
-	}
-
-	public function stmt_execute($vals = array(), $label)
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
-	}
-
-	public function stmt_clear($label)
+	public function stmt_prepare($sql = '')
 	{
 		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
 	}
