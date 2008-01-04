@@ -4,11 +4,11 @@ $lang = array
 (
 	'page'     => 'strona',
 	'pages'    => 'stron',
-	'item'     => 'elementy',
+	'item'     => 'element',
 	'items'    => 'elementów',
 	'of'       => 'z',
-	'first'    => 'pierwszy',
-	'last'     => 'ostatni',
-	'previous' => 'poprzedni',
-	'next'     => 'następny',
+	'first'    => 'pierwsza',
+	'last'     => 'ostatnia',
+	'previous' => 'poprzednia',
+	'next'     => 'następna',
 );
