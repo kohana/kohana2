@@ -14,7 +14,7 @@ $lang = array
 	'exact_length'  => 'Il campo %s deve contenere esattamente %d caratteri.',
 	'in_array'      => 'Il campo %s deve essere selezionato dalla lista delle opzioni.',
 	'matches'       => 'Il campo %s deve coincidere con il campo %s.',
-	'valid_url'     => 'Il campo %s deve contenere un URL valido che inizi per %s://.',
+	'valid_url'     => 'Il campo %s deve contenere un URL valido.',
 	'valid_email'   => 'Il campo %s deve contenere un indirizzo email valido.',
 	'valid_ip'      => 'Il campo %s deve contenere un indirizzo IP valido.',
 	'valid_type'    => 'Il campo %s deve contenere solo i caratteri %s.',
@@ -28,4 +28,10 @@ $lang = array
 	'max_size'      => 'Il file %s è troppo grande. La massima dimensione consentita è %s.',
 	'max_width'     => 'Il file %s deve avere una larghezza massima di %spx.',
 	'max_height'    => 'Il file %s deve avere un\'altezza massima di %spx.',
+
+	// Field types
+	'alpha'         => 'alfabetico',
+	'alpha_dash'    => 'alfabetico, trattino e sottolineato',
+	'digit'         => 'cifra',
+	'numeric'       => 'numerico',
 );

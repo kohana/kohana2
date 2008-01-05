@@ -10,5 +10,5 @@ $lang = array
 	'must_use_set'          => 'È necessario definire una clausola SET per la query.',
 	'must_use_where'        => 'È necessario definire una clausola WHERE per la query.',
 	'must_use_table'        => 'È necessario definire una tabella per la query.',
-	'not_implimented'       => 'Il metodo chiamato, %s, non è supportato da questo driver.'
+	'not_implemented'       => 'Il metodo chiamato, %s, non è supportato da questo driver.'
 );
