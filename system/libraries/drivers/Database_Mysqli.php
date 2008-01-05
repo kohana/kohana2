@@ -469,6 +469,8 @@ class Kohana_Mysqli_Statement {
 
 	protected $link = NULL;
 	protected $stmt;
+	protected $var_names;
+	protected $var_values;
 
 	public function __construct($sql, $link)
 	{
@@ -485,21 +487,23 @@ class Kohana_Mysqli_Statement {
 	}
 
 	// Sets the bind parameters
-	public function bind_params()
+	public function bind_params($param_types, $params)
 	{
-		$argv = func_get_args();
-		return $this;
-	}
+		$this->var_names = array_keys($params);
+		$this->var_values = array_values($params);
+		call_user_func_array(array($this->stmt, 'bind_param'), array_merge($param_types, $var_names));
 
-	// sets the statement values to the bound parameters
-	public function set_vals()
-	{
 		return $this;
 	}
 
 	// Runs the statement
 	public function execute()
 	{
-		return $this;
+		foreach ($this->var_names as $key => $name)
+		{
+			$$name = $this->var_values[$key];
+		}
+		$this->stmt->execute();
+		return $this->stmt;
 	}
 }
