@@ -6,5 +6,4 @@ $lang = array
 	'unwritable'           => 'Wybrane w konfiguracji miejsce, <tt>%s</tt>, jest tylko do odczytu.',
 	'resources'            => 'Zachowanie danych w pamięci podręcznej jest niemożliwe z powodu braku możliwości serializacji.',
 	'driver_error'         => '%s',
-	'driver_error'         => '%s',
 );
