@@ -24,7 +24,7 @@ abstract class Database_Driver {
 	 * Perform a query based on a manually written query
 	 *
 	 * @param  string $sql
-	 * @return Mysql_Result
+	 * @return Database_Result
 	 */
 	abstract public function query($sql);
 
@@ -150,8 +150,8 @@ abstract class Database_Driver {
 	{
 		$prefix = ($num_likes == 0) ? '' : $type;
 
-		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%') 
-		       ? $this->escape_str($match) 
+		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%')
+		       ? $this->escape_str($match)
 		       : '%'.$this->escape_str($match).'%';
 
 		return $prefix.' '.$this->escape_column($field).' LIKE \''.$match . '\'';
@@ -170,8 +170,8 @@ abstract class Database_Driver {
 	{
 		$prefix = ($num_likes == 0) ? '' : $type;
 
-		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%') 
-		       ? $this->escape_str($match) 
+		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%')
+		       ? $this->escape_str($match)
 		       : '%'.$this->escape_str($match).'%';
 
 		return $prefix.' '.$this->escape_column($field).' NOT LIKE \''.$match.'\'';
@@ -237,31 +237,12 @@ abstract class Database_Driver {
 	abstract public function limit($limit, $offset = 0);
 
 	/**
-	 * Initiates a prepared statement.
+	 * Creates a prepared statement.
 	 *
 	 * @param  string $sql
-	 * @param  string $label
-	 * @return boolean
+	 * @return Database_Stmt
 	 */
-	abstract public function stmt_prepare($sql = '', $label);
-
-	/**
-	 * Executes a prepared statement.
-	 *
-	 * @param  string $sql
-	 * @param  string $label
-	 * @return boolean
-	 */
-	abstract public function stmt_execute($vals = array(), $label);
-
-	/**
-	 * Destroys a prepared statement.
-	 *
-	 * @param  string $sql
-	 * @param  string $label
-	 * @return boolean
-	 */
-	abstract public function stmt_clear($label);
+	abstract public function stmt_prepare($sql = '');
 
 	/**
 	 *  Compiles the SELECT statement.
@@ -445,7 +426,7 @@ interface Database_Result {
 	 *
 	 * @param  bool  $object
 	 * @param  mixed $type
-	 * @return object
+	 * @return Database_Result
 	 */
 	public function result($object = TRUE, $type = FALSE);
 
