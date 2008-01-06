@@ -64,6 +64,10 @@
 {
 	background-color: #CCE8FB;
 }
+#kp-cookiedata th
+{
+	background-color: #FFF4D7;
+}
 #kohana-profiler .kp-column
 {
 	width: 100px;
@@ -225,6 +229,39 @@ else:
 			<td class="kp-name"><?php echo $name ?></td>
 			<td>
 				<?php echo (is_array($value) OR is_object($value)) ? '<pre>'.html::specialchars(print_r($value, TRUE)).'</pre>' : html::specialchars($value) ?>
+			</td>
+		</tr>
+<?php
+
+	endforeach;
+endif;
+
+?>
+	</table>
+<?php endif; ?>
+
+<?php if (isset($cookie)): ?>
+	<table id="kp-cookiedata">
+		<tr>
+			<th colspan="2"><?php echo Kohana::lang('profiler.cookie_data') ?></th>
+		</tr>
+<?php
+
+if (count($_COOKIE) == 0):
+
+?>
+		<tr><td colspan="2"><?php echo Kohana::lang('profiler.no_cookie') ?></td></tr>
+<?php
+
+else:
+	text::alternate();
+	foreach($_COOKIE as $name => $value):
+
+?>
+		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
+			<td class="kp-name"><?php echo $name ?></td>
+			<td>
+				<?php echo (is_array($value)) ? '<pre>'.html::specialchars(print_r($value, TRUE)).'</pre>' : html::specialchars($value) ?>
 			</td>
 		</tr>
 <?php

@@ -77,9 +77,14 @@ class Profiler_Core {
 			$data['session'] = TRUE;
 		}
 
+		if (Config::item('profiler.cookie'))
+		{
+			$data['cookie'] = TRUE;
+		}
+
 		// Load the profiler view
 		$view = new View('kohana_profiler', $data);
-		
+
 		// Return rendered view if $return is TRUE
 		if ($return == TRUE)
 			return $view->render();
@@ -88,7 +93,7 @@ class Profiler_Core {
 		if (stripos(Kohana::$output, '</body>') !== FALSE)
 		{
 			// Closing body tag was found, insert the profiler data before it
-			Kohana::$output = str_replace('</body>', $view->render().'</body>', Kohana::$output);
+			Kohana::$output = str_ireplace('</body>', $view->render().'</body>', Kohana::$output);
 		}
 		else
 		{

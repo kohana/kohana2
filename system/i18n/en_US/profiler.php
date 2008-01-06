@@ -10,4 +10,6 @@ $lang = array
 	'queries'      => 'Database Queries',
 	'no_queries'   => 'No queries',
 	'no_database'  => 'Database not loaded',
+	'cookie_data'  => 'Cookie Data',
+	'no_cookie'    => 'No cookie data',
 );

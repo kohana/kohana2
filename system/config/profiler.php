@@ -20,3 +20,8 @@ $config['post'] = TRUE;
  * Show session data.
  */
 $config['session'] = TRUE;
+
+/**
+ * Show cookie data.
+ */
+$config['cookie'] = TRUE;
