@@ -65,7 +65,7 @@ class url_Core {
 			$id = '#'.$id;
 		}
 
-		$index_page = Config::item('core.index_page', TRUE);
+		$index_page = ($uri != '') ? Config::item('core.index_page', TRUE) : Config::item('core.index_page');
 		$url_suffix = ($uri != '') ? Config::item('core.url_suffix') : '';
 
 		return self::base(FALSE, $protocol).$index_page.$uri.$url_suffix.$qs.$id;
