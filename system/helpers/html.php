@@ -86,7 +86,11 @@ class html_Core {
 	 */
 	public static function anchor($uri, $title = FALSE, $attributes = FALSE, $protocol = FALSE)
 	{
-		if (strpos($uri, '://') === FALSE)
+		if ($uri === '')
+		{
+			$site_url = url::base(FALSE);
+		}
+		elseif (strpos($uri, '://') === FALSE)
 		{
 			$site_url = url::site($uri, $protocol);
 		}
