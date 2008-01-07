@@ -130,11 +130,14 @@ class Auth_Core {
 	/**
 	 * Log out a user by removing the related session variables.
 	 *
-	 * Parameters:
-	 *  destroy - completely destroy the session
+	 * @param   bool   completely destroy the session
+	 * @return  bool
 	 */
 	public function logout($destroy = FALSE)
 	{
+		// Delete the autologin cookie if it exists
+		cookie::get('autologin') and cookie::delete('autologin');
+
 		if ($destroy == TRUE)
 		{
 			$this->session->destroy();
@@ -143,6 +146,8 @@ class Auth_Core {
 		{
 			$this->session->del('user_id', 'username', 'roles');
 		}
+
+		return TRUE;
 	}
 
 	/**
