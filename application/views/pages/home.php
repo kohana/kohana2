@@ -1,5 +1,5 @@
 <p class="intro">
-	Kohana is a <strong>PHP5 framework</strong> that uses the <strong>Model View Controller</strong> architectural pattern.
+	Kohana is a <strong>PHP 5 framework</strong> that uses the <strong>Model View Controller</strong> architectural pattern.
 	It aims to be <strong>secure</strong>, <strong>lightweight</strong>, and <strong>easy</strong> to use.
 </p>
 
@@ -19,7 +19,7 @@
 <div style="float:left;">
 <h2>Technology</h2>
 <ul>
-	<li>Strict PHP5 <abbr title="Object Oriented Programming">OOP</abbr></li>
+	<li>Strict PHP 5 <abbr title="Object Oriented Programming">OOP</abbr></li>
 	<li>Simple database abstraction using SQL helpers</li>
 	<li>Multiple session drivers (native, database, and cookie)</li>
 	<!-- <li>Advanced cache system with drivers (file, database, memcache, shmop)</li> -->
@@ -34,7 +34,7 @@
 
 <ol>
 <li><strong>Community, not company, driven.</strong> Kohana development is driven by a team of dedicated people that need a framework for fast, powerful solutions.</li>
-<li><strong>Strict PHP5 <abbr title="Object Oriented Programming">OOP</abbr>.</strong> Offers many benefits: visibility protection, automatic class loading, overloading, interfaces, abstracts, and singletons.</li>
+<li><strong>Strict PHP 5 <abbr title="Object Oriented Programming">OOP</abbr>.</strong> Offers many benefits: visibility protection, automatic class loading, overloading, interfaces, abstracts, and singletons.</li>
 <li><strong>Extremely lightweight.</strong> Kohana has no dependencies on PECL extensions or PEAR libraries. Large, monolithic libraries are avoided in favor of optimized solutions.</li>
 <li><strong>GET, POST, COOKIE, <em>and</em> SESSION arrays all work as expected.</strong> Kohana does not limit your access to global data, but offers  filtering and <abbr title="Cross Site Scripting">XSS</abbr> protection.</li>
 <li><strong>True auto-loading of classes.</strong> True on-demand loading of classes, as they are requested in your application.</li>

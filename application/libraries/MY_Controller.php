@@ -70,36 +70,10 @@ class Controller extends Controller_Core {
 			// Sidebar
 			$this->template->sidebar = new View('sidebar');
 
-			// Feed caching
 			foreach($this->feeds as $name => $data)
 			{
-				$cache_id = 'feed--'.$name;
-
-				if (($feed = $this->cache->get($cache_id)) == FALSE)
-				{
-					// Initialize cURL
-					$curl = curl_init();
-
-					// Set cURL options
-					curl_setopt($curl, CURLOPT_URL, $data['url']);  // Remote feed location
-					curl_setopt($curl, CURLOPT_HEADER, 0);          // No headers in fetched page
-					curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  // Return the fetched page, instead of printing it
-					curl_setopt($curl, CURLOPT_TIMEOUT, 5);         // Five second timeout
-
-					// Fetch the remote feed
-					$feed = curl_exec($curl);
-
-					if (curl_errno($curl) === CURLE_OK)
-					{
-						// Cache the content if there was no error
-						$this->cache->set($cache_id, $feed, array('feed'));
-					}
-					else
-					{
-						// Log fetching errors
-						Log::add('error', 'Error fetching remote feed ('.$data['url'].'): '.curl_error($curl));
-					}
-				}
+				// Load the feed from cache
+				$feed = $this->cache->get('feed--'.$name);
 
 				$this->feeds[$name]['items'] = empty($feed) ? array() : feed::parse($feed, 3);
 			}

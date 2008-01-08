@@ -2,10 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 
-<title><?php echo $title ?> &ndash; Kohana: Swift, Secure, and Small PHP5 Framework</title>
+<title><?php echo $title ?> &ndash; Kohana: Swift, Secure, and Small PHP 5 Framework</title>
 
-<meta name="keywords" content="Kohana, PHP5, MVC, framework, strict, XHTML, UTF-8, utf8, database abstraction, mysql, CodeIgniter, events, sessions, secure, lighweight, extensible, easy to extend, easy to use, forums, api, OOP, object oriented" />
-<meta name="description" content="Kohana is a PHP5 framework that uses the Model View Controller architectural pattern. It aims to be secure, lightweight, and easy to use." />
+<meta name="keywords" content="Kohana, PHP 5, MVC, framework, strict, XHTML, UTF-8, utf8, database abstraction, mysql, CodeIgniter, events, sessions, secure, lighweight, extensible, easy to extend, easy to use, forums, api, OOP, object oriented" />
+<meta name="description" content="Kohana is a PHP 5 framework that uses the Model View Controller architectural pattern. It aims to be secure, lightweight, and easy to use." />
 
 <?php
 
