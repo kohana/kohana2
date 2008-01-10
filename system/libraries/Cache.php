@@ -176,12 +176,12 @@ class Cache_Core {
 	 * @param  string  cache id
 	 * @return bool
 	 */
-	public function del($id)
+	public function delete($id)
 	{
 		// Change slashes to colons
 		$id = str_replace(array('/', '\\'), '=', $id);
 
-		return $this->driver->del($id);
+		return $this->driver->delete($id);
 	}
 
 	/**
@@ -190,9 +190,9 @@ class Cache_Core {
 	 * @param  string  cache tag name
 	 * @return bool
 	 */
-	public function del_tag($tag)
+	public function delete_tag($tag)
 	{
-		return $this->driver->del(FALSE, $tag);
+		return $this->driver->delete(FALSE, $tag);
 	}
 
 	/**
@@ -200,9 +200,9 @@ class Cache_Core {
 	 *
 	 * @return bool
 	 */
-	public function del_all()
+	public function delete_all()
 	{
-		return $this->driver->del(TRUE);
+		return $this->driver->delete(TRUE);
 	}
 
 } // End Cache

@@ -23,7 +23,7 @@ interface Cache_Driver
 	/**
 	 * Delete cache items by id or tag.
 	 */
-	public function del($id, $tag = FALSE);
+	public function delete($id, $tag = FALSE);
 
 	/**
 	 * Deletes all expired cache items.

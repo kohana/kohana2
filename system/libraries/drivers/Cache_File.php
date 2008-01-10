@@ -176,7 +176,7 @@ class Cache_File_Driver implements Cache_Driver {
 	 * @param  bool    use tags
 	 * @return bool
 	 */
-	public function del($id, $tag = FALSE)
+	public function delete($id, $tag = FALSE)
 	{
 		$files = $this->exists($id, $tag);
 
