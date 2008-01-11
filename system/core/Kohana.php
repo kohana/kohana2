@@ -426,7 +426,7 @@ class Kohana {
 			}
 		}
 
-		exit($output);
+		echo $output;
 	}
 
 	/**
