@@ -120,14 +120,33 @@ class Controller extends Controller_Core {
 			// Flush the buffer
 			flush();
 
-			foreach ($feeds as $id => $feed)
+			// Initialize CURL
+			$curl = curl_init();
+
+			// Set CURL options
+			curl_setopt_array($curl, array
+			(
+				CURLOPT_USERAGENT      => Kohana::$user_agent,
+				CURLOPT_TIMEOUT        => 10,
+				CURLOPT_CONNECTTIMEOUT => 3,
+				CURLOPT_RETURNTRANSFER => TRUE,
+				CURLOPT_MUTE           => TRUE,
+			));
+
+			foreach ($feeds as $id => $url)
 			{
-				if ($feed = file_get_contents($feed))
+				// Change the URL
+				curl_setopt($curl, CURLOPT_URL, $url);
+
+				if ($feed = curl_exec($curl))
 				{
 					// Cache the retrieved feed
 					$this->cache->set($id, $feed);
 				}
 			}
+
+			// Close curl
+			curl_close($curl);
 
 			// Restore error reporting
 			error_reporting($ER);
