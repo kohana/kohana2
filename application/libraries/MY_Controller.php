@@ -128,7 +128,7 @@ class Controller extends Controller_Core {
 			(
 				CURLOPT_USERAGENT      => Kohana::$user_agent,
 				CURLOPT_TIMEOUT        => 10,
-				CURLOPT_CONNECTTIMEOUT => 3,
+				CURLOPT_CONNECTTIMEOUT => 6,
 				CURLOPT_RETURNTRANSFER => TRUE,
 				CURLOPT_MUTE           => TRUE,
 			));
@@ -145,7 +145,7 @@ class Controller extends Controller_Core {
 				}
 			}
 
-			// Close curl
+			// Close CURL
 			curl_close($curl);
 
 			// Restore error reporting
