@@ -8,8 +8,8 @@
  */
 
 /**
- * Permitted URI characters. Note that "?", "#", and "=" are URL characters, and do
- * not to be added here.
+ * Permitted URI characters. Note that "?", "#", and "=" are URL characters, and
+ * should not be added here.
  */
 $config['_allowed'] = '-a-z 0-9~%.,:_';
 
