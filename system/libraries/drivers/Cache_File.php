@@ -88,7 +88,7 @@ class Cache_File_Driver implements Cache_Driver {
 	public function set($id, $data, $tags, $expiration)
 	{
 		// Remove old cache files
-		$this->del($id);
+		$this->delete($id);
 
 		// Construct the filename
 		$filename = $id.'~'.implode('+', $tags).'~'.$expiration;
@@ -142,7 +142,7 @@ class Cache_File_Driver implements Cache_Driver {
 			if ($this->expired($file))
 			{
 				// Remove this cache, it has expired
-				$this->del($id);
+				$this->delete($id);
 			}
 			else
 			{
@@ -157,7 +157,7 @@ class Cache_File_Driver implements Cache_Driver {
 				if ($hash !== sha1($data))
 				{
 					// Remove this cache, it doesn't validate
-					$this->del($id);
+					$this->delete($id);
 
 					// Unset data to prevent it from being returned
 					unset($data);

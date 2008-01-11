@@ -159,7 +159,7 @@ class Cache_Sqlite_Driver implements Cache_Driver {
 			if (($cache->expiration != 0 AND $cache->expiration <= time()) OR $cache->hash !== sha1($cache->cache))
 			{
 				// Cache is not valid, delete it now
-				$this->del($cache->id);
+				$this->delete($cache->id);
 			}
 			else
 			{
