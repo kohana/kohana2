@@ -162,7 +162,7 @@ class ORM_Core {
 	 */
 	public function __set($key, $value)
 	{
-		if ($key != 'id' AND isset($this->object->$key))
+		if ($key != 'id' AND isset(self::$fields[$this->table][$key]))
 		{
 			if ($this->object->$key != $value)
 			{
