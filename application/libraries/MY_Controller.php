@@ -75,6 +75,12 @@ class Controller extends Controller_Core {
 				// Load the feed from cache
 				$feed = $this->cache->get('feed--'.$name);
 
+				if (empty($feed))
+				{
+					// Queue the load feed for loading
+					$this->_load_feed('feed--'.$name, $data['url']);
+				}
+
 				$this->feeds[$name]['items'] = empty($feed) ? array() : feed::parse($feed, 3);
 			}
 
@@ -83,6 +89,9 @@ class Controller extends Controller_Core {
 
 			// Auto-rendering
 			Event::add('system.post_controller', array($this, '_display'));
+
+			// Load feeds after display
+			Event::add('system.shutdown', array($this, '_load_feed'));
 		}
 	}
 
@@ -91,6 +100,42 @@ class Controller extends Controller_Core {
 		if ($this->auto_render == TRUE)
 		{
 			$this->template->render(TRUE);
+		}
+	}
+
+	public function _load_feed($id = NULL, $url = NULL)
+	{
+		static $feeds;
+
+		is_array($feeds) or $feeds = array();
+
+		if (empty($id) AND empty($url))
+		{
+			// Disable error reporting
+			$ER = error_reporting(0);
+
+			// Send all current output
+			while (ob_get_level() > 0) ob_end_flush();
+
+			// Flush the buffer
+			flush();
+
+			foreach ($feeds as $id => $feed)
+			{
+				if ($feed = file_get_contents($feed))
+				{
+					// Cache the retrieved feed
+					$this->cache->set($id, $feed);
+				}
+			}
+
+			// Restore error reporting
+			error_reporting($ER);
+		}
+		else
+		{
+			// Add the URL to the feeds
+			$feeds[$id] = $url;
 		}
 	}
 
