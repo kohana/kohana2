@@ -55,18 +55,21 @@ class Auth_Controller extends Controller {
 		if ($form->validate())
 		{
 			// Create new user
-			$user = new User_Model();
+			$user = new User_Model;
 
-			foreach($form->data() as $key => $val)
+			if ( ! $user->username_exists($this->input->post('username')))
 			{
-				// Set user data
-				$user->$key = $val;
-			}
+				foreach($form->data() as $key => $val)
+				{
+					// Set user data
+					$user->$key = $val;
+				}
 
-			if ($user->save() AND $user->add_role('login'))
-			{
-				// Redirect to the login page
-				url::redirect('auth/login');
+				if ($user->save() AND $user->add_role('login'))
+				{
+					// Redirect to the login page
+					url::redirect('auth/login');
+				}
 			}
 		}
 

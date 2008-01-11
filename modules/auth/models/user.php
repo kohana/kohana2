@@ -76,6 +76,17 @@ class User_Model extends ORM {
 	}
 
 	/**
+	 * Tests if a username exists in the database.
+	 *
+	 * @param   string   username to check
+	 * @return  bool
+	 */
+	public function username_exists($name)
+	{
+		return (bool) self::$db->where('username', $name)->count_records('users');
+	}
+
+	/**
 	 * Allows a model to be loaded by username or email address.
 	 */
 	protected function where_key($id = NULL)
