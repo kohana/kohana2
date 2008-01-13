@@ -232,15 +232,13 @@ class Router_Core {
 			self::$current_uri = $_SERVER['PHP_SELF'];
 		}
 
-		// Find the URI string based on the location of the front controller
-		if (($offset = strpos(self::$current_uri, KOHANA)) !== FALSE)
-		{
-			// Add the length of the index file to the offset
-			$offset += strlen(KOHANA);
+		// The front controller directory and filename
+		$fc = substr($_SERVER['SCRIPT_FILENAME'], strlen($_SERVER['DOCUMENT_ROOT']));
 
-			// Get the segment part of the URL
-			self::$current_uri = substr(self::$current_uri, $offset);
-			self::$current_uri = trim(self::$current_uri, '/');
+		if (strpos(self::$current_uri, $fc) === 0)
+		{
+			// Remove the front controller from the current uri
+			self::$current_uri = substr(self::$current_uri, strlen($fc));
 		}
 
 		if ($suffix = Config::item('core.url_suffix') AND strpos(self::$current_uri, $suffix) !== FALSE)
