@@ -45,9 +45,16 @@ class Session_Cookie_Driver implements Session_Driver {
 	{
 		$data = $this->input->cookie($this->cookie_name);
 
-		if ($this->encryption == TRUE AND $data != '')
+		if ($data == '')
+			return $data;
+
+		if ($this->encryption == TRUE)
 		{
 			$data = $this->encrypt->decode($data);
+		}
+		else
+		{
+			$data = base64_decode($data);
 		}
 
 		return $data;
@@ -58,6 +65,10 @@ class Session_Cookie_Driver implements Session_Driver {
 		if ($this->encryption == TRUE)
 		{
 			$data = $this->encrypt->encode($data);
+		}
+		else
+		{
+			$data = base64_encode($data);
 		}
 
 		if (strlen($data) > 4048)
