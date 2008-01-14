@@ -30,7 +30,7 @@ table.form th, table.form td { padding: 0.2em; }
 	#body form ul { display: block; padding: 0.5em 1em 0; list-style: none; }
 	#body form p.error { font-weight: bold; padding: 0.5em 1em 0; color: #600; }
 	#body .intro { margin-bottom: 1em; margin-left: -4em; padding: 1em 2em; padding-left: 4em; font-size: 1.6em; line-height: 1.4em; color: #8C9393; }
-		#body .intro strong { text-transform: uppercase; font-weight: bold; font-size: 0.76em; color: #7b7d78; letter-spacing: -0.02em; white-space: nowrap; }
+		#body .intro strong { font-weight: bold; white-space: nowrap; }
 	#body .note { font-weight: bold; font-size: 0.9em; color: #225; }
 
 /* Footer */

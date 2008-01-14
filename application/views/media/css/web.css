@@ -48,6 +48,7 @@ p.confirm a { font-size: 1.2em; padding: 0 0.3em; }
 #body { padding: 2em 4em 1em; _margin-top: -1.1em; background: #f7fbf1; }
 	#body form .legend { background: #ddefbd; }
 	#body .intro { background: #eaeee5; }
+	#body .intro strong { text-transform: uppercase; font-weight: bold; font-size: 0.76em; color: #7b7d78; letter-spacing: -0.02em; white-space: nowrap; }
 
 /* Content */
 #content-wrapper { margin-right: 22em; }
