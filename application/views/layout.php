@@ -13,7 +13,7 @@ echo html::stylesheet(array
 (
 	'media/css/reset',
 	'media/css/common',
-	'media/css/layout',
+	'media/css/web',
 	'media/css/print',
 ), array
 (
