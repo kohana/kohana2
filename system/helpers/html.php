@@ -1,12 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: html
- *  HTML helper class.
+ * HTML helper class.
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id:$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class html_Core {
 
@@ -201,7 +202,7 @@ class html_Core {
 	/**
 	 * Generate a "breadcrumb" list of anchors representing the URI.
 	 *
-	 * @param 
+	 * @param
 	 * @return string
 	 */
 	public static function breadcrumb($segments = NULL)
@@ -214,7 +215,7 @@ class html_Core {
 			$array[] = self::anchor
 			(
 				// Complete URI for the URL
-				implode('/', $segments).'/'.$segment, 
+				implode('/', $segments).'/'.$segment,
 				// Title for the current segment
 				ucwords(inflector::humanize($segment))
 			);
@@ -280,7 +281,7 @@ class html_Core {
 		}
 
 		return $compiled;
-	}    
+	}
 
 	/**
 	 * Method: script

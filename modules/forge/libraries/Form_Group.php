@@ -10,9 +10,16 @@ class Form_Group_Core extends Forge {
 		'message' => ''
 	);
 
+	// Input method
+	public $method;
+
 	public function __construct($class = 'group')
 	{
 		$this->data['class'] = $class;
+
+		// Set dummy data so we don't get errors
+		$this->attr['action'] = '';
+		$this->attr['method'] = 'post';
 	}
 
 	public function __get($key)
@@ -22,6 +29,15 @@ class Form_Group_Core extends Forge {
 			return $this->data['type'];
 		}
 		return parent::__get($key);
+	}
+
+	public function __set($key, $val)
+	{
+		if ($key == 'method')
+		{
+			$this->attr['method'] = $val;
+		}
+		$this->$key = $val;
 	}
 
 	public function label($val = NULL)

@@ -1,12 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: valid
- *  Validation helper class.
+ * Validation helper class.
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id:$
+ *
+ * @package    Validation
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class valid_Core {
 
@@ -29,7 +30,7 @@ class valid_Core {
 	 * Method: email_rfc
 	 *  Validate email, RFC compliant version
 	 *  Note: This function is LESS strict than valid_email. Choose carefully.
-	 * 
+	 *
 	 *  Originally by Cal Henderson, modified to fit Kohana syntax standards:
 	 *  - http://www.iamcal.com/publish/articles/php/parsing_email/
 	 *  - http://www.w3.org/Protocols/rfc822/
@@ -298,7 +299,7 @@ class valid_Core {
 	 *
 	 * Returns:
 	 *  TRUE if string is a valid text, FALSE if not.
-	 */	
+	 */
 	public static function standard_text($str)
 	{
 		return preg_match('/^[-\pL\pN\pZs_]+$/uD', (string) $str);

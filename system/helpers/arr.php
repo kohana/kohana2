@@ -1,27 +1,24 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: array_helper
- *  Array helper class.
+ * Array helper class.
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id:$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class arr_Core {
-	
+
 	/**
-	 * Method: rotate
-	 *  Rotates a 2D array clockwise.
-	 *  Example, turns a 2x3 array into a 3x2 array
+	 * Rotates a 2D array clockwise.
+	 * Example, turns a 2x3 array into a 3x2 array.
 	 *
-	 * Parameters:
-	 *  source_array - the array to rotate
-	 *  keep_keys - keep the keys in the final rotated array. the sub arrays of the source array need to have the same key values.
-	 *              if your subkeys might not match, you need to pass FALSE here!
-	 *
-	 * Returns:
-	 *  The transformed array
+	 * @param   array    array to rotate
+	 * @param   boolean  keep the keys in the final rotated array. the sub arrays of the source array need to have the same key values.
+	 *                   if your subkeys might not match, you need to pass FALSE here!
+	 * @return  array
 	 */
 	public function rotate($source_array, $keep_keys = TRUE)
 	{
@@ -34,20 +31,16 @@ class arr_Core {
 				$new_array[$k][$key] = $v;
 			}
 		}
-		
+
 		return $new_array;
 	}
-	
+
 	/**
-	 * Method: remove
-	 *  Removes a key from an array and returns the value
+	 * Removes a key from an array and returns the value.
 	 *
-	 * Parameters:
-	 *  key - to key to return
-	 *  array - the array to work on
-	 *
-	 * Returns:
-	 *  The value of the requested array key
+	 * @param   string  key to return
+	 * @param   array   array to work on
+	 * @return  mixed   value of the requested array key
 	 */
 	public function remove($key, & $array)
 	{
@@ -80,11 +73,11 @@ class arr_Core {
 	/**
 	 * Binary search algorithm.
 	 *
-	 * @param  mixed    the value to search for
-	 * @param  array    an array of values to search in
-	 * @param  boolean  return false, or the nearest value
-	 * @param  mixed    sort the array before searching it
-	 * @return integer
+	 * @param   mixed    the value to search for
+	 * @param   array    an array of values to search in
+	 * @param   boolean  return false, or the nearest value
+	 * @param   mixed    sort the array before searching it
+	 * @return  integer
 	 */
 	public function binary_search($needle, $haystack, $nearest = FALSE, $sort = FALSE)
 	{
@@ -123,12 +116,12 @@ class arr_Core {
 		else
 			return $high;
 	}
-	
+
 	/**
 	 * Emulates array_merge_recursive, but appends numeric keys and replaces
 	 * associative keys, instead of appending all keys.
 	 *
-	 * @param   array   any number of arrays
+	 * @param   array  any number of arrays
 	 * @return  array
 	 */
 	public static function merge()
