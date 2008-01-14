@@ -1,0 +1,37 @@
+/* Defaults */
+body { font-family: "Times New Roman", "Bitstream Vera Serif", Times, serif; font-size: 90%; line-height: 1; }
+h1 { font-size: 4em; }
+h2 { font-size: 2em; }
+h3 { font-size: 1.7em; }
+h4 { font-size: 1.5em; }
+h5 { font-size: 1.3em; }
+h6 { font-size: 1.1em; }
+h2, h3, h4, h5, h6 { margin: 0.4em 0 0.6em; }
+a { color: #006; text-decoration: none; }
+a:hover { color: #009; }
+abbr { border-bottom: dotted 1px #aaa; cursor: help; }
+tt, code { font-family: 'Monaco', Courier, monospace; }
+code { display: block; padding: 1em; padding-bottom: 0; margin: 1em 0 1em; }
+
+/* Form Tables */
+table.form caption { font-size: 1.2em; padding: 0.2em 0 0.3em; }
+table.form th, table.form td { padding: 0.2em; }
+
+/* Main Body */
+#body { line-height: 140%; }
+	#body h2 span { float: right; padding-right: 1em; font-weight: bold; font-size: 0.6em; }
+	#body em { font-style: italic; }
+	#body strong { font-weight: bold; }
+	#body p { padding-bottom: 1em; }
+	#body ul, #body ol { padding-left: 1.5em; margin-bottom: 1em; list-style: square; line-height: 180%; }
+	#body ol { list-style: decimal; }
+	#body form fieldset { padding: 0.5em 0; }
+	#body form .legend { display: block; padding: 0.5em; background: #ddefbd; }
+	#body form ul { display: block; padding: 0.5em 1em 0; list-style: none; }
+	#body form p.error { font-weight: bold; padding: 0.5em 1em 0; color: #600; }
+	#body .intro { margin-bottom: 1em; margin-left: -4em; padding: 1em 2em; padding-left: 4em; font-size: 1.6em; line-height: 1.4em; color: #8C9393; }
+		#body .intro strong { text-transform: uppercase; font-weight: bold; font-size: 0.76em; color: #7b7d78; letter-spacing: -0.02em; white-space: nowrap; }
+	#body .note { font-weight: bold; font-size: 0.9em; color: #225; }
+
+/* Footer */
+#footer { padding: 1em 4em; text-transform: uppercase; text-align: center; color: #eee; font-size: 0.8em; }
