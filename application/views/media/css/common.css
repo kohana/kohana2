@@ -26,10 +26,10 @@ table.form th, table.form td { padding: 0.2em; }
 	#body ul, #body ol { padding-left: 1.5em; margin-bottom: 1em; list-style: square; line-height: 180%; }
 	#body ol { list-style: decimal; }
 	#body form fieldset { padding: 0.5em 0; }
-	#body form .legend { display: block; padding: 0.5em; background: #ddefbd; }
+	#body form .legend { display: block; padding: 0.5em; }
 	#body form ul { display: block; padding: 0.5em 1em 0; list-style: none; }
 	#body form p.error { font-weight: bold; padding: 0.5em 1em 0; color: #600; }
-	#body .intro { margin-bottom: 1em; margin-left: -4em; padding: 1em 2em; padding-left: 4em; font-size: 1.6em; line-height: 1.4em; color: #8C9393; }
+	#body .intro { font-size: 1.6em; line-height: 1.4em; }
 		#body .intro strong { font-weight: bold; white-space: nowrap; }
 	#body .note { font-weight: bold; font-size: 0.9em; color: #225; }
 
