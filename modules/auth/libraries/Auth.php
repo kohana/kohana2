@@ -28,6 +28,21 @@ class Auth_Core {
 	}
 
 	/**
+	 * Return a static instance of Auth.
+	 *
+	 * @return  object
+	 */
+	public static function instance($config = array())
+	{
+		static $instance;
+
+		// Load the Auth instance
+		empty($instance) and $instance = new Auth($config);
+
+		return $instance;
+	}
+
+	/**
 	 * Loads Session and configuration options.
 	 */
 	public function __construct($config = array())
