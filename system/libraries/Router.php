@@ -219,14 +219,14 @@ class Router_Core {
 			$_GET = array();
 			$_SERVER['QUERY_STRING'] = '';
 		}
-		// elseif (isset($_SERVER['PATH_INFO']) AND $_SERVER['PATH_INFO'])
-		// {
-		// 	self::$current_uri = $_SERVER['PATH_INFO'];
-		// }
-		// elseif (isset($_SERVER['ORIG_PATH_INFO']) AND $_SERVER['ORIG_PATH_INFO'])
-		// {
-		// 	self::$current_uri = $_SERVER['ORIG_PATH_INFO'];
-		// }
+		elseif (isset($_SERVER['PATH_INFO']) AND $_SERVER['PATH_INFO'])
+		{
+			self::$current_uri = $_SERVER['PATH_INFO'];
+		}
+		elseif (isset($_SERVER['ORIG_PATH_INFO']) AND $_SERVER['ORIG_PATH_INFO'])
+		{
+			self::$current_uri = $_SERVER['ORIG_PATH_INFO'];
+		}
 		elseif (isset($_SERVER['PHP_SELF']) AND $_SERVER['PHP_SELF'])
 		{
 			self::$current_uri = $_SERVER['PHP_SELF'];
