@@ -219,26 +219,26 @@ class Router_Core {
 			$_GET = array();
 			$_SERVER['QUERY_STRING'] = '';
 		}
-		elseif (isset($_SERVER['PATH_INFO']) AND $_SERVER['PATH_INFO'])
-		{
-			self::$current_uri = $_SERVER['PATH_INFO'];
-		}
-		elseif (isset($_SERVER['ORIG_PATH_INFO']) AND $_SERVER['ORIG_PATH_INFO'])
-		{
-			self::$current_uri = $_SERVER['ORIG_PATH_INFO'];
-		}
+		// elseif (isset($_SERVER['PATH_INFO']) AND $_SERVER['PATH_INFO'])
+		// {
+		// 	self::$current_uri = $_SERVER['PATH_INFO'];
+		// }
+		// elseif (isset($_SERVER['ORIG_PATH_INFO']) AND $_SERVER['ORIG_PATH_INFO'])
+		// {
+		// 	self::$current_uri = $_SERVER['ORIG_PATH_INFO'];
+		// }
 		elseif (isset($_SERVER['PHP_SELF']) AND $_SERVER['PHP_SELF'])
 		{
 			self::$current_uri = $_SERVER['PHP_SELF'];
 		}
 
 		// The front controller directory and filename
-		$fc = substr($_SERVER['SCRIPT_FILENAME'], strlen($_SERVER['DOCUMENT_ROOT']));
+		$fc = substr($_SERVER['SCRIPT_FILENAME'], strlen(DOCROOT));
 
-		if (strpos(self::$current_uri, $fc) === 0)
+		if (strpos(self::$current_uri, $fc) !== FALSE)
 		{
 			// Remove the front controller from the current uri
-			self::$current_uri = substr(self::$current_uri, strlen($fc));
+			self::$current_uri = preg_replace('!.+?'.preg_quote($fc).'(.*)!', '$1', self::$current_uri);
 		}
 
 		if ($suffix = Config::item('core.url_suffix') AND strpos(self::$current_uri, $suffix) !== FALSE)
