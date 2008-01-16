@@ -232,7 +232,7 @@ class Kohana {
 			elseif (isset($methods[Router::$method]) AND substr(Router::$method, 0, 1) != '_')
 			{
 				// A valid route has been found, and nothing needs to be done.
-				// Amazing that having nothing inside the statment still works.
+				// Amazing that having nothing inside the statement still works.
 			}
 			elseif (method_exists($controller, '_default'))
 			{

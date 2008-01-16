@@ -194,7 +194,7 @@ class Database_Core {
 	 *  Runs a query into the driver and returns the result.
 	 *
 	 * Parameters:
-	 *  sql - sql query to execute
+	 *  sql - SQL query to execute
 	 *
 	 * Returns:
 	 *  <Database_Result> object
@@ -1122,7 +1122,7 @@ class Database_Core {
 
 	/**
 	 * Method: compile_binds
-	 *  Combine a sql statement with the bind values. Used for safe queries.
+	 *  Combine a SQL statement with the bind values. Used for safe queries.
 	 *
 	 * Parameters:
 	 *  sql   - query to bind to the values
@@ -1133,23 +1133,24 @@ class Database_Core {
 	 */
 	public function compile_binds($sql, $binds)
 	{
-		if (strpos($sql, '?') === FALSE)
-			return $sql;
-
 		foreach ((array) $binds as $val)
 		{
+			// If the SQL contains no more bind marks ("?"), we're done.
+			if (($next_bind_pos = strpos($sql, '?')) === FALSE)
+				break;
+
+			// Properly escape the bind value.
 			$val = $this->driver->escape($val);
 
-			// Just in case the replacement string contains the bind
-			// character we'll temporarily replace it with a marker
-			$val = str_replace('?', '{%bind_marker%}', $val);
-			// Replace possible regex vars like $0, $1 etc
-			$val = str_replace('$', '\$', $val);
+			// Temporarily replace possible bind marks ("?"), in the bind value itself, with a placeholder.
+			$val = str_replace('?', '{%B%}', $val);
 
-			$sql = preg_replace('/\?/', $val, $sql, 1);
+			// Replace the first bind mark ("?") with its corresponding value.
+			$sql = substr($sql, 0, $next_bind_pos).$val.substr($sql, $next_bind_pos + 1);
 		}
 
-		return str_replace('{%bind_marker%}', '?', $sql);
+		// Restore placeholders.
+		return str_replace('{%B%}', '?', $sql);
 	}
 
 	/**
