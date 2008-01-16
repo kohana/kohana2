@@ -674,7 +674,7 @@ class Kohana {
 
 			// If required and nothing was found, throw an exception
 			if ($required == TRUE AND $fnd === array())
-				throw new Kohana_Exception('core.resource_not_found', inflector::singular($directory), $filename);
+				throw new Kohana_Exception('core.resource_not_found', Kohana::lang('core.'.inflector::singular($directory)), $filename);
 
 			return $found[$hash] = $fnd;
 		}
@@ -692,7 +692,7 @@ class Kohana {
 
 			// If the file is required, throw an exception
 			if ($required == TRUE)
-				throw new Kohana_Exception('core.resource_not_found', inflector::singular($directory), $filename);
+				throw new Kohana_Exception('core.resource_not_found', Kohana::lang('core.'.inflector::singular($directory)), $filename);
 
 			return $found[$hash] = FALSE;
 		}
