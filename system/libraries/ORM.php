@@ -65,30 +65,12 @@ class ORM_Core {
 	 */
 	public function __construct($id = FALSE)
 	{
-		if (self::$db === NULL)
-		{
-			// Load database, if not already loaded
-			isset(Kohana::instance()->db) or Kohana::instance()->load->database();
-
-			// Insert db into this object
-			self::$db = Kohana::instance()->db;
-
-			// Define ALL
-			defined('ALL') or define('ALL', -1);
-		}
-
 		// Fetch table name
 		empty($this->class) and $this->class = strtolower(substr(get_class($this), 0, -6));
 		empty($this->table) and $this->table = inflector::plural($this->class);
 
-		if (empty(self::$fields[$this->table]))
-		{
-			foreach(self::$db->list_fields($this->table) as $field => $data)
-			{
-				// Cache the column names
-				self::$fields[$this->table][$field] = $data;
-			}
-		}
+		// Connect to the database
+		$this->connect();
 
 		if (is_object($id))
 		{
@@ -122,6 +104,20 @@ class ORM_Core {
 			// Automatically save the model
 			$this->save();
 		}
+	}
+
+	/**
+	 * Reloads the database when the object is unserialized.
+	 *
+	 * @return  void
+	 */
+	public function __wakeup()
+	{
+		// Connect to the database
+		$this->connect();
+
+		// Reload the internal object
+		empty($this->object->id) or $this->find($this->object->id);
 	}
 
 	/**
@@ -704,6 +700,36 @@ class ORM_Core {
 	{
 		// Create and return the object
 		return ORM::factory(inflector::singular($table));
+	}
+
+	/**
+	 * Loads the database if it is not already loaded. Used during initialization
+	 * and unserialization.
+	 *
+	 * @return  void
+	 */
+	protected function connect()
+	{
+		if (self::$db === NULL)
+		{
+			// Load database, if not already loaded
+			isset(Kohana::instance()->db) or Kohana::instance()->load->database();
+
+			// Insert db into this object
+			self::$db = Kohana::instance()->db;
+
+			// Define ALL
+			defined('ALL') or define('ALL', -1);
+		}
+
+		if (empty(self::$fields[$this->table]))
+		{
+			foreach(self::$db->list_fields($this->table) as $field => $data)
+			{
+				// Cache the column names
+				self::$fields[$this->table][$field] = $data;
+			}
+		}
 	}
 
 	/**
