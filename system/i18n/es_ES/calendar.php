@@ -21,13 +21,13 @@ $lang = array
 	'sat'       => 'Sab',
 
 	// Long day names
-	'sunday'    => 'Dominfo',
+	'sunday'    => 'Domingo',
 	'monday'    => 'Lunes',
 	'tuesday'   => 'Martes',
-	'wednesday' => 'Miercoles',
+	'wednesday' => 'Miércoles',
 	'thursday'  => 'Jueves',
 	'friday'    => 'Viernes',
-	'saturday'  => 'Sabado',
+	'saturday'  => 'Sábado',
 
 	// Short month names
 	'jan'       => 'Ene',
@@ -52,7 +52,7 @@ $lang = array
 	'june'      => 'Junio',
 	'july'      => 'Julio',
 	'august'    => 'Agosto',
-	'september' => 'Septiembere',
+	'september' => 'Septiembre',
 	'october'   => 'Octubre',
 	'november'  => 'Noviembre',
 	'december'  => 'Diciembre'

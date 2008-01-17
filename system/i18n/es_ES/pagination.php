@@ -8,7 +8,7 @@ $lang = array
 	'items'    => 'elementos',
 	'of'       => 'de',
 	'first'    => 'primero',
-	'last'     => 'ultimo',
+	'last'     => 'último',
 	'previous' => 'anterior',
 	'next'     => 'siguiente',
 );
