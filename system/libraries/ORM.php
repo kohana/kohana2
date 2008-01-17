@@ -469,7 +469,7 @@ class ORM_Core {
 			return $this->find_all();
 
 		// Generate WHERE
-		$this->where or self::$db->where($this->where_key($id), $id);
+		($this->where AND empty($id)) or self::$db->where($this->where_key($id), $id);
 
 		// Only one result will be returned
 		self::$db->limit(1);
