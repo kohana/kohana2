@@ -2,7 +2,7 @@
 /**
  * Security helper class.
  *
- * $Id:$
+ * $Id$
  *
  * @package    Core
  * @author     Kohana Team
@@ -12,14 +12,10 @@
 class security_Core {
 
 	/**
-	 * Method: xss_clean
-	 *  Sanitize a string with the xss_clean method.
+	 * Sanitize a string with the xss_clean method.
 	 *
-	 * Parameters:
-	 *  str - string to sanitize
-	 *
-	 * Returns:
-	 *  Sanitized string.
+	 * @param   string  string to sanitize
+	 * @return  string
 	 */
 	public static function xss_clean($str)
 	{
@@ -34,14 +30,10 @@ class security_Core {
 	}
 
 	/**
-	 * Method: strip_image_tags
-	 *  Remove image tags from a string.
+	 * Remove image tags from a string.
 	 *
-	 * Parameters:
-	 *  str - string to sanitize
-	 *
-	 * Returns:
-	 *  Sanitized string.
+	 * @param   string  string to sanitize
+	 * @return  string
 	 */
 	public static function strip_image_tags($str)
 	{
@@ -51,14 +43,10 @@ class security_Core {
 	}
 
 	/**
-	 * Method: encode_php_tags
-	 *  Remove PHP tags from a string.
+	 * Remove PHP tags from a string.
 	 *
-	 * Parameters:
-	 *  str - string to sanitize
-	 *
-	 * Returns:
-	 *  Sanitized string.
+	 * @param   string  string to sanitize
+	 * @return  string
 	 */
 	public static function encode_php_tags($str)
 	{

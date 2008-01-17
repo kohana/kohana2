@@ -2,7 +2,7 @@
 /**
  * Cookie helper class.
  *
- * $Id:$
+ * $Id$
  *
  * @package    Core
  * @author     Kohana Team
@@ -12,21 +12,17 @@
 class cookie_Core {
 
 	/**
-	 * Method: set
-	 *  Sets a cookie with the given parameters.
+	 * Sets a cookie with the given parameters.
 	 *
-	 * Parameters:
-	 *  name     - cookie name or array of config options
-	 *  value    - cookie value
-	 *  expire   - number of seconds before the cookie expires
-	 *  path     - URL path to allow
-	 *  domain   - URL domain to allow
-	 *  secure   - HTTPS only
-	 *  httponly - HTTP only (requires PHP 5.2 or higher)
-	 *  prefix   - collision-prevention prefix
-	 *
-	 * Returns:
-	 *  TRUE or FALSE.
+	 * @param   string   cookie name or array of config options
+	 * @param   string   cookie value
+	 * @param   integer  number of seconds before the cookie expires
+	 * @param   string   URL path to allow
+	 * @param   string   URL domain to allow
+	 * @param   boolean  HTTPS only
+	 * @param   boolean  HTTP only (requires PHP 5.2 or higher)
+	 * @param   string   collision-prevention prefix
+	 * @return  boolean
 	 */
 	public static function set($name, $value = NULL, $expire = NULL, $path = NULL, $domain = NULL, $secure = NULL, $httponly = NULL, $prefix = NULL)
 	{
@@ -54,16 +50,12 @@ class cookie_Core {
 	}
 
 	/**
-	 * Method: get
-	 *  Fetch a cookie value, using the Input library.
+	 * Fetch a cookie value, using the Input library.
 	 *
-	 * Parameters:
-	 *  name      - cookie name
-	 *  prefix    - collision-prevention prefix
-	 *  xss_clean - use XSS cleaning on the value
-	 *
-	 * Returns:
-	 *  Value of the requested cookie.
+	 * @param   string   cookie name
+	 * @param   string   collision-prevention prefix
+	 * @param   boolean  use XSS cleaning on the value
+	 * @return  string
 	 */
 	public static function get($name, $prefix = NULL, $xss_clean = FALSE)
 	{
@@ -83,17 +75,13 @@ class cookie_Core {
 	}
 
 	/**
-	 * Method: delete
-	 *  Nullify and unset a cookie.
+	 * Nullify and unset a cookie.
 	 *
-	 * Parameters:
-	 *  name   - cookie name
-	 *  path   - URL path
-	 *  domain - URL domain
-	 *  prefix - collision-prevention prefix
-	 *
-	 * Returns:
-	 *  TRUE or FALSE.
+	 * @param   string   cookie name
+	 * @param   string   URL path
+	 * @param   string   URL domain
+	 * @param   string   collision-prevention prefix
+	 * @return  boolean
 	 */
 	public static function delete($name, $path = NULL, $domain = NULL, $prefix = NULL)
 	{

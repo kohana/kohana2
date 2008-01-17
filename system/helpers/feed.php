@@ -2,7 +2,7 @@
 /**
  * Feed helper class.
  *
- * $Id:$
+ * $Id$
  *
  * @package    Feed Helper
  * @author     Kohana Team
@@ -12,15 +12,11 @@
 class feed_Core {
 
 	/**
-	 * Method: parse
-	 *  Parses a remote feed into an array.
+	 * Parses a remote feed into an array.
 	 *
-	 * Parameters:
-	 *  feed   - remote feed URL
-	 *  limit  - item limit to fetch
-	 *
-	 * Returns:
-	 *  Array of feed items.
+	 * @param   string   remote feed URL
+	 * @param   integer  item limit to fetch
+	 * @return  array
 	 */
 	public static function parse($feed, $limit = 0)
 	{

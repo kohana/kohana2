@@ -2,7 +2,7 @@
 /**
  * File helper class.
  *
- * $Id:$
+ * $Id$
  *
  * @package    File Helper
  * @author     Kohana Team
@@ -12,16 +12,12 @@
 class file_Core {
 
 	/**
-	 * Method: split
-	 *  Split a file into pieces matching a specific size.
+	 * Split a file into pieces matching a specific size.
 	 *
-	 * Parameters:
-	 *  filename   - file to be split
-	 *  output_dir - directory to output to, defaults to the same directory as the file
-	 *  piece_size - size, in MB, for each chunk to be
-	 *
-	 * Returns:
-	 *  The number of pieces that were created.
+	 * @param   string   file to be split
+	 * @param   string   directory to output to, defaults to the same directory as the file
+	 * @param   integer  size, in MB, for each chunk to be
+	 * @return  integer  The number of pieces that were created.
 	 */
 	public static function split($filename, $output_dir = FALSE, $piece_size = 10)
 	{
@@ -73,15 +69,11 @@ class file_Core {
 	}
 
 	/**
-	 * Method: join
-	 *  Join a split file into a whole file.
+	 * Join a split file into a whole file.
 	 *
-	 * Parameters:
-	 *  filename  - split filename, without .000 extension
-	 *  output    - output filename, if different then an the filename
-	 *
-	 * Returns:
-	 *  The number of pieces that were joined.
+	 * @param   string   split filename, without .000 extension
+	 * @param   string   output filename, if different then an the filename
+	 * @return  integer  The number of pieces that were joined.
 	 */
 	public static function join($filename, $output = FALSE)
 	{

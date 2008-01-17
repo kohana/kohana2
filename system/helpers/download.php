@@ -2,7 +2,7 @@
 /**
  * Download helper class.
  *
- * $Id:$
+ * $Id$
  *
  * @package    Download Helper
  * @author     Kohana Team
@@ -12,13 +12,12 @@
 class download_Core {
 
 	/**
-	 * Method: force
-	 *  Force a download of a file to the user's browser. This function is
-	 *  binary-safe and will work with any MIME type that Kohana is aware of.
+	 * Force a download of a file to the user's browser. This function is
+	 * binary-safe and will work with any MIME type that Kohana is aware of.
 	 *
-	 * Parameters:
-	 *  filename - a file path or file name
-	 *  data     - data to be sent if the filename does not exist
+	 * @param   string  a file path or file name
+	 * @param   mixed   data to be sent if the filename does not exist
+	 * @return  void
 	 */
 	public static function force($filename = '', $data = '')
 	{
