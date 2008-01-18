@@ -53,6 +53,15 @@ class Session_Core {
 			// Makes a mirrored array, eg: foo=foo
 			self::$protect = array_combine(self::$protect, self::$protect);
 
+			session_set_cookie_params
+			(
+				self::$config['expiration'],
+				Config::item('cookie.path'),
+				Config::item('cookie.domain'),
+				Config::item('cookie.secure'),
+				Config::item('cookie.httponly')
+			);
+
 			if (self::$config['driver'] != 'native')
 			{
 				try
