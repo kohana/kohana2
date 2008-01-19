@@ -1,6 +1,6 @@
 <h2><span>Total Downloads: <?php echo $counter ?></span>Download Kohana</h2>
 
-<p>You are downloading Kohana v<?php echo KOHANA_VERSION ?>. Please use <?php echo html::anchor('http://trac.kohanaphp.com/newticket', 'Trac tickets') ?> to report any bugs you experience. <span style="font-size:0.8em;font-style:italic;">Download files were last synced on <?php echo date('F jS, Y', $sync_date) ?>.</span></p>
+<p>You are downloading Kohana v2.0. Please use <?php echo html::anchor('http://trac.kohanaphp.com/newticket', 'Trac tickets') ?> to report any bugs you experience. <span style="font-size:0.8em;font-style:italic;">Download files were last synced on <?php echo date('F jS, Y', $sync_date) ?>.</span></p>
 
 <p><strong>This is the final release of version 2.0.</strong> Barring severe bugs, this will be the last release before version 2.1. There is no current release date for 2.1, but we expect it to take less time than version 2.0.</p>
 
