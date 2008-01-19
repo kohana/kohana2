@@ -287,7 +287,7 @@ class Download_Controller extends Controller {
 			$this->auto_render = FALSE;
 
 			// Force a download of the archive
-			return download::force('Kohana_v'.KOHANA_VERSION.'_'.date('Y-m-d', $content->sync_date).'.zip', $cache);
+			return download::force('Kohana_v2.0_'.date('Y-m-d', $content->sync_date).'.zip', $cache);
 		}
 
 		// Set page title and content
