@@ -44,14 +44,7 @@ class Validation_Core {
 	 */
 	public function __construct( & $data = array())
 	{
-		if ($data === array())
-		{
-			$this->data =& $_POST;
-		}
-		elseif (is_array($data) AND count($data) > 0)
-		{
-			$this->data =& $data;
-		}
+		$this->set_data($data);
 
 		// Load the default error messages
 		$this->messages = Kohana::lang('validation');
@@ -188,6 +181,24 @@ class Validation_Core {
 		foreach($func as $name => $message)
 		{
 			$this->messages[$name] = $message;
+		}
+	}
+
+	/**
+	 * Method: set_data
+	 *
+	 * Parameters:
+	 *  data - array to validate
+	 */
+	public function set_data( & $data)
+	{
+		if ( ! empty($data) AND is_array($data))
+		{
+			$this->data =& $data;
+		}
+		else
+		{
+			$this->data =& $_POST;
 		}
 	}
 
