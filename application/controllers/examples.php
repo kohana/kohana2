@@ -141,7 +141,7 @@ class Examples_Controller extends Controller {
 		(
 			// Format:
 			// key          friendly name,  validation rules
-			'user' => array('username',    '=trim|required[1,12]|regex[[0-9]+]'),
+			'user' => array('username',    '=trim|required[1,12]|regex[/[0-9]+/]'),
 			'pass' => array('password',    'required|=sha1'),
 			'reme' => array('remember me', 'required')
 		));
