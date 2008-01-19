@@ -28,4 +28,10 @@ $lang = array
 	'max_size'      => 'Датотеката %s која е испратена е преголема. Максимум дозволена големина е %s.',
 	'max_width'     => 'Датотеката %s има максимум дозволена ширина од %s и е %spx.',
 	'max_height'    => 'Датотеката %s има максимум дозволена висина од %s и е %spx.',
+
+	// Field types
+	'alpha'         => 'alphabetical',
+	'alpha_dash'    => 'alphabetical, dash, and underscore',
+	'digit'         => 'digit',
+	'numeric'       => 'numeric',
 );
