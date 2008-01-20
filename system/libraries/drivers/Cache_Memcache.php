@@ -9,6 +9,7 @@
  */
 class Cache_Memcache_Driver implements Cache_Driver {
 
+	// Cache backend object and flags
 	protected $backend;
 	protected $flags;
 
@@ -69,4 +70,4 @@ class Cache_Memcache_Driver implements Cache_Driver {
 		return TRUE;
 	}
 
-}// End Cache Memcache Driver
+} // End Cache Memcache Driver
