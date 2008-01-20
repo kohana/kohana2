@@ -12,7 +12,7 @@
 class Kohana {
 
 	// The singleton instance of the controller
-	private static $instance = NULL;
+	public static $instance = NULL;
 
 	// Output buffering level
 	private static $buffer_level = 0;
@@ -25,28 +25,6 @@ class Kohana {
 
 	// The current user agent
 	public static $user_agent = '';
-
-	/**
-	 * Allows the controller to be a true singleton object. This method *must*
-	 * be called by all controllers.
-	 *
-	 * @throws  Kohana_Exception  if controller instance already exists
-	 */
-	public function __construct()
-	{
-		if (is_object(self::$instance))
-			throw new Kohana_Exception('core.there_can_be_only_one');
-
-		self::$instance = $this;
-	}
-
-	/**
-	 * Protects the Kohana instance from being copied
-	 */
-	final public function __clone()
-	{
-		$this->__construct();
-	}
 
 	/**
 	 * Sets up the PHP environment. Adds error/exception handling, output
@@ -251,13 +229,6 @@ class Kohana {
 
 			// Load the controller
 			$controller = new $controller();
-
-			// Make sure the controller extends the Kohana class
-			is_subclass_of($controller, __CLASS__) or exit
-			(
-				'Kohana controllers must have the Kohana class as an ancestor. '."\n".
-				'Please make sure Controller is defined with: Controller_Core extends Kohana.'
-			);
 
 			// Run system.post_controller_constructor
 			Event::run('system.post_controller_constructor');

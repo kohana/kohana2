@@ -28,6 +28,7 @@ $config['encryption'] = FALSE;
 
 /**
  * Number of seconds that each session will last.
+ * A value of 0 will keep the session active until the browser is closed.
  */
 $config['expiration'] = 7200;
 

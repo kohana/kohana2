@@ -7,7 +7,7 @@
  *  copyright - (c) 2007 Kohana Team
  *  license   - <http://kohanaphp.com/license.html>
  */
-class Controller_Core extends Kohana {
+class Controller_Core {
 
 	// Always loaded libraries
 	public $load;
@@ -20,8 +20,10 @@ class Controller_Core extends Kohana {
 	 */
 	public function __construct()
 	{
-		// This must always be called, it provides the singleton functionality
-		parent::__construct();
+		if (Kohana::$instance == FALSE)
+		{
+			Kohana::$instance = $this;
+		}
 
 		// Loader should always be available
 		$this->load = new Loader();
