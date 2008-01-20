@@ -2,7 +2,7 @@
 /**
  * Form helper class.
  *
- * $Id:$
+ * $Id$
  *
  * @package    Core
  * @author     Kohana Team
@@ -23,35 +23,33 @@ class form_Core {
 	 * Returns:
 	 *  An HTML form tag.
 	 */
-	public static function open($action = '', $attr = array(), $hidden = array())
+	public static function open($action = '', $attr = array(), $hidden = NULL)
 	{
 		// Make sure that the method is always set
-		$attr += array
-		(
-			'method' => 'post'
-		);
+		empty($attr['method']) and $attr['method'] = 'post';
 
-		// Make sure that the method is valid
-		$attr['method'] = ($attr['method'] == 'post') ? 'post' : 'get';
-
-		// Default action is to use the current URI
-		if ($action == '' OR ! is_string($action))
+		if ($attr['method'] != 'post' AND $attr['method'] != 'get')
 		{
+			// If the method is invalid, use post
+			$attr['method'] = 'post';
+		}
+
+		if (empty($action))
+		{
+			// Use the current URL as the default action
 			$action = url::site(Router::$current_uri);
 		}
 		elseif (strpos($action, '://') === FALSE)
 		{
+			// Make the action URI into a URL
 			$action = url::site($action);
 		}
 
 		// Form opening tag
 		$form = '<form action="'.$action.'"'.self::attributes($attr).'>'."\n";
 
-		// Add hidden fields
-		if (is_array($hidden) AND count($hidden > 0))
-		{
-			$form .= self::hidden($hidden);
-		}
+		// Add hidden fields immediate after opening tag
+		empty($hidden) or $form .= self::hidden($hidden);
 
 		return $form;
 	}
