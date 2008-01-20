@@ -4,7 +4,7 @@
  *
  * $Id$
  *
- * @package    Validation
+ * @package    Expires Helper
  * @author     Kohana Team
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
@@ -19,13 +19,14 @@ class expires_Core {
 	 */
 	public static function set($seconds = 60)
 	{
-		$now = $expires = time();
-
-		// Set the expiration timestamp
-		$expires += $seconds;
-
 		if (self::check_headers())
 		{
+			$now = $expires = time();
+
+			// Set the expiration timestamp
+			$expires += $seconds;
+
+			// Send headers
 			header('Last-Modified: '.gmdate('D, d M Y H:i:s', $now).' GMT');
 			header('Expires: '.gmdate('D, d M Y H:i:s', $expires).' GMT');
 			header('Cache-Control: max-age='.$seconds);
@@ -35,6 +36,7 @@ class expires_Core {
 
 		return FALSE;
 	}
+
 	/**
 	 * Checks to see if a page should be updated or send Not Modified status
 	 *
