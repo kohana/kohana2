@@ -9,8 +9,8 @@
  */
 class Cache_Memcache_Driver implements Cache_Driver {
 
-	private $_mc = null;
-	private $flag = null;
+	protected $backend;
+	protected $flags;
 
 	public function __construct()
 	{
@@ -45,7 +45,7 @@ class Cache_Memcache_Driver implements Cache_Driver {
 	{
 		count($tags) and Log::add('error', 'Cache: Tags are unsupported by the memcache driver');
 
-		return $this->backend->set($id, $data, $this->flag, $expiration);
+		return $this->backend->set($id, $data, $this->flags, $expiration);
 	}
 
 	public function delete($id, $tag = FALSE)
