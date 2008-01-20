@@ -34,7 +34,7 @@ class Kohana {
 	 * benchmarked as environment_setup.
 	 *
 	 * For security, this function also destroys the $_REQUEST global variable.
-	 * Using the proper global, GET, POST, COOKIE, etc is inherently more secure.
+	 * Using the proper global (GET, POST, COOKIE, etc) is inherently more secure.
 	 * The recommended way to fetch a global variable is using the Input library.
 	 * @see http://www.php.net/globals
 	 *
