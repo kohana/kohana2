@@ -1,16 +1,18 @@
 <?php defined('SYSPATH') or die('No direct script access.');
- /**
- * Class: Controller
+/**
+ * Kohana Controller class.
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Controller_Core {
 
 	/**
-	 * Loads Loader, URI, and Input into the Kohana instance during construction.
+	 * Loads Loader, URI, and Input into this controller.
 	 *
 	 * @return  void
 	 */
@@ -46,12 +48,9 @@ class Controller_Core {
 	/**
 	 * Includes a View within the controller scope.
 	 *
-	 * Parameters:
-	 *  kohana_view_filename - filename
-	 *  kohana_input_data    - array of data to make accessible within the view
-	 *
-	 * Returns:
-	 *  Output of view file
+	 * @param   string  view filename
+	 * @param   array   array of view variables
+	 * @return  string
 	 */
 	public function _kohana_load_view($kohana_view_filename, $kohana_input_data)
 	{
