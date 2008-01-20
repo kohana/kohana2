@@ -15,7 +15,7 @@ class Controller_Core {
 	 */
 	public function __construct()
 	{
-		if (empty(Kohana::$instance))
+		if (Kohana::$instance === NULL)
 		{
 			// Set the instance to the first controller loaded
 			Kohana::$instance = $this;
