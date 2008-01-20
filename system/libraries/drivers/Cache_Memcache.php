@@ -16,7 +16,7 @@ class Cache_Memcache_Driver implements Cache_Driver {
 	public function __construct()
 	{
 		if ( ! extension_loaded('memcache'))
-			throw new Kohana_Exception('cache.extension_not_loaded', 'memcache')
+			throw new Kohana_Exception('cache.extension_not_loaded', 'memcache');
 
 		$this->backend = new Memcache;
 		$this->flags = Config::item('cache_memcache.compression') ? MEMCACHE_COMPRESSED : 0;
