@@ -235,10 +235,10 @@ class Router_Core {
 		// The front controller directory and filename
 		$fc = substr($_SERVER['SCRIPT_FILENAME'], strlen(DOCROOT));
 
-		if (strpos(self::$current_uri, $fc) !== FALSE)
+		if (($strpos_fc = strpos(self::$current_uri, $fc)) !== FALSE)
 		{
 			// Remove the front controller from the current uri
-			self::$current_uri = preg_replace('!.+?'.preg_quote($fc, '!').'(.*)!', '$1', self::$current_uri);
+			self::$current_uri = (string) substr(self::$current_uri, $strpos_fc + strlen($fc));
 		}
 
 		if ($suffix = Config::item('core.url_suffix') AND strpos(self::$current_uri, $suffix) !== FALSE)
