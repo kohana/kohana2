@@ -10,11 +10,18 @@
 class URI_Core extends Router {
 
 	/**
-	 * Constructor.
+	 * Returns a singleton instance of URI.
+	 *
+	 * @return  object
 	 */
-	public function __construct()
+	public static function instance()
 	{
-		Log::add('debug', 'URI library initialized.');
+		static $instance;
+
+		// Initialize the URI instance
+		empty($instance) and $instance = new URI;
+
+		return $instance;
 	}
 
 	/**

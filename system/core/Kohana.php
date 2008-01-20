@@ -12,7 +12,7 @@
 class Kohana {
 
 	// The singleton instance of the controller
-	public static $instance = NULL;
+	public static $instance;
 
 	// Output buffering level
 	private static $buffer_level = 0;
@@ -176,7 +176,7 @@ class Kohana {
 	 */
 	final public static function & instance()
 	{
-		if (self::$instance == FALSE)
+		if (self::$instance === NULL)
 		{
 			Benchmark::start(SYSTEM_BENCHMARK.'_controller_setup');
 
@@ -227,8 +227,8 @@ class Kohana {
 				Event::run('system.404');
 			}
 
-			// Load the controller
-			$controller = new $controller();
+			// Initialize the controller
+			$controller = new $controller;
 
 			// Run system.post_controller_constructor
 			Event::run('system.post_controller_constructor');

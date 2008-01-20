@@ -9,30 +9,26 @@
  */
 class Controller_Core {
 
-	// Always loaded libraries
-	public $load;
-	public $uri;
-	public $input;
-
 	/**
 	 * Constructor: __construct
 	 *  Loads the Input, URI and Loader libraries into the '$this' namespace.
 	 */
 	public function __construct()
 	{
-		if (Kohana::$instance == FALSE)
+		if (empty(Kohana::$instance))
 		{
+			// Set the instance to the first controller loaded
 			Kohana::$instance = $this;
+
+			// Loader should always be available
+			$this->load = new Loader;
+
+			// URI should always be available
+			$this->uri = new URI;
+
+			// Input should always be available
+			$this->input = new Input;
 		}
-
-		// Loader should always be available
-		$this->load = new Loader();
-
-		// URI should always be available
-		$this->uri = new URI();
-
-		// Input should always be available
-		$this->input = new Input();
 	}
 
 	/**

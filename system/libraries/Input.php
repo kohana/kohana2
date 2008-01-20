@@ -9,6 +9,7 @@
  */
 class Input_Core {
 
+	// Singleton instance
 	protected static $instance;
 
 	protected $use_xss_clean = FALSE;
