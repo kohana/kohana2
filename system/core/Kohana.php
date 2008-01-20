@@ -379,7 +379,7 @@ class Kohana {
 			$output
 		);
 
-		if ($level = Config::item('core.output_compression'))
+		if (ini_get('output_handler') != 'ob_gzhandler' AND ini_get('zlib.output_compression') == 0 AND $level = Config::item('core.output_compression'))
 		{
 			if ($level < 1 OR $level > 9)
 			{
@@ -581,13 +581,17 @@ class Kohana {
 	 */
 	public static function auto_load($class)
 	{
+		static $prefix;
+
+		// Set the extension prefix
+		empty($prefix) and $prefix = Config::item('core.extension_prefix');
+
 		if (class_exists($class, FALSE))
 			return TRUE;
 
-		$type = strrpos($class, '_');
-
-		if ($type !== FALSE)
+		if (($type = strrpos($class, '_')) !== FALSE)
 		{
+			// Find the class suffix
 			$type = substr($class, $type + 1);
 		}
 
@@ -629,12 +633,15 @@ class Kohana {
 
 		if ($type === 'libraries' OR $type === 'helpers')
 		{
-			if ($extension = self::find_file($type, Config::item('core.extension_prefix').$class))
+			if ($extension = self::find_file($type, $prefix.$class))
 			{
-				require $extension;
+				// Load the class extension
+				require_once $extension;
 			}
-			elseif (substr($class, -5) !== '_Core' AND class_exists($class.'_Core', TRUE))
+			elseif (substr($class, -5) !== '_Core' AND class_exists($class.'_Core', FALSE))
 			{
+				// Transparent class extensions are handled using eval. This is
+				// a disgusting hack, but it works very well.
 				eval('class '.$class.' extends '.$class.'_Core { }');
 			}
 		}
