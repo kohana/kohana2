@@ -2,7 +2,7 @@
 /**
  * Array helper class.
  *
- * $Id:$
+ * $Id$
  *
  * @package    Core
  * @author     Kohana Team

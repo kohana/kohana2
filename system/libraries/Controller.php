@@ -9,6 +9,11 @@
  */
 class Controller_Core extends Kohana {
 
+	// Always loaded libraries
+	public $load;
+	public $uri;
+	public $input;
+
 	/**
 	 * Constructor: __construct
 	 *  Loads the Input, URI and Loader libraries into the '$this' namespace.

@@ -238,7 +238,7 @@ class Router_Core {
 		if (strpos(self::$current_uri, $fc) !== FALSE)
 		{
 			// Remove the front controller from the current uri
-			self::$current_uri = preg_replace('!.+?'.preg_quote($fc).'(.*)!', '$1', self::$current_uri);
+			self::$current_uri = preg_replace('!.+?'.preg_quote($fc, '!').'(.*)!', '$1', self::$current_uri);
 		}
 
 		if ($suffix = Config::item('core.url_suffix') AND strpos(self::$current_uri, $suffix) !== FALSE)
