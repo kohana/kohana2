@@ -42,6 +42,8 @@ class Input_Core {
 
 		if (self::$instance === NULL)
 		{
+			$this->user_agent = Kohana::$user_agent;
+
 			if (ini_get('register_globals'))
 			{
 				// Prevent GLOBALS override attacks
@@ -54,7 +56,7 @@ class Input_Core {
 				$preserve = array('GLOBALS', '_REQUEST', '_GET', '_POST', '_FILES', '_COOKIE', '_SERVER', '_ENV', '_SESSION');
 
 				// This loop has the same effect as disabling register_globals
-				foreach($GLOBALS as $key => $val)
+				foreach ($GLOBALS as $key => $val)
 				{
 					if ( ! in_array($key, $preserve))
 					{
@@ -73,7 +75,7 @@ class Input_Core {
 
 			if (is_array($_GET) AND count($_GET) > 0)
 			{
-				foreach($_GET as $key => $val)
+				foreach ($_GET as $key => $val)
 				{
 					// Sanitize $_GET
 					$_GET[$this->clean_input_keys($key)] = $this->clean_input_data($val);
@@ -86,7 +88,7 @@ class Input_Core {
 
 			if (is_array($_POST) AND count($_POST) > 0)
 			{
-				foreach($_POST as $key => $val)
+				foreach ($_POST as $key => $val)
 				{
 					// Sanitize $_POST
 					$_POST[$this->clean_input_keys($key)] = $this->clean_input_data($val);
@@ -99,7 +101,7 @@ class Input_Core {
 
 			if (is_array($_COOKIE) AND count($_COOKIE) > 0)
 			{
-				foreach($_COOKIE as $key => $val)
+				foreach ($_COOKIE as $key => $val)
 				{
 					// Sanitize $_COOKIE
 					$_COOKIE[$this->clean_input_keys($key)] = $this->clean_input_data($val);
@@ -134,7 +136,7 @@ class Input_Core {
 	{
 		// Array to be searched, assigned by reference
 		$array = array();
-		switch(strtolower($global))
+		switch (strtolower($global))
 		{
 			case 'get':    $array =& $_GET;    break;
 			case 'post':   $array =& $_POST;   break;
@@ -148,13 +150,13 @@ class Input_Core {
 			return $array;
 
 		// If the last argument is a boolean, it's the XSS clean flag
-		$xss_clean = is_bool(end($args)) ? array_pop($args) : FALSE;
+		$xss_clean = (is_bool(end($args))) ? array_pop($args) : FALSE;
 
 		// Reset the array pointer
 		reset($args);
 
 		// Multiple inputs require us to return an array
-		$return_array = (count($args) > 1) ? TRUE : FALSE;
+		$return_array = (bool) count($args);
 
 		// Compose the data to return
 		$data = array();
@@ -314,11 +316,6 @@ class Input_Core {
 	 */
 	public function user_agent()
 	{
-		if ($this->user_agent !== FALSE)
-			return $this->user_agent;
-
-		$this->user_agent = (isset($_SERVER['HTTP_USER_AGENT'])) ? trim($_SERVER['HTTP_USER_AGENT']) : FALSE;
-
 		return $this->user_agent;
 	}
 
