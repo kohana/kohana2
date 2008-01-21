@@ -2,7 +2,7 @@
 
 $lang = array
 (
-	'driver_not_supported'    => 'Der %s-Bildtreiber existiert nicht.',
+	'driver_not_supported'    => 'Der %s-Bildtreiber wurde nicht gefunden.',
 
 	// CI's Image_lib stuff below
 	'source_image_required'   => 'Sie müssen das Quellbild in Ihren Einstellungen angeben.',
