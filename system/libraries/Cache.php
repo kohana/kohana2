@@ -50,7 +50,7 @@ class Cache_Core {
 		$this->driver = new $driver($this->config['params']);
 
 		// Validate the driver
-		if ( ! (self::$driver instanceof Cache_Driver))
+		if ( ! ($this->driver instanceof Cache_Driver))
 			throw new Kohana_Exception('cache.driver_not_supported', 'Cache drivers must use the Cache_Driver interface.');
 
 		Log::add('debug', 'Cache Library initialized');

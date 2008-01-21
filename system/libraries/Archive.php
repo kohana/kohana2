@@ -45,7 +45,7 @@ class Archive_Core {
 		$this->driver = new $driver();
 
 		// Validate the driver
-		if ( ! (self::$driver instanceof Archive_Driver))
+		if ( ! ($this->driver instanceof Archive_Driver))
 			throw new Kohana_Exception('archive.driver_implements', $type);
 
 		Log::add('debug', 'Archive Library initialized');

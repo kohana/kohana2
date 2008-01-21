@@ -79,7 +79,7 @@ class Image_Core {
 		// Initialize the driver
 		$this->driver = new $driver($this->config['params']);
 
-		if ( ! (self::$driver instanceof Image_Driver))
+		if ( ! ($this->driver instanceof Image_Driver))
 			throw new Kohana_Exception('image.invalid_driver', $driver);
 	}
 
