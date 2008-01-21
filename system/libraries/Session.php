@@ -118,14 +118,28 @@ class Session_Core {
 		$this->destroy();
 
 		// Set the session cookie parameters
-		session_set_cookie_params
-		(
-			self::$config['expiration'],
-			Config::item('cookie.path'),
-			Config::item('cookie.domain'),
-			Config::item('cookie.secure'),
-			Config::item('cookie.httponly')
-		);
+		// Note: the httponly parameter was added in PHP 5.2.0
+		if (version_compare(PHP_VERSION, '5.2.0', '>='))
+		{
+			session_set_cookie_params
+			(
+				self::$config['expiration'],
+				Config::item('cookie.path'),
+				Config::item('cookie.domain'),
+				Config::item('cookie.secure'),
+				Config::item('cookie.httponly')
+			);
+		}
+		else
+		{
+			session_set_cookie_params
+			(
+				self::$config['expiration'],
+				Config::item('cookie.path'),
+				Config::item('cookie.domain'),
+				Config::item('cookie.secure')
+			);
+		}
 
 		if (self::$config['driver'] != 'native')
 		{
@@ -141,7 +155,10 @@ class Session_Core {
 			);
 		}
 
-		// Set the session name
+		// Set the session name after having checked it
+		if ( ! ctype_alnum(self::$config['name']) OR ctype_digit(self::$config['name']))
+			throw new Kohana_Exception('session.invalid_session_name', self::$config['name']);
+
 		session_name(self::$config['name']);
 
 		// Start the session!
@@ -153,7 +170,7 @@ class Session_Core {
 		// Set defaults
 		if ( ! isset($_SESSION['_kf_flash_']))
 		{
-			$_SESSION['user_agent'] = Kohana::$user_agent;
+			$_SESSION['user_agent'] = $this->input->user_agent();
 			$_SESSION['ip_address'] = $this->input->ip_address();
 			$_SESSION['_kf_flash_'] = array();
 			$_SESSION['total_hits'] = 0;
@@ -178,7 +195,6 @@ class Session_Core {
 					case 'ip_address':
 						if ($_SESSION[$valid] !== $this->input->$valid())
 						{
-							session_unset();
 							return $this->create();
 						}
 					break;
@@ -224,7 +240,6 @@ class Session_Core {
 		else
 		{
 			// Pass the regenerating off to the driver in case it wants to do anything special
-			// The new id is returned
 			$_SESSION['session_id'] = self::$driver->regenerate();
 		}
 	}
@@ -243,7 +258,7 @@ class Session_Core {
 			// Remove all session data
 			session_unset();
 
-			// Write the session
+			// Destroy the session
 			return session_destroy();
 		}
 	}
@@ -286,8 +301,8 @@ class Session_Core {
 	 */
 	public function set_flash($keys, $val = FALSE)
 	{
-		if ($keys == FALSE)
-			return;
+		if (empty($keys))
+			return FALSE;
 
 		if ( ! is_array($keys))
 		{
@@ -335,10 +350,10 @@ class Session_Core {
 	 */
 	public function get($key = FALSE, $default = FALSE)
 	{
-		if ($key == FALSE)
+		if (empty($key))
 			return $_SESSION;
 
-		$result = isset($_SESSION[$key]) ? $_SESSION[$key] : Kohana::key_string($key, $_SESSION);
+		$result = (isset($_SESSION[$key])) ? $_SESSION[$key] : Kohana::key_string($key, $_SESSION);
 
 		return ($result === NULL) ? $default : $result;
 	}
@@ -380,7 +395,7 @@ class Session_Core {
 
 		foreach((array) $keys as $key)
 		{
-			if(isset(self::$protect[$key]))
+			if (isset(self::$protect[$key]))
 				continue;
 
 			// Unset the key

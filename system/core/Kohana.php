@@ -54,9 +54,6 @@ class Kohana {
 		// Disable error reporting
 		$ER = error_reporting(0);
 
-		// Set the user agent
-		self::$user_agent = trim($_SERVER['HTTP_USER_AGENT']);
-
 		if (function_exists('date_default_timezone_set'))
 		{
 			$timezone = Config::item('locale.timezone');
@@ -99,6 +96,9 @@ class Kohana {
 
 		// Set locale information
 		setlocale(LC_ALL, Config::item('locale.language').'.UTF-8');
+
+		// Set the user agent
+		self::$user_agent = Input::instance()->user_agent();
 
 		// Enable Kohana routing
 		Event::add('system.routing', array('Router', 'find_uri'));

@@ -317,7 +317,7 @@ class Input_Core {
 		if ($this->user_agent !== FALSE)
 			return $this->user_agent;
 
-		$this->user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : FALSE;
+		$this->user_agent = (isset($_SERVER['HTTP_USER_AGENT'])) ? trim($_SERVER['HTTP_USER_AGENT']) : FALSE;
 
 		return $this->user_agent;
 	}

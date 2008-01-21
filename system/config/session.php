@@ -13,8 +13,9 @@ $config['storage'] = '';
 
 /**
  * Default session name.
+ * It should contain only alphanumeric characters and at least one letter should be present.
  */
-$config['name'] = 'kohana_session';
+$config['name'] = 'kohanasession';
 
 /**
  * Session parameters to validate.
