@@ -20,17 +20,17 @@ class Media_Controller extends Controller {
 
 	protected $use_cache = FALSE;
 	protected $cache_lifetime;
-	
+
 	protected $pack_css = FALSE;
 	protected $pack_js = FALSE;
-	
+
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		$cache = Config::item('media.cache');
 		$this->use_cache = ($cache > 0);
-		
+
 		if (is_int($cache))
 		{
 			$this->cache_lifetime = $cache;
@@ -39,21 +39,21 @@ class Media_Controller extends Controller {
 		{
 			$this->cache_lifetime = config::item('cache.lifetime') OR $this->cache_lifetime = 1800;
 		}
-		
+
 		if ($this->use_cache AND ! isset($this->cache)) 
 		{
 			$this->load->library('cache');
 		}
-		
+
 		$this->pack_css = (bool) Config::item('media.pack_css');
 		$this->pack_js = Config::item('media.pack_js');
-		
+
 		if ($this->pack_js === TRUE)
 		{
 			$this->pack_js = 'Normal';
 		}
 	}
-	
+
 	public function css()
 	{
 		$filename = $orig_filename = $this->uri->segment(3);
@@ -61,12 +61,12 @@ class Media_Controller extends Controller {
 		{
 			$filename = substr($filename, 0, -4);
 		}
-		
+
 		$mimetype = config::item('mimes.css');
 		$mimetype = (isset($mimetype[0])) ? $mimetype[0] : 'text/stylesheet';
-		
+
 		$this->use_cache AND $data = $this->cache->get('media.css.'.$filename);
-		
+
 		if ( ! isset($data) OR empty($data))
 		{
 			try
@@ -86,16 +86,16 @@ class Media_Controller extends Controller {
 					unset($view);
 				}
 			}
-			
+
 			if (isset($view))
 			{
 				$data = $view->render();
-				
+
 				if ($this->pack_css) 
 				{
 					$data = $this->_css_compress($data);
 				}
-				
+
 				if ($this->use_cache) 
 				{
 					$this->cache->set('media.css.'.$filename, $data, array('media'), $this->cache_lifetime);
@@ -106,7 +106,7 @@ class Media_Controller extends Controller {
 				$data = '/* stylesheet not found */';
 			}
 		}
-		
+
 		$mimetype AND header('Content-type: '.$mimetype);
 		echo $data;
 	}
@@ -118,13 +118,13 @@ class Media_Controller extends Controller {
 		{
 			$filename = substr($filename, 0, -3);
 		}
-		
+
 		$mimetype = Config::item('mimes.js');
 		$mimetype = (isset($mimetype[0])) ? $mimetype[0] : 'text/javascript';
 
-		
+
 		$this->use_cache AND $data = $this->cache->get('media.js.'.$filename);
-		
+
 		if ( ! isset($data) OR empty($data)) 
 		{
 			try
@@ -144,17 +144,17 @@ class Media_Controller extends Controller {
 					unset($view);
 				}
 			}
-			
+
 			if (isset($view)) 
 			{
 				$data = $view->render();
-				
+
 				if ($this->pack_js) 
 				{
 					$packer = new JavaScriptPacker($data, $this->pack_js);
 					$data = $packer->pack();
 				}
-				
+
 				if ($this->use_cache) 
 				{
 					$this->cache->set('media.js.'.$filename, $data, array('media'), $this->cache_lifetime);
@@ -165,7 +165,7 @@ class Media_Controller extends Controller {
 				$data = '/* script not found */';
 			}
 		}
-		
+
 		$mimetype AND header('Content-type: '.$mimetype);
 		echo $data;
 	}
@@ -183,7 +183,7 @@ class Media_Controller extends Controller {
 	{
 		// Remove comments
 		$data = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $data);
-		
+
 		// Remove tabs, spaces, newlines, etc.
 		$data = preg_replace('/\s+/s', ' ', $data);
 		$data = str_replace

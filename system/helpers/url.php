@@ -22,7 +22,7 @@ class url_Core {
 	{
 		$protocol = ($protocol == FALSE) ? Config::item('core.site_protocol') : strtolower($protocol);
 
- 		$base_url = $protocol.'://'.Config::item('core.site_domain', TRUE);
+		$base_url = $protocol.'://'.Config::item('core.site_domain', TRUE);
 
 		if ($index == TRUE AND $index = Config::item('core.index_page'))
 		{

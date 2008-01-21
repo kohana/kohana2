@@ -18,9 +18,9 @@ $lang = array
 	'valid_email'   => 'Le champ %s doit contenir une adresse email valide.',
 	'valid_ip'      => 'Le champ %s doit contenir une adresse IP valide.',
 	'valid_type'    => 'Le champ %s doit contenir uniquement des caractères %s',
-    'range'         => 'Le champ %s doit être situé dans la plage de valeurs spécifiée.',
+	'range'         => 'Le champ %s doit être situé dans la plage de valeurs spécifiée.',
 	'regex'         => 'Le champ %s ne correspond pas aux valeurs acceptées.',
-    'depends_on'    => 'Le champ %s est dépendant du champ %s.',
+	'depends_on'    => 'Le champ %s est dépendant du champ %s.',
 
 	// Upload errors
 	'user_aborted'  => 'L\'envoi du fichier %s sur le serveur a échoué.',
@@ -28,8 +28,8 @@ $lang = array
 	'max_size'      => 'Le fichier %s que vous tentez d\'envoyer est trop lourd. La taille maximale allouée est de %s',
 	'max_width'     => 'Le fichier image %s doit avoir une taille maximale de %spx de large.',
 	'max_height'    => 'Le fichier image %s doit avoir une taille maximale de %spx de haut.',
-    
-    // Field types
+
+	// Field types
 	'alpha'         => 'alphabétiques',
 	'alpha_dash'    => 'alphabétiques, tirets haut ou tirets bas (underscore)',
 	'digit'         => 'digitaux',

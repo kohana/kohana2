@@ -27,7 +27,7 @@ class Payment_Trustcommerce_Driver
 
 	public function __construct($config)
 	{
-		
+
 		$this->test_mode = $config['test_mode'];
 		$this->tclink_library = $config['tclink_library'];	
 		$this->fields['ip'] = $_SERVER['REMOTE_ADDR'];

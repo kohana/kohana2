@@ -354,7 +354,7 @@ class Validation_Core {
 		{
 			if (strpos($rule, '=') === 0)
 			{
-				$rule 				= substr($rule, 1);
+				$rule               = substr($rule, 1);
 				$this->data[$field] = $rule($data);
 				return;
 			}

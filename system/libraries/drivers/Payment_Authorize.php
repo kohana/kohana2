@@ -141,7 +141,7 @@ class Payment_Authorize_Driver
 } // End Payment_Authorize_Driver Class
 
 /**
- * 	A normal transaction array looks like this (for reference):
+ * A normal transaction array looks like this (for reference):
  * 
  * 	$authnet_values				= array
 	(
@@ -169,7 +169,7 @@ class Payment_Authorize_Driver
 		"x_phone"				=> $this->input->post('phone'),
 		"x_fax"					=> "",
 		"x_cust_id"				=> "",
-						
+
 		"x_ship_to_first_name"	=> $this->input->post('shipping_first_name'),
 		"x_ship_to_last_name"	=> $this->input->post('shipping_last_name'),
 		"x_ship_to_company"		=> $this->input->post('shipping_company'),
@@ -177,7 +177,7 @@ class Payment_Authorize_Driver
 		"x_ship_to_city"		=> $this->input->post('shipping_city'),
 		"x_ship_to_state"		=> $this->input->post('shipping_state'),
 		"x_ship_to_zip"			=> $this->input->post('shipping_zip'),
-			
+
 		"x_tax"					=> $tax,
 		"x_freight"				=> $shipping,
 		"x_comments"			=> "",

@@ -59,10 +59,10 @@ class User_Model extends ORM {
 		// Don't mess with these calls, they are too complex
 		if (is_object($role))
 			return parent::has_role($role);
-	
+
 		// Make sure the role name is a string
 		$role = (string) $role;
-	
+
 		if (ctype_digit($role))
 		{
 			// Find by id

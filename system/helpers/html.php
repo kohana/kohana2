@@ -233,7 +233,7 @@ class html_Core {
 		{
 			foreach($href as $_href)
 			{
-	   			$_rel   = is_array($rel) ? array_shift($rel) : $rel;
+				$_rel   = is_array($rel) ? array_shift($rel) : $rel;
 				$_type  = is_array($type) ? array_shift($type) : $type;
 				$_media = is_array($media) ? array_shift($media) : $media;
 

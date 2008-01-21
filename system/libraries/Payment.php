@@ -113,7 +113,7 @@ class Payment_Core {
 	public function set_fields($fields)
 	{
 		$this->driver->set_fields((array) $fields);
-		
+
 		return $this;
 	}
 

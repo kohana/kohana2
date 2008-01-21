@@ -15,8 +15,8 @@ $lang = array
 	'bad_filename'       => 'Un fichier du même nom que celui que vous avez envoyé existe déjà sur le serveur.',
 	'not_writable'       => 'Le répertoire de destination %s ne semble pas être accessible en écriture.',
 	'error_on_file'      => 'Erreur lors de l\'envoi du fichier %s:',
-	
-    // Error code responses
+
+	// Error code responses
 	'set_allowed'        => 'Pour des raisons de sécurité, vous devez définir les types de fichiers autorisés à l\'envoi.',
 	'max_file_size'      => 'Pour des raisons de sécurité, vous ne devriez pas utiliser MAX_FILE_SIZE pour contrôler la taille des fichiers envoyés.',
 	'no_tmp_dir'         => 'Impossible de trouver un répertoire temporaire accessible en écriture.',

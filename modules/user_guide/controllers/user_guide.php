@@ -20,7 +20,7 @@ class User_Guide_Controller extends Controller {
 				'system.shutdown' => 'Last event called before Kohana stops processing the current request'
 			)
 		);
-		
+
 		if ($this->uri->segment(2) == FALSE)
 		{
 			url::redirect('user_guide/'.current(explode('_', Config::item('locale.language'))).'/kohana/about');

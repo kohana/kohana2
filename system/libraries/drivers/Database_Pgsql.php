@@ -13,7 +13,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 	// Database connection link
 	protected $link;
 	protected $db_config;
-	
+
 	/**
 	 * Constructor: __construct
 	 *  Sets up the config for the class.
@@ -39,7 +39,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 		// Build the connection info
 		$port = (isset($port)) ? 'port=\''.$port.'\'' : '';
 		$host = (isset($host)) ? 'host=\''.$host.'\' '.$port : ''; // if no host, connect with the socket
-		
+
 		$connection_string = $host.' dbname=\''.$database.'\' user=\''.$user.'\' password=\''.$pass.'\'';
 		// Make the connection and select the database
 		if ($this->link = $connect($connection_string))
@@ -67,10 +67,10 @@ class Database_Pgsql_Driver extends Database_Driver {
 				// Set the cached object
 				self::$query_cache[$hash] = new Pgsql_Result(pg_query($this->link, $sql), $this->link, $this->db_config['object'], $sql);
 			}
-			
+
 			return self::$query_cache[$hash];
 		}
-		
+
 		return new Pgsql_Result(pg_query($this->link, $sql), $this->link, $this->db_config['object'], $sql);
 	}
 
@@ -103,7 +103,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 				// Re-create the AS statement
 				return implode(' AS ', $column);
 			}
-		
+
 			return preg_replace('/[^.*]+/', '"$0"', $column);
 		}
 
@@ -143,7 +143,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 	{
 		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
 	}
-	
+
 	public function limit($limit, $offset = 0)
 	{
 		return 'LIMIT '.$limit.' OFFSET '.$offset;

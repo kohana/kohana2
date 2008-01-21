@@ -127,13 +127,13 @@ class Payment_Yourpay_Driver
 			</order>';
 
 		$post_url = 'https://secure.linkpt.net:1129/LSGSXML';
-		
+
 		$ch = curl_init($post_url); 
-		
+
 		// Set custom curl options
 		curl_setopt_array($ch, $this->curl_config);
 		curl_setopt ($ch, CURLOPT_SSLCERT, $this->certificate);
-		
+
 		// Set the curl POST fields
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
 
@@ -141,7 +141,7 @@ class Payment_Yourpay_Driver
 		{
 			if (strlen($result) < 2) # no response
 				throw new Kohana_Exception('payment.gateway_connection_error');
-			
+
 			// Convert the XML response to an array
 			preg_match_all ("/<(.*?)>(.*?)\</", $result, $outarr, PREG_SET_ORDER);
 			$n = 0;

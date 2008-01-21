@@ -10,6 +10,6 @@ $lang = array
 	'queries'      => 'Requêtes',
 	'no_queries'   => 'Aucune requête',
 	'no_database'  => 'Base de données non chargée',
-    'cookie_data'  => 'Données du Cookie',
+	'cookie_data'  => 'Données du Cookie',
 	'no_cookie'    => 'Aucune donnée de Cookie',
 );

@@ -29,10 +29,9 @@ $lang = array
 	'max_width'     => 'Szerokość pliku %s przekracza dozwoloną wartość. Maksymalna szerokość to %spx.',
 	'max_height'    => 'Wysokość pliku %s przekracza dozwoloną wartość. Maksymalna wysokość to %spx.',
 
-        // Field types
-        'alpha'         => 'litera',
-        'alpha_dash'    => 'litera, podkreślenie i myślnik',
-        'digit'         => 'cyfra',
-        'numeric'       => 'liczba',
-
+	// Field types
+	'alpha'         => 'litera',
+	'alpha_dash'    => 'litera, podkreślenie i myślnik',
+	'digit'         => 'cyfra',
+	'numeric'       => 'liczba',
 );

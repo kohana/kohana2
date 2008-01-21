@@ -153,7 +153,7 @@ final class utf8 {
 	 * Replaces special/accented UTF-8 characters by ASCII-7 'equivalents'.
 	 *
 	 * @author  Andreas Gohr <andi@splitbrain.org>
-     *
+	 *
 	 * @param   string   string to transliterate
 	 * @param   integer  -1 lowercase only, +1 uppercase only, 0 both cases
 	 * @return  string

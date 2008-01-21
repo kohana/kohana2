@@ -154,7 +154,7 @@ class Payment_Paypal_Driver {
 		$data = '&TOKEN='.$this->session->get('paypal_token').
 		        '&PAYERID='.$this->paypal_values['payerid'].
 		        '&IPADDRESS='.urlencode($_SERVER['SERVER_NAME']).
- 		        '&Amt='.$this->paypal_values['Amt'].
+		        '&Amt='.$this->paypal_values['Amt'].
 		        '&PAYMENTACTION='.$this->paypal_values['PAYMENTACTION'].
 		        '&ReturnUrl='.$this->paypal_values['ReturnUrl'].
 		        '&CANCELURL='.$this->paypal_values['CANCELURL'] .
@@ -277,7 +277,7 @@ class Payment_Paypal_Driver {
 
 			// Decoding the respose
 			$nvpArray[urldecode($keyval)] = urldecode( $valval);
-			
+
 			$nvpstr = substr($nvpstr, $valuepos + 1, strlen($nvpstr));
 		}
 

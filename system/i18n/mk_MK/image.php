@@ -3,7 +3,7 @@
 $lang = array
 (
 	'driver_not_supported'    => 'Драјверот за слики %s не постои.',
-	
+
 	// CI's Image_lib stuff below
 	'source_image_required'   => 'Мора да се дефинира source слика во вашите преференци.',
 	'gd_required'             => 'Библиотеката GD (image library) е задолжителна библиотека.',

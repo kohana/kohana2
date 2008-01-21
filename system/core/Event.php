@@ -46,7 +46,7 @@ final class Event {
 			// Add the event if it does not already exist in the queue
 			self::$events[$name][] = $callback;
 		}
-		
+
 		return TRUE;
 	}
 

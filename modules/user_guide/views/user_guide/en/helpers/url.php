@@ -43,7 +43,7 @@ Returns a properly formatted title, for use in a URI.
 
 
 Generates: 
-	
+
     Eclectic_titles_entered_by_crazed_users-
 
 ****

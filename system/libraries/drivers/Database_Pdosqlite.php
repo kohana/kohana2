@@ -136,7 +136,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 	{
 		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
 	}
-	
+
 	public function limit($limit, $offset = 0)
 	{
 		return 'LIMIT '.$offset.', '.$limit;
@@ -324,15 +324,15 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 			{
 				throw new Kohana_Database_Exception('database.error', $e->getMessage());
 			}
-			
+
 			if (preg_match('/^SELECT|PRAGMA|EXPLAIN/i', $sql))
 			{
 				//Log::add('debug','it was a SELECT, SHOW, DESCRIBE, EXPLAIN query');
 				$this->result = $result;
 				$this->current_row = 0;
-				
+
 				$this->total_rows = $this->sqlite_row_count();
-				
+
 				$this->fetch_type = ($object === TRUE) ? PDO::FETCH_OBJ : PDO::FETCH_ASSOC;
 			}
 			elseif (preg_match('/^DELETE|INSERT|UPDATE/i', $sql))
@@ -349,7 +349,7 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 		// Set result type
 		$this->result($object);
 	}
-	
+
 	private function sqlite_row_count() 
 	{
 		// workaround for PDO not supporting RowCount with SQLite - we manually count
@@ -358,10 +358,10 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 		while ($this->result->fetch()) {
 			$count++;
 		}
-		
+
 		// now the really dumb part: need to re-execute the query
 		$this->result->execute();
-		
+
 		return $count;
 	}
 

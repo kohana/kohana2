@@ -3,7 +3,7 @@
 $lang = array
 (
 	'driver_not_supported'    => 'Il driver per immagini %s non esiste.',
-	
+
 	// CI's Image_lib stuff below
 	'source_image_required'   => 'Specificare un\'immagine sorgente nelle preferenze.',
 	'gd_required'             => 'La libreria GD è necessaria per questa funzionalità.',

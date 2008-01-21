@@ -29,9 +29,9 @@ $lang = array
 	'max_width'     => 'El archivo %s debe tener como ancho maximo %s, y tiene %spx.',
 	'max_height'    => 'El archivo %s debe tener como alto maximo %s, y tiene %spx.',
 
-        // Field types                                                                                                                                                     
-        'alpha'         => 'caracteres del alfabeto',
-        'alpha_dash'    => 'caracteres del alfabeto, guiones y subrayado',
-        'digit'         => 'digitos',
-        'numeric'       => 'numéricos'
+	// Field types                                                                                                                                                     
+	'alpha'         => 'caracteres del alfabeto',
+	'alpha_dash'    => 'caracteres del alfabeto, guiones y subrayado',
+	'digit'         => 'digitos',
+	'numeric'       => 'numéricos'
 );
