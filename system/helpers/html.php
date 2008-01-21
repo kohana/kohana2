@@ -2,7 +2,7 @@
 /**
  * HTML helper class.
  *
- * $Id:$
+ * $Id$
  *
  * @package    Core
  * @author     Kohana Team
@@ -12,15 +12,11 @@
 class html_Core {
 
 	/**
-	 * Method: specialchars
-	 *  Convert special characters to HTML entities
+	 * Convert special characters to HTML entities
 	 *
-	 * Parameters:
-	 *  str           - string to convert
-	 *  double_encode - encode existing entities
-	 *
-	 * Returns:
-	 *  Entity-encoded string.
+	 * @param   string   string to convert
+	 * @param   boolean  encode existing entities
+	 * @return  string
 	 */
 	public static function specialchars($str, $double_encode = TRUE)
 	{
@@ -48,14 +44,10 @@ class html_Core {
 	}
 
 	/**
-	 * Method: query_string
-	 *  Creates an HTTP query string from an array.
+	 * Creates an HTTP query string from an array.
 	 *
-	 * Parameters:
-	 *  array - array of data to convert to string
-	 *
-	 * Returns:
-	 *  An HTTP query string.
+	 * @param   array   array of data to convert to string
+	 * @return  string
 	 */
 	public static function query_string($array)
 	{
@@ -73,17 +65,13 @@ class html_Core {
 	}
 
 	/**
-	 * Method: anchor
-	 *  Create HTML link anchors.
+	 * Create HTML link anchors.
 	 *
-	 * Parameters:
-	 *  uri        - URL or URI string
-	 *  title      - link text
-	 *  attributes - HTML anchor attributes
-	 *  protocol   - non-default protocol, eg: https
-	 *
-	 * Returns:
-	 *  An HTML link anchor.
+	 * @param   string  URL or URI string
+	 * @param   string  link text
+	 * @param   array   HTML anchor attributes
+	 * @param   string  non-default protocol, eg: https
+	 * @return  string
 	 */
 	public static function anchor($uri, $title = FALSE, $attributes = FALSE, $protocol = FALSE)
 	{
@@ -110,17 +98,13 @@ class html_Core {
 	}
 
 	/**
-	 * Method: file_anchor
-	 *  Creates an HTML anchor to a file.
+	 * Creates an HTML anchor to a file.
 	 *
-	 * Parameters:
-	 *  file       - name of file to link to
-	 *  title      - link text
-	 *  attributes - HTML anchor attributes
-	 *  protocol   - non-default protocol, eg: ftp
-	 *
-	 * Returns:
-	 *  An HTML link anchor.
+	 * @param   string  name of file to link to
+	 * @param   string  link text
+	 * @param   array   HTML anchor attributes
+	 * @param   string  non-default protocol, eg: ftp
+	 * @return  string
 	 */
 	public static function file_anchor($file, $title = FALSE, $attributes = FALSE, $protocol = FALSE)
 	{
@@ -134,17 +118,13 @@ class html_Core {
 	}
 
 	/**
-	 * Method: panchor
-	 *  Similar to anchor, but with the protocol parameter first.
+	 * Similar to anchor, but with the protocol parameter first.
 	 *
-	 * Parameters:
-	 *  protocol   - link protocol
-	 *  uri        - URI or URL to link to
-	 *  title      - link text
-	 *  attributes - HTML anchor attributes
-	 *
-	 * Returns:
-	 *  An HTML link anchor.
+	 * @param   string  link protocol
+	 * @param   string  URI or URL to link to
+	 * @param   string  link text
+	 * @param   array   HTML anchor attributes
+	 * @return  string
 	 */
 	public static function panchor($protocol, $uri, $title = FALSE, $attributes = FALSE)
 	{
@@ -152,16 +132,12 @@ class html_Core {
 	}
 
 	/**
-	 * Method: mailto
-	 *  Creates a email anchor.
+	 * Creates a email anchor.
 	 *
-	 * Parameters:
-	 *  email      - email address to send to
-	 *  title      - link text
-	 *  attributes - HTML anchor attributes
-	 *
-	 * Returns:
-	 *  An HTML link anchor.
+	 * @param   string  email address to send to
+	 * @param   string  link text
+	 * @param   array   HTML anchor attributes
+	 * @return  string
 	 */
 	public static function mailto($email, $title = FALSE, $attributes = FALSE)
 	{
@@ -202,8 +178,8 @@ class html_Core {
 	/**
 	 * Generate a "breadcrumb" list of anchors representing the URI.
 	 *
-	 * @param
-	 * @return string
+	 * @param   array   segments to use as breadcrumbs, defaults to using Router::$segments
+	 * @return  string
 	 */
 	public static function breadcrumb($segments = NULL)
 	{
@@ -226,16 +202,12 @@ class html_Core {
 	}
 
 	/**
-	 * Method: stylesheet
-	 *  Creates a stylesheet link.
+	 * Creates a stylesheet link.
 	 *
-	 * Parameters:
-	 *  style - filename
-	 *  media - media type of stylesheet
-	 *  index  - include the index_page in the link
-	 *
-	 * Returns:
-	 *  An HTML stylesheet link.
+	 * @param   string|array  filename, or array of filenames to match to array of medias
+	 * @param   string|array  media type of stylesheet, or array to match filenames
+	 * @param   boolean       include the index_page in the link
+	 * @return  string
 	 */
 	public static function stylesheet($style, $media = FALSE, $index = TRUE)
 	{
@@ -243,19 +215,15 @@ class html_Core {
 	}
 
 	/**
-	 * Method: link
-	 *  Creates a link tag.
+	 * Creates a link tag.
 	 *
-	 * Parameters:
-	 *  href   - filename
-     *  rel    - relationship
-     *  type   - mimetype
-     *  suffix - specifies suffix of the file
-	 *  media  - specifies on what device the document will be displayed
-	 *  index  - include the index_page in the link
-	 *
-	 * Returns:
-	 *  An HTML stylesheet link.
+	 * @param   string|array  filename
+	 * @param   string|array  relationship
+	 * @param   string|array  mimetype
+	 * @param   string        specifies suffix of the file
+	 * @param   string|array  specifies on what device the document will be displayed
+	 * @param   boolean       include the index_page in the link
+	 * @return  string
 	 */
 	public static function link($href, $rel, $type, $suffix = FALSE, $media = FALSE, $index = TRUE)
 	{
@@ -284,15 +252,11 @@ class html_Core {
 	}
 
 	/**
-	 * Method: script
-	 *  Creates a script link.
+	 * Creates a script link.
 	 *
-	 * Parameters:
-	 *  script - filename
-	 *  index  - include the index_page in the link
-	 *
-	 * Returns:
-	 *  An HTML script link.
+	 * @param   string|array  filename
+	 * @param   boolean       include the index_page in the link
+	 * @return  string
 	 */
 	public static function script($script, $index = TRUE)
 	{
@@ -316,15 +280,11 @@ class html_Core {
 	}
 
 	/**
-	 * Method: image
-	 *  Creates a image link.
+	 * Creates a image link.
 	 *
-	 * Parameters:
-	 *  attr  - array of html attributes, or an image name
-	 *  index - include the index_page in the link
-	 *
-	 * Returns:
-	 *  An HTML image link.
+	 * @param   string|array  array of html attributes, or an image name
+	 * @param   boolean       include the index_page in the link
+	 * @return  string
 	 */
 	public static function image($attr = NULL, $index = TRUE)
 	{
@@ -343,14 +303,10 @@ class html_Core {
 	}
 
 	/**
-	 * Method: attributes
-	 *  Compiles an array of HTML attributes into an attribute string.
+	 * Compiles an array of HTML attributes into an attribute string.
 	 *
-	 * Parameters:
-	 *  attrs - array of attributes
-	 *
-	 * Returns:
-	 *  HTML attribute string.
+	 * @param   string|array  array of attributes
+	 * @return  string
 	 */
 	public static function attributes($attrs)
 	{
