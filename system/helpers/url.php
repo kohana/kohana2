@@ -2,7 +2,7 @@
 /**
  * URL helper class.
  *
- * $Id:$
+ * $Id$
  *
  * @package    Core
  * @author     Kohana Team
@@ -51,8 +51,8 @@ class url_Core {
 	{
 		$uri = trim($uri, '/');
 
-		$id = ''; // anchor#id
 		$qs = ''; // anchor?query=string
+		$id = ''; // anchor#id
 
 		if (strpos($uri, '?') !== FALSE)
 		{
