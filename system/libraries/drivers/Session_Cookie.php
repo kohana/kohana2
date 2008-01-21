@@ -9,23 +9,16 @@
  */
 class Session_Cookie_Driver implements Session_Driver {
 
-	protected $cookie_name = '';
-
-	// Libraries
-	protected $input;
-	protected $encrypt;
+	protected $cookie_name;
+	protected $encrypt; // Library
 
 	public function __construct()
 	{
-		$this->cookie_name = Config::item('cookie.prefix').Config::item('session.name').'_data';
-		$this->expiration  = Config::item('session.expiration');
-		$this->encryption  = Config::item('session.encryption');
+		$this->cookie_name = Config::item('session.name').'_data';
 
-		$this->input = new Input();
-
-		if ($this->encryption == TRUE)
+		if (Config::item('session.encryption'))
 		{
-			$this->encrypt = new Encrypt();
+			$this->encrypt = new Encrypt;
 		}
 
 		Log::add('debug', 'Session Cookie Driver Initialized');
@@ -43,48 +36,32 @@ class Session_Cookie_Driver implements Session_Driver {
 
 	public function read($id)
 	{
-		$data = $this->input->cookie($this->cookie_name);
+		$data = cookie::get($this->cookie_name);
 
 		if ($data == '')
 			return $data;
 
-		if ($this->encryption == TRUE)
-		{
-			$data = $this->encrypt->decode($data);
-		}
-		else
-		{
-			$data = base64_decode($data);
-		}
-
-		return $data;
+		return (Config::item('session.encryption')) ? $this->encrypt->decode($data) : base64_decode($data);
 	}
 
 	public function write($id, $data)
 	{
-		if ($this->encryption == TRUE)
-		{
-			$data = $this->encrypt->encode($data);
-		}
-		else
-		{
-			$data = base64_encode($data);
-		}
+		$data = (Config::item('session.encryption')) ? $this->encrypt->encode($data) : base64_encode($data);
 
 		if (strlen($data) > 4048)
 		{
-			Log::add('error', 'Session data exceeds the 4KB limit, ignoring write.');
+			Log::add('error', 'Session data exceeds the 4kB limit, ignoring write.');
 			return FALSE;
 		}
 
-		return $this->setcookie($data, $this->expiration ? time() + $this->expiration : 0);
+		return cookie::set($this->cookie_name, $data, Config::item('session.expiration'));
 	}
 
 	public function destroy($id)
 	{
 		unset($_COOKIE[$this->cookie_name]);
 
-		return $this->setcookie(session_id(), (time() - 86400));
+		return cookie::delete($this->cookie_name);
 	}
 
 	public function regenerate()
@@ -98,30 +75,6 @@ class Session_Cookie_Driver implements Session_Driver {
 	public function gc()
 	{
 		return TRUE;
-	}
-
-	/**
-	 * Method: setcookie
-	 *  Proxy for setcookie()
-	 *
-	 * Parameters:
-	 *  data       - session data
-	 *  expiration - cookie expiration
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
-	 */
-	protected function setcookie($data, $expiration)
-	{
-		return headers_sent() ? FALSE : setcookie
-		(
-			$this->cookie_name,
-			$data,
-			$expiration,
-			Config::item('cookie.path'),
-			Config::item('cookie.domain'),
-			Config::item('cookie.secure')
-		);
 	}
 
 } // End Session Cookie Driver Class

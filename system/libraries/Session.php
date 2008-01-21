@@ -42,7 +42,7 @@ class Session_Core {
 	 */
 	public function __construct()
 	{
-		$this->input = new Input();
+		$this->input = new Input;
 
 		// This part only needs to be run once
 		if (self::$instance === NULL)
@@ -119,7 +119,7 @@ class Session_Core {
 
 		// Set the session cookie parameters
 		// Note: the httponly parameter was added in PHP 5.2.0
-		if (version_compare(PHP_VERSION, '5.2.0', '>='))
+		if (version_compare(PHP_VERSION, '5.2', '>='))
 		{
 			session_set_cookie_params
 			(

@@ -26,6 +26,9 @@ class cookie_Core {
 	 */
 	public static function set($name, $value = NULL, $expire = NULL, $path = NULL, $domain = NULL, $secure = NULL, $httponly = NULL, $prefix = NULL)
 	{
+		if (headers_sent())
+			return FALSE;
+
 		// If the name param is an array, we import it
 		is_array($name) and extract($name, EXTR_OVERWRITE);
 
@@ -59,19 +62,12 @@ class cookie_Core {
 	 */
 	public static function get($name, $prefix = NULL, $xss_clean = FALSE)
 	{
-		static $input;
-
-		if ($input === NULL)
-		{
-			$input = new Input;
-		}
-
 		if ($prefix === NULL)
 		{
 			$prefix = (string) Config::item('cookie.prefix');
 		}
 
-		return $input->cookie($prefix.$name, $xss_clean);
+		return Input::instance()->cookie($prefix.$name, $xss_clean);
 	}
 
 	/**
