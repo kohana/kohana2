@@ -77,7 +77,7 @@ class Session_Cookie_Driver implements Session_Driver {
 			return FALSE;
 		}
 
-		return $this->setcookie($data, (time() + $this->expiration));
+		return $this->setcookie($data, $this->expiration ? time() + $this->expiration : 0);
 	}
 
 	public function destroy($id)
