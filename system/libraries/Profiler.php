@@ -102,4 +102,14 @@ class Profiler_Core {
 		}
 	}
 
+	/**
+	 * Magically convert this object to a string, the rendered profiler.
+	 *
+	 * @return  string
+	 */
+	public function __toString()
+	{
+		return $this->render(TRUE);
+	}
+
 } // End Profiler Class
