@@ -469,8 +469,8 @@ class Kohana_Mysqli_Statement {
 
 	protected $link = NULL;
 	protected $stmt;
-	protected $var_names;
-	protected $var_values;
+	protected $var_names = array();
+	protected $var_values = array();
 
 	public function __construct($sql, $link)
 	{
@@ -494,6 +494,11 @@ class Kohana_Mysqli_Statement {
 		call_user_func_array(array($this->stmt, 'bind_param'), array_merge($param_types, $var_names));
 
 		return $this;
+	}
+
+	public function bind_result($params)
+	{
+		call_user_func_array(array($this->stmt, 'bind_result'), $params);
 	}
 
 	// Runs the statement
