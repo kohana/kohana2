@@ -63,8 +63,14 @@ class valid_Core {
 		// Scheme is always lowercase
 		$scheme = strtolower($scheme);
 
+		// Disable error reporting
+		$ER = error_reporting(0);
+
 		// Use parse_url to validate the URL
-		$url = @parse_url($url);
+		$url = parse_url($url);
+
+		// Restore error reporting
+		error_reporting($ER);
 
 		// If the boolean check returns TRUE, return FALSE, and vice versa
 		return ! (empty($url['host']) OR empty($url['scheme']) OR $url['scheme'] !== $scheme);

@@ -27,7 +27,7 @@ class feed_Core {
 		$ER = error_reporting(0);
 
 		// Allow loading by filename or raw XML string.
-		$feed = is_file($feed) ? simplexml_load_file($feed) : simplexml_load_string($feed);
+		$feed = (is_file($feed) OR valid::url($feed)) ? simplexml_load_file($feed) : simplexml_load_string($feed);
 
 		// Restore error reporting
 		error_reporting($ER);

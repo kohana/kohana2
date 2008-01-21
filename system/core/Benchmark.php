@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Simple benchmarking.
- * 
+ *
  * $Id$
  *
  * @package    Core

@@ -30,7 +30,7 @@ class form_Core {
 			$attr['method'] = 'post';
 		}
 
-		if (empty($action))
+		if (empty($action) OR ! is_string($action))
 		{
 			// Use the current URL as the default action
 			$action = url::site(Router::$current_uri);
