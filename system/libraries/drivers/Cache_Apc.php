@@ -4,7 +4,7 @@
  *
  * @package    Cache:APC
  * @author     Kohana Team
- * @copyright  (c) 2007 Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
 class Cache_Apc_Driver implements Cache_Driver {

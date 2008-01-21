@@ -2,7 +2,7 @@
 /**
  * Inflector helper class.
  *
- * $Id:$
+ * $Id$
  *
  * @package    Core
  * @author     Kohana Team
@@ -12,14 +12,10 @@
 class inflector_Core {
 
 	/**
-	 * Method: uncountable
-	 *  Checks if a word is defined as uncountable.
+	 * Checks if a word is defined as uncountable.
 	 *
-	 * Parameters:
-	 *  str - word to check
-	 *
-	 * Returns:
-	 *  TRUE or FALSE.
+	 * @param   string   word to check
+	 * @return  boolean
 	 */
 	public static function uncountable($str)
 	{
@@ -35,14 +31,10 @@ class inflector_Core {
 	}
 
 	/**
-	 * Method: singular
-	 *  Makes a plural word singular.
+	 * Makes a plural word singular.
 	 *
-	 * Parameters:
-	 *  str - word to singularize
-	 *
-	 * Returns:
-	 *  The singular version of the word.
+	 * @param   string  word to singularize
+	 * @return  string
 	 */
 	public static function singular($str)
 	{
@@ -88,14 +80,10 @@ class inflector_Core {
 	}
 
 	/**
-	 * Method: plural
-	 *  Makes a singular word plural.
+	 * Makes a singular word plural.
 	 *
-	 * Parameters:
-	 *  str - word to pluralize
-	 *
-	 * Returns:
-	 *  Plural version of the word.
+	 * @param   string  word to pluralize
+	 * @return  string
 	 */
 	public static function plural($str)
 	{
@@ -147,14 +135,10 @@ class inflector_Core {
 	}
 
 	/**
-	 * Method: camelize
-	 *  Makes a phrase camel case.
+	 * Makes a phrase camel case.
 	 *
-	 * Parameters:
-	 *  str - phrase to to camelize
-	 *
-	 * Returns:
-	 *  camelCase version of the phrase.
+	 * @param   string  phrase to camelize
+	 * @return  string
 	 */
 	public static function camelize($str)
 	{
@@ -165,14 +149,10 @@ class inflector_Core {
 	}
 
 	/**
-	 * Method: underscore
-	 *  Makes a phrase underscored instead of spaced.
+	 * Makes a phrase underscored instead of spaced.
 	 *
-	 * Parameters:
-	 *  str - phrase to underscore
-	 *
-	 * Returns:
-	 *  Under_score version of the phrase.
+	 * @param   string  phrase to underscore
+	 * @return  string
 	 */
 	public static function underscore($str)
 	{
@@ -180,14 +160,10 @@ class inflector_Core {
 	}
 
 	/**
-	 * Method:
-	 *  Makes an underscored or dashed phrase human-reable.
+	 * Makes an underscored or dashed phrase human-reable.
 	 *
-	 * Parameters:
-	 *  str - phrase to make human-reable
-	 *
-	 * Returns:
-	 *  Human readable version of the phrase.
+	 * @param   string  phrase to make human-reable
+	 * @return  string
 	 */
 	public static function humanize($str)
 	{

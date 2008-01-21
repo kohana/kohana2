@@ -2,7 +2,7 @@
 /**
  * Date helper class.
  *
- * $Id:$
+ * $Id$
  *
  * @package    Core
  * @author     Kohana Team
@@ -12,14 +12,10 @@
 class date_Core {
 
 	/**
-	 * Method: unix2dos
-	 *  Converts a UNIX timestamp to DOS format.
+	 * Converts a UNIX timestamp to DOS format.
 	 *
-	 * Parameters:
-	 *  timestamp - UNIX timestamp
-	 *
-	 * Returns:
-	 *  DOS timestamp
+	 * @param   integer  UNIX timestamp
+	 * @return  integer
 	 */
 	public static function unix2dos($timestamp = FALSE)
 	{
@@ -40,14 +36,10 @@ class date_Core {
 	}
 
 	/**
-	 * Method: dos2unix
-	 *  Converts a DOS timestamp to UNIX format.
+	 * Converts a DOS timestamp to UNIX format.
 	 *
-	 * Parameters:
-	 *  timestamp - DOS timestamp
-	 *
-	 * Returns:
-	 *  UNIX timestamp
+	 * @param   integer  DOS timestamp
+	 * @return  integer
 	 */
 	public static function dos2unix($timestamp = FALSE)
 	{
@@ -62,16 +54,12 @@ class date_Core {
 	}
 
 	/**
-	 * Method: offset
-	 *  Returns the offset (in seconds) between two time zones. See
-	 *  <http://php.net/timezones> for a list of supported time zones.
+	 * Returns the offset (in seconds) between two time zones.
+	 * @see     http://php.net/timezones
 	 *
-	 * Parameters:
-	 *  remote - timezone that to find the offset of
-	 *  local  - timezone used as the baseline
-	 *
-	 * Returns:
-	 *  Number of seconds between the remote and local timezones.
+	 * @param   string          timezone that to find the offset of
+	 * @param   string|boolean  timezone used as the baseline
+	 * @return  integer
 	 */
 	public static function offset($remote, $local = TRUE)
 	{
@@ -102,14 +90,12 @@ class date_Core {
 	}
 
 	/**
-	 * Method: seconds
-	 *  Number of seconds in a minute, incrementing by a step.
+	 * Number of seconds in a minute, incrementing by a step.
 	 *
-	 * Parameters:
-	 *  step - amount to increment each step by, 1 to 30
-	 *
-	 * Returns:
-	 *  A mirrored (foo => foo) array from 1-60.
+	 * @param   integer  amount to increment each step by, 1 to 30
+	 * @param   integer  start value
+	 * @param   integer  end value
+	 * @return  array    A mirrored (foo => foo) array from 1-60.
 	 */
 	public static function seconds($step = 1, $start = 0, $end = 60)
 	{
@@ -127,14 +113,10 @@ class date_Core {
 	}
 
 	/**
-	 * Method: minutes
-	 *  Number of minutes in an hour, incrementing by a step.
+	 * Number of minutes in an hour, incrementing by a step.
 	 *
-	 * Parameters:
-	 *  step - amount to increment each step by, 1 to 30
-	 *
-	 * Returns:
-	 *  A mirrored (foo => foo) array from 1-60.
+	 * @param   integer  amount to increment each step by, 1 to 30
+	 * @return  array    A mirrored (foo => foo) array from 1-60.
 	 */
 	public static function minutes($step = 5)
 	{
@@ -146,16 +128,12 @@ class date_Core {
 	}
 
 	/**
-	 * Method: hours
-	 *  Number of hours in a day.
+	 * Number of hours in a day.
 	 *
-	 * Parameters:
-	 *  step - amount to increment each step by
-	 *  long - use 24-hour time
-	 *  start - the hour to start at
-	 *
-	 * Returns:
-	 *  A mirrored (foo => foo) array from start-12 or start-23.
+	 * @param   integer  amount to increment each step by
+	 * @param   boolean  use 24-hour time
+	 * @param   integer  the hour to start at
+	 * @return  array    A mirrored (foo => foo) array from start-12 or start-23.
 	 */
 	public static function hours($step = 1, $long = FALSE, $start = NULL)
 	{
@@ -184,14 +162,10 @@ class date_Core {
 	}
 
 	/**
-	 * Method: ampm
-	 *  Returns AM or PM, based on a given hour.
+	 * Returns AM or PM, based on a given hour.
 	 *
-	 * Parameters:
-	 *  hour - number of the hour
-	 *
-	 * Returns:
-	 *  AM or PM.
+	 * @param   integer  number of the hour
+	 * @return  string
 	 */
 	public static function ampm($hour)
 	{
@@ -229,15 +203,11 @@ class date_Core {
 	}
 
 	/**
-	 * Method: days
-	 *  Number of days in month.
+	 * Number of days in month.
 	 *
-	 * Parameters:
-	 *  month - number of month
-	 *  year  - number of year to check month, defaults to the current year
-	 *
-	 * Returns:
-	 *  A mirrored (foo => foo) array of the days.
+	 * @param   integer  number of month
+	 * @param   integer  number of year to check month, defaults to the current year
+	 * @return  array    A mirrored (foo => foo) array of the days.
 	 */
 	public static function days($month, $year = FALSE)
 	{
@@ -268,11 +238,9 @@ class date_Core {
 	}
 
 	/**
-	 * Method: months
-	 *  Number of months in a year
+	 * Number of months in a year
 	 *
-	 * Returns:
-	 *  A mirrored (foo => foo) array from 1-12.
+	 * @return  array  A mirrored (foo => foo) array from 1-12.
 	 */
 	public static function months()
 	{
@@ -280,16 +248,12 @@ class date_Core {
 	}
 
 	/**
-	 * Method: years
-	 *  Returns an array of years between a starting and ending year. Uses the
-	 *  current year +/- 5 as the max/min.
+	 * Returns an array of years between a starting and ending year.
+	 * Uses the current year +/- 5 as the max/min.
 	 *
-	 * Parameters:
-	 *  start - starting year
-	 *  end   - ending year
-	 *
-	 * Returns:
-	 *  A mirrored array of years between start and end.
+	 * @param   integer  starting year
+	 * @param   integer  ending year
+	 * @return  array
 	 */
 	public static function years($start = FALSE, $end = FALSE)
 	{
@@ -311,16 +275,12 @@ class date_Core {
 	}
 
 	/**
-	 * Method:
-	 *  Returns time difference between two timestamps, in human readable format.
+	 * Returns time difference between two timestamps, in human readable format.
 	 *
-	 * Parameters:
-	 *  time1  - timestamp
-	 *  time2  - timestamp, defaults to the current time
-	 *  output - formatting string
-	 *
-	 * Returns:
-	 *  A human-readable description of the time span.
+	 * @param   integer       timestamp
+	 * @param   integer       timestamp, defaults to the current time
+	 * @param   string        formatting string
+	 * @return  string|array
 	 */
 	public static function timespan($time1, $time2 = FALSE, $output = 'years,months,weeks,days,hours,minutes,seconds')
 	{

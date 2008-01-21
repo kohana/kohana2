@@ -2,7 +2,7 @@
 /**
  * Text helper class.
  *
- * $Id:$
+ * $Id$
  *
  * @package    Text Helper
  * @author     Kohana Team
@@ -12,16 +12,12 @@
 class text_Core {
 
 	/**
-	 * Method: limit_words
-	 *  Limits a phrase to a given number of words.
+	 * Limits a phrase to a given number of words.
 	 *
-	 * Parameters:
-	 *  str      - phrase to limit words of
-	 *  limit    - number of words to limit to
-	 *  end_char - end character or entity
-	 *
-	 * Returns:
-	 *  A word-limited string with the end character attached.
+	 * @param   string   phrase to limit words of
+	 * @param   integer  number of words to limit to
+	 * @param   string   end character or entity
+	 * @return  string
 	 */
 	public static function limit_words($str, $limit = 100, $end_char = NULL)
 	{
@@ -42,17 +38,13 @@ class text_Core {
 	}
 
 	/**
-	 * Method: limit_chars
-	 *  Limits a phrase to a given number of characters.
+	 * Limits a phrase to a given number of characters.
 	 *
-	 * Parameters:
-	 *  str            - phrase to limit characters of
-	 *  limit          - number of characters to limit to
-	 *  end_char       - end character or entity
-	 *  preserve_words - enable or disable the preservation of words while limiting
-	 *
-	 * Returns:
-	 *  A character-limited string with the end character attached.
+	 * @param   string   phrase to limit characters of
+	 * @param   integer  number of characters to limit to
+	 * @param   string   end character or entity
+	 * @param   boolean  enable or disable the preservation of words while limiting
+	 * @return  string
 	 */
 	public static function limit_chars($str, $limit = 100, $end_char = NULL, $preserve_words = FALSE)
 	{
@@ -77,14 +69,10 @@ class text_Core {
 	}
 
 	/**
-	 * Method: alternate
-	 *  Alternates between two or more strings.
+	 * Alternates between two or more strings.
 	 *
-	 * Parameters:
-	 *  Strings to alternate between.
-	 *
-	 * Returns:
-	 *  The next alternate item.
+	 * @param   string  strings to alternate between
+	 * @return  string
 	 */
 	public static function alternate()
 	{
@@ -101,22 +89,17 @@ class text_Core {
 	}
 
 	/**
-	 * Method: random
-	 *  Generates a random string of a given type and length.
+	 * Generates a random string of a given type and length.
 	 *
-	 * Parameters:
-	 *  type   - a type of pool, or a string of characters to use as the pool
-	 *  length - length of string to return
+	 * @param   string   a type of pool, or a string of characters to use as the pool
+	 * @param   integer  length of string to return
+	 * @return  string
 	 *
-	 * Default Types:
-	 *  unique  - 40 character unique hash
-	 *  alnum   - alpha-numeric characters
-	 *  alpha   - alphabetical characters
-	 *  numeric - digit characters, 0-9
-	 *  nozero  - digit characters, 1-9
-	 *
-	 * Returns:
-	 *  A random string.
+	 * @tutorial  unique  - 40 character unique hash
+	 * @tutorial  alnum   - alpha-numeric characters
+	 * @tutorial  alpha   - alphabetical characters
+	 * @tutorial  numeric - digit characters, 0-9
+	 * @tutorial  nozero  - digit characters, 1-9
 	 */
 	public static function random($type = 'alnum', $length = 8)
 	{
@@ -153,14 +136,10 @@ class text_Core {
 	}
 
 	/**
-	 * Method: reduce_slashes
-	 *  Reduces multiple slashes in a string to single slashes.
+	 * Reduces multiple slashes in a string to single slashes.
 	 *
-	 * Parameters:
-	 *  str - string to reduce slashes of
-	 *
-	 * Returns:
-	 *  Sanitized string.
+	 * @param   string  string to reduce slashes of
+	 * @return  string
 	 */
 	public static function reduce_slashes($str)
 	{
@@ -168,17 +147,13 @@ class text_Core {
 	}
 
 	/**
-	 * Method: censor
-	 *  Replaces the given words with a string.
+	 * Replaces the given words with a string.
 	 *
-	 * Parameters:
-	 *  str                   - phrase to replace words in
-	 *  badwords              - words to replace
-	 *  replacement           - replacement string
-	 *  replace_partial_words - replace words across word boundries (space, period, etc)
-	 *
-	 * Returns:
-	 *  The input string with the given words replaced.
+	 * @param   string   phrase to replace words in
+	 * @param   array    words to replace
+	 * @param   string   replacement string
+	 * @param   boolean  replace words across word boundries (space, period, etc)
+	 * @return  string
 	 */
 	public static function censor($str, $badwords, $replacement = '#', $replace_partial_words = FALSE)
 	{
@@ -207,20 +182,16 @@ class text_Core {
 	}
 
 	/**
-	 * Method: bytes
-	 *  Returns human readable sizes.
-	 *  Based on original functions written by:
-	 *  - Aidan Lister: http://aidanlister.com/repos/v/function.size_readable.php
-	 *  - Quentin Zervaas: http://www.phpriot.com/d/code/strings/filesize-format/
+	 * Returns human readable sizes.
+	 * @see  Based on original functions written by:
+	 * @see  Aidan Lister: http://aidanlister.com/repos/v/function.size_readable.php
+	 * @see  Quentin Zervaas: http://www.phpriot.com/d/code/strings/filesize-format/
 	 *
-	 * Parameters:
-	 *  bytes      - size in bytes
-	 *  force_unit - a definitive unit
-	 *  format     - the return string format
-	 *  si         - whether to use SI prefixes or IEC
-	 *
-	 * Returns:
-	 *  Human readable size.
+	 * @param   integer  size in bytes
+	 * @param   string   a definitive unit
+	 * @param   string   the return string format
+	 * @param   boolean  whether to use SI prefixes or IEC
+	 * @return  string
 	 */
 	public static function bytes($bytes, $force_unit = NULL, $format = NULL, $si = TRUE)
 	{
@@ -250,15 +221,11 @@ class text_Core {
 	}
 
 	/**
-	 * Method: widont
-	 *  Prevents widow words by inserting a non-breaking space between the last two words.
-	 *  See: http://www.shauninman.com/archive/2006/08/22/widont_wordpress_plugin
+	 * Prevents widow words by inserting a non-breaking space between the last two words.
+	 * @see  http://www.shauninman.com/archive/2006/08/22/widont_wordpress_plugin
 	 *
-	 * Parameters:
-	 *  str - string to remove widows from
-	 *
-	 * Returns:
-	 *  String with non-breaking space between the last two words.
+	 * @param   string  string to remove widows from
+	 * @return  string
 	 */
 	public function widont($str)
 	{

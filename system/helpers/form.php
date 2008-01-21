@@ -12,16 +12,12 @@
 class form_Core {
 
 	/**
-	 * Method: open
-	 *  Generates an opening HTML form tag.
+	 * Generates an opening HTML form tag.
 	 *
-	 * Parameters:
-	 *  action - form action attribute
-	 *  attr   - extra attributes
-	 *  hidden - hidden fields to be created immediately after the form tag
-	 *
-	 * Returns:
-	 *  An HTML form tag.
+	 * @param   string  form action attribute
+	 * @param   array   extra attributes
+	 * @param   array   hidden fields to be created immediately after the form tag
+	 * @return  string
 	 */
 	public static function open($action = '', $attr = array(), $hidden = NULL)
 	{
@@ -55,16 +51,12 @@ class form_Core {
 	}
 
 	/**
-	 * Method: open_multipart
-	 *  Generates an opening HTML form tag that can be used for uploading files.
+	 * Generates an opening HTML form tag that can be used for uploading files.
 	 *
-	 * Parameters:
-	 *  action - form action attribute
-	 *  attr   - extra attributes
-	 *  hidden - hidden fields to be created immediately after the form tag
-	 *
-	 * Returns:
-	 *  An HTML form tag.
+	 * @param   string  form action attribute
+	 * @param   array   extra attributes
+	 * @param   array   hidden fields to be created immediately after the form tag
+	 * @return  string
 	 */
 	public static function open_multipart($action, $attr = array(), $hidden = array())
 	{
@@ -75,16 +67,12 @@ class form_Core {
 	}
 
 	/**
-	 * Method: hidden
-	 *  Generates hidden form fields.
-	 *  You can pass a simple key/value string or an associative array with multiple values.
+	 * Generates hidden form fields.
+	 * You can pass a simple key/value string or an associative array with multiple values.
 	 *
-	 * Parameters:
-	 *  data  - input name (string) or key/value pairs (array)
-	 *  value - input value, if using an input name
-	 *
-	 * Returns:
-	 *  One or more HTML hidden form input tags.
+	 * @param   string|array  input name (string) or key/value pairs (array)
+	 * @param   string        input value, if using an input name
+	 * @return  string
 	 */
 	public static function hidden($data, $value = '')
 	{
@@ -113,16 +101,12 @@ class form_Core {
 	}
 
 	/**
-	 * Method: input
-	 *  Creates an HTML form input tag. Defaults to a text type.
+	 * Creates an HTML form input tag. Defaults to a text type.
 	 *
-	 * Parameters:
-	 *  data  - input name or an array of HTML attributes
-	 *  value - input value, when using a name
-	 *  extra - a string to be attached to the end of the attributes
-	 *
-	 * Returns:
-	 *  An HTML form input tag.
+	 * @param   string|array  input name or an array of HTML attributes
+	 * @param   string        input value, when using a name
+	 * @param   string        a string to be attached to the end of the attributes
+	 * @return  string
 	 */
 	public static function input($data, $value = '', $extra = '')
 	{
@@ -152,16 +136,12 @@ class form_Core {
 	}
 
 	/**
-	 * Method: password
-	 *  Creates a HTML form password input tag.
+	 * Creates a HTML form password input tag.
 	 *
-	 * Parameters:
-	 *  data  - input name or an array of HTML attributes
-	 *  value - input value, when using a name
-	 *  extra - a string to be attached to the end of the attributes
-	 *
-	 * Returns:
-	 *  An HTML form password input tag.
+	 * @param   string|array  input name or an array of HTML attributes
+	 * @param   string        input value, when using a name
+	 * @param   string        a string to be attached to the end of the attributes
+	 * @return  string
 	 */
 	public static function password($data, $value = '', $extra = '')
 	{
@@ -176,16 +156,12 @@ class form_Core {
 	}
 
 	/**
-	 * Method: upload
-	 *  Creates an HTML form upload input tag.
+	 * Creates an HTML form upload input tag.
 	 *
-	 * Parameters:
-	 *  data  - input name or an array of HTML attributes
-	 *  value - input value, when using a name
-	 *  extra - a string to be attached to the end of the attributes
-	 *
-	 * Returns:
-	 *  An HTML form upload tag.
+	 * @param   string|array  input name or an array of HTML attributes
+	 * @param   string        input value, when using a name
+	 * @param   string        a string to be attached to the end of the attributes
+	 * @return  string
 	 */
 	public static function upload($data, $value = '', $extra = '')
 	{
@@ -200,16 +176,12 @@ class form_Core {
 	}
 
 	/**
-	 * Method: textarea
-	 *  Creates an HTML form textarea tag.
+	 * Creates an HTML form textarea tag.
 	 *
-	 * Parameters:
-	 *  data  - textarea name or an array of HTML attributes
-	 *  value - textarea value, when using a name
-	 *  extra - a string to be attached to the end of the attributes
-	 *
-	 * Returns:
-	 *  An HTML form textarea tag.
+	 * @param   string|array  input name or an array of HTML attributes
+	 * @param   string        input value, when using a name
+	 * @param   string        a string to be attached to the end of the attributes
+	 * @return  string
 	 */
 	public static function textarea($data, $value = '', $extra = '')
 	{
@@ -234,17 +206,13 @@ class form_Core {
 	}
 
 	/**
-	 * Method: dropdown
-	 *  Creates an HTML form select tag, or "dropdown menu".
+	 * Creates an HTML form select tag, or "dropdown menu".
 	 *
-	 * Parameters:
-	 *  data     - select name or an array of HTML attributes
-	 *  options  - select options, when using a name
-	 *  selected - option key that should be selected by default
-	 *  extra    - a string to be attached to the end of the attributes
-	 *
-	 * Returns:
-	 *  An HTML form select tag, with options.
+	 * @param   string|array  input name or an array of HTML attributes
+	 * @param   array         select options, when using a name
+	 * @param   string        option key that should be selected by default
+	 * @param   string        a string to be attached to the end of the attributes
+	 * @return  string
 	 */
 	public static function dropdown($data, $options = array(), $selected = '', $extra = '')
 	{
@@ -284,17 +252,13 @@ class form_Core {
 	}
 
 	/**
-	 * Method: checkbox
-	 *  Creates an HTML form checkbox input tag.
+	 * Creates an HTML form checkbox input tag.
 	 *
-	 * Parameters:
-	 *  data    - input name or an array of HTML attributes
-	 *  value   - input value, when using a name
-	 *  checked - make the checkbox checked by default
-	 *  extra   - a string to be attached to the end of the attributes
-	 *
-	 * Returns:
-	 *  An HTML form checkbox tag.
+	 * @param   string|array  input name or an array of HTML attributes
+	 * @param   string        input value, when using a name
+	 * @param   boolean       make the checkbox checked by default
+	 * @param   string        a string to be attached to the end of the attributes
+	 * @return  string
 	 */
 	public static function checkbox($data, $value = '', $checked = FALSE, $extra = '')
 	{
@@ -318,17 +282,13 @@ class form_Core {
 	}
 
 	/**
-	 * Method: radio
-	 *  Creates an HTML form radio input tag.
+	 * Creates an HTML form radio input tag.
 	 *
-	 * Parameters:
-	 *  data    - input name or an array of HTML attributes
-	 *  value   - input value, when using a name
-	 *  checked - make the radio selected by default
-	 *  extra   - a string to be attached to the end of the attributes
-	 *
-	 * Returns:
-	 *  An HTML form radio tag.
+	 * @param   string|array  input name or an array of HTML attributes
+	 * @param   string        input value, when using a name
+	 * @param   boolean       make the radio selected by default
+	 * @param   string        a string to be attached to the end of the attributes
+	 * @return  string
 	 */
 	public static function radio($data = '', $value = '', $checked = FALSE, $extra = '')
 	{
@@ -352,16 +312,12 @@ class form_Core {
 	}
 
 	/**
-	 * Method: submit
-	 *  Creates an HTML form submit input tag.
+	 * Creates an HTML form submit input tag.
 	 *
-	 * Parameters:
-	 *  data    - input name or an array of HTML attributes
-	 *  value   - input value, when using a name
-	 *  extra   - a string to be attached to the end of the attributes
-	 *
-	 * Returns:
-	 *  An HTML form submit tag.
+	 * @param   string|array  input name or an array of HTML attributes
+	 * @param   string        input value, when using a name
+	 * @param   string        a string to be attached to the end of the attributes
+	 * @return  string
 	 */
 	public static function submit($data = '', $value = '', $extra = '')
 	{
@@ -376,16 +332,12 @@ class form_Core {
 	}
 
 	/**
-	 * Method: button
-	 *  Creates an HTML form button input tag.
+	 * Creates an HTML form button input tag.
 	 *
-	 * Parameters:
-	 *  data    - input name or an array of HTML attributes
-	 *  value   - input value, when using a name
-	 *  extra   - a string to be attached to the end of the attributes
-	 *
-	 * Returns:
-	 *  An HTML form button tag.
+	 * @param   string|array  input name or an array of HTML attributes
+	 * @param   string        input value, when using a name
+	 * @param   string        a string to be attached to the end of the attributes
+	 * @return  string
 	 */
 	public static function button($data = '', $value = '', $extra = '')
 	{
@@ -414,14 +366,10 @@ class form_Core {
 	}
 
 	/**
-	 * Method: close
-	 *  Closes an open form tag.
+	 * Closes an open form tag.
 	 *
-	 * Parameters:
-	 *  extra - string to be attached after the closing tag
-	 *
-	 * Returns:
-	 *  A closing HTML form tag.
+	 * @param   string  string to be attached after the closing tag
+	 * @return  string
 	 */
 	public static function close($extra = '')
 	{
@@ -429,16 +377,12 @@ class form_Core {
 	}
 
 	/**
-	 * Method: label
-	 *  Creates an HTML form label tag.
+	 * Creates an HTML form label tag.
 	 *
-	 * Parameters:
-	 *  data  - label "for" name or an array of HTML attributes
-	 *  text  - label text or HTML
-	 *  extra - a string to be attached to the end of the attributes
-	 *
-	 * Returns:
-	 *  An HTML form submit tag.
+	 * @param   string|array  label "for" name or an array of HTML attributes
+	 * @param   string        label text or HTML
+	 * @param   string        a string to be attached to the end of the attributes
+	 * @return  string
 	 */
 	public static function label($data = '', $text = '', $extra = '')
 	{
@@ -462,15 +406,11 @@ class form_Core {
 	}
 
 	/**
-	 * Method: attributes
-	 *  Sorts a key/value array of HTML attributes, putting form attributes first,
-	 *  and returns an attribute string.
+	 * Sorts a key/value array of HTML attributes, putting form attributes first,
+	 * and returns an attribute string.
 	 *
-	 * Parameters:
-	 *  attr - HTML attributes array
-	 *
-	 * Returns:
-	 *  An HTML attribute string.
+	 * @param   array   HTML attributes array
+	 * @return  string
 	 */
 	public static function attributes($attr)
 	{

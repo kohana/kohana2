@@ -12,15 +12,11 @@
 class url_Core {
 
 	/**
-	 * Method: base
-	 *  Base URL, with or without the index page.
+	 * Base URL, with or without the index page.
 	 *
-	 * Parameters:
-	 *  index    - include the index page
-	 *  protocol - non-default protocol
-	 *
-	 * Returns:
-	 *  The base URL string.
+	 * @param   boolean  include the index page
+	 * @param   boolean  non-default protocol
+	 * @return  string
 	 */
 	public static function base($index = FALSE, $protocol = FALSE)
 	{
@@ -37,15 +33,11 @@ class url_Core {
 	}
 
 	/**
-	 * Method: site
-	 *  Fetches a site URL based on a URI segment.
+	 * Fetches a site URL based on a URI segment.
 	 *
-	 * Parameters:
-	 *  uri      - site URI to convert
-	 *  protocol - non-default protocol
-	 *
-	 * Returns:
-	 *  A URL string.
+	 * @param   string  site URI to convert
+	 * @param   string  non-default protocol
+	 * @return  string
 	 */
 	public static function site($uri = '', $protocol = FALSE)
 	{
@@ -73,11 +65,10 @@ class url_Core {
 	}
 
 	/**
-	 * Method: current
-	 *  Fetches the current URI.
+	 * Fetches the current URI.
 	 *
-	 * Returns:
-	 *  The current URI string.
+	 * @param   boolean  include the query string
+	 * @return  string
 	 */
 	public static function current($qs = FALSE)
 	{
@@ -85,15 +76,11 @@ class url_Core {
 	}
 
 	/**
-	 * Method: title
-	 *  Convert a phrase to a URL-safe title.
+	 * Convert a phrase to a URL-safe title.
 	 *
-	 * Parameters:
-	 *  title     - phrase to convert
-	 *  separator - word separator
-	 *
-	 * Returns:
-	 *  A URL-safe title string.
+	 * @param   string  phrase to convert
+	 * @param   string  word separator (- or _)
+	 * @return  string
 	 */
 	public static function title($title, $separator = '-')
 	{
@@ -115,16 +102,12 @@ class url_Core {
 	}
 
 	/**
-	 * Method: redirect
-	 *  Sends a page redirect header.
+	 * Sends a page redirect header.
 	 *
-	 * Parameters:
-	 *  uri    - site URI or URL to redirect to
-	 *  method - HTTP method of redirect
-	 *
-	 * Returns:
-	 *  A HTML anchor, but sends HTTP headers. The anchor should never be seen
-	 *  by the user, unless their browser does not understand the headers sent.
+	 * @param  string  site URI or URL to redirect to
+	 * @param  string  HTTP method of redirect
+	 * @return A HTML anchor, but sends HTTP headers. The anchor should never be seen
+	 *         by the user, unless their browser does not understand the headers sent.
 	 */
 	public static function redirect($uri = '', $method = '302')
 	{
