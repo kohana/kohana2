@@ -156,7 +156,7 @@ class Input_Core {
 		reset($args);
 
 		// Multiple inputs require us to return an array
-		$return_array = (bool) count($args);
+		$return_array = (bool) (count($args) > 1);
 
 		// Compose the data to return
 		$data = array();

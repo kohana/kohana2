@@ -55,7 +55,7 @@ class Kohana {
 		$ER = error_reporting(0);
 
 		// Set the user agent
-		self::$user_agent = (isset($_SERVER['HTTP_USER_AGENT'])) ? trim($_SERVER['HTTP_USER_AGENT']) : FALSE;
+		self::$user_agent = trim($_SERVER['HTTP_USER_AGENT']);
 
 		if (function_exists('date_default_timezone_set'))
 		{
