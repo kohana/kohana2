@@ -44,7 +44,7 @@ class feed_Core {
 
 		foreach ($feed as $item)
 		{
-			if ($i++ === $limit)
+			if ($limit !== 0 AND $i++ === $limit)
 				break;
 
 			$items[] = (array) $item;
