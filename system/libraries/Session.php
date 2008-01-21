@@ -57,10 +57,10 @@ class Session_Core {
 			{
 				try
 				{
-					// Set the driver name
+					// Set driver name
 					$driver = 'Session_'.ucfirst(strtolower(self::$config['driver'])).'_Driver';
 
-					// Manually call auto-loading, for proper exception handling
+					// Manually autoload so that exceptions can be caught
 					Kohana::auto_load($driver);
 				}
 				catch (Kohana_Exception $e)

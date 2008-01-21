@@ -35,14 +35,14 @@ class Cache_Core {
 
 		try
 		{
-			$driver = 'Cache_'.ucfirst($this->config['driver']).'_Driver';
+			// Set driver name
+			$driver = 'Cache_'.ucfirst(strtolower($this->config['driver'])).'_Driver';
 
 			// Manually autoload so that exceptions can be caught
 			Kohana::auto_load($driver);
 		}
 		catch (Kohana_Exception $e)
 		{
-			// Driver was not found
 			throw new Kohana_Exception('cache.driver_not_supported', $this->config['driver']);
 		}
 

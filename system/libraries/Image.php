@@ -65,16 +65,15 @@ class Image_Core {
 
 		try
 		{
-			// Create the driver class name
-			$driver = 'Image_'.ucfirst($this->config['driver']).'_Driver';
+			// Set driver name
+			$driver = 'Image_'.ucfirst(strtolower($this->config['driver'])).'_Driver';
 
 			// Manually autoload so that exceptions can be caught
 			Kohana::auto_load($driver);
 		}
 		catch (Kohana_Exception $e)
 		{
-			// Driver was not found
-			throw new Kohana_Exception('cache.driver_not_supported', $this->config['driver']);
+			throw new Kohana_Exception('image.driver_not_supported', $this->config['driver']);
 		}
 
 		// Initialize the driver

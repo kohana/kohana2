@@ -77,11 +77,18 @@ class Payment_Core {
 		// Get the driver specific settings
 		$this->config = array_merge($this->config, Config::item('payment.'.$this->config['driver']));
 
-		// Set driver name
-		$driver = 'Payment_'.ucfirst($this->config['driver']).'_Driver';
+		try
+		{
+			// Set driver name
+			$driver = 'Payment_'.ucfirst(strtolower($this->config['driver'])).'_Driver';
 
-		// Manually call auto-loading, for proper exception handling
-		Kohana::auto_load($driver);
+			// Manually autoload so that exceptions can be caught
+			Kohana::auto_load($driver);
+		}
+		catch (Kohana_Exception $e)
+		{
+			throw new Kohana_Exception('payment.driver_not_supported', $this->config['driver']);
+		}
 
 		// Initialize the driver
 		$this->driver = new $driver($this->config);

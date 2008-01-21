@@ -31,18 +31,18 @@ class Archive_Core {
 		try
 		{
 			// Set driver name
-			$driver = 'Archive_'.ucfirst($type).'_Driver';
+			$driver = 'Archive_'.ucfirst(strtolower($type)).'_Driver';
 
-			// Manually call auto-loading, for proper exception handling
+			// Manually autoload so that exceptions can be caught
 			Kohana::auto_load($driver);
-
-			// Initialize the driver
-			$this->driver = new $driver();
 		}
 		catch (Kohana_Exception $exception)
 		{
 			throw new Kohana_Exception('archive.driver_not_supported', $type);
 		}
+
+		// Initialize the driver
+		$this->driver = new $driver();
 
 		// Validate the driver
 		if ( ! in_array('Archive_Driver', class_implements($this->driver)))

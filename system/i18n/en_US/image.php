@@ -2,7 +2,7 @@
 
 $lang = array
 (
-	'driver_not_supported'    => 'The %s image driver does not exist.',
+	'driver_not_supported'    => 'The requested Image driver, %s, was not found.',
 
 	// CI's Image_lib stuff below
 	'source_image_required'   => 'You must specify a source image in your preferences.',
