@@ -237,7 +237,7 @@ class html_Core {
 				$_type  = is_array($type) ? array_shift($type) : $type;
 				$_media = is_array($media) ? array_shift($media) : $media;
 
-				$compiled .= self::link($_href, $_rel, $_type, $suffix, $_media, $index)."\n";
+				$compiled .= self::link($_href, $_rel, $_type, $suffix, $_media, $index);
 			}
 		}
 		else
@@ -248,7 +248,7 @@ class html_Core {
 			$compiled = '<link rel="'.$rel.'" type="'.$type.'" href="'.url::base((bool) $index).$href.$suffix.'"'.$media.' />';
 		}
 
-		return $compiled;
+		return $compiled."\n";
 	}
 
 	/**
@@ -266,7 +266,7 @@ class html_Core {
 		{
 			foreach($script as $name)
 			{
-				$compiled .= self::script($name, $index)."\n";
+				$compiled .= self::script($name, $index);
 			}
 		}
 		else
@@ -276,7 +276,7 @@ class html_Core {
 			$compiled = '<script type="text/javascript" src="'.url::base((bool) $index).$script.$suffix.'"></script>';
 		}
 
-		return $compiled;
+		return $compiled."\n";
 	}
 
 	/**
