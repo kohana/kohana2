@@ -1,21 +1,22 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Loader
+ * Loader.
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Loader_Core {
 
 	/**
-	 * Constructor: __construct
-	 *  Autoloads libraries and models specified in config file.
+	 * Autoloads libraries and models specified in config file.
 	 */
 	public function __construct()
 	{
-		foreach(Config::item('core.autoload') as $type => $load)
+		foreach(Config::item('core.preload') as $type => $load)
 		{
 			if ($load == FALSE) continue;
 
@@ -44,17 +45,12 @@ class Loader_Core {
 	}
 
 	/**
-	 * Method: library
-	 *  Load library.
+	 * Load library.
 	 *
-	 * Parameters:
-	 *  name   - library name
-	 *  config - custom configuration
-	 *  return - return library instance instead of adding to Kohana instance
-	 *
-	 * Returns:
-	 *  FALSE  - library is already loaded and 'return' parameter is FALSE
-	 *  Object - instance of library if 'return' parameter is TRUE
+	 * @param   string   library name
+	 * @param   array    custom configuration
+	 * @param   boolean  return library instance instead of adding to Kohana instance
+	 * @return  FALSE|Object  FALSE if library is already loaded, instance of library if return is TRUE
 	 */
 	public function library($name, $config = array(), $return = FALSE)
 	{
@@ -78,15 +74,11 @@ class Loader_Core {
 	}
 
 	/**
-	 * Method: database
-	 *  Load database.
+	 * Load database.
 	 *
-	 * Parameters:
-	 *  group  - Database config group to use
-	 *  return - return database instance instead of adding to Kohana instance
-	 *
-	 * Returns:
-	 *  Database instance if 'return' parameter is TRUE
+	 * @param   string         Database config group to use
+	 * @param   boolean        return database instance instead of adding to Kohana instance
+	 * @return  void|Database  database instance if return is TRUE
 	 */
 	public function database($group = 'default', $return = FALSE)
 	{
@@ -100,11 +92,9 @@ class Loader_Core {
 	}
 
 	/**
-	 * Method: helper
-	 *  Load helper.
+	 * Load helper. Deprecated.
 	 *
-	 * Parameters:
-	 *  name - helper name
+	 * @param  string  helper name
 	 */
 	public function helper($name)
 	{
@@ -113,16 +103,11 @@ class Loader_Core {
 	}
 
 	/**
-	 * Method: model
-	 *  Load model.
+	 * Load model.
 	 *
-	 * Parameters:
-	 *  name  - model name
-	 *  alias - custom name for accessing model, or TRUE to return instance of model
-	 *
-	 * Returns:
-	 *  FALSE  - model is already loaded
-	 *  Object - instance of model if 'alias' parameter is TRUE
+	 * @param   string             model name
+	 * @param   string             custom name for accessing model, or TRUE to return instance of model
+	 * @return  void|FALSE|Object  FALSE if model is already loaded, instance of model if alias is TRUE
 	 */
 	public function model($name, $alias = FALSE)
 	{
@@ -153,15 +138,11 @@ class Loader_Core {
 	}
 
 	/**
-	 * Method: view
-	 *  Load view.
+	 * Load view.
 	 *
-	 * Parameters:
-	 *  name - view name
-	 *  data - data to make accessible within view
-	 *
-	 * Returns:
-	 *  Instance of specified view
+	 * @param   string  view name
+	 * @param   array   data to make accessible within view
+	 * @return  View
 	 */
 	public function view($name, $data = array())
 	{

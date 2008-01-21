@@ -68,10 +68,10 @@ $config['modules'] = array
 );
 
 /**
- * Libraries and models to be automatically loaded into every controller. Use
+ * Libraries and models to be automatically preloaded into every controller. Use
  * a comma-separated list to set multiple items.
  */
-$config['autoload'] = array
+$config['preload'] = array
 (
 	'libraries' => '',
 	'models'    => '',
