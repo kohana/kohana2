@@ -13,7 +13,7 @@
  *  global_xss_filtering - enable or disable XSS attack filtering on all user input
  *  extension_prefix     - filename prefix for library extensions
  *  include_paths        - extra Kohana resource paths, see <Kohana.find_file>
- *  autoload             - libraries and models to be loaded with the controller
+ *  preload              - libraries and models to be loaded with the controller
  */
 $config = array
 (
@@ -31,7 +31,7 @@ $config = array
 		'modules/kodoc',
 		'modules/auth',
 	),
-	'autoload'             => array
+	'preload'              => array
 	(
 		'libraries' => '',
 		'models'    => ''
