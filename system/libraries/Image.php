@@ -68,8 +68,8 @@ class Image_Core {
 			// Set driver name
 			$driver = 'Image_'.ucfirst(strtolower($this->config['driver'])).'_Driver';
 
-			// Manually autoload so that exceptions can be caught
-			Kohana::auto_load($driver);
+			// Manually load so that exceptions can be caught
+			require_once Kohana::find_file('libraries/drivers', substr($driver, 0, -7), TRUE);
 		}
 		catch (Kohana_Exception $e)
 		{
@@ -79,7 +79,7 @@ class Image_Core {
 		// Initialize the driver
 		$this->driver = new $driver($this->config['params']);
 
-		if ( ! ($this->driver instanceof Image_Driver))
+		if ( ! (self::$driver instanceof Image_Driver))
 			throw new Kohana_Exception('image.invalid_driver', $driver);
 	}
 

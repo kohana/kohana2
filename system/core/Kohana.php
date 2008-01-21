@@ -596,7 +596,7 @@ class Kohana {
 		}
 
 		// If the file doesn't exist, just return
-		if (($filepath = self::find_file($type, $file, TRUE)) === FALSE)
+		if (($filepath = self::find_file($type, $file)) === FALSE)
 			return;
 
 		// Load the requested file

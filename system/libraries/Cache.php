@@ -38,8 +38,8 @@ class Cache_Core {
 			// Set driver name
 			$driver = 'Cache_'.ucfirst(strtolower($this->config['driver'])).'_Driver';
 
-			// Manually autoload so that exceptions can be caught
-			Kohana::auto_load($driver);
+			// Manually load so that exceptions can be caught
+			require_once Kohana::find_file('libraries/drivers', substr($driver, 0, -7), TRUE);
 		}
 		catch (Kohana_Exception $e)
 		{
@@ -50,7 +50,7 @@ class Cache_Core {
 		$this->driver = new $driver($this->config['params']);
 
 		// Validate the driver
-		if ( ! in_array('Cache_Driver', class_implements($this->driver)))
+		if ( ! (self::$driver instanceof Cache_Driver))
 			throw new Kohana_Exception('cache.driver_not_supported', 'Cache drivers must use the Cache_Driver interface.');
 
 		Log::add('debug', 'Cache Library initialized');

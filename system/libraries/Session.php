@@ -60,8 +60,8 @@ class Session_Core {
 					// Set driver name
 					$driver = 'Session_'.ucfirst(strtolower(self::$config['driver'])).'_Driver';
 
-					// Manually autoload so that exceptions can be caught
-					Kohana::auto_load($driver);
+					// Manually load so that exceptions can be caught
+					require_once Kohana::find_file('libraries/drivers', substr($driver, 0, -7), TRUE);
 				}
 				catch (Kohana_Exception $e)
 				{
@@ -72,7 +72,7 @@ class Session_Core {
 				self::$driver = new $driver();
 
 				// Validate the driver
-				if ( ! in_array('Session_Driver', class_implements(self::$driver)))
+				if ( ! (self::$driver instanceof Session_Driver))
 					throw new Kohana_Exception('session.driver_must_implement_interface');
 			}
 

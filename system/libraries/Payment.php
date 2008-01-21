@@ -82,8 +82,8 @@ class Payment_Core {
 			// Set driver name
 			$driver = 'Payment_'.ucfirst(strtolower($this->config['driver'])).'_Driver';
 
-			// Manually autoload so that exceptions can be caught
-			Kohana::auto_load($driver);
+			// Manually load so that exceptions can be caught
+			require_once Kohana::find_file('libraries/drivers', substr($driver, 0, -7), TRUE);
 		}
 		catch (Kohana_Exception $e)
 		{
