@@ -169,7 +169,7 @@ class Media_Controller extends Controller {
 		$mimetype AND header('Content-type: '.$mimetype);
 		echo $data;
 	}
-	
+
 	public function _default()
 	{
 		$type = $this->uri->segment(2);
@@ -178,20 +178,24 @@ class Media_Controller extends Controller {
 		/* issues: getting View to work with any types of files */
 	}
 
-	// Based on http://www.ibloomstudios.com/articles/php_css_compressor/	
+	// Based on http://www.ibloomstudios.com/articles/php_css_compressor/
 	public function _css_compress($data)
 	{
 		// Remove comments
 		$data = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $data);
 		
 		// Remove tabs, spaces, newlines, etc.
+		$data = preg_replace('/\s+/s', ' ', $data);
 		$data = str_replace
 		(
-			array("\r\n", "\r", "\n", "\t", '  ', ' {', '{ ', ' }', '} ', ' +', '+ ', ' >', '> ', ' :', ': ', ' ;', '; ', ' ,', ', ', ';}'),
-			array(' ',    ' ',  ' ',  ' ',  ' ',  '{',  '{',  '}',  '}',  '+',  '+',  '>',  '>',  ':',  ':',  ';',  ';',  ',',  ',',  '}' ),
+			array(' {', '{ ', ' }', '} ', ' +', '+ ', ' >', '> ', ' :', ': ', ' ;', '; ', ' ,', ', ', ';}'),
+			array('{',  '{',  '}',  '}',  '+',  '+',  '>',  '>',  ':',  ':',  ';',  ';',  ',',  ',',  '}' ),
 			$data
 		);
-		
+
+		// Remove empty CSS declarations
+		$data = preg_replace('/[^{}]++\{\}/', '', $data);
+
 		return $data;
 	}
 
