@@ -117,6 +117,16 @@ class Session_Core {
 		// Destroy the session
 		$this->destroy();
 
+		// Set the session name after having checked it
+		if ( ! ctype_alnum(self::$config['name']) OR ctype_digit(self::$config['name']))
+			throw new Kohana_Exception('session.invalid_session_name', self::$config['name']);
+
+		session_name(self::$config['name']);
+
+		// Set garbage collection probability
+		ini_set('session.gc_probability', (int) self::$config['gc_probability']);
+		ini_set('session.gc_divisor', 100);
+
 		// Set the session cookie parameters
 		// Note: the httponly parameter was added in PHP 5.2.0
 		if (version_compare(PHP_VERSION, '5.2', '>='))
@@ -141,9 +151,9 @@ class Session_Core {
 			);
 		}
 
+		// Register non-native driver as the session handler
 		if (self::$config['driver'] != 'native')
 		{
-			// Register driver as the session handler
 			session_set_save_handler
 			(
 				array(self::$driver, 'open'),
@@ -154,12 +164,6 @@ class Session_Core {
 				array(self::$driver, 'gc')
 			);
 		}
-
-		// Set the session name after having checked it
-		if ( ! ctype_alnum(self::$config['name']) OR ctype_digit(self::$config['name']))
-			throw new Kohana_Exception('session.invalid_session_name', self::$config['name']);
-
-		session_name(self::$config['name']);
 
 		// Start the session!
 		session_start();

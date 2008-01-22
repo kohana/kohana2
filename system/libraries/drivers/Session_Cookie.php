@@ -36,7 +36,7 @@ class Session_Cookie_Driver implements Session_Driver {
 
 	public function read($id)
 	{
-		$data = cookie::get($this->cookie_name);
+		$data = (string) cookie::get($this->cookie_name);
 
 		if ($data == '')
 			return $data;

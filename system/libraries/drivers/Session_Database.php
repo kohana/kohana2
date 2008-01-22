@@ -9,41 +9,42 @@
  */
 class Session_Database_Driver implements Session_Driver {
 
-	/**
-	CREATE TABLE `kohana_session` (
-		`session_id` VARCHAR( 40 ) NOT NULL ,
-		`last_activity` INT( 11 ) NOT NULL ,
-		`data` TEXT NOT NULL ,
-		PRIMARY KEY ( `session_id` )
+	/*
+	CREATE TABLE kohana_session
+	(
+		session_id VARCHAR(40) NOT NULL,
+		last_activity INT(11) NOT NULL,
+		data TEXT NOT NULL,
+		PRIMARY KEY (session_id)
 	);
 	*/
 
-	// Database connection
 	protected $db;
+	protected $input;
+	protected $encrypt;
 
+	protected $db_group;
+	protected $expiration;
 	protected $new_session = TRUE;
 	protected $old_id;
 
 	public function __construct()
 	{
-		// Set config options
+		$this->db_group = Config::item('session.storage');
 		$this->expiration = Config::item('session.expiration');
-		$this->encryption = Config::item('session.encryption');
-		$this->group_name = Config::item('session.storage');
 
-		// Load Input
-		$this->input = new Input();
+		$this->input = new Input;
 
-		// Load Encryption
-		if ($this->encryption == TRUE)
+		// Load Encrypt library
+		if (Config::item('session.encryption'))
 		{
-			$this->encrypt = new Encrypt();
+			$this->encrypt = new Encrypt;
 		}
 
 		// Set 'no expiration' to two years
 		if ($this->expiration == 0)
 		{
-			$this->expiration = 60 * 60 * 24 * 365 * 2;
+			$this->expiration = 63072000;
 		}
 
 		Log::add('debug', 'Session Database Driver Initialized');
@@ -66,70 +67,63 @@ class Session_Database_Driver implements Session_Driver {
 		{
 			// Try connecting to the database using a database group, defined
 			// by the 'session.storage' config item. This is optional, but preferred.
-			$this->db = new Database($this->group_name);
+			$this->db = new Database($this->db_group);
 		}
 		catch (Kohana_Database_Exception $e)
 		{
 			// If there's no default group, we use the default database
-			$this->db = new Database();
+			$this->db = new Database;
 		}
 
-		if ( ! $this->db->table_exists($this->group_name))
-			throw new Kohana_Exception('session.no_table', $this->group_name);
+		if ( ! $this->db->table_exists($this->db_group))
+			throw new Kohana_Exception('session.no_table', $this->db_group);
 
 		return is_object($this->db);
 	}
 
 	public function close()
 	{
-		// Garbage collect
-		$this->gc();
+		return TRUE;
 	}
 
 	public function read($id)
 	{
-		$query = $this->db->from($this->group_name)->where('session_id', $id)->get()->result(TRUE);
+		$query = $this->db->from($this->db_group)->where('session_id', $id)->get()->result(TRUE);
 
 		if (count($query) > 0)
 		{
-			// New session, this is used when writing the data
+			// No new session, this is used when writing the data
 			$this->new_session = FALSE;
-			return $query->current()->data;
+			return (Config::item('session.encryption')) ? $this->encrypt->decode($query->current()->data) : $query->current()->data;
 		}
 
 		// Return value must be string, NOT a boolean
 		return '';
 	}
 
-	public function write($id, $session_string)
+	public function write($id, $data)
 	{
-		$data = array
-		(
-			'session_id'    => $id,
-			'last_activity' => time(),
-			'data'          => $session_string
-		);
+		$session['session_id'] = $id;
+		$session['last_activity'] = time();
+		$session['data'] = (Config::item('session.encryption')) ? $this->encrypt->encode($data) : $data;
 
+		// New session
 		if ($this->new_session)
 		{
-			// No existing session, insert new one
-			$query = $this->db->insert($this->group_name, $data);
+			$query = $this->db->insert($this->db_group, $session);
 		}
+		// Existing session, with regenerated session id
+		elseif ( ! empty($this->old_id))
+		{
+			$query = $this->db->update($this->db_group, $session, array('session_id' => $this->old_id));
+		}
+		// Existing session, without regenerated session id
 		else
 		{
-			// Is this a regenerated session?
-			if (empty($this->old_id))
-			{
-				// Remove session ID from the update
-				unset($data['session_id']);
+			// No need to update session_id
+			unset($session['session_id']);
 
-				$query = $this->db->update($this->group_name, $data, array('session_id' => $id));
-			}
-			else
-			{
-				// Session id has been regenerated, so just update the old row with the new id
-				$query = $this->db->update($this->group_name, $data, array('session_id' => $this->old_id));
-			}
+			$query = $this->db->update($this->db_group, $session, array('session_id' => $id));
 		}
 
 		return (bool) count($query);
@@ -137,7 +131,7 @@ class Session_Database_Driver implements Session_Driver {
 
 	public function destroy($id)
 	{
-		return (bool) count($this->db->delete($this->group_name, array('session_id' => $id)));
+		return (bool) count($this->db->delete($this->db_group, array('session_id' => $id)));
 	}
 
 	public function regenerate()
@@ -154,23 +148,16 @@ class Session_Database_Driver implements Session_Driver {
 
 	/**
 	 * Method: gc
-	 *  Upon each call there is a 3% chance that this function will delete all
-	 *  sessions older than session.expiration.
+	 *  Session garbage collection
 	 *
 	 * Returns:
-	 *  Number of deleted rows if gc run, TRUE if not
+	 *  TRUE
 	 */
 	public function gc()
 	{
-		if (rand(1, 100) < 4)
-		{
-			$expiry = time() - $this->expiration;
-			$result = (int) count($this->db->delete($this->group_name, array('last_activity <' => $expiry)));
+		$query = $this->db->delete($this->db_group, array('last_activity <' => time() - $this->expiration));
 
-			Log::add('debug', 'Session garbage was collected, '.$result.' row(s) deleted');
-
-			return $result;
-		}
+		Log::add('debug', 'Session garbage collected: '.count($query).' row(s) deleted.');
 
 		return TRUE;
 	}

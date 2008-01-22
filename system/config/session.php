@@ -39,3 +39,8 @@ $config['expiration'] = 7200;
  * Number of page loads before the session id is regenerated.
  */
 $config['regenerate'] = 3;
+
+/**
+ * Percentage probability that the gc (garbage collection) routine is started.
+ */
+$config['gc_probability'] = 2;
