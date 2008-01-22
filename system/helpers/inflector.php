@@ -36,11 +36,24 @@ class inflector_Core {
 	 * @param   string  word to singularize
 	 * @return  string
 	 */
-	public static function singular($str)
+	public static function singular($str, $count = NULL)
 	{
 		static $cache;
 
 		$str = trim($str);
+
+		// Cache key name
+		$key = $str.$count;
+
+		// We can just return uncountable words
+		if (self::uncountable($str))
+			return $str;
+
+		if (is_string($count) AND ctype_digit($count))
+		{
+			// Convert to integer when using a digit string
+			$count = (int) $count;
+		}
 
 		if ($cache === NULL)
 		{
@@ -50,15 +63,12 @@ class inflector_Core {
 		else
 		{
 			// Already pluralized
-			if (isset($cache[$str]))
-				return $cache[$str];
+			if (isset($cache[$key]))
+				return $cache[$key];
 		}
 
-		// Set the key name
-		$key = $str;
-
-		// We can just return uncountable words
-		if (self::uncountable($str))
+		// Do nothing with a single count
+		if (is_int($count) AND $count === 0 OR $count > 1)
 			return $str;
 
 		$end = substr($str, -3);
@@ -85,15 +95,24 @@ class inflector_Core {
 	 * @param   string  word to pluralize
 	 * @return  string
 	 */
-	public static function plural($str)
+	public static function plural($str, $count = NULL)
 	{
 		static $cache;
 
 		$str = trim($str);
 
+		// Cache key name
+		$key = $str.$count;
+
 		// We can just return uncountable words
 		if (self::uncountable($str))
 			return $str;
+
+		if (is_string($count) AND ctype_digit($count))
+		{
+			// Convert to integer when using a digit string
+			$count = (int) $count;
+		}
 
 		if ($cache === NULL)
 		{
@@ -103,12 +122,13 @@ class inflector_Core {
 		else
 		{
 			// Already pluralized
-			if (isset($cache[$str]))
-				return $cache[$str];
+			if (isset($cache[$key]))
+				return $cache[$key];
 		}
 
-		// Set the key name
-		$key = $str;
+		// If the count is one, do not pluralize
+		if ($count === 1)
+			return $str;
 
 		$end = substr($str, -1);
 		$low = (strcmp($end, strtolower($end)) === 0) ? TRUE : FALSE;

@@ -132,6 +132,26 @@ class ORM_Core {
 		{
 			return $this->object->$key;
 		}
+		elseif ( ! empty($this->object->id) AND in_array($key, $this->has_one))
+		{
+			// Set the model name
+			$model = ucfirst($key).'_Model';
+
+			// Set the foreign key name
+			$id = $key.'_id';
+
+			if (isset($this->object->$id))
+			{
+				return $this->object->$key = new $model($this->object->$id);
+			}
+			else
+			{
+				// Set the foriegn key to this primary key
+				$id = $this->class.'_id';
+
+				return $this->object->$key = new $model(array($this->class.'_id', $this->object->id));
+			}
+		}
 		else
 		{
 			switch($key)
