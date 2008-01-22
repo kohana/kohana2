@@ -79,9 +79,9 @@ class Session_Core {
 			// Create a new session
 			$this->create();
 
+			// Regenerate session id
 			if (self::$config['regenerate'] > 0 AND ($_SESSION['total_hits'] % self::$config['regenerate']) === 0)
 			{
-				// Regenerate session ID
 				$this->regenerate();
 			}
 
@@ -170,7 +170,7 @@ class Session_Core {
 		// Set defaults
 		if ( ! isset($_SESSION['_kf_flash_']))
 		{
-			$_SESSION['user_agent'] = $this->input->user_agent();
+			$_SESSION['user_agent'] = Kohana::$user_agent;
 			$_SESSION['ip_address'] = $this->input->ip_address();
 			$_SESSION['_kf_flash_'] = array();
 			$_SESSION['total_hits'] = 0;
@@ -187,16 +187,17 @@ class Session_Core {
 		if ($_SESSION['total_hits'] > 1)
 		{
 			// Validate the session
-			foreach(self::$config['validate'] as $valid)
+			foreach((array) self::$config['validate'] as $valid)
 			{
 				switch($valid)
 				{
 					case 'user_agent':
+						if ($_SESSION[$valid] !== Kohana::$user_agent)
+							return $this->create();
+					break;
 					case 'ip_address':
 						if ($_SESSION[$valid] !== $this->input->$valid())
-						{
 							return $this->create();
-						}
 					break;
 				}
 			}
@@ -249,7 +250,7 @@ class Session_Core {
 	 *  Destroys the current session.
 	 *
 	 * Returns:
-	 *  TRUE or FALSE
+	 *  TRUE or FALSE (or NULL if called before session_start())
 	 */
 	public function destroy()
 	{

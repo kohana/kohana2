@@ -18,22 +18,24 @@ $config['storage'] = '';
 $config['name'] = 'kohanasession';
 
 /**
- * Session parameters to validate.
+ * Session parameters to validate: user_agent, ip_address.
  */
 $config['validate'] = array('user_agent');
 
 /**
- * Encryption key, set to FALSE to disable session encryption.
+ * Enable or disable session encryption.
+ * Note: this has no effect on the native session driver.
+ * Note: the cookie driver always encrypts session data. Set to TRUE for stronger encryption.
  */
 $config['encryption'] = FALSE;
 
 /**
- * Number of seconds that each session will last.
+ * Session lifetime. Number of seconds that each session will last.
  * A value of 0 will keep the session active until the browser is closed.
  */
 $config['expiration'] = 7200;
 
 /**
- * Number of page loads before the session is regenerated.
+ * Number of page loads before the session id is regenerated.
  */
 $config['regenerate'] = 3;
