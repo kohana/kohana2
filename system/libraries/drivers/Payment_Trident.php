@@ -94,7 +94,7 @@ class Payment_Trident_Driver
 
 		$post_url = ($this->test_mode) ?
 		             'https://test.merchante-solutions.com/mes-api/tridentApi' : // Test mode URL
-		             ''; // Live URL
+		             'https://api.merchante-solutions.com/mes-api/tridentApi'; // Live URL
 
 		$ch = curl_init($post_url); 
 
