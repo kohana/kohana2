@@ -63,20 +63,17 @@ class Session_Database_Driver implements Session_Driver {
 	 */
 	public function open($path, $name)
 	{
-		try
+		if (Config::item('database.'.$this->db_group) === NULL)
 		{
-			// Try connecting to the database using a database group, defined
-			// by the 'session.storage' config item. This is optional, but preferred.
-			$this->db = new Database($this->db_group);
-		}
-		catch (Kohana_Database_Exception $e)
-		{
-			// If there's no default group, we use the default database
+			// There's no defined group, use the default database
 			$this->db = new Database;
 		}
-
-		if ( ! $this->db->table_exists($this->db_group))
-			throw new Kohana_Exception('session.no_table', $this->db_group);
+		else
+		{
+			// Connect to the database using a database group, defined
+			// by the 'session.storage' config item.
+			$this->db = new Database($this->db_group);
+		}
 
 		return is_object($this->db);
 	}
@@ -90,7 +87,7 @@ class Session_Database_Driver implements Session_Driver {
 	{
 		$query = $this->db->from($this->db_group)->where('session_id', $id)->get()->result(TRUE);
 
-		if (count($query) > 0)
+		if ($query->count() > 0)
 		{
 			// No new session, this is used when writing the data
 			$this->new_session = FALSE;
@@ -103,9 +100,12 @@ class Session_Database_Driver implements Session_Driver {
 
 	public function write($id, $data)
 	{
-		$session['session_id'] = $id;
-		$session['last_activity'] = time();
-		$session['data'] = (Config::item('session.encryption')) ? $this->encrypt->encode($data) : $data;
+		$session = array
+		(
+			'session_id' => $id,
+			'last_activity' => time(),
+			'data' => (Config::item('session.encryption')) ? $this->encrypt->encode($data) : $data
+		);
 
 		// New session
 		if ($this->new_session)
@@ -126,12 +126,12 @@ class Session_Database_Driver implements Session_Driver {
 			$query = $this->db->update($this->db_group, $session, array('session_id' => $id));
 		}
 
-		return (bool) count($query);
+		return (bool) $query->count();
 	}
 
 	public function destroy($id)
 	{
-		return (bool) count($this->db->delete($this->db_group, array('session_id' => $id)));
+		return (bool) $this->db->delete($this->db_group, array('session_id' => $id))->count();
 	}
 
 	public function regenerate()
@@ -157,7 +157,7 @@ class Session_Database_Driver implements Session_Driver {
 	{
 		$query = $this->db->delete($this->db_group, array('last_activity <' => time() - $this->expiration));
 
-		Log::add('debug', 'Session garbage collected: '.count($query).' row(s) deleted.');
+		Log::add('debug', 'Session garbage collected: '.$query->count().' row(s) deleted.');
 
 		return TRUE;
 	}
