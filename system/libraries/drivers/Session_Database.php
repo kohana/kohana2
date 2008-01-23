@@ -24,14 +24,12 @@ class Session_Database_Driver implements Session_Driver {
 	protected $encrypt;
 
 	protected $db_group;
-	protected $expiration;
 	protected $new_session = TRUE;
 	protected $old_id;
 
 	public function __construct()
 	{
 		$this->db_group = Config::item('session.storage');
-		$this->expiration = Config::item('session.expiration');
 
 		$this->input = new Input;
 
@@ -39,12 +37,6 @@ class Session_Database_Driver implements Session_Driver {
 		if (Config::item('session.encryption'))
 		{
 			$this->encrypt = new Encrypt;
-		}
-
-		// Set 'no expiration' to two years
-		if ($this->expiration == 0)
-		{
-			$this->expiration = 63072000;
 		}
 
 		Log::add('debug', 'Session Database Driver Initialized');
@@ -155,7 +147,8 @@ class Session_Database_Driver implements Session_Driver {
 	 */
 	public function gc()
 	{
-		$query = $this->db->delete($this->db_group, array('last_activity <' => time() - $this->expiration));
+		$expiration = (Config::item('session.expiration') == 0) ? 86400 : Config::item('session.expiration');
+		$query = $this->db->delete($this->db_group, array('last_activity <' => time() - $expiration));
 
 		Log::add('debug', 'Session garbage collected: '.$query->count().' row(s) deleted.');
 

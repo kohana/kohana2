@@ -131,7 +131,7 @@ class Session_Core {
 		// Note: 'no expiration' is set to two years
 		if (self::$config['driver'] == 'native')
 		{
-			ini_set('session.gc_maxlifetime', (Config::item('session.expiration') == 0) ? 63072000 : Config::item('session.expiration'));
+			ini_set('session.gc_maxlifetime', (self::$config['expiration'] == 0) ? 86400 : self::$config['expiration']);
 		}
 
 		// Set the session cookie parameters
