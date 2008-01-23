@@ -107,15 +107,15 @@ class Session_Database_Driver implements Session_Driver {
 			'data' => (Config::item('session.encryption')) ? $this->encrypt->encode($data) : $data
 		);
 
-		// New session
-		if ($this->new_session)
-		{
-			$query = $this->db->insert($this->db_group, $session);
-		}
 		// Existing session, with regenerated session id
-		elseif ( ! empty($this->old_id))
+		if ( ! empty($this->old_id))
 		{
 			$query = $this->db->update($this->db_group, $session, array('session_id' => $this->old_id));
+		}
+		// New session
+		elseif ($this->new_session)
+		{
+			$query = $this->db->insert($this->db_group, $session);
 		}
 		// Existing session, without regenerated session id
 		else
