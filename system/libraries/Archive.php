@@ -54,13 +54,20 @@ class Archive_Core {
 	/**
 	 * Adds files or directories, recursively, to an archive.
 	 *
-	 * @param   string   file or directory to add
+	 * @param   string       file or directory to add
+	 * @param   string|bool  
 	 * @return  object
 	 */
-	public function add($path, $recursive = TRUE)
+	public function add($path, $name = TRUE)
 	{
 		// Normalize to forward slashes
 		$path = str_replace('\\', '/', $path);
+
+		// Enable or disable recursion
+		$recursive = ($name === TRUE) ? TRUE : FALSE;
+
+		// Set the name
+		$name = is_string($name) ? $name : $path;
 
 		if (file_exists($path) AND is_dir($path))
 		{
@@ -87,7 +94,7 @@ class Archive_Core {
 		}
 		else
 		{
-			$this->paths[] = $path;
+			$this->paths[] = array($path, $name);
 		}
 
 		return $this;

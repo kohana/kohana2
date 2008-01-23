@@ -34,15 +34,17 @@ class Archive_Zip_Driver implements Archive_Driver {
 		// Sort the paths to make sure that directories come before files
 		sort($paths);
 
-		foreach($paths as $file)
+		while ($set = array_shift($paths))
 		{
+			list ($file, $name) = $set;
+
 			if (substr($file, -1) === '/')
 			{
-				$this->add_dir($file);
+				$this->add_dir($file, $name);
 			}
 			else
 			{
-				$this->add_file($file);
+				$this->add_file($file, $name);
 			}
 		}
 
@@ -98,7 +100,7 @@ class Archive_Zip_Driver implements Archive_Driver {
 	 * Parameters:
 	 *  dir - name of directory
 	 */
-	protected function add_dir($dir)
+	protected function add_dir($dir, $name)
 	{
 		// Fetch the timestamp
 		$timestamp = date::unix2dos(filemtime($dir));
@@ -110,12 +112,12 @@ class Archive_Zip_Driver implements Archive_Driver {
 			"\x00\x00".               // General bit flag
 			"\x00\x00".               // Compression method
 			pack('V', $timestamp).    // Last mod time and date
-			pack('V', crc32($dir)).   // CRC32
+			pack('V', crc32($name)).  // CRC32
 			pack('V', 0).             // Compressed filesize
 			pack('V', 0).             // Uncompressed filesize
-			pack('v', strlen($dir)).  // Length of directory name
+			pack('v', strlen($name)). // Length of directory name
 			pack('v', 0).             // Extra field length
-			$dir;                     // Directory name
+			$name;                    // Directory name
 
 		$this->dirs[] =
 			"\x50\x4b\x01\x02".       // Zip header
@@ -127,7 +129,7 @@ class Archive_Zip_Driver implements Archive_Driver {
 			pack('V', 0).             // CRC32
 			pack('V', 0).             // Compressed filesize
 			pack('V', 0).             // Uncompressed filesize
-			pack('v', strlen($dir)).  // Length of directory name
+			pack('v', strlen($name)). // Length of directory name
 			pack('v', 0).             // Extra field length
 			// Data description
 			pack('v', 0).             // CRC32
@@ -135,7 +137,7 @@ class Archive_Zip_Driver implements Archive_Driver {
 			pack('v', 0).             // Uncompressed filesize
 			pack('V', 16).            // External file attribute "directory"
 			pack('V', $this->offset). // Directory offset
-			$dir;                     // Directory name
+			$name;                    // Directory name
 
 		// Set the new offset
 		$this->offset = strlen(implode('', $this->data));
@@ -148,7 +150,7 @@ class Archive_Zip_Driver implements Archive_Driver {
 	 * Parameters:
 	 *  file - name of file
 	 */
-	protected function add_file($file)
+	protected function add_file($file, $name)
 	{
 		// Fetch the timestamp
 		$timestamp = date::unix2dos(filemtime($file));
@@ -165,12 +167,12 @@ class Archive_Zip_Driver implements Archive_Driver {
 			"\x00\x00".               // General bit flag
 			"\x08\x00".               // Compression method
 			pack('V', $timestamp).    // Last mod time and date
-			pack('V', crc32($data)).  // CRC32
+			pack('V', crc32($name)).  // CRC32
 			pack('V', strlen($zdata)).// Compressed filesize
 			pack('V', strlen($data)). // Uncompressed filesize
-			pack('v', strlen($file)). // Length of file name
+			pack('v', strlen($name)). // Length of file name
 			pack('v', 0).             // Extra field length
-			$file.                    // File name
+			$name.                    // File name
 			$zdata;                   // Compressed data
 
 		$this->dirs[] =
@@ -183,7 +185,7 @@ class Archive_Zip_Driver implements Archive_Driver {
 			pack('V', crc32($data)).  // CRC32
 			pack('V', strlen($zdata)).// Compressed filesize
 			pack('V', strlen($data)). // Uncompressed filesize
-			pack('v', strlen($file)). // Length of file name
+			pack('v', strlen($name)). // Length of file name
 			pack('v', 0).             // Extra field length
 			// End "local file header"
 			// Start "data descriptor"
@@ -192,7 +194,7 @@ class Archive_Zip_Driver implements Archive_Driver {
 			pack('v', 0).             // Uncompressed filesize
 			pack('V', 32).            // External file attribute "file"
 			pack('V', $this->offset). // Directory offset
-			$file;                    // File name
+			$name;                    // File name
 
 		// Set the new offset
 		$this->offset = strlen(implode('', $this->data));

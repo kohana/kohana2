@@ -39,6 +39,25 @@ class Examples_Controller extends Controller {
 		echo '<p>'.Kohana::lang('core.stats_footer')."</p>\n";
 	}
 
+	public function archive($build = FALSE)
+	{
+		if ($build === 'build')
+		{
+			// Load archive
+			$archive = new Archive('zip');
+
+			// Add welcome.php with the name of test.php
+			$archive->add(APPPATH.'controllers/welcome.php', 'test.php');
+
+			// Download the built archive
+			$archive->download('test.zip');
+		}
+		else
+		{
+			echo html::anchor(Router::$current_uri.'/build', 'Download welcome.php as test.php');
+		}
+	}
+
 	/**
 	 * Method: template
 	 *  Demonstrates how to use views inside of views.
