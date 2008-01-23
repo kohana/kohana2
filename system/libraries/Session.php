@@ -269,6 +269,9 @@ class Session_Core {
 			// Remove all session data
 			session_unset();
 
+			// Delete the session cookie
+			cookie::delete(session_name());
+
 			// Destroy the session
 			return session_destroy();
 		}
