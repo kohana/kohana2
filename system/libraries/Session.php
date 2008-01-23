@@ -127,6 +127,13 @@ class Session_Core {
 		ini_set('session.gc_probability', (int) self::$config['gc_probability']);
 		ini_set('session.gc_divisor', 100);
 
+		// Set expiration time for native sessions
+		// Note: 'no expiration' is set to two years
+		if (self::$config['driver'] == 'native')
+		{
+			ini_set('session.gc_maxlifetime', (Config::item('session.expiration') == 0) ? 63072000 : Config::item('session.expiration'));
+		}
+
 		// Set the session cookie parameters
 		// Note: the httponly parameter was added in PHP 5.2.0
 		if (version_compare(PHP_VERSION, '5.2', '>='))
