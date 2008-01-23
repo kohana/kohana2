@@ -233,7 +233,7 @@ class Router_Core {
 		}
 
 		// The front controller directory and filename
-		$fc = substr($_SERVER['SCRIPT_FILENAME'], strlen(DOCROOT));
+		$fc = substr(realpath($_SERVER['SCRIPT_FILENAME']), strlen(DOCROOT));
 
 		if (($strpos_fc = strpos(self::$current_uri, $fc)) !== FALSE)
 		{
