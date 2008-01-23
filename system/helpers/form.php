@@ -132,7 +132,7 @@ class form_Core {
 		// For safe form data
 		$data['value'] = html::specialchars($data['value']);
 
-		return '<input'.self::attributes($data).$extra.' />';
+		return '<input'.self::attributes($data).$extra.' />'."\n";
 	}
 
 	/**
