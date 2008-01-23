@@ -24,7 +24,7 @@ class Cache_Apc_Driver implements Cache_Driver {
 	{
 		count($tags) and Log::add('error', 'Cache: tags are unsupported by the APC driver');
 
-		return apc_store($id, $cache, $expiration);
+		return apc_store($id, $data, $expiration);
 	}
 
 	public function find($tag)
