@@ -204,7 +204,7 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 			// this is kinda useless, but needs to be done to avoid the "Commands out of sync; you
 			// can't run this command now" error. Basically, we get all results after the first one
 			// (the one we actually need) and free them.
-			if ($this->link->more_results())
+			if (is_resource($this->link) AND $this->link->more_results())
 			{
 				do
 				{
