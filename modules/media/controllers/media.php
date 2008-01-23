@@ -53,67 +53,67 @@ class Media_Controller extends Controller {
 			$this->pack_js = 'Normal';
 		}
 	}
-
-	public function css()
-	{
-		$filename = $orig_filename = $this->uri->segment(3);
-		if (substr($filename, -4) == '.css')
-		{
-			$filename = substr($filename, 0, -4);
-		}
+	
+	public function css($querystr) {
+		// find all the individual files 
+		$files = explode("+", $querystr);
 
 		$mimetype = config::item('mimes.css');
 		$mimetype = (isset($mimetype[0])) ? $mimetype[0] : 'text/stylesheet';
 
-		$this->use_cache AND $data = $this->cache->get('media.css.'.$filename);
+		$this->use_cache AND $data = $this->cache->get('media.css.'.$querystr);
 
 		if ( ! isset($data) OR empty($data))
 		{
-			try
-			{
-				$view = new View('media/css/'.$filename, NULL, 'css');
-			}
-			catch (Kohana_Exception $exception)
-			{
-				// Try to load the file as a php view (e.g. file.css.php) 
+			$data = '';
+			foreach ($files as $orig_filename) {
+				$filename = $orig_filename;
+				if (substr($filename, -4) == ".css") 
+				{
+					$filename = substr($filename, 0, -4);
+				}
+				
 				try
 				{
-					$view = new View('media/css/'.$orig_filename);
+					$view = new View('media/css/'.$filename, null, 'css');
 				}
 				catch (Kohana_Exception $exception)
 				{
-					// Not found
-					unset($view);
+					// try to load the file as a php view (eg, file.css.php) 
+					try
+					{
+						$view = new View('media/css/'.$orig_filename);
+						
+					}
+					catch (Kohana_Exception $exception)
+					{
+						// not found
+						unset($view);
+					}
+				}
+
+				if (isset($view)) {
+					$filedata = $view->render();
+					
+					($this->pack_css) and $filedata = $this->_css_compress($filedata);
+					
+					$data .= $filedata;
+				}
+				else
+				{	
+					$data .= "\n/**** stylesheet ".$filename." not found ****/\n\n\n";
 				}
 			}
-
-			if (isset($view))
-			{
-				$data = $view->render();
-
-				if ($this->pack_css) 
-				{
-					$data = $this->_css_compress($data);
-				}
-
-				if ($this->use_cache) 
-				{
-					$this->cache->set('media.css.'.$filename, $data, array('media'), $this->cache_lifetime);
-				}
-			}
-			else
-			{	
-				$data = '/* stylesheet not found */';
-			}
+			
+			($this->use_cache) and $this->cache->set('media.css.'.$querystr, $data, array('media'), $this->cache_lifetime);
 		}
 
 		$mimetype AND header('Content-type: '.$mimetype);
 		echo $data;
 	}
 
-	public function js()
-	{
-		$filename = $orig_filename = $this->uri->segment(3);
+	public function js($orig_filename) {
+		$filename = $orig_filename;
 		if (substr($filename, -3) == '.js')
 		{
 			$filename = substr($filename, 0, -3);
@@ -155,10 +155,7 @@ class Media_Controller extends Controller {
 					$data = $packer->pack();
 				}
 
-				if ($this->use_cache) 
-				{
-					$this->cache->set('media.js.'.$filename, $data, array('media'), $this->cache_lifetime);
-				}
+				($this->use_cache) and $this->cache->set('media.js.'.$filename, $data, array('media'), $this->cache_lifetime);
 			} 
 			else 
 			{
@@ -176,6 +173,15 @@ class Media_Controller extends Controller {
 		$filename = $this->uri->segment(3);
 		// TODO: finish this for generic types
 		/* issues: getting View to work with any types of files */
+		
+		try
+		{
+			$view = new View('media/'.$type.'/'.$filename);
+		}
+		catch (Kohana_Exception $exception)
+		{
+			Event::run('system.404');
+		}
 	}
 
 	// Based on http://www.ibloomstudios.com/articles/php_css_compressor/
