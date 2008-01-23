@@ -235,14 +235,14 @@ class form_Core {
 				$input .= '<optgroup label="'.$key.'">'."\n";
 				foreach ($val as $inner_key => $inner_val)
 				{
-					$sel = ($selected == $inner_key) ? ' selected="selected"' : '';
+					$sel = ($selected === $inner_key) ? ' selected="selected"' : '';
 					$input .= '<option value="'.$inner_key.'"'.$sel.'>'.$inner_val.'</option>'."\n";
 				}
 				$input .= '</optgroup>'."\n";
 			}
 			else
 			{
-				$sel = ($selected == $key) ? ' selected="selected"' : '';
+				$sel = ($selected === $key) ? ' selected="selected"' : '';
 				$input .= '<option value="'.$key.'"'.$sel.'>'.$val.'</option>'."\n";
 			}
 		}
