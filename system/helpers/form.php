@@ -227,14 +227,23 @@ class form_Core {
 			$extra = ' '.ltrim($extra);
 		}
 
+		// Selected value should always be a string
+		$selected = (string) $selected;
+
 		$input = '<select'.self::attributes($data).$extra.'>'."\n";
 		foreach ($options as $key => $val)
 		{
+			// Key should always be a string
+			$key = (string) $key;
+
 			if (is_array($val))
 			{
 				$input .= '<optgroup label="'.$key.'">'."\n";
 				foreach ($val as $inner_key => $inner_val)
 				{
+					// Inner key should always be a string
+					$inner_key = (string) $inner_key;
+
 					$sel = ($selected === $inner_key) ? ' selected="selected"' : '';
 					$input .= '<option value="'.$inner_key.'"'.$sel.'>'.$inner_val.'</option>'."\n";
 				}
