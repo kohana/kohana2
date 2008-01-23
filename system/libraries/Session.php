@@ -128,7 +128,6 @@ class Session_Core {
 		ini_set('session.gc_divisor', 100);
 
 		// Set expiration time for native sessions
-		// Note: 'no expiration' is set to two years
 		if (self::$config['driver'] == 'native')
 		{
 			ini_set('session.gc_maxlifetime', (self::$config['expiration'] == 0) ? 86400 : self::$config['expiration']);
