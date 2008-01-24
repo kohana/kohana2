@@ -25,7 +25,6 @@ class Tutorials_Controller extends Controller {
 			),
 			'Forms and Validation' => array
 			(
-				'model_validation' => 'Built-in Model Validation',
 				'quick_forms' => 'Quick Form Generation'
 			),
 			'Advanced Tutorials' => array
