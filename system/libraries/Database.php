@@ -844,18 +844,12 @@ class Database_Core {
 		}
 
 		if ($this->set == NULL)
-		{
-			Log::add('debug', Kohana::lang('database.must_use_set'));
 			throw new Kohana_Database_Exception('database.must_use_set');
-		}
 
 		if ($table == '')
 		{
 			if ( ! isset($this->from[0]))
-			{
-				Log::add('debug', Kohana::lang('database.must_use_table'));
 				throw new Kohana_Database_Exception('database.must_use_table');
-			}
 
 			$table = $this->from[0];
 		}
@@ -885,18 +879,12 @@ class Database_Core {
 		}
 
 		if ($this->set == NULL)
-		{
-			Log::add('debug', Kohana::lang('database.must_use_set'));
 			throw new Kohana_Database_Exception('database.must_use_set');
-		}
 
 		if ($table == '')
 		{
 			if ( ! isset($this->from[0]))
-			{
-				Log::add('debug', Kohana::lang('database.must_use_table'));
 				throw new Kohana_Database_Exception('database.must_use_table');
-			}
 
 			$table = $this->from[0];
 		}
@@ -932,18 +920,12 @@ class Database_Core {
 		}
 
 		if ($this->set == FALSE)
-		{
-			Log::add('debug', Kohana::lang('database.must_use_set'));
 			throw new Kohana_Database_Exception('database.must_use_set');
-		}
 
 		if ($table == '')
 		{
 			if ( ! isset($this->from[0]))
-			{
-				Log::add('debug', Kohana::lang('database.must_use_table'));
 				throw new Kohana_Database_Exception('database.must_use_table');
-			}
 
 			$table = $this->from[0];
 		}
@@ -970,10 +952,7 @@ class Database_Core {
 		if ($table == '')
 		{
 			if ( ! isset($this->from[0]))
-			{
-				Log::add('debug', Kohana::lang('database.must_use_table'));
 				throw new Kohana_Database_Exception('database.must_use_table');
-			}
 
 			$table = $this->from[0];
 		}
@@ -984,10 +963,7 @@ class Database_Core {
 		}
 
 		if (count($this->where) < 1)
-		{
-			Log::add('debug', Kohana::lang('database.must_use_where'));
 			throw new Kohana_Database_Exception('database.must_use_where');
-		}
 
 		$sql = $this->driver->delete($this->config['table_prefix'].$table, $this->where);
 
@@ -1023,10 +999,7 @@ class Database_Core {
 		if (count($this->from) < 1)
 		{
 			if ($table == FALSE)
-			{
-				Log::add('debug', Kohana::lang('database.must_use_table'));
 				throw new Kohana_Database_Exception('database.must_use_table');
-			}
 
 			$this->from($table);
 		}
