@@ -14,6 +14,8 @@ $lang = array
 	'stats_footer'          => 'Seite geladen in {execution_time} Sekunden bei {memory_usage} Speichernutzung. Generiert von Kohana v{kohana_version}.',
 	'error_message'         => 'Fehler aufgetreten in <strong>Zeile %s</strong> in <strong>%s</strong>.',
 	'stack_trace'           => 'Stack Trace',
+	'generic_error'         => 'Die Abfrage konnte nicht abgeschlossen werden.',
+	'errors_disabled'       => 'Sie können zur <a href="%s">Startseite</a> zurück kehren oder es <a href="%s">erneut versuchen</a>.',
 
 	// Resource names
 	'controller'            => 'Der Controller',

@@ -26,8 +26,10 @@ $lang = array
 	'user_aborted'  => 'Das Hochladen der Datei %s wurde abgebrochen.',
 	'invalid_type'  => 'Die Datei %s entspricht nicht den erlaubten Dateitypen.',
 	'max_size'      => 'Die Datei %s ist zu groß. Die maximale Größe beträgt %s.',
-	'max_width'     => 'Die Datei %s überschreitet die maximal erlaubte Breite von %spx.',
-	'max_height'    => 'Die Datei %s überschreitet die maximal erlaubte Höhe von %spx.',
+	'max_width'     => 'Die Datei %s ist zu groß. Die maximal erlaubte Breite betägt %spx.',
+	'max_height'    => 'Die Datei %s ist zu groß. Die maximal erlaubte Höhe betägt %spx.',
+	'min_width'     => 'Die Datei %s ist zu klein. Die minimal erlaubte Breite betägt %spx.',
+	'min_height'    => 'Die Datei %s ist zu klein. Die minimal erlaubte Höhe betägt %spx.',
 
 	// Field types
 	'alpha'         => 'alphabetische Zeichen',
