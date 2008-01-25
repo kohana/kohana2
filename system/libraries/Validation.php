@@ -596,7 +596,7 @@ class Validation_Core {
 
 		if ($maxsize['file'] AND $data['size'] > $maxsize['file'])
 		{
-			$this->add_error('max_size', $this->current_field, $maxsize['file']);
+			$this->add_error('max_size', $this->current_field, $maxsize['human']);
 			return FALSE;
 		}
 
