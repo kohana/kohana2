@@ -504,10 +504,10 @@ class Validation_Core {
 
 			foreach($params as $param)
 			{
-				if (preg_match('/[0-9]+x[0-9]+(-[0-9]+x[0-9]+)?/', $param))
+				if (preg_match('/[0-9]+x[0-9]+(?:-[0-9]+x[0-9]+)?/', $param))
 				{
- 					// Image size, eg: 200x100 , 20x10-200x100
-					$param = (strpos($param, '-') === False) ? $param.'-'.$param : $param;
+ 					// Image size, eg: 200x100, 20x10-200x100
+					$param = (strpos($param, '-') === FALSE) ? $param.'-'.$param : $param;
 
 					list($min, $max) = explode('-', $param);
 

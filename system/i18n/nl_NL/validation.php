@@ -26,8 +26,10 @@ $lang = array
 	'user_aborted'  => 'Het uploaden van het %s bestand werd afgebroken.',
 	'invalid_type'  => 'Het bestandstype van het %s bestand is niet toegestaan.',
 	'max_size'      => 'Het %s bestand dat je wilde uploaden is te groot. De maximum toegelaten grootte is %s.',
-	'max_width'     => 'Het %s bestand heeft een maximum toegelaten breedte van %spx.',
-	'max_height'    => 'Het %s bestand heeft een maximum toegelaten hoogte van %spx.',
+	'max_width'     => 'Het %s upgeloade bestand is te groot: maximum toegelaten breedte is %spx.',
+	'max_height'    => 'Het %s upgeloade bestand is te groot: maximum toegelaten hoogte is %spx.',
+	'min_width'     => 'Het %s upgeloade bestand is te klein: minimum toegelaten breedte is %spx.',
+	'min_height'    => 'Het %s upgeloade bestand is te klein: minimum toegelaten breedte is %spx.',
 
 	// Field types
 	'alpha'         => 'alfabetisch',

@@ -27,9 +27,9 @@ $lang = array
 	'invalid_type'  => 'The %s file is not an allowed file type.',
 	'max_size'      => 'The %s file you uploaded was too large. The maximum size allowed is %s.',
 	'max_width'     => 'The %s file you uploaded was too big. The maximum allowed width is %spx.',
-	'max_height'    => 'The %s file you uploaded was too big, The maximum allowed height is %spx.',
-	'min_width'     => 'The %s file you uploaded was too big. The minimum allowed width is %spx.',
-	'min_height'    => 'The %s file you uploaded was too big, The minimum allowed height is %spx.',
+	'max_height'    => 'The %s file you uploaded was too big. The maximum allowed height is %spx.',
+	'min_width'     => 'The %s file you uploaded was too small. The minimum allowed width is %spx.',
+	'min_height'    => 'The %s file you uploaded was too small. The minimum allowed height is %spx.',
 
 	// Field types
 	'alpha'         => 'alphabetical',
