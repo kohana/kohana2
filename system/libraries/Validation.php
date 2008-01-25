@@ -496,10 +496,6 @@ class Validation_Core {
 			return empty($this->errors);
 		}
 
-		// Validate the uploaded file
-		if ( ! isset($data['tmp_name']) OR ! is_uploaded_file($data['tmp_name']))
-			return FALSE;
-
 		// Parse addition parameters
 		if (is_array($params) AND ! empty($params))
 		{
@@ -593,6 +589,10 @@ class Validation_Core {
 				throw new Kohana_Exception('upload.tmp_unwritable', $upload_path);
 			break;
 		}
+
+		// Validate the uploaded file
+		if ( ! isset($data['tmp_name']) OR ! is_uploaded_file($data['tmp_name']))
+			return FALSE;        
 
 		if ($maxsize['file'] AND $data['size'] > $maxsize['file'])
 		{
