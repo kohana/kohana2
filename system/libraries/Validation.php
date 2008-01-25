@@ -452,12 +452,12 @@ class Validation_Core {
 		$allowed = FALSE;
 
 		// Maximum sizes of various attributes
-		$maxsize = array
+		$fileinfo = array
 		(
 			'file'   => FALSE,
 			'human'  => FALSE,
-			'width'  => FALSE,
-			'height' => FALSE
+			'max_width'  => FALSE,
+			'max_height' => FALSE
 		);
 
 		if ($data === $this->data[$this->current_field])
@@ -504,15 +504,20 @@ class Validation_Core {
 
 			foreach($params as $param)
 			{
-				if (preg_match('/[0-9]+x[0-9]+/', $param))
+				if (preg_match('/[0-9]+x[0-9]+(-[0-9]+x[0-9]+)?/', $param))
 				{
-					// Maximum image size, eg: 200x100
-					list($maxsize['width'], $maxsize['height']) = explode('x', $param);
+ 					// Image size, eg: 200x100 , 20x10-200x100
+					$param = (strpos($param, '-') === False) ? $param.'-'.$param : $param;
+
+					list($min, $max) = explode('-', $param);
+
+					list($fileinfo['max_width'], $fileinfo['max_height']) = explode('x', $max);
+					list($fileinfo['min_width'], $fileinfo['min_height']) = explode('x', $min);
 				}
 				elseif (preg_match('/[0-9]+[BKMG]/i', $param))
 				{
 					// Maximum file size, eg: 1M
-					$maxsize['human'] = strtoupper($param);
+					$fileinfo['human'] = strtoupper($param);
 
 					switch(strtoupper(substr($param, -1)))
 					{
@@ -522,7 +527,7 @@ class Validation_Core {
 						default:  $param = intval($param);                break;
 					}
 
-					$maxsize['file'] = $param;
+					$fileinfo['file'] = $param;
 				}
 				else
 				{
@@ -559,11 +564,11 @@ class Validation_Core {
 			break;
 			// Upload to large, based on php.ini settings
 			case UPLOAD_ERR_INI_SIZE:
-				if ($maxsize['human'] == FALSE)
+				if ($fileinfo['human'] == FALSE)
 				{
-					$maxsize['human'] = ini_get('upload_max_filesize');
+					$fileinfo['human'] = ini_get('upload_max_filesize');
 				}
-				$this->add_error('max_size', $this->current_field, $maxsize['human']);
+				$this->add_error('max_size', $this->current_field, $fileinfo['human']);
 				return FALSE;
 			break;
 			// Kohana does not allow the MAX_FILE_SIZE input to control filesize
@@ -594,9 +599,9 @@ class Validation_Core {
 		if ( ! isset($data['tmp_name']) OR ! is_uploaded_file($data['tmp_name']))
 			return FALSE;        
 
-		if ($maxsize['file'] AND $data['size'] > $maxsize['file'])
+		if ($fileinfo['file'] AND $data['size'] > $fileinfo['file'])
 		{
-			$this->add_error('max_size', $this->current_field, $maxsize['human']);
+			$this->add_error('max_size', $this->current_field, $fileinfo['human']);
 			return FALSE;
 		}
 
@@ -610,14 +615,24 @@ class Validation_Core {
 			$mime = @getimagesize($data['tmp_name']);
 
 			// Validate height and width
-			if ($maxsize['width'] AND $mime[0] > $maxsize['width'])
+			if ($fileinfo['max_width'] AND $mime[0] > $fileinfo['max_width'])
 			{
-				$this->add_error('max_width', $this->current_field, $maxsize['width']);
+				$this->add_error('max_width', $this->current_field, $fileinfo['max_width']);
 				return FALSE;
 			}
-			elseif ($maxsize['height'] AND $mime[1] > $maxsize['height'])
+			elseif ($fileinfo['min_width'] AND $mime[0] < $fileinfo['min_width'])
 			{
-				$this->add_error('max_height', $this->current_field, $maxsize['height']);
+				$this->add_error('min_width', $this->current_field, $fileinfo['min_width']);
+				return FALSE;
+			}
+			elseif ($fileinfo['max_height'] AND $mime[1] > $fileinfo['max_height'])
+			{
+				$this->add_error('max_height', $this->current_field, $fileinfo['max_height']);
+				return FALSE;
+			}
+			elseif ($fileinfo['min_height'] AND $mime[1] < $fileinfo['min_height'])
+			{
+				$this->add_error('min_height', $this->current_field, $fileinfo['min_height']);
 				return FALSE;
 			}
 

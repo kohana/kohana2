@@ -26,8 +26,10 @@ $lang = array
 	'user_aborted'  => 'The %s file was aborted during upload.',
 	'invalid_type'  => 'The %s file is not an allowed file type.',
 	'max_size'      => 'The %s file you uploaded was too large. The maximum size allowed is %s.',
-	'max_width'     => 'The %s file has a maximum allowed width of %s is %spx.',
-	'max_height'    => 'The %s file has a maximum allowed image height of %s is %spx.',
+	'max_width'     => 'The %s file you uploaded was too big. The maximum allowed width is %spx.',
+	'max_height'    => 'The %s file you uploaded was too big, The maximum allowed height is %spx.',
+	'min_width'     => 'The %s file you uploaded was too big. The minimum allowed width is %spx.',
+	'min_height'    => 'The %s file you uploaded was too big, The minimum allowed height is %spx.',
 
 	// Field types
 	'alpha'         => 'alphabetical',
