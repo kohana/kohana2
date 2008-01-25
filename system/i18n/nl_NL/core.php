@@ -14,6 +14,8 @@ $lang = array
 	'stats_footer'          => 'Geladen in {execution_time} seconden, met een geheugengebruik van {memory_usage}. Aangedreven door Kohana v{kohana_version}.',
 	'error_message'         => 'Fout vond plaats op <strong>lijn %s</strong> van <strong>%s</strong>.',
 	'stack_trace'           => 'Stack Trace',
+	'generic_error'         => 'Oproep kon niet afgewerkt worden',
+	'errors_disabled'       => 'Ga naar de <a href="%s">homepage</a> of <a href="%s">probeer opnieuw</a>.',
 
 	// Resource names
 	'controller'            => 'controller',
