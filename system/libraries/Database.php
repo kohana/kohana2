@@ -845,7 +845,7 @@ class Database_Core {
 
 		if ($this->set == NULL)
 		{
-			Log::add('degug', Kohana::lang('database.must_use_set'));
+			Log::add('debug', Kohana::lang('database.must_use_set'));
 			throw new Kohana_Database_Exception('database.must_use_set');
 		}
 
@@ -853,7 +853,7 @@ class Database_Core {
 		{
 			if ( ! isset($this->from[0]))
 			{
-				Log::add('degug', Kohana::lang('database.must_use_table'));
+				Log::add('debug', Kohana::lang('database.must_use_table'));
 				throw new Kohana_Database_Exception('database.must_use_table');
 			}
 
@@ -886,7 +886,7 @@ class Database_Core {
 
 		if ($this->set == NULL)
 		{
-			Log::add('degug', Kohana::lang('database.must_use_set'));
+			Log::add('debug', Kohana::lang('database.must_use_set'));
 			throw new Kohana_Database_Exception('database.must_use_set');
 		}
 
@@ -894,7 +894,7 @@ class Database_Core {
 		{
 			if ( ! isset($this->from[0]))
 			{
-				Log::add('degug', Kohana::lang('database.must_use_table'));
+				Log::add('debug', Kohana::lang('database.must_use_table'));
 				throw new Kohana_Database_Exception('database.must_use_table');
 			}
 
@@ -933,7 +933,7 @@ class Database_Core {
 
 		if ($this->set == FALSE)
 		{
-			Log::add('degug', Kohana::lang('database.must_use_set'));
+			Log::add('debug', Kohana::lang('database.must_use_set'));
 			throw new Kohana_Database_Exception('database.must_use_set');
 		}
 
@@ -941,7 +941,7 @@ class Database_Core {
 		{
 			if ( ! isset($this->from[0]))
 			{
-				Log::add('degug', Kohana::lang('database.must_use_table'));
+				Log::add('debug', Kohana::lang('database.must_use_table'));
 				throw new Kohana_Database_Exception('database.must_use_table');
 			}
 
@@ -971,7 +971,7 @@ class Database_Core {
 		{
 			if ( ! isset($this->from[0]))
 			{
-				Log::add('degug', Kohana::lang('database.must_use_table'));
+				Log::add('debug', Kohana::lang('database.must_use_table'));
 				throw new Kohana_Database_Exception('database.must_use_table');
 			}
 
@@ -985,7 +985,7 @@ class Database_Core {
 
 		if (count($this->where) < 1)
 		{
-			Log::add('degug', Kohana::lang('database.must_use_where'));
+			Log::add('debug', Kohana::lang('database.must_use_where'));
 			throw new Kohana_Database_Exception('database.must_use_where');
 		}
 
@@ -1024,7 +1024,7 @@ class Database_Core {
 		{
 			if ($table == FALSE)
 			{
-				Log::add('degug', Kohana::lang('database.must_use_table'));
+				Log::add('debug', Kohana::lang('database.must_use_table'));
 				throw new Kohana_Database_Exception('database.must_use_table');
 			}
 
