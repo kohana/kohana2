@@ -31,7 +31,7 @@ class Archive_Core {
 		try
 		{
 			// Set driver name
-			$driver = 'Archive_'.ucfirst(strtolower($type)).'_Driver';
+			$driver = 'Archive_'.ucfirst($type).'_Driver';
 
 			// Manually load so that exceptions can be caught
 			require_once Kohana::find_file('libraries/drivers', substr($driver, 0, -7), TRUE);

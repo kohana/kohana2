@@ -58,7 +58,7 @@ class Session_Core {
 				try
 				{
 					// Set driver name
-					$driver = 'Session_'.ucfirst(strtolower(self::$config['driver'])).'_Driver';
+					$driver = 'Session_'.ucfirst(self::$config['driver']).'_Driver';
 
 					// Manually load so that exceptions can be caught
 					require_once Kohana::find_file('libraries/drivers', substr($driver, 0, -7), TRUE);

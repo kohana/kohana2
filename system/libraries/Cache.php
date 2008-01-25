@@ -36,7 +36,7 @@ class Cache_Core {
 		try
 		{
 			// Set driver name
-			$driver = 'Cache_'.ucfirst(strtolower($this->config['driver'])).'_Driver';
+			$driver = 'Cache_'.ucfirst($this->config['driver']).'_Driver';
 
 			// Manually load so that exceptions can be caught
 			require_once Kohana::find_file('libraries/drivers', substr($driver, 0, -7), TRUE);

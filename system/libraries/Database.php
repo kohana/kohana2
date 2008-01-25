@@ -154,7 +154,7 @@ class Database_Core {
 		try
 		{
 			// Set driver name
-			$driver = 'Database_'.ucfirst(strtolower($this->config['connection']['type'])).'_Driver';
+			$driver = 'Database_'.ucfirst($this->config['connection']['type']).'_Driver';
 
 			// Manually load so that exceptions can be caught
 			require_once Kohana::find_file('libraries/drivers', substr($driver, 0, -7), TRUE);
