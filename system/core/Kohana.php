@@ -472,10 +472,6 @@ class Kohana {
 			Log::add('error', Kohana::lang('core.uncaught_exception', $type, $message, $file, $line));
 		}
 
-		// Test if display_errors is off
-		if (Config::item('core.display_errors') == FALSE)
-			return;
-
 		if ($PHP_ERROR)
 		{
 			$description = Kohana::lang('errors.'.E_RECOVERABLE_ERROR);
@@ -499,17 +495,30 @@ class Kohana {
 			ob_clean();
 		}
 
-		if ($line != FALSE)
+		// Test if display_errors is on
+		if (Config::item('core.display_errors'))
 		{
-			// Remove the first entry of debug_backtrace(), it is the exception_handler call
-			$trace = $PHP_ERROR ? array_slice(debug_backtrace(), 1) : $exception->getTrace();
+			if ($line != FALSE)
+			{
+				// Remove the first entry of debug_backtrace(), it is the exception_handler call
+				$trace = $PHP_ERROR ? array_slice(debug_backtrace(), 1) : $exception->getTrace();
 
-			// Beautify backtrace
-			$trace = self::backtrace($trace);
+				// Beautify backtrace
+				$trace = self::backtrace($trace);
+			}
+
+			// Load the error
+			include self::find_file('views', empty($template) ? 'kohana_error_page' : $template);
 		}
+		else
+		{
+			// Get the i18n messages
+			$error = Kohana::lang('core.generic_error');
+			$message = sprintf(Kohana::lang('core.errors_disabled'), url::site(''), url::site(Router::$current_uri));
 
-		// Load the error
-		include self::find_file('views', empty($template) ? 'kohana_error_page' : $template);
+			// Load the errors_disabled view
+			include self::find_file('views', 'kohana_error_disabled');
+		}
 
 		// Run the system.shutdown event
 		Event::has_run('system.shutdown') or Event::run('system.shutdown');
