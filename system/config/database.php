@@ -21,7 +21,6 @@
  */
 $config['default'] = array
 (
-	'show_errors'   => TRUE,
 	'benchmark'     => TRUE,
 	'persistent'    => FALSE,
 	'connection'    => 'mysql://dbuser:secret@localhost/kohana',
