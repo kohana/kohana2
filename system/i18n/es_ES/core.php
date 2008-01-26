@@ -14,6 +14,9 @@ $lang = array
     'stats_footer'          => 'Cargado en {execution_time} segundos, usando {memory_usage} de memoria. Generado con Kohana v{kohana_version}.',
     'error_message'         => 'Ocurrio un error en la linea <strong>%s</strong> de <strong>%s</strong>.',
     'stack_trace'           => 'Stack Trace',
+    'generic_error'         => 'Imposible completar la solicitud',
+    'errors_disabled'       => 'Puedes volver a la <a href="%s">página de inico</a> o <a href="%s">volver a intentarlo</a>.', 
+
     // Resource names
     'controller'            => 'controlador',
     'helper'                => 'helper',

@@ -5,6 +5,7 @@ $lang = array
     // Class errors
     'error_format'  => 'La plantilla de mensaje de error, debe contener la expresión {message} .',
     'invalid_rule'  => 'La regla de validación usada es invalida: %s',
+
     // General errors
     'unknown_error' => 'Error de validación desconocido al comprobar el campo %s.',
     'required'      => 'El campo %s es obligatorio.',
@@ -20,12 +21,16 @@ $lang = array
     'range'         => 'El campo %s debe estar entre los rangos especificados.',
     'regex'         => 'El campo %s no coincide con los datos aceptados.',
     'depends_on'    => 'El campo %s depende del campo %s.',
+
     // Upload errors
     'user_aborted'  => 'El envio del archivo %s fue abortado antes de completarse.',
     'invalid_type'  => 'El archivo %s no es un tipo de archivo permitido.',
-    'max_size'      => 'El archivo %s que estabas enviando es muy grande. El tamaño maximo es %s.',
-    'max_width'     => 'El archivo %s debe tener como ancho maximo %s, y tiene %spx.',
-    'max_height'    => 'El archivo %s debe tener como alto maximo %s, y tiene %spx.',
+    'max_size'      => 'El archivo %s que estas enviando es muy grande. El tamaño máximo es de %s.',
+    'max_width'     => 'El archivo %s debe tener como ancho máximo %s, y tiene %spx.',
+    'max_height'    => 'El archivo %s debe tener como alto máximo %s, y tiene %spx.',
+    'min_width'     => 'El archivo %s que estas enviando es muy pequeño. El ancho mínimo permitido es de %spx.',
+    'min_height'    => 'El archivo %s que estas enviando es muy pequeño. El alto mínimo permitido es de %spx.',
+
     // Field types                                                                                                                                                     
     'alpha'         => 'caracteres del alfabeto',
     'alpha_dash'    => 'caracteres del alfabeto, guiones y subrayado',
