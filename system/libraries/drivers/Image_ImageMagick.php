@@ -5,6 +5,9 @@ class Image_ImageMagick_Driver extends Image_Driver {
 	// Directory that IM is installed in
 	protected $dir = '';
 
+	// Command extension (exe for windows)
+	protected $ext = '';
+
 	// Temporary image filename
 	protected $tmp_image;
 
@@ -29,8 +32,11 @@ class Image_ImageMagick_Driver extends Image_Driver {
 			$config['directory'] = dirname($path);
 		}
 
+		// Set the command extension
+		$this->ext = (PHP_SHLIB_SUFFIX === 'dll') ? '.exe' : '';
+
 		// Check to make sure the provided path is correct
-		if ( ! file_exists(realpath($config['directory']).'/convert'))
+		if ( ! file_exists(realpath($config['directory']).'/convert'.$this->ext))
 			throw new Kohana_Exception('image.imagemagick.not_found');
 
 		// Set the installation directory
@@ -64,7 +70,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 			// Use convert to change the image into it's final version. This is
 			// done to allow the file type to change correctly, and to handle
 			// the quality conversion in the most effective way possible.
-			if ($error = exec(escapeshellcmd($this->dir.'convert').' -quality '.$quality.'% '.$this->cmd_image.' '.$this->new_image))
+			if ($error = exec(escapeshellcmd($this->dir.'convert'.$this->ext).' -quality '.$quality.'% '.$this->cmd_image.' '.$this->new_image))
 			{
 				$this->errors[] = $error;
 			}
@@ -84,7 +90,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		// Set the IM geometry based on the properties
 		$geometry = escapeshellarg($prop['width'].'x'.$prop['height'].'+'.$prop['left'].'+'.$prop['top']);
 
-		if ($error = exec(escapeshellcmd($this->dir.'convert').' -crop '.$geometry.' '.$this->cmd_image.' '.$this->cmd_image))
+		if ($error = exec(escapeshellcmd($this->dir.'convert'.$this->ext).' -crop '.$geometry.' '.$this->cmd_image.' '.$this->cmd_image))
 		{
 			$this->errors[] = $error;
 			return FALSE;
@@ -98,7 +104,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		// Convert the direction into a IM command
 		$dir = ($dir === Image::HORIZONTAL) ? '-flop' : '-flip';
 
-		if ($error = exec(escapeshellcmd($this->dir.'convert').' '.$dir.' '.$this->cmd_image.' '.$this->cmd_image))
+		if ($error = exec(escapeshellcmd($this->dir.'convert'.$this->ext).' '.$dir.' '.$this->cmd_image.' '.$this->cmd_image))
 		{
 			$this->errors[] = $error;
 			return FALSE;
@@ -126,7 +132,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		}
 
 		// Use "convert" to change the width and height
-		if ($error = exec(escapeshellcmd($this->dir.'convert').' -resize '.$dim.' '.$this->cmd_image.' '.$this->cmd_image))
+		if ($error = exec(escapeshellcmd($this->dir.'convert'.$this->ext).' -resize '.$dim.' '.$this->cmd_image.' '.$this->cmd_image))
 		{
 			$this->errors[] = $error;
 			return FALSE;
@@ -137,7 +143,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 
 	public function rotate($amt)
 	{
-		if ($error = exec(escapeshellcmd($this->dir.'convert').' -rotate '.escapeshellarg($amt).' '.$this->cmd_image.' '.$this->cmd_image))
+		if ($error = exec(escapeshellcmd($this->dir.'convert'.$this->ext).' -rotate '.escapeshellarg($amt).' '.$this->cmd_image.' '.$this->cmd_image))
 		{
 			$this->errors[] = $error;
 			return FALSE;
@@ -157,7 +163,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		// Convert the amount to an IM command
 		$sharpen = escapeshellarg($radius.'x'.$sigma.'+'.$amount.'+0');
 
-		if ($error = exec(escapeshellcmd($this->dir.'convert').' -unsharp '.$sharpen.' '.$this->cmd_image.' '.$this->cmd_image))
+		if ($error = exec(escapeshellcmd($this->dir.'convert'.$this->ext).' -unsharp '.$sharpen.' '.$this->cmd_image.' '.$this->cmd_image))
 		{
 			$this->errors[] = $error;
 			return FALSE;
@@ -175,7 +181,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 	protected function properties()
 	{
 		// Return the width and height as an array. Use with list()
-		return explode(',', exec(escapeshellcmd($this->dir.'identify').' -format '.escapeshellarg('%w,%h').' '.$this->cmd_image));
+		return explode(',', exec(escapeshellcmd($this->dir.'identify'.$this->ext).' -format '.escapeshellarg('%w,%h').' '.$this->cmd_image));
 	}
 
 	/**
@@ -226,4 +232,4 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		error_reporting($reporting);
 	}
 
-}
+} // End Image ImageMagick Driver
