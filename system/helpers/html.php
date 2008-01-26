@@ -209,7 +209,7 @@ class html_Core {
 	 * @param   boolean       include the index_page in the link
 	 * @return  string
 	 */
-	public static function stylesheet($style, $media = FALSE, $index = TRUE)
+	public static function stylesheet($style, $media = FALSE, $index = FALSE)
 	{
 		return self::link($style, 'stylesheet', 'text/css', '.css', $media, $index);
 	}
@@ -225,7 +225,7 @@ class html_Core {
 	 * @param   boolean       include the index_page in the link
 	 * @return  string
 	 */
-	public static function link($href, $rel, $type, $suffix = FALSE, $media = FALSE, $index = TRUE)
+	public static function link($href, $rel, $type, $suffix = FALSE, $media = FALSE, $index = FALSE)
 	{
 		$compiled = '';
 
@@ -258,7 +258,7 @@ class html_Core {
 	 * @param   boolean       include the index_page in the link
 	 * @return  string
 	 */
-	public static function script($script, $index = TRUE)
+	public static function script($script, $index = FALSE)
 	{
 		$compiled = '';
 
@@ -286,7 +286,7 @@ class html_Core {
 	 * @param   boolean       include the index_page in the link
 	 * @return  string
 	 */
-	public static function image($attr = NULL, $index = TRUE)
+	public static function image($attr = NULL, $index = FALSE)
 	{
 		if ( ! is_array($attr))
 		{
