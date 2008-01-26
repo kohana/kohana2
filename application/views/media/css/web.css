@@ -65,8 +65,8 @@ p.confirm a { font-size: 1.2em; padding: 0 0.3em; }
 		#sidecontent p { padding: 0 1em 1em; }
 
 #download { margin-bottom: 2em; border: solid 0.3em #76b714; }
-	#download a { display: block; padding: 2em 1em; padding-right: 90px; background: #93c924; border: solid 0.1em #63a80d; text-transform: uppercase; font-size: 0.8em; color: #efefef; }
-	#download a:hover { background: #a2d135; }
+	#download a { display: block; padding: 2em; padding-right: 90px; background: #93c924 url(../img/download.png) no-repeat 160px 50%; border: solid 0.1em #63a80d; text-transform: uppercase; font-size: 0.8em; color: #efefef; }
+	#download a:hover { background-color: #a2d135; }
 		#download a strong,
 		#download a span { display: block; font-size: 2em; font-weight: bold; }
 		#download a span { font-size: 1.8em; text-transform: none; }
