@@ -10,7 +10,6 @@
  * connected at once.
  *
  * Group Options:
- *  show_errors   - Enable or disable database exceptions
  *  benchmark     - Enable or disable database benchmarking
  *  persistent    - Enable or disable a persistent connection
  *  connection    - DSN identifier: driver://user:password@server/database

@@ -371,7 +371,7 @@ class Validation_Core {
 			if (preg_match('/([^\[]*+)\[(.+)\]/', $rule, $match))
 			{
 				$rule   = $match[1];
-				$params = preg_split('/(?<!\\\\)(\,)/', $match[2]);
+				$params = preg_split('/(?<!\\\\),/', $match[2]);
 				$params = str_replace('\,', ',', $params);
 			}
 
@@ -1140,17 +1140,13 @@ class Validation_Core {
 				list($low, $high) = explode(':', $range, 2);
 
 				if ($low == 'FALSE' AND $num <= (float) $high)
-				{
 					return TRUE;
-				}
-				elseif ($high == 'FALSE' AND $num >= (float) $low)
-				{
+
+				if ($high == 'FALSE' AND $num >= (float) $low)
 					return TRUE;
-				}
-				elseif ($num >= (float) $low AND $num <= (float) $high)
-				{
+
+				if ($num >= (float) $low AND $num <= (float) $high)
 					return TRUE;
-				}
 			}
 		}
 
