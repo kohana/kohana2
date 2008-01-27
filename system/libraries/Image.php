@@ -50,18 +50,48 @@ class Image_Core {
 	 */
 	public function __construct($image, $config = NULL)
 	{
-		// Load configuration
-		$this->config = (array) $config + Config::item('image');
+		static $check;
+
+		// Make the check exactly once
+		($check === NULL) and $check = function_exists('getimagesize');
+
+		if ($check === FALSE)
+			throw new Kohana_Exception('image.getimagesize_missing');
 
 		// Check to make sure the image exists
 		if ( ! file_exists($image))
 			throw new Kohana_Exception('image.file_not_found', $image);
 
+		// Disable error reporting, to prevent PHP warnings
+		$ER = error_reporting(0);
+
+		// Fetch the image size and mime type
+		$image_info = getimagesize($image);
+
+		// Turn on error reporting again
+		error_reporting($ER);
+
+		// Make sure that the image is readable and valid
+		if ( ! is_array($image_info) OR count($image_info) < 3)
+			throw new Kohana_Exception('image.file_unreadable', $image);
+
 		// Check to make sure the image type is allowed
-		if (($type = exif_imagetype($image)) == FALSE OR ! isset(Image::$allowed_types[$type]))
+		if ( ! isset(Image::$allowed_types[$image_info[2]]))
 			throw new Kohana_Exception('image.type_not_allowed', $image);
 
-		$this->image = str_replace('\\', '/', realpath($image));
+		// Image has been validated, load it
+		$this->image = array
+		(
+			'file' => str_replace('\\', '/', realpath($image)),
+			'width' => $image_info[0],
+			'height' => $image_info[1],
+			'type' => $image_info[2],
+			'ext' => Image::$allowed_types[$image_info[2]],
+			'mime' => $image_info['mime']
+		);
+
+		// Load configuration
+		$this->config = (array) $config + Config::item('image');
 
 		try
 		{
@@ -246,7 +276,7 @@ class Image_Core {
 	public function save($new_image = FALSE)
 	{
 		// If no new image is defined, use the current image
-		empty($new_image) and $new_image = $this->image;
+		empty($new_image) and $new_image = $this->image['file'];
 
 		// Separate the directory and filename
 		$dir  = pathinfo($new_image, PATHINFO_DIRNAME);

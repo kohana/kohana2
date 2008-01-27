@@ -11,9 +11,6 @@ class Image_ImageMagick_Driver extends Image_Driver {
 	// Temporary image filename
 	protected $tmp_image;
 
-	// Processing errors
-	protected $errors = array();
-
 	/**
 	 * Attempts to detect the ImageMagick installation directory.
 	 *
@@ -37,7 +34,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 
 		// Check to make sure the provided path is correct
 		if ( ! file_exists(realpath($config['directory']).'/convert'.$this->ext))
-			throw new Kohana_Exception('image.imagemagick.not_found');
+			throw new Kohana_Exception('image.imagemagick.not_found', 'convert'.$this->ext);
 
 		// Set the installation directory
 		$this->dir = str_replace('\\', '/', realpath($config['directory'])).'/';
@@ -49,6 +46,9 @@ class Image_ImageMagick_Driver extends Image_Driver {
 	 */
 	public function process($image, $actions, $dir, $file)
 	{
+		// We only need the filename
+		$image = $image['file'];
+
 		// Unique temporary filename
 		$this->tmp_image = $dir.'k2img--'.sha1($dir.$file).substr($file, strrpos($file, '.'));
 
@@ -172,64 +172,9 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		return TRUE;
 	}
 
-	/**
-	 * Return the current width and height of the temporary image. This is mainly
-	 * needed for sanitizing the geometry.
-	 *
-	 * @return  array  width, height
-	 */
 	protected function properties()
 	{
-		// Return the width and height as an array. Use with list()
 		return explode(',', exec(escapeshellcmd($this->dir.'identify'.$this->ext).' -format '.escapeshellarg('%w,%h').' '.$this->cmd_image));
-	}
-
-	/**
-	 * Sanitize and normalize a geometry array based on the temporary image
-	 * width and height. Valid properties are: width, height, top, left.
-	 *
-	 * @param   array  geometry properties
-	 * @return  void
-	 */
-	protected function sanitize_geometry( & $geometry)
-	{
-		list($width, $height) = $this->properties();
-
-		// Turn off error reporting
-		$reporting = error_reporting(0);
-
-		// Width and height cannot exceed current image size
-		$geometry['width']  = min($geometry['width'], $width);
-		$geometry['height'] = min($geometry['height'], $height);
-
-		switch($geometry['top'])
-		{
-			case 'center':
-				$geometry['top'] = floor(($height / 2) - ($geometry['height'] / 2));
-			break;
-			case 'top':
-				$geometry['top'] = 0;
-			break;
-			case 'bottom':
-				$geometry['top'] = $height - $geometry['height'];
-			break;
-		}
-
-		switch($geometry['left'])
-		{
-			case 'center':
-				$geometry['left'] = floor(($width / 2) - ($geometry['width'] / 2));
-			break;
-			case 'left':
-				$geometry['left'] = 0;
-			break;
-			case 'right':
-				$geometry['left'] = $width - $geometry['height'];
-			break;
-		}
-
-		// Restore error reporting
-		error_reporting($reporting);
 	}
 
 } // End Image ImageMagick Driver

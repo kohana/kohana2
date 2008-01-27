@@ -9,7 +9,7 @@ abstract class Image_Driver {
 	protected $tmp_image;
 
 	// Processing errors
-	protected $errors;
+	protected $errors = array();
 
 	/**
 	 * Executes a set of actions, defined in pairs.
@@ -27,6 +27,62 @@ abstract class Image_Driver {
 
 		return TRUE;
 	}
+
+	/**
+	 * Sanitize and normalize a geometry array based on the temporary image
+	 * width and height. Valid properties are: width, height, top, left.
+	 *
+	 * @param   array  geometry properties
+	 * @return  void
+	 */
+	protected function sanitize_geometry( & $geometry)
+	{
+		list($width, $height) = $this->properties();
+
+		// Turn off error reporting
+		$reporting = error_reporting(0);
+
+		// Width and height cannot exceed current image size
+		$geometry['width']  = min($geometry['width'], $width);
+		$geometry['height'] = min($geometry['height'], $height);
+
+		switch($geometry['top'])
+		{
+			case 'center':
+				$geometry['top'] = floor(($height / 2) - ($geometry['height'] / 2));
+			break;
+			case 'top':
+				$geometry['top'] = 0;
+			break;
+			case 'bottom':
+				$geometry['top'] = $height - $geometry['height'];
+			break;
+		}
+
+		switch($geometry['left'])
+		{
+			case 'center':
+				$geometry['left'] = floor(($width / 2) - ($geometry['width'] / 2));
+			break;
+			case 'left':
+				$geometry['left'] = 0;
+			break;
+			case 'right':
+				$geometry['left'] = $width - $geometry['height'];
+			break;
+		}
+
+		// Restore error reporting
+		error_reporting($reporting);
+	}
+
+	/**
+	 * Return the current width and height of the temporary image. This is mainly
+	 * needed for sanitizing the geometry.
+	 *
+	 * @return  array  width, height
+	 */
+	abstract protected function properties();
 
 	/**
 	 * Process an image with a set of actions.
