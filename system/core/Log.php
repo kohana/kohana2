@@ -52,7 +52,15 @@ final class Log {
 		// Make sure the log directory is writable
 		if ( ! is_dir($filename) OR ! is_writable($filename))
 		{
-			ob_get_level() AND ob_clean();
+			// Disable errors
+			$ER = error_reporting(0);
+
+			// Clear the buffer
+			ob_get_level() and ob_clean();
+
+			// Enable errors
+			error_reporting($ER);
+
 			exit(Kohana::lang('core.cannot_write_log'));
 		}
 
