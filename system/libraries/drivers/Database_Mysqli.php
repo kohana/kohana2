@@ -87,13 +87,13 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 
 	public function stmt_prepare($sql = '')
 	{
-		is_object($this->link) or $this->connect($this->db_config);
+		is_object($this->link) or $this->connect();
 		return new Kohana_Mysqli_Statement($sql, $this->link);
 	}
 
 	public function escape_str($str)
 	{
-		is_object($this->link) or $this->connect($this->db_config);
+		is_object($this->link) or $this->connect();
 
 		return $this->link->real_escape_string($str);
 	}

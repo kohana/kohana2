@@ -242,7 +242,7 @@ class Database_Mysql_Driver extends Database_Driver {
 
 	public function escape_str($str)
 	{
-		is_resource($this->link) or $this->connect($this->db_config);
+		is_resource($this->link) or $this->connect();
 
 		return mysql_real_escape_string($str, $this->link);
 	}

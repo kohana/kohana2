@@ -151,7 +151,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 
 	public function stmt_prepare($sql = '')
 	{
-		is_object($this->link) or $this->connect($this->db_config);
+		is_object($this->link) or $this->connect();
 		return new Kohana_Mysqli_Statement($sql, $this->link);
 	}
 
@@ -207,7 +207,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 
 	public function escape_str($str)
 	{
-		is_resource($this->link) or $this->connect($this->db_config);
+		is_resource($this->link) or $this->connect();
 
 		return pg_escape_string($this->link, $str);
 	}
@@ -467,7 +467,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	/**
 	 * Method: count
 	 *  Counts the number of rows in the result set.
-	 * 
+	 *
 	 * Returns:
 	 *  The number of rows in the result set
 	 */
@@ -484,7 +484,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 *
 	 * Parameters:
 	 *  offset - offset id
-	 * 
+	 *
 	 * Returns:
 	 *  TRUE if the offset exists, FALSE otherwise
 	 */
@@ -507,7 +507,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 *
 	 * Parameters:
 	 *  offset - offset id
-	 * 
+	 *
 	 * Returns:
 	 *  The query row
 	 */
@@ -529,7 +529,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 * Parameters:
 	 *  offset - offset id
 	 *  value  - value to set
-	 * 
+	 *
 	 * Returns:
 	 *  <Kohana_Database_Exception> object
 	 */
@@ -544,7 +544,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	 *
 	 * Parameters:
 	 *  offset - offset id
-	 * 
+	 *
 	 * Returns:
 	 *  <Kohana_Database_Exception> object
 	 */
@@ -558,7 +558,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	/**
 	 * Method: current
 	 *  Retreives the current result set row.
-	 * 
+	 *
 	 * Returns:
 	 *  The current result row (type based on <Pgsql_result.result>)
 	 */
@@ -570,7 +570,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	/**
 	 * Method: key
 	 *  Retreives the current row id.
-	 * 
+	 *
 	 * Returns:
 	 *  The current result row id
 	 */
@@ -582,7 +582,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	/**
 	 * Method: next
 	 *  Moves the result pointer ahead one.
-	 * 
+	 *
 	 * Returns:
 	 *  The next row id
 	 */
@@ -594,7 +594,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	/**
 	 * Method: next
 	 *  Moves the result pointer back one.
-	 * 
+	 *
 	 * Returns:
 	 *  The previous row id
 	 */
@@ -606,7 +606,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	/**
 	 * Method: rewind
 	 *  Moves the result pointer to the beginning of the result set.
-	 * 
+	 *
 	 * Returns:
 	 *  0
 	 */
@@ -618,7 +618,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	/**
 	 * Method: valid
 	 *  Determines if the current result pointer is valid.
-	 * 
+	 *
 	 * Returns:
 	 *  TRUE if the pointer is valid, FALSE otherwise
 	 */
