@@ -179,15 +179,19 @@ class Image_GD_Driver extends Image_Driver {
 			$properties['master'] = ($width > $height) ? Image::WIDTH : Image::HEIGHT;
 		}
 
+		// Recalculate the width and height, if they are missing
+		empty($properties['width'])  and $properties['width']  = round($width * $properties['height'] / $height);
+		empty($properties['height']) and $properties['height'] = round($height * $properties['width'] / $width);
+
 		if (empty($properties['height']) OR $properties['master'] === Image::WIDTH)
 		{
-			// Recalculate the height
+			// Recalculate the height based on the width
 			$properties['height'] = round($height * $properties['width'] / $width);
 		}
 
 		if (empty($properties['width']) OR $properties['master'] === Image::HEIGHT)
 		{
-			// Recalculate the width
+			// Recalculate the width based on the height
 			$properties['width'] = round($width * $properties['height'] / $height);
 		}
 
