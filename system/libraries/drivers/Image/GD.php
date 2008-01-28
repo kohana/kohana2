@@ -2,12 +2,6 @@
 
 class Image_GD_Driver extends Image_Driver {
 
-	// GD image create function name
-	protected $imagecreate;
-
-	// GD image save function name
-	protected $imagesave;
-
 	// A transparent PNG as a string
 	protected static $blank_png;
 	protected static $blank_png_width;
@@ -20,63 +14,85 @@ class Image_GD_Driver extends Image_Driver {
 			throw new Kohana_Exception('image.gd.requires_v2');
 	}
 
-	protected function set_functions($type)
-	{
-		static $imagecreate;
-		static $imagesave;
-
-		if ($imagecreate === NULL)
-		{
-			$imagecreate = array
-			(
-				1 => 'imagecreatefromgif',
-				2 => 'imagecreatefromjpeg',
-				3 => 'imagecreatefrompng'
-			);
-
-			$imagesave = array
-			(
-				1 => 'imagegif',
-				2 => 'imagejpeg',
-				3 => 'imagepng'
-			);
-		}
-
-		// Set the create function
-		isset($imagecreate[$type])
-			and function_exists($imagecreate[$type])
-			and $this->imagecreate = $imagecreate[$type];
-
-		// Set the save function
-		isset($imagesave[$type])
-			and function_exists($imagesave[$type])
-			and $this->imagesave = $imagesave[$type];
-
-		return ! (empty($this->imagecreate) OR empty($this->imagesave));
-	}
-
 	public function process($image, $actions, $dir, $file)
 	{
-		// Make sure the image type is supported
-		if ( ! $this->set_functions($image['type']))
+		switch ($image['type'])
+		{
+			case IMAGETYPE_JPEG:
+				$create = 'imagecreatefromjpeg';
+			break;
+			case IMAGETYPE_GIF:
+				$create = 'imagecreatefromgif';
+			break;
+			case IMAGETYPE_PNG:
+				$create = 'imagecreatefrompng';
+			break;
+		}
+
+		switch (substr($file, strrpos($file, '.') + 1))
+		{
+			case 'jpg':
+			case 'jpeg':
+				$save = 'imagejpeg';
+			break;
+			case 'gif':
+				$save = 'imagegif';
+			break;
+			case 'png':
+				$save = 'imagepng';
+			break;
+		}
+
+		// Make sure the image type is supported for import
+		if (empty($create) OR ! function_exists($create))
 			throw new Kohana_Exception('image.type_not_allowed', $image['file']);
+
+		// Make sure the image type is supported for saving
+		if (empty($save) OR ! function_exists($save))
+			throw new Kohana_Exception('image.type_not_allowed', $dir.$file);
 
 		// Load the image
 		$this->image = $image;
 
-		// Image create function alias
-		$create = $this->imagecreate;
-
 		// Create the GD image resource
 		$this->tmp_image = $create($image['file']);
 
+		// Get the quality setting from the actions
+		$quality = arr::remove('quality', $actions);
+
 		if ($status = $this->execute($actions))
 		{
-			// Image save function alias
-			$save = $this->imagesave;
+			// Prevent the alpha from being lost
+			imagealphablending($this->tmp_image, TRUE);
+			imagesavealpha($this->tmp_image, TRUE);
 
-			// Save the image to set the status
-			$status = $save($this->tmp_image, $dir.$file);
+			switch ($save)
+			{
+				case 'imagejpeg':
+					if ($quality === NULL)
+					{
+						// Default quality is 95%
+						$quality = 95;
+					}
+					else
+					{
+						// Make sure the quality is in range
+						$quality = max(1, min($quality, 100));
+					}
+				break;
+				case 'imagegif':
+					// Remove the quality setting, GIF doesn't use it
+					unset($quality);
+				break;
+				case 'imagepng':
+					// Always use a compression level of 9 for PNGs.
+					// This does not affect quality, it only increases the level of compression!
+					$quality = 9;
+				break;
+			}
+
+			// Set the status to the save return value, saving with the quality reques
+			$status = isset($quality) ? $save($this->tmp_image, $dir.$file, $quality) : $save($this->tmp_image, $dir.$file);
 
 			// Destroy the temporary image
 			imagedestroy($this->tmp_image);
@@ -99,18 +115,17 @@ class Image_GD_Driver extends Image_Driver {
 		list($width, $height) = $this->properties();
 
 		// Create the temporary image to copy to
-		$tmp = $this->imagecreatetransparent($properties['width'], $properties['height']);
+		$img = $this->imagecreatetransparent($properties['width'], $properties['height']);
 
 		// Execute the crop
-		imagecopyresampled($tmp, $this->tmp_image, 0, 0, $properties['left'], $properties['top'], $width, $height, $width, $height);
+		if ($status = imagecopyresampled($img, $this->tmp_image, 0, 0, $properties['left'], $properties['top'], $width, $height, $width, $height))
+		{
+			// Swap the new image for the old one
+			imagedestroy($this->tmp_image);
+			$this->tmp_image = $img;
+		}
 
-		// Destroy the temporary image
-		imagedestroy($this->tmp_image);
-
-		// Set the temporary image to this image
-		$this->tmp_image = $tmp;
-
-		return TRUE;
+		return $status;
 	}
 
 	public function resize($properties)
