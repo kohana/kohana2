@@ -270,7 +270,7 @@ class Router_Core {
 
 		if ($str != '' AND ($allowed = Config::item('routes._allowed')) != '')
 		{
-			if ( ! preg_match('|^['.preg_quote($allowed).']+$|iu', $str))
+			if ( ! preg_match('|^['.preg_quote($allowed).']++$|iuD', $str))
 			{
 				header('HTTP/1.1 400 Bad Request');
 				exit('The URI you submitted has disallowed characters.');
