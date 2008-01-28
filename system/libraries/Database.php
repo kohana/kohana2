@@ -83,7 +83,7 @@ class Database_Core {
 
 		// Make sure the connection is valid
 		if (strpos($this->config['connection'], '://') === FALSE)
-			throw new Kohana_Exception('database.invalid_dsn', $this->config['connection']);
+			throw new Kohana_Database_Exception('database.invalid_dsn', $this->config['connection']);
 
 		// Parse the DSN, creating an array to hold the connection parameters
 		$db = array
@@ -168,7 +168,7 @@ class Database_Core {
 
 		// Validate the driver
 		if ( ! ($this->driver instanceof Database_Driver))
-			throw new Kohana_Exception('database.driver_not_supported', 'Database drivers must use the Database_Driver interface.');
+			throw new Kohana_Database_Exception('database.driver_not_supported', 'Database drivers must use the Database_Driver interface.');
 
 		Log::add('debug', 'Database Library initialized');
 	}
@@ -184,7 +184,7 @@ class Database_Core {
 		{
 			$this->link = $this->driver->connect();
 			if ( ! is_resource($this->link) AND ! is_object($this->link))
-				throw new Kohana_Exception('database.connection', $this->driver->show_error());
+				throw new Kohana_Database_Exception('database.connection', $this->driver->show_error());
 		}
 	}
 
@@ -625,7 +625,7 @@ class Database_Core {
 	 */
 	public function having($key, $value = '')
 	{
-	    $this->having = array_merge($this->having, $this->driver->having($key, $value, 'AND'));
+	    $this->having = array_merge($this->having, $this->driver->having($key, $value, 'AND', count($this->having)));
 		return $this;
 	}
 
@@ -642,7 +642,7 @@ class Database_Core {
 	 */
 	public function orhaving($key, $value = '')
 	{
-		$this->having = array_merge($this->having, $this->driver->having($key, $value, 'OR'));
+		$this->having = array_merge($this->having, $this->driver->having($key, $value, 'OR', count($this->having)));
 		return $this;
 	}
 
