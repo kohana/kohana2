@@ -69,8 +69,8 @@ class Image_GD_Driver extends Image_Driver {
 			switch ($save)
 			{
 				case 'imagejpeg':
-					// Make sure the quality is in range (defaults to 95%)
-					$quality = ($quality === NULL) ? 95 : max(1, min($quality, 100));
+					// Default the quality to 95
+					($quality === NULL) and $quality = 95;
 				break;
 				case 'imagegif':
 					// Remove the quality setting, GIF doesn't use it
@@ -95,7 +95,41 @@ class Image_GD_Driver extends Image_Driver {
 
 	public function flip($direction)
 	{
-		echo Kohana::debug($direction);
+		// Get the current width and height
+		$width = imagesx($this->tmp_image);
+		$height = imagesy($this->tmp_image);
+
+		// Create the flipped image
+		$flipped = $this->imagecreatetransparent($width, $height);
+
+		if ($direction === Image::HORIZONTAL)
+		{
+			for ($x = 0; $x < $width; $x++)
+			{
+				$status = imagecopy($flipped, $this->tmp_image, $x, 0, $width - $x - 1, 0, 1, $height);
+			}
+		}
+		elseif ($direction === Image::VERTICAL)
+		{
+			for ($y = 0; $y < $height; $y++)
+			{
+				$status = imagecopy($flipped, $this->tmp_image, 0, $y, 0, $height - $y - 1, $width, 1);
+			}
+		}
+		else
+		{
+			// Do nothing
+			return TRUE;
+		}
+
+		if ($status === TRUE)
+		{
+			// Swap the new image for the old one
+			imagedestroy($this->tmp_image);
+			$this->tmp_image = $flipped;
+		}
+
+		return $status;
 	}
 
 	public function crop($properties)
@@ -104,7 +138,8 @@ class Image_GD_Driver extends Image_Driver {
 		$this->sanitize_geometry($properties);
 
 		// Get the current width and height
-		list($width, $height) = $this->properties();
+		$width = imagesx($this->tmp_image);
+		$height = imagesy($this->tmp_image);
 
 		// Create the temporary image to copy to
 		$img = $this->imagecreatetransparent($properties['width'], $properties['height']);
@@ -123,7 +158,8 @@ class Image_GD_Driver extends Image_Driver {
 	public function resize($properties)
 	{
 		// Get the current width and height
-		list($width, $height) = $this->properties();
+		$width = imagesx($this->tmp_image);
+		$height = imagesy($this->tmp_image);
 
 		if (substr($properties['width'], -1) === '%')
 		{
@@ -137,18 +173,22 @@ class Image_GD_Driver extends Image_Driver {
 			$properties['height'] = round($height * (substr($properties['height'], 0, -1) / 100));
 		}
 
-		if (empty($properties['width']))
+		if ($properties['master'] === Image::AUTO)
 		{
-			/**
-			 * @todo Determine the width difference and calculate, don't forget $properties['master']!
-			 */
+			// Change an automatic master dim to the correct type
+			$properties['master'] = ($width > $height) ? Image::WIDTH : Image::HEIGHT;
 		}
 
-		if (empty($properties['height']))
+		if (empty($properties['height']) OR $properties['master'] === Image::WIDTH)
 		{
-			/**
-			 * @todo Determine the height difference and calculate, don't forget $properties['master']!
-			 */
+			// Recalculate the height
+			$properties['height'] = round($height * $properties['width'] / $width);
+		}
+
+		if (empty($properties['width']) OR $properties['master'] === Image::HEIGHT)
+		{
+			// Recalculate the width
+			$properties['width'] = round($width * $properties['height'] / $height);
 		}
 
 		// Create the temporary image to copy to
@@ -222,7 +262,7 @@ class Image_GD_Driver extends Image_Driver {
 	 *
 	 * @param   integer  image width
 	 * @param   integer  image height
-	 * @return  GD resource
+	 * @return  resource
 	 */
 	protected function imagecreatetransparent($width, $height)
 	{

@@ -127,6 +127,9 @@ class Image_Core {
 		if ( ! $this->valid_size('height', $height))
 			throw new Kohana_Exception('image.invalid_height', $height);
 
+		if (empty($width) AND empty($height))
+			throw new Kohana_Exception('image.invalid_dimensions', __FUNCTION__);
+
 		if ($master === NULL)
 		{
 			// Maintain the aspect ratio by default
@@ -170,6 +173,9 @@ class Image_Core {
 
 		if ( ! $this->valid_size('left', $left))
 			throw new Kohana_Exception('image.invalid_left', $left);
+
+		if (empty($width) AND empty($height))
+			throw new Kohana_Exception('image.invalid_dimensions', __FUNCTION__);
 
 		$this->actions['crop'] = array
 		(
@@ -242,7 +248,7 @@ class Image_Core {
 	 */
 	public function quality($value)
 	{
-		$this->actions['quality'] = $value;
+		$this->actions['quality'] = max(1, min($amount, 100));
 
 		return $this;
 	}
