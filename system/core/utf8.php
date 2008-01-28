@@ -7,7 +7,8 @@
  * This file is licensed differently from the rest of Kohana. As a port of
  * phputf8, which is LGPL software, this file is released under the LGPL.
  *
- * PCRE needs to be compiled with UTF-8 support.
+ * PCRE needs to be compiled with UTF-8 support (--enable-utf8).
+ * Support for Unicode properties is recommended (--enable-unicode-properties).
  * @see http://php.net/manual/reference.pcre.pattern.modifiers.php
  *
  * UTF-8 conversion will be much more reliable if the iconv extension is loaded.
@@ -26,7 +27,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
  */
 
-if (preg_match('/^.$/u', 'ñ') !== 1)
+if ( ! preg_match('/^.$/u', 'ñ'))
 {
 	trigger_error
 	(
@@ -58,6 +59,9 @@ if (extension_loaded('mbstring') AND (ini_get('mbstring.func_overload') & MB_OVE
 		E_USER_ERROR
 	);
 }
+
+// Check PCRE support for Unicode properties such as \p and \X.
+define('PCRE_UNICODE_PROPERTIES', (bool) @preg_match('/^\pL$/u', 'ñ'));
 
 // SERVER_UTF8 ? use mb_* functions : use non-native functions
 if (extension_loaded('mbstring'))
