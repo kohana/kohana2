@@ -125,11 +125,30 @@ class Image_GD_Driver extends Image_Driver {
 
 	public function resize($properties)
 	{
-		// Sanitize the resize settings
-		$this->sanitize_geometry($properties);
-
 		// Get the current width and height
 		list($width, $height) = $this->properties();
+
+		if (substr($properties['width'], -1) === '%')
+		{
+			// Recalculate the percentage to a pixel size
+			$properties['width'] = round($width * (substr($properties['width'], 0, -1) / 100));
+		}
+
+		if (substr($properties['height'], -1) === '%')
+		{
+			// Recalculate the percentage to a pixel size
+			$properties['height'] = round($height * (substr($properties['height'], 0, -1) / 100));
+		}
+
+		if (empty($properties['width']))
+		{
+			// Determine the width difference and calculate, don't forget $properties['master']
+		}
+
+		if (empty($properties['height']))
+		{
+			// Determine the width difference and calculate, don't forget $properties['master']
+		}
 
 		// Create the temporary image to copy to
 		$img = $this->imagecreatetransparent($properties['width'], $properties['height']);
@@ -148,15 +167,21 @@ class Image_GD_Driver extends Image_Driver {
 
 	public function rotate($amount)
 	{
+		// Use current image to rotate
+		$img = $this->tmp_image;
+
+		// Rotate, setting the transparent color
+		$img = imagerotate($img, 360 - $amount, $transparent = imagecolorallocatealpha($img, 255, 255, 255, 127), -1);
+
+		// Fill the background with the transparent "color"
+		imagecolortransparent($img, $transparent);
+
+		// Merge the images
+		imagecopymerge($this->tmp_image, $img, 0, 0, 0, 0, imagesx($this->tmp_image), imagesy($this->tmp_image), 100);
+
 		// Prevent the alpha from being lost
-		imagealphablending($this->tmp_image, TRUE);
-		imagesavealpha($this->tmp_image, TRUE);
-
-		// Rotate, using -1 as the color to preserve transparency
-		$img = imagerotate($this->tmp_image, $amount, -1);
-
-		// Destory the current image
-		imagedestroy($this->tmp_image);
+		imagealphablending($img, TRUE);
+		imagesavealpha($img, TRUE);
 
 		// Swap the new image for the old one
 		$this->tmp_image = $img;
@@ -166,7 +191,21 @@ class Image_GD_Driver extends Image_Driver {
 
 	public function sharpen($amount)
 	{
-		throw new Kohana_Exception('image.unsupported_driver_method', 'sharpen');
+		// Amount should be in the range of 18-10
+		$amount = round(abs(-18 + ($amount * 0.08)), 2);
+
+		// Gaussian blur matrix
+		$matrix = array
+		(
+			array(-1, -1, -1),
+			array(-1, $amount, -1),
+			array(-1, -1, -1)
+		);
+
+		// Perform the sharpen
+		imageconvolution($this->tmp_image, $matrix, $amount - 8, 0);
+
+		return TRUE;
 	}
 
 	protected function properties()
