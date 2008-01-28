@@ -2,14 +2,12 @@
 /**
  * @package  Image
  *
- * Driver name.
+ * Driver name. Default: GD
  */
-$config['driver'] = 'ImageMagick';
+$config['driver'] = 'GD';
 
 /**
- * Driver parameters.
+ * Driver parameters:
+ * ImageMagick - set the "directory" parameter to your ImageMagick installation directory
  */
-$config['params'] = array
-(
-	'directory' => '/opt/local/bin'
-);
+$config['params'] = array();
