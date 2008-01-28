@@ -69,24 +69,16 @@ class Image_GD_Driver extends Image_Driver {
 			switch ($save)
 			{
 				case 'imagejpeg':
-					if ($quality === NULL)
-					{
-						// Default quality is 95%
-						$quality = 95;
-					}
-					else
-					{
-						// Make sure the quality is in range
-						$quality = max(1, min($quality, 100));
-					}
+					// Make sure the quality is in range (defaults to 95%)
+					$quality = ($quality === NULL) ? 95 : max(1, min($quality, 100));
 				break;
 				case 'imagegif':
 					// Remove the quality setting, GIF doesn't use it
 					unset($quality);
 				break;
 				case 'imagepng':
-					// Always use a compression level of 9 for PNGs.
-					// This does not affect quality, it only increases the level of compression!
+					// Always use a compression level of 9 for PNGs. This does not
+					// affect quality, it only increases the level of compression!
 					$quality = 9;
 				break;
 			}

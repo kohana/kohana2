@@ -626,7 +626,7 @@ class Kohana {
 			}
 		}
 
-		return TRUE;
+		return class_exists($class, FALSE);
 	}
 
 	/**

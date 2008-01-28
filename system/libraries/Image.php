@@ -355,4 +355,4 @@ class Image_Core {
 		return TRUE;
 	}
 
-}
+} // End Image
