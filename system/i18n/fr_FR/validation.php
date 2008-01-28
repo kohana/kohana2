@@ -25,9 +25,11 @@ $lang = array
 	// Upload errors
 	'user_aborted'  => 'L\'envoi du fichier %s sur le serveur a échoué.',
 	'invalid_type'  => 'Le type du fichier %s n\'est pas autorisé.',
-	'max_size'      => 'Le fichier %s que vous tentez d\'envoyer est trop lourd. La taille maximale allouée est de %s',
-	'max_width'     => 'Le fichier image %s doit avoir une taille maximale de %spx de large.',
-	'max_height'    => 'Le fichier image %s doit avoir une taille maximale de %spx de haut.',
+	'max_size'      => 'Le fichier %s que vous tentez d\'envoyer est trop lourd. La taille maximale autorisée est de %s',
+	'max_width'     => 'Le fichier %s que vous envoyez est trop large. La largeur maximale autorisée est de %spx',
+	'max_height'    => 'Le fichier %s que vous envoyez est trop haut. La hauteur maximale autorisée est de %spx',
+	'min_width'     => 'Le fichier %s que vous envoyez n\'est pas assez large. La largeur minimale demandée est de %spx',
+	'min_height'    => 'Le fichier %s que vous envoyez n\'est pas assez haut. La hauteur minimale demandée est de %spx',
 
 	// Field types
 	'alpha'         => 'alphabétiques',

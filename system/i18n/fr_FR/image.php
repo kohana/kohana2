@@ -2,7 +2,24 @@
 
 $lang = array
 (
+	'getimagesize_missing'    => 'La librairie d\'image requiert la function PHP <tt>getimagesize</tt>. Celle-ci n\'est pas supporté par votre installation.',
 	'driver_not_supported'    => 'Le pilote d\'image %s n\'existe pas.',
+	'unsupported_method'      => 'Le pilote configuré ne supporte pas la transformation d\'image %s.',
+	'file_not_found'          => 'L\'image spécifié %s n\'a pas été trouvé. Merci de vérifier que l\'image existe bien avec la fonction <tt>file_exists</tt> avant sa manipulation.',
+	'type_not_allowed'        => 'L\'image spécifié %s n\'est pas d\'un type autorisé.',
+
+	// ImageMagick specific messages
+	'imagemagick' => array
+	(
+		'not_found' => 'Le répertoire ImageMagick spécifié ne contient pas le programme requis %s.',
+	),
+
+
+	// GD specific messages
+	'gd' => array
+	(
+		'requires_v2' => 'La librairie d\'image requiert GD2. Veuillez consulter http://php.net/gd_info pour de plus amples informations.',
+	),
 
 	// CI's Image_lib stuff below
 	'source_image_required'   => 'Vous devez spécifier une image source dans vos préférences.',
