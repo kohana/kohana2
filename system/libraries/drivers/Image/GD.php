@@ -10,7 +10,14 @@ class Image_GD_Driver extends Image_Driver {
 	public function __construct()
 	{
 		// Make sure that GD2 is available
-		if ( ! function_exists('imageconvolution'))
+		if ( ! function_exists('gd_info'))
+			throw new Kohana_Exception('image.gd.requires_v2');
+
+		// Get the GD information
+		$info = gd_info();
+
+		// Make sure that the GD2 is installed
+		if (strpos($info['GD Version'], '2.') === FALSE)
 			throw new Kohana_Exception('image.gd.requires_v2');
 	}
 
@@ -240,6 +247,10 @@ class Image_GD_Driver extends Image_Driver {
 
 	public function sharpen($amount)
 	{
+		// Make sure that the sharpening function is available
+		if ( ! function_exists('imageconvolution'))
+			throw new Kohana_Exception('image.unsupported_method', __FUNCTION__);
+
 		// Amount should be in the range of 18-10
 		$amount = round(abs(-18 + ($amount * 0.08)), 2);
 
