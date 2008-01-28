@@ -50,7 +50,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		$image = $image['file'];
 
 		// Unique temporary filename
-		$this->tmp_image = $dir.'k2img--'.sha1($dir.$file).substr($file, strrpos($file, '.'));
+		$this->tmp_image = $dir.'k2img--'.sha1(time().$dir.$file).substr($file, strrpos($file, '.'));
 
 		// Copy the image to the temporary file
 		copy($image, $this->tmp_image);
@@ -78,6 +78,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 
 		// Remove the temporary image
 		unlink($this->tmp_image);
+		$this->tmp_image = '';
 
 		return $status;
 	}
@@ -143,7 +144,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 
 	public function rotate($amt)
 	{
-		if ($error = exec(escapeshellcmd($this->dir.'convert'.$this->ext).' -rotate '.escapeshellarg($amt).' '.$this->cmd_image.' '.$this->cmd_image))
+		if ($error = exec(escapeshellcmd($this->dir.'convert'.$this->ext).' -rotate '.escapeshellarg($amt).' -background transparent '.$this->cmd_image.' '.$this->cmd_image))
 		{
 			$this->errors[] = $error;
 			return FALSE;
@@ -174,6 +175,9 @@ class Image_ImageMagick_Driver extends Image_Driver {
 
 	protected function properties()
 	{
+		/**
+		 * @todo This should be replaced with a getimagesize() alternative, due to the poor performance of exec()
+		 */
 		return explode(',', exec(escapeshellcmd($this->dir.'identify'.$this->ext).' -format '.escapeshellarg('%w,%h').' '.$this->cmd_image));
 	}
 
