@@ -50,6 +50,10 @@ class Database_Mysql_Driver extends Database_Driver {
 
 	public function connect()
 	{
+		// Check if link already exists
+		if ($this->link)
+			return $this->link;
+
 		// Import the connect variables
 		extract($this->db_config['connection']);
 
@@ -67,6 +71,9 @@ class Database_Mysql_Driver extends Database_Driver {
 			{
 				$this->set_charset($charset);
 			}
+
+			// Clear password after successful connect
+			$this->db_config['connection']['pass'] = NULL;
 
 			return $this->link;
 		}
