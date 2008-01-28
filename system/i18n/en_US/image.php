@@ -7,6 +7,11 @@ $lang = array
 	'unsupported_method'      => 'Your configured driver does not support the %s image transformation.',
 	'file_not_found'          => 'The specified image, %s was not found. Please verify that images exist by using <tt>file_exists</tt> before manipulating them.',
 	'type_not_allowed'        => 'The specified image, %s, is not an allowed image type.',
+	'invalid_width'           => 'The width you specified, %s, is not valid.',
+	'invalid_height'          => 'The height you specified, %s, is not valid.',
+	'invalid_dimensions'      => 'The dimensions specified for %s are not valid.',
+	'invalid_master'          => 'The master dim specified is not valid.',
+	'invalid_flip'            => 'The flip direction specified is not valid.',
 
 	// ImageMagick specific messages
 	'imagemagick' => array
