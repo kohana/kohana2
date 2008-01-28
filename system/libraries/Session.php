@@ -55,18 +55,12 @@ class Session_Core {
 
 			if (self::$config['driver'] != 'native')
 			{
-				try
-				{
-					// Set driver name
-					$driver = 'Session_'.ucfirst(self::$config['driver']).'_Driver';
+				// Set driver name
+				$driver = 'Session_'.ucfirst(self::$config['driver']).'_Driver';
 
-					// Manually load so that exceptions can be caught
-					require_once Kohana::find_file('libraries/drivers', substr($driver, 0, -7), TRUE);
-				}
-				catch (Kohana_Exception $e)
-				{
+				// Load the driver
+				if ( ! Kohana::auto_load($driver))
 					throw new Kohana_Exception('session.driver_not_supported', self::$config['driver']);
-				}
 
 				// Initialize the driver
 				self::$driver = new $driver();

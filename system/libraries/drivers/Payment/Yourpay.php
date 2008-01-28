@@ -11,13 +11,16 @@
 class Payment_Yourpay_Driver
 {
 	// Fields required to do a transaction
-	private $required_fields = array('card_num' => FALSE,
-	                                 'expiration_date' => FALSE,
-	                                 'amount' => FALSE,
-	                                 'tax' => FALSE,
-	                                 'shipping' => FALSE,
-	                                 'cvm_value' => FALSE
-	                                 );
+	private $required_fields = array
+	(
+		'card_num' => FALSE,
+		'expiration_date' => FALSE,
+		'amount' => FALSE,
+		'tax' => FALSE,
+		'shipping' => FALSE,
+		'cvm_value' => FALSE
+	);
+
 	// Default required values
 	private $fields = array
 	(

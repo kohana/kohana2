@@ -15,29 +15,35 @@
  */
 class Payment_Paypal_Driver {
 
-	private $required_fields = array('API_UserName'  => FALSE,
-	                                 'API_Password'  => FALSE,
-	                                 'API_Signature' => FALSE,
-	                                 'API_Endpoint'  => TRUE,
-	                                 'version'       => TRUE,
-	                                 'Amt'           => FALSE,
-	                                 'PAYMENTACTION' => TRUE,
-	                                 'ReturnUrl'     => FALSE,
-	                                 'CANCELURL'     => FALSE,
-	                                 'CURRENCYCODE'  => TRUE);
+	private $required_fields = array
+	(
+		'API_UserName'  => FALSE,
+		'API_Password'  => FALSE,
+		'API_Signature' => FALSE,
+		'API_Endpoint'  => TRUE,
+		'version'       => TRUE,
+		'Amt'           => FALSE,
+		'PAYMENTACTION' => TRUE,
+		'ReturnUrl'     => FALSE,
+		'CANCELURL'     => FALSE,
+		'CURRENCYCODE'  => TRUE
+	);
 
-	private $paypal_values = array('API_UserName'  => '',
-	                               'API_Password'  => '',
-	                               'API_Signature' => '',
-	                               'API_Endpoint'  => 'https://api-3t.paypal.com/nvp',
-	                               'version'       => '3.0',
-	                               'Amt'           => 0,
-	                               'PAYMENTACTION' => 'Sale',
-	                               'ReturnUrl'     => '',
-	                               'CANCELURL'     => '',
-	                               'error_url'     => '',
-	                               'CURRENCYCODE'  => 'USD',
-	                               'payerid'       => '');
+	private $paypal_values = array
+	(
+		'API_UserName'  => '',
+		'API_Password'  => '',
+		'API_Signature' => '',
+		'API_Endpoint'  => 'https://api-3t.paypal.com/nvp',
+		'version'       => '3.0',
+		'Amt'           => 0,
+		'PAYMENTACTION' => 'Sale',
+		'ReturnUrl'     => '',
+		'CANCELURL'     => '',
+		'error_url'     => '',
+		'CURRENCYCODE'  => 'USD',
+		'payerid'       => ''
+	);
 
 	private $paypal_url = '';
 

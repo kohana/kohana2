@@ -11,14 +11,16 @@
 class Payment_Trustcommerce_Driver
 {
 	// Fields required to do a transaction
-	private $required_fields = array('custid' => TRUE,
-	                                 'password' => TRUE,
-	                                 'action' => TRUE,
-	                                 'media' => TRUE,
-	                                 'cc' => FALSE,
-	                                 'exp' => FALSE,
-	                                 'amount' => FALSE
-	                                 );
+	private $required_fields = array
+	(
+		'custid' => TRUE,
+		'password' => TRUE,
+		'action' => TRUE,
+		'media' => TRUE,
+		'cc' => FALSE,
+		'exp' => FALSE,
+		'amount' => FALSE
+	);
 
 	private $tclink_library = './path/to/library';
 	private $test_mode = TRUE;

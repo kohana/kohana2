@@ -28,18 +28,12 @@ class Archive_Core {
 	{
 		$type = empty($type) ? 'zip' : $type;
 
-		try
-		{
-			// Set driver name
-			$driver = 'Archive_'.ucfirst($type).'_Driver';
+		// Set driver name
+		$driver = 'Archive_'.ucfirst($type).'_Driver';
 
-			// Manually load so that exceptions can be caught
-			require_once Kohana::find_file('libraries/drivers', substr($driver, 0, -7), TRUE);
-		}
-		catch (Kohana_Exception $exception)
-		{
+		// Load the driver
+		if ( ! Kohana::auto_load($driver))
 			throw new Kohana_Exception('archive.driver_not_supported', $type);
-		}
 
 		// Initialize the driver
 		$this->driver = new $driver();

@@ -557,7 +557,7 @@ class Kohana {
 	 *
 	 * @throws  Kohana_Exception
 	 * @param   string  name of class
-	 * @return  void
+	 * @return  bool
 	 */
 	public static function auto_load($class)
 	{
@@ -593,7 +593,7 @@ class Kohana {
 			break;
 			case 'Driver':
 				$type = 'libraries/drivers';
-				$file = substr($class, 0, -7);
+				$file = str_replace('_', '/', substr($class, 0, -7));
 			break;
 			default:
 				// This can mean either a library or a helper, but libraries must
@@ -606,7 +606,7 @@ class Kohana {
 
 		// If the file doesn't exist, just return
 		if (($filepath = self::find_file($type, $file)) === FALSE)
-			return;
+			return FALSE;
 
 		// Load the requested file
 		require_once $filepath;
@@ -625,6 +625,8 @@ class Kohana {
 				eval('class '.$class.' extends '.$class.'_Core { }');
 			}
 		}
+
+		return TRUE;
 	}
 
 	/**

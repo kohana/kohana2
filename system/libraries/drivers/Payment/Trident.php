@@ -11,19 +11,25 @@
 class Payment_Trident_Driver
 {
 	// Fields required to do a transaction
-	private $required_fields = array('profile_id'         => FALSE,
-	                                 'profile_key'        => FALSE,
-	                                 'card_number'        => FALSE,
-	                                 'card_exp_date'      => FALSE,
-	                                 'transaction_amount' => FALSE,
-	                                 'transaction_type'   => FALSE);
+	private $required_fields = array
+	(
+		'profile_id'         => FALSE,
+		'profile_key'        => FALSE,
+		'card_number'        => FALSE,
+		'card_exp_date'      => FALSE,
+		'transaction_amount' => FALSE,
+		'transaction_type'   => FALSE
+	);
 
-	private $fields = array('profile_id'         => '',
-	                        'profile_key'        => '',
-	                        'card_number'        => '',
-	                        'card_exp_date'      => '',
-	                        'transaction_amount' => '',
-	                        'transaction_type'   => '');
+	private $fields = array
+	(
+		'profile_id'         => '',
+		'profile_key'        => '',
+		'card_number'        => '',
+		'card_exp_date'      => '',
+		'transaction_amount' => '',
+		'transaction_type'   => ''
+	);
 
 	private $test_mode = TRUE;
 
