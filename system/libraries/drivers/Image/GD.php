@@ -23,6 +23,7 @@ class Image_GD_Driver extends Image_Driver {
 
 	public function process($image, $actions, $dir, $file)
 	{
+		// Set the "create" function
 		switch ($image['type'])
 		{
 			case IMAGETYPE_JPEG:
@@ -36,6 +37,7 @@ class Image_GD_Driver extends Image_Driver {
 			break;
 		}
 
+		// Set the "save" function
 		switch (substr($file, strrpos($file, '.') + 1))
 		{
 			case 'jpg':
@@ -294,8 +296,9 @@ class Image_GD_Driver extends Image_Driver {
 				'3IEAADXoHAgTQoHcgQAANegcCBNCgdyBAgAEAMpcDTTQWJVEAAAAASUVORK5CYII='
 			));
 
-			self::$blank_png_width = 40;
-			self::$blank_png_height = 40;
+			// Set the blank PNG width and height
+			self::$blank_png_width = imagesx(self::$blank_png);
+			self::$blank_png_height = imagesy(self::$blank_png);
 		}
 
 		$img = imagecreatetruecolor($width, $height);
