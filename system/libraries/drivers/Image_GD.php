@@ -2,7 +2,6 @@
 
 class Image_GD_Driver extends Image_Driver {
 
-
 	// GD image create function name
 	protected $imagecreate;
 
@@ -11,23 +10,14 @@ class Image_GD_Driver extends Image_Driver {
 
 	// A transparent PNG as a string
 	protected static $blank_png;
+	protected static $blank_png_width;
+	protected static $blank_png_height;
 
 	public function __construct()
 	{
 		// Make sure that GD2 is available
 		if ( ! function_exists('imageconvolution'))
 			throw new Kohana_Exception('image.gd.requires_v2');
-
-		// Decode the blank PNG if it has not been done already
-		(self::$blank_png === NULL) and self::$blank_png = base64_decode
-		(
-			'iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29'.
-			'mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADqSURBVHjaYvz//z/DYAYAAcTEMMgBQAANegcCBN'.
-			'CgdyBAAA16BwIE0KB3IEAADXoHAgTQoHcgQAANegcCBNCgdyBAAA16BwIE0KB3IEAADXoHAgTQoHcgQ'.
-			'AANegcCBNCgdyBAAA16BwIE0KB3IEAADXoHAgTQoHcgQAANegcCBNCgdyBAAA16BwIE0KB3IEAADXoH'.
-			'AgTQoHcgQAANegcCBNCgdyBAAA16BwIE0KB3IEAADXoHAgTQoHcgQAANegcCBNCgdyBAAA16BwIE0KB'.
-			'3IEAADXoHAgTQoHcgQAANegcCBNCgdyBAgAEAMpcDTTQWJVEAAAAASUVORK5CYII='
-		);
 	}
 
 	protected function set_functions($type)
@@ -142,27 +132,30 @@ class Image_GD_Driver extends Image_Driver {
 
 		if (empty($properties['width']))
 		{
-			// Determine the width difference and calculate, don't forget $properties['master']
+			/**
+			 * @todo Determine the width difference and calculate, don't forget $properties['master']!
+			 */
 		}
 
 		if (empty($properties['height']))
 		{
-			// Determine the width difference and calculate, don't forget $properties['master']
+			/**
+			 * @todo Determine the height difference and calculate, don't forget $properties['master']!
+			 */
 		}
 
 		// Create the temporary image to copy to
 		$img = $this->imagecreatetransparent($properties['width'], $properties['height']);
 
 		// Execute the resize
-		imagecopyresampled($img, $this->tmp_image, 0, 0, 0, 0, $properties['width'], $properties['height'], $width, $height);
+		if ($status = imagecopyresampled($img, $this->tmp_image, 0, 0, 0, 0, $properties['width'], $properties['height'], $width, $height))
+		{
+			// Swap the new image for the old one
+			imagedestroy($this->tmp_image);
+			$this->tmp_image = $img;
+		}
 
-		// Destroy the temporary image
-		imagedestroy($this->tmp_image);
-
-		// Set the temporary image to this image
-		$this->tmp_image = $img;
-
-		return TRUE;
+		return $status;
 	}
 
 	public function rotate($amount)
@@ -170,23 +163,28 @@ class Image_GD_Driver extends Image_Driver {
 		// Use current image to rotate
 		$img = $this->tmp_image;
 
+		// White, with an alpha of 0
+		$transparent = imagecolorallocatealpha($img, 255, 255, 255, 127);
+
 		// Rotate, setting the transparent color
-		$img = imagerotate($img, 360 - $amount, $transparent = imagecolorallocatealpha($img, 255, 255, 255, 127), -1);
+		$img = imagerotate($img, 360 - $amount, $transparent, -1);
 
 		// Fill the background with the transparent "color"
 		imagecolortransparent($img, $transparent);
 
 		// Merge the images
-		imagecopymerge($this->tmp_image, $img, 0, 0, 0, 0, imagesx($this->tmp_image), imagesy($this->tmp_image), 100);
+		if ($status = imagecopymerge($this->tmp_image, $img, 0, 0, 0, 0, imagesx($this->tmp_image), imagesy($this->tmp_image), 100))
+		{
+			// Prevent the alpha from being lost
+			imagealphablending($img, TRUE);
+			imagesavealpha($img, TRUE);
 
-		// Prevent the alpha from being lost
-		imagealphablending($img, TRUE);
-		imagesavealpha($img, TRUE);
+			// Swap the new image for the old one
+			imagedestroy($this->tmp_image);
+			$this->tmp_image = $img;
+		}
 
-		// Swap the new image for the old one
-		$this->tmp_image = $img;
-
-		return TRUE;
+		return $status;
 	}
 
 	public function sharpen($amount)
@@ -203,9 +201,7 @@ class Image_GD_Driver extends Image_Driver {
 		);
 
 		// Perform the sharpen
-		imageconvolution($this->tmp_image, $matrix, $amount - 8, 0);
-
-		return TRUE;
+		return imageconvolution($this->tmp_image, $matrix, $amount - 8, 0);
 	}
 
 	protected function properties()
@@ -223,15 +219,31 @@ class Image_GD_Driver extends Image_Driver {
 	 */
 	protected function imagecreatetransparent($width, $height)
 	{
+		if (self::$blank_png === NULL)
+		{
+			// Decode the blank PNG if it has not been done already
+			self::$blank_png = imagecreatefromstring(base64_decode
+			(
+				'iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29'.
+				'mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADqSURBVHjaYvz//z/DYAYAAcTEMMgBQAANegcCBN'.
+				'CgdyBAAA16BwIE0KB3IEAADXoHAgTQoHcgQAANegcCBNCgdyBAAA16BwIE0KB3IEAADXoHAgTQoHcgQ'.
+				'AANegcCBNCgdyBAAA16BwIE0KB3IEAADXoHAgTQoHcgQAANegcCBNCgdyBAAA16BwIE0KB3IEAADXoH'.
+				'AgTQoHcgQAANegcCBNCgdyBAAA16BwIE0KB3IEAADXoHAgTQoHcgQAANegcCBNCgdyBAAA16BwIE0KB'.
+				'3IEAADXoHAgTQoHcgQAANegcCBNCgdyBAgAEAMpcDTTQWJVEAAAAASUVORK5CYII='
+			));
+
+			self::$blank_png_width = 40;
+			self::$blank_png_height = 40;
+		}
+
 		$img = imagecreatetruecolor($width, $height);
-		$tmp = imagecreatefromstring(self::$blank_png);
+
+		// Resize the blank image
+		imagecopyresized($img, self::$blank_png, 0, 0, 0, 0, $width, $height, self::$blank_png_width, self::$blank_png_height);
 
 		// Prevent the alpha from being lost
 		imagealphablending($img, FALSE);
 		imagesavealpha($img, TRUE);
-
-		// Resize the blank image
-		imagecopyresized($img, $tmp, 0, 0, 0, 0, $width, $height, imagesx($tmp), imagesy($tmp));
 
 		return $img;
 	}
