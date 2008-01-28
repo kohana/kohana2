@@ -178,22 +178,6 @@ abstract class Database_Driver {
 	}
 
 	/**
-	 * Builds a HAVING portion of a query.
-	 *
-	 * @param  mixed  $field
-	 * @param  string $match
-	 * @param  string $type
-	 * @param  int    $num_havings
-	 * @return string
-	 */
-	public function having($field, $match = '', $type = 'AND ', $num_havings)
-	{
-		$prefix = ($num_havings == 0) ? '' : $type;
-
-		return $prefix.' '.$this->escape_column($field).' HAVING \''.$match . '\'';
-	}
-
-	/**
 	 * Builds a REGEX portion of a query
 	 *
 	 * @param  string  $field

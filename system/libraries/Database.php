@@ -622,13 +622,14 @@ class Database_Core {
 	 * Parameters:
 	 *  key   - key name or array of key => value pairs
 	 *  value - value to match with key
+	 *  quote - disable quoting of WHERE clause
 	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
-	public function having($key, $value = '')
+	public function having($key, $value = '', $quote = TRUE)
 	{
-	    $this->having = array_merge($this->having, $this->driver->having($key, $value, 'AND', count($this->having)));
+		$this->having[] = $this->driver->where($key, $value, 'AND', count($this->having), TRUE);
 		return $this;
 	}
 
@@ -639,13 +640,14 @@ class Database_Core {
 	 * Parameters:
 	 *  key   - key name or array of key => value pairs
 	 *  value - value to match with key
+	 *  quote - disable quoting of WHERE clause
 	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
-	public function orhaving($key, $value = '')
+	public function orhaving($key, $value = '', $quote = TRUE)
 	{
-		$this->having = array_merge($this->having, $this->driver->having($key, $value, 'OR', count($this->having)));
+		$this->having[] = $this->driver->where($key, $value, 'OR', count($this->having), TRUE);
 		return $this;
 	}
 
