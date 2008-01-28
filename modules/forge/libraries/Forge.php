@@ -18,7 +18,7 @@ class Forge_Core {
 	public $inputs = array();
 	public $hidden = array();
 
-	public function __construct($action = '', $title = '', $method = NULL, $class = 'form')
+	public function __construct($action = '', $title = '', $method = NULL, $attr = array())
 	{
 		// Set form attributes
 		$this->attr['action'] = $action;
@@ -26,7 +26,15 @@ class Forge_Core {
 
 		// Set template variables
 		$this->template['title'] = $title;
-		$this->template['class'] = $class;
+
+		// Empty attributes sets the class to "form"
+		empty($attr) and $attr = array('class' => 'form');
+
+		// String attributes is the class name
+		is_string($attr) and $attr = array('class' => $attr);
+
+		// Extend the template with the attributes
+		$this->template += $attr;
 	}
 
 	public function __get($key)
