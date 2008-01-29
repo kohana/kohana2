@@ -2,6 +2,6 @@
 
 $lang = array
 (
-	'driver_not_supported'            => 'El driver de sessiones, %s, no fue encontrado.',
-	'driver_must_implement_interface' => 'Los driver de sessiones deben implementar la interfase Session_Driver.'
+	'driver_not_supported' => 'El driver de sessiones, %s, no fue encontrado.',
+	'driver_implements'    => 'Los driver de sessiones deben implementar la interfase Session_Driver.'
 );
