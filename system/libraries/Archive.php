@@ -69,7 +69,7 @@ class Archive_Core {
 			$path = rtrim($path, '/').'/';
 
 			// Add directory to paths
-			$this->paths[] = array($path, $name);
+			$this->paths[] = array($path, $path);
 
 			if ($recursive == TRUE)
 			{
