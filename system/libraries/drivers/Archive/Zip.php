@@ -135,7 +135,7 @@ class Archive_Zip_Driver implements Archive_Driver {
 			pack('v', 0).             // CRC32
 			pack('v', 0).             // Compressed filesize
 			pack('v', 0).             // Uncompressed filesize
-			pack('V', 16).            // External file attribute "directory"
+			pack('V', 16).            // Internal file attribute "directory"
 			pack('V', $this->offset). // Directory offset
 			$name;                    // Directory name
 
@@ -167,7 +167,7 @@ class Archive_Zip_Driver implements Archive_Driver {
 			"\x00\x00".               // General bit flag
 			"\x08\x00".               // Compression method
 			pack('V', $timestamp).    // Last mod time and date
-			pack('V', crc32($name)).  // CRC32
+			pack('V', crc32($data)).  // CRC32
 			pack('V', strlen($zdata)).// Compressed filesize
 			pack('V', strlen($data)). // Uncompressed filesize
 			pack('v', strlen($name)). // Length of file name
