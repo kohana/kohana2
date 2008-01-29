@@ -722,7 +722,10 @@ class Database_Core {
 	public function offset($value)
 	{
 		if ($value !== FALSE)
+		{
 			$this->offset = (int) $value;
+		}
+
 		return $this;
 	}
 

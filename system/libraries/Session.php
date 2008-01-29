@@ -174,10 +174,18 @@ class Session_Core {
 		// Set defaults
 		if ( ! isset($_SESSION['_kf_flash_']))
 		{
-			$_SESSION['user_agent'] = Kohana::$user_agent;
-			$_SESSION['ip_address'] = $this->input->ip_address();
-			$_SESSION['_kf_flash_'] = array();
 			$_SESSION['total_hits'] = 0;
+			$_SESSION['_kf_flash_'] = array();
+
+			if (in_array('user_agent', self::$config['validate']))
+			{
+				$_SESSION['user_agent'] = Kohana::$user_agent;
+			}
+
+			if (in_array('ip_address', self::$config['validate']))
+			{
+				$_SESSION['ip_address'] = $this->input->ip_address();
+			}
 		}
 
 		// Set up flash variables
@@ -191,7 +199,7 @@ class Session_Core {
 		if ($_SESSION['total_hits'] > 1)
 		{
 			// Validate the session
-			foreach((array) self::$config['validate'] as $valid)
+			foreach(self::$config['validate'] as $valid)
 			{
 				switch($valid)
 				{
