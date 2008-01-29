@@ -301,13 +301,14 @@ class Database_Core {
 	 *
 	 * Parameters:
 	 *  table - table name
-	 *  cond  - join condition
+	 *  key  - where key
+	 *  value  - where value
 	 *  type  - type of join (optional)
 	 *
 	 * Returns:
 	 *  The <Database> object
 	 */
-	public function join($table, $cond, $type = '')
+	public function join($table, $key, $value = NULL, $type = '')
 	{
 		if ($type != '')
 		{
@@ -323,14 +324,15 @@ class Database_Core {
 			}
 		}
 
-		if (preg_match('/([a-z.].+)\s+=\s+([a-z.].+)/i', $cond, $where))
+		$cond = array();
+		$keys  = is_array($key) ? $key : array($key => $value);
+		foreach ($keys as $key => $value)
 		{
-			$cond = $this->driver->escape_column($this->config['table_prefix'].$where[1]).
-			        ' = '.
-			        $this->driver->escape_column($this->config['table_prefix'].$where[2]);
+			$key           = (strpos($key, '.') !== FALSE) ? $this->config['table_prefix'].$key : $key;
+			$cond[] = $this->driver->where($key, $value, 'AND ', count($cond), TRUE);
 		}
 
-		$this->join[] = $type.'JOIN '.$this->driver->escape_column($this->config['table_prefix'].$table).' ON '.$cond;
+		$this->join[] = $type.'JOIN '.$this->driver->escape_column($this->config['table_prefix'].$table).' ON '.implode(' ', $cond);
 
 		return $this;
 	}
