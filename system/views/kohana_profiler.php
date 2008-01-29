@@ -7,6 +7,7 @@
 	clear: both;
 	padding: 10px 10px 0;
 	border: 1px solid #E5EFF8;
+	text-align: left;
 }
 #kohana-profiler pre
 {
