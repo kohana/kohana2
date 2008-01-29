@@ -120,7 +120,7 @@ abstract class Image_Driver {
 	abstract public function resize($properties);
 
 	/**
-	 * Rotate an image. Validate amounts are -180 to 180.
+	 * Rotate an image. Valid amounts are -180 to 180.
 	 *
 	 * @param   integer   amount to rotate
 	 * @return  boolean

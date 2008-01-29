@@ -319,7 +319,7 @@ class Image_Core {
 				if (is_string($value) AND ! ctype_digit($value))
 				{
 					// Only numbers and percent signs
-					if ( ! preg_match('/[0-9]+%$/', $value))
+					if ( ! preg_match('/^[0-9]++%$/D', $value))
 						return FALSE;
 				}
 				else
