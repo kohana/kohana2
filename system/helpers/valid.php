@@ -48,7 +48,7 @@ class valid_Core {
 		$local_part     = "$word(\\x2e$word)*";
 		$addr_spec      = "$local_part\\x40$domain";
 
-		return (bool) preg_match('/^'.$addr_spec.'$/', $email);
+		return (bool) preg_match('/^'.$addr_spec.'$/D', $email);
 	}
 
 	/**
@@ -123,7 +123,7 @@ class valid_Core {
 	public static function credit_card($number, $type = 'default')
 	{
 		// Remove all non-digit characters from the number
-		if (($number = preg_replace('/[^0-9]/', '', $number)) === '')
+		if (($number = preg_replace('/\D+/', '', $number)) === '')
 			return FALSE;
 
 		$cards = Config::item('credit_cards');
@@ -138,7 +138,7 @@ class valid_Core {
 		$length = strlen($number);
 
 		// Validate the card length by the card type
-		if ( ! preg_match('/\b'.$length.'\b/', $cards[$type]['length']))
+		if ( ! in_array($length, preg_split('/\D+/', $cards[$type]['length'])))
 			return FALSE;
 
 		// Check card number prefix
@@ -181,6 +181,7 @@ class valid_Core {
 	 */
 	public static function phone($number)
 	{
+		// Remove all non-digit characters from the number
 		$number = preg_replace('/\D+/', '', $number);
 
 		if (strlen($number) > 10 AND substr($number, 0, 1) === '1')
@@ -203,7 +204,7 @@ class valid_Core {
 	public static function alpha($str, $utf8 = FALSE)
 	{
 		return (bool) ($utf8 == TRUE)
-			? preg_match('/^\pL+$/uD', (string) $str)
+			? preg_match('/^\pL++$/uD', (string) $str)
 			: ctype_alpha((string) $str);
 	}
 
@@ -217,7 +218,7 @@ class valid_Core {
 	public static function alpha_numeric($str, $utf8 = FALSE)
 	{
 		return (bool) ($utf8 == TRUE)
-			? preg_match('/^[\pL\pN]+$/uD', (string) $str)
+			? preg_match('/^[\pL\pN]++$/uD', (string) $str)
 			: ctype_alnum((string) $str);
 	}
 
@@ -231,8 +232,8 @@ class valid_Core {
 	public static function alpha_dash($str, $utf8 = FALSE)
 	{
 		return (bool) ($utf8 == TRUE)
-			? preg_match('/^[-\pL\pN_]+$/uD', (string) $str)
-			: preg_match('/^[-a-z0-9_]+$/iD', (string) $str);
+			? preg_match('/^[-\pL\pN_]++$/uD', (string) $str)
+			: preg_match('/^[-a-z0-9_]++$/iD', (string) $str);
 	}
 
 	/**
@@ -245,7 +246,7 @@ class valid_Core {
 	public static function digit($str, $utf8 = FALSE)
 	{
 		return (bool) ($utf8 == TRUE)
-			? preg_match('/^\pN+$/uD', (string) $str)
+			? preg_match('/^\pN++$/uD', (string) $str)
 			: ctype_digit((string) $str);
 	}
 
@@ -257,7 +258,7 @@ class valid_Core {
 	 */
 	public static function numeric($str)
 	{
-		return (is_numeric($str) AND preg_match('/^[-0-9.]+$/', $str));
+		return (is_numeric($str) AND preg_match('/^[-0-9.]++$/D', $str));
 	}
 
 	/**
@@ -268,7 +269,7 @@ class valid_Core {
 	 */
 	public static function standard_text($str)
 	{
-		return preg_match('/^[-\pL\pN\pZs_]+$/uD', (string) $str);
+		return preg_match('/^[-\pL\pN\pZ_]++$/uD', (string) $str);
 	}
 
 } // End valid
