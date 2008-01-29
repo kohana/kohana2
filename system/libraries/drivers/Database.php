@@ -1,27 +1,28 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Interface: Database_Driver
- *  Database API driver
+ * Database API driver
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 abstract class Database_Driver {
 
 	static $query_cache;
 
 	/**
-	 * Connect to our database
-	 * Returns FALSE on failure or a MySQL resource
+	 * Connect to our database.
+	 * Returns FALSE on failure or a MySQL resource.
 	 *
 	 * @return mixed
 	 */
 	abstract public function connect();
 
 	/**
-	 * Perform a query based on a manually written query
+	 * Perform a query based on a manually written query.
 	 *
 	 * @param  string $sql
 	 * @return Database_Result
@@ -58,7 +59,7 @@ abstract class Database_Driver {
 	}
 
 	/**
-	 * Set the charset using 'SET NAMES <charset>'
+	 * Set the charset using 'SET NAMES <charset>'.
 	 *
 	 * @param string $charset
 	 */
@@ -178,7 +179,7 @@ abstract class Database_Driver {
 	}
 
 	/**
-	 * Builds a REGEX portion of a query
+	 * Builds a REGEX portion of a query.
 	 *
 	 * @param  string  $field
 	 * @param  string  $match
@@ -189,7 +190,7 @@ abstract class Database_Driver {
 	abstract public function regex($field, $match, $type, $num_regexs);
 
 	/**
-	 * Builds a NOT REGEX portion of a query
+	 * Builds a NOT REGEX portion of a query.
 	 *
 	 * @param  string  $field
 	 * @param  string  $match
@@ -266,7 +267,7 @@ abstract class Database_Driver {
 	}
 
 	/**
-	 * Escapes any input value
+	 * Escapes any input value.
 	 *
 	 * @param  mixed $value
 	 * @return string
@@ -293,7 +294,7 @@ abstract class Database_Driver {
 	}
 
 	/**
-	 * Escapes a string for a query
+	 * Escapes a string for a query.
 	 *
 	 * @param  mixed $str but most likely string
 	 * @return mixed but most likely string
@@ -301,14 +302,22 @@ abstract class Database_Driver {
 	abstract public function escape_str($str);
 
 	/**
-	 * Lists all tables in the database
+	 * Lists all tables in the database.
 	 *
 	 * @return array
 	 */
 	abstract public function list_tables();
 
 	/**
-	 * Returns the last database error
+	 * Lists all fields in a table.
+	 *
+	 * @param  string $table
+	 * @return array
+	 */
+	abstract function list_fields($table);
+
+	/**
+	 * Returns the last database error.
 	 *
 	 * @return string
 	 */
@@ -383,7 +392,7 @@ abstract class Database_Driver {
 	}
 
 	/**
-	 * Clears the internal query cache
+	 * Clears the internal query cache.
 	 *
 	 * @param  string $sql
 	 */
@@ -440,14 +449,14 @@ interface Database_Result {
 	public function result_array($object = NULL, $type = FALSE);
 
 	/**
-	 * gets the ID of the last insert statement
+	 * Gets the ID of the last insert statement.
 	 *
 	 * @return int
 	 */
 	public function insert_id();
 
 	/**
-	 * Gets the fields of an already run query
+	 * Gets the fields of an already run query.
 	 *
 	 * @return array
 	 */

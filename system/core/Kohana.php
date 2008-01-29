@@ -777,7 +777,10 @@ class Kohana {
 
 		// Return the key string as fallback
 		if ($line === NULL)
+		{
+			Log::add('debug', 'Missing i18n entry '.$key.' for language '.Config::item('locale.language'));
 			return $key;
+		}
 
 		if (is_string($line) AND func_num_args() > 1)
 		{

@@ -1,16 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana Source Code:
+ * MySQL Database Driver
  *
- * @author Kohana Team
- * @copyright (c) 2007 Kohana Team
- * @license http://kohanaphp.com/license.html
- */
-
-
-/**
- * Database_Mysql_Driver
+ * $Id$
  *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Database_Mysql_Driver extends Database_Driver {
 
@@ -273,12 +270,6 @@ class Database_Mysql_Driver extends Database_Driver {
 		return mysql_error($this->link);
 	}
 
-	/**
-	 * return a list of fields from $table
-	 *
-	 * @param  string $table
-	 * @return array
-	 */
 	public function list_fields($table)
 	{
 		static $tables;
