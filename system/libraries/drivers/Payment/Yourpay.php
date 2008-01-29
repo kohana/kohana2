@@ -166,6 +166,7 @@ class Payment_Yourpay_Driver
 		}
 		else
 		{
+			Log::add('debug', Kohana::lang('payment.gateway_connection_error'));
 			throw new Kohana_Exception('payment.gateway_connection_error');
 		}
 	}

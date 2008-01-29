@@ -201,11 +201,10 @@ class Payment_Paypal_Driver {
 		}
 		else // Something went terribly wrong...
 		{
-			Log::add('debug', Kohana::debug($reply));
+			Log::add('error', Kohana::debug($reply));
+			Log::add('debug', Kohana::lang('payment.gateway_connection_error'));
 			url::redirect($this->paypal_values['error_url']);
 		}
-
-		die('<h3>You should not be here. Please email jeremy.bush@kohanaphp.com and include what you did right before seeing this.</h3>');
 	}
 
 	/**
