@@ -227,6 +227,7 @@ class Payment_Paypal_Driver {
 		              '&USER='.urlencode($this->paypal_values['API_UserName']).
 		              'SIGNATURE='.urlencode($this->paypal_values['API_Signature']).$data;
 
+		Log::add('debug', 'Connecting to '.$this->paypal_values['API_Endpoint']);
 		$ch = curl_init($this->paypal_values['API_Endpoint']);
 
 		// Set custom curl options
