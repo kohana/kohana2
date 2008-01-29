@@ -202,7 +202,6 @@ class Payment_Paypal_Driver {
 		else // Something went terribly wrong...
 		{
 			Log::add('error', Kohana::debug($reply));
-			Log::add('debug', Kohana::lang('payment.gateway_connection_error'));
 			url::redirect($this->paypal_values['error_url']);
 		}
 	}

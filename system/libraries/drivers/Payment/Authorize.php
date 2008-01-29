@@ -107,10 +107,7 @@ class Payment_Authorize_Driver
 		$resp = curl_exec($ch);
 		curl_close ($ch);
 		if (!$resp)
-		{
-			Log::add('debug', Kohana::lang('payment.gateway_connection_error'));
 			throw new Kohana_Exception('payment.gateway_connection_error');
-		}
 
 		// This could probably be done better, but it's taken right from the Authorize.net manual
 		// Need testing to opimize probably

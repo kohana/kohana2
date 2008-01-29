@@ -114,10 +114,8 @@ class Payment_Trident_Driver
 		$response = curl_exec($ch);
 		curl_close ($ch);
 		if (!$response)
-		{
-			Log::add('debug', Kohana::lang('payment.gateway_connection_error'));
 			throw new Kohana_Exception('payment.gateway_connection_error');
-		}
+
 		$response = explode('&', $response);
 		foreach ($response as $code)
 		{
