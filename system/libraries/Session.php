@@ -67,7 +67,7 @@ class Session_Core {
 
 				// Validate the driver
 				if ( ! (self::$driver instanceof Session_Driver))
-					throw new Kohana_Exception('session.driver_must_implement_interface');
+					throw new Kohana_Exception('session.driver_implements', self::$config['driver']);
 			}
 
 			// Create a new session
