@@ -704,7 +704,7 @@ class Database_Core {
 	public function limit($limit, $offset = FALSE)
 	{
 		$this->limit  = (int) $limit;
-		$this->offset = (int) $offset;
+		$this->offset($offset);
 
 		return $this;
 	}
@@ -721,7 +721,8 @@ class Database_Core {
 	 */
 	public function offset($value)
 	{
-		$this->offset = (int) $value;
+		if ($value)
+			$this->offset = (int) $value;
 		return $this;
 	}
 
