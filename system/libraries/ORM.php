@@ -5,12 +5,12 @@
  *
  * @see http://en.wikipedia.org/wiki/Active_record
  * @see http://en.wikipedia.org/wiki/Object-relational_mapping
- * 
+ *
  * $Id$
  *
  * @package    Core
  * @author     Kohana Team
- * @copyright  (c) 2007 Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
 class ORM_Core {
@@ -260,7 +260,7 @@ class ORM_Core {
 			if (isset($all))
 			{
 				// Array of results
-				return $this->load_result(TRUE); 
+				return $this->load_result(TRUE);
 			}
 			else
 			{
@@ -792,7 +792,7 @@ class ORM_Core {
 		$this->where = TRUE;
 
 		// Execute the join
-		self::$db->where("$join.$primary", $this->object->id)->join($join, "$join.$foreign = $table.id");
+		self::$db->where("$join.$primary", $this->object->id)->join($join, "$join.$foreign", "$table.id");
 	}
 
 } // End ORM
@@ -815,7 +815,7 @@ class ORM_Iterator implements Iterator, Countable {
 	}
 
 	/**
-	 * Returns an array of all the 
+	 * Returns an array of all the
 	 */
 	public function as_array()
 	{
