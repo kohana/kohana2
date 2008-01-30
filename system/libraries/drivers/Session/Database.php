@@ -27,6 +27,9 @@ class Session_Database_Driver implements Session_Driver {
 	protected $new_session = TRUE;
 	protected $old_id;
 
+	// Session has been written?
+	protected $written = FALSE;
+
 	public function __construct()
 	{
 		$this->db_group = Config::item('session.storage');
@@ -38,6 +41,10 @@ class Session_Database_Driver implements Session_Driver {
 		{
 			$this->encrypt = new Encrypt;
 		}
+
+		// Write the session when PHP shuts down, this stops the database
+		// being connected to twice when exit is called manually
+		register_shutdown_function('session_write_close');
 
 		Log::add('debug', 'Session Database Driver Initialized');
 	}
@@ -92,6 +99,10 @@ class Session_Database_Driver implements Session_Driver {
 
 	public function write($id, $data)
 	{
+		// Has the session already been written?
+		if ($this->written)
+			return TRUE;
+
 		$session = array
 		(
 			'session_id' => $id,
@@ -116,6 +127,8 @@ class Session_Database_Driver implements Session_Driver {
 			unset($session['session_id']);
 
 			$query = $this->db->update($this->db_group, $session, array('session_id' => $id));
+
+			$this->written = TRUE;
 		}
 
 		return (bool) $query->count();

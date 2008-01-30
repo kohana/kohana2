@@ -40,7 +40,7 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 	public function connect()
 	{
 		// Check if link already exists
-		if ($this->link)
+		if (is_object($this->link))
 			return $this->link;
 
 		// Import the connect variables

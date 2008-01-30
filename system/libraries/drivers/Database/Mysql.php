@@ -48,7 +48,7 @@ class Database_Mysql_Driver extends Database_Driver {
 	public function connect()
 	{
 		// Check if link already exists
-		if ($this->link)
+		if (is_resource($this->link))
 			return $this->link;
 
 		// Import the connect variables
