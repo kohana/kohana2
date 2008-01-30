@@ -46,6 +46,22 @@ class Database_Core {
 	protected $last_query = '';
 
 	/**
+	 * Returns a singleton instance of Database.
+	 *
+	 * @param   mixed  configuration array or DSN
+	 * @return  object
+	 */
+	public static function instance($config = array())
+	{
+		static $instance;
+
+		// Create the instance if it does not exist
+		($instance === NULL) and $instance = new Database($config);
+
+		return $instance;
+	}
+
+	/**
 	 * Constructor: __construct
 	 *  Sets up the database configuration, loads the <Database_Driver>.
 	 *
