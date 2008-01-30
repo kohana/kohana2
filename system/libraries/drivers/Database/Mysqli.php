@@ -321,13 +321,6 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 	{
 		return $this->total_rows;
 	}
-
-	public function num_rows()
-	{
-		Log::add('error', 'You should really be using "count($result)" instead of "$result->num_rows()". Fix your code!');
-
-		return $this->total_rows;
-	}
 	// End Interface
 
 	// Interface: ArrayAccess

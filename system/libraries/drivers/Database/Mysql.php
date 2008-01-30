@@ -496,19 +496,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	{
 		return $this->total_rows;
 	}
-
-	/**
-	 * Counts the number of rows in the result set.
-	 *
-	 * @return     integer The number of rows in the result set
-	 * @deprecated Depricated, use count()
-	 */
-	public function num_rows()
-	{
-		Log::add('error', 'You should really be using "count($result)" instead of "$result->num_rows()". Fix your code!');
-
-		return $this->total_rows;
-	}
 	// End Interface
 
 
