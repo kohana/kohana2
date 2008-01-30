@@ -328,8 +328,8 @@ class Database_Core {
 		$keys  = is_array($key) ? $key : array($key => $value);
 		foreach ($keys as $key => $value)
 		{
-			$key           = (strpos($key, '.') !== FALSE) ? $this->config['table_prefix'].$key : $key;
-			$cond[] = $this->driver->where($key, $value, 'AND ', count($cond), TRUE);
+			$key    = (strpos($key, '.') !== FALSE) ? $this->config['table_prefix'].$key : $key;
+			$cond[] = $this->driver->where($key, $this->driver->escape_column($value), 'AND ', count($cond), FALSE);
 		}
 
 		$this->join[] = $type.'JOIN '.$this->driver->escape_column($this->config['table_prefix'].$table).' ON '.implode(' ', $cond);
@@ -706,7 +706,7 @@ class Database_Core {
 	public function limit($limit, $offset = FALSE)
 	{
 		$this->limit  = (int) $limit;
-		$this->offset($offset);
+		$this->offset(($offset === FALSE)? 0 : $offset);
 
 		return $this;
 	}
