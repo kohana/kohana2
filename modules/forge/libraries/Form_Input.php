@@ -109,7 +109,7 @@ class Form_Input_Core {
 		}
 		else
 		{
-			$this->data['label'] = ($val === TRUE) ? ucwords(inflector::humanize($this->name)) : $val;
+			$this->data['label'] = ($val === TRUE) ? utf8::ucwords(inflector::humanize($this->name)) : $val;
 			return $this;
 		}
 	}
@@ -238,7 +238,7 @@ class Form_Input_Core {
 				$args = is_array($args) ? $args : array();
 
 				// Add the label or name to the beginning of the args
-				array_unshift($args, $this->label ? strtolower($this->label) : $this->name);
+				array_unshift($args, $this->label ? utf8::strtolower($this->label) : $this->name);
 
 				if (isset($this->error_messages[$func]))
 				{
@@ -289,7 +289,7 @@ class Form_Input_Core {
 		if (is_string($this->data['value']))
 		{
 			// Trim string values
-			$this->data['value'] = trim($this->data['value']);
+			$this->data['value'] = utf8::trim($this->data['value']);
 		}
 	}
 
