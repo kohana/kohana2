@@ -67,6 +67,53 @@ class form_Core {
 	}
 
 	/**
+	 * Generates a fieldset opening tag.
+	 *
+	 * @param   array   html attributes
+	 * @param   string  a string to be attached to the end of the attributes
+	 * @return  string
+	 */
+	public static function open_fieldset($data, $extra = '')
+	{
+		if ( ! empty($extra))
+		{
+			// Make sure there is 1 space before extra
+			$extra = ' '.ltrim($extra);
+		}
+
+		return '<fieldset'.html::attributes((array) $data).$extra.'>'."\n";
+	}
+
+	/**
+	 * Generates a fieldset closing tag.
+	 *
+	 * @return  string
+	 */
+	public static function close_fieldset()
+	{
+		return '</fieldset>'."\n";
+	}
+
+	/**
+	 * Generates a legend tag for use with a fieldset.
+	 *
+	 * @param   string  legend text
+	 * @param   array   HTML attributes
+	 * @param   string  a string to be attached to the end of the attributes
+	 * @return  string
+	 */
+	public static function legend($text = '', $data = array(), $extra = '')
+	{
+		if ( ! empty($extra))
+		{
+			// Make sure there is 1 space before extra
+			$extra = ' '.ltrim($extra);
+		}
+
+		return '<legend'.self::attributes((array) $data).$extra.'>'.$text.'</legend>'."\n";
+	}
+
+	/**
 	 * Generates hidden form fields.
 	 * You can pass a simple key/value string or an associative array with multiple values.
 	 *
@@ -122,7 +169,6 @@ class form_Core {
 			'value' => $value
 		);
 
-		// Form elements should have the same id as name
 		if ( ! empty($extra))
 		{
 			// Make sure there is 1 space before extra
