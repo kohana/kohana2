@@ -193,7 +193,7 @@ class Kohana {
 			class_exists($controller, FALSE) or Event::run('system.404');
 
 			// Find the unique controller methods
-			$methods = array_diff(get_class_methods($controller), get_class_methods('Controller'));
+			$methods = array_diff(get_class_methods($controller), get_class_methods('Controller_Core'));
 
 			// If there are no methods in the controller, it's invalid
 			empty($methods) and Event::run('system.404');
