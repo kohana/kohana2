@@ -158,10 +158,9 @@ class Session_Database_Driver implements Session_Driver {
 	 * Returns:
 	 *  TRUE
 	 */
-	public function gc()
+	public function gc($maxlifetime)
 	{
-		$expiration = (Config::item('session.expiration') == 0) ? 86400 : Config::item('session.expiration');
-		$query = $this->db->delete($this->db_group, array('last_activity <' => time() - $expiration));
+		$query = $this->db->delete($this->db_group, array('last_activity <' => time() - $maxlifetime));
 
 		Log::add('debug', 'Session garbage collected: '.$query->count().' row(s) deleted.');
 

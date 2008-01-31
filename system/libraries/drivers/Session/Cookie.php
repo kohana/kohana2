@@ -72,7 +72,7 @@ class Session_Cookie_Driver implements Session_Driver {
 		return session_id();
 	}
 
-	public function gc()
+	public function gc($maxlifetime)
 	{
 		return TRUE;
 	}

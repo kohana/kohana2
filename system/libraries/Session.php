@@ -117,15 +117,10 @@ class Session_Core {
 
 		session_name(self::$config['name']);
 
-		// Set garbage collection probability
+		// Configure garbage collection
 		ini_set('session.gc_probability', (int) self::$config['gc_probability']);
 		ini_set('session.gc_divisor', 100);
-
-		// Set expiration time for native sessions
-		if (self::$config['driver'] == 'native')
-		{
-			ini_set('session.gc_maxlifetime', (self::$config['expiration'] == 0) ? 86400 : self::$config['expiration']);
-		}
+		ini_set('session.gc_maxlifetime', (self::$config['expiration'] == 0) ? 86400 : self::$config['expiration']);
 
 		// Set the session cookie parameters
 		// Note: the httponly parameter was added in PHP 5.2.0

@@ -77,11 +77,14 @@ interface Session_Driver {
 
 	/**
 	 * Method: gc
-	 *  Garbage collection, called by close()
+	 *  Garbage collection.
+	 *
+	 * Parameters:
+	 *  maxlifetime - session expiration period
 	 *
 	 * Returns:
 	 *  TRUE or FALSE
 	 */
-	public function gc();
+	public function gc($maxlifetime);
 
 } // End Session Driver Interface
