@@ -289,7 +289,7 @@ class Form_Input_Core {
 		if (is_string($this->data['value']))
 		{
 			// Trim string values
-			$this->data['value'] = utf8::trim($this->data['value']);
+			$this->data['value'] = trim($this->data['value']);
 		}
 	}
 
