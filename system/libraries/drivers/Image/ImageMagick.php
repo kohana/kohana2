@@ -175,7 +175,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 
 	protected function properties()
 	{
-		return array_slice(getimagesize($this->cmd_image), 0, 2, FALSE);
+		return array_slice(getimagesize($this->tmp_image), 0, 2, FALSE);
 	}
 
 } // End Image ImageMagick Driver
