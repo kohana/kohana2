@@ -246,7 +246,7 @@ class Image_Core {
 	 * @param   integer  quality as a percentage
 	 * @return  object
 	 */
-	public function quality($value)
+	public function quality($amount)
 	{
 		$this->actions['quality'] = max(1, min($amount, 100));
 
