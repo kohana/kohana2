@@ -345,7 +345,7 @@ class Database_Core {
 		foreach ($keys as $key => $value)
 		{
 			$key    = (strpos($key, '.') !== FALSE) ? $this->config['table_prefix'].$key : $key;
-			$cond[] = $this->driver->where($this->config['table_prefix'].$key, $this->driver->escape_column($this->config['table_prefix'].$value), 'AND ', count($cond), FALSE);
+			$cond[] = $this->driver->where($key, $this->driver->escape_column($this->config['table_prefix'].$value), 'AND ', count($cond), FALSE);
 		}
 
 		$this->join[] = $type.'JOIN '.$this->driver->escape_column($this->config['table_prefix'].$table).' ON '.implode(' ', $cond);
