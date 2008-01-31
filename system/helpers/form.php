@@ -73,7 +73,7 @@ class form_Core {
 	 * @param   string  a string to be attached to the end of the attributes
 	 * @return  string
 	 */
-	public static function open_fieldset($data, $extra = '')
+	public static function open_fieldset($data = NULL, $extra = '')
 	{
 		if ( ! empty($extra))
 		{
@@ -102,7 +102,7 @@ class form_Core {
 	 * @param   string  a string to be attached to the end of the attributes
 	 * @return  string
 	 */
-	public static function legend($text = '', $data = array(), $extra = '')
+	public static function legend($text = '', $data = NULL, $extra = '')
 	{
 		if ( ! empty($extra))
 		{
