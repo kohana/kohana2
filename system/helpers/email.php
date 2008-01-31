@@ -2,7 +2,7 @@
 /**
  * Email helper class.
  *
- * $Id: valid.php 1865 2008-01-29 19:48:29Z Geert $
+ * $Id$
  *
  * @package    Validation
  * @author     Kohana Team
