@@ -175,10 +175,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 
 	protected function properties()
 	{
-		/**
-		 * @todo This should be replaced with a getimagesize() alternative, due to the poor performance of exec()
-		 */
-		return explode(',', exec(escapeshellcmd($this->dir.'identify'.$this->ext).' -format '.escapeshellarg('%w,%h').' '.$this->cmd_image));
+		return array_slice(getimagesize($this->cmd_image), 0, 2, FALSE);
 	}
 
 } // End Image ImageMagick Driver
