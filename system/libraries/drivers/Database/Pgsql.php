@@ -53,8 +53,8 @@ class Database_Pgsql_Driver extends Database_Driver {
 				echo $this->set_charset($charset);
 			}
 
-			// Clear password after successful connect
-			$this->db_config['connection']['pass'] = NULL;
+			// Clear connection after successful connect
+			$this->db_config['connection'] = NULL;
 
 			return $this->link;
 		}

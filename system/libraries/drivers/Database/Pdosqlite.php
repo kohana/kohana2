@@ -55,6 +55,9 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 			throw new Kohana_Database_Exception('database.error', $e->getMessage());
 		}
 
+		// Clear connection after successful connect
+		$this->db_config['connection'] = NULL;
+
 		return $this->link;
 	}
 
