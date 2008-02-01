@@ -457,7 +457,9 @@ class Validation_Core {
 			'file'   => FALSE,
 			'human'  => FALSE,
 			'max_width'  => FALSE,
-			'max_height' => FALSE
+			'max_height' => FALSE,
+			'min_width' => FALSE,
+			'min_height' => FALSE
 		);
 
 		if ($data === $this->data[$this->current_field])
