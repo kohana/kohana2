@@ -518,6 +518,9 @@ class Kohana {
 			ob_end_clean();
 		}
 
+		// Clear the current buffer
+		(ob_get_level() === self::$buffer_level) and ob_clean();
+
 		// Test if display_errors is on
 		if (Config::item('core.display_errors'))
 		{
