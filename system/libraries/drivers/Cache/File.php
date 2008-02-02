@@ -199,9 +199,6 @@ class Cache_File_Driver implements Cache_Driver {
 	{
 		if ($files = $this->exists(TRUE))
 		{
-			// Current timestamp
-			$time = time();
-
 			foreach($files as $file)
 			{
 				if ($this->expired($file))
