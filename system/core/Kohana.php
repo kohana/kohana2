@@ -84,12 +84,6 @@ class Kohana {
 		// Set exception handler
 		set_exception_handler(array('Kohana', 'exception_handler'));
 
-		if (Config::item('log.threshold') > 0)
-		{
-			// Enable log writing if the log threshold is above 0
-			register_shutdown_function(array('Log', 'write'));
-		}
-
 		// Disable magic_quotes_runtime. The Input library takes care of
 		// magic_quotes_gpc later.
 		set_magic_quotes_runtime(0);
@@ -99,6 +93,29 @@ class Kohana {
 
 		// Set locale information
 		setlocale(LC_ALL, Config::item('locale.language').'.UTF-8');
+
+		if (Config::item('log.threshold') > 0)
+		{
+			// Get the configured log directory
+			$log_dir = Config::item('log.directory');
+
+			// Two possible locations
+			$app_log = APPPATH.$log_dir;
+			$log_dir = realpath($log_dir);
+
+			// If the log directory does not exist, log inside of application/
+			is_dir($log_dir) or $log_dir = $app_log;
+
+			// Log directory must be writable
+			if ( ! is_dir($log_dir) OR ! is_writable($log_dir))
+				throw new Kohana_Exception('core.cannot_write_log');
+
+			// Set the log directory
+			Log::directory($log_dir);
+
+			// Enable log writing if the log threshold is above 0
+			register_shutdown_function(array('Log', 'write'));
+		}
 
 		// Enable Kohana routing
 		Event::add('system.routing', array('Router', 'find_uri'));
@@ -310,13 +327,19 @@ class Kohana {
 	 */
 	public static function shutdown()
 	{
+		while (ob_get_level() > self::$buffer_level)
+		{
+			// Flush all open output buffers above the internal buffer
+			ob_end_flush();
+		}
+
 		// This will flush the Kohana buffer, which sets self::$output
 		(ob_get_level() === self::$buffer_level) and ob_end_clean();
 
 		// Run the output event
 		Event::run('system.display', self::$output);
 
-		// Render the output
+		// Render the final output
 		self::render(self::$output);
 	}
 
@@ -489,13 +512,10 @@ class Kohana {
 			}
 		}
 
-		if (ob_get_level() >= self::$buffer_level)
+		while (ob_get_level() > self::$buffer_level)
 		{
-			// Flush the entire buffer here, to ensure the error is displayed
-			while(ob_get_level() > self::$buffer_level) ob_end_clean();
-
-			// Clear out the output buffer
-			ob_clean();
+			// Clean all active output buffers
+			ob_end_clean();
 		}
 
 		// Test if display_errors is on
@@ -525,6 +545,9 @@ class Kohana {
 
 		// Run the system.shutdown event
 		Event::has_run('system.shutdown') or Event::run('system.shutdown');
+
+		// Turn off error reporting
+		error_reporting(0);
 		exit;
 	}
 

@@ -11,8 +11,25 @@
  */
 final class Log {
 
+	private static $log_directory;
+
 	private static $types = array(1 => 'error', 2 => 'debug', 3 => 'info');
 	private static $messages = array();
+
+	/**
+	 * Set the the log directory. The log directory is determined by Kohana::setup.
+	 *
+	 * @param   string   full log directory path
+	 * @return  void
+	 */
+	public static function directory($directory)
+	{
+		if (self::$log_directory === NULL)
+		{
+			// Set the log directory if it has not already been set
+			self::$log_directory = $directory;
+		}
+	}
 
 	/**
 	 * Add a log message.
@@ -37,39 +54,17 @@ final class Log {
 	 */
 	public static function write()
 	{
-		$filename  = Config::item('log.directory');
+		// Set the log threshold
 		$threshold = Config::item('log.threshold');
 
 		// Don't log if there is nothing to log to
-		if ($threshold < 1 OR count(self::$messages) == 0 OR $filename == FALSE) return;
+		if ($threshold < 1 OR count(self::$messages) === 0) return;
 
-		// Make sure that the log directory is absolute
-		$filename = (substr($filename, 0, 1) === '/') ? $filename : APPPATH.$filename;
+		// Set the log filename
+		$filename = self::$log_directory.date('Y-m-d').'.log'.EXT;
 
-		// Find the realpath to the log directory
-		$filename = realpath($filename).'/';
-
-		// Make sure the log directory is writable
-		if ( ! is_dir($filename) OR ! is_writable($filename))
-		{
-			// Disable errors
-			$ER = error_reporting(0);
-
-			// Clear the buffer
-			ob_get_level() and ob_clean();
-
-			// Enable errors
-			error_reporting($ER);
-
-			exit(Kohana::lang('core.cannot_write_log'));
-		}
-
-		// Attach the filename to the directory
-		$filename .= date('Y-m-d').'.log'.EXT;
-
+		// Compile the messages
 		$messages = '';
-
-		// Get messages
 		foreach(self::$messages as $type => $data)
 		{
 			if (array_search($type, self::$types) > $threshold)

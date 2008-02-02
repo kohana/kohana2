@@ -58,8 +58,8 @@ class Database_Mysql_Driver extends Database_Driver {
 		$connect = ($this->db_config['persistent'] == TRUE) ? 'mysql_pconnect' : 'mysql_connect';
 
 		// Build the connection info
-		$host = (isset($host)) ? $host : $socket;
-		$port = (isset($port)) ? ':'.$port : '';
+		$host = isset($host) ? $host : $socket;
+		$port = isset($port) ? ':'.$port : '';
 
 		// Make the connection and select the database
 		if (($this->link = $connect($host.$port, $user, $pass, TRUE)) AND mysql_select_db($database, $this->link))
