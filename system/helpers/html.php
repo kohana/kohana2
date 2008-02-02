@@ -51,17 +51,7 @@ class html_Core {
 	 */
 	public static function query_string($array)
 	{
-		if (empty($array) OR ! is_array($array))
-			return '';
-
-		$string = array();
-
-		foreach($array as $key => $value)
-		{
-			$string[] = $key.'='.rawurlencode($value);
-		}
-
-		return implode('&', $string);
+		return http_build_query($array);
 	}
 
 	/**
