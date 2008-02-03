@@ -20,10 +20,10 @@ class email_Core {
 	 * @param   string   DSN connection string
 	 * @return  void
 	 */
-	public static function connect($dsn = NULL)
+	public static function connect($config = NULL)
 	{
 		// Load default configuration
-		($dsn === NULL) and $dsn = Config::item('email.dsn');
+		($config === NULL) and $config = Config::item('email');
 
 		if ( ! class_exists('Swift', FALSE))
 		{
@@ -34,43 +34,37 @@ class email_Core {
 			spl_autoload_register(array('Swift_ClassLoader', 'load'));
 		}
 
-		if (substr($dsn, 0, 4) === 'smtp')
+		switch ($config['driver'])
 		{
-			$dsn = parse_url($dsn);
+			case 'smtp':
+				// Create a SMTP connection
+				$connection = new Swift_Connection_SMTP
+				(
+					$config['hostname'], 
+					empty($config['options']['port']) ? 25 : $config['options']['port']
+				);
 
-			// Create the connection
-			$connection = new Swift_Connection_SMTP($dsn['host'], empty($dsn['port']) ? 25 : (int) $dsn['port']);
+				// Do authentication, if part of the DSN
+				empty($config['options']['username']) or $connection->setUsername($config['options']['username']);
+				empty($config['options']['password']) or $connection->setPassword($config['options']['password']);
 
-			// Do authentication, if part of the DSN
-			empty($dsn['user']) or $connection->setUsername($dsn['user']);
-			empty($dsn['pass']) or $connection->setPassword($dsn['pass']);
+				// Set the timeout to 5 seconds
+				$connection->setTimeout(5);
+			break;
+			case 'sendmail':
+				// Create a sendmail connection
+				$connection = new Swift_Connection_Sendmail
+				(
+					empty($config['options']) ? Swift_Connection_Sendmail::AUTO_DETECT : $config['options']
+				);
 
-			// Set the timeout to 5 seconds
-			$connection->setTimeout(5);
-		}
-		elseif (substr($dsn, 0, 8) === 'sendmail')
-		{
-			if (($dsn = substr($dsn, 11)) === '')
-			{
-				// Auto-detect the paths
-				$dsn = Swift_Connection_Sendmail::AUTO_DETECT;
-			}
-			else
-			{
-				// Add the sendmail flags
-				$dsn.= ' -bs';
-			}
-
-			// Use the sendmail connection
-			$connection = new Swift_Connection_Sendmail($dsn);
-
-			// Set the timeout to 5 seconds
-			$connection->setTimeout(5);
-		}
-		else
-		{
-			// Use the native connection
-			$connection = new Swift_Connection_NativeMail;
+				// Set the timeout to 5 seconds
+				$connection->setTimeout(5);
+			break;
+			default:
+				// Use the native connection
+				$connection = new Swift_Connection_NativeMail;
+			break;
 		}
 
 		// Create the SwiftMailer instance

@@ -1,9 +1,19 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Mail connection DSN, used with the email helper.
+ * SwiftMailer driver, used with the email helper.
  *
- * PHP mail function - native://mail
- * Server sendmail   - sendmail:///path/to/sendmail
- * External SMTP     - smtp://user:password@host:port
+ * @see http://www.swiftmailer.org/wikidocs/v3/connections/nativemail
+ * @see http://www.swiftmailer.org/wikidocs/v3/connections/sendmail
+ * @see http://www.swiftmailer.org/wikidocs/v3/connections/smtp
+ *
+ * Valid drivers are: native, sendmail, smtp
  */
-$config['dsn'] = 'native://mail';
+$config['driver'] = 'native';
+
+/**
+ * Driver options:
+ * @param   null    native: no options
+ * @param   string  sendmail: executable path, with -bs or equivalent attached
+ * @param   array   smtp: hostname, (username), (password), (port)
+ */
+$config['options'] = NULL;
