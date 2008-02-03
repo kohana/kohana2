@@ -34,18 +34,10 @@ class Archive_Zip_Driver implements Archive_Driver {
 		// Sort the paths to make sure that directories come before files
 		sort($paths);
 
-		while ($set = array_shift($paths))
+		foreach ($paths as $set)
 		{
-			list ($file, $name) = $set;
-
-			if (substr($file, -1) === '/')
-			{
-				$this->add_dir($file, $name);
-			}
-			else
-			{
-				$this->add_file($file, $name);
-			}
+			// Add each file
+			$this->add_file($set[0], $set[1]);
 		}
 
 		// File data

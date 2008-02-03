@@ -65,14 +65,11 @@ class Archive_Core {
 
 		if (file_exists($path) AND is_dir($path))
 		{
-			// Normalize ending slash
-			$path = rtrim($path, '/').'/';
-
-			// Add directory to paths
-			$this->paths[] = array($path, $path);
-
 			if ($recursive == TRUE)
 			{
+				// Force directories to end with a slash
+				$path = rtrim($path, '/').'/';
+
 				$dir = opendir($path);
 				while (($file = readdir($dir)) !== FALSE)
 				{
@@ -80,7 +77,7 @@ class Archive_Core {
 					if (substr($file, 0, 1) === '.')
 						continue;
 
-					// Read directory contents
+					// Add directory contents
 					$this->add($path.$file);
 				}
 				closedir($dir);
