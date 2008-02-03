@@ -18,7 +18,7 @@ class email_Core {
 	 * Creates a SwiftMailer instance.
 	 *
 	 * @param   string   DSN connection string
-	 * @return  void
+	 * @return  object   Swift object
 	 */
 	public static function connect($config = NULL)
 	{
@@ -68,7 +68,7 @@ class email_Core {
 		}
 
 		// Create the SwiftMailer instance
-		self::$mail = new Swift($connection);
+		return self::$mail = new Swift($connection);
 	}
 
 	/**
