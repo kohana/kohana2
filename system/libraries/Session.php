@@ -80,8 +80,8 @@ class Session_Core {
 			}
 
 			// Close the session just before sending the headers, so that
-			// the session cookie can be written
-			Event::add('system.send_headers', 'session_write_close');
+			// the session cookie(s) can be written.
+			Event::add('system.send_headers', array($this, 'write_close'));
 
 			// Singleton instance
 			self::$instance = $this;
@@ -271,6 +271,27 @@ class Session_Core {
 
 			// Destroy the session
 			return session_destroy();
+		}
+	}
+
+	/**
+	 * Runs the system.session_write event, then calls session_write_close.
+	 *
+	 * @return void
+	 */
+	public function write_close()
+	{
+		static $run;
+
+		if ($run === NULL)
+		{
+			$run = TRUE;
+
+			// Run the events that depend on the session being open
+			Event::run('system.session_write');
+
+			// Close the session
+			session_write_close();
 		}
 	}
 
