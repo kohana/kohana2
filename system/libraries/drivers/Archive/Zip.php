@@ -126,7 +126,7 @@ class Archive_Zip_Driver implements Archive_Driver {
 			"\x00\x00".               // General bit flag
 			"\x00\x00".               // Compression method
 			pack('V', $timestamp).    // Last mod time and date
-			pack('V', 0).             // CRC32
+			pack('V', crc32($name)).  // CRC32
 			pack('V', 0).             // Compressed filesize
 			pack('V', 0).             // Uncompressed filesize
 			pack('v', strlen($name)). // Length of directory name
