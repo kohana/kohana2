@@ -44,7 +44,7 @@ class html_Core {
 	}
 
 	/**
-	 * Creates an HTTP query string from an array.
+	 * Creates an HTTP query string from an array. Deprecated.
 	 *
 	 * @param   array   array of data to convert to string
 	 * @return  string

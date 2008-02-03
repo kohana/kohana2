@@ -10,10 +10,10 @@
 class Pagination_Core {
 
 	// Config values
-	private   $base_url       = '';
-	private   $directory      = 'pagination';
-	private   $style          = 'classic';
-	private   $uri_segment    = 3;
+	protected $base_url       = '';
+	protected $directory      = 'pagination';
+	protected $style          = 'classic';
+	protected $uri_segment    = 3;
 	protected $items_per_page = 10;
 	protected $total_items    = 0;
 
@@ -27,13 +27,14 @@ class Pagination_Core {
 	protected $last_page;
 	protected $previous_page;
 	protected $next_page;
+	protected $sql_offset;
+	protected $sql_limit;
 
 	/**
-	 * Constructor: __construct
-	 *  Sets up the config values.
+	 * Constructs the Pagination object.
 	 *
-	 * Parameters:
-	 *  config - custom configuration
+	 * @param  array  configuration
+	 * @return void
 	 */
 	public function __construct($config = array())
 	{
@@ -46,11 +47,10 @@ class Pagination_Core {
 	}
 
 	/**
-	 * Method: initialize
-	 *  Sets or overwrites (some) config values.
+	 * Sets or overwrites (some) config values.
 	 *
-	 * Parameters:
-	 *  config - custom configuration
+	 * @param  array  configuration
+	 * @return void
 	 */
 	public function initialize($config = array())
 	{
@@ -102,17 +102,17 @@ class Pagination_Core {
 		$this->last_page          = ($this->current_page >= $this->total_pages) ? FALSE : $this->total_pages;
 		$this->previous_page      = ($this->current_page > 1) ? $this->current_page - 1 : FALSE;
 		$this->next_page          = ($this->current_page < $this->total_pages) ? $this->current_page + 1 : FALSE;
+
+		// SQL values
+		$this->sql_offset         = (int) ($this->current_page - 1) * $this->items_per_page;
+		$this->sql_limit          = sprintf(' LIMIT %d OFFSET %d ', $this->items_per_page, $this->sql_offset);
 	}
 
 	/**
-	 * Method: create_links
-	 *  Generates the HTML for the chosen pagination style.
+	 * Generates the HTML for the chosen pagination style.
 	 *
-	 * Parameters:
-	 *  style - style of generated links
-	 *
-	 * Returns:
-	 *  Generated pagination HTML.
+	 * @param  string  pagination style
+	 * @return string  pagination html
 	 */
 	public function create_links($style = NULL)
 	{
@@ -122,11 +122,9 @@ class Pagination_Core {
 	}
 
 	/**
-	 * Method: __toString
-	 *  Magic method for converting an object to a string.
+	 * Magically converts pagination object to string.
 	 *
-	 * Returns:
-	 *  The generated pagination HTML.
+	 * @return string  pagination html
 	 */
 	public function __toString()
 	{
@@ -134,27 +132,36 @@ class Pagination_Core {
 	}
 
 	/**
-	 * Method: sql_offset
-	 *  Gets the SQL offset of the first row to return.
+	 * Magically gets a pagination variable.
 	 *
-	 * Returns:
-	 *  SQL offset integer.
+	 * @param  string  variable key
+	 * @return mixed   variable value if the key is found
+	 * @return void    if the key is not found
 	 */
-	public function sql_offset()
+	public function __get($key)
 	{
-		return (int) ($this->current_page - 1) * $this->items_per_page;
+		if (isset($this->$key))
+			return $this->$key;
 	}
 
 	/**
-	 * Method: sql_limit
-	 *  Generates the complete SQL LIMIT clause.
+	 * Gets the SQL offset of the first row to return. Deprecated.
 	 *
-	 * Returns:
-	 *  SQL LIMIT clause.
+	 * @return integer  sql offset
+	 */
+	public function sql_offset()
+	{
+		return $this->sql_offset;
+	}
+
+	/**
+	 * Generates the complete SQL LIMIT clause. Deprecated.
+	 *
+	 * @return string  sql limit clause
 	 */
 	public function sql_limit()
 	{
-		return sprintf(' LIMIT %d OFFSET %d ', $this->items_per_page, $this->sql_offset());
+		return $this->sql_limit;
 	}
 
 } // End Pagination Class
