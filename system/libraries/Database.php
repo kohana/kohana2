@@ -196,8 +196,8 @@ class Database_Core {
 			if ( ! is_resource($this->link) AND ! is_object($this->link))
 				throw new Kohana_Database_Exception('database.connection', $this->driver->show_error());
 
-			// Clear connection after successful connect
-			$this->config['connection'] = NULL;
+			// Clear password after successful connect
+			$this->config['connection']['pass'] = NULL;
 		}
 	}
 

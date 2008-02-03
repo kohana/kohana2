@@ -57,8 +57,8 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 				$this->set_charset($charset);
 			}
 
-			// Clear connection after successful connect
-			$this->db_config['connection'] = NULL;
+			// Clear password after successful connect
+			$this->config['connection']['pass'] = NULL;
 
 			return $this->link;
 		}
