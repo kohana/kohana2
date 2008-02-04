@@ -10,10 +10,8 @@
  */
 function _trim($str, $charlist = NULL)
 {
-	if ($charlist === NULL OR utf8::is_ascii($charlist))
-	{
-		return ($charlist === NULL) ? trim($str) : trim($str, $charlist);
-	}
+	if ($charlist === NULL)
+		return trim($str);
 
 	return utf8::ltrim(utf8::rtrim($str, $charlist), $charlist);
 }

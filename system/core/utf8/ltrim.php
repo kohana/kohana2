@@ -10,16 +10,13 @@
  */
 function _ltrim($str, $charlist = NULL)
 {
-	if ($charlist === NULL OR utf8::is_ascii($charlist))
-	{
-		return ($charlist === NULL) ? ltrim($str) : ltrim($str, $charlist);
-	}
+	if ($charlist === NULL)
+		return ltrim($str);
 
-	$charlist = preg_replace('#[-[\].:\\\\^/]#', '\\\\$0', $charlist);
+	if (utf8::is_ascii($charlist))
+		return ltrim($str, $charlist);
 
-	// Try to support .. character ranges. If they cause errors, drop support.
-	$charlist_ranged = str_replace('\.\.', '-', $charlist);
-	$str_ranged = @preg_replace('/^['.$charlist_ranged.']+/u', '', $str);
+	$charlist = preg_replace('#[-\[\]:\\\\^/]#', '\\\\$0', $charlist);
 
-	return ($str_ranged !== NULL) ? $str_ranged : preg_replace('/^['.$charlist.']+/u', '', $str);
+	return preg_replace('/^['.$charlist.']+/u', '', $str);
 }
