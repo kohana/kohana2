@@ -2,12 +2,12 @@
 /**
  * Manipulate images using standard methods such as resize, crop, rotate, etc.
  * This class must be re-initialized for every image you wish to manipulate.
- * 
+ *
  * $Id$
  *
  * @package    Image
  * @author     Kohana Team
- * @copyright  (c) 2007 Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
 class Image_Core {

@@ -7,7 +7,7 @@
  *
  * @package    Core
  * @author     Kohana Team
- * @copyright  (c) 2007 Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
 class View_Core {
@@ -58,7 +58,7 @@ class View_Core {
 			// Load the filename and set the content type
 			$this->kohana_filename = Kohana::find_file('views', $name.'.'.$type, TRUE, $type);
 			$this->kohana_filetype = Config::item('mimes.'.$type);
-			$this->kohana_filetype = empty($this->kohana_filetype) ? $type : $this->kohana_filetype;		
+			$this->kohana_filetype = empty($this->kohana_filetype) ? $type : $this->kohana_filetype;
 		}
 
 		if (is_array($data) AND ! empty($data))

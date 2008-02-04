@@ -1,21 +1,18 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana - The Swift PHP Framework
- *
- *  License:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
- */
-
-/**
  * Allows a template to be automatically loaded and displayed. Display can be
  * dynamically turned off in the controller methods, and the template file
  * can be overloaded.
  *
- * Usage:
- * To use the Template_Controller, declare your controller to extend this class:
+ * To use it, declare your controller to extend this class:
  * `class Your_Controller extends Template_Controller`
+ *
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Template_Controller extends Controller {
 

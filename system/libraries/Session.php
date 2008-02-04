@@ -1,11 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Session
+ * Session library.
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Session_Core {
 
@@ -37,8 +39,7 @@ class Session_Core {
 	}
 
 	/**
-	 * Constructor: __construct
-	 *  On first session instance creation, sets up the driver and creates session.
+	 * On first session instance creation, sets up the driver and creates session.
 	 */
 	public function __construct()
 	{
@@ -91,11 +92,9 @@ class Session_Core {
 	}
 
 	/**
-	 * Method: id
-	 *  Get the session id.
+	 * Get the session id.
 	 *
-	 * Returns:
-	 *  Session id
+	 * @return  string
 	 */
 	public function id()
 	{
@@ -103,8 +102,10 @@ class Session_Core {
 	}
 
 	/**
-	 * Method: create
-	 *  Create a new session.
+	 * Create a new session.
+	 *
+	 * @param   array  variables to set after creation
+	 * @return  void
 	 */
 	public function create($vars = NULL)
 	{
@@ -232,8 +233,7 @@ class Session_Core {
 	}
 
 	/**
-	 * Method: regenerate
-	 *  Regenerates the global session id.
+	 * Regenerates the global session id.
 	 */
 	public function regenerate()
 	{
@@ -253,11 +253,9 @@ class Session_Core {
 	}
 
 	/**
-	 * Method: destroy
-	 *  Destroys the current session.
+	 * Destroys the current session.
 	 *
-	 * Returns:
-	 *  TRUE or FALSE (or NULL if called before session_start())
+	 * @return  boolean
 	 */
 	public function destroy()
 	{
@@ -296,12 +294,11 @@ class Session_Core {
 	}
 
 	/**
-	 * Method: set
-	 *  Set a session variable.
+	 * Set a session variable.
 	 *
-	 * Parameters:
-	 *  keys - array of values, or key
-	 *  val  - value (if keys is not an array)
+	 * @param   string|array  key, or array of values
+	 * @param   mixed         value (if keys is not an array)
+	 * @return  void
 	 */
 	public function set($keys, $val = FALSE)
 	{
@@ -324,12 +321,11 @@ class Session_Core {
 	}
 
 	/**
-	 * Method: set_flash
-	 *  Set a flash variable.
+	 * Set a flash variable.
 	 *
-	 * Parameters:
-	 *  keys - array of values, or key
-	 *  val  - value (if keys is not an array)
+	 * @param   string|array  key, or array of values
+	 * @param   mixed         value (if keys is not an array)
+	 * @return  void
 	 */
 	public function set_flash($keys, $val = FALSE)
 	{
@@ -352,11 +348,10 @@ class Session_Core {
 	}
 
 	/**
-	 * Method: keep_flash
-	 *  Freshen a flash variable.
+	 * Freshen a flash variable.
 	 *
-	 * Parameters:
-	 *  key - variable key
+	 * @param   string   variable key
+	 * @return  boolean
 	 */
 	public function keep_flash($key)
 	{
@@ -370,15 +365,11 @@ class Session_Core {
 	}
 
 	/**
-	 * Method: get
-	 *  Get a variable. Access to sub-arrays is supported with key.subkey.
+	 * Get a variable. Access to sub-arrays is supported with key.subkey.
 	 *
-	 * Parameters:
-	 *  key     - variable key (optional)
-	 *  default - default value returned if variable does not exist
-	 *
-	 * Returns:
-	 *   Variable data if key specified, otherwise array containing all session data
+	 * @param   string  variable key
+	 * @param   mixed   default value returned if variable does not exist
+	 * @return  mixed   Variable data if key specified, otherwise array containing all session data.
 	 */
 	public function get($key = FALSE, $default = FALSE)
 	{
@@ -391,14 +382,10 @@ class Session_Core {
 	}
 
 	/**
-	 * Method: get_once
-	 *  Get a variable, and delete it.
+	 * Get a variable, and delete it.
 	 *
-	 * Parameters:
-	 *  key - variable key (optional)
-	 *
-	 * Returns:
-	 *   Variable data if key specified, otherwise array containing all session data
+	 * @param   string  variable key
+	 * @return  mixed
 	 */
 	public function get_once($key)
 	{
@@ -409,11 +396,10 @@ class Session_Core {
 	}
 
 	/**
-	 * Method: del
-	 *  Delete one or more variables.
+	 * Delete one or more variables.
 	 *
-	 * Parameters:
-	 *  key - variable key(s)
+	 * @param   variable key(s)  $keys
+	 * @return  void
 	 */
 	public function del($keys)
 	{

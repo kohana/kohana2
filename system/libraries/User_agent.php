@@ -1,11 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: User_Agent
+ * User agent library.
  *
- * Kohana Source Code:
- *  author    - Rick Ellis, Kohana Team
- *  copyright - Copyright (c) 2006, EllisLab, Inc.
- *  license   - <http://www.codeigniter.com/user_guide/license.html>
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class User_agent_Core {
 
@@ -22,8 +24,7 @@ class User_agent_Core {
 	protected $robot    = '';
 
 	/**
-	 * Constructor: __construct
-	 *  Loads user agent data.
+	 * Loads user agent data.
 	 */
 	public function __construct()
 	{
@@ -77,17 +78,12 @@ class User_agent_Core {
 	}
 
 	/**
-	 * Method: __get
-	 *  Fetch information about the user agent, examples:
+	 * Fetch information about the user agent, examples:
+	 * is_browser, is_mobile, is_robot
+	 * agent, browser, mobile, version, referrer
 	 *
-	 *  is_browser, is_mobile, is_robot
-	 *  agent, browser, mobile, version, referrer
-	 *
-	 * Parameters:
-	 *  key - key name
-	 *
-	 * Returns:
-	 *   Key value
+	 * @param   string  key name
+	 * @return  string
 	 */
 	public function __get($key)
 	{
@@ -115,15 +111,10 @@ class User_agent_Core {
 	}
 
 	/**
-	 * Method: __call
-	 *  So that users can use $user_agent->is_robot() or $user_agent->is_robot.
+	 * So that users can use $user_agent->is_robot() or $user_agent->is_robot.
 	 *
-	 * Parameters:
-	 *  func - function name
-	 *  args - function arguments
-	 *
-	 * Returns:
-	 *   Function return value
+	 * @param   string  function name
+	 * @return  string
 	 */
 	public function __call($func, $args = FALSE)
 	{
@@ -131,11 +122,9 @@ class User_agent_Core {
 	}
 
 	/**
-	 * Method: __toString
-	 *  Returns the full user agent string when the object is turned into a string.
+	 * Returns the full user agent string when the object is turned into a string.
 	 *
-	 * Returns:
-	 *   User agent string
+	 * @return  string
 	 */
 	public function __toString()
 	{
@@ -143,14 +132,10 @@ class User_agent_Core {
 	}
 
 	/**
-	 * Method: accept_lang
-	 *  Test for a particular language.
+	 * Test for a particular language.
 	 *
-	 * Parameters:
-	 *  lang - language to test for
-	 *
-	 * Returns:
-	 *   TRUE or FALSE
+	 * @param   string   language to test for
+	 * @return  boolean
 	 */
 	public function accept_lang($lang = 'en')
 	{
@@ -161,14 +146,10 @@ class User_agent_Core {
 	}
 
 	/**
-	 * Method: accept_charset
-	 *  Test for a particular character set.
+	 * Test for a particular character set.
 	 *
-	 * Parameters:
-	 *  charset - character set to test for
-	 *
-	 * Returns:
-	 *   TRUE or FALSE
+	 * @param   string   character set to test for
+	 * @return  boolean
 	 */
 	public function accept_charset($charset = 'utf-8')
 	{

@@ -1,11 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Pagination
+ * Pagination library.
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Pagination_Core {
 
@@ -33,8 +35,8 @@ class Pagination_Core {
 	/**
 	 * Constructs the Pagination object.
 	 *
-	 * @param  array  configuration
-	 * @return void
+	 * @param   array  configuration
+	 * @return  void
 	 */
 	public function __construct($config = array())
 	{
@@ -49,8 +51,8 @@ class Pagination_Core {
 	/**
 	 * Sets or overwrites (some) config values.
 	 *
-	 * @param  array  configuration
-	 * @return void
+	 * @param   array  configuration
+	 * @return  void
 	 */
 	public function initialize($config = array())
 	{
@@ -111,8 +113,8 @@ class Pagination_Core {
 	/**
 	 * Generates the HTML for the chosen pagination style.
 	 *
-	 * @param  string  pagination style
-	 * @return string  pagination html
+	 * @param   string  pagination style
+	 * @return  string  pagination html
 	 */
 	public function create_links($style = NULL)
 	{
@@ -124,7 +126,7 @@ class Pagination_Core {
 	/**
 	 * Magically converts pagination object to string.
 	 *
-	 * @return string  pagination html
+	 * @return  string  pagination html
 	 */
 	public function __toString()
 	{
@@ -134,9 +136,9 @@ class Pagination_Core {
 	/**
 	 * Magically gets a pagination variable.
 	 *
-	 * @param  string  variable key
-	 * @return mixed   variable value if the key is found
-	 * @return void    if the key is not found
+	 * @param   string  variable key
+	 * @return  mixed   variable value if the key is found
+	 * @return  void    if the key is not found
 	 */
 	public function __get($key)
 	{
@@ -147,7 +149,7 @@ class Pagination_Core {
 	/**
 	 * Gets the SQL offset of the first row to return. Deprecated.
 	 *
-	 * @return integer  sql offset
+	 * @return  integer  sql offset
 	 */
 	public function sql_offset()
 	{
@@ -157,7 +159,7 @@ class Pagination_Core {
 	/**
 	 * Generates the complete SQL LIMIT clause. Deprecated.
 	 *
-	 * @return string  sql limit clause
+	 * @return  string  sql limit clause
 	 */
 	public function sql_limit()
 	{

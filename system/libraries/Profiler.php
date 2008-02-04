@@ -1,23 +1,23 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Profiler
- *  Adds useful information to the bottom of the current page for debugging and optimization purposes.
+ * Adds useful information to the bottom of the current page for debugging and optimization purposes.
  *
- *  Benchmarks   - The times and memory usage of benchmarks run by the <Benchmark> library
- *  Database     - The raw SQL and number of affected rows of <Database> queries
- *  POST Data    - The name and values of any POST data submitted to the current page
- *  Session Data - Data stored in the current session if using the <Session> library
+ * Benchmarks   - The times and memory usage of benchmarks run by the <Benchmark> library
+ * Database     - The raw SQL and number of affected rows of <Database> queries
+ * POST Data    - The name and values of any POST data submitted to the current page
+ * Session Data - Data stored in the current session if using the <Session> library
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Profiler_Core {
 
 	/**
-	 * Constructor: __construct
-	 *  Adds event for adding the profile output to the page when displayed.
+	 * Adds event for adding the profile output to the page when displayed.
 	 */
 	public function __construct()
 	{
@@ -28,9 +28,8 @@ class Profiler_Core {
 	}
 
 	/**
-	 * Method: disable
-	 *  Disables the profiler for this page only.
-	 *  Best used when profiler is autoloaded.
+	 * Disables the profiler for this page only.
+	 * Best used when profiler is autoloaded.
 	 */
 	public function disable()
 	{
@@ -39,15 +38,10 @@ class Profiler_Core {
 	}
 
 	/**
-	 * Method: render
-	 *  Render the profiler. Output is added to
-	 *  the bottom of the page by default.
+	 * Render the profiler. Output is added to the bottom of the page by default.
 	 *
-	 * Parameters:
-	 *  return - return the output if TRUE
-	 *
-	 * Returns:
-	 *  The profiler output if $return is TRUE
+	 * @param   boolean  return the output if TRUE
+	 * @return  void|string
 	 */
 	public function render($return = FALSE)
 	{

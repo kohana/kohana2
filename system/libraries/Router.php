@@ -1,11 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Router
+ * Router
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Router_Core {
 
@@ -24,8 +26,7 @@ class Router_Core {
 	public static $arguments  = FALSE;
 
 	/**
-	 * Method: setup
-	 *  Router setup routine. Automatically called during Kohana setup process.
+	 * Router setup routine. Automatically called during Kohana setup process.
 	 */
 	public static function setup()
 	{
@@ -177,8 +178,7 @@ class Router_Core {
 	}
 
 	/**
-	 * Method: find_uri
-	 *  Attempts to determine the current URI using CLI, GET, PATH_INFO, ORIG_PATH_INFO, or PHP_SELF.
+	 * Attempts to determine the current URI using CLI, GET, PATH_INFO, ORIG_PATH_INFO, or PHP_SELF.
 	 */
 	public static function find_uri()
 	{
@@ -255,14 +255,10 @@ class Router_Core {
 	}
 
 	/**
-	 * Method: filter_uri
-	 *  Filter a string for allowed URI characters.
+	 * Filter a string for allowed URI characters.
 	 *
-	 * Parameters:
-	 *  str - string to filter
-	 *
-	 * Returns:
-	 *  Filtered string
+	 * @param   string  string to filter
+	 * @return  string
 	 */
 	public static function filter_uri($str)
 	{

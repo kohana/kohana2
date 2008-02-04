@@ -1,19 +1,19 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Examples
- *  Contains examples of various Kohana library examples. You can access these
- *  samples in your own installation of Kohana by going to ROOT_URL/examples.
+ * Contains examples of various Kohana library examples. You can access these
+ * samples in your own installation of Kohana by going to ROOT_URL/examples.
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Examples_Controller extends Controller {
 
 	/**
-	 * Method: index
-	 *  Displays a list of available examples
+	 * Displays a list of available examples
 	 */
 	function index()
 	{
@@ -59,8 +59,7 @@ class Examples_Controller extends Controller {
 	}
 
 	/**
-	 * Method: template
-	 *  Demonstrates how to use views inside of views.
+	 * Demonstrates how to use views inside of views.
 	 */
 	function template()
 	{
@@ -78,8 +77,7 @@ class Examples_Controller extends Controller {
 	}
 
 	/**
-	 * Method: rss
-	 *  Demonstrates how to parse RSS feeds by using DOMDocument.
+	 * Demonstrates how to parse RSS feeds by using DOMDocument.
 	 */
 	function rss()
 	{
@@ -93,8 +91,7 @@ class Examples_Controller extends Controller {
 	}
 
 	/**
-	 * Method: session
-	 *  Demonstrates the Session library and using session data.
+	 * Demonstrates the Session library and using session data.
 	 */
 	function session()
 	{
@@ -109,8 +106,7 @@ class Examples_Controller extends Controller {
 	}
 
 	/**
-	 * Method: form
-	 *  Demonstrates how to use the form helper with the Validation library.
+	 * Demonstrates how to use the form helper with the Validation library.
 	 */
 	function form()
 	{
@@ -137,8 +133,7 @@ class Examples_Controller extends Controller {
 	}
 
 	/**
-	 * Method: validation
-	 *  Demontrates how to use the Validation library to validate an arbitrary array.
+	 * Demontrates how to use the Validation library to validate an arbitrary array.
 	 */
 	function validation()
 	{
@@ -176,8 +171,8 @@ class Examples_Controller extends Controller {
 	}
 
 	/**
-	 * Method: database
-	 *  Demonstrates the features of the Database library.
+	 * Demonstrates the features of the Database library.
+	 *
 	 * Table Structure:
 	 *  CREATE TABLE `pages` (
 	 *  `id` mediumint( 9 ) NOT NULL AUTO_INCREMENT ,
@@ -255,8 +250,7 @@ class Examples_Controller extends Controller {
 	}
 
 	/**
-	 * Method: pagination
-	 *  Demonstrates how to use the Pagination library and Pagination styles.
+	 * Demonstrates how to use the Pagination library and Pagination styles.
 	 */
 	function pagination()
 	{
@@ -279,8 +273,7 @@ class Examples_Controller extends Controller {
 	}
 
 	/**
-	 * Method: user_agent
-	 *  Demonstrates the User_Agent library.
+	 * Demonstrates the User_Agent library.
 	 */
 	function user_agent()
 	{
@@ -296,8 +289,7 @@ class Examples_Controller extends Controller {
 	}
 
 	/**
-	 * Method: credit_card
-	 *  Demonstrates the CreditCard library.
+	 * Demonstrates the Payment library.
 	 */
 	/*function payment()
 	{
@@ -353,4 +345,4 @@ class Examples_Controller extends Controller {
 		echo Kohana::debug($image);
 	}
 
-} // End Welcome
+} // End Examples

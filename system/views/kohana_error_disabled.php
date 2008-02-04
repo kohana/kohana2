@@ -20,6 +20,6 @@ p.error { color: #500; }
 <div id="wrap">
 <h1><?php echo $error ?></h1>
 <p class="error"><?php echo $message ?></p>
-</h1>
+</div>
 </body>
 </html>

@@ -15,7 +15,7 @@ $lang = array
 	'error_message'         => 'Une erreur est survenue à la <strong>ligne %s</strong> de <strong>%s</strong>.',
 	'stack_trace'           => 'Stack Trace',
 	'generic_error'         => 'Impossible de compléter la requete',
-	'errors_disabled'       => 'Vous pouvez aller sur la <a href="%s">page d'accueil</a> ou <a href="%s">essayer encore</a>.',
+	'errors_disabled'       => 'Vous pouvez aller sur la <a href="%s">page d\'accueil</a> ou <a href="%s">essayer encore</a>.',
 
 	// Resource names
 	'controller'            => 'controller',

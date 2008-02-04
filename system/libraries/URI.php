@@ -1,11 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: URI
+ * URI library.
  *
- * Kohana Source Code:
- *  author    - Rick Ellis, Kohana Team
- *  copyright - Copyright (c) 2006, EllisLab, Inc.
- *  license   - <http://www.codeigniter.com/user_guide/license.html>
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class URI_Core extends Router {
 
@@ -25,15 +27,11 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Method: segment
-	 *  Retrieve a specific URI segment.
+	 * Retrieve a specific URI segment.
 	 *
-	 * Parameters:
-	 *  index   - segment number or label
-	 *  default - default value returned if segment does not exist
-	 *
-	 * Returns:
-	 *   Value of segment
+	 * @param   integer|string  segment number or label
+	 * @param   mixed           default value returned if segment does not exist
+	 * @return  string
 	 */
 	public function segment($index = 1, $default = FALSE)
 	{
@@ -51,15 +49,11 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Method: rsegment
-	 *  Retrieve a specific routed URI segment.
+	 * Retrieve a specific routed URI segment.
 	 *
-	 * Parameters:
-	 *  index   - segment number or label
-	 *  default - default value returned if segment does not exist
-	 *
-	 * Returns:
-	 *   Value of segment
+	 * @param   integer|string  rsegment number or label
+	 * @param   mixed           default value returned if segment does not exist
+	 * @return  string
 	 */
 	public function rsegment($index = 1, $default = FALSE)
 	{
@@ -77,16 +71,12 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Method: argument
-	 *  Retrieve a specific URI argument. This is the part of the segments that does not indicate controller
-	 *  or method
+	 * Retrieve a specific URI argument.
+	 * This is the part of the segments that does not indicate controller or method
 	 *
-	 * Parameters:
-	 *  index   - argument number or label
-	 *  default - default value returned if segment does not exist
-	 *
-	 * Returns:
-	 *   Value of segment
+	 * @param   integer|string  argument number or label
+	 * @param   mixed           default value returned if segment does not exist
+	 * @return  string
 	 */
 	public function argument($index = 1, $default = FALSE)
 	{
@@ -104,15 +94,11 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Method: segment_array
-	 *  Returns an array containing all the URI segments.
+	 * Returns an array containing all the URI segments.
 	 *
-	 * Parameters:
-	 *  offset      - segment offset
-	 *  associative - return an associative array
-	 *
-	 * Returns:
-	 *   Array of URI segments
+	 * @param   integer  segment offset
+	 * @param   boolean  return an associative array
+	 * @return  array
 	 */
 	public function segment_array($offset = 0, $associative = FALSE)
 	{
@@ -134,15 +120,11 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Method: rsegment_array
-	 *  Returns an array containing all the re-routed URI segments.
+	 * Returns an array containing all the re-routed URI segments.
 	 *
-	 * Parameters:
-	 *  offset      - rsegment offset
-	 *  associative - return an associative array
-	 *
-	 * Returns:
-	 *   Array of re-routed URI segments
+	 * @param   integer  rsegment offset
+	 * @param   boolean  return an associative array
+	 * @return  array
 	 */
 	public function rsegment_array($offset = 0, $associative = FALSE)
 	{
@@ -164,15 +146,11 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Method: argument_array
-	 *  Returns an array containing all the URI arguments.
+	 * Returns an array containing all the URI arguments.
 	 *
-	 * Parameters:
-	 *  offset      - segment offset
-	 *  associative - return an associative array
-	 *
-	 * Returns:
-	 *   Array of URI segment arguments
+	 * @param   integer  segment offset
+	 * @param   boolean  return an associative array
+	 * @return  array
 	 */
 	public function argument_array($offset = 0, $associative = FALSE)
 	{
@@ -194,11 +172,9 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Method: string
-	 *  Returns the complete URI as a string.
+	 * Returns the complete URI as a string.
 	 *
-	 * Returns:
-	 *   Full URI as string
+	 * @return  string
 	 */
 	public function string()
 	{
@@ -206,23 +182,19 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Method: __toString
-	 *  Magic method for converting an object to a string.
+	 * Magic method for converting an object to a string.
 	 *
-	 * Returns:
-	 *  Full URI as string
-	 */	
+	 * @return  string
+	 */
 	public function __toString()
 	{
 		return $this->string();
 	}
 
 	/**
-	 * Method: total_segments
-	 *  Returns the total number of URI segments.
+	 * Returns the total number of URI segments.
 	 *
-	 * Returns:
-	 *   Total number of URI segments
+	 * @return  integer
 	 */
 	public function total_segments()
 	{
@@ -230,11 +202,9 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Method: total_rsegments
-	 *  Returns the total number of re-routed URI segments.
+	 * Returns the total number of re-routed URI segments.
 	 *
-	 * Returns:
-	 *   Total number of re-routed URI segments
+	 * @return  integer
 	 */
 	public function total_rsegments()
 	{
@@ -242,11 +212,9 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Method: total_arguments
-	 *  Returns the total number of URI arguments.
+	 * Returns the total number of URI arguments.
 	 *
-	 * Returns:
-	 *   Total number of URI arguments
+	 * @return  integer
 	 */
 	public function total_arguments()
 	{
@@ -254,11 +222,10 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Method: last_segment
-	 *  Returns the last URI segment.
+	 * Returns the last URI segment.
 	 *
-	 * Returns:
-	 *   Last URI segment
+	 * @param   mixed   default value returned if segment does not exist
+	 * @return  string
 	 */
 	public function last_segment($default = FALSE)
 	{
@@ -269,11 +236,10 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Method: last_rsegment
-	 *  Returns the last re-routed URI segment.
+	 * Returns the last re-routed URI segment.
 	 *
-	 * Returns:
-	 *   Last re-routed URI segment
+	 * @param   mixed   default value returned if segment does not exist
+	 * @return  string
 	 */
 	public function last_rsegment($default = FALSE)
 	{

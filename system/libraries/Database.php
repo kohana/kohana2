@@ -1,13 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Database
- *  Provides database access in a platform agnostic way, using simple query building blocks.
+ * Provides database access in a platform agnostic way, using simple query building blocks.
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  copyright - (c) 2006 EllisLab, Inc.
- *  license   - <http://www.codeigniter.com/user_guide/license.html>
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Database_Core {
 

@@ -1,12 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Payment_Core
- *  Provides payment support for credit cards and other providers like PayPal
+ * Provides payment support for credit cards and other providers like PayPal.
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Payment
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Payment_Core {
 
@@ -22,38 +23,36 @@ class Payment_Core {
 	protected $driver = NULL;
 
 	/**
-	 * Constructor: __construct
-	 *  Sets the payment processing fields.
-	 *  The driver will translate these into the specific format for the provider.
-	 *  Standard fields are (Providers may have additional or different fields):
+	 * Sets the payment processing fields.
+	 * The driver will translate these into the specific format for the provider.
+	 * Standard fields are (Providers may have additional or different fields):
 	 *
-	 *  card_num
-	 *  exp_date
-	 *  cvv
-	 *  description
-	 *  amount
-	 *  tax
-	 *  shipping
-	 *  first_name
-	 *  last_name
-	 *  company
-	 *  address
-	 *  city
-	 *  state
-	 *  zip
-	 *  email
-	 *  phone
-	 *  fax
-	 *  ship_to_first_name
-	 *  ship_to_last_name
-	 *  ship_to_company
-	 *  ship_to_address
-	 *  ship_to_city
-	 *  ship_to_state
-	 *  ship_to_zip
+	 * card_num
+	 * exp_date
+	 * cvv
+	 * description
+	 * amount
+	 * tax
+	 * shipping
+	 * first_name
+	 * last_name
+	 * company
+	 * address
+	 * city
+	 * state
+	 * zip
+	 * email
+	 * phone
+	 * fax
+	 * ship_to_first_name
+	 * ship_to_last_name
+	 * ship_to_company
+	 * ship_to_address
+	 * ship_to_city
+	 * ship_to_state
+	 * ship_to_zip
 	 *
-	 * Parameters:
-	 *  config - the driver string
+	 * @param  array  the driver string
 	 */
 	public function __construct($config = array())
 	{
@@ -89,12 +88,10 @@ class Payment_Core {
 	}
 
 	/**
-	 * Method: __set
-	 *  Sets the credit card processing fields
+	 * Sets the credit card processing fields
 	 *
-	 * Parameters:
-	 *  name - the field name
-	 *  val  - the value
+	 * @param  string  field name
+	 * @param  string  value
 	 */
 	public function __set($name, $val)
 	{
@@ -102,14 +99,10 @@ class Payment_Core {
 	}
 
 	/**
-	 * Method: set_fields
-	 *  Bulk setting of payment processing fields
+	 * Bulk setting of payment processing fields.
 	 *
-	 * Parameters:
-	 *  fields - an array of values to set
-	 *
-	 * Returns:
-	 *  <Payment> object
+	 * @param   array   array of values to set
+	 * @return  object  this object
 	 */
 	public function set_fields($fields)
 	{
@@ -119,11 +112,9 @@ class Payment_Core {
 	}
 
 	/**
-	 * Method: process
-	 *  Runs the transaction
+	 * Runs the transaction
 	 *
-	 * Returns:
-	 *  TRUE on successful payment, an error string on failure
+	 * @return  TRUE|string  TRUE on successful payment, an error string on failure
 	 */
 	public function process()
 	{

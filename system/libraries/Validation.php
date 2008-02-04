@@ -1,11 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Validation
+ * Validation library.
  *
- * Kohana Source Code:
- *  author    - Rick Ellis, Kohana Team
- *  copyright - Copyright (c) 2006, EllisLab, Inc.
- *  license   - <http://www.codeigniter.com/user_guide/license.html>
+ * $Id$
+ *
+ * @package    Validation
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Validation_Core {
 
@@ -599,7 +601,7 @@ class Validation_Core {
 
 		// Validate the uploaded file
 		if ( ! isset($data['tmp_name']) OR ! is_uploaded_file($data['tmp_name']))
-			return FALSE;        
+			return FALSE;
 
 		if ($fileinfo['file'] AND $data['size'] > $fileinfo['file'])
 		{

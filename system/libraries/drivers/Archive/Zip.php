@@ -1,11 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Archive_Zip_Driver
+ * Archive library zip driver.
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Cache
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Archive_Zip_Driver implements Archive_Driver {
 
@@ -18,17 +20,6 @@ class Archive_Zip_Driver implements Archive_Driver {
 	// Offset location
 	protected $offset = 0;
 
-	/**
-	 * Method: create
-	 *  Creates a zip archive and optionally, saves it to a file.
-	 *
-	 * Parameters:
-	 *  paths    - array of filenames to add
-	 *  filename - file to save the archive to
-	 *
-	 * Returns:
-	 *  FALSE if creation fails, TRUE if the filename is set, or archive data.
-	 */
 	public function create($paths, $filename = FALSE)
 	{
 		// Sort the paths to make sure that directories come before files
@@ -86,11 +77,10 @@ class Archive_Zip_Driver implements Archive_Driver {
 	}
 
 	/**
-	 * Method: add_dir
-	 *  Adds a directory to a zip.
+	 * Adds a directory to a zip.
 	 *
-	 * Parameters:
-	 *  dir - name of directory
+	 * @param  string  path to directory
+	 * @param  string  name of directory
 	 */
 	protected function add_dir($dir, $name)
 	{
@@ -136,11 +126,10 @@ class Archive_Zip_Driver implements Archive_Driver {
 	}
 
 	/**
-	 * Method: add_file
-	 *  Adds a file to a zip.
+	 * Adds a file to a zip.
 	 *
-	 * Parameters:
-	 *  file - name of file
+	 * @param  string  path to file
+	 * @param  string  name of file
 	 */
 	protected function add_file($file, $name)
 	{

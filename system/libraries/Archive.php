@@ -1,12 +1,12 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Archive
+ * Archive library.
  *
  * $Id$
  *
- * @package    Cache
+ * @package    Archive
  * @author     Kohana Team
- * @copyright  (c) 2007 Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
 class Archive_Core {
@@ -49,7 +49,7 @@ class Archive_Core {
 	 * Adds files or directories, recursively, to an archive.
 	 *
 	 * @param   string       file or directory to add
-	 * @param   string|bool  
+	 * @param   string|bool
 	 * @return  object
 	 */
 	public function add($path, $name = TRUE)
@@ -130,8 +130,7 @@ class Archive_Core {
 	}
 
 	/**
-	 * Method: download
-	 *  Forces a download of a created archive.
+	 * Forces a download of a created archive.
 	 *
 	 * @param   string   name of the file that will be downloaded
 	 * @return  void

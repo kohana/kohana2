@@ -1,19 +1,20 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Model
+ * Model class.
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Model_Core {
 
 	protected $db;
 
 	/**
-	 * Constructor: __construct
-	 *  Loads database to $this->db.
+	 * Loads database to $this->db.
 	 */
 	public function __construct()
 	{
@@ -28,4 +29,4 @@ class Model_Core {
 		}
 	}
 
-} // End Model Core
+} // End Model class
