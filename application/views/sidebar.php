@@ -1,6 +1,6 @@
 <div id="sidecontent">
 <h6>Keep Kohana Alive</h6>
-<p id="donate">If you use Kohana and find it worth something, please consider <strong><?php echo html::anchor('donate', 'donating') ?></strong>. <?php echo html::anchor('donate/donation_list', 'Your donations') ?> will be directly used to cover the costs of maintaining Kohana.</li>
+<p id="donate">If you use Kohana and find it worth something, please consider <strong><?php echo html::anchor('donate', 'donating') ?></strong>. <?php echo html::anchor('donate/donation_list', 'Your donations') ?> will be directly used to cover the costs of maintaining Kohana.
 </p>
 
 <?php

@@ -103,6 +103,5 @@ echo html::script(array
 
 <div id="footer"><strong>&copy;2007 Kohana Team. All rights reserved.</strong> <span class="stats">Powered by Kohana v{kohana_version}. Rendered in {execution_time} seconds, using {memory_usage} of memory.</span></div>
 
-</div>
 </body>
 </html>
