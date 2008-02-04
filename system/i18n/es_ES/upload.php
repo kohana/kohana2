@@ -19,5 +19,5 @@ $lang = array
 	'set_allowed'        => 'Por seguridad, deberias definir los tipos de fichero que esta permitido enviar.',
 	'max_file_size'      => 'Por seguridad, por favor no utilice MAX_FILE_SIZE para controlar el tamaño maximo permitido.',
 	'no_tmp_dir'         => 'No es posible encontrar un fichero temporal donde escribir.',
-	'tmp_unwritable'     => 'No es posible crear/escribir dentro del directorio especificado, %s.'
+	'tmp_unwritable'     => 'No es posible crear/escribir dentro del directorio especificado, %s.',
 );

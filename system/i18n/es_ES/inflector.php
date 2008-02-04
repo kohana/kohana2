@@ -21,5 +21,5 @@ $lang = array
 	'species',
 	'traffic',
 	'understanding',
-	'work'
+	'work',
 );

@@ -10,5 +10,5 @@ $lang = array
 	'first'    => 'primero',
 	'last'     => 'último',
 	'previous' => 'anterior',
-	'next'     => 'siguiente'
+	'next'     => 'siguiente',
 );

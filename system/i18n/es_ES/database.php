@@ -10,5 +10,5 @@ $lang = array
 	'must_use_set'          => 'Necesitas una clausula SET para tu consulta.',
 	'must_use_where'        => 'Necesitas una clausula WHERE para tu consulta.',
 	'must_use_table'        => 'Necesitas especificar la tabla para tu consulta.',
-	'not_implemented'       => 'El método requerido, %s, no esta soportado por este driver.'
+	'not_implemented'       => 'El método requerido, %s, no esta soportado por este driver.',
 );

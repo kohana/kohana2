@@ -31,6 +31,6 @@ $lang = array
 		'cantconnect'        => 'Imposible conectar con la pasarela TrustCommerce. Comprueba tu conexión a Internet y asegura que este en funcionamiento.',
 		'dnsfailure'         => 'El programa TCLink no ha sido capaz de resolver los nombres DNS. Asegurate de poder resolver en la maquina.',
 		'linkfailure'        => 'La conexión se ha establecido , pero se ha interrumpido antes de que la transacción finalizase.',
-		'failtoprocess'      => 'Los servidores del Banco estan fuera de línea por lo que resulta imposible autorizar transacciones. Vuelva a intentarlo dentro de unos minutos, o intentelo con una tarjeta de otra entidad bancaria.'
-	)
+		'failtoprocess'      => 'Los servidores del Banco estan fuera de línea por lo que resulta imposible autorizar transacciones. Vuelva a intentarlo dentro de unos minutos, o intentelo con una tarjeta de otra entidad bancaria.',
+	),
 );

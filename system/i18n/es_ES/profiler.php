@@ -11,5 +11,5 @@ $lang = array
 	'no_queries'   => 'No hay consultas a la base de datos',
 	'no_database'  => 'No se encuentra la base de datos',
 	'cookie_data'  => 'Datos de la cookie',
-	'no_cookie'    => 'No se encuentran los datos de la cookie'
+	'no_cookie'    => 'No se encuentran los datos de la cookie',
 );

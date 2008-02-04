@@ -35,5 +35,5 @@ $lang = array
 	'alpha'         => 'caracteres del alfabeto',
 	'alpha_dash'    => 'caracteres del alfabeto, guiones y subrayado',
 	'digit'         => 'digitos',
-	'numeric'       => 'caracteres numéricos'
+	'numeric'       => 'caracteres numéricos',
 );

@@ -2,7 +2,7 @@
 
 $lang = array
 (
-	'no_connection'       => 'No se encuentra una ID de conexion valida.  Por favor, asegurate de realizar la conexión antes de iniciar alguna operación con ficheros.',
+	'no_connection'       => 'No se encuentra una ID de conexión valida. Por favor, asegurate de realizar la conexión antes de iniciar alguna operación con ficheros.',
 	'unable_to_connect'   => 'No es posible conectar con el servidor FTP utilizando el nombre de servidor proporcionado.',
 	'unable_to_login'     => 'Imposible validarse en el servidor FTP. Por favor comprueba tu nombre de usuario y contraseña.',
 	'unable_to_makdir'    => 'Imposible crear el directorio especificado.',
@@ -12,5 +12,5 @@ $lang = array
 	'no_source_file'      => 'No se encuentra el fichero de origen. Por favor, comprueba las rutas',
 	'unable_to_remame'    => 'Imposible renombrar el fichero',
 	'unable_to_delete'    => 'Imposible borrar el fichero.',
-	'unable_to_move'      => 'Imposible mover el fichero. Por favor, asegurate de que el directorio de destino existe.'	
+	'unable_to_move'      => 'Imposible mover el fichero. Por favor, asegurate de que el directorio de destino existe.',
 );

@@ -23,5 +23,5 @@ $lang = array
 	'library'               => 'librería',
 	'driver'                => 'driver',
 	'model'                 => 'modelo',
-	'view'                  => 'vista'
+	'view'                  => 'vista',
 );

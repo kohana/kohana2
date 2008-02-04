@@ -12,5 +12,5 @@ $lang = array
 	E_WARNING            => array( 2, 'Advertencia', ''),
 	E_USER_WARNING       => array( 2, 'Advertencia', ''),
 	E_STRICT             => array( 3, 'Strict Mode Error', ''),
-	E_NOTICE             => array( 3, 'Runtime Message', '')
+	E_NOTICE             => array( 3, 'Runtime Message', ''),
 );

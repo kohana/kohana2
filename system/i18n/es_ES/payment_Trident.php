@@ -79,5 +79,5 @@ $lang = array
 	'302' => 'Fallo al devolver la transacción PayVision.',
 	'303' => 'Verificacion de tarjeta no soportadad.',
 	'304' => 'Fallo al invertir la autorización de PayVision.',
-	'305' => 'Error Interno.'
+	'305' => 'Error Interno.',
 );

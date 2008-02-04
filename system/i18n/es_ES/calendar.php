@@ -51,5 +51,5 @@ $lang = array
 	'september' => 'Septiembre',
 	'october'   => 'Octubre',
 	'november'  => 'Noviembre',
-	'december'  => 'Diciembre'
+	'december'  => 'Diciembre',
 );
