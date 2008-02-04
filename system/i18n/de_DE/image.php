@@ -2,7 +2,7 @@
 
 $lang = array
 (
-	'getimagesize_missing'    => 'Die Bildbibliothek versucht die PHP-Funktion <tt>getimagesize</tt> zu benutzen, die aber nicht bestandteil ihrer PHP-Installation ist',
+	'getimagesize_missing'    => 'Die Bildbibliothek versucht die PHP-Funktion <tt>getimagesize</tt> zu benutzen, die aber nicht Bestandteil ihrer PHP-Installation ist',
 	'driver_not_supported'    => 'Der Bildtreiber %s konnte nicht gefunden werden',
 	'unsupported_method'      => 'Der Bildtreiber, den Sie benutzen, unterstützt nicht die %s-Bildtransformation.',
 	'file_not_found'          => 'Das angegebene Bild %s konnte nicht gefunden werden. Stellen Sie bitte sicher, dass das Bild existiert. Benutzen Sie hierzu die Funktion <tt>file_exists</tt>.',
