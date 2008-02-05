@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/**
  * Domain name, with the installation directory. Default: localhost/kohana/
  */
 $config['site_domain'] = 'localhost/kohana/';
@@ -26,7 +26,7 @@ $config['url_suffix'] = '';
  * server bandwidth usage, at the cost of slightly higher CPU usage. Set to
  * the compression level (1-9) that you want to use, or FALSE to disable.
  *
- * @note Do not enable this option if you are using output compression in php.ini!
+ * Do not enable this option if you are using output compression in php.ini!
  */
 $config['output_compression'] = FALSE;
 
@@ -34,7 +34,7 @@ $config['output_compression'] = FALSE;
  * Enable or disable global XSS filtering of GET, POST, and SERVER data. This
  * option also accepts a string to specify a specific XSS filtering tool.
  */
-$config['global_xss_filtering'] = FALSE;
+$config['global_xss_filtering'] = TRUE;
 
 /**
  * Enable or disable dynamic setting of configuration options. By default, all
@@ -61,10 +61,10 @@ $config['extension_prefix'] = 'MY_';
  */
 $config['modules'] = array
 (
-	// To enable the demo module; uncomment the following line
-	// 'modules/demo',
-	// To enable local API documentation at /kodoc/, uncomment the following line
-	// 'modules/kodoc',
+	// 'modules/auth',   // Authentication
+	// 'modules/forge',  // Form generation
+	// 'modules/kodoc',  // Self-generating documentation
+	// 'modules/media',  // Media caching and compression
 );
 
 /**
