@@ -66,11 +66,6 @@ class Payment_Yourpay_Driver
 		Log::add('debug', 'YourPay.net Payment Driver Initialized');
 	}
 
-	/**
-	 * Sets driver fields and marks reqired fields as TRUE.
-	 *
-	 * @param  array  array of key => value pairs to set
-	 */
 	public function set_fields($fields)
 	{
 		foreach ((array) $fields as $key => $value)
@@ -90,11 +85,6 @@ class Payment_Yourpay_Driver
 		}
 	}
 
-	/**
-	 * Runs the transaction.
-	 *
-	 * @return  boolean
-	 */
 	public function process()
 	{
 		// Check for required fields

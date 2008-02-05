@@ -80,11 +80,6 @@ class Payment_Paypal_Driver {
 		Log::add('debug', 'PayPal Payment Driver Initialized');
 	}
 
-	/**
-	 * Sets driver fields and marks reqired fields as TRUE.
-	 *
-	 * @param  array  array of key => value pairs to set
-	 */
 	public function set_fields($fields)
 	{
 		foreach ((array) $fields as $key => $value)
@@ -108,14 +103,6 @@ class Payment_Paypal_Driver {
 		}
 	}
 
-	/**
-	 * Runs the paypal transaction.
-	 * With the this driver, you will need to run process() twice,
-	 * once to check authorization with paypal to get the token string,
-	 * and once to actually process the transacton with that token string.
-	 *
-	 * @return  boolean
-	 */
 	public function process()
 	{
 		// Make sure the payer ID is set. We do it here because it's not required the first time around.
