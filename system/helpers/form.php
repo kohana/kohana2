@@ -469,6 +469,9 @@ class form_Core {
 	 */
 	public static function attributes($attr)
 	{
+		if (empty($attr))
+			return '';
+
 		if ( ! empty($attr['name']) AND strpos($attr['name'], '[') === FALSE AND empty($attr['id']))
 		{
 			$attr['id'] = $attr['name'];
