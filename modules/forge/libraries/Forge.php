@@ -38,7 +38,7 @@ class Forge_Core {
 		is_string($attr) and $attr = array('class' => $attr);
 
 		// Extend the template with the attributes
-		$this->template += $attr;
+		$this->attr += $attr;
 	}
 
 	public function __get($key)
