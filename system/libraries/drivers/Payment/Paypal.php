@@ -1,17 +1,16 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
 /**
- * Class: Payment_Paypal_Driver
- *  Provides payment processing with Paypal.
+ * Paypal Payment Driver
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * You have to set payerid after authorizing with paypal:
+ * $this->paypment->payerid = $this->input->get('payerid');
  *
- * Notes:
- *  You have to set payerid after authorizing with paypal:
- *  $this->paypment->payerid = $this->input->get('payerid');
+ * $Id$
+ *
+ * @package    Payment
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Payment_Paypal_Driver {
 
@@ -48,13 +47,11 @@ class Payment_Paypal_Driver {
 	private $paypal_url = '';
 
 	/**
-	 * Constructor: __construct
-	 *  Sets up the class.
+	 * Sets the config for the class.
 	 *
-	 * Parameters:
-	 *  config - config passed from the library
+	 * @param  array  config passed from the library
 	 */
-	function __construct($config)
+	public function __construct($config)
 	{
 		$this->paypal_values['API_UserName']  = $config['API_UserName'];
 		$this->paypal_values['API_Password']  = $config['API_Password'];
@@ -64,8 +61,8 @@ class Payment_Paypal_Driver {
 		$this->paypal_values['CURRENCYCODE']  = $config['CURRENCYCODE'];
 		$this->paypal_values['API_Endpoint']  = ($config['test_mode']) ? 'https://api.sandbox.paypal.com/nvp' : 'https://api-3t.paypal.com/nvp';
 
-		$this->paypal_url = ($config['test_mode']) 
-		                  ? 'https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=' 
+		$this->paypal_url = ($config['test_mode'])
+		                  ? 'https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token='
 		                  : 'https://www.paypal.com/webscr&cmd=_express-checkout&token=';
 
 		$this->required_fields['API_UserName']  = !empty($config['API_UserName']);
@@ -84,11 +81,9 @@ class Payment_Paypal_Driver {
 	}
 
 	/**
-	 * Method: set_fields
-	 *  Sets driver fields and marks reqired fields as TRUE.
+	 * Sets driver fields and marks reqired fields as TRUE.
 	 *
-	 * Parameters:
-	 *  fields - array of key => value pairs to set
+	 * @param  array  array of key => value pairs to set
 	 */
 	public function set_fields($fields)
 	{
@@ -114,16 +109,14 @@ class Payment_Paypal_Driver {
 	}
 
 	/**
-	 * Method: process
-	 *  Runs the paypal transaction.
-	 *  With the this driver, you will need to run process() twice,
-	 *  once to check authoriztion with paypal to get the token string,
-	 *  and once to actually process the transacton with that token string.
-	 * 
-	 * Returns:
-	 *  TRUE if the transaction was success, FALSE otherwise
+	 * Runs the paypal transaction.
+	 * With the this driver, you will need to run process() twice,
+	 * once to check authorization with paypal to get the token string,
+	 * and once to actually process the transacton with that token string.
+	 *
+	 * @return  boolean
 	 */
-	function process()
+	public function process()
 	{
 		// Make sure the payer ID is set. We do it here because it's not required the first time around.
 		if ($this->session->get('paypal_token') AND isset($this->paypal_values['payerid']))
@@ -173,10 +166,9 @@ class Payment_Paypal_Driver {
 	}
 
 	/**
-	 * Method: paypal_login
-	 *  Runs paypal authentication.
+	 * Runs paypal authentication.
 	 */
-	function paypal_login()
+	protected function paypal_login()
 	{
 		$data = '&Amt='.$this->paypal_values['Amt'].
 		        '&PAYMENTACTION='.$this->paypal_values['PAYMENTACTION'].
@@ -207,17 +199,13 @@ class Payment_Paypal_Driver {
 	}
 
 	/**
-	 * Method: contact_paypal
-	 *  Runs the CURL methods to communicate with paypal.
-	 * 
-	 * Parameters:
-	 *  method - paypal API call to run
-	 *  data   - any additional query string data to send to paypal
-	 * 
-	 * Returns:
-	 *  The response from paypal
+	 * Runs the CURL methods to communicate with paypal.
+	 *
+	 * @param   string  paypal API call to run
+	 * @param   string  any additional query string data to send to paypal
+	 * @return  mixed
 	 */
-	function contact_paypal($method, $data)
+	protected function contact_paypal($method, $data)
 	{
 		$final_data = 'METHOD='.urlencode($method).
 		              '&VERSION='.urlencode($this->paypal_values['version']).
@@ -253,17 +241,13 @@ class Payment_Paypal_Driver {
 	}
 
 	/**
-	 * Method: deformatNVP
-	 *  This is from paypal. It decodes their return string and converts it into an array.
-	 *  We can probably rewrite this better, but it works, so its going in for now.
-	 * 
-	 * Parameters:
-	 *  nvpstr - query string
-	 * 
-	 * Returns:
-	 *  An array of the passed query string
+	 * This is from paypal. It decodes their return string and converts it into an array.
+	 * We can probably rewrite this better, but it works, so its going in for now.
+	 *
+	 * @param   string  query string
+	 * @return  array
 	 */
-	function deformatNVP($nvpstr)
+	protected function deformatNVP($nvpstr)
 	{
 		$intial   = 0;
 		$nvpArray = array();

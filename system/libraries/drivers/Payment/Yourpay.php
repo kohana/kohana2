@@ -1,12 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Payment_Yourpay_Driver
- *  Provides payment processing with YourPay.net.
+ * Yourpay Payment Driver
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Payment
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Payment_Yourpay_Driver
 {
@@ -46,6 +47,11 @@ class Payment_Yourpay_Driver
 	private $certificate = './path/to/certificate';
 	private $test_mode = TRUE;
 
+	/**
+	 * Sets the config for the class.
+	 *
+	 * @param  array  config passed from the library
+	 */
 	public function __construct($config)
 	{
 		// Check to make sure the certificate is valid
@@ -60,6 +66,11 @@ class Payment_Yourpay_Driver
 		Log::add('debug', 'YourPay.net Payment Driver Initialized');
 	}
 
+	/**
+	 * Sets driver fields and marks reqired fields as TRUE.
+	 *
+	 * @param  array  array of key => value pairs to set
+	 */
 	public function set_fields($fields)
 	{
 		foreach ((array) $fields as $key => $value)
@@ -79,7 +90,12 @@ class Payment_Yourpay_Driver
 		}
 	}
 
-	function process()
+	/**
+	 * Runs the transaction.
+	 *
+	 * @return  boolean
+	 */
+	public function process()
 	{
 		// Check for required fields
 		if (in_array(FALSE, $this->required_fields))
@@ -131,7 +147,7 @@ class Payment_Yourpay_Driver
 
 		$post_url = 'https://secure.linkpt.net:1129/LSGSXML';
 
-		$ch = curl_init($post_url); 
+		$ch = curl_init($post_url);
 
 		// Set custom curl options
 		curl_setopt_array($ch, $this->curl_config);
@@ -167,4 +183,4 @@ class Payment_Yourpay_Driver
 		else
 			throw new Kohana_Exception('payment.gateway_connection_error');
 	}
-}
+} // End Payment_Yourpay_Driver Class

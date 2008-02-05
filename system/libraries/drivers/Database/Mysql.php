@@ -13,22 +13,18 @@ class Database_Mysql_Driver extends Database_Driver {
 
 	/**
 	 * Database connection link
-	 *
-	 * @var resource
 	 */
 	protected $link;
 
 	/**
 	 * Database configuration
-	 *
-	 * @var array
 	 */
 	protected $db_config;
 
 	/**
-	 * Construction, sets the config for the class.
+	 * Sets the config for the class.
 	 *
-	 * @param array $config
+	 * @param  array  database configuration
 	 */
 	public function __construct($config)
 	{
@@ -38,7 +34,7 @@ class Database_Mysql_Driver extends Database_Driver {
 	}
 
 	/**
-	 * Destruction, closes the database connection.
+	 * Closes the database connection.
 	 */
 	public function __destruct()
 	{
@@ -307,60 +303,47 @@ class Database_Mysql_Driver extends Database_Driver {
 
 
 /**
- * Mysql_Result
- *
+ * MySQL result.
  */
 class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable {
 
 	/**
 	 * Result resource
-	 *
-	 * @var resource
 	 */
 	protected $result = NULL;
 
 	/**
 	 * Total rows
-	 *
-	 * @var integer
 	 */
 	protected $total_rows  = FALSE;
 
 	/**
 	 * Current row
-	 *
-	 * @var integer
 	 */
 	protected $current_row = FALSE;
 
 	/**
 	 * Last insterted ID
-	 *
-	 * @var integer
 	 */
 	protected $insert_id = FALSE;
 
 	/**
 	 * Fetch type
-	 *
-	 * @var string
 	 */
 	protected $fetch_type  = 'mysql_fetch_object';
 
 	/**
 	 * Return type
-	 *
-	 * @var integer
 	 */
 	protected $return_type = MYSQL_ASSOC;
 
 	/**
-	 * Construct, sets up the class.
+	 * Sets up the result variables.
 	 *
-	 * @param resource $result
-	 * @param resource $link
-	 * @param boolean  $object
-	 * @param string   $sql
+	 * @param  resource  query result
+	 * @param  resource  database link
+	 * @param  boolean   return objects or arrays
+	 * @param  string    SQL query that was run
 	 */
 	public function __construct($result, $link, $object = TRUE, $sql)
 	{
@@ -394,7 +377,6 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 	/**
 	 * Destruct, the cleanup crew!
-	 *
 	 */
 	public function __destruct()
 	{
@@ -491,10 +473,11 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 
 	// Interface: Countable
+
 	/**
 	 * Counts the number of rows in the result set.
 	 *
-	 * @return integer The number of rows in the result set
+	 * @return  integer
 	 */
 	public function count()
 	{
@@ -507,8 +490,8 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	/**
 	 * Determines if the requested offset of the result set exists.
 	 *
-	 * @param  integer $offset
-	 * @return boolean TRUE if exists, FALSE otherwise
+	 * @param   integer  offset id
+	 * @return  boolean
 	 */
 	public function offsetExists($offset)
 	{
@@ -526,8 +509,8 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	/**
 	 * Retreives the requested query result offset.
 	 *
-	 * @param  integer $offset
-	 * @return mixed the query row
+	 * @param   integer  offset id
+	 * @return  mixed
 	 */
 	public function offsetGet($offset)
 	{
@@ -546,9 +529,9 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	/**
 	 * Sets the offset with the provided value. Since you can't modify query result sets, this function just throws an exception.
 	 *
-	 * @param  integer $offset
-	 * @param  integer $value
-	 * @throws Kohana_Database_Exception
+	 * @param   integer  offset id
+	 * @param   integer  value
+	 * @throws  Kohana_Database_Exception
 	 */
 	public function offsetSet($offset, $value)
 	{
@@ -558,8 +541,8 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	/**
 	 * Unsets the offset. Since you can't modify query result sets, this function just throws an exception.
 	 *
-	 * @param  integer $offset
-	 * @throws Kohana_Database_Exception
+	 * @param   integer  offset id
+	 * @throws  Kohana_Database_Exception
 	 */
 	public function offsetUnset($offset)
 	{
@@ -569,9 +552,9 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 	// Interface: Iterator
 	/**
-	 * Retreives the current result set row.
+	 * Retrieves the current result set row.
 	 *
-	 * @return integer The current result row (type based on <Mysql_result.result>)
+	 * @return  mixed
 	 */
 	public function current()
 	{
@@ -581,7 +564,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	/**
 	 * Retreives the current row id.
 	 *
-	 * @return integer The current result row number
+	 * @return  integer
 	 */
 	public function key()
 	{
@@ -591,7 +574,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	/**
 	 * Moves the result pointer ahead one step.
 	 *
-	 * @return integer The next row number
+	 * @return  integer
 	 */
 	public function next()
 	{
@@ -601,7 +584,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	/**
 	 * Moves the result pointer back one step.
 	 *
-	 * @return integer The previous row number
+	 * @return  integer
 	 */
 	public function prev()
 	{
@@ -611,7 +594,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	/**
 	 * Moves the result pointer to the beginning of the result set.
 	 *
-	 * @return integer 0
+	 * @return  integer
 	 */
 	public function rewind()
 	{
@@ -621,7 +604,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 	/**
 	 * Determines if the current result pointer is valid.
 	 *
-	 * @return boolean
+	 * @return  boolean
 	 */
 	public function valid()
 	{

@@ -1,12 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Database_Mysqli_Driver
- *  Provides specific database items for MySQL.
+ * MySQLi Database Driver
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Database_Mysqli_Driver extends Database_Mysql_Driver {
 
@@ -16,11 +17,9 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 	protected $statements = array();
 
 	/**
-	 * Constructor: __construct
-	 *  Sets up the config for the class.
+	 * Sets the config for the class.
 	 *
-	 * Parameters:
-	 *  config - database configuration
+	 * @param  array  database configuration
 	 */
 	public function __construct($config)
 	{
@@ -126,13 +125,7 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 } // End Database_Mysqli_Driver Class
 
 /**
- * Class: Mysqli_Result
- *  The result class for MySQLi queries.
- *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * MySQLi result.
  */
 class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Countable {
 
@@ -152,14 +145,11 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 	protected $return_type = MYSQLI_ASSOC;
 
 	/**
-	 * Constructor: __construct
-	 *  Sets up the class.
+	 * Sets up the result variables.
 	 *
-	 * Parameters:
-	 *  result - result resource
-	 *  link   - database resource link
-	 *  object - return objects or arrays
-	 *  sql    - sql query that was run
+	 * @param  object    database link
+	 * @param  boolean   return objects or arrays
+	 * @param  string    SQL query that was run
 	 */
 	public function __construct($link, $object = TRUE, $sql)
 	{
@@ -199,8 +189,7 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 	}
 
 	/**
-	 * Destructor: __destruct
-	 *  Magic __destruct function, frees the result.
+	 * Magic __destruct function, frees the result.
 	 */
 	public function __destruct()
 	{
@@ -311,11 +300,9 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 
 	// Interface: Countable
 	/**
-	 * Method: count
-	 *  Counts the number of rows in the result set.
+	 * Counts the number of rows in the result set.
 	 *
-	 * Returns:
-	 *  The number of rows in the result set
+	 * @return  integer
 	 */
 	public function count()
 	{
@@ -325,14 +312,10 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 
 	// Interface: ArrayAccess
 	/**
-	 * Method: offsetExists
-	 *  Determines if the requested offset of the result set exists.
+	 * Determines if the requested offset of the result set exists.
 	 *
-	 * Parameters:
-	 *  offset - offset id
-	 *
-	 * Returns:
-	 *  TRUE if the offset exists, FALSE otherwise
+	 * @param   integer  offset id
+	 * @return  boolean
 	 */
 	public function offsetExists($offset)
 	{
@@ -348,14 +331,10 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 	}
 
 	/**
-	 * Method: offsetGet
-	 *  Retreives the requested query result offset.
+	 * Retreives the requested query result offset.
 	 *
-	 * Parameters:
-	 *  offset - offset id
-	 *
-	 * Returns:
-	 *  The query row
+	 * @param   integer  offset id
+	 * @return  mixed
 	 */
 	public function offsetGet($offset)
 	{
@@ -372,15 +351,11 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 	}
 
 	/**
-	 * Method: offsetSet
-	 *  Sets the offset with the provided value. Since you can't modify query result sets, this function just throws an exception.
+	 * Sets the offset with the provided value. Since you can't modify query result sets, this function just throws an exception.
 	 *
-	 * Parameters:
-	 *  offset - offset id
-	 *  value  - value to set
-	 *
-	 * Returns:
-	 *  <Kohana_Database_Exception> object
+	 * @param   integer  offset id
+	 * @param   integer  value to set
+	 * @throws  Kohana_Database_Exception
 	 */
 	public function offsetSet($offset, $value)
 	{
@@ -388,14 +363,10 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 	}
 
 	/**
-	 * Method: offsetUnset
-	 *  Unsets the offset. Since you can't modify query result sets, this function just throws an exception.
+	 * Unsets the offset. Since you can't modify query result sets, this function just throws an exception.
 	 *
-	 * Parameters:
-	 *  offset - offset id
-	 *
-	 * Returns:
-	 *  <Kohana_Database_Exception> object
+	 * @param   integer  offset id
+	 * @throws  Kohana_Database_Exception
 	 */
 	public function offsetUnset($offset)
 	{
@@ -405,11 +376,9 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 
 	// Interface: Iterator
 	/**
-	 * Method: current
-	 *  Retreives the current result set row.
+	 * Retrieves the current result set row.
 	 *
-	 * Returns:
-	 *  The current result row (type based on <Mysql_result.result>)
+	 * @return  mixed
 	 */
 	public function current()
 	{
@@ -417,11 +386,9 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 	}
 
 	/**
-	 * Method: key
-	 *  Retreives the current row id.
+	 * Retreives the current row id.
 	 *
-	 * Returns:
-	 *  The current result row id
+	 * @return  integer
 	 */
 	public function key()
 	{
@@ -429,11 +396,9 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 	}
 
 	/**
-	 * Method: next
-	 *  Moves the result pointer ahead one.
+	 * Moves the result pointer ahead one step.
 	 *
-	 * Returns:
-	 *  The next row id
+	 * @return  integer
 	 */
 	public function next()
 	{
@@ -441,11 +406,9 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 	}
 
 	/**
-	 * Method: next
-	 *  Moves the result pointer back one.
+	 * Moves the result pointer back one step.
 	 *
-	 * Returns:
-	 *  The previous row id
+	 * @return  integer
 	 */
 	public function prev()
 	{
@@ -453,11 +416,9 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 	}
 
 	/**
-	 * Method: rewind
-	 *  Moves the result pointer to the beginning of the result set.
+	 * Moves the result pointer to the beginning of the result set.
 	 *
-	 * Returns:
-	 *  0
+	 * @return  integer
 	 */
 	public function rewind()
 	{
@@ -465,11 +426,9 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 	}
 
 	/**
-	 * Method: valid
-	 *  Determines if the current result pointer is valid.
+	 * Determines if the current result pointer is valid.
 	 *
-	 * Returns:
-	 *  TRUE if the pointer is valid, FALSE otherwise
+	 * @return  boolean
 	 */
 	public function valid()
 	{
@@ -479,6 +438,9 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 
 } // End Mysqli_Result Class
 
+/**
+ * MySQLi Prepared Statement (experimental)
+ */
 class Kohana_Mysqli_Statement {
 
 	protected $link = NULL;

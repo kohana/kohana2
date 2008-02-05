@@ -1,12 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Payment_Trustcommerce_Driver
- *  Provides payment processing with TrustCommerce.
+ * Trustcommerce Payment Driver
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Payment
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Payment_Trustcommerce_Driver
 {
@@ -27,11 +28,16 @@ class Payment_Trustcommerce_Driver
 
 	private $fields = array('demo' => 'n');
 
+	/**
+	 * Sets the config for the class.
+	 *
+	 * @param  array  config passed from the library
+	 */
 	public function __construct($config)
 	{
 
 		$this->test_mode = $config['test_mode'];
-		$this->tclink_library = $config['tclink_library'];	
+		$this->tclink_library = $config['tclink_library'];
 		$this->fields['ip'] = $_SERVER['REMOTE_ADDR'];
 		$this->fields['custid'] = $config['custid'];
 		$this->fields['password'] = $config['password'];
@@ -48,6 +54,11 @@ class Payment_Trustcommerce_Driver
 		Log::add('debug', 'TrustCommerce Payment Driver Initialized');
 	}
 
+	/**
+	 * Sets driver fields and marks reqired fields as TRUE.
+	 *
+	 * @param  array  array of key => value pairs to set
+	 */
 	public function set_fields($fields)
 	{
 		foreach ((array) $fields as $key => $value)
@@ -95,7 +106,12 @@ class Payment_Trustcommerce_Driver
 		}
 	}
 
-	function process()
+	/**
+	 * Runs the transaction.
+	 *
+	 * @return  boolean
+	 */
+	public function process()
 	{
 		if ($this->test_mode)
 			$this->fields['demo'] = 'y';
