@@ -265,11 +265,19 @@ class Database_Core {
 
 		foreach($sql as $val)
 		{
-			if (($val = trim($val)) == '') continue;
+			if (($val = trim($val)) === '') continue;
 
 			if (strpos($val, '(') === FALSE AND $val !== '*')
 			{
-				$val = (strpos($val, '.') !== FALSE) ? $this->config['table_prefix'].$val : $val;
+				if (preg_match('/^DISTINCT\s(.+)$/i', $val, $matches))
+				{
+					$val = 'DISTINCT '.$this->config['table_prefix'].$matches[1];
+				}
+				else
+				{
+					$val = (strpos($val, '.') !== FALSE) ? $this->config['table_prefix'].$val : $val;
+				}
+
 				$val = $this->driver->escape_column($val);
 			}
 
