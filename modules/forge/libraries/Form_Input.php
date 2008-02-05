@@ -247,10 +247,29 @@ class Form_Input_Core {
 				}
 				else
 				{
-					// Strip 'valid_' from func name
-					$func = (substr($func, 0, 6) === 'valid_') ? substr($func, 6) : $func;
-					// Fetch an i18n error message
-					$error = Kohana::lang('validation.'.$func, $args);
+					// Get the proper i18n entry, very hacky but it works
+					switch($func)
+					{
+						case 'valid_url':
+						case 'valid_email':
+						case 'valid_ip':
+							// Fetch an i18n error message
+							$error = Kohana::lang('validation.'.$func, $args);
+							break;
+						case substr($func, 0, 6) === 'valid_':
+							// Strip 'valid_' from func name
+							$func = (substr($func, 0, 6) === 'valid_') ? substr($func, 6) : $func;
+						case 'alpha':
+						case 'alpha_dash':
+						case 'digit':
+						case 'numeric':
+							// i18n strings have to be inserted into valid_type
+							$args[] = Kohana::lang('validation.'.$func);
+							$error = Kohana::lang('validation.valid_type', $args);
+							break;
+						default:
+							$error = Kohana::lang('validation.'.$func, $args);
+					}
 				}
 			}
 

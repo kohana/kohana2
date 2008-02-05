@@ -140,8 +140,8 @@ class Forge_Core {
 	 */
 	public function html($template = 'forge_template', $custom = FALSE)
 	{
-		// Load template with current template vars
-		$form = new View($template, $this->template);
+		// Load template
+		$form = new View($template);
 
 		if ($custom)
 		{
@@ -173,6 +173,7 @@ class Forge_Core {
 		{
 			// Using a template view
 
+			$form->set($this->template);
 			$hidden = array();
 			if ( ! empty($this->hidden))
 			{
