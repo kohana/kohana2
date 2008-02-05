@@ -1,11 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Class: Session_Database_Driver
+ * Session database driver.
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Session_Database_Driver implements Session_Driver {
 
@@ -49,17 +51,6 @@ class Session_Database_Driver implements Session_Driver {
 		Log::add('debug', 'Session Database Driver Initialized');
 	}
 
-	/**
-	 * Method: open
-	 *  Session opens a dedicated database connection.
-	 *  This is done for 3 reasons:
-	 *  1. A sessions database group MUST be configured.
-	 *  2. To prevent data loss occurring with different db connections.
-	 *  3. To keep the session db connection available in the shutdown handler.
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
-	 */
 	public function open($path, $name)
 	{
 		if (Config::item('database.'.$this->db_group) === NULL)
@@ -151,13 +142,6 @@ class Session_Database_Driver implements Session_Driver {
 		return session_id();
 	}
 
-	/**
-	 * Method: gc
-	 *  Session garbage collection
-	 *
-	 * Returns:
-	 *  TRUE
-	 */
 	public function gc($maxlifetime)
 	{
 		$query = $this->db->delete($this->db_group, array('last_activity <' => time() - $maxlifetime));

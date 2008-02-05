@@ -1,89 +1,69 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Interface: Session_Driver
- *  Session API Driver
+ * Session driver interface
  *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 interface Session_Driver {
 
 	/**
-	 * Method: open
-	 *  Opens a session.
+	 * Opens a session.
 	 *
-	 * Parameters:
-	 *  path - save path
-	 *  name - session name
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string   save path
+	 * @param   string   session name
+	 * @return  boolean
 	 */
 	public function open($path, $name);
 
 	/**
-	 * Method: close
-	 *  Closes a session.
+	 * Closes a session.
+	 *
+	 * @return  boolean
 	 */
 	public function close();
 
 	/**
-	 * Method: read
-	 *  Reads a session.
+	 * Reads a session.
 	 *
-	 * Parameters:
-	 *  id - session id
-	 *
-	 * Returns:
-	 *  Session data
+	 * @param   string  session id
+	 * @return  string
 	 */
 	public function read($id);
 
 	/**
-	 * Method: write
-	 *  Writes a session.
+	 * Writes a session.
 	 *
-	 * Parameters:
-	 *  id   - session id
-	 *  data - session data
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string   session id
+	 * @param   string   session data
+	 * @return  boolean
 	 */
 	public function write($id, $data);
 
 	/**
-	 * Method: destroy
-	 *  Destroys a session.
+	 * Destroys a session.
 	 *
-	 * Parameters:
-	 *  id - session id
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string   session id
+	 * @return  boolean
 	 */
 	public function destroy($id);
 
 	/**
-	 * Method: regenerate
-	 *  Regenerates the session id.
+	 * Regenerates the session id.
 	 *
-	 * Returns:
-	 *  The new session id
+	 * @return  string
 	 */
 	public function regenerate();
 
 	/**
-	 * Method: gc
-	 *  Garbage collection.
+	 * Garbage collection.
 	 *
-	 * Parameters:
-	 *  maxlifetime - session expiration period
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   integer  session expiration period
+	 * @return  boolean
 	 */
 	public function gc($maxlifetime);
 

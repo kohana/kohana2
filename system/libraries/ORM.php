@@ -61,7 +61,7 @@ class ORM_Core {
 	/**
 	 * Initialize database, setup internal variables, find requested object.
 	 *
-	 * @return void
+	 * @return  void
 	 */
 	public function __construct($id = FALSE)
 	{
@@ -95,7 +95,7 @@ class ORM_Core {
 	/**
 	 * Enables automatic saving of the object when the model is destroyed.
 	 *
-	 * @return void
+	 * @return  void
 	 */
 	public function __destruct()
 	{
@@ -609,7 +609,7 @@ class ORM_Core {
 	 * values to each of the object fields. At the same time, the WHERE and
 	 * SELECT statements are cleared and the changed keys are reset.
 	 *
-	 * @return void
+	 * @return  void
 	 */
 	public function clear()
 	{
@@ -648,12 +648,9 @@ class ORM_Core {
 	/**
 	 * Loads a database object result.
 	 *
-	 * Parameters:
-	 *  array  - force the return to be an array
-	 *
-	 * Return:
-	 *  boolean - TRUE for single result, FALSE for an empty result
-	 *  array   - Multiple row result set
+	 * @param   boolean        force the return to be an array
+	 * @param   boolean        $return
+	 * @return  boolean|array  TRUE for single result, FALSE for an empty result, or array of rows
 	 */
 	protected function load_result($array = FALSE, $return = FALSE)
 	{
@@ -706,14 +703,10 @@ class ORM_Core {
 	}
 
 	/**
-	 * Method: load_model
-	 *  Creates a model from a table name.
+	 * Creates a model from a table name.
 	 *
-	 * Parameters:
-	 *  table - table name
-	 *
-	 * Returns:
-	 *  Instance of model
+	 * @param   string  table name
+	 * @return  object  ORM instance
 	 */
 	protected function load_model($table)
 	{
@@ -754,8 +747,8 @@ class ORM_Core {
 	/**
 	 * Finds the many<>many relationship table.
 	 *
-	 * @param  string  table name
-	 * @return string
+	 * @param   string  table name
+	 * @return  string
 	 */
 	protected function related_table($table)
 	{
@@ -776,8 +769,8 @@ class ORM_Core {
 	/**
 	 * Execute a join to a table.
 	 *
-	 * @param  string  table name
-	 * @return void
+	 * @param   string  table name
+	 * @return  void
 	 */
 	protected function related_join($table)
 	{
