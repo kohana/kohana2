@@ -269,7 +269,7 @@ class Download_Controller extends Controller {
 					foreach($vendor_files as $name)
 					{
 						// Add vendor files
-						$archive->add('system/vendor/'.$content->vendors[$name]['file']);
+						$archive->add('system/vendor/'.$content->vendors[$name]['file'], NULL, TRUE);
 					}
 				}
 
