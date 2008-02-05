@@ -85,6 +85,9 @@ class Payment_Core {
 
 		// Initialize the driver
 		$this->driver = new $driver($this->config);
+
+		if ( ! ($this->driver instanceof Payment_Driver))
+			throw new Kohana_Exception('payment.driver_not_supported', 'Payment drivers must use the Payment_Driver interface.');
 	}
 
 	/**

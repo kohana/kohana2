@@ -12,7 +12,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Payment_Paypal_Driver {
+class Payment_Paypal_Driver implements Payment_Driver {
 
 	private $required_fields = array
 	(
