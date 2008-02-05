@@ -128,7 +128,10 @@ abstract class Database_Driver {
 				else
 				{
 					preg_match('/^(.+?)([<>!=]+|\bIS(?:\s+NULL))\s*$/i', $key, $matches);
-					$key = $this->escape_column(trim($matches[1])).' '.trim($matches[2]);
+					if(isset($matches[1]) AND isset($matches[2]))
+					{
+						$key = $this->escape_column(trim($matches[1])).' '.trim($matches[2]);
+					}
 				}
 
 				$value = ' '.(($quote == TRUE) ? $this->escape($value) : $value);
