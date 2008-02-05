@@ -27,7 +27,7 @@ final class Log {
 		if (self::$log_directory === NULL)
 		{
 			// Set the log directory if it has not already been set
-			self::$log_directory = $directory;
+			self::$log_directory = rtrim($directory, '/').'/';
 		}
 	}
 
