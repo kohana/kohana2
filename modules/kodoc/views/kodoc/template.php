@@ -13,7 +13,7 @@ echo html::script(array
 	'kodoc/media/js/jquery',
 	'kodoc/media/js/plugins',
 	'kodoc/media/js/effects'
-))
+), TRUE)
 
 ?>
 
