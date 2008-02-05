@@ -183,13 +183,20 @@ class Cache_File_Driver implements Cache_Driver {
 		if (empty($files))
 			return FALSE;
 
+		// Disable all error reporting while deleting
+		$ER = error_reporting(0);
+
 		foreach($files as $file)
 		{
 			// Remove the cache file
-			@unlink($file) or Log::add('error', 'Cache: Unable to delete cache file: '.$file);
+			if ( ! unlink($file))
+				Log::add('error', 'Cache: Unable to delete cache file: '.$file);
 		}
 
-		return FALSE;
+		// Turn on error reporting again
+		error_reporting($ER);
+
+		return TRUE;
 	}
 
 	/**
