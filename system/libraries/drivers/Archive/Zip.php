@@ -27,8 +27,8 @@ class Archive_Zip_Driver implements Archive_Driver {
 
 		foreach ($paths as $set)
 		{
-			// Add each file
-			$this->add_file($set[0], $set[1]);
+			// Add each path individually
+			$this->add_data($set[0], $set[1], isset($set[2]) ? $set[2] : NULL);
 		}
 
 		// File data
@@ -76,68 +76,16 @@ class Archive_Zip_Driver implements Archive_Driver {
 		return (bool) $return;
 	}
 
-	/**
-	 * Adds a directory to a zip.
-	 *
-	 * @param  string  path to directory
-	 * @param  string  name of directory
-	 */
-	protected function add_dir($dir, $name)
+	public function add_data($file, $name, $contents = NULL)
 	{
-		// Fetch the timestamp
-		$timestamp = date::unix2dos(filemtime($dir));
+		// Determine the file type: 16 = dir, 32 = file
+		$type = (substr($file, -1) === '/') ? 16 : 32;
 
-		$this->data[] =
-			// Start "local file header"
-			"\x50\x4b\x03\x04".       // Zip header
-			"\x0a\x00".               // Version required for extraction
-			"\x00\x00".               // General bit flag
-			"\x00\x00".               // Compression method
-			pack('V', $timestamp).    // Last mod time and date
-			pack('V', crc32($name)).  // CRC32
-			pack('V', 0).             // Compressed filesize
-			pack('V', 0).             // Uncompressed filesize
-			pack('v', strlen($name)). // Length of directory name
-			pack('v', 0).             // Extra field length
-			$name;                    // Directory name
+		// Fetch the timestamp, using the current time if manually setting the contents
+		$timestamp = date::unix2dos(($contents === NULL) ? filemtime($file) : time());
 
-		$this->dirs[] =
-			"\x50\x4b\x01\x02".       // Zip header
-			"\x00\x00".               // Version made by
-			"\x0a\x00".               // Version required for extraction
-			"\x00\x00".               // General bit flag
-			"\x00\x00".               // Compression method
-			pack('V', $timestamp).    // Last mod time and date
-			pack('V', crc32($name)).  // CRC32
-			pack('V', 0).             // Compressed filesize
-			pack('V', 0).             // Uncompressed filesize
-			pack('v', strlen($name)). // Length of directory name
-			pack('v', 0).             // Extra field length
-			// Data description
-			pack('v', 0).             // CRC32
-			pack('v', 0).             // Compressed filesize
-			pack('v', 0).             // Uncompressed filesize
-			pack('V', 16).            // Internal file attribute "directory"
-			pack('V', $this->offset). // Directory offset
-			$name;                    // Directory name
-
-		// Set the new offset
-		$this->offset = strlen(implode('', $this->data));
-	}
-
-	/**
-	 * Adds a file to a zip.
-	 *
-	 * @param  string  path to file
-	 * @param  string  name of file
-	 */
-	protected function add_file($file, $name)
-	{
-		// Fetch the timestamp
-		$timestamp = date::unix2dos(filemtime($file));
-
-		// Read the file
-		$data = file_get_contents($file);
+		// Read the file or use the defined contents
+		$data = ($contents === NULL) ? file_get_contents($file) : $contents;
 
 		// Gzip the data, use substr to fix a CRC bug
 		$zdata = substr(gzcompress($data), 2, -4);
@@ -173,7 +121,7 @@ class Archive_Zip_Driver implements Archive_Driver {
 			pack('v', 0).             // CRC32
 			pack('v', 0).             // Compressed filesize
 			pack('v', 0).             // Uncompressed filesize
-			pack('V', 32).            // External file attribute "file"
+			pack('V', $type).         // File attribute type
 			pack('V', $this->offset). // Directory offset
 			$name;                    // File name
 

@@ -20,4 +20,13 @@ interface Archive_Driver {
 	 */
 	public function create($paths, $filename = FALSE);
 
+	/**
+	 * Add data to the archive.
+	 *
+	 * @param   string   filename
+	 * @param   string   name of file in archive
+	 * @return  void
+	 */
+	public function add_data($file, $name, $contents = NULL);
+
 } // End Archive_Driver Interface
