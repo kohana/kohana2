@@ -10,7 +10,7 @@ $lang = array
 	'invalid_width'           => 'The width you specified, %s, is not valid.',
 	'invalid_height'          => 'The height you specified, %s, is not valid.',
 	'invalid_dimensions'      => 'The dimensions specified for %s are not valid.',
-	'invalid_master'          => 'The master dim specified is not valid.',
+	'invalid_master'          => 'The master dimension specified is not valid.',
 	'invalid_flip'            => 'The flip direction specified is not valid.',
 
 	// ImageMagick specific messages

@@ -10,7 +10,7 @@ $lang = array
 	'invalid_width'           => 'De breedte die je opgaf, %s, is ongeldig.',
 	'invalid_height'          => 'De hoogte die je opgaf, %s, is ongeldig.',
 	'invalid_dimensions'      => 'De afmetingen die je opgaf voor %s zijn ongeldig.',
-	'invalid_master'          => 'De master dim die je opgaf, is ongeldig.',
+	'invalid_master'          => 'De master afmeting die je opgaf, is ongeldig.',
 	'invalid_flip'            => 'De spiegelrichting die je opgaf, is ongeldig.',
 
 	// ImageMagick specific messages

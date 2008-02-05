@@ -20,7 +20,7 @@ $lang = array
 	'valid_type'    => 'The %s field must only contain %s characters.',
 	'range'         => 'The %s field must be between specified ranges.',
 	'regex'         => 'The %s field does not match accepted input.',
-	'depends_on'    => 'The %s field is depend on the %s field.',
+	'depends_on'    => 'The %s field depends on the %s field.',
 
 	// Upload errors
 	'user_aborted'  => 'The %s file was aborted during upload.',
