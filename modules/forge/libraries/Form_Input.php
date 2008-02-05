@@ -1,5 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+/**
+ * FORGE base input library.
+ *
+ * $Id$
+ *
+ * @package    Forge
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
 class Form_Input_Core {
 
 	// Input method
@@ -28,11 +37,17 @@ class Form_Input_Core {
 	protected $errors = array();
 	protected $error_messages = array();
 
+	/**
+	 * Sets the input element name.
+	 */
 	public function __construct($name)
 	{
 		$this->data['name'] = $name;
 	}
 
+	/**
+	 * Sets form attributes, or return rules.
+	 */
 	public function __call($method, $args)
 	{
 		if ($method == 'rules')
@@ -69,6 +84,12 @@ class Form_Input_Core {
 		return $this;
 	}
 
+	/**
+	 * Returns form attributes.
+	 *
+	 * @param   string  attribute name
+	 * @return  string
+	 */
 	public function __get($key)
 	{
 		if (isset($this->data[$key]))
@@ -77,6 +98,13 @@ class Form_Input_Core {
 		}
 	}
 
+	/**
+	 * Sets a form element that this element must match the value of.
+	 *
+	 * @chainable
+	 * @param   object  another Forge input
+	 * @return  object
+	 */
 	public function matches($input)
 	{
 		if ( ! in_array($input, $this->matches, TRUE))
@@ -87,6 +115,13 @@ class Form_Input_Core {
 		return $this;
 	}
 
+	/**
+	 * Sets a callback method as a rule for this input.
+	 *
+	 * @chainable
+	 * @param   callback
+	 * @return  object
+	 */
 	public function callback($callback)
 	{
 		if ( ! in_array($callback, $this->callbacks, TRUE))
@@ -97,6 +132,13 @@ class Form_Input_Core {
 		return $this;
 	}
 
+	/**
+	 * Sets or returns the input label.
+	 *
+	 * @chainable
+	 * @param   string   label to set
+	 * @return  string|object
+	 */
 	public function label($val = NULL)
 	{
 		if ($val === NULL)
@@ -114,6 +156,13 @@ class Form_Input_Core {
 		}
 	}
 
+	/**
+	 * Set or return the error message.
+	 *
+	 * @chainable
+	 * @param   string  error message
+	 * @return  strong|object
+	 */
 	public function message($val = NULL)
 	{
 		if ($val === NULL)
@@ -128,6 +177,11 @@ class Form_Input_Core {
 		}
 	}
 
+	/**
+	 * Runs validation and returns the element HTML.
+	 *
+	 * @return  string
+	 */
 	public function html()
 	{
 		// Make sure validation runs
@@ -136,6 +190,11 @@ class Form_Input_Core {
 		return $this->html_element();
 	}
 
+	/**
+	 * Returns the form input HTML.
+	 *
+	 * @return  string
+	 */
 	protected function html_element()
 	{
 		$data = $this->data;
@@ -146,6 +205,12 @@ class Form_Input_Core {
 		return form::input($data);
 	}
 
+	/**
+	 * Replace, remove, or append rules.
+	 *
+	 * @param   array   rules to change
+	 * @param   string  action to use: replace, remove, append
+	 */
 	protected function add_rules( array $rules, $action)
 	{
 		if ($action === '=')
@@ -182,6 +247,12 @@ class Form_Input_Core {
 		}
 	}
 
+	/**
+	 * Add an error to the input.
+	 *
+	 * @chainable
+	 * @return object
+	 */
 	public function add_error($key, $val)
 	{
 		if ( ! isset($this->errors[$key]))
@@ -192,6 +263,14 @@ class Form_Input_Core {
 		return $this;
 	}
 
+	/**
+	 * Set or return the error messages.
+	 *
+	 * @chainable
+	 * @param   string|array  failed validation function, or an array of messages
+	 * @param   string        error message
+	 * @return  object|array
+	 */
 	public function error_messages($func = NULL, $message = NULL)
 	{
 		// Set custom error messages
@@ -280,6 +359,11 @@ class Form_Input_Core {
 		return $messages;
 	}
 
+	/**
+	 * Get the global input value.
+	 *
+	 * @return  string|bool
+	 */
 	protected function input_value()
 	{
 		static $input, $method;
@@ -296,6 +380,11 @@ class Form_Input_Core {
 		return (func_num_args() > 0) ? $input->$method(func_get_arg(0)) : $input->$method();
 	}
 
+	/**
+	 * Load the value of the input, if form data is present.
+	 *
+	 * @return  void
+	 */
 	protected function load_value()
 	{
 		if (is_bool($this->is_valid))
@@ -314,6 +403,11 @@ class Form_Input_Core {
 		}
 	}
 
+	/**
+	 * Validate this input based on the set rules.
+	 *
+	 * @return  bool
+	 */
 	public function validate()
 	{
 		// Validation has already run
@@ -423,6 +517,9 @@ class Form_Input_Core {
 		return $this->is_valid = empty($this->errors);
 	}
 
+	/**
+	 * Validate required.
+	 */
 	protected function rule_required()
 	{
 		if ($this->value == FALSE)
@@ -431,6 +528,9 @@ class Form_Input_Core {
 		}
 	}
 
+	/**
+	 * Validate length.
+	 */
 	protected function rule_length($min, $max = NULL)
 	{
 		// Get the length, return if zero

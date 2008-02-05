@@ -1,5 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+/**
+ * FORGE (FORm GEneration) library.
+ *
+ * $Id$
+ *
+ * @package    Forge
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
 class Forge_Core {
 
 	// Template variables
@@ -22,6 +31,11 @@ class Forge_Core {
 	public $error_format = '<p class="error">{message}</p>';
 	public $newline_char = "\n";
 
+	/**
+	 * Form constructor. Sets the form action, title, method, and attributes.
+	 *
+	 * @return  void
+	 */
 	public function __construct($action = '', $title = '', $method = NULL, $attr = array())
 	{
 		// Set form attributes
@@ -41,6 +55,12 @@ class Forge_Core {
 		$this->attr += $attr;
 	}
 
+	/**
+	 * Magic __get method. Returns the specified form element.
+	 *
+	 * @param   string   unique input name
+	 * @return  object
+	 */
 	public function __get($key)
 	{
 		if (isset($this->inputs[$key]))
@@ -53,6 +73,14 @@ class Forge_Core {
 		}
 	}
 
+	/**
+	 * Magic __call method. Creates a new form element object.
+	 *
+	 * @throws  Kohana_Exception
+	 * @param   string   input type
+	 * @param   string   input name
+	 * @return  object
+	 */
 	public function __call($method, $args)
 	{
 		// Class name
@@ -95,6 +123,34 @@ class Forge_Core {
 		return $input;
 	}
 
+	/**
+	 * Set a form attribute. This method is chainable.
+	 *
+	 * @param   string|array  attribute name, or an array of attributes
+	 * @param   string        attribute value
+	 * @return  object
+	 */
+	public function set_attr($key, $val = NULL)
+	{
+		if (is_array($key))
+		{
+			// Merge the new attributes with the old ones
+			$this->attr = array_merge($this->attr, $key);
+		}
+		else
+		{
+			// Set the new attribute
+			$this->attr[$key] = $val;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Validates the form by running each inputs validation rules.
+	 *
+	 * @return  bool
+	 */
 	public function validate()
 	{
 		$status = TRUE;
@@ -109,6 +165,11 @@ class Forge_Core {
 		return $status;
 	}
 
+	/**
+	 * Returns the form as an array of input names and values.
+	 *
+	 * @return  array
+	 */
 	public function as_array()
 	{
 		$data = array();
@@ -123,6 +184,14 @@ class Forge_Core {
 		return $data;
 	}
 
+	/**
+	 * Changes the error message format. Your message formatting must
+	 * contain a {message} placeholder.
+	 *
+	 * @throws  Kohana_Exception
+	 * @param   string   new message format
+	 * @return  void
+	 */
 	public function error_format($string = '')
 	{
 		if (strpos((string) $string, '{message}') === FALSE)

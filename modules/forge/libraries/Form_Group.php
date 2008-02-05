@@ -1,5 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+/**
+ * FORGE group library.
+ *
+ * $Id$
+ *
+ * @package    Forge
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
 class Form_Group_Core extends Forge {
 
 	protected $data = array

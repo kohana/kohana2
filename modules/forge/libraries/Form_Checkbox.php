@@ -1,5 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+/**
+ * FORGE checkbox input library.
+ *
+ * $Id$
+ *
+ * @package    Forge
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
 class Form_Checkbox_Core extends Form_Input {
 
 	protected $data = array
@@ -21,19 +30,6 @@ class Form_Checkbox_Core extends Form_Input {
 		}
 
 		return parent::__get($key);
-	}
-
-	public function label($val = NULL)
-	{
-		if ($val === NULL)
-		{
-			return '';
-		}
-		else
-		{
-			$this->data['label'] = ($val === TRUE) ? ucwords(inflector::humanize($this->name)) : $val;
-			return $this;
-		}
 	}
 
 	protected function html_element()

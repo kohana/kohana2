@@ -1,5 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+/**
+ * FORGE upload input library.
+ *
+ * $Id$
+ *
+ * @package    Forge
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
 class Form_Upload_Core extends Form_Input {
 
 	protected $data = array
@@ -41,6 +50,12 @@ class Form_Upload_Core extends Form_Input {
 		}
 	}
 
+	/**
+	 * Sets the upload directory.
+	 *
+	 * @param   string   upload directory
+	 * @return  void
+	 */
 	public function directory($dir = NULL)
 	{
 		// Use the global upload directory by default
