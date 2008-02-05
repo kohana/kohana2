@@ -201,8 +201,12 @@ class Database_Mysql_Driver extends Database_Driver {
 
 		if (count($database['from']) > 0)
 		{
+			// Escape the tables
+			$froms = array();
+			foreach ($database['from'] as $from)
+				$froms[] = $this->escape_column($from);
 			$sql .= "\nFROM ";
-			$sql .= implode(', ', $database['from']);
+			$sql .= implode(', ', $froms);
 		}
 
 		if (count($database['join']) > 0)
