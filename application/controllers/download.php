@@ -243,13 +243,13 @@ class Download_Controller extends Controller {
 				// Add group files
 				foreach($groups[$this->validation->group] as $path)
 				{
-					$archive->add($path, FALSE);
+					$archive->add($path);
 				}
 
 				// Add language dirs
 				foreach($this->validation->languages as $lang)
 				{
-					$archive->add('system/i18n/'.$lang, FALSE);
+					$archive->add('system/i18n/'.$lang);
 				}
 
 				// Add language files
@@ -257,14 +257,14 @@ class Download_Controller extends Controller {
 				{
 					foreach($this->validation->languages as $lang)
 					{
-						$archive->add('system/i18n/'.$lang.'/'.$file.EXT, FALSE);
+						$archive->add('system/i18n/'.$lang.'/'.$file.EXT);
 					}
 				}
 
 				if ($vendor_files = $this->validation->vendor)
 				{
 					// Add vendor directory
-					$archive->add('system/vendor', FALSE);
+					$archive->add('system/vendor');
 
 					foreach($vendor_files as $name)
 					{
