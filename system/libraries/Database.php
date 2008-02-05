@@ -48,7 +48,7 @@ class Database_Core {
 	/**
 	 * Returns a singleton instance of Database.
 	 *
-	 * @param   mixed  configuration array or DSN
+	 * @param   mixed   configuration array or DSN
 	 * @return  object
 	 */
 	public static function instance($config = array())
@@ -62,12 +62,9 @@ class Database_Core {
 	}
 
 	/**
-	 * Constructor: __construct
-	 *  Sets up the database configuration, loads the <Database_Driver>.
+	 * Sets up the database configuration, loads the Database_Driver.
 	 *
-	 * Throws:
-	 *  <Kohana_Database_Exception> if there is no database group, an invalid DSN is supplied,
-	 *  or the requested driver doesn't exist.
+	 * @throws  Kohana_Database_Exception
 	 */
 	public function __construct($config = array())
 	{
@@ -184,8 +181,9 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: connect
-	 *  Simple connect method to get the database queries up and running.
+	 * Simple connect method to get the database queries up and running.
+	 *
+	 * @return  void
 	 */
 	public function connect()
 	{
@@ -202,14 +200,10 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: query
-	 *  Runs a query into the driver and returns the result.
+	 * Runs a query into the driver and returns the result.
 	 *
-	 * Parameters:
-	 *  sql - SQL query to execute
-	 *
-	 * Returns:
-	 *  <Database_Result> object
+	 * @param   string  SQL query to execute
+	 * @return  object  Database_Result
 	 */
 	public function query($sql = '')
 	{
@@ -249,14 +243,10 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: select
-	 *  Selects the column names for a database <Database.query>.
+	 * Selects the column names for a database query.
 	 *
-	 * Parameters:
-	 *  sql - string or array of column names to <Database.select>
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string  string or array of column names to select
+	 * @return  object  This Database object.
 	 */
 	public function select($sql = '*')
 	{
@@ -290,14 +280,10 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: from
-	 *  Selects the from table(s) for a database <Database.query>.
+	 * Selects the from table(s) for a database query.
 	 *
-	 * Parameters:
-	 *  sql - string or array of tables to <Database.select>
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string  string or array of tables to select
+	 * @return  object  This Database object.
 	 */
 	public function from($sql)
 	{
@@ -307,21 +293,18 @@ class Database_Core {
 
 			$this->from[] = $this->config['table_prefix'].$val;
 		}
+
 		return $this;
 	}
 
 	/**
-	 * Method: join
-	 *  Generates the JOIN portion of the query.
+	 * Generates the JOIN portion of the query.
 	 *
-	 * Parameters:
-	 *  table - table name
-	 *  key  - where key
-	 *  value  - where value
-	 *  type  - type of join (optional)
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string        table name
+	 * @param   string|array  where key or array of key => value pairs
+	 * @param   string        where value
+	 * @param   string        type of join
+	 * @return  object        This Database object.
 	 */
 	public function join($table, $key, $value = NULL, $type = '')
 	{
@@ -353,16 +336,12 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: where
-	 *  Selects the where(s) for a database <Database.query>.
+	 * Selects the where(s) for a database query.
 	 *
-	 * Parameters:
-	 *  key   - key name or array of key => value pairs
-	 *  value - value to match with key
-	 *  quote - disable quoting of WHERE clause
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string|array  key name or array of key => value pairs
+	 * @param   string        value to match with key
+	 * @param   boolean       disable quoting of WHERE clause
+	 * @return  object        This Database object.
 	 */
 	public function where($key, $value = NULL, $quote = TRUE)
 	{
@@ -379,16 +358,12 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: orwhere
-	 *  Selects the or where(s) for a database <Database.query>.
+	 * Selects the or where(s) for a database query.
 	 *
-	 * Parameters:
-	 *  key   - key name or array of key => value pairs
-	 *  value - value to match with key
-	 *  quote - disable quoting of WHERE clause
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string|array  key name or array of key => value pairs
+	 * @param   string        value to match with key
+	 * @param   boolean       disable quoting of WHERE clause
+	 * @return  object        This Database object.
 	 */
 	public function orwhere($key, $value = NULL, $quote = TRUE)
 	{
@@ -405,15 +380,11 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: like
-	 *  Selects the like(s) for a database <Database.query>.
+	 * Selects the like(s) for a database query.
 	 *
-	 * Parameters:
-	 *  field - field name or array of field => match pairs
-	 *  match - like value to match with field
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string|array  field name or array of field => match pairs
+	 * @param   string        like value to match with field
+	 * @return  object        This Database object.
 	 */
 	public function like($field, $match = '')
 	{
@@ -429,15 +400,11 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: orlike
-	 *  Selects the or like(s) for a database <Database.query>.
+	 * Selects the or like(s) for a database query.
 	 *
-	 * Parameters:
-	 *  field - field name or array of field => match pairs
-	 *  match - like value to match with field
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string|array  field name or array of field => match pairs
+	 * @param   string        like value to match with field
+	 * @return  object        This Database object.
 	 */
 	public function orlike($field, $match = '')
 	{
@@ -453,15 +420,11 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: notlike
-	 *  Selects the not like(s) for a database <Database.query>.
+	 * Selects the not like(s) for a database query.
 	 *
-	 * Parameters:
-	 *  field - field name or array of field => match pairs
-	 *  match - like value to match with field
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string|array  field name or array of field => match pairs
+	 * @param   string        like value to match with field
+	 * @return  object        This Database object.
 	 */
 	public function notlike($field, $match = '')
 	{
@@ -477,15 +440,11 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: ornotlike
-	 *  Selects the or not like(s) for a database <Database.query>.
+	 * Selects the or not like(s) for a database query.
 	 *
-	 * Parameters:
-	 *  field - field name or array of field => match pairs
-	 *  match - like value to match with field
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string|array  field name or array of field => match pairs
+	 * @param   string        like value to match with field
+	 * @return  object        This Database object.
 	 */
 	public function ornotlike($field, $match = '')
 	{
@@ -501,15 +460,11 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: regex
-	 *  Selects the like(s) for a database <Database.query>.
+	 * Selects the like(s) for a database query.
 	 *
-	 * Parameters:
-	 *  field - field name or array of field => match pairs
-	 *  match - like value to match with field
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string|array  field name or array of field => match pairs
+	 * @param   string        like value to match with field
+	 * @return  object        This Database object.
 	 */
 	public function regex($field, $match = '')
 	{
@@ -525,15 +480,11 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: orregex
-	 *  Selects the or like(s) for a database <Database.query>.
+	 * Selects the or like(s) for a database query.
 	 *
-	 * Parameters:
-	 *  field - field name or array of field => match pairs
-	 *  match - like value to match with field
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string|array  field name or array of field => match pairs
+	 * @param   string        like value to match with field
+	 * @return  object        This Database object.
 	 */
 	public function orregex($field, $match = '')
 	{
@@ -549,15 +500,11 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: notregex
-	 *  Selects the not regex(s) for a database <Database.query>.
+	 * Selects the not regex(s) for a database query.
 	 *
-	 * Parameters:
-	 *  field - field name or array of field => match pairs
-	 *  match - regex value to match with field
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string|array  field name or array of field => match pairs
+	 * @param   string        regex value to match with field
+	 * @return  object        This Database object.
 	 */
 	public function notregex($field, $match = '')
 	{
@@ -573,15 +520,11 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: ornotregex
-	 *  Selects the or not regex(s) for a database <Database.query>.
+	 * Selects the or not regex(s) for a database query.
 	 *
-	 * Parameters:
-	 *  field - field name or array of field => match pairs
-	 *  match - regex value to match with field
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string|array  field name or array of field => match pairs
+	 * @param   string        regex value to match with field
+	 * @return  object        This Database object.
 	 */
 	public function ornotregex($field, $match = '')
 	{
@@ -597,14 +540,10 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: groupby
-	 *  chooses the column to group by in a select <Database.query>.
+	 * Chooses the column to group by in a select query.
 	 *
-	 * Parameters:
-	 *  by - column name to group by
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string  column name to group by
+	 * @return  object  This Database object.
 	 */
 	public function groupby($by)
 	{
@@ -627,16 +566,12 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: having
-	 *  Selects the having(s) for a database <Database.query>.
+	 * Selects the having(s) for a database query.
 	 *
-	 * Parameters:
-	 *  key   - key name or array of key => value pairs
-	 *  value - value to match with key
-	 *  quote - disable quoting of WHERE clause
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string|array  key name or array of key => value pairs
+	 * @param   string        value to match with key
+	 * @param   boolean       disable quoting of WHERE clause
+	 * @return  object        This Database object.
 	 */
 	public function having($key, $value = '', $quote = TRUE)
 	{
@@ -645,16 +580,12 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: orhaving
-	 *  Selects the or having(s) for a database <Database.query>.
+	 * Selects the or having(s) for a database query.
 	 *
-	 * Parameters:
-	 *  key   - key name or array of key => value pairs
-	 *  value - value to match with key
-	 *  quote - disable quoting of WHERE clause
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string|array  key name or array of key => value pairs
+	 * @param   string        value to match with key
+	 * @param   boolean       disable quoting of WHERE clause
+	 * @return  object        This Database object.
 	 */
 	public function orhaving($key, $value = '', $quote = TRUE)
 	{
@@ -663,15 +594,11 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: orderby
-	 *  Chooses which column(s) to order the <Database.select> <Database.query> by.
+	 * Chooses which column(s) to order the select query by.
 	 *
-	 * Parameters:
-	 *  orderby   - column(s) to order on, can be an array, single column, or comma seperated list of columns
-	 *  direction - direction of the order
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string|array  column(s) to order on, can be an array, single column, or comma seperated list of columns
+	 * @param   string        direction of the order
+	 * @return  object        This Database object.
 	 */
 	public function orderby($orderby, $direction = '')
 	{
@@ -708,15 +635,11 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: limit
-	 *  Selects the limit section of a <Database.query>.
+	 * Selects the limit section of a query.
 	 *
-	 * Parameters:
-	 *  value  - number of rows to limit result to
-	 *  offset - offset in result to start returning rows from
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   integer  number of rows to limit result to
+	 * @param   integer  offset in result to start returning rows from
+	 * @return  object   This Database object.
 	 */
 	public function limit($limit, $offset = FALSE)
 	{
@@ -727,14 +650,10 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: offset
-	 *  Sets the offset portion of a <Database.query>.
+	 * Sets the offset portion of a query.
 	 *
-	 * Parameters:
-	 *  value - offset value
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   integer  offset value
+	 * @return  object   This Database object.
 	 */
 	public function offset($value)
 	{
@@ -744,15 +663,11 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: set
-	 *  Allows key/value pairs to be set for <Database.insert>ing or <Database.update>ing.
+	 * Allows key/value pairs to be set for inserting or updating.
 	 *
-	 * Parameters:
-	 *  key   - key name or array of key => value pairs
-	 *  value - value to match with key
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string|array  key name or array of key => value pairs
+	 * @param   string        value to match with key
+	 * @return  object        This Database object.
 	 */
 	public function set($key, $value = '')
 	{
@@ -770,17 +685,12 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: get
-	 *  Compiles the <Database.select> statement based on
-	 *  the other functions called and runs the query.
+	 * Compiles the select statement based on the other functions called and runs the query.
 	 *
-	 * Parameters:
-	 *  table  - table name
-	 *  limit  - <Database.limit> clause
-	 *  offset - <Database.offset> clause
-	 *
-	 * Returns:
-	 *  The <Database> object
+	 * @param   string  table name
+	 * @param   string  limit clause
+	 * @param   string  offset clause
+	 * @return  object  This Database object.
 	 */
 	public function get($table = '', $limit = NULL, $offset = NULL)
 	{
@@ -805,18 +715,13 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: getwhere
-	 *  Compiles the <Database.select> statement based on
-	 *  the other functions called and runs the <Database.query>.
+	 * Compiles the select statement based on the other functions called and runs the query.
 	 *
-	 * Parameters:
-	 *  table  - table name
-	 *  where  - <Database.where> clause
-	 *  limit  - <Database.limit) clause
-	 *  offset - <Database.offset) clause
-	 *
-	 * Returns:
-	 *  <Database_Result> object
+	 * @param   string  table name
+	 * @param   array   where clause
+	 * @param   string  limit clause
+	 * @param   string  offset clause
+	 * @return  object  This Database object.
 	 */
 	public function getwhere($table = '', $where = NULL, $limit = NULL, $offset = NULL)
 	{
@@ -843,15 +748,11 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: insert
-	 *  Compiles an insert string and runs the <Database.query>.
+	 * Compiles an insert string and runs the query.
 	 *
-	 * Parameters:
-	 *  table - table name
-	 *  set   - array of key/value pairs to insert
-	 *
-	 * Returns:
-	 *  <Database_Result> object
+	 * @param   string  table name
+	 * @param   array   array of key/value pairs to insert
+	 * @return  object  This Database object.
 	 */
 	public function insert($table = '', $set = NULL)
 	{
@@ -878,15 +779,11 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: merge
-	 *  Compiles an merge string and runs the <Database.query>.
+	 * Compiles a merge string and runs the query.
 	 *
-	 * Parameters:
-	 *  table - table name
-	 *  set   - array of key/value pairs to merge
-	 *
-	 * Returns:
-	 *  <Database_Result> object
+	 * @param   string  table name
+	 * @param   array   array of key/value pairs to merge
+	 * @return  object  This Database object.
 	 */
 	public function merge($table = '', $set = NULL)
 	{
@@ -913,16 +810,12 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: update
-	 *  Compiles an update string and runs the <Database.query>.
+	 * Compiles an update string and runs the query.
 	 *
-	 * Parameters:
-	 *  table - table name
-	 *  set   - associative array of update values
-	 *  where - <Database.where> clause
-	 *
-	 * Returns:
-	 *  <Database_Result> object
+	 * @param   string  table name
+	 * @param   array   associative array of update values
+	 * @param   array   where clause
+	 * @return  object  This Database object.
 	 */
 	public function update($table = '', $set = NULL, $where = NULL)
 	{
@@ -954,15 +847,11 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: delete
-	 *  Compiles a delete string and runs the <Database.query>.
+	 * Compiles a delete string and runs the query.
 	 *
-	 * Parameters:
-	 *  table - table name
-	 *  where - <Database.where> clause
-	 *
-	 * Returns:
-	 *  <Database_Result> object
+	 * @param   string  table name
+	 * @param   array   where clause
+	 * @return  object  This Database object.
 	 */
 	public function delete($table = '', $where = NULL)
 	{
@@ -989,11 +878,9 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: last_query
-	 *  Returns the last <Database.query> run.
+	 * Returns the last query run.
 	 *
-	 * Returns:
-	 *  A string containing the last SQL query
+	 * @return  string
 	 */
 	public function last_query()
 	{
@@ -1001,15 +888,11 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: count_records
-	 *  Count query records.
+	 * Count query records.
 	 *
-	 * Parameters:
-	 *  table - table name
-	 *  where - <Database.where> clause (optional)
-	 *
-	 * Returns:
-	 *  Number of records
+	 * @param   string   table name
+	 * @param   array    where clause
+	 * @return  integer
 	 */
 	public function count_records($table = FALSE, $where = NULL)
 	{
@@ -1032,8 +915,9 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: reset_select
-	 *  Resets all private select variables.
+	 * Resets all private select variables.
+	 *
+	 * @return  void
 	 */
 	private function reset_select()
 	{
@@ -1050,8 +934,9 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: reset_write
-	 *  Resets all private insert and update variables.
+	 * Resets all private insert and update variables.
+	 *
+	 * @return  void
 	 */
 	private function reset_write()
 	{
@@ -1061,11 +946,9 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: list_tables
-	 *  Lists all the tables in the current database.
+	 * Lists all the tables in the current database.
 	 *
-	 * Returns:
-	 *  An array of table names
+	 * @return  array
 	 */
 	public function list_tables()
 	{
@@ -1077,14 +960,10 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: table_exists
-	 *  See if a table exists in the database.
+	 * See if a table exists in the database.
 	 *
-	 * Parameters:
-	 *  table_name - table name
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string   table name
+	 * @return  boolean
 	 */
 	public function table_exists($table_name)
 	{
@@ -1092,15 +971,11 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: compile_binds
-	 *  Combine a SQL statement with the bind values. Used for safe queries.
+	 * Combine a SQL statement with the bind values. Used for safe queries.
 	 *
-	 * Parameters:
-	 *  sql   - query to bind to the values
-	 *  binds - array of values to bind to the query
-	 *
-	 * Returns:
-	 *  String containing the final <Database.query> to run
+	 * @param   string  query to bind to the values
+	 * @param   array   array of values to bind to the query
+	 * @return  string
 	 */
 	public function compile_binds($sql, $binds)
 	{
@@ -1125,14 +1000,10 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: field_data
-	 *  Get the field data for a database table, along with the field's attributes.
+	 * Get the field data for a database table, along with the field's attributes.
 	 *
-	 * Parameters:
-	 *  table - table name
-	 *
-	 * Returns:
-	 *  Array containing the field data
+	 * @param   string  table name
+	 * @return  array
 	 */
 	public function field_data($table = '')
 	{
@@ -1142,14 +1013,10 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: list_fields
-	 *  Get the field data for a database table, along with the field's attributes.
+	 * Get the field data for a database table, along with the field's attributes.
 	 *
-	 * Parameters:
-	 *  table - table name
-	 *
-	 * Returns:
-	 *  Array containing the field data
+	 * @param   string  table name
+	 * @return  array
 	 */
 	public function list_fields($table = '')
 	{
@@ -1159,14 +1026,10 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: escape
-	 *  Escapes a value for a query.
+	 * Escapes a value for a query.
 	 *
-	 * Parameters:
-	 *  value - value to escape
-	 *
-	 * Returns:
-	 *  An escaped version of the value
+	 * @param   mixed   value to escape
+	 * @return  string
 	 */
 	public function escape($value)
 	{
@@ -1174,14 +1037,10 @@ class Database_Core {
 	}
 
 	/**
-	 * Method: escape_str
-	 *  Escapes a string for a query.
+	 * Escapes a string for a query.
 	 *
-	 * Parameters:
-	 *  str - string to escape
-	 *
-	 * Returns:
-	 *  An escaped version of the string
+	 * @param   string  string to escape
+	 * @return  string
 	 */
 	public function escape_str($str)
 	{
@@ -1189,24 +1048,20 @@ class Database_Core {
 	}
 
 	/**
-	* Method: table_prefix
-	*  Returns table prefix of current configuration.
-	*
-	* Returns:
-	*  A string containing the table prefix for the database
-	*/
+	 * Returns table prefix of current configuration.
+	 *
+	 * @return  string
+	 */
 	public function table_prefix()
 	{
 		return $this->config['table_prefix'];
 	}
 
 	/**
-	 * Method: clear_cache
-	 *  Clears the query cache
+	 * Clears the query cache.
 	 *
-	 * Parameters:
-	 *  sql - clear cache by SQL statement (TRUE for last query)
-	 *
+	 * @param   string|TRUE  clear cache by SQL statement or TRUE for last query
+	 * @return  object       This Database object.
 	 */
 	public function clear_cache($sql = NULL)
 	{
@@ -1226,6 +1081,12 @@ class Database_Core {
 		return $this;
 	}
 
+	/**
+	 * Create a prepared statement (experimental).
+	 *
+	 * @param   string  SQL query
+	 * @return  object
+	 */
 	public function stmt_prepare($sql)
 	{
 		return $this->driver->stmt_prepare($sql, $this->config);
@@ -1233,14 +1094,9 @@ class Database_Core {
 
 } // End Database Class
 
+
 /**
- * Class: Kohana Database Exception
- *  Sets the code for a <Database> exception.
- *
- * Kohana Source Code:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * Sets the code for a Database exception.
  */
 class Kohana_Database_Exception extends Kohana_Exception {
 
