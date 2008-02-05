@@ -2,16 +2,16 @@
 
 $lang = array
 (
-	'getimagesize_missing'    => 'La librairie d\'image requiert la function PHP <tt>getimagesize</tt>. Celle-ci n\'est pas supporté par votre installation.',
+	'getimagesize_missing'    => 'La librairie d\'image requiert la function PHP <tt>getimagesize</tt>. Celle-ci n\'est pas disponible dans votre installation.',
 	'driver_not_supported'    => 'Le pilote d\'image %s n\'existe pas.',
 	'unsupported_method'      => 'Le pilote configuré ne supporte pas la transformation d\'image %s.',
-	'file_not_found'          => 'L\'image spécifié %s n\'a pas été trouvé. Merci de vérifier que l\'image existe bien avec la fonction <tt>file_exists</tt> avant sa manipulation.',
+	'file_not_found'          => 'L\'image spécifié %s n\'a pas été trouvée. Merci de vérifier que l\'image existe bien avec la fonction <tt>file_exists</tt> avant sa manipulation.',
 	'type_not_allowed'        => 'L\'image spécifié %s n\'est pas d\'un type autorisé.',
-	'invalid_width'           => 'La largeur que vous avez spécifié, %s, est invalide.',
-	'invalid_height'          => 'La hauteur que vous avez spécifié, %s, est invalide.',
-	'invalid_dimensions'      => 'Les dimensions spécifiés pour %s ne sont pas valides.',
+	'invalid_width'           => 'La largeur que vous avez spécifiée, %s, est invalide.',
+	'invalid_height'          => 'La hauteur que vous avez spécifiée, %s, est invalide.',
+	'invalid_dimensions'      => 'Les dimensions spécifiées pour %s ne sont pas valides.',
 	'invalid_master'          => 'La dimension principale (master dim) n\'est pas valide.',
-	'invalid_flip'            => 'La direction de rotation spécifié n\'est pas valide.',
+	'invalid_flip'            => 'La direction de rotation spécifiée n\'est pas valide.',
 
 	// ImageMagick specific messages
 	'imagemagick' => array

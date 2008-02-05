@@ -4,20 +4,20 @@ $lang = array
 (
 	// Class errors
 	'error_format'  => 'Votre message d\'erreur doit contenir la chaîne: {message}.',
-	'invalid_rule'  => 'La règle de validation %s est invalide',
+	'invalid_rule'  => 'La règle de validation %s utilisée est invalide',
 
 	// General errors
-	'unknown_error' => 'Erreur inconnue lors de la validation du champ %s.',
+	'unknown_error' => 'Erreur de validation inconnue lors de la validation du champ %s.',
 	'required'      => 'Le champ %s est requis.',
 	'min_length'    => 'Le champ %s doit contenir au minimum %d caractères.',
 	'max_length'    => 'Le champ %s ne peut contenir plus de %d caractères.',
 	'exact_length'  => 'Le champ %s doit contenir exactement %d caractères.',
-	'in_array'      => 'Vous devez sélectionner une option du champ %s parmis la liste proposée.',
+	'in_array'      => 'Le champ %s doit être sélectionné dans parmi les options listées.',
 	'matches'       => 'Le champ %s doit correspondre au champ %s.',
 	'valid_url'     => 'Le champ %s doit contenir une URL valide.',
 	'valid_email'   => 'Le champ %s doit contenir une adresse email valide.',
 	'valid_ip'      => 'Le champ %s doit contenir une adresse IP valide.',
-	'valid_type'    => 'Le champ %s doit contenir uniquement des caractères %s',
+	'valid_type'    => 'Le champ %s doit contenir uniquement %s caractères',
 	'range'         => 'Le champ %s doit être situé dans la plage de valeurs spécifiée.',
 	'regex'         => 'Le champ %s ne correspond pas aux valeurs acceptées.',
 	'depends_on'    => 'Le champ %s est dépendant du champ %s.',
@@ -25,11 +25,11 @@ $lang = array
 	// Upload errors
 	'user_aborted'  => 'L\'envoi du fichier %s sur le serveur a échoué.',
 	'invalid_type'  => 'Le type du fichier %s n\'est pas autorisé.',
-	'max_size'      => 'Le fichier %s que vous tentez d\'envoyer est trop lourd. La taille maximale autorisée est de %s',
-	'max_width'     => 'Le fichier %s que vous envoyez est trop large. La largeur maximale autorisée est de %spx',
-	'max_height'    => 'Le fichier %s que vous envoyez est trop haut. La hauteur maximale autorisée est de %spx',
-	'min_width'     => 'Le fichier %s que vous envoyez n\'est pas assez large. La largeur minimale demandée est de %spx',
-	'min_height'    => 'Le fichier %s que vous envoyez n\'est pas assez haut. La hauteur minimale demandée est de %spx',
+	'max_size'      => 'La taille du fichier %s que vous tentez d\'envoyer est trop volumineuse. La taille maximale autorisée est de %s',
+	'max_width'     => 'La largeur de l\'image %s que vous envoyez est trop grande. La largeur maximale autorisée est de %spx',
+	'max_height'    => 'La hauteur de l\'image %s que vous envoyez est trop grande. La hauteur maximale autorisée est de %spx',
+	'min_width'     => 'La largeur de l\'image %s que vous envoyez n\'est pas assez grande. La largeur minimale demandée est de %spx',
+	'min_height'    => 'La hauteur de l\'image %s que vous envoyez n\'est pas assez grande. La hauteur minimale demandée est de %spx',
 
 	// Field types
 	'alpha'         => 'alphabétiques',

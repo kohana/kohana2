@@ -14,7 +14,7 @@ $lang = array
 	'stats_footer'          => 'Chargé en {execution_time} secondes, {memory_usage} de mémoire utilisée. Généré par Kohana v{kohana_version}.',
 	'error_message'         => 'Une erreur est survenue à la <strong>ligne %s</strong> de <strong>%s</strong>.',
 	'stack_trace'           => 'Stack Trace',
-	'generic_error'         => 'Impossible de compléter la requete',
+	'generic_error'         => 'Impossible de terminer la requête',
 	'errors_disabled'       => 'Vous pouvez aller sur la <a href="%s">page d\'accueil</a> ou <a href="%s">essayer encore</a>.',
 
 	// Resource names

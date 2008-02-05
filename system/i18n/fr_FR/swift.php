@@ -2,5 +2,5 @@
 
 $lang = array
 (
-	'general_error' => 'Une erreur est survenue lors de l\'envoi de votre message.'
+	'general_error' => 'Une erreur est survenue lors de l\'envoi du message.'
 );
