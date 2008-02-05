@@ -247,6 +247,8 @@ class Form_Input_Core {
 				}
 				else
 				{
+					// Strip 'valid_' from func name
+					$func = (substr($func, 0, 6) === 'valid_') ? substr($func, 6) : $func;
 					// Fetch an i18n error message
 					$error = Kohana::lang('validation.'.$func, $args);
 				}

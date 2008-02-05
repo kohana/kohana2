@@ -37,6 +37,17 @@ class Forge_demo_Controller extends Controller {
 		}
 
 		echo $form->html();
+
+		// Using a custom template:
+		// echo $form->html('custom_view', TRUE);
+		// Inside the view access the inputs using $input_id->html(), ->label() etc
+		//
+		// To get the errors use $input_id_errors.
+		// Set the error format with $form->error_format('<div>{message}</div>');
+		// Defaults to <p class="error">{message}</p>
+		//
+		// Examples:
+		//   echo $username->html(); echo $password_errors;
 	}
 
 	public function upload()

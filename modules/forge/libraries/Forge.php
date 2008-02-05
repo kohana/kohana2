@@ -18,6 +18,10 @@ class Forge_Core {
 	public $inputs = array();
 	public $hidden = array();
 
+	// Error message format, only used with custom templates
+	public $error_format = '<p class="error">{message}</p>';
+	public $newline_char = "\n";
+
 	public function __construct($action = '', $title = '', $method = NULL, $attr = array())
 	{
 		// Set form attributes
@@ -119,45 +123,84 @@ class Forge_Core {
 		return $data;
 	}
 
+	public function error_format($string = '')
+	{
+		if (strpos((string) $string, '{message}') === FALSE)
+			throw new Kohana_Exception('validation.error_format');
+
+		$this->error_format = $string;
+	}
+
 	/**
 	 * Creates the form HTML
 	 *
 	 * @param   string   form view template name
+	 * @param   boolean  use a custom view
 	 * @return  string
 	 */
-	public function html($template = 'forge_template')
+	public function html($template = 'forge_template', $custom = FALSE)
 	{
 		// Load template with current template vars
 		$form = new View($template, $this->template);
 
-		$hidden = array();
-		if ( ! empty($this->hidden))
+		if ($custom)
 		{
-			foreach($this->hidden as $input)
+			// Using a custom view
+
+			$data = array();
+			foreach ($this->inputs as $input)
 			{
-				$hidden[$input->name] = $input->value;
+				$data[$input->name] = $input;
+
+				// Compile the error messages for this input
+				$messages = '';
+				$errors = $input->error_messages();
+				if (is_array($errors) AND ! empty($errors))
+				{
+					foreach($errors as $error)
+					{
+						// Replace the message with the error in the html error string
+						$messages .= str_replace('{message}', $error, $this->error_format).$this->newline_char;
+					}
+				}
+
+				$data[$input->name.'_errors'] = $messages;
 			}
+
+			$form->set($data);
+		}
+		else
+		{
+			// Using a template view
+
+			$hidden = array();
+			if ( ! empty($this->hidden))
+			{
+				foreach($this->hidden as $input)
+				{
+					$hidden[$input->name] = $input->value;
+				}
+			}
+
+			$form_type = 'open';
+			// See if we need a multipart form
+			foreach ($this->inputs as $input)
+			{
+				if ($input instanceof Form_Upload)
+				{
+					$form_type = 'open_multipart';
+				}
+			}
+
+			// Set the form open and close
+			$form->open  = form::$form_type(arr::remove('action', $this->attr), $this->attr, $hidden);
+			$form->close = form::close();
+
+			// Set the inputs
+			$form->inputs = $this->inputs;
 		}
 
-		$form_type = 'open';
-		// See if we need a multipart form
-		foreach ($this->inputs as $input)
-		{
-			if ($input instanceof Form_Upload)
-			{
-				$form_type = 'open_multipart';
-				break;
-			}
-		}
-
-		// Set the form open and close
-		$form->open  = form::$form_type(arr::remove('action', $this->attr), $this->attr, $hidden);
-		$form->close = form::close();
-
-		// Set the inputs
-		$form->inputs = $this->inputs;
-
-		return $form->render();
+		return $form;
 	}
 
 	/**
