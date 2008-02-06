@@ -84,7 +84,7 @@ class email_Core {
 	public static function send($to, $from, $subject, $message, $html = FALSE)
 	{
 		// Connect to SwiftMailer
-		(self::$mail === NULL) and self::connect();
+		(self::$mail === NULL) and email::connect();
 
 		// Determine the message type
 		$html = ($html === TRUE) ? 'text/html' : 'text/plain';

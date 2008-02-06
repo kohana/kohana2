@@ -80,9 +80,9 @@ class html_Core {
 
 		return
 		// Parsed URL
-		'<a href="'.self::specialchars($site_url, FALSE).'"'
+		'<a href="'.html::specialchars($site_url, FALSE).'"'
 		// Attributes empty? Use an empty string
-		.(empty($attributes) ? '' : self::attributes($attributes)).'>'
+		.(empty($attributes) ? '' : html::attributes($attributes)).'>'
 		// Title empty? Use the parsed URL
 		.(empty($title) ? $site_url : $title).'</a>';
 	}
@@ -100,9 +100,9 @@ class html_Core {
 	{
 		return
 		// Base URL + URI = full URL
-		'<a href="'.self::specialchars(url::base(FALSE, $protocol).$file, FALSE).'"'
+		'<a href="'.html::specialchars(url::base(FALSE, $protocol).$file, FALSE).'"'
 		// Attributes empty? Use an empty string
-		.(empty($attributes) ? '' : self::attributes($attributes)).'>'
+		.(empty($attributes) ? '' : html::attributes($attributes)).'>'
 		// Title empty? Use the filename part of the URI
 		.(empty($title) ? end(explode('/', $file)) : $title) .'</a>';
 	}
@@ -118,7 +118,7 @@ class html_Core {
 	 */
 	public static function panchor($protocol, $uri, $title = FALSE, $attributes = FALSE)
 	{
-		return self::anchor($uri, $title, $attributes, $protocol);
+		return html::anchor($uri, $title, $attributes, $protocol);
 	}
 
 	/**
@@ -159,7 +159,7 @@ class html_Core {
 		$subject = ($subject == TRUE) ? '?'.rawurlencode($subject) : '';
 
 		// Parse attributes
-		$attributes = ($attributes == TRUE) ? self::attributes($attributes) : '';
+		$attributes = ($attributes == TRUE) ? html::attributes($attributes) : '';
 
 		// Encoded start of the href="" is a static encoded version of 'mailto:'
 		return '<a href="&#109;&#097;&#105;&#108;&#116;&#111;&#058;'.$safe.$subject.'"'.$attributes.'>'.$title.'</a>';
@@ -178,7 +178,7 @@ class html_Core {
 		$array = array();
 		while ($segment = array_pop($segments))
 		{
-			$array[] = self::anchor
+			$array[] = html::anchor
 			(
 				// Complete URI for the URL
 				implode('/', $segments).'/'.$segment,
@@ -201,7 +201,7 @@ class html_Core {
 	 */
 	public static function stylesheet($style, $media = FALSE, $index = FALSE)
 	{
-		return self::link($style, 'stylesheet', 'text/css', '.css', $media, $index);
+		return html::link($style, 'stylesheet', 'text/css', '.css', $media, $index);
 	}
 
 	/**
@@ -227,7 +227,7 @@ class html_Core {
 				$_type  = is_array($type) ? array_shift($type) : $type;
 				$_media = is_array($media) ? array_shift($media) : $media;
 
-				$compiled .= self::link($_href, $_rel, $_type, $suffix, $_media, $index);
+				$compiled .= html::link($_href, $_rel, $_type, $suffix, $_media, $index);
 			}
 		}
 		else
@@ -256,7 +256,7 @@ class html_Core {
 		{
 			foreach($script as $name)
 			{
-				$compiled .= self::script($name, $index);
+				$compiled .= html::script($name, $index);
 			}
 		}
 		else
@@ -289,7 +289,7 @@ class html_Core {
 			$attr['src'] = url::base($index).$attr['src'];
 		}
 
-		return '<img'.self::attributes($attr).' />';
+		return '<img'.html::attributes($attr).' />';
 	}
 
 	/**

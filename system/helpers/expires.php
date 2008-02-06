@@ -19,7 +19,7 @@ class expires_Core {
 	 */
 	public static function set($seconds = 60)
 	{
-		if (self::check_headers())
+		if (expires::check_headers())
 		{
 			$now = $expires = time();
 
@@ -45,7 +45,7 @@ class expires_Core {
 	 */
 	public static function check($seconds = 60)
 	{
-		if ( ! empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) AND self::check_headers())
+		if ( ! empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) AND expires::check_headers())
 		{
 			if (strpos($_SERVER['HTTP_IF_MODIFIED_SINCE'], ';') !== FALSE)
 			{

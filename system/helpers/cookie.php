@@ -82,7 +82,7 @@ class cookie_Core {
 	public static function delete($name, $path = NULL, $domain = NULL, $prefix = NULL)
 	{
 		// Sets the cookie value to an empty string, and the expiration to 24 hours ago
-		return self::set($name, '', -86400, $path, $domain, FALSE, FALSE, $prefix);
+		return cookie::set($name, '', -86400, $path, $domain, FALSE, FALSE, $prefix);
 	}
 
 } // End cookie

@@ -61,7 +61,7 @@ class url_Core {
 		$index_page = Config::item('core.index_page', TRUE);
 		$url_suffix = ($uri != '') ? Config::item('core.url_suffix') : '';
 
-		return self::base(FALSE, $protocol).$index_page.$uri.$url_suffix.$qs.$id;
+		return url::base(FALSE, $protocol).$index_page.$uri.$url_suffix.$qs.$id;
 	}
 
 	/**
@@ -116,7 +116,7 @@ class url_Core {
 
 		if (strpos($uri, '://') === FALSE)
 		{
-			$uri = self::site($uri);
+			$uri = url::site($uri);
 		}
 
 		if ($method == 'refresh')

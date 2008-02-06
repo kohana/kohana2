@@ -46,7 +46,7 @@ class inflector_Core {
 		$key = $str.$count;
 
 		// We can just return uncountable words
-		if (self::uncountable($str))
+		if (inflector::uncountable($str))
 			return $str;
 
 		if (is_string($count) AND ctype_digit($count))
@@ -105,7 +105,7 @@ class inflector_Core {
 		$key = $str.$count;
 
 		// We can just return uncountable words
-		if (self::uncountable($str))
+		if (inflector::uncountable($str))
 			return $str;
 
 		if (is_string($count) AND ctype_digit($count))
