@@ -19,5 +19,5 @@ $lang = array
 	'set_allowed'        => 'For security, you must set the types of files that are allowed to be uploaded.',
 	'max_file_size'      => 'For security, please do not use MAX_FILE_SIZE to control the maximum upload size.',
 	'no_tmp_dir'         => 'Could not find a temporary directory to write to.',
-	'tmp_unwritable'     => 'Could not create or write to the configured upload directory, %s.'
+	'tmp_unwritable'     => 'Could not write to the configured upload directory, %s.'
 );
