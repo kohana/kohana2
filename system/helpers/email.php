@@ -40,7 +40,7 @@ class email_Core {
 				// Create a SMTP connection
 				$connection = new Swift_Connection_SMTP
 				(
-					$config['hostname'], 
+					$config['options']['hostname'],
 					empty($config['options']['port']) ? 25 : $config['options']['port']
 				);
 
