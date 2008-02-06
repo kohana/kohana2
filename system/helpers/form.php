@@ -42,10 +42,10 @@ class form_Core {
 		}
 
 		// Form opening tag
-		$form = '<form action="'.$action.'"'.self::attributes($attr).'>'."\n";
+		$form = '<form action="'.$action.'"'.form::attributes($attr).'>'."\n";
 
 		// Add hidden fields immediate after opening tag
-		empty($hidden) or $form .= self::hidden($hidden);
+		empty($hidden) or $form .= form::hidden($hidden);
 
 		return $form;
 	}
@@ -63,7 +63,7 @@ class form_Core {
 		// Set multi-part form type
 		$attr['enctype'] = 'multipart/form-data';
 
-		return self::open($action, $attr, $hidden);
+		return form::open($action, $attr, $hidden);
 	}
 
 	/**
@@ -110,7 +110,7 @@ class form_Core {
 			$extra = ' '.ltrim($extra);
 		}
 
-		return '<legend'.self::attributes((array) $data).$extra.'>'.$text.'</legend>'."\n";
+		return '<legend'.form::attributes((array) $data).$extra.'>'.$text.'</legend>'."\n";
 	}
 
 	/**
@@ -141,7 +141,7 @@ class form_Core {
 				'value' => $value
 			);
 
-			$input .= self::input($attr)."\n";
+			$input .= form::input($attr)."\n";
 		}
 
 		return $input;
@@ -178,7 +178,7 @@ class form_Core {
 		// For safe form data
 		$data['value'] = html::specialchars($data['value']);
 
-		return '<input'.self::attributes($data).$extra.' />';
+		return '<input'.form::attributes($data).$extra.' />';
 	}
 
 	/**
@@ -198,7 +198,7 @@ class form_Core {
 
 		$data['type'] = 'password';
 
-		return self::input($data, $value, $extra);
+		return form::input($data, $value, $extra);
 	}
 
 	/**
@@ -218,7 +218,7 @@ class form_Core {
 
 		$data['type'] = 'file';
 
-		return self::input($data, $value, $extra);
+		return form::input($data, $value, $extra);
 	}
 
 	/**
@@ -248,7 +248,7 @@ class form_Core {
 			$extra = ' '.ltrim($extra);
 		}
 
-		return '<textarea'.self::attributes($data).$extra.'>'.html::specialchars($value).'</textarea>';
+		return '<textarea'.form::attributes($data).$extra.'>'.html::specialchars($value).'</textarea>';
 	}
 
 	/**
@@ -276,7 +276,7 @@ class form_Core {
 		// Selected value should always be a string
 		$selected = (string) $selected;
 
-		$input = '<select'.self::attributes($data).$extra.'>'."\n";
+		$input = '<select'.form::attributes($data).$extra.'>'."\n";
 		foreach ($options as $key => $val)
 		{
 			// Key should always be a string
@@ -333,7 +333,7 @@ class form_Core {
 			unset($data['checked']);
 		}
 
-		return self::input($data, $value, $extra);
+		return form::input($data, $value, $extra);
 	}
 
 	/**
@@ -363,7 +363,7 @@ class form_Core {
 			unset($data['checked']);
 		}
 
-		return self::input($data, $value, $extra);
+		return form::input($data, $value, $extra);
 	}
 
 	/**
@@ -383,7 +383,7 @@ class form_Core {
 
 		$data['type'] = 'submit';
 
-		return self::input($data, $value, $extra);
+		return form::input($data, $value, $extra);
 	}
 
 	/**
@@ -417,7 +417,7 @@ class form_Core {
 			$extra = ' '.ltrim($extra);
 		}
 
-		return '<button'.self::attributes($data).$extra.'>'.html::specialchars($value).'</button>';
+		return '<button'.form::attributes($data).$extra.'>'.html::specialchars($value).'</button>';
 	}
 
 	/**
@@ -457,7 +457,7 @@ class form_Core {
 			$extra = ' '.ltrim($extra);
 		}
 
-		return '<label'.self::attributes($data).$extra.'>'.$text.'</label>';
+		return '<label'.form::attributes($data).$extra.'>'.$text.'</label>';
 	}
 
 	/**

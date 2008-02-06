@@ -124,7 +124,7 @@ class date_Core {
 		// we choose to re-use seconds(), rather than creating an entirely new
 		// function. Shhhh, it's cheating! ;) There are several more of these
 		// in the following methods.
-		return self::seconds($step);
+		return date::seconds($step);
 	}
 
 	/**
@@ -244,7 +244,7 @@ class date_Core {
 	 */
 	public static function months()
 	{
-		return self::hours();
+		return date::hours();
 	}
 
 	/**
