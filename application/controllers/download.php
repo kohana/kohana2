@@ -59,8 +59,11 @@ class Download_Controller extends Controller {
 		$content->languages = array
 		(
 			'en_US' => 'English (US)',
-			'fr_FR' => 'French',
+			'en_GB' => 'English (UK)',
 			'nl_NL' => 'Dutch',
+			'fr_FR' => 'French',
+			'de_DE' => 'German',
+			'mk_MK' => 'Macedonian',
 			'es_ES' => 'Spanish',
 		);
 
