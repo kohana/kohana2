@@ -269,7 +269,7 @@ class Database_Core {
 
 			if (strpos($val, '(') === FALSE AND $val !== '*')
 			{
-				if (preg_match('/^DISTINCT\s(.+)$/i', $val, $matches))
+				if (preg_match('/^DISTINCT\s++(.+)$/i', $val, $matches))
 				{
 					$val = 'DISTINCT '.$this->config['table_prefix'].$matches[1];
 				}
@@ -698,7 +698,7 @@ class Database_Core {
 	 * @param   string  table name
 	 * @param   string  limit clause
 	 * @param   string  offset clause
-	 * @return  object  This Database object.
+	 * @return  object  Database_Result
 	 */
 	public function get($table = '', $limit = NULL, $offset = NULL)
 	{
