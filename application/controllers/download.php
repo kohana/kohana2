@@ -94,7 +94,7 @@ class Download_Controller extends Controller {
 		// Set rules
 		$this->validation->set_rules(array
 		(
-			'modules'     => 'required[2,12]|in_array['.implode(',', array_keys($content->modules)).']',
+			'modules'   => 'required[2,12]|in_array['.implode(',', array_keys($content->modules)).']',
 			'format'    => 'required[2,3]|in_array['.implode(',', array_keys($content->formats)).']',
 			'languages' => 'required[5]|in_array['.implode(',', array_keys($content->languages)).']'
 		));
@@ -125,6 +125,8 @@ class Download_Controller extends Controller {
 				// Add application files
 				$this->add_files($source, $prefix, 'application/', $archive);
 
+				// Add the system directory
+				$archive->add($source.'system', $prefix.'system', FALSE);
 				foreach (glob($source.'system/*') as $file)
 				{
 					// Skip i18n directory, it's added manually
@@ -141,10 +143,22 @@ class Download_Controller extends Controller {
 					$this->add_files($source, $prefix, 'system/i18n/'.$lang.'/', $archive);
 				}
 
+				if ($module_files = $this->validation->modules)
+				{
+					// Add the modules directory
+					$archive->add($source.'modules', $prefix.'modules');
+
+					foreach ($module_files as $file)
+					{
+						// Add module files
+						$this->add_files($source, $prefix, 'modules/'.strtolower($file).'/', $archive);
+					}
+				}
+
 				if ($vendor_files = $this->validation->vendor)
 				{
 					// Add vendor directory
-					// $archive->add($source.'system/vendor', $prefix.'system/vendor');
+					$archive->add($source.'system/vendor', $prefix.'system/vendor');
 
 					if ($key = array_search('Markdown', $vendor_files))
 					{

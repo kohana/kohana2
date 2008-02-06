@@ -4,7 +4,7 @@
 
 <p style="font-size:1.2em">All Kohana libraries, helpers, and views are included in this download, but you may select your modules, vendor tools, and languages below.</p>
 
-<p style="font-size:0.8em;font-style:italic;">This version was released on <?php echo date('F jS, Y', $release_date) ?>. It's codename is "<?php echo $release_codename ?>".</p>
+<p style="font-size:0.8em;font-style:italic;">This version was released on <?php echo date('F jS, Y', $release_date) ?>. Its codename is "<?php echo $release_codename ?>".</p>
 
 <fieldset><span class="legend">Include the following modules in my download:</span>
 <ul>
