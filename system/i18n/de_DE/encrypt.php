@@ -1,7 +1,0 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
-
-$lang = array
-(
-	'requires_mcrypt'   => 'Um die Bibliothek Encrypt zu benutzen, muss mcrypt aktiviert werden.',
-	'no_encryption_key' => 'Um die Bibliothek Encrypt zu benutzen, müssen Sie einen Schlüssel in Ihrer Konfiguration eintragen.'
-);
