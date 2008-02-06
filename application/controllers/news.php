@@ -2,6 +2,8 @@
 
 class News_Controller extends Controller {
 
+	protected $auto_render = TRUE;
+
 	public function index()
 	{
 		Event::run('system.404');
