@@ -39,10 +39,7 @@ class Validation_Core {
 	protected $result;
 
 	/**
-	 * Method: __construct
-	 *
-	 * Parameters:
-	 *  data - array to validate
+	 * @param array  array to validate
 	 */
 	public function __construct( & $data = array())
 	{
@@ -58,15 +55,11 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: __get
-	 *  Magically gets a validation variable. This can be an error string or a
-	 *  data field, or an array of all field data.
+	 * Magically gets a validation variable. This can be an error string or a
+	 * data field, or an array of all field data.
 	 *
-	 * Parameters:
-	 *  key - variable name
-	 *
-	 * Returns:
-	 *  The variable contents or NULL if the variable does not exist
+	 * @param   string        Variable name
+	 * @return  string|array  The variable contents or NULL if the variable does not exist
 	 */
 	public function __get($key)
 	{
@@ -119,14 +112,13 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: set_rules
-	 *  This function takes an array of key names, rules, and field names as
-	 *  input and sets internal field information.
+	 * This function takes an array of key names, rules, and field names as
+	 * input and sets internal field information.
 	 *
-	 * Parameters:
-	 *  data  - key names
-	 *  rules - rules
-	 *  field - field names
+	 * @param   string|array Key names
+	 * @param   string       Rules
+	 * @param   string       Field name
+	 * @return  void
 	 */
 	public function set_rules($data, $rules = '', $field = FALSE)
 	{
@@ -165,13 +157,12 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: set_message
-	 *  Lets users set their own error messages on the fly.
-	 *  Note - The key name has to match the function name that it corresponds to.
+	 * Lets users set their own error messages on the fly.
+	 * Note - The key name has to match the function name that it corresponds to.
 	 *
-	 * Parameters:
-	 *  func    - function name
-	 *  message - error message
+	 * @param   string  Function name
+	 * @param   string  Error message
+	 * @return  void
 	 */
 	public function set_message($func, $message = '')
 	{
@@ -187,10 +178,8 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: set_data
-	 *
-	 * Parameters:
-	 *  data - array to validate
+	 * @param   array  Data to validate
+	 * @return  void
 	 */
 	public function set_data( & $data)
 	{
@@ -205,12 +194,11 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: error_format
-	 *  Allows the user to change the error message format. Error formats must
-	 *  contain the string "{message}" or Kohana_Exception will be triggered.
+	 * Allows the user to change the error message format. Error formats must
+	 * contain the string "{message}" or Kohana_Exception will be triggered.
 	 *
-	 * Parameters:
-	 *  string - error message
+	 * @param   string  Error message format  
+	 * @return  void
 	 */
 	public function error_format($string = '')
 	{
@@ -221,11 +209,9 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: add_error
-	 *
-	 * Parameters:
-	 *  func  - function name
-	 *  field - field name
+	 * @param   string  Function name
+	 * @param   string  field name
+	 * @return  void
 	 */
 	public function add_error($func, $field)
 	{
@@ -251,11 +237,9 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: run
-	 *  This function does all the work.
+	 * This function does all the work.
 	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @return  boolean  The validation result
 	 */
 	public function run()
 	{
@@ -328,12 +312,11 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: run_rule
-	 *  Handles recursively calling rules on arrays of data.
+	 * Handles recursively calling rules on arrays of data.
 	 *
-	 * Parameters:
-	 *  rule  - validation rule to be run on the data
-	 *  field - name of field
+	 * @param   string  Validation rule to be run on the data
+	 * @param   string  Name of field
+	 * @return  void
 	 */
 	protected function run_rule($rule, $field)
 	{
@@ -413,7 +396,9 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: in_array
+	 * @param   mixed
+	 * @param   array
+	 * @return  boolean
 	 */
 	public function in_array($data, $array = FALSE)
 	{
@@ -427,7 +412,9 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: event
+	 * @param   mixed         Data to pass to the event
+	 * @param   array         Events name
+	 * @return  boolean|void
 	 */
 	public function event($data, $events = FALSE)
 	{
@@ -446,7 +433,9 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: upload
+	 * @param   array
+	 * @param   array
+	 * @return  boolean|void
 	 */
 	public function upload($data, $params = FALSE)
 	{
@@ -709,14 +698,9 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: required
-	 *
-	 * Parameters:
-	 *  str    - string to validate
-	 *  length -
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string  String to check
+	 * @param   array   Length
+	 * @return  boolean
 	 */
 	public function required($str, $length = FALSE)
 	{
@@ -762,15 +746,11 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: matches
-	 *  Match one field to another.
+	 * Match one field to another.
 	 *
-	 * Parameters:
-	 *  field - first field
-	 *  match - field to match to first
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string  First field
+	 * @param   string  Field to match to first
+	 * @return  boolean
 	 */
 	public function matches($field, $match)
 	{
@@ -789,15 +769,11 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: min_length
-	 *  Check a string for a minimum length.
+	 * Check a string for a minimum length.
 	 *
-	 * Parameters:
-	 *  str - string to validate
-	 *  val - minimum length
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string   String to validate
+	 * @param   integer  Minimum length
+	 * @return  boolean
 	 */
 	public function min_length($str, $val)
 	{
@@ -814,15 +790,11 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: max_length
-	 *  Check a string for a maximum length.
+	 * Check a string for a maximum length.
 	 *
-	 * Parameters:
-	 *  str - string to validate
-	 *  val - maximum length
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string   String to validate
+	 * @param   integer  Maximum length
+	 * @return  boolean
 	 */
 	public function max_length($str, $val)
 	{
@@ -839,15 +811,11 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: exact_length
-	 *  Check a string for an exact length.
+	 * Check a string for an exact length.
 	 *
-	 * Parameters:
-	 *  str - string to validate
-	 *  val - length
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string   String to validate
+	 * @param   integer  Length
+	 * @return  boolean
 	 */
 	public function exact_length($str, $val)
 	{
@@ -864,15 +832,11 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: valid_url
-	 *  Valid URL.
+	 * Validate URL.
 	 *
-	 * Parameters:
-	 *  url    - URL
-	 *  scheme - protocol
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string  URL
+	 * @param   string  Scheme
+	 * @return  boolean
 	 */
 	public function valid_url($url, $scheme = '')
 	{
@@ -894,14 +858,10 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: valid_email
-	 *  Valid Email, Commonly used characters only.
+	 * Valid Email, Commonly used characters only.
 	 *
-	 * Parameters:
-	 *  email - email address
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string  Email address
+	 * @return  boolean
 	 */
 	public function valid_email($email)
 	{
@@ -913,14 +873,10 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: valid_email_rfc
-	 *  Valid Email, RFC compliant version
+	 * Valid Email, RFC compliant version
 	 *
-	 * Parameters:
-	 *  email - email address
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string  Email address
+	 * @return  boolean
 	 */
 	public function valid_email_rfc($email)
 	{
@@ -932,14 +888,10 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: valid_ip
-	 *  Validate IP Address.
+	 * Validate IP Address.
 	 *
-	 * Parameters:
-	 *  ip - ip address
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string  IP address
+	 * @return  boolean
 	 */
 	public function valid_ip($ip)
 	{
@@ -951,14 +903,10 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: alpha
-	 *  Alphabetic characters only.
+	 * Alphabetic characters only.
 	 *
-	 * Parameters:
-	 *  str - string to validate
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string  String to validate
+	 * @return  boolean
 	 */
 	public function alpha($str)
 	{
@@ -970,14 +918,10 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: utf8_alpha
-	 *  Alphabetic characters only (UTF-8 compatible).
+	 * Alphabetic characters only (UTF-8 compatible).
 	 *
-	 * Parameters:
-	 *  str - string to validate
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string  String to validate
+	 * @return  boolean
 	 */
 	public function utf8_alpha($str)
 	{
@@ -989,14 +933,10 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: alpha_numeric
-	 *  Alphabetic and numeric characters only.
+	 * Alphabetic and numeric characters only.
 	 *
-	 * Parameters:
-	 *  str - string to validate
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string  String to validate
+	 * @return  boolean
 	 */
 	public function alpha_numeric($str)
 	{
@@ -1008,14 +948,10 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: utf8_alpha_numeric
-	 *  Alphabetic and numeric characters only (UTF-8 compatible).
+	 * Alphabetic and numeric characters only (UTF-8 compatible).
 	 *
-	 * Parameters:
-	 *  str - string to validate
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string  String to validate
+	 * @return  boolean
 	 */
 	public function utf8_alpha_numeric($str)
 	{
@@ -1027,14 +963,10 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: alpha_dash
-	 *  Alpha-numeric with underscores and dashes.
+	 * Alpha-numeric with underscores and dashes.
 	 *
-	 * Parameters:
-	 *  str - string to validate
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string  String to validate
+	 * @return  boolean
 	 */
 	public function alpha_dash($str)
 	{
@@ -1046,14 +978,10 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: utf8_alpha_dash
-	 *  Alpha-numeric with underscores and dashes (UTF-8 compatible).
+	 * Alpha-numeric with underscores and dashes (UTF-8 compatible).
 	 *
-	 * Parameters:
-	 *  str - string to validate
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string  String to validate
+	 * @return  boolean
 	 */
 	public function utf8_alpha_dash($str)
 	{
@@ -1065,14 +993,10 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: digit
-	 *  Digits 0-9, no dots or dashes.
+	 * Digits 0-9, no dots or dashes.
 	 *
-	 * Parameters:
-	 *  str - string to validate
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string  String to validate
+	 * @return  boolean
 	 */
 	public function digit($str)
 	{
@@ -1084,14 +1008,10 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: utf8_digit
-	 *  Digits 0-9, no dots or dashes (UTF-8 compatible).
+	 * Digits 0-9, no dots or dashes (UTF-8 compatible).
 	 *
-	 * Parameters:
-	 *  str - string to validate
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string  String to validate
+	 * @return  boolean
 	 */
 	public function utf8_digit($str)
 	{
@@ -1103,14 +1023,10 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: numeric
-	 *  Digits 0-9 (negative and decimal numbers allowed).
+	 * Digits 0-9 (negative and decimal numbers allowed).
 	 *
-	 * Parameters:
-	 *  str - string to validate
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string  String to validate
+	 * @return  boolean
 	 */
 	public function numeric($str)
 	{
@@ -1122,15 +1038,11 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: range
-	 *  Test that a field is between a range.
+	 * Test that a field is between a range.
 	 *
-	 * Parameters:
-	 *  num    - number to validate
-	 *  ranges - ranges
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   integer  Number to validate
+	 * @param   array    Renges
+	 * @return  boolean
 	 */
 	public function range($num, $ranges)
 	{
@@ -1159,14 +1071,11 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: depends_on
-	 *
-	 * Parameters:
-	 *  field      - first field
-	 *  depends_on - field which the first field is depend on it
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * Check dependency between fields.
+	 * 
+	 * @param   string  First field
+	 * @param   string  Field which the first field is depend on it
+	 * @return  boolean
 	 */
 	public function depends_on($field, $depends_on)
 	{
@@ -1184,15 +1093,11 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: regex
-	 *  Test a field against a regex rule
+	 * Test a field against a regex rule
 	 *
-	 * Parameters:
-	 *  str   - string to test
-	 *  regex - regular expression to run
-	 *
-	 * Returns:
-	 *  TRUE or FALSE
+	 * @param   string  String to test
+	 * @param   string  Regular expression to run
+	 * @return  boolean
 	 */
 	public function regex($str, $regex)
 	{
@@ -1213,15 +1118,11 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: prep_for_form
-	 *  This function allows HTML to be safely shown in a form.
-	 *  Special characters are converted.
+	 * This function allows HTML to be safely shown in a form.
+	 * Special characters are converted.
 	 *
-	 * Parameters:
-	 *  str - HTML
-	 *
-	 * Returns:
-	 *  Prepped HTML
+	 * @param   string  HTML
+	 * @return  string  Prepped HTML
 	 */
 	public function prep_for_form($str = '')
 	{
@@ -1232,10 +1133,8 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: prep_url
-	 *
-	 * Parameters:
-	 *  str - URL
+	 * @param   string  URL
+	 * @return  void
 	 */
 	public function prep_url($str = '')
 	{
@@ -1254,11 +1153,10 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: strip_image_tags
-	 *  Strip image tags from string.
+	 * Strip image tags from string.
 	 *
-	 * Parameters:
-	 *  str - string
+	 * @param   string  HTML
+	 * @return  void
 	 */
 	public function strip_image_tags($str)
 	{
@@ -1266,11 +1164,10 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: xss_clean
-	 *  XSS clean string.
+	 * XSS clean string.
 	 *
-	 * Parameters:
-	 *  str - string
+	 * @param   string  String to be clean
+	 * @return  void
 	 */
 	public function xss_clean($str)
 	{
@@ -1278,11 +1175,10 @@ class Validation_Core {
 	}
 
 	/**
-	 * Method: encode_php_tags
-	 *  Convert PHP tags to entities.
+	 * Convert PHP tags to entities.
 	 *
-	 * Parameters:
-	 *  str - string
+	 * @param   string
+	 * @return  void
 	 */
 	public function encode_php_tags($str)
 	{
