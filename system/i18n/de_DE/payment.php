@@ -2,7 +2,8 @@
 
 $lang = array
 (
-	'driver_not_supported'     => 'Der %s-Payment-Treiber wurd enicht gefunden.',
+	'driver_not_supported'     => 'Der gewählte %s-Payment-Treiber wurd enicht gefunden.',
+	'driver_implements'        => 'Der gewählte Payment-Treiber, %s, implementiert nicht Payment_Driver.',
 	'required'                 => 'Einige benötigte Felder wurden nicht übergeben: %s',
 	'gateway_connection_error' => 'Fehler bei der Verbindung zum Bezahldienst aufgetreten. Sollte der Fehler weiterhin bestehen, kontaktieren Sie bitte den Webmaster.',
 	'invalid_certificate'      => 'Das Zertifikat ist ungültig: %s',
