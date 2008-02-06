@@ -15,143 +15,22 @@ class Download_Controller extends Controller {
 		// Load content
 		$content = new View('pages/download');
 
-		// Kohana trunk
-		$kohana_trunk = '/usr/home/wgilk/svn_checkout/kohana_trunk/';
+		// Release version, codename, and date
+		$content->release_version = '2.1';
+		$content->release_codename = 'Schneefeier';
+		$content->release_date = strtotime('2008/02/05');
 
 		// Counter
 		$content->counter = file_get_contents(APPPATH.'cache/counter.txt');
 
-		// Pull date
-		$content->sync_date = strtotime('2007/11/20');
-
-		// Set up groups array
-		$groups = array
+		// Modules
+		$content->modules = array
 		(
-			'minimal' => array
-			(
-				'index.php',
-				'application',
-				'application/config',
-				'application/config/config.php',
-				'application/controllers',
-				'application/controllers/welcome.php',
-				'application/logs',
-				'application/models',
-				'application/views',
-				'system',
-				'system/config',
-				'system/config/cookie.php',
-				'system/config/hooks.php',
-				'system/config/locale.php',
-				'system/config/log.php',
-				'system/config/mimes.php',
-				'system/config/routes.php',
-				'system/config/session.php',
-				'system/config/user_agents.php',
-				'system/core',
-				'system/helpers',
-				'system/helpers/arr.php',
-				'system/helpers/cookie.php',
-				'system/helpers/form.php',
-				'system/helpers/html.php',
-				'system/helpers/security.php',
-				'system/helpers/url.php',
-				'system/helpers/valid.php',
-				'system/i18n',
-				'system/libraries',
-				'system/libraries/drivers',
-				'system/libraries/drivers/Session.php',
-				'system/libraries/drivers/Session_Cookie.php',
-				'system/libraries/Controller.php',
-				'system/libraries/Input.php',
-				'system/libraries/Loader.php',
-				'system/libraries/Model.php',
-				'system/libraries/Router.php',
-				'system/libraries/Session.php',
-				'system/libraries/URI.php',
-				'system/libraries/User_agent.php',
-				'system/libraries/Validation.php',
-				'system/libraries/View.php',
-				'system/models',
-				'system/views',
-				'system/views/kohana_error_page.php'
-			),
-			'standard' => array
-			(
-				'application/helpers',
-				'application/hooks',
-				'application/libraries',
-				'application/controllers/examples.php',
-				'application/views/viewinview',
-				'application/views/viewinview/container.php',
-				'application/views/viewinview/footer.php',
-				'application/views/viewinview/header.php',
-				'system/config/database.php',
-				'system/config/encryption.php',
-				'system/config/pagination.php',
-				'system/config/profiler.php',
-				'system/config/upload.php',
-				'system/helpers/date.php',
-				'system/helpers/download.php',
-				'system/helpers/feed.php',
-				'system/helpers/inflector.php',
-				'system/helpers/text.php',
-				'system/libraries/drivers/Archive.php',
-				'system/libraries/drivers/Archive_Zip.php',
-				'system/libraries/drivers/Database.php',
-				'system/libraries/drivers/Database_Mysql.php',
-				'system/libraries/drivers/Session_Database.php',
-				'system/libraries/Archive.php',
-				'system/libraries/Calendar.php',
-				'system/libraries/Database.php',
-				'system/libraries/Encrypt.php',
-				'system/libraries/Pagination.php',
-				'system/libraries/Profiler.php',
-				'system/models/form.php',
-				'system/views/kohana_form.php',
-				'system/views/kohana_holiday.php',
-				'system/views/kohana_profiler.php',
-				'system/views/pagination',
-				'system/views/pagination/classic.php',
-				'system/views/pagination/digg.php',
-				'system/views/pagination/extended.php',
-				'system/views/pagination/punbb.php'
-			)
+			'Auth' => 'Simple authentication and user management. Uses <a href="http://doc.kohanaphp.com/libraries/orm">ORM</a> for models.',
+			'Forge' => 'Object-oriented form generation and templating.',
+			'Media' => 'Media caching, compression, and aggregation for CSS and Javascript files.',
+			'Kodoc' => 'Dynamic self-generated documentation. (Beta!)',
 		);
-
-		// Add core files
-		foreach(glob($kohana_trunk.'system/core/*') as $file)
-		{
-			$groups['minimal'][] = substr($file, strrpos($file, 'system/'));
-		}
-
-		// Standard should have all the files that minimal does
-		$groups['standard'] = array_merge($groups['minimal'], $groups['standard']);
-
-		// Language files for each group
-		$group_langs = array
-		(
-			'minimal' => array
-			(
-				'core',
-				'errors',
-				'session',
-				'validation'
-			),
-			'standard' => array
-			(
-				'archive',
-				'calendar',
-				'database',
-				'encrypt',
-				'inflector',
-				'pagination',
-				'profiler'
-			)
-		);
-
-		// Standard group should have all the files that minimal does
-		$group_langs['standard'] = array_merge($group_langs['minimal'], $group_langs['standard']);
 
 		// Vendor resources
 		$content->vendors = array
@@ -180,11 +59,9 @@ class Download_Controller extends Controller {
 		$content->languages = array
 		(
 			'en_US' => 'English (US)',
-			'zh_CN' => 'Chinese',
 			'fr_FR' => 'French',
 			'nl_NL' => 'Dutch',
-			'mk_MK' => 'Macedonian',
-			'pl_PL' => 'Polish'
+			'es_ES' => 'Spanish',
 		);
 
 		// Download formats
@@ -198,7 +75,6 @@ class Download_Controller extends Controller {
 			// Fake validation data, so that we can pre-fill the form
 			$validate = array
 			(
-				'group' => 'standard',
 				'format' => 'zip',
 				'languages' => array
 				(
@@ -218,7 +94,7 @@ class Download_Controller extends Controller {
 		// Set rules
 		$this->validation->set_rules(array
 		(
-			'group'     => 'required[2,12]|in_array['.implode(',', array_keys($groups)).']',
+			'modules'     => 'required[2,12]|in_array['.implode(',', array_keys($content->modules)).']',
 			'format'    => 'required[2,3]|in_array['.implode(',', array_keys($content->formats)).']',
 			'languages' => 'required[5]|in_array['.implode(',', array_keys($content->languages)).']'
 		));
@@ -231,53 +107,63 @@ class Download_Controller extends Controller {
 			// Attempt to fetch the archive from cache
 			if (($cache = $this->cache->get($cache_id)) == FALSE)
 			{
-				// Get current directory for return
-				$return_dir = getcwd();
+				// Kohana release directory
+				$source = IN_PRODUCTION
+					? '/usr/home/wgilk/svn_checkout/kohana_2.1/'
+					: '/Volumes/Media/Sites/Kohana/releases/2.1/';
 
-				// Change to the trunk directory
-				chdir($kohana_trunk);
+				// Directory prefix that will be added to the archive as the base directory
+				$prefix = 'Kohana_v'.$content->release_version.'/';
 
 				// Initialize a new archive
 				$archive = new Archive($this->validation->format);
 
-				// Add group files
-				foreach($groups[$this->validation->group] as $path)
+				// Add the prefix directory and index.php
+				$archive->add($source, $prefix, FALSE);
+				$archive->add($source.'index.php', $prefix.'index.php');
+
+				// Add application files
+				$this->add_files($source, $prefix, 'application/', $archive);
+
+				foreach (glob($source.'system/*') as $file)
 				{
-					$archive->add($path);
+					// Skip i18n directory, it's added manually
+					if (($dir = substr($file, strrpos($file, '/') + 1)) === 'i18n' OR $dir === 'vendor')
+						continue;
+
+					// Add files
+					$this->add_files($source, $prefix, 'system/'.$dir.'/', $archive);
 				}
 
-				// Add language dirs
 				foreach($this->validation->languages as $lang)
 				{
-					$archive->add('system/i18n/'.$lang);
-				}
-
-				// Add language files
-				foreach($group_langs[$this->validation->group] as $file)
-				{
-					foreach($this->validation->languages as $lang)
-					{
-						$archive->add('system/i18n/'.$lang.'/'.$file.EXT);
-					}
+					// Add language files
+					$this->add_files($source, $prefix, 'system/i18n/'.$lang.'/', $archive);
 				}
 
 				if ($vendor_files = $this->validation->vendor)
 				{
 					// Add vendor directory
-					$archive->add('system/vendor');
+					// $archive->add($source.'system/vendor', $prefix.'system/vendor');
+
+					if ($key = array_search('Markdown', $vendor_files))
+					{
+						// This just a file, so we add it manually
+						$archive->add($source.'system/vendor/Markdown.php', $prefix.'system/vendor/Markdown.php');
+
+						// Remove it from the list
+						unset($vendor_files[$key]);
+					}
 
 					foreach($vendor_files as $name)
 					{
 						// Add vendor files
-						$archive->add('system/vendor/'.$content->vendors[$name]['file'], NULL, TRUE);
+						$this->add_files($source, $prefix, 'system/vendor/'.$content->vendors[$name]['file'].'/', $archive);
 					}
 				}
 
 				// Create the archive and cache it
 				$this->cache->set($cache_id, $cache = $archive->create(), array('download'));
-
-				// Return to the original directory
-				chdir($return_dir);
 			}
 
 			// Increase the counter
@@ -287,7 +173,7 @@ class Download_Controller extends Controller {
 			$this->auto_render = FALSE;
 
 			// Force a download of the archive
-			return download::force('Kohana_v2.0_'.date('Y-m-d', $content->sync_date).'.zip', $cache);
+			return download::force('Kohana_v'.$content->release_version.'.zip', $cache);
 		}
 
 		// Set page title and content
@@ -296,6 +182,30 @@ class Download_Controller extends Controller {
 			'title'   => 'Download',
 			'content' => $content
 		));
+	}
+
+	protected function add_files($source, $prefix, $directory, Archive $archive)
+	{
+		// Open the directory
+		$dir = opendir($source.$directory);
+
+		// Loop through the directory and add each file
+		while ($file = readdir($dir))
+		{
+			// Skip hidden directories
+			if (substr($file, 0, 1) === '.')
+				continue;
+
+			// Add each file
+			$archive->add($source.$directory.$file, $prefix.$directory.$file);
+
+			if (is_dir($source.$directory.$file))
+			{
+				// Recursion!
+				$this->add_files($source, $prefix, $directory.rtrim($file, '/').'/', $archive);
+			}
+		}
+		closedir($dir);
 	}
 
 } // End Download_Controller

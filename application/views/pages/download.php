@@ -1,15 +1,26 @@
-<h2><span>Total Downloads: <?php echo $counter ?></span>Download Kohana</h2>
-
-<p>You are downloading Kohana v2.0. Please use <?php echo html::anchor('http://trac.kohanaphp.com/newticket', 'Trac tickets') ?> to report any bugs you experience. <span style="font-size:0.8em;font-style:italic;">Download files were last synced on <?php echo date('F jS, Y', $sync_date) ?>.</span></p>
-
-<p><strong>This is the final release of version 2.0.</strong> Barring severe bugs, this will be the last release before version 2.1. There is no current release date for 2.1, but we expect it to take less time than version 2.0.</p>
+<h2><span>Total Downloads: <?php echo $counter ?></span>Download Kohana v<?php echo $release_version ?></h2>
 
 <?php echo form::open('download', array('method' => 'get')) ?> 
 
-<fieldset><span class="legend">Choose your download type:</span>
+<p style="font-size:1.2em">All Kohana libraries, helpers, and views are included in this download, but you may select your modules, vendor tools, and languages below.</p>
+
+<p style="font-size:0.8em;font-style:italic;">This version was released on <?php echo date('F jS, Y', $release_date) ?>. It's codename is "<?php echo $release_codename ?>".</p>
+
+<fieldset><span class="legend">Include the following modules in my download:</span>
 <ul>
-<li><label><?php echo form::radio('group', 'minimal', ($this->validation->group == 'minimal')) ?> <strong>Minimal</strong></label> &ndash; Included libraries: Session, Validation. Included helpers: array, cookie, form, html, security, url, and validation.</li>
-<li><label><?php echo form::radio('group', 'standard', ($this->validation->group == 'standard')) ?> <strong>Standard</strong></label> &ndash; Additional libraries: Archive, Database, Encryption, Pagination, and Profiler. Additional helpers: date, download, feed, inflector, and text.</li>
+<?php
+
+foreach($modules as $name => $description):
+
+	$key = strtolower($name);
+
+?>
+<li><label><?php echo form::checkbox('modules['.$key.']', $name, isset($this->validation->modules[$key])) ?> <strong><?php echo $name ?></strong></label> &ndash; <?php echo $description ?></li>
+<?php
+
+endforeach;
+
+?>
 </ul>
 </fieldset>
 
@@ -22,7 +33,7 @@ foreach($vendors as $name => $data):
 	$key = strtolower($name);
 
 ?>
-<li><label><?php echo form::checkbox('vendor['.$key.']', $name, isset($this->validation->vendor[$key])) ?> <strong><?php echo $name ?></strong></label> &ndash; <?php echo $data['description'] ?> <?php echo html::anchor($data['link'], 'More Information') ?>.</li>
+<li><label><?php echo form::checkbox('vendor['.$key.']', $name, isset($this->validation->vendor[$key])) ?> <strong><?php echo $name ?></strong></label> &ndash; <?php echo $data['description'] ?> <?php echo html::anchor($data['link'], 'More Information') ?></li>
 <?php
 
 endforeach;
@@ -48,7 +59,7 @@ endforeach;
 </ul>
 </fieldset>
 
-<fieldset><span class="legend">Choose your download format:</span>
+<fieldset><span class="legend">Compress my download using:</span>
 <?php echo $this->validation->format_error ?> 
 <ul>
 <?php
