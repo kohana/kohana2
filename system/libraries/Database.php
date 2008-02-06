@@ -698,7 +698,7 @@ class Database_Core {
 	 * @param   string  table name
 	 * @param   string  limit clause
 	 * @param   string  offset clause
-	 * @return  object  This Database object.
+	 * @return  object  Database_Result
 	 */
 	public function get($table = '', $limit = NULL, $offset = NULL)
 	{
