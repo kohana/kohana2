@@ -100,11 +100,7 @@ class html_Core {
 	{
 		return
 		// Base URL + URI = full URL
-<<<<<<< .working
-		'<a href="'.url::base(FALSE, $protocol).$file.'"'
-=======
 		'<a href="'.html::specialchars(url::base(FALSE, $protocol).$file, FALSE).'"'
->>>>>>> .merge-right.r1967
 		// Attributes empty? Use an empty string
 		.(empty($attributes) ? '' : html::attributes($attributes)).'>'
 		// Title empty? Use the filename part of the URI
