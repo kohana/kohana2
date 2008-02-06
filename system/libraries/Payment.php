@@ -69,13 +69,6 @@ class Payment_Core {
 		// Merge the default config with the passed config
 		$this->config = array_merge($this->config, $config);
 
-		// Woah! We can't continue like this!
-		if ($this->config['driver'] == NULL)
-			throw new Kohana_Exception();
-
-		// Get the driver specific settings
-		$this->config = array_merge($this->config, Config::item('payment.'.$this->config['driver']));
-
 		// Set driver name
 		$driver = 'Payment_'.ucfirst($this->config['driver']).'_Driver';
 
@@ -83,11 +76,15 @@ class Payment_Core {
 		if ( ! Kohana::auto_load($driver))
 			throw new Kohana_Exception('payment.driver_not_supported', $this->config['driver']);
 
+		// Get the driver specific settings
+		$this->config = array_merge($this->config, Config::item('payment.'.$this->config['driver']));
+
 		// Initialize the driver
 		$this->driver = new $driver($this->config);
 
+		// Validate the driver
 		if ( ! ($this->driver instanceof Payment_Driver))
-			throw new Kohana_Exception('payment.driver_not_supported', 'Payment drivers must use the Payment_Driver interface.');
+			throw new Kohana_Exception('payment.driver_implements', $this->config['driver']);
 	}
 
 	/**

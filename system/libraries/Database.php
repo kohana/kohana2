@@ -269,7 +269,7 @@ class Database_Core {
 
 			if (strpos($val, '(') === FALSE AND $val !== '*')
 			{
-				if (preg_match('/^DISTINCT\s(.+)$/i', $val, $matches))
+				if (preg_match('/^DISTINCT\s++(.+)$/i', $val, $matches))
 				{
 					$val = 'DISTINCT '.$this->config['table_prefix'].$matches[1];
 				}
