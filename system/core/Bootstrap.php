@@ -10,7 +10,7 @@
  * @license    http://kohanaphp.com/license.html
  */
 
-define('KOHANA_VERSION',  '2.1');
+define('KOHANA_VERSION',  '2.1.1');
 define('KOHANA_CODENAME', 'Schneefeier');
 
 // Kohana benchmarks are prefixed by a random string to prevent collisions
