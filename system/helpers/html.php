@@ -80,7 +80,7 @@ class html_Core {
 
 		return
 		// Parsed URL
-		'<a href="'.$site_url.'"'
+		'<a href="'.self::specialchars($site_url, FALSE).'"'
 		// Attributes empty? Use an empty string
 		.(empty($attributes) ? '' : self::attributes($attributes)).'>'
 		// Title empty? Use the parsed URL
@@ -100,7 +100,7 @@ class html_Core {
 	{
 		return
 		// Base URL + URI = full URL
-		'<a href="'.url::base(FALSE, $protocol).$file.'"'
+		'<a href="'.self::specialchars(url::base(FALSE, $protocol).$file, FALSE).'"'
 		// Attributes empty? Use an empty string
 		.(empty($attributes) ? '' : self::attributes($attributes)).'>'
 		// Title empty? Use the filename part of the URI
