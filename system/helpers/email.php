@@ -4,7 +4,7 @@
  *
  * $Id$
  *
- * @package    Validation
+ * @package    Email Helper
  * @author     Kohana Team
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
@@ -17,8 +17,8 @@ class email_Core {
 	/**
 	 * Creates a SwiftMailer instance.
 	 *
-	 * @param   string   DSN connection string
-	 * @return  object   Swift object
+	 * @param   string  DSN connection string
+	 * @return  object  Swift object
 	 */
 	public static function connect($config = NULL)
 	{
