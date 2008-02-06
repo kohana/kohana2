@@ -112,8 +112,8 @@ class Download_Controller extends Controller {
 			{
 				// Kohana release directory
 				$source = IN_PRODUCTION
-					? '/usr/home/wgilk/svn_checkout/kohana_2.1/'
-					: '/Volumes/Media/Sites/Kohana/releases/2.1/';
+					? '/usr/home/wgilk/svn_checkout/kohana/releases/'.$content->release_version.'/'
+					: '/Volumes/Media/Sites/Kohana/releases/'.$content->release_version.'/';
 
 				// Directory prefix that will be added to the archive as the base directory
 				$prefix = 'Kohana_v'.$content->release_version.'/';
