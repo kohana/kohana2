@@ -94,7 +94,7 @@ class Download_Controller extends Controller {
 		// Set rules
 		$this->validation->set_rules(array
 		(
-			'modules'   => 'required[2,12]|in_array['.implode(',', array_keys($content->modules)).']',
+			'modules'   => 'in_array['.implode(',', array_keys($content->modules)).']',
 			'format'    => 'required[2,3]|in_array['.implode(',', array_keys($content->formats)).']',
 			'languages' => 'required[5]|in_array['.implode(',', array_keys($content->languages)).']'
 		));
