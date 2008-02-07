@@ -204,7 +204,7 @@ class Router_Core {
 				}
 			}
 		}
-		elseif (count($_GET) === 1 AND current($_GET) == '' AND substr($_SERVER['QUERY_STRING'], -1) !== '=')
+		elseif (count($_GET) === 1 AND current($_GET) === '' AND substr($_SERVER['QUERY_STRING'], -1) !== '=')
 		{
 			// The URI is the array key, eg: ?this/is/the/uri
 			self::$current_uri = key($_GET);
@@ -238,20 +238,23 @@ class Router_Core {
 		if (($strpos_fc = strpos(self::$current_uri, $fc)) !== FALSE)
 		{
 			// Remove the front controller from the current uri
-			self::$current_uri = (string) substr(self::$current_uri, $strpos_fc + strlen($fc));
+			self::$current_uri = substr(self::$current_uri, $strpos_fc + strlen($fc));
 		}
 
-		if ($suffix = Config::item('core.url_suffix') AND strpos(self::$current_uri, $suffix) !== FALSE)
+		if (self::$current_uri !== '')
 		{
-			// Remove the URL suffix
-			self::$current_uri = preg_replace('!'.preg_quote($suffix).'$!u', '', self::$current_uri);
+			if ($suffix = Config::item('core.url_suffix') AND strpos(self::$current_uri, $suffix) !== FALSE)
+			{
+				// Remove the URL suffix
+				self::$current_uri = preg_replace('!'.preg_quote($suffix).'$!u', '', self::$current_uri);
 
-			// Set the URL suffix
-			self::$url_suffix = $suffix;
+				// Set the URL suffix
+				self::$url_suffix = $suffix;
+			}
+
+			// Remove extra slashes from the segments that could cause fucked up routing
+			self::$current_uri = preg_replace('!//+!', '/', trim(self::$current_uri, '/'));
 		}
-
-		// Remove extra slashes from the segments that could cause fucked up routing
-		self::$current_uri = preg_replace('!//+!', '/', trim(self::$current_uri, '/'));
 	}
 
 	/**
