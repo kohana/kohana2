@@ -7,9 +7,21 @@ $lang = array
 	'invalid_method'        => 'Método <tt>%s</tt> inválido, chamado por <tt>%s</tt>.',
 	'cannot_write_log'      => 'A diretiva de configuracao do seu log.directory nao esta apontando para um diretorio com permissao de escrita disponivel.',
 	'resource_not_found'    => 'Nao foi possivel executar a requisicao %s, <tt>%s</tt>,.',
+    'invalid_filetype'      => 'O tipo de arquivo solicitado, <tt>.%s</tt>, não é permitido em seu arquivo de configuração do view.',
 	'no_default_route'      => 'Por favor, selecione uma rota padrão em <tt>config/routes.php</tt>.',
 	'no_controller'         => 'Não foi possível determinar um controlador para processar a requisicao: %s',
 	'page_not_found'        => 'A página <tt>%s</tt> requisitada, não foi encontrada.',
 	'stats_footer'          => 'Carregado em {execution_time} segundo(s), utilizando {memory_usage} de memória. Gerado por Kohana v{kohana_version}.',
 	'error_message'         => 'Erro ocorrido na <strong>linha %s</strong> de <strong>%s</strong>.'
+    'stack_trace'           => 'Stack Trace',
+    'generic_error'         => 'Incapaz de completar a solicitação',
+    'errors_disabled'       => 'Você pode ir para <a href="%s">home page</a> ou <a href="%s">tentar novamente</a>.',
+
+    // Resource names
+    'controller'            => 'controlador',
+    'helper'                => 'ajudante',
+    'library'               => 'biblioteca',
+    'driver'                => 'driver',
+    'model'                 => 'modelo',
+    'view'                  => 'vista',
 );

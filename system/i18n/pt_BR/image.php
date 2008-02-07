@@ -2,5 +2,26 @@
 
 $lang = array
 (
-	'driver_not_supported'    => 'The %s image driver does not exist.',
+	'getimagesize_missing'    => 'A biblioteca de imagem precisa da função <tt>getimagesize</tt> do PHP, a qual não esta disponível na sua instalação.',
+	'driver_not_supported'    => 'O driver de imagem solicitado, %s, não esta disponível',
+	'unsupported_method'      => 'O seu driver que esta configurado não suporta a transformação de imagem %s.',
+	'file_not_found'          => 'A imagem especificada, %s, não foi encontrada. Por Favor verifique se a imagem existe usando <tt>file_exists</tt> antes de manipula-la.',
+	'type_not_allowed'        => 'A imagem especificada, %s, não é um tipo permitido de imagem.',
+	'invalid_width'           => 'A largura que você especificou, %s, não é valida.',
+	'invalid_height'          => 'A altura que você especificou, %s, não é valida.',
+	'invalid_dimensions'      => 'As dimensões especificadas para %s não são validas.',
+	'invalid_master'          => 'A dimenção principal especificada não é valida.',
+	'invalid_flip'            => 'A direção de rotação especificada não é valida.',
+
+	// ImageMagick specific messages
+	'imagemagick' => array
+	(
+		'not_found' => 'O diretório ImageMagick especificado não contém um programa necessário, %s.',
+	),
+
+	// GD specific messages
+	'gd' => array
+	(
+		'requires_v2' => 'A biblioteca de imagem requer GD2. Por favor veja http://php.net/gd_info para maiores informações.',
+	),
 );

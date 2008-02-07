@@ -2,7 +2,11 @@
 
 $lang = array
 (
-	'required'       => 'Alguns campos requisitados n�o foram informados: %s',
-	'gateway_connection_error' => 'Um erro ocorreu durante a conex�o com o gateway de pagamento. Por favor, contate o webmaster caso o problema persista.',
-	'invalid_certificate' => 'O arquivo de certificado � inv�lido.'
+	'driver_not_supported'     => 'O driver de Payment requisitado, %s, não foi encontrado.',
+	'driver_implements'        => 'O driver de Payment requisitado, %s, não implementa Payment_Driver.',
+	'required'                 => 'Alguns campos necessários não foram prenchidos: %s',
+	'gateway_connection_error' => 'Um erro aconteceu ao conectar ao gateway de pagamento. Por favor conatte o webmaster se o problema persistir.',
+	'invalid_certificate'      => 'O arquivo de certificado é inválido: %s',
+	'no_dlib'                  => 'Não foi possível carregar a biblioteca dinâmica: %s',
+	'error'                    => 'Houve um erro ao processar a transação: %s',
 );

@@ -2,22 +2,22 @@
 
 $lang = array
 (
-	'userfile_not_set'   => 'Não foi possível encontrar uma variável POST chamada %s.',
-	'file_exceeds_limit' => 'The uploaded file exceeds the maximum allowed size in your PHP configuration file',
-	'file_partial'       => 'O arquivo foi parcialmente enviado',
-	'no_file_selected'   => 'Você não selecionou um arquivo para ser enviado',
-	'invalid_filetype'   => 'O tipo de arquivo que você está tentando enviar não é permitido.',
-	'invalid_filesize'   => 'The file you are attempting to upload is larger than the permitted size (%s)',
-	'invalid_dimensions' => 'The image you are attempting to upload exceedes the maximum height or width (%s)',
-	'destination_error'  => 'A problem was encountered while attempting to move the uploaded file to the final destination.',
-	'no_filepath'        => 'The upload path does not appear to be valid.',
-	'no_file_types'      => 'You have not specified any allowed file types.',
-	'bad_filename'       => 'The file name you submitted already exists on the server.',
-	'not_writable'       => 'The upload destination folder, %s, does not appear to be writable.',
-	'error_on_file'      => 'Erro durante o processo de upload %s:',
+	'userfile_not_set'   => 'Incapaz de encontrar uma variável post chamada %s.',
+	'file_exceeds_limit' => 'O tamanho do arquivo enviado excede o tamanho máximo permitido em seu arquivo de configuração do PHP',
+	'file_partial'       => 'O arquivo foi enviado apenas parcialmente',
+	'no_file_selected'   => 'Você não selecionou um arquivo para enviar',
+	'invalid_filetype'   => 'O tipo de arquivo que você esta tentando enviar não é permitido.',
+	'invalid_filesize'   => 'O arquivo que você esta tentando enviar é maior do que o limite de tamanho permitido (%s)',
+	'invalid_dimensions' => 'A imagem que você esta tentando enviar ultrapassa o limite de altura ou largura (%s)',
+	'destination_error'  => 'Foi encontrado um problema ao mover o arquivo enviado para o seu destino final.',
+	'no_filepath'        => 'O caminho para enviar parece não ser válido.',
+	'no_file_types'      => 'Você não especificou nenhum tipo de arquivo permitido.',
+	'bad_filename'       => 'O arquivo que você enviou já existe no servidor.',
+	'not_writable'       => 'O diretório de destino dos arquivos enviados, %s, parece não ser gravável.',
+	'error_on_file'      => 'Erro enviando %s:',
 	// Error code responses
-	'set_allowed'        => 'Por questões de seguranca, você deve configurar os tipos de arquivos que são permitidos para serem enviados.',
-	'max_file_size'      => 'Por questões de seguranca, por favor não utilize MAX_FILE_SIZE para controlar o tamanho máximo de upload.',
-	'no_tmp_dir'         => 'Não foi possível encontrar um diretório temporário para escrita.',
-	'tmp_unwritable'     => 'Could not create write to the configured upload directory, %s.'
+	'set_allowed'        => 'Para segurança, você deve definir os tipos de arquivos que é permitido enviar.',
+	'max_file_size'      => 'Para segurança, por favor não use MAX_FILE_SIZE para controlar o limite de tamanho do arquivo enviado.',
+	'no_tmp_dir'         => 'Não foi possível encontrar um diretório temporário para o qual escrever.',
+	'tmp_unwritable'     => 'Não foi possível escrever no diretório configurado para o envio, %s.'
 );
