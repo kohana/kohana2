@@ -34,7 +34,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		'API_Password'  => '',
 		'API_Signature' => '',
 		'API_Endpoint'  => 'https://api-3t.paypal.com/nvp',
-		'version'       => '3.0',
+		'version'       => '3.2',
 		'Amt'           => 0,
 		'PAYMENTACTION' => 'Sale',
 		'ReturnUrl'     => '',
@@ -58,6 +58,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		$this->paypal_values['API_Signature'] = $config['API_Signature'];
 		$this->paypal_values['ReturnUrl']     = $config['ReturnUrl'];
 		$this->paypal_values['CANCELURL']     = $config['CANCELURL'];
+		$this->paypal_values['error_url']     = $config['CANCELURL'];
 		$this->paypal_values['CURRENCYCODE']  = $config['CURRENCYCODE'];
 		$this->paypal_values['API_Endpoint']  = ($config['test_mode']) ? 'https://api.sandbox.paypal.com/nvp' : 'https://api-3t.paypal.com/nvp';
 
@@ -157,10 +158,10 @@ class Payment_Paypal_Driver implements Payment_Driver {
 	 */
 	protected function paypal_login()
 	{
-		$data = '&Amt='.$this->paypal_values['Amt'].
-		        '&PAYMENTACTION='.$this->paypal_values['PAYMENTACTION'].
-		        '&ReturnURL='.$this->paypal_values['ReturnUrl'].
-		        '&CancelURL='.$this->paypal_values['CANCELURL'];
+		$data = '&AMT='.urlencode($this->paypal_values['Amt']).
+		        //'&PAYMENTACTION='.$this->paypal_values['PAYMENTACTION'].
+		        '&RETURNURL='.urlencode($this->paypal_values['ReturnUrl']).
+		        '&CANCELURL='.urlencode($this->paypal_values['CANCELURL']);
 
 		$reply = $this->contact_paypal('SetExpressCheckout', $data);
 		$this->session->set(array('reshash' => $reply));
@@ -194,11 +195,11 @@ class Payment_Paypal_Driver implements Payment_Driver {
 	 */
 	protected function contact_paypal($method, $data)
 	{
-		$final_data = 'METHOD='.urlencode($method).
-		              '&VERSION='.urlencode($this->paypal_values['version']).
+		$final_data = 'USER='.urlencode($this->paypal_values['API_UserName']).
 		              '&PWD='.urlencode($this->paypal_values['API_Password']).
-		              '&USER='.urlencode($this->paypal_values['API_UserName']).
-		              'SIGNATURE='.urlencode($this->paypal_values['API_Signature']).$data;
+		              '&SIGNATURE='.urlencode($this->paypal_values['API_Signature']).
+		              '&VERSION='.urlencode($this->paypal_values['version']).
+		              '&METHOD='.urlencode($method).$data;
 
 		Log::add('debug', 'Connecting to '.$this->paypal_values['API_Endpoint']);
 		$ch = curl_init($this->paypal_values['API_Endpoint']);
@@ -217,7 +218,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		{
 			// Moving to error page to display curl errors
 			$this->session->set_flash(array('curl_error_no' => curl_errno($ch), 'curl_error_msg' => curl_error($ch)));
-			url::redirect($this->error_url);
+			url::redirect($this->paypal_values['error_url']);
 		}
 		else
 		{
