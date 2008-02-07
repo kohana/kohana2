@@ -241,6 +241,9 @@ class Router_Core {
 			self::$current_uri = substr(self::$current_uri, $strpos_fc + strlen($fc));
 		}
 
+		// Remove slashes from the start and end of the URI
+		self::$current_uri = trim(self::$current_uri, '/');
+
 		if (self::$current_uri !== '')
 		{
 			if ($suffix = Config::item('core.url_suffix') AND strpos(self::$current_uri, $suffix) !== FALSE)
@@ -252,8 +255,8 @@ class Router_Core {
 				self::$url_suffix = $suffix;
 			}
 
-			// Remove extra slashes from the segments that could cause fucked up routing
-			self::$current_uri = preg_replace('!//+!', '/', trim(self::$current_uri, '/'));
+			// Reduce multiple slashes into single slashes
+			self::$current_uri = preg_replace('!//+!', '/', self::$current_uri);
 		}
 	}
 
