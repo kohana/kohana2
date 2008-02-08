@@ -33,6 +33,7 @@ $lang = array
 
 	// Field types
 	'alpha'         => 'alfabetisch',
+	'alpha_numeric' => 'alfanumeriek',
 	'alpha_dash'    => 'alfabetisch, streepje, en underscore',
 	'digit'         => 'cijfers',
 	'numeric'       => 'getal',
