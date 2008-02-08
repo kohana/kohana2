@@ -301,11 +301,14 @@ class date_Core {
 		// Calculate timespan (seconds)
 		$timespan = abs($time1 - $time2);
 
+		// All values found using Google Calculator.
+		// Years and months do not match the formula exactly, due to leap years.
+
 		// Years ago, 60 * 60 * 24 * 365
-		isset($years) and $timespan -= 31536000 * ($years = (int) floor($timespan / 31536000));
+		isset($years) and $timespan -= 31556926 * ($years = (int) floor($timespan / 31556926));
 
 		// Months ago, 60 * 60 * 24 * 30
-		isset($months) and $timespan -= 2592000 * ($months = (int) floor($timespan / 2592000));
+		isset($months) and $timespan -= 2629744 * ($months = (int) floor($timespan / 2629743.83));
 
 		// Weeks ago, 60 * 60 * 24 * 7
 		isset($weeks) and $timespan -= 604800 * ($weeks = (int) floor($timespan / 604800));
