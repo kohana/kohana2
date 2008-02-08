@@ -132,13 +132,18 @@ class html_Core {
 	public static function mailto($email, $title = NULL, $attributes = NULL)
 	{
 		// Remove the subject or other parameters that do not need to be encoded
-		$params = '';
 		if (strpos($email, '?') !== FALSE)
 		{
+			// Extract the parameters from the email address
 			list ($email, $params) = explode('?', $email, 2);
 
 			// Make the params into a query string, replacing spaces
 			$params = '?'.str_replace(' ', '%20', $params);
+		}
+		else
+		{
+			// No parameters
+			$params = '';
 		}
 
 		$safe = '';
