@@ -129,13 +129,16 @@ class html_Core {
 	 * @param   array   HTML anchor attributes
 	 * @return  string
 	 */
-	public static function mailto($email, $title = FALSE, $attributes = FALSE)
+	public static function mailto($email, $title = NULL, $attributes = NULL)
 	{
 		// Remove the subject or other parameters that do not need to be encoded
-		$subject = FALSE;
+		$params = '';
 		if (strpos($email, '?') !== FALSE)
 		{
-			list ($email, $subject) = explode('?', $email);
+			list ($email, $params) = explode('?', $email, 2);
+
+			// Make the params into a query string, replacing spaces
+			$params = '?'.str_replace(' ', '%20', $params);
 		}
 
 		$safe = '';
@@ -153,16 +156,13 @@ class html_Core {
 		}
 
 		// Title defaults to the encoded email address
-		$title = ($title == FALSE) ? $safe : $title;
-
-		// URL encode the subject line
-		$subject = ($subject == TRUE) ? '?'.rawurlencode($subject) : '';
+		empty($title) and $title = $safe;
 
 		// Parse attributes
-		$attributes = ($attributes == TRUE) ? html::attributes($attributes) : '';
+		empty($attributes) or $attributes = html::attributes($attributes);
 
 		// Encoded start of the href="" is a static encoded version of 'mailto:'
-		return '<a href="&#109;&#097;&#105;&#108;&#116;&#111;&#058;'.$safe.$subject.'"'.$attributes.'>'.$title.'</a>';
+		return '<a href="&#109;&#097;&#105;&#108;&#116;&#111;&#058;'.$safe.$params.'"'.$attributes.'>'.$title.'</a>';
 	}
 
 	/**
