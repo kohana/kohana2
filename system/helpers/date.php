@@ -282,92 +282,73 @@ class date_Core {
 	 * @param   string        formatting string
 	 * @return  string|array
 	 */
-	public static function timespan($time1, $time2 = FALSE, $output = 'years,months,weeks,days,hours,minutes,seconds')
+	public static function timespan($time1, $time2 = NULL, $output = 'years,months,weeks,days,hours,minutes,seconds')
 	{
+		// Array with the output formats
+		$output = preg_split('/[^a-z]+/', strtolower((string) $output));
+
+		// Invalid output
+		if (empty($output))
+			return FALSE;
+
+		// Make the output values into keys
+		extract(array_flip($output), EXTR_SKIP);
+
 		// Default values
 		$time1  = max(0, (int) $time1);
-		$time2  = ($time2 === FALSE) ? time() : max(0, (int) $time2);
+		$time2  = empty($time) ? time() : max(0, (int) $time2);
 
 		// Calculate timespan (seconds)
 		$timespan = abs($time1 - $time2);
 
-		// Array with the output formats
-		$output = preg_split('/[\s,]+/', strtolower((string) $output));
-		$output = array_combine($output, $output);
+		// Years ago, 60 * 60 * 24 * 365
+		isset($years) and $timespan -= 31536000 * ($years = (int) floor($timespan / 31536000));
 
-		// Array of diff values
-		$timediff = array();
+		// Months ago, 60 * 60 * 24 * 30
+		isset($months) and $timespan -= 2592000 * ($months = (int) floor($timespan / 2592000));
 
-		// Years ago
-		if (isset($output['years']))
+		// Weeks ago, 60 * 60 * 24 * 7
+		isset($weeks) and $timespan -= 604800 * ($weeks = (int) floor($timespan / 604800));
+
+		// Days ago, 60 * 60 * 24
+		isset($days) and $timespan -= 86400 * ($days = (int) floor($timespan / 86400));
+
+		// Hours ago, 60 * 60
+		isset($hours) and $timespan -= 3600 * ($hours = (int) floor($timespan / 3600));
+
+		// Minutes ago, 60
+		isset($minutes) and $timespan -= 60 * ($minutes = (int) floor($timespan / 60));
+
+		// Seconds ago, 1
+		isset($seconds) and $seconds = $timespan;
+
+		// Remove the variables that cannot be accessed
+		unset($timespan, $time1, $time2);
+
+		// Deny access to these variables
+		$deny = array_flip(array('deny', 'key', 'difference', 'output'));
+
+		// Return the difference
+		$difference = array();
+		foreach ($output as $key)
 		{
-			// 60 * 60 * 24 * 365
-			$year = 31536000;
-			$timediff['years'] = (int) floor($timespan / $year);
-			$timespan -= $timediff['years'] * $year;
-		}
-
-		// Months ago
-		if (isset($output['months']))
-		{
-			// 60 * 60 * 24 * 30
-			$month = 2592000;
-			$timediff['months'] = (int) floor($timespan / $month);
-			$timespan -= $timediff['months'] * $month;
-		}
-
-		// Weeks ago
-		if (isset($output['weeks']))
-		{
-			// 60 * 60 * 24 * 7
-			$week = 604800;
-			$timediff['weeks'] = (int) floor($timespan / $week);
-			$timespan -= $timediff['weeks'] * $week;
-		}
-
-		// Days ago
-		if (isset($output['days']))
-		{
-			// 60 * 60 * 24
-			$day = 86400;
-			$timediff['days'] = (int) floor($timespan / $day);
-			$timespan -= $timediff['days'] * $day;
-		}
-
-		// Hours ago
-		if (isset($output['hours']))
-		{
-			// 60 * 60
-			$hour = 3600;
-			$timediff['hours'] = (int) floor($timespan / $hour);
-			$timespan -= $timediff['hours'] * $hour;
-		}
-
-		// Minutes ago
-		if (isset($output['minutes']))
-		{
-			// 60
-			$minute = 60;
-			$timediff['minutes'] = (int) floor($timespan / $minute);
-			$timespan -= $timediff['minutes'] * $minute;
-		}
-
-		// Seconds ago
-		if (isset($output['seconds']))
-		{
-			$timediff['seconds'] = $timespan;
+			if (isset($$key) AND ! isset($deny[$key]))
+			{
+				// Add requested key to the output
+				$difference[$key] = $$key;
+			}
 		}
 
 		// Invalid output formats string
-		if (empty($timediff))
+		if (empty($difference))
 			return FALSE;
 
 		// If only one output format was asked, don't put it in an array
-		if (count($timediff) == 1)
-			return current($timediff);
+		if (count($difference) === 1)
+			return current($difference);
 
 		// Return array
-		return $timediff;
+		return $difference;
 	}
 
 } // End date
