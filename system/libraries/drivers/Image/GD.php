@@ -167,8 +167,8 @@ class Image_GD_Driver extends Image_Driver {
 	public function resize($properties)
 	{
 		// Get the current width and height
-		$width = $pre_width = imagesx($this->tmp_image);
-		$height = $pre_height = imagesy($this->tmp_image);
+		$width = imagesx($this->tmp_image);
+		$height = imagesy($this->tmp_image);
 
 		if (substr($properties['width'], -1) === '%')
 		{
@@ -207,6 +207,10 @@ class Image_GD_Driver extends Image_Driver {
 		// Test if we can do a resize without resampling to speed up the final resize
 		if ($properties['width'] > $width / 2 AND $properties['height'] > $height / 2)
 		{
+			// Presize width and height
+			$pre_width = $width;
+			$pre_height = $height;
+
 			// The maximum reduction is 10% greater than the final size
 			$max_reduction_width  = round($properties['width'] + ($properties['width'] * 0.10));
 			$max_reduction_height = round($properties['height'] + ($properties['height'] * 0.10));
@@ -228,7 +232,7 @@ class Image_GD_Driver extends Image_Driver {
 				$this->tmp_image = $img;
 			}
 
-			// Set the new width and height to the presize
+			// Set the width and height to the presize
 			$width  = $pre_width;
 			$height = $pre_height;
 		}
