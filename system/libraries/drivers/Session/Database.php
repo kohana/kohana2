@@ -22,7 +22,6 @@ class Session_Database_Driver implements Session_Driver {
 	*/
 
 	protected $db;
-	protected $input;
 	protected $encrypt;
 
 	protected $db_group;
@@ -35,8 +34,6 @@ class Session_Database_Driver implements Session_Driver {
 	public function __construct()
 	{
 		$this->db_group = Config::item('session.storage');
-
-		$this->input = new Input;
 
 		// Load Encrypt library
 		if (Config::item('session.encryption'))
