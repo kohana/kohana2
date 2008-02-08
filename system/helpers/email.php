@@ -92,7 +92,7 @@ class email_Core {
 		// Create the message
 		$message = new Swift_Message($subject, $message, $html, '8bit', 'utf-8');
 
-		// Make a personalized From: address
+		// Make a personalized To: address
 		$to = is_array($to) ? new Swift_Address($to[0], $to[1]) : new Swift_Address($to);
 
 		// Make a personalized From: address
