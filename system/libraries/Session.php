@@ -71,13 +71,23 @@ class Session_Core {
 					throw new Kohana_Exception('session.driver_implements', self::$config['driver']);
 			}
 
+			// Configure garbage collection
+			ini_set('session.gc_probability', (int) self::$config['gc_probability']);
+			ini_set('session.gc_divisor', 100);
+			ini_set('session.gc_maxlifetime', (self::$config['expiration'] == 0) ? 86400 : self::$config['expiration']);
+
 			// Create a new session
 			$this->create();
 
-			// Regenerate session id
+			// Regenerate session id and update session cookie
 			if (self::$config['regenerate'] > 0 AND ($_SESSION['total_hits'] % self::$config['regenerate']) === 0)
 			{
 				$this->regenerate();
+			}
+			// Always update session cookie to keep the session alive
+			else
+			{
+				cookie::set(self::$config['name'], $_SESSION['session_id'], self::$config['expiration']);
 			}
 
 			// Close the session just before sending the headers, so that
@@ -117,11 +127,6 @@ class Session_Core {
 			throw new Kohana_Exception('session.invalid_session_name', self::$config['name']);
 
 		session_name(self::$config['name']);
-
-		// Configure garbage collection
-		ini_set('session.gc_probability', (int) self::$config['gc_probability']);
-		ini_set('session.gc_divisor', 100);
-		ini_set('session.gc_maxlifetime', (self::$config['expiration'] == 0) ? 86400 : self::$config['expiration']);
 
 		// Set the session cookie parameters
 		// Note: the httponly parameter was added in PHP 5.2.0
@@ -234,12 +239,15 @@ class Session_Core {
 
 	/**
 	 * Regenerates the global session id.
+	 * 
+	 * @return  void
 	 */
 	public function regenerate()
 	{
 		if (self::$config['driver'] == 'native')
 		{
-			// Thank god for small gifts
+			// Generate a new session id
+			// Note: also sets a new session cookie with the updated id
 			session_regenerate_id(TRUE);
 
 			// Update session with new id
@@ -265,7 +273,7 @@ class Session_Core {
 			session_unset();
 
 			// Delete the session cookie
-			cookie::delete(session_name());
+			cookie::delete(self::$config['name']);
 
 			// Destroy the session
 			return session_destroy();
@@ -275,7 +283,7 @@ class Session_Core {
 	/**
 	 * Runs the system.session_write event, then calls session_write_close.
 	 *
-	 * @return void
+	 * @return  void
 	 */
 	public function write_close()
 	{
