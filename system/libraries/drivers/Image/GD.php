@@ -212,8 +212,8 @@ class Image_GD_Driver extends Image_Driver {
 			$pre_height = $height;
 
 			// The maximum reduction is 10% greater than the final size
-			$max_reduction_width  = round($properties['width'] + ($properties['width'] * 0.10));
-			$max_reduction_height = round($properties['height'] + ($properties['height'] * 0.10));
+			$max_reduction_width  = round($properties['width']  1.1);
+			$max_reduction_height = round($properties['height'] 1.1);
 
 			// Reduce the size using an O(2n) algorithm, until it reaches the maximum reduction
 			while ($pre_width / 2 > $max_reduction_width AND $pre_height / 2 > $max_reduction_height)
