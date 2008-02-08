@@ -167,8 +167,8 @@ class Image_GD_Driver extends Image_Driver {
 	public function resize($properties)
 	{
 		// Get the current width and height
-		$width = imagesx($this->tmp_image);
-		$height = imagesy($this->tmp_image);
+		$width = $pre_width = imagesx($this->tmp_image);
+		$height = $pre_height = imagesy($this->tmp_image);
 
 		if (substr($properties['width'], -1) === '%')
 		{
@@ -204,9 +204,38 @@ class Image_GD_Driver extends Image_Driver {
 			$properties['width'] = round($width * $properties['height'] / $height);
 		}
 
+		// Test if we can do a resize without resampling to speed up the final resize
+		if ($properties['width'] > $width / 2 AND $properties['height'] > $height / 2)
+		{
+			// The maximum reduction is 10% greater than the final size
+			$max_reduction_width  = round($properties['width'] + ($properties['width'] * 0.10));
+			$max_reduction_height = round($properties['height'] + ($properties['height'] * 0.10));
+
+			// Reduce the size using an O(2n) algorithm, until it reaches the maximum reduction
+			while ($pre_width / 2 > $max_reduction_width AND $pre_height / 2 > $max_reduction_height)
+			{
+				$pre_width /= 2;
+				$pre_height /= 2;
+			}
+
+			// Create the temporary image to copy to
+			$img = $this->imagecreatetransparent($pre_width, $pre_height);
+
+			if ($status = imagecopyresized($img, $this->tmp_image, 0, 0, 0, 0, $pre_width, $pre_height, $width, $height))
+			{
+				// Swap the new image for the old one
+				imagedestroy($this->tmp_image);
+				$this->tmp_image = $img;
+			}
+
+			// Set the new width and height to the presize
+			$width  = $pre_width;
+			$height = $pre_height;
+		}
+
 		// Create the temporary image to copy to
 		$img = $this->imagecreatetransparent($properties['width'], $properties['height']);
-
+	
 		// Execute the resize
 		if ($status = imagecopyresampled($img, $this->tmp_image, 0, 0, 0, 0, $properties['width'], $properties['height'], $width, $height))
 		{
@@ -259,9 +288,9 @@ class Image_GD_Driver extends Image_Driver {
 		// Gaussian blur matrix
 		$matrix = array
 		(
-			array(-1, -1, -1),
+			array(-1,   -1,    -1),
 			array(-1, $amount, -1),
-			array(-1, -1, -1)
+			array(-1,   -1,    -1),
 		);
 
 		// Perform the sharpen
