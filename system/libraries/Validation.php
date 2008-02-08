@@ -943,7 +943,7 @@ class Validation_Core {
 		if (valid::alpha_numeric($str))
 			return TRUE;
 
-		$this->add_error('valid_type', $this->current_field, Kohana::lang('validation.alpha'));
+		$this->add_error('valid_type', $this->current_field, Kohana::lang('validation.alpha_numeric'));
 		return FALSE;
 	}
 
@@ -958,7 +958,7 @@ class Validation_Core {
 		if (valid::alpha_numeric($str, TRUE))
 			return TRUE;
 
-		$this->add_error('valid_type', $this->current_field, Kohana::lang('validation.alpha'));
+		$this->add_error('valid_type', $this->current_field, Kohana::lang('validation.alpha_numeric'));
 		return FALSE;
 	}
 
