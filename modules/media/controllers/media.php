@@ -42,7 +42,7 @@ class Media_Controller extends Controller {
 
 		if ($this->use_cache AND ! isset($this->cache)) 
 		{
-			$this->load->library('cache');
+			$this->cache = new Cache;
 		}
 
 		$this->pack_css = (bool) Config::item('media.pack_css');

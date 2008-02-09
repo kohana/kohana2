@@ -23,7 +23,7 @@ class Controller_Core {
 			// Set the instance to the first controller loaded
 			Kohana::$instance = $this;
 
-			// Loader should always be available
+			// URI should always be available
 			$this->uri = new URI;
 
 			// Input should always be available
@@ -31,10 +31,7 @@ class Controller_Core {
 		}
 		else
 		{
-			// Loader should always be available
-			$this->load = Kohana::$instance->load;
-
-			// Loader should always be available
+			// URI should always be available
 			$this->uri = Kohana::$instance->uri;
 
 			// Input should always be available
