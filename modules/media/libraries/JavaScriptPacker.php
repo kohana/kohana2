@@ -1,37 +1,42 @@
 <?php
-/* 7 December 2006. version 1.0
- * 
+/**
+ * @package  Media Module
+ *
+ * $Id$
+ *
+ * 7 December 2006. version 1.0
+ *
  * This is the php version of the Dean Edwards JavaScript 's Packer,
  * Based on :
- * 
+ *
  * ParseMaster, version 1.0.2 (2005-08-19) Copyright 2005, Dean Edwards
  * a multi-pattern parser.
  * KNOWN BUG: erroneous behavior when using escapeChar with a replacement
  * value that is a function
- * 
+ *
  * packer, version 2.0.2 (2005-08-19) Copyright 2004-2005, Dean Edwards
- * 
+ *
  * License: http://creativecommons.org/licenses/LGPL/2.1/
- * 
+ *
  * Ported to PHP by Nicolas Martin.
- * 
+ *
  * ----------------------------------------------------------------------
- * 
+ *
  * examples of usage :
  * $myPacker = new JavaScriptPacker($script, 62, true, false);
  * $packed = $myPacker->pack();
- * 
+ *
  * or
- * 
+ *
  * $myPacker = new JavaScriptPacker($script, 'Normal', true, false);
  * $packed = $myPacker->pack();
- * 
+ *
  * or (default values)
- * 
+ *
  * $myPacker = new JavaScriptPacker($script);
  * $packed = $myPacker->pack();
- * 
- * 
+ *
+ *
  * params of the constructor :
  * $script:       the JavaScript to pack, string.
  * $encoding:     level of encoding, int or string :
@@ -42,14 +47,14 @@
  * $specialChars: if you are flagged your private and local variables
  *                in the script, boolean.
  *                default: false.
- * 
+ *
  * The pack() method return the compressed JavasScript, as a string.
- * 
+ *
  * see http://dean.edwards.name/packer/usage/ for more information.
- * 
+ *
  * Notes :
  * # need PHP 5 . Tested with PHP 5.1.2
- * 
+ *
  * # The packed result may be different than with the Dean Edwards
  *   version, but with the same length. The reason is that the PHP
  *   function usort to sort array don't necessarily preserve the
@@ -57,9 +62,9 @@
  *   in fact preserve this order (but that's not require by the
  *   ECMAScript standard). So the encoded keywords order can be
  *   different in the two results.
- * 
+ *
  * # Be careful with the 'High ASCII' Level encoding if you use
- *   UTF-8 in your files... 
+ *   UTF-8 in your files...
  */
 
 
@@ -86,7 +91,7 @@ class JavaScriptPacker_Core {
 		if (array_key_exists($_encoding, $this->LITERAL_ENCODING))
 			$_encoding = $this->LITERAL_ENCODING[$_encoding];
 		$this->_encoding = min((int)$_encoding, 95);
-		$this->_fastDecode = $_fastDecode;	
+		$this->_fastDecode = $_fastDecode;
 		$this->_specialChars = $_specialChars;
 	}
 
@@ -252,7 +257,7 @@ class JavaScriptPacker_Core {
 			// but equivalent.
 			// the ECMAscript standard does not guarantee this behaviour,
 			// and thus not all browsers (e.g. Mozilla versions dating back to at
-			// least 2003) respect this. 
+			// least 2003) respect this.
 			usort($unsorted, array(&$this, '_sortWords'));
 			$j = 0;
 			// because there are "protected" words in the list
@@ -433,7 +438,7 @@ class JavaScriptPacker_Core {
 	private function _getJSFunction($aName) {
 		if (defined('self::JSFUNCTION'.$aName))
 			return constant('self::JSFUNCTION'.$aName);
-		else 
+		else
 			return '';
 	}
 
@@ -529,7 +534,7 @@ class JavaScriptPacker_Core {
 'function($charCode) {
     return ($charCode < _encoding ? \'\' : arguments.callee($charCode / _encoding)) +
         String.fromCharCode($charCode % _encoding + 161);
-}'; 
+}';
 
 }
 

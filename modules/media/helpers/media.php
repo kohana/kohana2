@@ -1,26 +1,24 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
-* Class: media
-*  Media helper class.
-*
-* Kohana Source Code:
-*  author    - Kohana Team
-*  copyright - (c) 2007 Kohana Team
-*  license   - <http://kohanaphp.com/license.html>
-*/
+ * Media helper class.
+ *
+ * $Id$
+ *
+ * @package	   Media Module
+ * @author	   Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license	   http://kohanaphp.com/license.html
+ */
 class media_Core {
+
 	/**
-	* Method: stylesheet
-	*  Creates a stylesheet link.
-	*
-	* Parameters:
-	*  style - filename, or array of filenames (do not include path)
-	*  media - media type of stylesheet
-	*  index  - include the index_page in the link
-	*
-	* Returns:
-	*  An HTML stylesheet link.
-	*/
+	 * Creates a stylesheet link.
+	 *
+	 * @param   string|array  filename, or array of filenames (do not include path)
+	 * @param   string        media type of stylesheet
+	 * @param   boolean       include the index_page in the link
+	 * @return  string
+	 */
 	public static function stylesheet($style, $media = FALSE, $index = TRUE)
 	{
 		if (is_array($style)) {

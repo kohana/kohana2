@@ -1,5 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+/**
+ * ImageMagick Image Driver.
+ *
+ * $Id$
+ *
+ * @package    Image
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
 class Image_ImageMagick_Driver extends Image_Driver {
 
 	// Directory that IM is installed in
