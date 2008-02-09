@@ -12,7 +12,7 @@ $lang = array
 	'no_controller'         => 'Não foi possível determinar um controlador para processar a requisicao: %s',
 	'page_not_found'        => 'A página <tt>%s</tt> requisitada, não foi encontrada.',
 	'stats_footer'          => 'Carregado em {execution_time} segundo(s), utilizando {memory_usage} de memória. Gerado por Kohana v{kohana_version}.',
-	'error_message'         => 'Erro ocorrido na <strong>linha %s</strong> de <strong>%s</strong>.'
+	'error_message'         => 'Erro ocorrido na <strong>linha %s</strong> de <strong>%s</strong>.',
     'stack_trace'           => 'Stack Trace',
     'generic_error'         => 'Incapaz de completar a solicitação',
     'errors_disabled'       => 'Você pode ir para <a href="%s">home page</a> ou <a href="%s">tentar novamente</a>.',
