@@ -69,12 +69,39 @@ class Session_Core {
 				// Validate the driver
 				if ( ! (self::$driver instanceof Session_Driver))
 					throw new Kohana_Exception('session.driver_implements', self::$config['driver']);
+
+				// Register non-native driver as the session handler
+				session_set_save_handler
+				(
+					array(self::$driver, 'open'),
+					array(self::$driver, 'close'),
+					array(self::$driver, 'read'),
+					array(self::$driver, 'write'),
+					array(self::$driver, 'destroy'),
+					array(self::$driver, 'gc')
+				);
 			}
 
 			// Configure garbage collection
 			ini_set('session.gc_probability', (int) self::$config['gc_probability']);
 			ini_set('session.gc_divisor', 100);
 			ini_set('session.gc_maxlifetime', (self::$config['expiration'] == 0) ? 86400 : self::$config['expiration']);
+
+			// Set the session name after having checked it
+			if ( ! ctype_alnum(self::$config['name']) OR ctype_digit(self::$config['name']))
+				throw new Kohana_Exception('session.invalid_session_name', self::$config['name']);
+
+			session_name(self::$config['name']);
+
+			// Set the session cookie parameters
+			session_set_cookie_params
+			(
+				self::$config['expiration'],
+				Config::item('cookie.path'),
+				Config::item('cookie.domain'),
+				Config::item('cookie.secure'),
+				Config::item('cookie.httponly')
+			);
 
 			// Create a new session
 			$this->create();
@@ -122,36 +149,6 @@ class Session_Core {
 		// Destroy the session
 		$this->destroy();
 
-		// Set the session name after having checked it
-		if ( ! ctype_alnum(self::$config['name']) OR ctype_digit(self::$config['name']))
-			throw new Kohana_Exception('session.invalid_session_name', self::$config['name']);
-
-		session_name(self::$config['name']);
-
-		// Set the session cookie parameters
-		session_set_cookie_params
-		(
-			self::$config['expiration'],
-			Config::item('cookie.path'),
-			Config::item('cookie.domain'),
-			Config::item('cookie.secure'),
-			Config::item('cookie.httponly')
-		);
-
-		// Register non-native driver as the session handler
-		if (self::$config['driver'] != 'native')
-		{
-			session_set_save_handler
-			(
-				array(self::$driver, 'open'),
-				array(self::$driver, 'close'),
-				array(self::$driver, 'read'),
-				array(self::$driver, 'write'),
-				array(self::$driver, 'destroy'),
-				array(self::$driver, 'gc')
-			);
-		}
-
 		// Start the session!
 		session_start();
 
@@ -178,9 +175,8 @@ class Session_Core {
 		// Set up flash variables
 		self::$flash =& $_SESSION['_kf_flash_'];
 
-		// Update constant session variables
-		$_SESSION['last_activity'] = time();
-		$_SESSION['total_hits']   += 1;
+		// Increase total hits
+		$_SESSION['total_hits'] += 1;
 
 		// Validate data only on hits after one
 		if ($_SESSION['total_hits'] > 1)
@@ -190,12 +186,21 @@ class Session_Core {
 			{
 				switch($valid)
 				{
+					// Check user agent for consistency
 					case 'user_agent':
 						if ($_SESSION[$valid] !== Kohana::$user_agent)
 							return $this->create();
 					break;
+
+					// Check ip address for consistency
 					case 'ip_address':
 						if ($_SESSION[$valid] !== $this->input->$valid())
+							return $this->create();
+					break;
+
+					// Check expiration time to prevent users from manually modifying it
+					case 'expiration':
+						if (time() - $_SESSION['last_activity'] > ini_get('session.gc_maxlifetime'))
 							return $this->create();
 					break;
 				}
@@ -218,6 +223,9 @@ class Session_Core {
 				}
 			}
 		}
+
+		// Update last activity
+		$_SESSION['last_activity'] = time();
 
 		// Set the new data
 		self::set($vars);
