@@ -46,10 +46,7 @@ class cookie_Core {
 		// Expiration timestamp
 		$expire = ($expire == 0) ? 0 : time() + (int) $expire;
 
-		// Only set httponly if possible
-		return (version_compare(PHP_VERSION, '5.2', '>='))
-			? setcookie($prefix.$name, $value, $expire, $path, $domain, $secure, $httponly)
-			: setcookie($prefix.$name, $value, $expire, $path, $domain, $secure);
+		return setcookie($prefix.$name, $value, $expire, $path, $domain, $secure, $httponly);
 	}
 
 	/**

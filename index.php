@@ -1,8 +1,8 @@
 <?php
 /**
  * This file acts as the "front controller" to your application. You can
- * configure your application and system directories here, as well as error
- * reporting and error display.
+ * configure your application, modules, and system directories here.
+ * PHP error_reporting level may also be changed.
  *
  * @package    Core
  * @author     Kohana Team
@@ -11,20 +11,30 @@
  */
 
 /**
- * Kohana website application directory. This directory should contain your
- * application configuration, controllers, models, views, and other resources.
+ * Website application directory. This directory should contain your application
+ * configuration, controllers, models, views, and other resources.
  *
  * This path can be absolute or relative to this file.
  */
 $kohana_application = 'application';
 
 /**
- * Kohana package files. This directory should contain the core/ directory, and
- * the resources you included in your download of Kohana.
+ * Kohana modules directory. This directory should contain all the modules used
+ * by your application. Modules are enabled and disabled by the application
+ * configuration file.
+ *
+ * This path can be absolute or relative to this file.
+ */
+$kohana_modules = 'modules';
+
+/**
+ * Kohana system directory. This directory should contain the core/ directory,
+ * and the resources you included in your download of Kohana.
  *
  * This path can be absolute or relative to this file.
  */
 $kohana_system = 'system';
+
 
 /**
  * Set the error reporting level. Unless you have a special need, E_ALL is a
@@ -49,7 +59,7 @@ define('EXT', '.php');
  * Test to make sure that Kohana is running on PHP 5.1.3 or newer. Once you are
  * sure that your environment is compatible with Kohana, you can disable this.
  */
-version_compare(PHP_VERSION, '5.1.3', '<') and exit('Kohana requires PHP 5.1.3 or newer.');
+version_compare(PHP_VERSION, '5.2', '<') and exit('Kohana requires PHP 5.2 or newer.');
 
 //
 // DO NOT EDIT BELOW THIS LINE, UNLESS YOU FULLY UNDERSTAND THE IMPLICATIONS.
@@ -63,10 +73,11 @@ define('KOHANA',  substr(__FILE__, strlen(DOCROOT)));
 
 // Define application and system paths
 define('APPPATH', str_replace('\\', '/', realpath($kohana_application)).'/');
+define('MODPATH', str_replace('\\', '/', realpath($kohana_modules)).'/');
 define('SYSPATH', str_replace('\\', '/', realpath($kohana_system)).'/');
 
 // Clean up
-unset($kohana_application, $kohana_system);
+unset($kohana_application, $kohana_modules, $kohana_system);
 
 (is_dir(APPPATH) AND is_dir(APPPATH.'/config')) or die
 (

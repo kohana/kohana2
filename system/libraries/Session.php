@@ -129,28 +129,14 @@ class Session_Core {
 		session_name(self::$config['name']);
 
 		// Set the session cookie parameters
-		// Note: the httponly parameter was added in PHP 5.2.0
-		if (version_compare(PHP_VERSION, '5.2', '>='))
-		{
-			session_set_cookie_params
-			(
-				self::$config['expiration'],
-				Config::item('cookie.path'),
-				Config::item('cookie.domain'),
-				Config::item('cookie.secure'),
-				Config::item('cookie.httponly')
-			);
-		}
-		else
-		{
-			session_set_cookie_params
-			(
-				self::$config['expiration'],
-				Config::item('cookie.path'),
-				Config::item('cookie.domain'),
-				Config::item('cookie.secure')
-			);
-		}
+		session_set_cookie_params
+		(
+			self::$config['expiration'],
+			Config::item('cookie.path'),
+			Config::item('cookie.domain'),
+			Config::item('cookie.secure'),
+			Config::item('cookie.httponly')
+		);
 
 		// Register non-native driver as the session handler
 		if (self::$config['driver'] != 'native')

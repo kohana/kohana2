@@ -51,6 +51,15 @@ class Kohana {
 		// Start the environment setup benchmark
 		Benchmark::start(SYSTEM_BENCHMARK.'_environment_setup');
 
+		// Define Kohana error constant
+		defined('E_KOHANA') or define('E_KOHANA', 42);
+
+		// Define 404 error constant
+		defined('E_PAGE_NOT_FOUND') or define('E_PAGE_NOT_FOUND', 43);
+
+		// Define database error constant
+		defined('E_DATABASE_ERROR') or define('E_DATABASE_ERROR', 44);
+
 		// Disable error reporting
 		$ER = error_reporting(0);
 
@@ -1104,8 +1113,3 @@ class Kohana_404_Exception extends Kohana_Exception {
 	}
 
 } // End Kohana 404 Exception
-
-/**
- * Run Kohana setup to prepare the environment.
- */
-Kohana::setup();

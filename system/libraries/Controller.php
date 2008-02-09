@@ -24,9 +24,6 @@ class Controller_Core {
 			Kohana::$instance = $this;
 
 			// Loader should always be available
-			$this->load = new Loader;
-
-			// Loader should always be available
 			$this->uri = new URI;
 
 			// Input should always be available
