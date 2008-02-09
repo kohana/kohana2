@@ -12,7 +12,7 @@
 class Controller_Core {
 
 	/**
-	 * Loads Loader, URI, and Input into this controller.
+	 * Loads URI, and Input into this controller.
 	 *
 	 * @return  void
 	 */

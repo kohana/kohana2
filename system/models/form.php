@@ -156,7 +156,7 @@ class Form_Model extends Model {
 			$form['inputs'][$name] = $data;
 		}
 
-		return Kohana::instance()->load->view($template, $form);
+		return new View($template, $form);
 	}
 
 } // End Form_Model

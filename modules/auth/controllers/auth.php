@@ -47,10 +47,10 @@ class Auth_Controller extends Controller {
 
 	function create()
 	{
-		$form = $this->load->model('form', TRUE)
-			->title('Create User')
-			->action('auth/create')
-			->inputs($this->inputs);
+		$form = new Form_Model;
+		$form->title('Create User')
+		  	 ->action('auth/create')
+			 ->inputs($this->inputs);
 
 		if ($form->validate())
 		{
@@ -91,10 +91,10 @@ class Auth_Controller extends Controller {
 		if ( ! $this->session->get('user_id'))
 		{
 			// Create the login form
-			$form = $this->load->model('form', TRUE)
-				->title('Test Login')
-				->action('auth/login')
-				->inputs($inputs);
+			$form = new Form_Model;
+			$form->title('Test Login')
+				 ->action('auth/login')
+				 ->inputs($inputs);
 
 			if ($form->validate())
 			{
@@ -117,17 +117,17 @@ class Auth_Controller extends Controller {
 
 		if ($this->session->get('user_id'))
 		{
-			$form = $this->load->model('form', TRUE)
-				->title('Logout')
-				->action('auth/logout')
-				->inputs(array
-				(
+			$form = new Form_Model;
+			$form->title('Logout')
+				 ->action('auth/logout')
+				 ->inputs(array
+				 (
 					'logout' => array
-					(
+				  	(
 						'type' => 'submit',
 						'value' => 'Logout'
 					)
-				));
+				 ));
 		}
 
 		// Display the form
