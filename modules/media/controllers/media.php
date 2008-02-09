@@ -1,20 +1,18 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana - The Swift PHP Framework
- *
- *  License:
- *  author    - Kohana Team
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
- */
-
-/**
  * Handles loading of site resources (CSS, JS, images) using Views.
  * By default it is assumed that your media files will be stored in
  * `application/views/media`.
  *
  * Usage:
  *  `http://example.com/index.php/media/css/styles.css`
+ *
+ * $Id$
+ *
+ * @package	   Media Module
+ * @author	   Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license	   http://kohanaphp.com/license.html
  */
 class Media_Controller extends Controller {
 
@@ -40,7 +38,7 @@ class Media_Controller extends Controller {
 			$this->cache_lifetime = config::item('cache.lifetime') OR $this->cache_lifetime = 1800;
 		}
 
-		if ($this->use_cache AND ! isset($this->cache)) 
+		if ($this->use_cache AND ! isset($this->cache))
 		{
 			$this->cache = new Cache;
 		}
@@ -53,9 +51,9 @@ class Media_Controller extends Controller {
 			$this->pack_js = 'Normal';
 		}
 	}
-	
+
 	public function css($querystr) {
-		// find all the individual files 
+		// find all the individual files
 		$files = explode("+", $querystr);
 
 		$mimetype = config::item('mimes.css');
@@ -68,22 +66,22 @@ class Media_Controller extends Controller {
 			$data = '';
 			foreach ($files as $orig_filename) {
 				$filename = $orig_filename;
-				if (substr($filename, -4) == ".css") 
+				if (substr($filename, -4) == ".css")
 				{
 					$filename = substr($filename, 0, -4);
 				}
-				
+
 				try
 				{
 					$view = new View('media/css/'.$filename, null, 'css');
 				}
 				catch (Kohana_Exception $exception)
 				{
-					// try to load the file as a php view (eg, file.css.php) 
+					// try to load the file as a php view (eg, file.css.php)
 					try
 					{
 						$view = new View('media/css/'.$orig_filename);
-						
+
 					}
 					catch (Kohana_Exception $exception)
 					{
@@ -94,17 +92,17 @@ class Media_Controller extends Controller {
 
 				if (isset($view)) {
 					$filedata = $view->render();
-					
+
 					($this->pack_css) and $filedata = $this->_css_compress($filedata);
-					
+
 					$data .= $filedata;
 				}
 				else
-				{	
+				{
 					$data .= "\n/**** stylesheet ".$filename." not found ****/\n\n\n";
 				}
 			}
-			
+
 			($this->use_cache) and $this->cache->set('media.css.'.$querystr, $data, array('media'), $this->cache_lifetime);
 		}
 
@@ -125,7 +123,7 @@ class Media_Controller extends Controller {
 
 		$this->use_cache AND $data = $this->cache->get('media.js.'.$filename);
 
-		if ( ! isset($data) OR empty($data)) 
+		if ( ! isset($data) OR empty($data))
 		{
 			try
 			{
@@ -133,7 +131,7 @@ class Media_Controller extends Controller {
 			}
 			catch (Kohana_Exception $exception)
 			{
-				// Try to load the file as a php view (eg, file.js.php) 
+				// Try to load the file as a php view (eg, file.js.php)
 				try
 				{
 					$view = new View('media/js/'.$orig_filename);
@@ -145,19 +143,19 @@ class Media_Controller extends Controller {
 				}
 			}
 
-			if (isset($view)) 
+			if (isset($view))
 			{
 				$data = $view->render();
 
-				if ($this->pack_js) 
+				if ($this->pack_js)
 				{
 					$packer = new JavaScriptPacker($data, $this->pack_js);
 					$data = $packer->pack();
 				}
 
 				($this->use_cache) and $this->cache->set('media.js.'.$filename, $data, array('media'), $this->cache_lifetime);
-			} 
-			else 
+			}
+			else
 			{
 				$data = '/* script not found */';
 			}
@@ -173,7 +171,7 @@ class Media_Controller extends Controller {
 		$filename = $this->uri->segment(3);
 		// TODO: finish this for generic types
 		/* issues: getting View to work with any types of files */
-		
+
 		try
 		{
 			$view = new View('media/'.$type.'/'.$filename);
