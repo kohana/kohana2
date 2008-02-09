@@ -2,6 +2,8 @@
 /**
  * Eaccelerator-based Cache driver.
  *
+ * $Id$
+ *
  * @package    Cache
  * @author     Kohana Team
  * @copyright  (c) 2007-2008 Kohana Team
@@ -11,7 +13,7 @@ class Cache_Eaccelerator_Driver implements Cache_Driver {
 
 	public function __construct()
 	{
-		if ( ! extension_loaded('eaccelerator')) 
+		if ( ! extension_loaded('eaccelerator'))
 			throw new Kohana_Exception('cache.extension_not_loaded', 'eaccelerator');
 	}
 

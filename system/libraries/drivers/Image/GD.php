@@ -1,5 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+/**
+ * GD Image Driver.
+ *
+ * $Id$
+ *
+ * @package    Image
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
 class Image_GD_Driver extends Image_Driver {
 
 	// A transparent PNG as a string
@@ -239,7 +248,7 @@ class Image_GD_Driver extends Image_Driver {
 
 		// Create the temporary image to copy to
 		$img = $this->imagecreatetransparent($properties['width'], $properties['height']);
-	
+
 		// Execute the resize
 		if ($status = imagecopyresampled($img, $this->tmp_image, 0, 0, 0, 0, $properties['width'], $properties['height'], $width, $height))
 		{

@@ -1,6 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Cache driver interface
+ * Cache driver interface.
+ *
+ * $Id$
+ *
+ * @package    Cache
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 interface Cache_Driver
 {

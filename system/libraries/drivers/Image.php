@@ -1,5 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+/**
+ * Image API driver.
+ *
+ * $Id$
+ *
+ * @package    Image
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
 abstract class Image_Driver {
 
 	// Reference to the current image

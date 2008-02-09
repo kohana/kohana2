@@ -2,7 +2,9 @@
 /**
  * APC-based Cache driver.
  *
- * @package    Cache:APC
+ * $Id$
+ *
+ * @package    Cache
  * @author     Kohana Team
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
