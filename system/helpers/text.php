@@ -189,23 +189,47 @@ class text_Core {
 	 */
 	public static function auto_link($text)
 	{
-		// Finds all email links using the same regex as valid::email
-		if (preg_match_all('/\b(?!\.)[-+_a-z0-9.]++(?<!\.)@(?![-.])[-a-z0-9.]+(?<!\.)\.[a-z]{2,6}\b/i', $text, $matches))
-		{
-			foreach ($matches[0] as $match)
-			{
-				// Replace each email with an encoded mailto
-				$text = str_replace($match, html::mailto($match), $text);
-			}
-		}
+		return text::auto_link_emails(text::auto_link_urls($text));
+	}
 
-		// Finds all http/https/ftp links
-		if (preg_match_all('!\b(?:ht|f)tps?://.+\b!i', $text, $matches))
+	/**
+	 * Converts text anchors into links.
+	 *
+	 * @param   string   text to auto link
+	 * @return  string
+	 */
+	public static function auto_link_urls($text)
+	{
+		// Finds all http/https/ftp/ftps links that are not part of an existing html anchor
+		if (preg_match_all('~\b(?<!href="|">)(?:ht|f)tps?://\S+(?:/|\b)~i', $text, $matches))
 		{
 			foreach ($matches[0] as $match)
 			{
 				// Replace each link with an anchor
 				$text = str_replace($match, html::anchor($match), $text);
+			}
+		}
+
+		return $text;
+	}
+
+	/**
+	 * Converts text email addresses into links.
+	 *
+	 * @param   string   text to auto link
+	 * @return  string
+	 */
+	public static function auto_link_emails($text)
+	{
+		// Finds all email addresses that are not part of an existing html mailto anchor
+		// Note: The "58;" negative lookbehind prevents matching of existing encoded html mailto anchors
+		//       The html entity for a colon (:) is &#58; or &#058; or &#0058; etc.
+		if (preg_match_all('~\b(?<!href="mailto:|">|58;)(?!\.)[-+_a-z0-9.]++(?<!\.)@(?![-.])[-a-z0-9.]+(?<!\.)\.[a-z]{2,6}\b~i', $text, $matches))
+		{
+			foreach ($matches[0] as $match)
+			{
+				// Replace each email with an encoded mailto
+				$text = str_replace($match, html::mailto($match), $text);
 			}
 		}
 
