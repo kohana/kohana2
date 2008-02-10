@@ -207,7 +207,7 @@ class Forge_Core {
 	 * @param   boolean  use a custom view
 	 * @return  string
 	 */
-	public function html($template = 'forge_template', $custom = FALSE)
+	public function render($template = 'forge_template', $custom = FALSE)
 	{
 		// Load template
 		$form = new View($template);
@@ -278,7 +278,7 @@ class Forge_Core {
 	 */
 	public function __toString()
 	{
-		return $this->html();
+		return $this->render();
 	}
 
 } // End Forge

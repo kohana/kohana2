@@ -78,7 +78,7 @@ class Form_Group_Core extends Forge {
 		}
 	}
 
-	public function html()
+	public function render()
 	{
 		// No Sir, we don't want any html today thank you
 		return;

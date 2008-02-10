@@ -182,7 +182,7 @@ class Form_Input_Core {
 	 *
 	 * @return  string
 	 */
-	public function html()
+	public function render()
 	{
 		// Make sure validation runs
 		$this->validate();

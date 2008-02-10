@@ -13,6 +13,7 @@ class Form_Hidden_Core extends Form_Input {
 
 	protected $data = array
 	(
+		'name'  => '',
 		'type'  => 'hidden',
 		'class' => 'hidden',
 		'value' => '',
@@ -20,7 +21,7 @@ class Form_Hidden_Core extends Form_Input {
 
 	protected $protect = array('type', 'label');
 
-	public function html()
+	public function render()
 	{
 		$data = $this->data;
 

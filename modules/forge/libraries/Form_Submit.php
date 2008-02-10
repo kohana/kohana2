@@ -24,7 +24,7 @@ class Form_Submit_Core extends Form_Input {
 		$this->data['value'] = $value;
 	}
 
-	public function html()
+	public function render()
 	{
 		$data = $this->data;
 		unset($data['label']);

@@ -43,7 +43,7 @@ class Form_Checklist_Core extends Form_Input {
 		return parent::__get($key);
 	}
 
-	public function html()
+	public function render()
 	{
 		// Import base data
 		$base_data = $this->data;
