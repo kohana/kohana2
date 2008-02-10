@@ -22,10 +22,11 @@ class Form_Upload_Core extends Form_Input {
 	// Upload data
 	protected $upload;
 
-	// Upload directory
+	// Upload directory and filename
 	protected $directory;
+	protected $filename;
 
-	public function __construct($name)
+	public function __construct($name, $filename = FALSE)
 	{
 		parent::__construct($name);
 
@@ -38,6 +39,9 @@ class Form_Upload_Core extends Form_Input {
 
 				// Hack to allow file-only inputs, where no POST data is present
 				$_POST[$name] = $this->upload['name'];
+
+				// Set the filename
+				$this->filename = empty($filename) ? FALSE : $filename;
 			}
 			else
 			{
@@ -90,14 +94,23 @@ class Form_Upload_Core extends Form_Input {
 				$filename = preg_replace('/\s+/', '_', $this->data['value']);
 			}
 
+			if (file_exists($filepath = $this->directory.$filename))
+			{
+				if ($this->filename !== TRUE OR ! is_writable($filepath))
+				{
+					// Prefix the file so that the filename is unique
+					$filepath = $this->directory.'uploadfile-'.uniqid(time()).'-'.$this->upload['name'];
+				}
+			}
+
 			// Move the uploaded file to the upload directory
-			move_uploaded_file($this->upload['tmp_name'], $filename = $this->directory.$filename);
+			move_uploaded_file($this->upload['tmp_name'], $filepath);
 		}
 
 		if ( ! empty($_POST[$this->data['name']]))
 		{
 			// Reset the POST value to the new filename
-			$this->data['value'] = $_POST[$this->data['name']] = $filename;
+			$this->data['value'] = $_POST[$this->data['name']] = $filepath;
 		}
 
 		return $status;
