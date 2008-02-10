@@ -14,13 +14,13 @@ class Auth_Controller extends Controller {
 		}
 	}
 
-	function index()
+	public function index()
 	{
 		// Display the install page
 		echo new View('auth/install');
 	}
 
-	function create()
+	public function create()
 	{
 		$form = new Forge(NULL, 'Create User');
 
@@ -54,7 +54,7 @@ class Auth_Controller extends Controller {
 		echo $form->render();
 	}
 
-	function login()
+	public function login()
 	{
 		if ($this->session->get('user_id'))
 		{
@@ -94,7 +94,7 @@ class Auth_Controller extends Controller {
 		echo $form->render();
 	}
 
-	function logout()
+	public function logout()
 	{
 		// Load auth and log out
 		$auth = new Auth();
