@@ -660,37 +660,28 @@ class ORM_Core {
 		// Fetch the query result
 		$result = self::$db->get($this->table)->result(TRUE);
 
-		if ($count = $result->count())
+		if ($array === TRUE)
 		{
-			if ($count > 1 OR $array == TRUE)
-			{
-				// Model class name
-				$class = get_class($this);
-
-				return new ORM_Iterator($class, $result);
-			}
-			else
-			{
-				if ($return === TRUE)
-				{
-					// Return the first result
-					return ORM::factory($this->class, $result->current());
-				}
-
-				// Load the first result
-				$this->object = $result->current();
-			}
+			// Create a new ORM iterator of the result
+			return new ORM_Iterator(get_class($this), $result);
 		}
 		else
 		{
-			if ($array == TRUE)
+			if ($return === TRUE)
 			{
-				// Return an empty array when an array is requested
-				return array();
+				// Return the first result
+				return ORM::factory($this->class, $result->current());
 			}
 
-			// Reset the object
-			$this->clear();
+			// Load the first result, if there is only one result
+			if ($result->count() === 1)
+			{
+				$this->object = $result->current();
+			}
+			else
+			{
+				$this->clear();
+			}
 		}
 
 		// Clear the changed keys, a new object has been loaded
