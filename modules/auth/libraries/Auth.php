@@ -63,6 +63,27 @@ class Auth_Core {
 	}
 
 	/**
+	 * Check if there is an active session. Optionally allows checking for a
+	 * specific role.
+	 *
+	 * @param   string   role name
+	 * @return  boolean
+	 */
+	public function logged_in($role = NULL)
+	{
+		// Check if the user_id is present in the session
+		$status = ! empty($_SESSION['user_id']);
+
+		if ($status === TRUE AND ! empty($role))
+		{
+			// Check if the user has the given role
+			$status = in_array($role, $_SESSION['roles']);
+		}
+
+		return $status;
+	}
+
+	/**
 	 * Attempt to log in a user by using an ORM object and plain-text password.
 	 *
 	 * @param   object  user model object
