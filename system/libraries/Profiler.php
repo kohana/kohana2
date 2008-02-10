@@ -45,6 +45,8 @@ class Profiler_Core {
 	 */
 	public function render($return = FALSE)
 	{
+		$data = array();
+
 		if (Config::item('profiler.benchmarks'))
 		{
 			// Clean unique id from system benchmark names
