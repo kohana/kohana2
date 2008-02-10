@@ -117,16 +117,16 @@ class User_Edit_Model extends User_Model {
 		return FALSE;
 	}
 
-	public function html()
+	public function render()
 	{
 		// Proxy to form html
-		return $this->form->html();
+		return $this->form->render();
 	}
 
 	public function __toString()
 	{
 		// Proxy to form html
-		return $this->form->html();
+		return $this->form->render();
 	}
 
 } // End User Edit Model

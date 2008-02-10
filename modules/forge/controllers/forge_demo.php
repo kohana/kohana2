@@ -36,10 +36,10 @@ class Forge_demo_Controller extends Controller {
 			echo Kohana::debug($form->as_array());
 		}
 
-		echo $form->html();
+		echo $form->render();
 
 		// Using a custom template:
-		// echo $form->html('custom_view', TRUE);
+		// echo $form->render('custom_view', TRUE);
 		// Inside the view access the inputs using $input_id->html(), ->label() etc
 		//
 		// To get the errors use $input_id_errors.
@@ -47,7 +47,7 @@ class Forge_demo_Controller extends Controller {
 		// Defaults to <p class="error">{message}</p>
 		//
 		// Examples:
-		//   echo $username->html(); echo $password_errors;
+		//   echo $username->render(); echo $password_errors;
 	}
 
 	public function upload()
@@ -56,7 +56,7 @@ class Forge_demo_Controller extends Controller {
 
 		$form = new Forge;
 		$form->input('hello')->label(TRUE);
-		$form->upload('file')->label(TRUE)->rules('required|size[100KB]|allow[jpg,png,gif]');
+		$form->upload('file', TRUE)->label(TRUE)->rules('required|size[200KB]|allow[jpg,png,gif]');
 		$form->submit('Upload');
 
 		if ($form->validate())
@@ -64,7 +64,7 @@ class Forge_demo_Controller extends Controller {
 			echo Kohana::debug($form->as_array());
 		}
 
-		echo $form->html();
+		echo $form->render();
 	}
 
 } // End Forge Demo Controller

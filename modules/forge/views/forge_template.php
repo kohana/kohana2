@@ -38,7 +38,7 @@ foreach($sub_inputs as $input):
 <td>
 <?php
 
-echo $input->html();
+echo $input->render();
 
 if ($message = $input->message()):
 
