@@ -84,21 +84,19 @@ class url_Core {
 	 */
 	public static function title($title, $separator = '-')
 	{
-		$separator = ($separator == '-') ? '-' : '_';
-
-		// Replace all dashes, underscores and whitespace by the separator
-		$title = preg_replace('/[-_\s]+/', $separator, $title);
+		$separator = ($separator === '-') ? '-' : '_';
 
 		// Replace accented characters by their unaccented equivalents
 		$title = utf8::transliterate_to_ascii($title);
 
-		// Remove all characters that are not a-z, 0-9, or the separator
-		$title = preg_replace('/[^a-z0-9'.$separator.']+/', '', strtolower($title));
+		// Remove all characters that are not the separator, a-z, 0-9, or whitespace
+		$title = preg_replace('/[^'.$separator.'a-z0-9\s]+/', '', strtolower($title));
+
+		// Replace all separator characters and whitespace by a single separator
+		$title = preg_replace('/['.$separator.'\s]+/', $separator, $title);
 
 		// Trim separators from the beginning and end
-		$title = trim($title, $separator);
-
-		return $title;
+		return trim($title, $separator);
 	}
 
 	/**
