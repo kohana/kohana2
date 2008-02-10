@@ -2,37 +2,12 @@
 
 class Auth_Controller extends Controller {
 
-	protected $inputs = array
-	(
-		'email' => array
-		(
-			'label' => 'Email Address',
-			'rules' => 'required[6,127]|valid_email'
-		),
-		'username' => array
-		(
-			'label' => 'Username',
-			'rules' => 'required[4,32]'
-		),
-		'password' => array
-		(
-			'label' => 'Password',
-			'type'  => 'password',
-			'rules' => 'required[5,40]'
-		),
-		'submit' => array
-		(
-			'type' => 'submit',
-			'value' => 'Create New User'
-		)
-	);
-
 	public function __construct()
 	{
 		parent::__construct();
 
 		// Load some libraries
-		foreach(array('profiler', 'auth', 'session') as $lib)
+		foreach(array('auth', 'session') as $lib)
 		{
 			$class = ucfirst($lib);
 			$this->$lib = new $class();
@@ -47,10 +22,12 @@ class Auth_Controller extends Controller {
 
 	function create()
 	{
-		$form = new Form_Model;
-		$form->title('Create User')
-		  	 ->action('auth/create')
-			 ->inputs($this->inputs);
+		$form = new Forge(NULL, 'Create User');
+
+		$form->input('email')->label(TRUE)->rules('required|length[4,32]');
+		$form->input('username')->label(TRUE)->rules('required|length[4,32]');
+		$form->password('password')->label(TRUE)->rules('required|length[5,40]');
+		$form->submit('Create New User');
 
 		if ($form->validate())
 		{
@@ -59,7 +36,7 @@ class Auth_Controller extends Controller {
 
 			if ( ! $user->username_exists($this->input->post('username')))
 			{
-				foreach($form->data() as $key => $val)
+				foreach($form->as_array() as $key => $val)
 				{
 					// Set user data
 					$user->$key = $val;
@@ -74,64 +51,47 @@ class Auth_Controller extends Controller {
 		}
 
 		// Display the form
-		echo $form->build();
+		echo $form->render();
 	}
 
 	function login()
 	{
-		// Get inputs
-		$inputs = $this->inputs;
-
-		// Change the submit button
-		$inputs['submit']['value'] = 'Attempt Login';
-
-		// Remove email, we don't need it
-		unset($inputs['email']);
-
-		if ( ! $this->session->get('user_id'))
+		if ($this->session->get('user_id'))
 		{
-			// Create the login form
-			$form = new Form_Model;
-			$form->title('Test Login')
-				 ->action('auth/login')
-				 ->inputs($inputs);
+			$form = new Forge('auth/logout', 'Log Out');
+
+			$form->submit('Logout Now');
+		}
+		else
+		{
+			$form = new Forge(NULL, 'User Login');
+
+			$form->input('username')->label(TRUE)->rules('required|length[4,32]');
+			$form->password('password')->label(TRUE)->rules('required|length[5,40]');
+			$form->submit('Attempt Login');
 
 			if ($form->validate())
 			{
 				// Load the user
-				$user = new User_Model($form->data('username'));
+				$user = ORM::factory('user', $form->username->value);
 
 				// Attempt a login
-				if ($this->auth->login($user, $form->data('password')))
+				if ($this->auth->login($user, $form->password->value))
 				{
 					echo "<h4>Login Success!</h4>";
 					echo "<p>Your roles are:</p>";
 					echo Kohana::debug($this->session->get('roles'));
+					return;
 				}
 				else
 				{
-					echo "<h4>Login Failed!</h4>";
+					$form->password->add_error('login_failed', 'Invalid username or password.');
 				}
 			}
 		}
 
-		if ($this->session->get('user_id'))
-		{
-			$form = new Form_Model;
-			$form->title('Logout')
-				 ->action('auth/logout')
-				 ->inputs(array
-				 (
-					'logout' => array
-				  	(
-						'type' => 'submit',
-						'value' => 'Logout'
-					)
-				 ));
-		}
-
 		// Display the form
-		echo $form->build();
+		echo $form->render();
 	}
 
 	function logout()
