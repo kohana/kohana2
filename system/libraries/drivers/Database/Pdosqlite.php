@@ -660,4 +660,5 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 		return $this->offsetExists($this->current_row);
 	}
 	// End Interface
+
 } // End PdoSqlite_Result Class

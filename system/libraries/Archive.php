@@ -59,7 +59,7 @@ class Archive_Core {
 		$path = str_replace('\\', '/', $path);
 
 		// Set the name
-		($name === NULL) and $name = $path;
+		empty($name) and $name = $path;
 
 		if (file_exists($path) AND is_dir($path))
 		{
@@ -70,7 +70,7 @@ class Archive_Core {
 			// Add the directory to the paths
 			$this->paths[] = array($path, $name);
 
-			if ($recursive == TRUE)
+			if ($recursive === TRUE)
 			{
 				$dir = opendir($path);
 				while (($file = readdir($dir)) !== FALSE)

@@ -288,15 +288,20 @@ class Database_Mysql_Driver extends Database_Driver {
 
 	public function field_data($table)
 	{
-		$query  = mysql_query('SHOW COLUMNS FROM '.$this->escape_table($table), $this->link);
+		$columns = array();
 
-		$table  = array();
-		while ($row = mysql_fetch_object($query))
+		if ($query = mysql_query('SHOW COLUMNS FROM '.$this->escape_table($table), $this->link))
 		{
-			$table[] = $row;
+			if (mysql_num_rows($query) > 0)
+			{
+				while ($row = mysql_fetch_object($query))
+				{
+					$columns[] = $row;
+				}
+			}
 		}
 
-		return $table;
+		return $columns;
 	}
 
 } // End Database_Mysql_Driver Class
