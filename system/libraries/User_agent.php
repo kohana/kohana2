@@ -59,13 +59,13 @@ class User_agent_Core {
 		// Set the accepted languages
 		if (empty(self::$languages) AND ! empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
 		{
-			preg_match_all('/[-a-z]{2,}/i', trim($_SERVER['HTTP_ACCEPT_LANGUAGE']), self::$languages);
+			self::$languages = (preg_match_all('/[-a-z]{2,}/', strtolower(trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])), $matches)) ? $matches[0] : array();
 		}
 
 		// Set the accepted charsets
 		if (empty(self::$charsets) AND ! empty($_SERVER['HTTP_ACCEPT_CHARSET']))
 		{
-			preg_match_all('/[-a-z0-9]{2,}/i', trim($_SERVER['HTTP_ACCEPT_CHARSET']), self::$charsets);
+			self::$charsets = (preg_match_all('/[-a-z0-9]{2,}/', strtolower(trim($_SERVER['HTTP_ACCEPT_CHARSET'])), $matches)) ? $matches[0] : array();
 		}
 
 		// Set the referrer
