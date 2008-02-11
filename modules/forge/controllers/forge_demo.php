@@ -40,7 +40,7 @@ class Forge_demo_Controller extends Controller {
 
 		// Using a custom template:
 		// echo $form->render('custom_view', TRUE);
-		// Inside the view access the inputs using $input_id->html(), ->label() etc
+		// Inside the view access the inputs using $input_id->render(), ->label() etc
 		//
 		// To get the errors use $input_id_errors.
 		// Set the error format with $form->error_format('<div>{message}</div>');
