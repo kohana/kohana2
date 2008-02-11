@@ -147,23 +147,14 @@ class Pagination_Core {
 	}
 
 	/**
-	 * Gets the SQL offset of the first row to return. Deprecated.
+	 * So that users can use $pagination->total_pages() or $pagination->total_pages.
 	 *
-	 * @return  integer  sql offset
+	 * @param   string  function name
+	 * @return  string
 	 */
-	public function sql_offset()
+	public function __call($func, $args = FALSE)
 	{
-		return $this->sql_offset;
-	}
-
-	/**
-	 * Generates the complete SQL LIMIT clause. Deprecated.
-	 *
-	 * @return  string  sql limit clause
-	 */
-	public function sql_limit()
-	{
-		return $this->sql_limit;
+		return $this->__get($func);
 	}
 
 } // End Pagination Class
