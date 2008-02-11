@@ -19,7 +19,7 @@ class valid_Core {
 	 */
 	public static function email($email)
 	{
-		return (bool) preg_match('/^(?!\.)[-+_a-z0-9.]++(?<!\.)@(?![-.])[-a-z0-9.]+(?<!\.)\.[a-z]{2,6}$/iD', $email);
+		return (bool) filter_var($email, FILTER_VALIDATE_EMAIL);
 	}
 
 	/**
@@ -55,61 +55,33 @@ class valid_Core {
 	 * Validate URL
 	 *
 	 * @param   string   URL
-	 * @param   string   protocol
 	 * @return  boolean
 	 */
-	public static function url($url, $scheme = 'http')
+	public static function url($url)
 	{
-		// Scheme is always lowercase
-		$scheme = strtolower($scheme);
-
-		// Disable error reporting
-		$ER = error_reporting(0);
-
-		// Use parse_url to validate the URL
-		$url = parse_url($url);
-
-		// Restore error reporting
-		error_reporting($ER);
-
-		// If the boolean check returns TRUE, return FALSE, and vice versa
-		return ! (empty($url['host']) OR empty($url['scheme']) OR $url['scheme'] !== $scheme);
+		return (bool) filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED);
 	}
 
 	/**
 	 * Validate IP
 	 *
 	 * @param   string   IP address
+	 * @param   boolean  allow IPv6 addresses
 	 * @return  boolean
 	 */
-	public static function ip($ip)
+	public static function ip($ip, $ipv6 = FALSE)
 	{
-		if ( ! preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/D', $ip))
-			return FALSE;
+		// Do not allow private and reserved range IPs
+		$flags = FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE;
 
-		$octets = explode('.', $ip);
-
-		for ($i = 1; $i < 5; $i++)
+		if ($ipv6 === TRUE)
 		{
-			$octet = (int) $octets[($i-1)];
-			if ($i === 1)
-			{
-				if ($octet > 223 OR $octet < 1)
-					return FALSE;
-			}
-			elseif ($i === 4)
-			{
-				if ($octet < 1)
-					return FALSE;
-			}
-			else
-			{
-				if ($octet > 254)
-					return FALSE;
-			}
+			return (bool) filter_var($ip, FILTER_VALIDATE_IP, $flags);
 		}
-
-		return TRUE;
+		else
+		{
+			return (bool) filter_var($ip, FILTER_VALIDATE_IP, $flags | FILTER_FLAG_IPV4);
+		}
 	}
 
 	/**
