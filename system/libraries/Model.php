@@ -26,7 +26,7 @@ class Model_Core {
 		if (is_object($database) AND ($database instanceof Database))
 		{
 			// Use the passed database instance
-			$this->db = $database;
+			$this->db = $db = $database;
 		}
 		else
 		{
