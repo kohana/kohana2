@@ -271,7 +271,8 @@ class Database_Core {
 			{
 				if (preg_match('/^DISTINCT\s++(.+)$/i', $val, $matches))
 				{
-					$val = 'DISTINCT '.$this->config['table_prefix'].$matches[1];
+					$val            = $this->config['table_prefix'].$matches[1];
+					$this->distinct = TRUE;
 				}
 				else
 				{
