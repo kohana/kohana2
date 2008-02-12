@@ -32,6 +32,20 @@ class Form_Checkbox_Core extends Form_Input {
 		return parent::__get($key);
 	}
 
+	public function label($val = NULL)
+	{
+		if ($val === NULL)
+		{
+			// Do not display labels for checkboxes, labels wrap checkboxes
+			return '';
+		}
+		else
+		{
+			$this->data['label'] = ($val === TRUE) ? utf8::ucwords(inflector::humanize($this->name)) : $val;
+			return $this;
+		}
+	}
+
 	protected function html_element()
 	{
 		// Import the data
