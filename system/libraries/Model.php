@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Model class.
+ * Model base class.
  *
  * $Id$
  *
@@ -14,19 +14,28 @@ class Model_Core {
 	protected $db;
 
 	/**
-	 * Loads database to $this->db.
+	 * Loads or sets the database instance.
+	 *
+	 * @param   object   Database instance
+	 * @return  void
 	 */
-	public function __construct()
+	public function __construct($database = NULL)
 	{
-		// Load the database into the model
-		if (Event::has_run('system.pre_controller'))
+		static $db;
+
+		if (is_object($database) AND ($database instanceof Database))
 		{
-			$this->db = isset(Kohana::instance()->db) ? Kohana::instance()->db : new Database('default');
+			// Use the passed database instance
+			$this->db = $database;
 		}
 		else
 		{
-			$this->db = new Database('default');
+			// Load the default database if necessary
+			($db === NULL) and $db = new Database('default');
+
+			// Use the static database
+			$this->db = $db;
 		}
 	}
 
-} // End Model class
+} // End Model
