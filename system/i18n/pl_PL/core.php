@@ -14,4 +14,14 @@ $lang = array
 	'stats_footer'          => 'Czas wywołania: {execution_time} sekund, użyto {memory_usage} pamięci. Wygenerowano przez Kohana v{kohana_version}.',
 	'error_message'         => 'Wystąpił błąd w <strong>lini %s</strong> z <strong>%s</strong>.',
 	'stack_trace'           => 'Zrzut stosu (Stack Trace)',
+	'generic_error'         => 'Nie można zakończyć żądania',
+	'errors_disabled'       => 'Przejdź na <a href="%s">stronę główną</a> lub <a href="%s">spróbuj znowu</a>.',
+
+	// Resource names
+	'controller'            => 'kontroler',
+	'helper'                => 'pomocnik',
+	'library'               => 'biblioteka',
+	'driver'                => 'sterownik',
+	'model'                 => 'model',
+	'view'                  => 'widok',
 );
