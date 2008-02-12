@@ -23,10 +23,10 @@ class Tutorials_Controller extends Controller {
 			(
 				'page' => 'Creating a Page Controller',
 			),
-			'Forms and Validation' => array
-			(
-				'quick_forms' => 'Quick Form Generation'
-			),
+			// 'Forms and Validation' => array
+			// (
+			// 	'quick_forms' => 'Quick Form Generation'
+			// ),
 			'Advanced Tutorials' => array
 			(
 				'remove_index' => 'Removing index.php From URLs',
