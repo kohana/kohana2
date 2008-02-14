@@ -278,7 +278,7 @@ class Forge_Core {
 	 */
 	public function __toString()
 	{
-		return $this->render();
+		return (string) $this->render();
 	}
 
 } // End Forge
