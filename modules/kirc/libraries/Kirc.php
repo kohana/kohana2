@@ -1,66 +1,243 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+/**
+ * Kohana IRC Bot. Yah, we do that too.
+ *
+ * $Id$
+ *
+ * @package    Kirc
+ * @author     Woody Gilk
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
 class Kirc_Core {
 
-	// Database instance
-	protected $db;
+	// The characters that represent a newline
+	public static $newline = "\r\n";
 
-	// ShIRC configuration
-	protected $config;
+	// Log level: 1 = errors, 2 = debug
+	public $log_level = 1;
 
-	// IRC socket
+	// IRC socket and stats
 	protected $socket;
+	protected $stats = array
+	(
+		'start'              => 0,
+		'last_ping'          => 0,
+		'last_sent'          => 0,
+		'last_received'      => 0,
+		'commands_sent'      => 0,
+		'commands_received'  => 0,
+	);
 
-	// A newline
-	protected $newline = "\r\n";
+	// Connected channels
+	protected $channels = array();
 
-	public function __construct()
+	public function __construct($server, $port = NULL, $timeout = NULL)
 	{
-		// Load the database
-		$this->db = new Database('shirc');
+		if (PHP_SAPI !== 'cli')
+			throw new Kirc_Exception('kirc.command_line_only');
 
-		// Load configuration
-		$this->config = Config::item('shirc');
-
-		// Open the connection
-		$this->connect();
-		$this->run();
-	}
-
-	protected function connect()
-	{
 		// Close all output buffers
 		while (ob_get_level()) ob_end_clean();
 
-		// Handle PHP errors inline
-		set_error_handler(array($this, 'error'));
-
-		// Make the script never terminate
+		// Keep-alive: TRUE
 		set_time_limit(0);
 
-		// Open the socket
-		$this->socket = fsockopen($this->config['server'], $this->config['port']);
+		// Use internal an internal exception handler, to write logs
+		set_error_handler(array($this, 'exception_handler'));
+		set_exception_handler(array($this, 'exception_handler'));
 
-		// Set non-blocking streams
-		stream_set_blocking($this->socket, 0);
+		// Set the port
+		empty($port) and $port = 6667;
 
-		// Connect
-		$this->send('USER '.$this->config['username'].' * * '.$this->config['realname']);
-		$this->send('NICK '.$this->config['username']);
-		$this->send('JOIN '.$this->config['channel']);
+		// Set the timeout
+		empty($timeout) and $timeout = 10;
+
+		// Disable error reporting
+		$ER = error_reporting(0);
+
+		if ($this->socket = fsockopen($server, $port, $errno, $errstr, $timeout))
+		{
+			// Enable error reporting
+			error_reporting($ER);
+
+			// Set the start time
+			$this->stats['start'] = microtime(TRUE);
+
+			// Keep the response time as short as possible, for greater interactivity
+			stream_set_blocking($this->socket, 0);
+
+			// Connection is complete
+			$this->log(1, 'Connected to '.$server.':'.$port);
+		}
+		else
+		{
+			// Nothing left to do if the connection fails
+			$this->log(1, 'Could not to connect to '.$server.':'.$port.' in less than '.$timeout.' seconds: '.$errstr);
+			exit;
+		}
 	}
 
-	public function error($error, $message, $file, $line)
+	public function exception_handler($exception, $message = NULL, $file = NULL, $line = NULL)
 	{
-		echo '[ERROR] '.$message.' >>> '.$file.': '.$line."\n";
+		if (func_num_args() === 5)
+		{
+			if ((error_reporting() & $exception) !== 0)
+			{
+				// PHP Error
+				$this->log(1, $message.' in '.$file.' on line '.$line);
+			}
+		}
+		else
+		{
+			// Exception
+			$this->log(1, $exception->getMessage());
+		}
 	}
 
-	protected function send($cmd)
+	public function log($level, $message)
 	{
-		$cmd .= $this->newline;
-		fwrite($this->socket, $cmd);
-		echo '[SEND] '.$cmd;
-		flush();
+		if ($level >= $this->log_level)
+		{
+			echo date('Y-m-d g:i:s').' --- '.$message."\n"; flush();
+		}
+	}
+
+	public function login($username, $password = NULL, $realname = 'Kohana PHP Bot')
+	{
+		// Send the login commands
+		$this->send('USER '.$username.' * * :'.$realname);
+		$this->send('NICK '.$username);
+
+		// Update the last ping
+		$this->stats['last_ping'] = microtime(TRUE);
+
+		// Read the MOTD before continuing
+		$this->read(375, 376, FALSE);
+		$this->log(2, 'Received MOTD (suppressed)');
+	}
+
+	public function join($channel)
+	{
+		if (empty($this->channels[$channel]))
+		{
+			// Join the channel
+			$this->send('JOIN '.$channel);
+
+			// Read the USERS command
+			$this->channels[$channel] = explode(':', $this->read(353));
+			$this->channels[$channel] = explode(' ', $this->channels[$channel][1]);
+
+			// The end of the USERS command
+			$this->read(366, FALSE);
+			$this->log(2, 'Received USERS (suppressed)');
+		}
+	}
+
+	public function part($channel)
+	{
+		if ( ! empty($this->channels[$channel]))
+		{
+			// Leave the channel
+			$this->send('PART '.$channel);
+
+			// Remove the channel
+			unset($this->channels[$channel]);
+		}
+	}
+
+	public function quit($message = '</Kirc> by Kohana Team')
+	{
+		// Quit, wait, and exit
+		$this->send('QUIT '.$message);
+		sleep(2);
+		exit;
+	}
+
+	public function send($command)
+	{
+		if (feof($this->socket))
+		{
+			// The socket has been terminated unexpectedly. Abort, now!
+			$this->log(1, 'Disconnected unexpectedly, shutting down.');
+			exit;
+		}
+
+		if (fwrite($this->socket, $command.self::$newline))
+		{
+			// Log the sent command
+			$this->log(2, '>>> '.$command);
+
+			// Update the stats
+			$this->stats['last_sent'] = microtime(TRUE);
+		}
+		else
+		{
+			// Log error
+			$this->log(1, 'Error sending command >>> '.$command);
+		}
+	}
+
+	public function read($start = NULL, $end = NULL, $return = TRUE)
+	{
+		if (is_bool($end))
+		{
+			// Return value and end are shifted one place
+			$return = $end;
+			$end = NULL;
+		}
+
+		// Make sure the start and end are strings
+		($start === NULL) or $start = (string) $start;
+		($end   === NULL) or $end   = (string) $end;
+
+		$buffer = '';
+		while ( ! feof($this->socket))
+		{
+			while ($raw = fgets($this->socket, 128))
+			{
+				if ( ! empty($start))
+				{
+					// Get the host and command from the stream
+					list ($host, $cmd, $msg) = explode(' ', $raw, 3);
+
+					if ($cmd === $start)
+					{
+						// Trim the message
+						$msg = trim($msg);
+
+						if (empty($end))
+						{
+							// Return the message
+							return ($return === TRUE) ? $msg : NULL;
+						}
+
+						$buffer .= $msg;
+					}
+
+					if ( ! empty($buffer))
+					{
+						if ($return === TRUE)
+						{
+							// Only add to the buffer for returns
+							$buffer .= $msg;
+						}
+
+						if ($cmd === $end)
+						{
+							// Return the complete buffer
+							return ($return === TRUE) ? $buffer : NULL;
+						}
+					}
+				}
+				else
+				{
+					$this->log(2, '<<< '.trim($raw));
+				}
+			}
+			// One half-second is high enough interactivity
+			usleep(500000);
+		}
 	}
 
 	protected function run()

@@ -4,8 +4,22 @@ class Kirc_Controller extends Controller {
 
 	public function index()
 	{
-		// Yah, exciting!
-		new ShIRC;
+		// Start a new bot
+		$bot = new Kirc('irc.freenode.net');
+
+		// Enable debugging
+		$bog->log_level = 2;
+
+		// Login and join the default channel
+		$bot->login('koboto');
+		$bot->join('#koboto');
+
+		print_r($bot);exit;
+
+		// $bot->read();
+
+		// $bot->send('PRIVMSG #koboto :Go away, Shadowhand!');
+		// $bot->quit('hahahaha');
 	}
 
 } // End
