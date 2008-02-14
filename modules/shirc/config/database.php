@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-$config['shirc'] = array
+$config['kirc'] = array
 (
 	'benchmark'     => FALSE,
 	'persistent'    => FALSE,

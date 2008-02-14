@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Shirc_Controller extends Controller {
+class Kirc_Controller extends Controller {
 
 	public function index()
 	{

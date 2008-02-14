@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class ShIRC_Core {
+class Kirc_Core {
 
 	// Database instance
 	protected $db;
@@ -40,6 +40,9 @@ class ShIRC_Core {
 
 		// Open the socket
 		$this->socket = fsockopen($this->config['server'], $this->config['port']);
+
+		// Set non-blocking streams
+		stream_set_blocking($this->socket, 0);
 
 		// Connect
 		$this->send('USER '.$this->config['username'].' * * '.$this->config['realname']);
