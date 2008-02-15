@@ -94,12 +94,6 @@ class Kobot_Core {
 			// Connection is complete
 			$this->log(1, 'Connected to '.$server.':'.$port);
 
-			foreach ($this->dropped as $cmd)
-			{
-				// Drop all requested commands
-				$this->set_response($cmd, array($this, 'response_drop'));
-			}
-
 			// Read the PING command
 			$this->set_response('PING', array($this, 'response_ping'));
 
@@ -119,6 +113,12 @@ class Kobot_Core {
 
 			// Read the PRIVMSG command
 			$this->set_response('PRIVMSG', array($this, 'response_privmsg'));
+
+			foreach ($this->dropped as $cmd)
+			{
+				// Drop all requested commands
+				$this->set_response($cmd, array($this, 'response_drop'));
+			}
 		}
 		else
 		{
@@ -128,48 +128,84 @@ class Kobot_Core {
 		}
 	}
 
-	public function login($username, $password = NULL, $realname = 'Kohana PHP Bot')
+	public function log($level, $message)
 	{
-		// Cache the current username
-		$this->username = $username;
-
-		// Send the login commands, use 8 for the mask (invisible)
-		$this->send('USER '.$username.' 8 * :'.$realname);
-		$this->send('NICK '.$username);
-
-		// Update the last ping
-		$this->stats['last_ping'] = microtime(TRUE);
-	}
-
-	public function join($channel)
-	{
-		if (empty($this->channels[$channel]))
+		if ($level >= $this->log_level)
 		{
-			// Set the channel as joined
-			$this->channels[$channel] = array();
-
-			// Join the channel
-			$this->send('JOIN '.$channel);
+			// Display the message with a timestamp, flush the output
+			echo date('Y-m-d g:i:s').' --- '.$message."\n"; flush();
 		}
 	}
 
-	public function part($channel)
-	{
-		if ( ! empty($this->channels[$channel]))
-		{
-			// Leave the channel
-			$this->send('PART '.$channel);
+	/**
+	 * Handler setters for responses, triggers, and timers.
+	 * - A response executes when an IRC command is received.
+	 * - A timer executes every N.N seconds.
+	 * - A trigger executes when the bot is spoken to.
+	 */
 
-			// Remove the channel
-			unset($this->channels[$channel]);
-		}
+	public function set_response($command, $callback)
+	{
+		if ( ! is_callable($callback))
+			throw new Kohana_Exception('kobot.invalid_callback', $command);
+
+		// Set the response callback
+		$this->responses[$command] = $callback;
+
+		return $this;
 	}
 
-	public function quit($message = '</Kirc> by Kohana Team')
+	public function remove_response($command)
 	{
-		// Send a quit message
-		$this->send('QUIT :'.$message);
+		// Remove the response
+		unset($this->responses[$command]);
+
+		return $this;
 	}
+
+	public function set_timer($interval, $callback)
+	{
+		if ( ! is_callable($callback))
+			throw new Kohana_Exception('kobot.invalid_timer');
+
+		// Add the timer to the timers, forcing the callback to be unique
+		$this->timers[$this->callback_hash($callback)] = array
+		(
+			'callback' => $callback,
+			'interval' => $interval,
+			'timeout'  => microtime(TRUE) + $interval,
+		);
+
+		return $this;
+	}
+
+	public function remove_timer($callback)
+	{
+		// Remove the timer
+		unset($this->timers[$this->callback_hash($callback)]);
+
+		return $this;
+	}
+
+	public function set_trigger($pattern, $callback)
+	{
+		// Store the trigger and it's callback
+		$this->msg_triggers[$pattern] = $callback;
+
+		return $this;
+	}
+
+	public function remove_trigger($pattern)
+	{
+		// Remove the trigger
+		unset($this->msg_triggers[$pattern]);
+
+		return $this;
+	}
+
+	/**
+	 * Server stream reading and writing. This is where the magic happens!
+	 */
 
 	public function send($command)
 	{
@@ -313,15 +349,25 @@ class Kobot_Core {
 		return $data;
 	}
 
-	public function log($level, $message)
+	protected function check_timers()
 	{
-		if ($level >= $this->log_level)
+		foreach ($this->timers as $key => $data)
 		{
-			// Display the message with a timestamp, flush the output
-			echo date('Y-m-d g:i:s').' --- '.$message."\n"; flush();
+			if (microtime(TRUE) >= $data['timeout'])
+			{
+				// Run the callback, passing the bot as the only parameter
+				call_user_func($data['callback'], $this);
+
+				// Restart the timer, if it was not removed
+				isset($this->timers[$key]) and $this->timers[$key]['timeout'] = microtime(TRUE) + $data['interval'];
+			}
 		}
 	}
 
+	/**
+	 * Error and exception handler. Logs errors to the console rather than
+	 * displaying them as HTML with Kohana.
+	 */
 	public function exception_handler($e, $message = NULL, $file = NULL, $line = NULL)
 	{
 		if (func_num_args() === 5)
@@ -339,64 +385,9 @@ class Kobot_Core {
 		}
 	}
 
-	protected function check_timers()
-	{
-		foreach ($this->timers as $key => $data)
-		{
-			if (microtime(TRUE) >= $data['timeout'])
-			{
-				// Run the callback, passing the bot as the only parameter
-				call_user_func($data['callback'], $this);
-
-				// Restart the timer, if it was not removed
-				isset($this->timers[$key]) and $this->timers[$key]['timeout'] = microtime(TRUE) + $data['interval'];
-			}
-		}
-	}
-
-	public function set_timer($interval, $callback)
-	{
-		if ( ! is_callable($callback))
-			throw new Kohana_Exception('kobot.invalid_timer');
-
-		// Add the timer to the timers, forcing the callback to be unique
-		$this->timers[$this->callback_hash($callback)] = array
-		(
-			'callback' => $callback,
-			'interval' => $interval,
-			'timeout'  => microtime(TRUE) + $interval,
-		);
-
-		return $this;
-	}
-
-	public function remove_timer($callback)
-	{
-		// Remove the timer
-		unset($this->timers[$this->callback_hash($callback)]);
-
-		return $this;
-	}
-
-	public function set_trigger($pattern, $callback)
-	{
-		// Store the trigger and it's callback
-		$this->msg_triggers[$pattern] = $callback;
-
-		return $this;
-	}
-
-	public function set_response($command, $callback)
-	{
-		if ( ! is_callable($callback))
-			throw new Kohana_Exception('kobot.invalid_callback', $command);
-
-		// Set the response callback
-		$this->responses[$command] = $callback;
-
-		return $this;
-	}
-
+	/**
+	 * Generates a unique key for a callback.
+	 */
 	protected function callback_hash($callback)
 	{
 		$hash = NULL;
@@ -423,8 +414,55 @@ class Kobot_Core {
 	}
 
 	/**
-	 * Kobot default responses. You can overload these in your own extension class,
-	 * or attach your own event handlers
+	 * Standard IRC commands.
+	 */
+
+	public function login($username, $password = NULL, $realname = 'Kohana PHP Bot')
+	{
+		// Cache the current username
+		$this->username = $username;
+
+		// Send the login commands, use 8 for the mask (invisible)
+		$this->send('USER '.$username.' 8 * :'.$realname);
+		$this->send('NICK '.$username);
+
+		// Update the last ping
+		$this->stats['last_ping'] = microtime(TRUE);
+	}
+
+	public function join($channel)
+	{
+		if (empty($this->channels[$channel]))
+		{
+			// Set the channel as joined
+			$this->channels[$channel] = array();
+
+			// Join the channel
+			$this->send('JOIN '.$channel);
+		}
+	}
+
+	public function part($channel)
+	{
+		if ( ! empty($this->channels[$channel]))
+		{
+			// Leave the channel
+			$this->send('PART '.$channel);
+
+			// Remove the channel
+			unset($this->channels[$channel]);
+		}
+	}
+
+	public function quit($message = '</Kirc> by Kohana Team')
+	{
+		// Send a quit message
+		$this->send('QUIT :'.$message);
+	}
+
+	/**
+	 * Default response handlers. You can overload these in your own extension
+	 * class, or attach your own event handlers
 	 */
 
 	// *
