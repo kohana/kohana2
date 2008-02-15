@@ -788,6 +788,36 @@ class Database_Core {
 	}
 
 	/**
+	 * Adds an "in" condition to the where clause
+	 * 
+	 * @param   string  Name of the column being examined
+	 * @param   mixed   An array or string to match against
+	 * @return  object  This Database object.
+	 */
+	public function in($field, $values) 
+	{
+		if (is_array($values))
+		{
+			$escaped_values = array();
+			foreach ($values as $v)
+			{
+				if (is_numeric($v)) 
+				{
+					$escaped_values[] = $v;
+				}
+				else
+				{
+					$escaped_values[] = "'".$this->driver->escape_string($v)."'";
+				}
+			}
+			$values = implode(",", $escaped_values);
+		}
+		$this->where($this->driver->escape_column($field).' IN('.$values.')');
+		
+		return $this;
+	}
+
+	/**
 	 * Compiles a merge string and runs the query.
 	 *
 	 * @param   string  table name
