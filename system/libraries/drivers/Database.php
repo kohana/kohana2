@@ -266,7 +266,7 @@ abstract class Database_Driver {
 	 */
 	public function has_operator($str)
 	{
-		return (bool) preg_match('/[<>!=]|\sIS\s+(?:NOT\s+)?NULL\b/i', trim($str));
+		return (bool) preg_match('/[<>!=]|\sIS(\s+?:NOT\s+)?\b/i', trim($str));
 	}
 
 	/**
