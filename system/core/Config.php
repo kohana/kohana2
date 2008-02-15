@@ -99,9 +99,6 @@ final class Config {
 
 		foreach($keys as $i => $k)
 		{
-			if ( ! isset($conf[$k]))
-				return FALSE;
-
 			if ($i === $last)
 			{
 				$conf[$k] = $value;
