@@ -17,8 +17,9 @@ class Kobot_Core {
 	// Log level: 1 = errors, 2 = debug
 	public $log_level = 1;
 
-	// Command responses
+	// Command responses and timers
 	protected $responses = array();
+	protected $timers = array();
 
 	// Responses to drop by default
 	protected $dropped = array
@@ -118,9 +119,6 @@ class Kobot_Core {
 
 			// Read the PRIVMSG command
 			$this->set_response('PRIVMSG', array($this, 'response_privmsg'));
-
-			// Reply to VERSION commands
-			$this->add_trigger('^VERSION$', array($this, 'trigger_version'));
 		}
 		else
 		{
@@ -201,6 +199,9 @@ class Kobot_Core {
 	{
 		while ( ! feof($this->socket))
 		{
+			// Start a new read loop
+			$loop_time = microtime(TRUE);
+
 			// Read the raw server stream, up to 512 characters
 			while ($raw = fgets($this->socket, 512))
 			{
@@ -221,8 +222,15 @@ class Kobot_Core {
 					$this->log(3, '<<< '.$data['command'].' <<< '.trim($raw));
 				}
 			}
-			// One half-second is high enough interactivity
-			usleep(500000);
+
+			// Check the timers
+			$this->check_timers();
+
+			// Detemine the amount of time spent in this loop, in microseconds
+			$loop_time = (microtime(TRUE) - $loop_time) * 1000000;
+
+			// Every loop should take one-half second
+			($loop_time < 500000) and usleep(500000 - $loop_time);
 		}
 
 		// Disconnect
@@ -331,7 +339,46 @@ class Kobot_Core {
 		}
 	}
 
-	public function add_trigger($pattern, $callback)
+	protected function check_timers()
+	{
+		foreach ($this->timers as $key => $data)
+		{
+			if (microtime(TRUE) >= $data['timeout'])
+			{
+				// Run the callback, passing the bot as the only parameter
+				call_user_func($data['callback'], $this);
+
+				// Restart the timer, if it was not removed
+				isset($this->timers[$key]) and $this->timers[$key]['timeout'] = microtime(TRUE) + $data['interval'];
+			}
+		}
+	}
+
+	public function set_timer($interval, $callback)
+	{
+		if ( ! is_callable($callback))
+			throw new Kohana_Exception('kobot.invalid_timer');
+
+		// Add the timer to the timers, forcing the callback to be unique
+		$this->timers[$this->callback_hash($callback)] = array
+		(
+			'callback' => $callback,
+			'interval' => $interval,
+			'timeout'  => microtime(TRUE) + $interval,
+		);
+
+		return $this;
+	}
+
+	public function remove_timer($callback)
+	{
+		// Remove the timer
+		unset($this->timers[$this->callback_hash($callback)]);
+
+		return $this;
+	}
+
+	public function set_trigger($pattern, $callback)
 	{
 		// Store the trigger and it's callback
 		$this->msg_triggers[$pattern] = $callback;
@@ -348,6 +395,31 @@ class Kobot_Core {
 		$this->responses[$command] = $callback;
 
 		return $this;
+	}
+
+	protected function callback_hash($callback)
+	{
+		$hash = NULL;
+		if (is_array($callback))
+		{
+			if (is_string($callback[0]))
+			{
+				// Static method callback
+				$hash = sha1($callback[0].'::'.$callback[1]);
+			}
+			else
+			{
+				// Object method callback
+				$hash = sha1(get_class($callback[0]).'->'.$callback[1]);
+			}
+		}
+		else
+		{
+			// Hash the name
+			$hash = sha1($callback);
+		}
+
+		return $hash;
 	}
 
 	/**
@@ -421,6 +493,9 @@ class Kobot_Core {
 			{
 				// Add the sender to the channel userlist
 				$this->channels[$data['target']][] = $data['sender'];
+
+				// This prevents the userlist key from growing too large, causing a buffer overflow
+				$this->channels[$data['target']] = array_values($this->channels[$data['target']]);
 
 				// Debug the join
 				$this->log(2, '> '.$data['sender'].' ('.$data['target'].')');

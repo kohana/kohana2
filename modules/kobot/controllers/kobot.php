@@ -11,19 +11,27 @@ class Kobot_Controller extends Controller {
 		$bog->log_level = 4;
 
 		// Add triggers
-		$bot->add_trigger('^goodnight, bot$', array($this, 'trigger_quit'))
-		    ->add_trigger('^tell (.+?) about (.+)$', array($this, 'trigger_say'))
-		    ->add_trigger('^([r|#])(\d+)$', array($this, 'trigger_trac'))
-		    ->add_trigger('^[a-z_]+$', array($this, 'trigger_default'));
+		$bot->set_trigger('^goodnight, bot$', array($this, 'trigger_quit'))
+		    ->set_trigger('^tell (.+?) about (.+)$', array($this, 'trigger_say'))
+		    ->set_trigger('^([r|#])(\d+)$', array($this, 'trigger_trac'))
+		    ->set_trigger('^[a-z_]+$', array($this, 'trigger_default'));
+
+		// Add timers
+		$bot->set_timer(5, array($this, 'say_hi'));
 
 		// Login and join the default channel
 		$bot->login('koboto');
 		$bot->join('#koboto');
-
 		$bot->read();
+	}
 
-		// $bot->send('PRIVMSG #koboto :Go away, Shadowhand!');
-		// $bot->quit('hahahaha');
+	public function say_hi(Kobot $bot)
+	{
+		// Say hello!
+		$bot->log(1, 'Just saying a timed hello!');
+
+		// Only execute the timer once
+		$bot->remove_timer(array($this, __FUNCTION__));
 	}
 
 	public function trigger_default(Kobot $bot, array $data, array $params)
@@ -54,10 +62,10 @@ class Kobot_Controller extends Controller {
 		switch ($params[1])
 		{
 			case '#':
-				$bot->send('PRIVMSG '.$data['target'].' :Ticket #'.$params[2].' is http://trac.kohanaphp.com/ticket/'.$params[2]);
+				$bot->send('PRIVMSG '.$data['target'].' :Ticket '.$params[2].', http://trac.kohanaphp.com/ticket/'.$params[2]);
 			break;
 			case 'r':
-				$bot->send('PRIVMSG '.$data['target'].' :Revision r'.$params[2].' is http://trac.kohanaphp.com/changeset/'.$params[2]);
+				$bot->send('PRIVMSG '.$data['target'].' :Revision '.$params[2].', http://trac.kohanaphp.com/changeset/'.$params[2]);
 			break;
 		}
 	}
