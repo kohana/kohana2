@@ -40,8 +40,9 @@ class Kobot_Core {
 		'477',
 	);
 
-	// IRC socket, MOTD, and stats
+	// IRC socket, username, MOTD, and stats
 	protected $socket;
+	protected $username;
 	protected $motd;
 	protected $stats = array
 	(
@@ -114,6 +115,12 @@ class Kobot_Core {
 
 			// Read the PART command
 			$this->set_response('PART', array($this, 'response_part'));
+
+			// Read the PRIVMSG command
+			$this->set_response('PRIVMSG', array($this, 'response_privmsg'));
+
+			// Reply to VERSION commands
+			$this->add_trigger('^VERSION$', array($this, 'trigger_version'));
 		}
 		else
 		{
@@ -125,8 +132,11 @@ class Kobot_Core {
 
 	public function login($username, $password = NULL, $realname = 'Kohana PHP Bot')
 	{
-		// Send the login commands
-		$this->send('USER '.$username.' * * :'.$realname);
+		// Cache the current username
+		$this->username = $username;
+
+		// Send the login commands, use 8 for the mask (invisible)
+		$this->send('USER '.$username.' 8 * :'.$realname);
 		$this->send('NICK '.$username);
 
 		// Update the last ping
@@ -159,10 +169,8 @@ class Kobot_Core {
 
 	public function quit($message = '</Kirc> by Kohana Team')
 	{
-		// Quit, wait, and exit
-		$this->send('QUIT '.$message);
-		sleep(2);
-		exit;
+		// Send a quit message
+		$this->send('QUIT :'.$message);
 	}
 
 	public function send($command)
@@ -210,12 +218,15 @@ class Kobot_Core {
 				else
 				{
 					// Debug the response
-					$this->log(2, 'NOT FOUND: '.$data['command'].' <<< '.trim($raw));
+					$this->log(3, '<<< '.$data['command'].' <<< '.trim($raw));
 				}
 			}
 			// One half-second is high enough interactivity
 			usleep(500000);
 		}
+
+		// Disconnect
+		$this->log(1, 'Disconnected');
 	}
 
 	/**
@@ -294,105 +305,6 @@ class Kobot_Core {
 		return $data;
 	}
 
-	protected function run()
-	{
-		// Current username and size of username
-		$bot = $this->config['username'];
-		$len = strlen($bot);
-
-		// Parts of a publicly spoken message
-		$parts = array('nickname', 'username', 'hostname', 'channel', 'message');
-
-		while ( ! feof($this->socket))
-		{
-			while ($raw = fgets($this->socket, 1024))
-			{
-				// Remove extra whitespace
-				$raw = trim($raw);
-
-				if (substr($raw, 0, 4) === 'PING')
-				{
-					// Send a PONG response
-					$this->send('PONG'.substr($raw, 4));
-					break;
-				}
-				else
-				{
-					if (strpos($raw, 'PRIVMSG') !== FALSE
-					    AND strpos($raw, $bot) !== FALSE
-					    AND preg_match('/^:(.+?)!n=(.+?)@(.+?) PRIVMSG (#.+?) :(.+)$/', $raw, $data))
-					{
-						// Make an associative array of the data
-						$data = array_combine($parts, array_slice($data, 1));
-
-						if (substr($data['message'], 0, $len) === $bot)
-						{
-							// A command has been sent
-							$command = ltrim(substr($data['message'], $len), ' :;,');
-
-							if ($command === 'say hello')
-							{
-								;
-							}
-							elseif (preg_match('/^r(\d+)$/', $command, $match))
-							{
-								// The URL for a revision number
-								$url = 'http://trac.kohanaphp.com/changeset/'.$match[1];
-
-								if ($this->url_status($url))
-								{
-									$this->send('PRIVMSG '.$data['channel'].' :Revision r'.$match[1].', '.$url);
-								}
-							}
-							elseif (preg_match('/^#(\d+)$/', $command, $match))
-							{
-								// The URL for a ticket number
-								$url = 'http://trac.kohanaphp.com/ticket/'.$match[1];
-
-								if ($this->url_status($url))
-								{
-									$this->send('PRIVMSG '.$data['channel'].' :Ticket #'.$match[1].', '.$url);
-								}
-							}
-						}
-					}
-					else
-					{
-						echo $raw."\n";
-					}
-
-					// 
-					// if (($offset = strpos($raw, ' PRIVMSG :'.$user)) !== FALSE AND )
-					// {
-					// 	
-					// }
-					// list ($host, $cmd, $msg) = explode(' ', $raw, 3);
-					// 
-					// $host = trim($host);
-					// $cmd  = trim($cmd);
-					// $msg  = trim($msg);
-					// 
-					// list ($chan, $msg) = explode(' ', $msg);
-					// $msg = substr($msg, 1);
-					// 
-					// print_r(array('host' => $host, 'cmd' => $cmd, 'chan' => $chan, 'msg' => $msg));
-
-					// if (($offset = strpos($raw, ':', 1)) !== FALSE)
-					// {
-					// 	if (($offset = substr($raw, $offset, $size)) === $user)
-					// 	{
-					// 		// Process the command
-					// 		$this->send('PRIVMSG '.$chan.' :saying hello?');
-					// 	}
-					// }
-				}
-
-				// Flush the console output
-				flush();
-			}
-		}
-	}
-
 	public function log($level, $message)
 	{
 		if ($level >= $this->log_level)
@@ -419,9 +331,11 @@ class Kobot_Core {
 		}
 	}
 
-	public function add_trigger($callback, $pattern)
+	public function add_trigger($pattern, $callback)
 	{
-		// TODO
+		// Store the trigger and it's callback
+		$this->msg_triggers[$pattern] = $callback;
+
 		return $this;
 	}
 
@@ -530,6 +444,35 @@ class Kobot_Core {
 				$this->log(2, '< '.$data['sender'].' ('.$data['target'].')');
 			}
 		}
+	}
+
+	public function response_privmsg($data)
+	{
+		if ($data['message'] === chr(1).'VERSION'.chr(1))
+		{
+			// Send a CTCP VERSION response
+			$this->response_version($data);
+		}
+		elseif (substr($data['message'], 0, strlen($this->username)) === $this->username
+		    AND $trigger = trim(substr($data['message'], strlen($this->username)), ' :'))
+		{
+			// Process triggers
+			foreach ($this->msg_triggers as $pattern => $func)
+			{
+				if (preg_match('/'.$pattern.'/', $trigger, $matches))
+				{
+					// Execute the callback trigger:
+					// callback($this, $command_array, $captures);
+					call_user_func($func, $this, $data, $matches);
+				}
+			}
+		}
+	}
+
+	public function response_version($data)
+	{
+		// Send a CTCP VERSION response
+		$this->send('NOTICE '.$data['sender'].' :'.chr(1).'VERSION Kobot v'.KOHANA_VERSION.' Kohana Team'.chr(1));
 	}
 
 } // End Kobot
