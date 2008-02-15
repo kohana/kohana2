@@ -788,13 +788,14 @@ class Database_Core {
 	}
 
 	/**
-	 * Adds an "in" condition to the where clause
+	 * Adds an "IN" condition to the where clause
 	 * 
 	 * @param   string  Name of the column being examined
 	 * @param   mixed   An array or string to match against
+	 * @param   bool    Generate a NOT IN clause instead
 	 * @return  object  This Database object.
 	 */
-	public function in($field, $values) 
+	public function in($field, $values, $not = FALSE) 
 	{
 		if (is_array($values))
 		{
@@ -812,9 +813,21 @@ class Database_Core {
 			}
 			$values = implode(",", $escaped_values);
 		}
-		$this->where($this->driver->escape_column($field).' IN('.$values.')');
-		
+		$this->where($this->driver->escape_column($field).' '.(!$not) ? 'NOT ' : ''.'IN ('.$values.')');
+
 		return $this;
+	}
+
+	/**
+	 * Adds a "NOT IN" condition to the where clause
+	 * 
+	 * @param   string  Name of the column being examined
+	 * @param   mixed   An array or string to match against
+	 * @return  object  This Database object.
+	 */
+	public function notin($field, $values) 
+	{
+		return $this->in($field, $values, TRUE);
 	}
 
 	/**
