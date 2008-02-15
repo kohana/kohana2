@@ -4,18 +4,21 @@
  *
  * $Id$
  *
- * @package    Kirc
+ * @package    Kobot
  * @author     Woody Gilk
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Kirc_Core {
+class Kobot_Core {
 
 	// The characters that represent a newline
 	public static $newline = "\r\n";
 
 	// Log level: 1 = errors, 2 = debug
 	public $log_level = 1;
+
+	// Command responses
+	protected $responses = array();
 
 	// IRC socket, MOTD, and stats
 	protected $socket;
@@ -35,8 +38,10 @@ class Kirc_Core {
 
 	public function __construct($server, $port = NULL, $timeout = NULL)
 	{
+		echo Kohana::debug($this->parse(':anthony.freenode.net 353 koboto @ #koboto :koboto @Shadowhand'));exit;
+		
 		if (PHP_SAPI !== 'cli')
-			throw new Kirc_Exception('kirc.command_line_only');
+			throw new Kohana_Exception('kobot.command_line_only');
 
 		// Close all output buffers
 		while (ob_get_level()) ob_end_clean();
@@ -72,7 +77,7 @@ class Kirc_Core {
 			$this->log(1, 'Connected to '.$server.':'.$port);
 
 			// Automatically reply to PING comamnds
-			Event::add('kirc.ping', array($this, 'pong'));
+			$this->set_response('ping', array($this, 'pong'));
 		}
 		else
 		{
@@ -108,6 +113,17 @@ class Kirc_Core {
 		}
 	}
 
+	public function set_response($command, $callback)
+	{
+		if ( ! is_callable($callback))
+			throw new Kohana_Exception('kobot.invalid_callback');
+
+		// Set the response callback
+		$this->responses[$command] = $callback;
+
+		return $this;
+	}
+
 	public function login($username, $password = NULL, $realname = 'Kohana PHP Bot')
 	{
 		// Send the login commands
@@ -117,15 +133,15 @@ class Kirc_Core {
 		// Update the last ping
 		$this->stats['last_ping'] = microtime(TRUE);
 
-		// Read the MOTD before continuing
-		Event::add('kirc.375', array($this, 'read_motd'));
-		Event::add('kirc.372', array($this, 'read_motd'));
-		Event::add('kirc.376', array($this, 'read_motd'));
+		// Set the MOTD response
+		$this->set_response('375', array($this, 'read_motd'));
+		$this->set_response('372', array($this, 'read_motd'));
+		$this->set_response('376', array($this, 'read_motd'));
 	}
 
-	public function read_motd()
+	public function read_motd($data)
 	{
-		switch (Event::$data['command'])
+		switch ($data['command'])
 		{
 			case '375':
 				// Prepare to read the MOTD
@@ -133,7 +149,7 @@ class Kirc_Core {
 			break;
 			case '372':
 				// Read the MOTD
-				$this->motd[] = substr(Event::$data['message'], 2);
+				$this->motd[] = substr($data['message'], 2);
 			break;
 			case '376':
 				// Log the number of lines in the MOTD
@@ -156,22 +172,7 @@ class Kirc_Core {
 			$this->send('JOIN '.$channel);
 
 			// Read the USERS command
-			Event::add('kirc.353', array($this, 'read_userlist'));
-		}
-	}
-
-	public function read_userlist()
-	{
-		if (strpos(Event::$data['target'], ' @ ') !== FALSE)
-		{
-			// Get the channel name from the target
-			list ($bot, $channel) = explode(' @ ', Event::$data['target'], 2);
-
-			// Set the current users
-			$this->channels[$channel] = explode(' ', Event::$data['message']);
-
-			// Log the user count
-			$this->log(1, 'Read '.count($this->channels[$channel]).' users');
+			$this->set_response('353', array($this, 'read_userlist'));
 		}
 	}
 
@@ -219,12 +220,6 @@ class Kirc_Core {
 		}
 	}
 
-	public function pong()
-	{
-		// Reply with a PONG
-		$this->send('PONG '.substr(Event::$data['message'], 1));
-	}
-
 	public function read()
 	{
 		while ( ! feof($this->socket))
@@ -247,61 +242,64 @@ class Kirc_Core {
 	// Return: array(sender, sendhost, command, target, message)
 	protected function parse($raw)
 	{
-		// These will always be returned
-		$sender   = NULL;
-		$sendhost = NULL;
-		$command  = NULL;
-		$target   = NULL;
-		$message  = NULL;
+		// Remove the whitespace garbage
+		$raw = trim($raw);
 
-		// Split the message
-		$message = explode(' ', trim($raw), 2);
+		// These values are always returned
+		$data = array
+		(
+			'sender'   => NULL,
+			'sendhost' => NULL,
+			'command'  => NULL,
+			'target'   => NULL,
+			'message'  => NULL,
+		);
 
-		if ( ! empty($message[0]) AND $message[0]{0} === ':')
+		// Extract the prefix from the string
+		list ($prefix, $str) = explode(' ', $raw, 2);
+
+		if ( ! empty($prefix) AND $prefix{0} === ':')
 		{
-			// Is a receivable command
-			$prefix = substr($message[0], 1);
+			// A user-level command, like PRIVMSG or NOTICE
+			$prefix = substr($prefix, 1);
 
 			if (strpos($prefix, '!') !== FALSE)
 			{
-				// sender!sendhost
-				list ($sender, $sendhost) = explode('!', $prefix, 2);
+				// sender@host, typically a user
+				list ($data['sender'], $data['sendhost']) = explode('!', $prefix, 2);
 			}
 			else
 			{
-				// sender
-				$sender = $prefix;
+				// sender, Typically a server
+				$data['sender'] = $prefix;
 			}
 
-			// Separate the command and message
-			list ($command, $params) = explode(' ', $message[1], 2);
+			// CMD str, Extract the command from the remaining string
+			list ($data['command'], $str) = explode(' ', $str, 2);
 
-			if (strpos($params, ' :') !== FALSE)
+			if (strpos($str, ' :') !== FALSE)
 			{
-				// target :message
-				list ($target, $message) = explode(' :', $params, 2);
+				// target :message, some kind of communication
+				list ($data['target'], $data['message']) = explode(' :', $params, 2);
 			}
-			elseif ($params{0} === ':')
+			elseif ($str{0} === ':')
 			{
-				// :target
-				$target = substr($params, 1);
-				$message = NULL;
+				// :target, without a message
+				$data['target'] = substr($str, 1);
 			}
 			else
 			{
-				// target
-				$target = $params;
-				$message = NULL;
+				$data['target'] = $str;
 			}
 		}
 		else
 		{
-			// Is a raw command, like PING
-			$command = $message[0];
-			$message = empty($message[1]) ? NULL : trim($message[1]);
+			// A server-level command, like PING
+			$data['command'] = $prefix;
+			$data['message'] = empty($str) ? NULL : $str;
 		}
 
-		return array($sender, $sendhost, $command, $target, $message);
+		return $data;
 	}
 
 	protected function run()
@@ -403,43 +401,37 @@ class Kirc_Core {
 		}
 	}
 
-	protected function url_status($url)
+	/**
+	 * Kobot default responses. You can overload these in your own extension class,
+	 * or attach your own event handlers
+	 */
+
+	public function response_drop($data)
 	{
-		if (($status = $this->db_url_status($url)) === NULL)
+		// Log dropped responses
+		$this->log(2, $data);
+	}
+
+	public function response_ping($data)
+	{
+		// Reply with a PONG
+		$this->send('PONG '.substr($data['message'], 1));
+	}
+
+	// 353
+	public function response_userlist($data)
+	{
+		if (strpos($data['target'], ' @ ') !== FALSE)
 		{
-			// Extract the URL params
-			extract(parse_url($url), EXTR_PREFIX_ALL, 'url');
+			// Get the channel name from the target
+			list ($bot, $channel) = explode(' @ ', $data['target'], 2);
 
-			// Invalid URL by default
-			$status = FALSE;
-			if ($socket = fsockopen($url_host, 80, $errno, $errstr, 6))
-			{
-				// Fetch the HTTP HEAD
-				fwrite($socket, "HEAD $url_path HTTP/1.0\r\nHost: $url_host\r\n\r\n");
+			// Set the current users
+			$this->channels[$channel] = explode(' ', $data['message']);
 
-				// Read the response
-				$status = fgets($socket, 22);
-
-				// Set the response
-				$status = (strpos($status, '200 OK') !== FALSE);
-
-				// Close the connection
-				fclose($socket);
-			}
-
-			// Save the URL to the database
-			$this->db->insert('urls', array('url' => $url, 'status' => (int) $status));
+			// Log the user count
+			$this->log(1, 'Read '.count($this->channels[$channel]).' users');
 		}
-
-		return $status;
 	}
 
-	protected function db_url_status($url)
-	{
-		// Fetch the status of the URL
-		$status = $this->db->select('status')->where('url', $url)->limit(1)->get('urls');
-
-		return $status->count() ? (bool) $status->current()->status : NULL;
-	}
-
-}
+} // End Kobot
