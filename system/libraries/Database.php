@@ -813,7 +813,7 @@ class Database_Core {
 			}
 			$values = implode(",", $escaped_values);
 		}
-		$this->where($this->driver->escape_column($field).' '.(!$not) ? 'NOT ' : ''.'IN ('.$values.')');
+		$this->where($this->driver->escape_column($field).' '.($not) ? 'NOT ' : ''.'IN ('.$values.')');
 
 		return $this;
 	}
