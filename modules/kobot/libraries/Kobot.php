@@ -238,8 +238,8 @@ class Kobot_Core {
 			// Start a new read loop
 			$loop_time = microtime(TRUE);
 
-			// Read the raw server stream, up to 512 characters
-			while ($raw = fgets($this->socket, 512))
+			// Read the raw server stream, up to 1024 characters
+			while ($raw = fgets($this->socket, 1024))
 			{
 				// Update the last received time
 				$this->stats['last_received'] = microtime(TRUE);
@@ -266,11 +266,13 @@ class Kobot_Core {
 			$loop_time = (microtime(TRUE) - $loop_time) * 1000000;
 
 			// Every loop should take one-half second
-			($loop_time < 500000) and usleep(500000 - $loop_time);
+			($loop_time < 500000) and usleep(500000 - (int) $loop_time);
 		}
 
 		// Disconnect
 		$this->log(1, 'Disconnected');
+
+		// TODO: Handle reconnecting
 	}
 
 	/**
