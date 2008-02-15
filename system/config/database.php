@@ -6,7 +6,7 @@
  * name is used when loading the database library, the group named "default"
  * will be used.
  *
- * Each group can be connected to independantly, and multiple groups can be
+ * Each group can be connected to independently, and multiple groups can be
  * connected at once.
  *
  * Group Options:

@@ -673,13 +673,14 @@ class ORM_Core {
 				return ORM::factory($this->class, $result->current());
 			}
 
-			// Load the first result, if there is only one result
 			if ($result->count() === 1)
 			{
+				// Load the first result, if there is only one result
 				$this->object = $result->current();
 			}
 			else
 			{
+				// Clear the object, nothing was loaded
 				$this->clear();
 			}
 		}
