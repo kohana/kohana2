@@ -14,9 +14,7 @@ class Kirc_Controller extends Controller {
 		$bot->login('koboto');
 		$bot->join('#koboto');
 
-		print_r($bot);exit;
-
-		// $bot->read();
+		$bot->read();
 
 		// $bot->send('PRIVMSG #koboto :Go away, Shadowhand!');
 		// $bot->quit('hahahaha');

@@ -17,8 +17,9 @@ class Kirc_Core {
 	// Log level: 1 = errors, 2 = debug
 	public $log_level = 1;
 
-	// IRC socket and stats
+	// IRC socket, MOTD, and stats
 	protected $socket;
+	protected $motd;
 	protected $stats = array
 	(
 		'start'              => 0,
@@ -69,6 +70,9 @@ class Kirc_Core {
 
 			// Connection is complete
 			$this->log(1, 'Connected to '.$server.':'.$port);
+
+			// Automatically reply to PING comamnds
+			Event::add('kirc.ping', array($this, 'pong'));
 		}
 		else
 		{
@@ -99,6 +103,7 @@ class Kirc_Core {
 	{
 		if ($level >= $this->log_level)
 		{
+			// Display the message with a timestamp, flush the output
 			echo date('Y-m-d g:i:s').' --- '.$message."\n"; flush();
 		}
 	}
@@ -113,24 +118,60 @@ class Kirc_Core {
 		$this->stats['last_ping'] = microtime(TRUE);
 
 		// Read the MOTD before continuing
-		$this->read(375, 376, FALSE);
-		$this->log(2, 'Received MOTD (suppressed)');
+		Event::add('kirc.375', array($this, 'read_motd'));
+		Event::add('kirc.372', array($this, 'read_motd'));
+		Event::add('kirc.376', array($this, 'read_motd'));
+	}
+
+	public function read_motd()
+	{
+		switch (Event::$data['command'])
+		{
+			case '375':
+				// Prepare to read the MOTD
+				$this->motd = array();
+			break;
+			case '372':
+				// Read the MOTD
+				$this->motd[] = substr(Event::$data['message'], 2);
+			break;
+			case '376':
+				// Log the number of lines in the MOTD
+				$this->log(1, 'Read '.count($this->motd).' MOTD lines');
+
+				// Make the MOTD into a string
+				$this->motd = implode("\n", $this->motd);
+			break;
+		}
 	}
 
 	public function join($channel)
 	{
 		if (empty($this->channels[$channel]))
 		{
+			// Set the channel as joined
+			$this->channels[$channel] = array();
+
 			// Join the channel
 			$this->send('JOIN '.$channel);
 
 			// Read the USERS command
-			$this->channels[$channel] = explode(':', $this->read(353));
-			$this->channels[$channel] = explode(' ', $this->channels[$channel][1]);
+			Event::add('kirc.353', array($this, 'read_userlist'));
+		}
+	}
 
-			// The end of the USERS command
-			$this->read(366, FALSE);
-			$this->log(2, 'Received USERS (suppressed)');
+	public function read_userlist()
+	{
+		if (strpos(Event::$data['target'], ' @ ') !== FALSE)
+		{
+			// Get the channel name from the target
+			list ($bot, $channel) = explode(' @ ', Event::$data['target'], 2);
+
+			// Set the current users
+			$this->channels[$channel] = explode(' ', Event::$data['message']);
+
+			// Log the user count
+			$this->log(1, 'Read '.count($this->channels[$channel]).' users');
 		}
 	}
 
@@ -178,66 +219,89 @@ class Kirc_Core {
 		}
 	}
 
-	public function read($start = NULL, $end = NULL, $return = TRUE)
+	public function pong()
 	{
-		if (is_bool($end))
-		{
-			// Return value and end are shifted one place
-			$return = $end;
-			$end = NULL;
-		}
+		// Reply with a PONG
+		$this->send('PONG '.substr(Event::$data['message'], 1));
+	}
 
-		// Make sure the start and end are strings
-		($start === NULL) or $start = (string) $start;
-		($end   === NULL) or $end   = (string) $end;
-
-		$buffer = '';
+	public function read()
+	{
 		while ( ! feof($this->socket))
 		{
-			while ($raw = fgets($this->socket, 128))
+			while ($raw = fgets($this->socket, 512))
 			{
-				if ( ! empty($start))
-				{
-					// Get the host and command from the stream
-					list ($host, $cmd, $msg) = explode(' ', $raw, 3);
+				$this->log(2, '<<< '.trim($raw));
 
-					if ($cmd === $start)
-					{
-						// Trim the message
-						$msg = trim($msg);
+				// Parse the command
+				$data = array_combine(array('sender', 'sendhost', 'command', 'target', 'message'), $this->parse($raw));
 
-						if (empty($end))
-						{
-							// Return the message
-							return ($return === TRUE) ? $msg : NULL;
-						}
-
-						$buffer .= $msg;
-					}
-
-					if ( ! empty($buffer))
-					{
-						if ($return === TRUE)
-						{
-							// Only add to the buffer for returns
-							$buffer .= $msg;
-						}
-
-						if ($cmd === $end)
-						{
-							// Return the complete buffer
-							return ($return === TRUE) ? $buffer : NULL;
-						}
-					}
-				}
-				else
-				{
-					$this->log(2, '<<< '.trim($raw));
-				}
+				// Run the event
+				Event::run('kirc.'.strtolower($data['command']), $data);
 			}
 			// One half-second is high enough interactivity
 			usleep(500000);
 		}
+	}
+
+	// Return: array(sender, sendhost, command, target, message)
+	protected function parse($raw)
+	{
+		// These will always be returned
+		$sender   = NULL;
+		$sendhost = NULL;
+		$command  = NULL;
+		$target   = NULL;
+		$message  = NULL;
+
+		// Split the message
+		$message = explode(' ', trim($raw), 2);
+
+		if ( ! empty($message[0]) AND $message[0]{0} === ':')
+		{
+			// Is a receivable command
+			$prefix = substr($message[0], 1);
+
+			if (strpos($prefix, '!') !== FALSE)
+			{
+				// sender!sendhost
+				list ($sender, $sendhost) = explode('!', $prefix, 2);
+			}
+			else
+			{
+				// sender
+				$sender = $prefix;
+			}
+
+			// Separate the command and message
+			list ($command, $params) = explode(' ', $message[1], 2);
+
+			if (strpos($params, ' :') !== FALSE)
+			{
+				// target :message
+				list ($target, $message) = explode(' :', $params, 2);
+			}
+			elseif ($params{0} === ':')
+			{
+				// :target
+				$target = substr($params, 1);
+				$message = NULL;
+			}
+			else
+			{
+				// target
+				$target = $params;
+				$message = NULL;
+			}
+		}
+		else
+		{
+			// Is a raw command, like PING
+			$command = $message[0];
+			$message = empty($message[1]) ? NULL : trim($message[1]);
+		}
+
+		return array($sender, $sendhost, $command, $target, $message);
 	}
 
 	protected function run()
