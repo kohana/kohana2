@@ -35,23 +35,12 @@ class html_Core {
 			}
 			else
 			{
-				$str = preg_replace('/&(?!(?:#\d+|[a-z]+);)/i', '&amp;', $str);
+				$str = preg_replace('/&(?!(?:#\d++|[a-z]++);)/i', '&amp;', $str);
 				$str = str_replace(array('<', '>', '\'', '"'), array('&lt;', '&gt;', '&#39;', '&quot;'), $str);
 			}
 		}
 
 		return $str;
-	}
-
-	/**
-	 * Creates an HTTP query string from an array. Deprecated.
-	 *
-	 * @param   array   array of data to convert to string
-	 * @return  string
-	 */
-	public static function query_string($array)
-	{
-		return http_build_query($array);
 	}
 
 	/**

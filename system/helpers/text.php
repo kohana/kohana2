@@ -95,7 +95,6 @@ class text_Core {
 	 * @param   integer  length of string to return
 	 * @return  string
 	 *
-	 * @tutorial  unique  - 40 character unique hash
 	 * @tutorial  alnum   - alpha-numeric characters
 	 * @tutorial  alpha   - alphabetical characters
 	 * @tutorial  numeric - digit characters, 0-9
@@ -103,10 +102,10 @@ class text_Core {
 	 */
 	public static function random($type = 'alnum', $length = 8)
 	{
+		$utf8 = FALSE;
+
 		switch ($type)
 		{
-			case 'unique':
-				return sha1(uniqid(NULL, TRUE));
 			case 'alnum':
 				$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 			break;
@@ -121,15 +120,19 @@ class text_Core {
 			break;
 			default:
 				$pool = (string) $type;
+				$utf8 = ! utf8::is_ascii($pool);
 			break;
 		}
 
 		$str = '';
-		$pool_size = utf8::strlen($pool);
+
+		$pool_size = ($utf8 === TRUE) ? utf8::strlen($pool) : strlen($pool);
 
 		for ($i = 0; $i < $length; $i++)
 		{
-			$str .= utf8::substr($pool, mt_rand(0, $pool_size - 1), 1);
+			$str .= ($utf8 === TRUE)
+				? utf8::substr($pool, mt_rand(0, $pool_size - 1), 1)
+				:       substr($pool, mt_rand(0, $pool_size - 1), 1);
 		}
 
 		return $str;
