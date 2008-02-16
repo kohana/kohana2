@@ -491,7 +491,7 @@ class Validation_Core extends ArrayObject {
 		if ( ! is_string($str))
 			return FALSE;
 
-		$size = strlen($str);
+		$size = utf8::strlen($str);
 		$status = FALSE;
 
 		if (count($length) > 1)

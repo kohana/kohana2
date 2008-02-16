@@ -286,6 +286,7 @@ abstract class Database_Driver {
 				$value = (int) $value;
 			break;
 			case 'double':
+				// Convert to non-locale aware float to prevent possible commas
 				$value = sprintf('%F', $value);
 			break;
 			default:

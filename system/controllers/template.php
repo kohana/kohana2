@@ -19,7 +19,7 @@ class Template_Controller extends Controller {
 	// Template view name
 	protected $template = 'template';
 
-	// Default to no auto-rendering
+	// Default to do auto-rendering
 	protected $auto_render = TRUE;
 
 	/**
