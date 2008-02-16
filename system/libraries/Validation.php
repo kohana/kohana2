@@ -392,7 +392,7 @@ class Validation_Core extends ArrayObject {
 					call_user_func($func, $this, $field);
 
 					// Stop after an error is found
-					if ( ! empty($errors[$f])) break;
+					if ( ! empty($errors[$field])) break;
 				}
 			}
 		}
