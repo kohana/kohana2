@@ -22,6 +22,6 @@ $lang = array
 	// GD specific messages
 	'gd' => array
 	(
-		'requires_v2' => 'За библиотеката Image задолжителен е GD2. Молиме видете на http://php.net/gd_info за повеќе информации.',
+		'requires_v2' => 'За библиотеката Image задолжителен е GD2. Молиме погледнете на http://php.net/gd_info за повеќе информации.',
 	),
 );

@@ -2,7 +2,7 @@
 
 $lang = array
 (
-	'driver_not_supported'		=> 'Задолжителниот Payment драјвер, %s, ме е пронајден.',
+	'driver_not_supported'		=> 'Задолжителниот Payment драјвер, %s, не е пронајден.',
 	'driver_implements'			=> 'Задолжителниот Payment драјвер, %s, не го имплементира Payment_Driver.',
 	'required'					=> 'Некои задолжителни полиња не се пополнети: %s',
 	'gateway_connection_error'	=> 'Се појави грешка при поврзување со payment gateway. Ве молиме контактирајте со вебмастерот ако овој проблем цело време се појавува.',

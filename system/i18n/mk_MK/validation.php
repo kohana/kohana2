@@ -4,7 +4,7 @@ $lang = array
 (
 	// Class errors
 	'error_format'  => 'Стрингот во пораката за грешка мора да го содржи стрингот {message} .',
-	'invalid_rule'  => 'Користено е невалидно правило за валидација: %s',
+	'invalid_rule'  => 'Користено е невалидно правило за валидирање: %s',
 
 	// General errors
 	'unknown_error' => 'Непозната грешка при валидирање на полето: %s.',
@@ -33,6 +33,7 @@ $lang = array
 
 	// Field types
 	'alpha'         => 'alphabetical',
+	'alpha_numeric' => 'alphabetical and numeric',
 	'alpha_dash'    => 'alphabetical, dash, and underscore',
 	'digit'         => 'digit',
 	'numeric'       => 'numeric',
