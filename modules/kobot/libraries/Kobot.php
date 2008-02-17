@@ -103,6 +103,14 @@ class Kobot_Core {
 		}
 	}
 
+	public function __get($key)
+	{
+		if (isset($this->$key))
+		{
+			return $this->$key;
+		}
+	}
+
 	public function default_responses()
 	{
 		// Read the PING command
@@ -134,18 +142,13 @@ class Kobot_Core {
 		// Read the "info" trigger
 		$this->set_trigger('^info ([^\s]+)$', array($this, 'trigger_info'));
 
+		// Set the "uptime" timer for 60 minutes
+		$this->set_timer(60 * 60, array($this, 'timer_uptime'));
+
 		foreach ($this->dropped as $cmd)
 		{
 			// Drop all requested commands
 			$this->set_response($cmd, array($this, 'response_drop'));
-		}
-	}
-
-	public function __get($key)
-	{
-		if (isset($this->$key))
-		{
-			return $this->$key;
 		}
 	}
 
@@ -662,6 +665,39 @@ class Kobot_Core {
 				break;
 			}
 		}
+	}
+
+	/**
+	 * Default timers.
+	 */
+
+	protected function timer_uptime()
+	{
+		// Uptime array
+		$uptime = array();
+
+		// Timespan array
+		$timespan = date::timespan((int) $this->stats['start']);
+
+		// Skip all the empty starting intervals
+		$skip = TRUE;
+
+		foreach ($timespan as $interval => $amount)
+		{
+			if ($amount > 0 OR $skip === FALSE)
+			{
+				// Stop skipping intervals
+				$skip = FALSE;
+
+				// Only add amounts that are greater than 0
+				$uptime[$interval] = $amount.' '.$interval;
+			}
+		}
+		// Add "and" before the last amount
+		$uptime[$interval] = 'and '.$uptime[$interval];
+
+		// Log the uptime
+		$this->log(1, 'Uptime: '.implode(' ', $uptime));
 	}
 
 } // End Kobot
