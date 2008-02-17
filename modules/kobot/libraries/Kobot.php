@@ -17,9 +17,10 @@ class Kobot_Core {
 	// Log level: 1 = errors, 2 = debug
 	public $log_level = 1;
 
-	// Command responses and timers
+	// Command responses, timers, and triggers
 	protected $responses = array();
 	protected $timers = array();
+	protected $triggers = array();
 
 	// Responses to drop by default
 	protected $dropped = array
@@ -30,19 +31,19 @@ class Kobot_Core {
 		'003',
 		'004',
 		'005',
+		'250',
 		'251',
 		'252',
 		'254',
 		'255',
 		'265',
 		'266',
-		'250',
 		'366',
 		'477',
 	);
 
 	// IRC socket, username, MOTD, and stats
-	protected $socket;
+	protected $server;
 	protected $username;
 	protected $motd;
 	protected $stats = array
@@ -56,7 +57,7 @@ class Kobot_Core {
 	// Connected channels
 	protected $channels = array();
 
-	public function __construct($server, $port = NULL, $timeout = NULL)
+	public function __construct($host, $port = NULL, $timeout = NULL)
 	{
 		if (PHP_SAPI !== 'cli')
 			throw new Kohana_Exception('kobot.command_line_only');
@@ -71,70 +72,92 @@ class Kobot_Core {
 		set_error_handler(array($this, 'exception_handler'));
 		set_exception_handler(array($this, 'exception_handler'));
 
+		// Add the identify event
+		Event::add('kobot.motd_read', array($this, 'login_identify'));
+
 		// Set the port
 		empty($port) and $port = 6667;
 
 		// Set the timeout
 		empty($timeout) and $timeout = 10;
 
-		// Disable error reporting
-		$ER = error_reporting(0);
+		// Set the start time
+		$this->stats['start'] = microtime(TRUE);
 
-		if ($this->socket = fsockopen($server, $port, $errno, $errstr, $timeout))
+		// Load the server object
+		$this->server = new Kobot_Server($host, $port, $timeout);
+
+		if ($this->server->connect())
 		{
-			// Enable error reporting
-			error_reporting($ER);
-
-			// Set the start time
-			$this->stats['start'] = microtime(TRUE);
-
-			// Keep the response time as short as possible, for greater interactivity
-			stream_set_blocking($this->socket, 0);
+			// Set the default responses
+			$this->default_responses();
 
 			// Connection is complete
-			$this->log(1, 'Connected to '.$server.':'.$port);
-
-			// Read the PING command
-			$this->set_response('PING', array($this, 'response_ping'));
-
-			// Read the MOTD command
-			$this->set_response('375', array($this, 'response_motd'));
-			$this->set_response('372', array($this, 'response_motd'));
-			$this->set_response('376', array($this, 'response_motd'));
-
-			// Read the USERS command
-			$this->set_response('353', array($this, 'response_userlist'));
-
-			// Read the JOIN command
-			$this->set_response('JOIN', array($this, 'response_join'));
-
-			// Read the PART command
-			$this->set_response('PART', array($this, 'response_part'));
-
-			// Read the PRIVMSG command
-			$this->set_response('PRIVMSG', array($this, 'response_privmsg'));
-
-			foreach ($this->dropped as $cmd)
-			{
-				// Drop all requested commands
-				$this->set_response($cmd, array($this, 'response_drop'));
-			}
+			$this->log(1, 'Connected to '.$this->server->host.':'.$this->server->port);
 		}
 		else
 		{
 			// Nothing left to do if the connection fails
-			$this->log(1, 'Could not to connect to '.$server.':'.$port.' in less than '.$timeout.' seconds: '.$errstr);
+			$this->log(1, 'Could not to connect to '.$this->server->host.':'.$this->server->port.' in less than '.$this->server->timeout.' seconds: '.$this->server->error);
 			exit;
+		}
+	}
+
+	public function default_responses()
+	{
+		// Read the PING command
+		$this->set_response('PING', array($this, 'response_ping'));
+
+		// Read the MOTD command
+		$this->set_response('375', array($this, 'response_motd'));
+		$this->set_response('372', array($this, 'response_motd'));
+		$this->set_response('376', array($this, 'response_motd'));
+
+		// Read the JOINTOPIC command
+		$this->set_response('332', array($this, 'response_topic'));
+
+		// Read the USERS command
+		$this->set_response('353', array($this, 'response_userlist'));
+
+		// Read the TOPIC command
+		$this->set_response('TOPIC', array($this, 'response_topic'));
+
+		// Read the JOIN command
+		$this->set_response('JOIN', array($this, 'response_join'));
+
+		// Read the PART command
+		$this->set_response('PART', array($this, 'response_part'));
+
+		// Read the PRIVMSG command
+		$this->set_response('PRIVMSG', array($this, 'response_privmsg'));
+
+		// Read the "info" trigger
+		$this->set_trigger('^info ([^\s]+)$', array($this, 'trigger_info'));
+
+		foreach ($this->dropped as $cmd)
+		{
+			// Drop all requested commands
+			$this->set_response($cmd, array($this, 'response_drop'));
+		}
+	}
+
+	public function __get($key)
+	{
+		if (isset($this->$key))
+		{
+			return $this->$key;
 		}
 	}
 
 	public function log($level, $message)
 	{
-		if ($level >= $this->log_level)
+		if ($this->log_level >= $level)
 		{
 			// Display the message with a timestamp, flush the output
 			echo date('Y-m-d g:i:s').' --- '.$message."\n"; flush();
 		}
+
+		return TRUE;
 	}
 
 	/**
@@ -190,7 +213,7 @@ class Kobot_Core {
 	public function set_trigger($pattern, $callback)
 	{
 		// Store the trigger and it's callback
-		$this->msg_triggers[$pattern] = $callback;
+		$this->triggers[$pattern] = $callback;
 
 		return $this;
 	}
@@ -198,7 +221,7 @@ class Kobot_Core {
 	public function remove_trigger($pattern)
 	{
 		// Remove the trigger
-		unset($this->msg_triggers[$pattern]);
+		unset($this->triggers[$pattern]);
 
 		return $this;
 	}
@@ -209,17 +232,17 @@ class Kobot_Core {
 
 	public function send($command)
 	{
-		if (feof($this->socket))
+		if (feof($this->server->socket))
 		{
 			// The socket has been terminated unexpectedly. Abort, now!
 			$this->log(1, 'Disconnected unexpectedly, shutting down.');
 			exit;
 		}
 
-		if (fwrite($this->socket, $command.self::$newline))
+		if (fwrite($this->server->socket, $command.self::$newline))
 		{
 			// Log the sent command
-			$this->log(2, '>>> '.$command);
+			$this->log(3, '>>> '.$command);
 
 			// Update the stats
 			$this->stats['last_sent'] = microtime(TRUE);
@@ -233,13 +256,13 @@ class Kobot_Core {
 
 	public function read()
 	{
-		while ( ! feof($this->socket))
+		while ( ! feof($this->server->socket))
 		{
 			// Start a new read loop
 			$loop_time = microtime(TRUE);
 
 			// Read the raw server stream, up to 1024 characters
-			while ($raw = fgets($this->socket, 1024))
+			while ($raw = fgets($this->server->socket, 1024))
 			{
 				// Update the last received time
 				$this->stats['last_received'] = microtime(TRUE);
@@ -252,11 +275,9 @@ class Kobot_Core {
 					// Call the response handler
 					call_user_func($this->responses[$data['command']], $data);
 				}
-				else
-				{
-					// Debug the response
-					$this->log(3, '<<< '.$data['command'].' <<< '.trim($raw));
-				}
+
+				// Debug the response
+				$this->log(3, '<<< '.$data['command'].' <<< '.trim($raw));
 			}
 
 			// Check the timers
@@ -421,8 +442,9 @@ class Kobot_Core {
 
 	public function login($username, $password = NULL, $realname = 'Kohana PHP Bot')
 	{
-		// Cache the current username
+		// Cache the current username and password
 		$this->username = $username;
+		$this->password = $password;
 
 		// Send the login commands, use 8 for the mask (invisible)
 		$this->send('USER '.$username.' 8 * :'.$realname);
@@ -432,15 +454,21 @@ class Kobot_Core {
 		$this->stats['last_ping'] = microtime(TRUE);
 	}
 
-	public function join($channel)
+	public function login_identify()
+	{
+		// Send the IDENTIFY command
+		$this->send('PRIVMSG NickServ :IDENTIFY '.$this->password);
+	}
+
+	public function join($channel, $password = '')
 	{
 		if (empty($this->channels[$channel]))
 		{
-			// Set the channel as joined
-			$this->channels[$channel] = array();
+			// Create a new channel
+			$this->channels[$channel] = new Kobot_Channel($channel, $password);
 
 			// Join the channel
-			$this->send('JOIN '.$channel);
+			$this->send('JOIN '.trim($channel.' '.$password));
 		}
 	}
 
@@ -474,7 +502,7 @@ class Kobot_Core {
 	}
 
 	// PING
-	public function response_ping($data)
+	public function response_ping(array $data)
 	{
 		// Update the stats
 		$this->stats['last_ping'] = microtime(TRUE);
@@ -484,7 +512,7 @@ class Kobot_Core {
 	}
 
 	// 375, 372+, 376
-	public function response_motd($data)
+	public function response_motd(array $data)
 	{
 		switch ($data['command'])
 		{
@@ -502,12 +530,34 @@ class Kobot_Core {
 
 				// Make the MOTD into a string
 				$this->motd = implode("\n", $this->motd);
+
+				// Run the motd_read event
+				Event::run('kobot.motd_read');
 			break;
 		}
 	}
 
+	// TOPIC
+	public function response_topic(array $data)
+	{
+		if ($data['command'] === '332')
+		{
+			// Remove the user from the target
+			list ($user, $data['target']) = explode(' ', $data['target']);
+		}
+
+		if (isset($this->channels[$data['target']]))
+		{
+			// Set the channel topic
+			$this->channels[$data['target']]->topic = $data['message'];
+
+			// Log the topic change
+			$this->log(2, 'Topic of '.$data['target'].' changed: '.$data['message']);
+		}
+	}
+
 	// 353, 366
-	public function response_userlist($data)
+	public function response_userlist(array $data)
 	{
 		if (strpos($data['target'], ' @ ') !== FALSE)
 		{
@@ -515,64 +565,68 @@ class Kobot_Core {
 			list ($bot, $channel) = explode(' @ ', $data['target'], 2);
 
 			// Set the current users
-			$this->channels[$channel] = explode(' ', $data['message']);
+			$this->channels[$channel]->users = ($users = explode(' ', $data['message']));
 
 			// Log the user count
-			$this->log(1, 'Found '.count($this->channels[$channel]).' users in channel');
+			$this->log(2, 'Found '.count($users).' users in channel');
+
+			// Log the channel join
+			$this->log(1, 'Joined '.$channel);
 		}
 	}
 
 	// JOIN
-	public function response_join($data)
+	public function response_join(array $data)
 	{
 		// Make sure the bot is joined to the target channel
 		if (isset($this->channels[$data['target']]))
 		{
-			// Only add the user if they are not already in the list
-			if ( ! in_array($data['sender'], $this->channels[$data['target']]))
-			{
-				// Add the sender to the channel userlist
-				$this->channels[$data['target']][] = $data['sender'];
+			// Add the user to the channel
+			$this->channels[$data['target']]->user_join($data['sender']);
 
-				// This prevents the userlist key from growing too large, causing a buffer overflow
-				$this->channels[$data['target']] = array_values($this->channels[$data['target']]);
-
-				// Debug the join
-				$this->log(2, '> '.$data['sender'].' ('.$data['target'].')');
-			}
+			// Debug the join
+			$this->log(2, '> '.$data['sender'].' ('.$data['target'].')');
 		}
 	}
 
 	// PART
-	public function response_part($data)
+	public function response_part(array $data)
 	{
 		// Make sure the bot is joined to the target channel
 		if (isset($this->channels[$data['target']]))
 		{
-			// Only remove the user if they are in the list
-			if (($key = array_search($data['sender'], $this->channels[$data['target']])) !== FALSE)
-			{
-				// Remove the sender from the channel userlist
-				unset($this->channels[$data['target']][$key]);
+			// Remove the user from the channel
+			$this->channels[$data['target']]->user_part($data['sender']);
 
-				// Debug the join
-				$this->log(2, '< '.$data['sender'].' ('.$data['target'].')');
-			}
+			// Debug the join
+			$this->log(2, '< '.$data['sender'].' ('.$data['target'].')');
 		}
 	}
 
-	public function response_privmsg($data)
+	// PRIVMSG
+	public function response_privmsg(array $data)
 	{
 		if ($data['message'] === chr(1).'VERSION'.chr(1))
 		{
 			// Send a CTCP VERSION response
 			$this->response_version($data);
 		}
-		elseif (substr($data['message'], 0, strlen($this->username)) === $this->username
-		    AND $trigger = trim(substr($data['message'], strlen($this->username)), ' :'))
+		elseif
+		((
+			// Private messages, reply to the sender and log
+			$data['target'] === $this->username
+			AND $trigger = trim($data['message'])
+			AND $this->log(2, 'Private message from '.$data['sender'].' received')
+		)
+		OR
+		(
+			// Channel messages
+			substr($data['message'], 0, strlen($this->username)) === $this->username
+			AND $trigger = trim(substr($data['message'], strlen($this->username)), ' :')
+		))
 		{
 			// Process triggers
-			foreach ($this->msg_triggers as $pattern => $func)
+			foreach ($this->triggers as $pattern => $func)
 			{
 				if (preg_match('/'.$pattern.'/', $trigger, $matches))
 				{
@@ -584,10 +638,30 @@ class Kobot_Core {
 		}
 	}
 
-	public function response_version($data)
+	public function response_version(array $data)
 	{
 		// Send a CTCP VERSION response
 		$this->send('NOTICE '.$data['sender'].' :'.chr(1).'VERSION Kobot v'.KOHANA_VERSION.' Kohana Team'.chr(1));
+	}
+
+	/**
+	 * Default triggers.
+	 */
+
+	protected function trigger_info(Kobot $bot, array $data, array $params)
+	{
+		if (isset($this->channels[$data['target']]))
+		{
+			switch ($params[1])
+			{
+				case 'topic':
+					$this->send('PRIVMSG '.$data['target'].' :'.$data['sender'].': '.$this->channels[$data['target']]->topic);
+				break;
+				default:
+					$this->log(1, var_export($data, TRUE));
+				break;
+			}
+		}
 	}
 
 } // End Kobot

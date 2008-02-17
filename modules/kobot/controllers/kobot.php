@@ -8,22 +8,57 @@ class Kobot_Controller extends Controller {
 		$bot = new Kobot('irc.freenode.net');
 
 		// Enable debugging
-		$bog->log_level = 4;
+		$bog->log_level = 1;
 
 		// Add triggers
 		$bot->set_trigger('^goodnight, bot$', array($this, 'trigger_quit'))
+		    ->set_trigger('^register(.+)?$', array($this, 'register'))
 		    ->set_trigger('^tell (.+?) about (.+)$', array($this, 'trigger_say'))
 		    ->set_trigger('^([r|#])(\d+)$', array($this, 'trigger_trac'))
 		    ->set_trigger('^[a-z_]+$', array($this, 'trigger_default'));
 
-		// Add timers
-		$bot->set_timer(5, array($this, 'say_hi'));
-
 		// Login and join the default channel
-		$bot->login('koboto');
+		$bot->login('koboto', 'PhoenixRisingKO');
 		$bot->join('#koboto');
 		$bot->read();
 	}
+
+	public function register(Kobot $bot, array $data, array $params)
+	{
+		if ($data['target'] === $bot->username)
+		{
+			// Send the message back to the sender
+			$data['target'] = $data['sender'];
+
+			if (isset($params[1]))
+			{
+				if (preg_match('/[^a-z\d]+/i', $params[1]))
+				{
+					// Send the confirmation message
+					$message = 'You have been registered as '.$data['sender'];
+				}
+				else
+				{
+					// Send the registration error
+					$message = 'Passwords may only contain letters and numbers';
+				}
+			}
+			else
+			{
+				// Send the register usage, no password was supplied
+				$message = 'Usage: register <password>';
+			}
+		}
+		else
+		{
+			// Only allow registration in private messages
+			$message = $data['sender'].': Send me a private message: /msg '.$bot->username.' register <password>';
+		}
+
+		// Send the response message
+		$bot->send('PRIVMSG '.$data['target'].' :'.$message);
+	}
+
 
 	public function say_hi(Kobot $bot)
 	{
@@ -49,10 +84,10 @@ class Kobot_Controller extends Controller {
 
 	public function trigger_say(Kobot $bot, array $data, array $params)
 	{
-		switch ($params[1])
+		switch ($params[2])
 		{
 			case 'yourself':
-				$bot->send('PRIVMSG '.$data['target'].' :Who wants to know? '.$params[0].'? HA!');
+				$bot->send('PRIVMSG '.$data['target'].' :Who wants to know? '.$params[1].'? HA!');
 			break;
 		}
 	}
