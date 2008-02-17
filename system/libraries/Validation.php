@@ -128,7 +128,7 @@ class Validation_Core extends ArrayObject {
 		if ($field === TRUE)
 		{
 			// Handle "any field" filters
-			$fields = $this->any_field;
+			$fields = array($this->any_field);
 		}
 		else
 		{
@@ -164,7 +164,7 @@ class Validation_Core extends ArrayObject {
 		if ($field === TRUE)
 		{
 			// Handle "any field" filters
-			$fields = $this->any_field;
+			$fields = array($this->any_field);
 		}
 		else
 		{
@@ -212,6 +212,9 @@ class Validation_Core extends ArrayObject {
 					// Split the rule into the function and args
 					$rule = $matches[1];
 					$args = preg_split('/(?<!\\\\),\s*/', $matches[2]);
+
+					// Replace escaped comma with comma
+					$args = str_replace('\,', ',', $args);
 				}
 
 				if (method_exists($this, $rule))
