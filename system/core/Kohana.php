@@ -218,34 +218,33 @@ class Kohana {
 			// Make sure the controller class exists
 			class_exists($controller, FALSE) or Event::run('system.404');
 
-			// Find the unique controller methods
-			$methods = array_diff(get_class_methods($controller), get_class_methods('Controller_Core'));
+			// Get the controller methods
+			$methods = array_flip(get_class_methods($controller));
 
-			// If there are no methods in the controller, it's invalid
-			empty($methods) and Event::run('system.404');
-
-			// Combine the methods
-			$methods = array_combine($methods, $methods);
 
 			if (isset($methods['_remap']))
 			{
-				// Change arguments to be $method, $arguments.
-				// This makes _remap capable of being a much more effecient dispatcher
-				Router::$arguments = array(Router::$method, Router::$arguments);
+				// Make the arguments routed
+				$arguments = array(Router::$method, Router::$arguments);
+
+				// The method becomes part of the arguments
+				array_unshift(Router::$arguments, Router::$method);
 
 				// Set the method to _remap
 				Router::$method = '_remap';
 			}
-			elseif (isset($methods[Router::$method]) AND substr(Router::$method, 0, 1) != '_')
+			elseif (isset($methods[Router::$method]) AND Router::$method{0} !== '_')
 			{
-				// A valid route has been found, and nothing needs to be done.
-				// Amazing that having nothing inside the statement still works.
+				// Use the arguments normally
+				$arguments = Router::$arguments;
 			}
-			elseif (method_exists($controller, '_default'))
+			elseif (isset($methods['_default']))
 			{
-				// Change arguments to be $method, $arguments.
-				// This makes _default a much more effecient 404 handler
-				Router::$arguments = array(Router::$method, Router::$arguments);
+				// Make the arguments routed
+				$arguments = array(Router::$method, Router::$arguments);
+
+				// The method becomes part of the arguments
+				array_unshift(Router::$arguments, Router::$method);
 
 				// Set the method to _default
 				Router::$method = '_default';
@@ -259,6 +258,9 @@ class Kohana {
 			// Initialize the controller
 			$controller = new $controller;
 
+			// Controller method name, used for calling
+			$method = Router::$method;
+
 			// Run system.post_controller_constructor
 			Event::run('system.post_controller_constructor');
 
@@ -268,35 +270,31 @@ class Kohana {
 			// Start the controller execution benchmark
 			Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
 
-			// Controller method name, used for calling
-			$method = Router::$method;
-
-			if (empty(Router::$arguments))
+			if (empty($arguments))
 			{
 				// Call the controller method with no arguments
 				$controller->$method();
 			}
 			else
 			{
-				// Manually call the controller for up to 4 arguments. Why? Because
-				// call_user_func_array is ~3 times slower than direct method calls.
-				switch(count(Router::$arguments))
+				// Manually call the controller for up to 4 arguments, to increase performance
+				switch(count($arguments))
 				{
 					case 1:
-						$controller->$method(Router::$arguments[0]);
+						$controller->$method($arguments[0]);
 					break;
 					case 2:
-						$controller->$method(Router::$arguments[0], Router::$arguments[1]);
+						$controller->$method($arguments[0], $arguments[1]);
 					break;
 					case 3:
-						$controller->$method(Router::$arguments[0], Router::$arguments[1], Router::$arguments[2]);
+						$controller->$method($arguments[0], $arguments[1], $arguments[2]);
 					break;
 					case 4:
-						$controller->$method(Router::$arguments[0], Router::$arguments[1], Router::$arguments[2], Router::$arguments[3]);
+						$controller->$method($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
 					break;
 					default:
 						// Resort to using call_user_func_array for many segments
-						call_user_func_array(array($controller, $method), Router::$arguments);
+						call_user_func_array(array($controller, $method), $arguments);
 					break;
 				}
 			}
