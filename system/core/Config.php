@@ -90,8 +90,73 @@ final class Config {
 		// Do this to make sure that the config array is already loaded
 		Config::item($key);
 
-		// Convert dot-noted key string to an array
-		$keys = explode('.', rtrim($key, '.'));
+		if (strpos($key, '{') !== FALSE)
+		{
+			// The follow garbage is the biggest hack ever, and shows my total
+			// lack of advanced regex skills. Hopefully Geert can replace this
+			// with a "lookahead" or some kind of fancy-pants regex. :) -Woody
+
+			// Final keys
+			$keys = array();
+
+			// Break token and token buffer
+			$break  = '.';
+			$buffer = '';
+
+			// Parse each letter of the string... ick
+			for ($i = 0, $max = strlen($key); $i <= $max; $i++)
+			{
+				if ($i === $max AND ! empty($buffer))
+				{
+					if ($break === '}.' AND substr($buffer, -1) === '}')
+					{
+						// Remove the ending "unquote"
+						$buffer = substr($buffer, 0, -1);
+					}
+
+					// Add the final buffer
+					$keys[] = $buffer;
+					break;
+				}
+
+				// Current token
+				$token = $key{$i};
+
+				if ($token === '{' AND $break === '.')
+				{
+					// Change the break token to "unquote dot"
+					$break = '}.';
+				}
+				elseif ($token === '.' AND $break === '.')
+				{
+					// Add the key and reset the buffer
+					$keys[] = $buffer;
+					$buffer = '';
+				}
+				elseif ($break === '}.' AND substr($key, $i, 2) === '}.')
+				{
+					// Add the key and reset the buffer
+					$keys[] = $buffer;
+					$buffer = '';
+
+					// Reset the break token
+					$break = '.';
+
+					// Increase the buffer to skip the next "dot"
+					$i++;
+				}
+				else
+				{
+					// Add the token to the buffer
+					$buffer = $buffer.$token;
+				}
+			}
+		}
+		else
+		{
+			// Convert dot-noted key string to an array
+			$keys = explode('.', rtrim($key, '.'));
+		}
 
 		// Used for recursion
 		$conf =& self::$conf;
