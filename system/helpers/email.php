@@ -93,10 +93,10 @@ class email_Core {
 		$message = new Swift_Message($subject, $message, $html, '8bit', 'utf-8');
 
 		// Make a personalized To: address
-		$to = is_array($to) ? new Swift_Address($to[0], $to[1]) : new Swift_Address($to);
+		is_object($to) or $to = is_array($to) ? new Swift_Address($to[0], $to[1]) : new Swift_Address($to);
 
 		// Make a personalized From: address
-		$from = is_array($from) ? new Swift_Address($from[0], $from[1]) : new Swift_Address($from);
+		is_object($from) or $from = is_array($from) ? new Swift_Address($from[0], $from[1]) : new Swift_Address($from);
 
 		return self::$mail->send($message, $to, $from);
 	}
