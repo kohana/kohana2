@@ -102,21 +102,7 @@ class URI_Core extends Router {
 	 */
 	public function segment_array($offset = 0, $associative = FALSE)
 	{
-		$segment_array = self::$segments;
-		array_unshift($segment_array, 0);
-		$segment_array = array_slice($segment_array, $offset + 1, $this->total_segments(), TRUE);
-
-		if ( ! $associative)
-			return $segment_array;
-
-		$segment_array_assoc = array();
-
-		foreach (array_chunk($segment_array, 2) as $pair)
-		{
-			$segment_array_assoc[$pair[0]] = isset($pair[1]) ? $pair[1] : '';
-		}
-
-		return $segment_array_assoc;
+		return $this->build_array(self::$segments, $offset, $associative);
 	}
 
 	/**
@@ -128,21 +114,7 @@ class URI_Core extends Router {
 	 */
 	public function rsegment_array($offset = 0, $associative = FALSE)
 	{
-		$segment_array = self::$rsegments;
-		array_unshift($segment_array, 0);
-		$segment_array = array_slice($segment_array, $offset + 1, $this->total_segments(), TRUE);
-
-		if ( ! $associative)
-			return $segment_array;
-
-		$segment_array_assoc = array();
-
-		foreach (array_chunk($segment_array, 2) as $pair)
-		{
-			$segment_array_assoc[$pair[0]] = isset($pair[1]) ? $pair[1] : '';
-		}
-
-		return $segment_array_assoc;
+		return $this->build_array(self::$rsegments, $offset, $associative);
 	}
 
 	/**
@@ -154,21 +126,37 @@ class URI_Core extends Router {
 	 */
 	public function argument_array($offset = 0, $associative = FALSE)
 	{
-		$argument_array = self::$arguments;
-		array_unshift($argument_array, 0);
-		$argument_array = array_slice($argument_array, $offset + 1, $this->total_arguments(), TRUE);
+		return $this->build_array(self::$arguments, $offset, $associative);
+	}
 
-		if ( ! $associative)
-			return $argument_array;
+	/**
+	 * Creates a simple or associative array from an array and an offset.
+	 * Used as a helper for (r)segment_array and argument_array.
+	 *
+	 * @param   array    array to rebuild
+	 * @param   integer  offset to start from
+	 * @param   bool     create an associative array
+	 * @return  array
+	 */
+	public function build_array($array, $offset = 0, $associative = FALSE)
+	{
+		// Prevent the keys from being improperly indexed
+		array_unshift($array, 0);
 
-		$argument_array_assoc = array();
+		// Slice the array, preserving the keys
+		$array = array_slice($array, $offset + 1, count($array) - 1, TRUE);
 
-		foreach (array_chunk($argument_array, 2) as $pair)
+		if ($associative === FALSE)
+			return $array;
+
+		$associative = array();
+		foreach (array_chunk($array, 2) as $pair)
 		{
-			$argument_array_assoc[$pair[0]] = isset($pair[1]) ? $pair[1] : '';
+			// Add the key/value pair to the associative array
+			$associative[$pair[0]] = isset($pair[1]) ? $pair[1] : '';
 		}
 
-		return $argument_array_assoc;
+		return $associative;
 	}
 
 	/**
@@ -188,7 +176,7 @@ class URI_Core extends Router {
 	 */
 	public function __toString()
 	{
-		return $this->string();
+		return self::$current_uri;
 	}
 
 	/**
@@ -229,10 +217,10 @@ class URI_Core extends Router {
 	 */
 	public function last_segment($default = FALSE)
 	{
-		if ($this->total_segments() < 1)
+		if (($end = $this->total_segments()) < 1)
 			return $default;
 
-		return end(self::$segments);
+		return self::$segments[$end - 1];
 	}
 
 	/**
@@ -243,10 +231,10 @@ class URI_Core extends Router {
 	 */
 	public function last_rsegment($default = FALSE)
 	{
-		if ($this->total_rsegments() < 1)
+		if (($end = $this->total_segments()) < 1)
 			return $default;
 
-		return end(self::$rsegments);
+		return self::$rsegments[$end - 1];
 	}
 
 } // End URI Class
