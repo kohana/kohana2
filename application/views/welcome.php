@@ -31,7 +31,7 @@ p.copyright { font-size: 0.8em; text-transform: uppercase; color: #44640b; }
 <?php endforeach ?>
 </ul>
 
-<p class="copyright">Copyright &copy;2007-2008 Kohana Team</p>
+<p class="copyright">Rendered in {execution_time} seconds, using {memory_usage} of memory<br/>Copyright &copy;2007-2008 Kohana Team</p>
 
 </body>
 </html>
