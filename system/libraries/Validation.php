@@ -91,10 +91,21 @@ class Validation_Core extends ArrayObject {
 	 * @param   string   message to set
 	 * @return  string|object
 	 */
-	public function message($input, $message = NULL)
+	public function message($input = NULL, $message = NULL)
 	{
 		if ($message === NULL)
 		{
+			if ($input === NULL)
+			{
+				$messages = array();
+				foreach (array_keys($this->messages) as $input)
+				{
+					$messages[] = $this->message($input);
+				}
+
+				return implode("\n", $messages);
+			}
+
 			// Return nothing if no message exists
 			if (empty($this->messages[$input]))
 				return '';
