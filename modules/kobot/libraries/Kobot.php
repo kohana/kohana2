@@ -323,7 +323,7 @@ class Kobot_Core {
 		// Extract the prefix from the string
 		list ($prefix, $str) = explode(' ', $raw, 2);
 
-		if ( ! empty($prefix) AND $prefix{0} === ':')
+		if ( ! empty($prefix) AND $prefix[0] === ':')
 		{
 			// A user-level command, like PRIVMSG or NOTICE
 			$prefix = substr($prefix, 1);
@@ -349,7 +349,7 @@ class Kobot_Core {
 					// target :message, some kind of communication
 					list ($data['target'], $data['message']) = explode(' :', $str, 2);
 				}
-				elseif ($str{0} === ':')
+				elseif ($str[0] === ':')
 				{
 					// :target, without a message
 					$data['target'] = substr($str, 1);

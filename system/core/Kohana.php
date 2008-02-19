@@ -233,7 +233,7 @@ class Kohana {
 				// Set the method to _remap
 				Router::$method = '_remap';
 			}
-			elseif (isset($methods[Router::$method]) AND Router::$method{0} !== '_')
+			elseif (isset($methods[Router::$method]) AND Router::$method[0] !== '_')
 			{
 				// Use the arguments normally
 				$arguments = Router::$arguments;
