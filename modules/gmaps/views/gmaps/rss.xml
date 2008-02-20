@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+        xmlns:media="http://search.yahoo.com/mrss/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+        xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:georss="http://www.georss.org/georss">
+	<channel>
+		<title>RSS Test</title>
+		<link>http://localhost/kohana/trunk/</link>
+
+		<item>
+			<title>Home</title>
+			<link>http://wgilk.com</link>
+			<description>Test of description</description>
+			<pubDate>Sun, 17 Feb 2008 19:49:03 -0600</pubDate>
+			<author>Shadowhand</author>
+			<geo:Point>
+				<geo:lat>-93.328379</geo:lat>
+		        <geo:long>45.109871</geo:long>
+			</geo:Point>
+		</item>
+
+	</channel>
+</rss>
