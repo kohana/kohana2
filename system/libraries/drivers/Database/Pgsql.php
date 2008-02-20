@@ -431,7 +431,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 			}
 		}
 
-		while ($row = $fetch($this->result, $type))
+		while ($row = $fetch($this->result, NULL, $type))
 		{
 			$rows[] = $row;
 		}
