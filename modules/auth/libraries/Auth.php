@@ -200,7 +200,7 @@ class Auth_Core {
 	{
 		if ($salt == FALSE)
 		{
-			// Create a salt string, same length as the number of offsets in the pattern
+			// Create a salt seed, same length as the number of offsets in the pattern
 			$salt = substr($this->hash(uniqid(NULL, TRUE)), 0, count($this->config['salt_pattern']));
 		}
 
@@ -261,7 +261,6 @@ class Auth_Core {
 	protected function find_salt($password)
 	{
 		$salt = '';
-
 		foreach($this->config['salt_pattern'] as $i => $offset)
 		{
 			// Find salt characters... take a good long look..
@@ -290,7 +289,6 @@ class Auth_Core {
 		$this->session->set(array
 		(
 			'user_id'  => $user->id,
-			'username' => $user->username,
 			'roles'    => $user->roles
 		));
 	}
