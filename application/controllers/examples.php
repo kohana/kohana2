@@ -151,21 +151,14 @@ class Examples_Controller extends Controller {
 
 		$validation = new Validation($data);
 
-		// Looks familiar...
-		$validation->set_rules(array
-		(
-			// Format:
-			// key          friendly name,  validation rules
-			'user' => array('username',    '=trim|required[1,12]|regex[/[0-9]+/]'),
-			'pass' => array('password',    'required|=sha1'),
-			'reme' => array('remember me', 'required')
-		));
+		$validation->add_rules('user', 'required', 'length[1,12]')->pre_filter('trim', 'user');
+		$validation->add_rules('pass', 'required')->post_filter('sha1', 'pass');
+		$validation->add_rules('reme', 'required');
 
-		// Same syntax as before
-		$validation->run();
+		$result = $validation->validate();
 
-		// Same syntax, but dynamcially generated wth __get()
-		echo $validation->error_string;
+		var_dump($validation->errors());
+		var_dump($validation->as_array());
 
 		// Yay!
 		echo '{execution_time} ALL DONE!';

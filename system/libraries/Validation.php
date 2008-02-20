@@ -533,4 +533,23 @@ class Validation_Core extends ArrayObject {
 		return $status;
 	}
 
+	/**
+	 * Rule: matches. Generates an error if the field does not depend on one or more
+	 * other fields.
+	 *
+	 * @param   mixed   field name
+	 * @param   array   field names to check dependency
+	 * @return  bool
+	 */
+	public function depends_on($field, array $fields)
+	{
+		foreach ($fields as $depends_on)
+		{
+			if (! isset($this[$depends_on]) OR $this[$depends_on] == NULL)
+				return FALSE;
+		}
+
+		return TRUE;
+	}
+
 } // End Validation
