@@ -38,7 +38,7 @@ $config['bit'] = $config['boolean'];
 $config['timestamp'] = $config['datetime'];
 
 // ENUM
-$config['enum'] = $config['varchar'];
+$config['enum'] = $config['set'] = $config['varchar'];
 
 // TEXT
 $config['tinytext'] = $config['mediumtext'] = $config['longtext'] = $config['text'];
