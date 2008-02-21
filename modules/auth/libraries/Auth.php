@@ -71,15 +71,29 @@ class Auth_Core {
 	 */
 	public function logged_in($role = NULL)
 	{
-		// Check if the user_id is present in the session
-		$status = ! empty($_SESSION['user_id']);
+		static $status;
 
-		if ($status === TRUE AND ! empty($role))
+		if (is_bool($status))
+			return $status;
+
+		// Not logged in by default
+		$status = FALSE;
+
+		// Check if the user is a valid object
+		if ( ! empty($_SESSION['auth_user']) AND is_object($_SESSION['auth_user'])
+			AND ($_SESSION['auth_user'] instanceof User_Model) AND $_SESSION['auth_user']->id > 0)
 		{
-			// Check if the user has the given role
-			$status = in_array($role, $_SESSION['roles']);
+			// Everything is okay so far
+			$status = TRUE;
+
+			if ( ! empty($role))
+			{
+				// Check that the user has the given role
+				$status = $user->has_role($role);
+			}
 		}
 
+		// Not logged in
 		return $status;
 	}
 
@@ -102,7 +116,7 @@ class Auth_Core {
 		// If the user has the "login" role and the passwords match, perform a login
 		if ($user->has_role('login') AND $user->password === $password)
 		{
-			if ($remember == TRUE)
+			if ($remember === TRUE)
 			{
 				// Create a new autologin token
 				$token = new User_Token_Model;
@@ -113,7 +127,7 @@ class Auth_Core {
 				$token->save();
 
 				// Set the autologin cookie
-				cookie::set('autologin', $token->token, $this->config['lifetime']);
+				cookie::set('authautologin', $token->token, $this->config['lifetime']);
 			}
 
 			// Finish the login
@@ -132,7 +146,7 @@ class Auth_Core {
 	 */
 	public function auto_login()
 	{
-		if ($token = cookie::get('autologin'))
+		if ($token = cookie::get('authautologin'))
 		{
 			// Load the token and user
 			$token = new User_Token_Model($token);
@@ -146,7 +160,7 @@ class Auth_Core {
 					$token->save();
 
 					// Set the new token
-					cookie::set('autologin', $token->token, $token->expires - time());
+					cookie::set('authautologin', $token->token, $token->expires - time());
 
 					// Complete the login with the found data
 					$this->complete_login($user);
@@ -172,15 +186,17 @@ class Auth_Core {
 	public function logout($destroy = FALSE)
 	{
 		// Delete the autologin cookie if it exists
-		cookie::get('autologin') and cookie::delete('autologin');
+		cookie::get('authautologin') and cookie::delete('authautologin');
 
-		if ($destroy == TRUE)
+		if ($destroy === TRUE)
 		{
-			$this->session->destroy();
+			// Destroy the session completely
+			Session::instance()->destroy();
 		}
 		else
 		{
-			$this->session->del('user_id', 'username', 'roles');
+			// Remove the user object from the session
+			unset($_SESSION['auth_user']);
 		}
 
 		return TRUE;
@@ -270,6 +286,15 @@ class Auth_Core {
 		return $salt;
 	}
 
+	public function force_login(User_Model $user)
+	{
+		// Mark the session as forced, to prevent users from changing account information
+		$_SESSION['auth_forced'] = TRUE;
+
+		// Run the standard completion
+		$this->complete_login($user);
+	}
+
 	/**
 	 * Complete the login for a user by incrementing the logins and setting
 	 * session data: user_id, username, roles
@@ -286,11 +311,7 @@ class Auth_Core {
 		$user->save();
 
 		// Store session data
-		$this->session->set(array
-		(
-			'user_id'  => $user->id,
-			'roles'    => $user->roles
-		));
+		$_SESSION['auth_user'] = $user;
 	}
 
 } // End Auth
