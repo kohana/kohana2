@@ -257,7 +257,7 @@ class Session_Core {
 	/**
 	 * Destroys the current session.
 	 *
-	 * @return  boolean
+	 * @return  void
 	 */
 	public function destroy()
 	{
@@ -270,7 +270,10 @@ class Session_Core {
 			cookie::delete(self::$config['name']);
 
 			// Destroy the session
-			return session_destroy();
+			session_destroy();
+
+			// Re-initialize the array
+			$_SESSION = array();
 		}
 	}
 
