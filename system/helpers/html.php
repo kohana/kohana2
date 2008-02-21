@@ -186,6 +186,37 @@ class html_Core {
 	}
 
 	/**
+	 * Creates a meta tag.
+	 *
+	 * @param   string|array   tag name, or an array of tags
+	 * @param   string         tag value
+	 * @return  string
+	 */
+	public static function meta($tag, $value = NULL)
+	{
+		if (is_array($tag))
+		{
+			$tags = array();
+			foreach ($tag as $t => $v)
+			{
+				// Build each tag and add it to the array
+				$tags[] = html::meta($t, $v);
+			}
+
+			// Return all of the tags as a string
+			return implode("\n", $tags);
+		}
+
+		// HTTP type meta tags
+		$http = array('content-type', 'expires', 'refresh', 'set-cookie');
+
+		// Set the type attribute
+		$attr = in_array($tag, $http) ? 'http-equiv' : 'name';
+
+		return '<meta '.$attr.'="'.$value.'" />';
+	}
+
+	/**
 	 * Creates a stylesheet link.
 	 *
 	 * @param   string|array  filename, or array of filenames to match to array of medias
