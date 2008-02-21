@@ -97,8 +97,7 @@ class Auth_Controller extends Controller {
 	public function logout()
 	{
 		// Load auth and log out
-		$auth = new Auth();
-		$auth->logout(TRUE);
+		$this->auth->logout(TRUE);
 
 		// Redirect back to the login page
 		url::redirect('auth/login');
