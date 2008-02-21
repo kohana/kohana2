@@ -80,7 +80,7 @@ class Auth_Controller extends Controller {
 				{
 					echo "<h4>Login Success!</h4>";
 					echo "<p>Your roles are:</p>";
-					echo Kohana::debug($this->session->get('roles'));
+					echo Kohana::debug($user->roles);
 					return;
 				}
 				else
@@ -104,4 +104,4 @@ class Auth_Controller extends Controller {
 		url::redirect('auth/login');
 	}
 
-} // End Auth_Controller
+} // End Auth Controller
