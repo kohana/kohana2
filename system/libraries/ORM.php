@@ -115,9 +115,6 @@ class ORM_Core {
 	{
 		// Connect to the database
 		$this->connect();
-
-		// Reload the internal object
-		empty($this->object->id) or $this->find($this->object->id);
 	}
 
 	/**
@@ -466,7 +463,7 @@ class ORM_Core {
 	 */
 	protected function where_key($id = NULL)
 	{
-		return 'id';
+		return $this->table.'.id';
 	}
 
 	/**
