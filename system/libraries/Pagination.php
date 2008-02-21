@@ -18,6 +18,7 @@ class Pagination_Core {
 	protected $uri_segment    = 3;
 	protected $items_per_page = 10;
 	protected $total_items    = 0;
+	protected $auto_hide      = FALSE;
 
 	// Automatically generated values
 	protected $url;
@@ -116,11 +117,20 @@ class Pagination_Core {
 	 * @param   string  pagination style
 	 * @return  string  pagination html
 	 */
-	public function create_links($style = NULL)
+	public function render($style = NULL)
 	{
-		$style = (isset($style)) ? $style : $this->style;
-		$view = new View($this->directory.$style, get_object_vars($this));
-		return $view->render();
+		// Hide single page pagination
+		if ($this->auto_hide == TRUE AND $this->total_pages <= 1)
+			return '';
+
+		if ($style === NULL)
+		{
+			// Use default style
+			$style = $this->style;
+		}
+
+		// Return rendered pagination view
+		return View::factory($this->directory.$style, get_object_vars($this))->render();
 	}
 
 	/**
@@ -130,7 +140,7 @@ class Pagination_Core {
 	 */
 	public function __toString()
 	{
-		return $this->create_links();
+		return $this->render();
 	}
 
 	/**

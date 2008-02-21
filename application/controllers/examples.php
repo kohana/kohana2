@@ -260,10 +260,10 @@ class Examples_Controller extends Controller {
 		// Just echoing it is enough to display the links (__toString() rocks!)
 		echo 'Classic style: '.$pagination;
 
-		// You can also use the create_links() method and pick a style on the fly if you want
-		echo '<hr />Digg style:     '.$pagination->create_links('digg');
-		echo '<hr />Extended style: '.$pagination->create_links('extended');
-		echo '<hr />PunBB style:    '.$pagination->create_links('punbb');
+		// You can also use the render() method and pick a style on the fly if you want
+		echo '<hr />Digg style:     '.$pagination->render('digg');
+		echo '<hr />Extended style: '.$pagination->render('extended');
+		echo '<hr />PunBB style:    '.$pagination->render('punbb');
 		echo 'done in {execution_time} seconds';
 	}
 
