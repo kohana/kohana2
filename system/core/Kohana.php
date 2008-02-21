@@ -209,18 +209,17 @@ class Kohana {
 			// Include the Controller file
 			require Router::$directory.Router::$controller.EXT;
 
-			// Run system.pre_controller
-			Event::run('system.pre_controller');
-
 			// Set controller class name
 			$controller = ucfirst(Router::$controller).'_Controller';
 
 			// Make sure the controller class exists
 			class_exists($controller, FALSE) or Event::run('system.404');
 
+			// Run system.pre_controller
+			Event::run('system.pre_controller');
+
 			// Get the controller methods
 			$methods = array_flip(get_class_methods($controller));
-
 
 			if (isset($methods['_remap']))
 			{
@@ -814,7 +813,7 @@ class Kohana {
 		// Return the key string as fallback
 		if ($line === NULL)
 		{
-			Log::add('debug', 'Missing i18n entry '.$key.' for language '.Config::item('locale.language'));
+			Log::add('error', 'Missing i18n entry '.$key.' for language '.Config::item('locale.language'));
 			return $key;
 		}
 
