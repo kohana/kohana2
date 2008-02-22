@@ -185,7 +185,7 @@ class View_Core {
 			$data = array_merge(self::$global_data, $this->data);
 
 			// Load the view in the controller for access to $this
-			$output = Kohana::instance()->_kohana_load_view($this->kohana_filename, $data);
+			$output = Kohana::$instance->_kohana_load_view($this->kohana_filename, $data);
 
 			if ($renderer == TRUE AND is_callable($renderer, TRUE))
 			{

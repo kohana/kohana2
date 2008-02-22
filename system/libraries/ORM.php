@@ -714,10 +714,10 @@ class ORM_Core {
 		if (self::$db === NULL)
 		{
 			// Load database, if not already loaded
-			isset(Kohana::instance()->db) or Kohana::instance()->db = Database::instance();
+			isset(Kohana::$instance->db) or Kohana::$instance->db = Database::instance();
 
 			// Insert db into this object
-			self::$db = Kohana::instance()->db;
+			self::$db = Kohana::$instance->db;
 
 			// Define ALL
 			defined('ALL') or define('ALL', -1);
