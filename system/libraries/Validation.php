@@ -282,8 +282,8 @@ class Validation_Core {
 				if (strpos($rules, 'required') !== FALSE)
 				{
 					$this->add_error('required', $field);
+					continue;
 				}
-				continue;
 			}
 
 			// Loop through the rules and process each one
