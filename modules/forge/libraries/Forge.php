@@ -98,7 +98,7 @@ class Forge_Core {
 		}
 
 		if ( ! ($input instanceof Form_Input) AND ! ($input instanceof Forge))
-			throw new Kohana_Exception('forge.invalid_input', get_class($input));
+			throw new Kohana_Exception('forge.unknown_input', get_class($input));
 
 		$input->method = $this->attr['method'];
 

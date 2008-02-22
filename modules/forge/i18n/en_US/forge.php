@@ -2,5 +2,5 @@
 
 $lang = array
 (
-	'invalid_input' => 'Invalid input type requested: %s',
+	'unknown_input' => 'Unable to find a Forge input class for: %s',
 );
