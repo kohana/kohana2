@@ -780,7 +780,7 @@ class Kohana {
 		static $language = array();
 
 		// Extract the main group from the key
-		$group = explode('.', $key, 1);
+		$group = explode('.', $key);
 		$group = $group[0];
 
 		if (empty($language[$group]))
