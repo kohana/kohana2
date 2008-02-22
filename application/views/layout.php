@@ -21,7 +21,7 @@ echo html::stylesheet(array
 	'all',
 	'screen',
 	'print'
-), TRUE)
+))
 
 ?>
 
@@ -32,7 +32,7 @@ echo html::script(array
 	'media/js/jquery',
 	'media/js/plugins',
 	'media/js/effects'
-), TRUE) 
+))
 
 ?>
 
