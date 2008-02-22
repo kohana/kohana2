@@ -217,7 +217,7 @@ class Forge_Core {
 			// Using a custom view
 
 			$data = array();
-			foreach ($this->inputs as $input)
+			foreach (array_merge($this->hidden, $this->inputs) as $input)
 			{
 				$data[$input->name] = $input;
 
