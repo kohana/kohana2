@@ -23,6 +23,22 @@ class Cache_Core {
 	protected $driver;
 
 	/**
+	 * Returns a singleton instance of Cache.
+	 *
+	 * @param   array   configuration
+	 * @return  object  Cache
+	 */
+	public static function instance($config = array())
+	{
+		static $obj;
+
+		// Create the Cache instance
+		($obj === NULL) and $obj = new Cache($config);
+
+		return $obj;
+	}
+
+	/**
 	 * Loads the configured driver and validates it.
 	 *
 	 * @param  array  custom configuration
