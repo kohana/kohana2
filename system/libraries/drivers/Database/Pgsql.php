@@ -87,7 +87,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 
 	public function escape_table($table)
 	{
-		return '"'.str_replace('.', '"."', $table).'"';
+		return '\''.str_replace('.', '"."', $table).'\'';
 	}
 
 	public function escape_column($column)
@@ -258,7 +258,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 
 		// WOW...REALLY?!?
 		// Taken from http://www.postgresql.org/docs/7.4/interactive/catalogs.html
-		return 'SELECT
+		$query = $this->query('SELECT
   -- Field
   pg_attribute.attname AS "Field",
   -- Type
@@ -275,7 +275,7 @@ class Database_Pgsql_Driver extends Database_Driver {
   END AS "Null",
   -- Default
   CASE pg_type.typname
-    WHEN \'varchar\' THEN substring(pg_attrdef.adsrc from \'^\'(.*)\'.*$\')
+    WHEN \'varchar\' THEN substring(pg_attrdef.adsrc from \'^(.*).*$\')
     ELSE pg_attrdef.adsrc
   END AS "Default"
 FROM pg_class
@@ -286,7 +286,14 @@ FROM pg_class
   LEFT JOIN pg_attrdef
     ON (pg_class.oid=pg_attrdef.adrelid AND pg_attribute.attnum=pg_attrdef.adnum)
 WHERE pg_class.relname=\''.$this->escape_table($table).'\' AND pg_attribute.attnum>=1 AND NOT pg_attribute.attisdropped
-ORDER BY pg_attribute.attnum';
+ORDER BY pg_attribute.attnum');
+                $fields = array();
+                foreach ($query as $row)
+                {
+                        $fields[$row->Field]=$row->Type;
+                }
+
+                return $fields;
 
 	}
 
