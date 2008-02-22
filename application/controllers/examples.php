@@ -24,6 +24,8 @@ class Examples_Controller extends Controller {
 			get_class_methods(get_parent_class($this))
 		);
 
+		sort($examples);
+
 		echo "<strong>Examples:</strong>\n";
 		echo "<ul>\n";
 
@@ -47,14 +49,14 @@ class Examples_Controller extends Controller {
 			$archive = new Archive('zip');
 
 			// Add welcome.php with the name of test.php
-			$archive->add(APPPATH.'controllers/welcome.php', 'test.php');
+			$archive->add(APPPATH.'views/', 'shitty/views', TRUE);
 
 			// Download the built archive
 			$archive->download('test.zip');
 		}
 		else
 		{
-			echo html::anchor(Router::$current_uri.'/build', 'Download welcome.php as test.php');
+			echo html::anchor(Router::$current_uri.'/build', 'Download views');
 		}
 	}
 
@@ -95,7 +97,6 @@ class Examples_Controller extends Controller {
 	 */
 	function session()
 	{
-		$this->load->database();
 		$s = new Session();
 
 		echo 'SESSID: <pre>'.session_id()."</pre>\n";
