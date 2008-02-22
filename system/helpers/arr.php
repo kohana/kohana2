@@ -161,4 +161,5 @@ class arr_Core {
 
 		return $result;
 	}
+
 } // End arr

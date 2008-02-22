@@ -238,7 +238,7 @@ class Session_Core {
 	 */
 	public function regenerate()
 	{
-		if (self::$config['driver'] == 'native')
+		if (self::$config['driver'] === 'native')
 		{
 			// Generate a new session id
 			// Note: also sets a new session cookie with the updated id

@@ -738,6 +738,7 @@ class Kohana {
 		{
 			foreach(Config::include_paths() as $path)
 			{
+				// Recursively get and merge all files
 				$files = array_merge($files, self::list_files($directory, $recursive, $path.$directory));
 			}
 		}
@@ -778,9 +779,11 @@ class Kohana {
 	{
 		static $language = array();
 
-		$group = current(explode('.', $key));
+		// Extract the main group from the key
+		$group = explode('.', $key, 1);
+		$group = $group[0];
 
-		if ( ! isset($language[$group]))
+		if (empty($language[$group]))
 		{
 			// Messages from this file
 			$messages = array();
@@ -808,6 +811,7 @@ class Kohana {
 			$language[$group] = $messages;
 		}
 
+		// Get the line from the language
 		$line = self::key_string($key, $language);
 
 		// Return the key string as fallback
@@ -880,8 +884,8 @@ class Kohana {
 
 	/**
 	 * Retrieves current user agent information:
-	 * keys:        browser, version, platform, mobile, robot, referrer, languages, charsets
-	 * tests:       is_browser, is_mobile, is_robot, accept_
+	 * keys:  browser, version, platform, mobile, robot, referrer, languages, charsets
+	 * tests: is_browser, is_mobile, is_robot, accept_lang, accept_charset
 	 *
 	 * @param   string   key or test name
 	 * @param   string   used with "accept" tests: user_agent(accept_lang, en)
