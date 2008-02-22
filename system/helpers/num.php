@@ -2,7 +2,7 @@
 /**
  * Number helper class.
  *
- * $Id:$
+ * $Id$
  *
  * @package    Number Helper
  * @author     Kohana Team
