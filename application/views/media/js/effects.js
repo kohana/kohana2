@@ -8,7 +8,7 @@ $(document).ready(function()
 		if ($.browser.version == '6.0')
 		{
 			// IE6 doens't support transparent PNGs
-			$('#logo').ifixpng('../img/pixel.gif');
+			$('#logo, #download a').ifixpng('../img/pixel.gif');
 		}
 	}
 	// Menu link effects

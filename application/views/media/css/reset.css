@@ -37,7 +37,7 @@ input, select, textarea {
 /* http://24ways.org/2006/knockout-type */
 body {
 	-moz-opacity:.9999;
-	text-shadow:0 0 0 #000;
+	-webkit-text-shadow:0 0 0 #000;;
 }
 
 /* http://www.positioniseverything.net/easyclearing.html */
