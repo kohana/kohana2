@@ -18,7 +18,7 @@ $config['storage'] = '';
 $config['name'] = 'kohanasession';
 
 /**
- * Session parameters to validate: user_agent, ip_address.
+ * Session parameters to validate: user_agent, ip_address, expiration.
  */
 $config['validate'] = array('user_agent');
 

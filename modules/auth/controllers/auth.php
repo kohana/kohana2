@@ -39,13 +39,13 @@ class Auth_Controller extends Controller {
 		}
 	}
 
-	function index()
+	public function index()
 	{
 		// Display the install page
 		echo new View('auth/install');
 	}
 
-	function create()
+	public function create()
 	{
 		$form = $this->load->model('form', TRUE)
 			->title('Create User')
@@ -77,7 +77,7 @@ class Auth_Controller extends Controller {
 		echo $form->build();
 	}
 
-	function login()
+	public function login()
 	{
 		// Get inputs
 		$inputs = $this->inputs;
@@ -134,7 +134,7 @@ class Auth_Controller extends Controller {
 		echo $form->build();
 	}
 
-	function logout()
+	public function logout()
 	{
 		// Load auth and log out
 		$auth = new Auth();
