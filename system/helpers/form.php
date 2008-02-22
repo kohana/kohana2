@@ -248,7 +248,7 @@ class form_Core {
 			$extra = ' '.ltrim($extra);
 		}
 
-		return '<textarea'.form::attributes($data).$extra.'>'.html::specialchars($value).'</textarea>';
+		return '<textarea'.form::attributes($data, 'textarea').$extra.'>'.html::specialchars($value).'</textarea>';
 	}
 
 	/**
@@ -276,7 +276,7 @@ class form_Core {
 		// Selected value should always be a string
 		$selected = (string) $selected;
 
-		$input = '<select'.form::attributes($data).$extra.'>'."\n";
+		$input = '<select'.form::attributes($data, 'select').$extra.'>'."\n";
 		foreach ($options as $key => $val)
 		{
 			// Key should always be a string
@@ -401,11 +401,6 @@ class form_Core {
 			$data = array('name' => $data);
 		}
 
-		$data += array
-		(
-			'type'  => 'button'
-		);
-
 		if (isset($data['value']))
 		{
 			$value = arr::remove('value', $data);
@@ -417,7 +412,7 @@ class form_Core {
 			$extra = ' '.ltrim($extra);
 		}
 
-		return '<button'.form::attributes($data).$extra.'>'.html::specialchars($value).'</button>';
+		return '<button'.form::attributes($data, 'button').$extra.'>'.html::specialchars($value).'</button>';
 	}
 
 	/**
@@ -467,14 +462,34 @@ class form_Core {
 	 * @param   array   HTML attributes array
 	 * @return  string
 	 */
-	public static function attributes($attr)
+	public static function attributes($attr, $type = NULL)
 	{
 		if (empty($attr))
 			return '';
 
-		if ( ! empty($attr['name']) AND strpos($attr['name'], '[') === FALSE AND empty($attr['id']))
+		if ($type === NULL AND ! empty($attr['type']))
 		{
-			$attr['id'] = $attr['name'];
+			// Set the type by the attributes
+			$type = $attr['type'];
+		}
+
+		if (isset($attr['name']) AND empty($attr['id']) AND strpos($attr['name'], '[') === FALSE)
+		{
+			switch ($type)
+			{
+				case 'text':
+				case 'textarea':
+				case 'password':
+				case 'select':
+				case 'checkbox':
+				case 'file':
+				case 'image':
+				case 'button':
+				case 'submit':
+					// Only specific types of inputs use name to id matching
+					$attr['id'] = $attr['name'];
+				break;
+			}
 		}
 
 		$order = array
@@ -507,13 +522,16 @@ class form_Core {
 		{
 			if (isset($attr[$key]))
 			{
+				// Move the attribute to the sorted array
 				$sorted[$key] = $attr[$key];
+
+				// Remove the attribute from unsorted array
+				unset($attr[$key]);
 			}
 		}
 
-		$sorted = array_merge($sorted, $attr);
-
-		return html::attributes($sorted);
+		// Combine the sorted and unsorted attributes and create an HTML string
+		return html::attributes(array_merge($sorted, $attr));
 	}
 
 } // End form
