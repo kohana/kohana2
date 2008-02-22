@@ -19,7 +19,7 @@ class Kobot_Controller extends Controller {
 
 		// Login and join the default channel
 		$bot->login('koboto', 'PhoenixRisingKO');
-		$bot->join('#koboto');
+		$bot->join('#kohana-dev', 'lovespeed');
 		$bot->read();
 	}
 

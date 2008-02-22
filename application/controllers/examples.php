@@ -272,11 +272,9 @@ class Examples_Controller extends Controller {
 	 */
 	function user_agent()
 	{
-		$ua = new User_agent;
-
 		foreach(array('agent', 'browser', 'version') as $key)
 		{
-			echo $key.': '.$ua->$key.'<br/>'."\n";
+			echo $key.': '.Kohana::user_agent($key).'<br/>'."\n";
 		}
 
 		echo "<br/><br/>\n";
