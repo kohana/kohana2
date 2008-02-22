@@ -545,7 +545,7 @@ class Validation_Core extends ArrayObject {
 	{
 		foreach ($fields as $depends_on)
 		{
-			if (! isset($this[$depends_on]) OR $this[$depends_on] == NULL)
+			if ( ! isset($this[$depends_on]) OR $this[$depends_on] == NULL)
 				return FALSE;
 		}
 

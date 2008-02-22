@@ -54,7 +54,7 @@ class Session_Core {
 			// Makes a mirrored array, eg: foo=foo
 			self::$protect = array_combine(self::$protect, self::$protect);
 
-			if (self::$config['driver'] != 'native')
+			if (self::$config['driver'] !== 'native')
 			{
 				// Set driver name
 				$driver = 'Session_'.ucfirst(self::$config['driver']).'_Driver';

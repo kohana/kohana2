@@ -95,7 +95,7 @@ class Pagination_Core {
 		$this->total_items        = (int) max(0, $this->total_items);
 		$this->items_per_page     = (int) max(1, $this->items_per_page);
 		$this->total_pages        = (int) ceil($this->total_items / $this->items_per_page);
-		$this->current_page       = (int) min(max(1, Kohana::$instance->uri->segment($this->uri_segment)), max(1, $this->total_pages));
+		$this->current_page       = (int) min(max(1, URI::instance()->segment($this->uri_segment)), max(1, $this->total_pages));
 		$this->current_first_item = (int) min((($this->current_page - 1) * $this->items_per_page) + 1, $this->total_items);
 		$this->current_last_item  = (int) min($this->current_first_item + $this->items_per_page - 1, $this->total_items);
 

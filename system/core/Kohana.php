@@ -893,7 +893,7 @@ class Kohana {
 	 * @return  string   all other keys
 	 * @return  boolean  all tests
 	 */
-	public static function user_agent($key, $compare = NULL)
+	public static function user_agent($key = 'agent', $compare = NULL)
 	{
 		static $info;
 
@@ -910,7 +910,7 @@ class Kohana {
 				{
 					if (stripos(Kohana::$user_agent, $agent) !== FALSE)
 					{
-						if ($type === 'browser' AND preg_match('|'.preg_quote($agent).'[^0-9.]*([0-9.]+)|i', Kohana::$user_agent, $match))
+						if ($type === 'browser' AND preg_match('|'.preg_quote($agent).'[^0-9.]*+([0-9.]+)|i', Kohana::$user_agent, $match))
 						{
 							// Set the browser version
 							$info['version'] = $match[1];
@@ -990,7 +990,7 @@ class Kohana {
 		}
 
 		// Return the key, if set
-		return isset($info[$key]) ? $info[$key] : NULL;
+		return (isset($info[$key])) ? $info[$key] : NULL;
 	}
 
 	/**
