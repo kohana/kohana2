@@ -725,10 +725,18 @@ class ORM_Core {
 
 		if (empty(self::$fields[$this->table]))
 		{
-			foreach(self::$db->list_fields($this->table) as $field => $data)
+			if ($fields = self::$db->list_fields($this->table))
 			{
-				// Cache the column names
-				self::$fields[$this->table][$field] = $data;
+				foreach ($fields as $field => $data)
+				{
+					// Cache the column names
+					self::$fields[$this->table][$field] = $data;
+				}
+			}
+			else
+			{
+				// Table doesn't exist
+				throw new Kohana_Exception('database.table_not_found', $this->table);
 			}
 		}
 	}
