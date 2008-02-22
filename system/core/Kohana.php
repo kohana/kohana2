@@ -705,7 +705,7 @@ class Kohana {
 		else
 		{
 			// Users can define their own extensions, .css, etc
-			$ext = ($ext == FALSE) ? EXT : '';
+			$ext = ($ext == FALSE) ? EXT : $ext;
 
 			// Find the file and return its filename
 			foreach (Config::include_paths() as $path)
