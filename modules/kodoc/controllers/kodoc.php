@@ -2,7 +2,7 @@
 
 class Kodoc_Controller extends Template_Controller {
 
-	protected $template = 'kodoc/template';
+	public $template = 'kodoc/template';
 
 	// Kodoc instance
 	protected $kodoc;
