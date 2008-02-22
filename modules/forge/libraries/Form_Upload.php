@@ -180,7 +180,7 @@ class Form_Upload_Core extends Form_Input {
 			default: break;
 		}
 
-		if (empty($this->upload['size']) OR $this->upload['size'] > $bytes)
+		if ( ! empty($this->upload) AND (empty($this->upload['size']) OR $this->upload['size'] > $bytes))
 		{
 			$this->errors['max_size'] = array($size);
 		}
