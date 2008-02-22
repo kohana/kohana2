@@ -90,8 +90,19 @@ final class Config {
 		// Do this to make sure that the config array is already loaded
 		Config::item($key);
 
-		// Convert dot-noted key string to an array
-		$keys = explode('.', rtrim($key, '.'));
+		// Clean key
+		$key = rtrim($key, '.');
+
+		if (substr($key, 0, 7) === 'routes.')
+		{
+			// Routes cannot contain sub keys due to possible dots in regex
+			$keys = explode('.', $key, 2);
+		}
+		else
+		{
+			// Convert dot-noted key string to an array
+			$keys = explode('.', $key);
+		}
 
 		// Used for recursion
 		$conf =& self::$conf;
