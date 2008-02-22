@@ -80,20 +80,28 @@ class Encrypt_Core {
 		// Set the rand type if it has not already been set
 		if (self::$rand === NULL)
 		{
-			if (defined('MCRYPT_DEV_URANDOM'))
+			if (KOHANA_IS_WIN)
 			{
-				// Use /dev/urandom
-				self::$rand = MCRYPT_DEV_URANDOM;
-			}
-			elseif (defined('MCRYPT_DEV_RANDOM'))
-			{
-				// Use /dev/random
-				self::$rand = MCRYPT_DEV_RANDOM;
+				// Windows only supports the system random number generator
+				self::$rand = MCRYPT_RAND;
 			}
 			else
 			{
-				// Use the system random number generator
-				self::$rand = MCRYPT_RAND;
+				if (defined('MCRYPT_DEV_URANDOM'))
+				{
+					// Use /dev/urandom
+					self::$rand = MCRYPT_DEV_URANDOM;
+				}
+				elseif (defined('MCRYPT_DEV_RANDOM'))
+				{
+					// Use /dev/random
+					self::$rand = MCRYPT_DEV_RANDOM;
+				}
+				else
+				{
+					// Use the system random number generator
+					self::$rand = MCRYPT_RAND;
+				}
 			}
 		}
 
