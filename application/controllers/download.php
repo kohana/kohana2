@@ -16,9 +16,9 @@ class Download_Controller extends Controller {
 		$content = new View('pages/download');
 
 		// Release version, codename, and date
-		$content->release_version = '2.1.1';
+		$content->release_version = '2.1.2';
 		$content->release_codename = 'Schneefeier';
-		$content->release_date = strtotime('2008/02/06');
+		$content->release_date = strtotime('2008/02/21');
 
 		// Counter
 		$content->counter = file_get_contents(APPPATH.'cache/counter.txt');
