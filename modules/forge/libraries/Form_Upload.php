@@ -170,6 +170,10 @@ class Form_Upload_Core extends Form_Input {
 
 	public function rule_size($size)
 	{
+		// Skip the field if it is empty
+		if (empty($this->upload) OR $this->upload['error'] === UPLOAD_ERR_NO_FILE)
+			return;
+
 		$bytes = (int) $size;
 
 		switch (substr($size, -2))
