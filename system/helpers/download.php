@@ -26,12 +26,6 @@ class download_Core {
 		if ($filename == '')
 			return FALSE;
 
-		// Load the user agent
-		if ($user_agent === NULL)
-		{
-			$user_agent = new User_agent();
-		}
-
 		if (is_file($filename))
 		{
 			// Get the real path
@@ -78,7 +72,7 @@ class download_Core {
 		header('Content-Length: '.$filesize);
 
 		// IE headers
-		if ($user_agent->browser === 'Internet Explorer')
+		if (Kohana::user_agent('browser') === 'Internet Explorer')
 		{
 			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 			header('Pragma: public');
