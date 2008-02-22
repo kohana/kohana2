@@ -17,10 +17,10 @@
 class Template_Controller extends Controller {
 
 	// Template view name
-	protected $template = 'template';
+	public $template = 'template';
 
 	// Default to no auto-rendering
-	protected $auto_render = TRUE;
+	public $auto_render = TRUE;
 
 	/**
 	 * Template loading and setup routine.
