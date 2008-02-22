@@ -110,7 +110,7 @@ class Form_Upload_Core extends Form_Input {
 		if ( ! empty($_POST[$this->data['name']]))
 		{
 			// Reset the POST value to the new filename
-			$this->data['value'] = $_POST[$this->data['name']] = $filepath;
+			$this->data['value'] = $_POST[$this->data['name']] = empty($filepath) ? '' : $filepath;
 		}
 
 		return $status;
