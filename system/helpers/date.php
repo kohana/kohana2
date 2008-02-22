@@ -296,7 +296,7 @@ class date_Core {
 
 		// Default values
 		$time1  = max(0, (int) $time1);
-		$time2  = empty($time) ? time() : max(0, (int) $time2);
+		$time2  = empty($time2) ? time() : max(0, (int) $time2);
 
 		// Calculate timespan (seconds)
 		$timespan = abs($time1 - $time2);
