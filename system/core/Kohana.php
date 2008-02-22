@@ -875,7 +875,118 @@ class Kohana {
 		while ( ! empty($keys));
 
 		// We return NULL, because it's less common than FALSE
-		return;
+		return NULL;
+	}
+
+	/**
+	 * Retrieves current user agent information:
+	 * keys:        browser, version, platform, mobile, robot, referrer, languages, charsets
+	 * tests:       is_browser, is_mobile, is_robot, accept_
+	 *
+	 * @param   string   key or test name
+	 * @param   string   used with "accept" tests: user_agent(accept_lang, en)
+	 * @return  array    languages and charsets
+	 * @return  string   all other keys
+	 * @return  boolean  all tests
+	 */
+	public static function user_agent($key, $compare = NULL)
+	{
+		static $info;
+
+		// Return the raw string
+		if ($key === 'agent')
+			return Kohana::$user_agent;
+
+		if ($info === NULL)
+		{
+			// Parse the user agent and extract basic information
+			foreach(Config::item('user_agents') as $type => $data)
+			{
+				foreach($data as $agent => $name)
+				{
+					if (stripos(Kohana::$user_agent, $agent) !== FALSE)
+					{
+						if ($type === 'browser' AND preg_match('|'.preg_quote($agent).'[^0-9.]*([0-9.]+)|i', Kohana::$user_agent, $match))
+						{
+							// Set the browser version
+							$info['version'] = $match[1];
+						}
+
+						// Set the agent name
+						$info[$type] = $name;
+						break;
+					}
+				}
+			}
+		}
+
+		if (empty($info[$key]))
+		{
+			switch ($key)
+			{
+				case 'is_robot':
+				case 'is_browser':
+				case 'is_mobile':
+					// A boolean result
+					$return = ! empty($info[substr($key, 3)]);
+				break;
+				case 'languages':
+					if ( ! empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
+					{
+						if (preg_match_all('/[-a-z]{2,}/', strtolower(trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])), $matches))
+						{
+							// Found a result
+							$return = $matches[0];
+						}
+					}
+				break;
+				case 'charsets':
+					if ( ! empty($_SERVER['HTTP_ACCEPT_CHARSET']))
+					{
+						if (preg_match_all('/[-a-z0-9]{2,}/', strtolower(trim($_SERVER['HTTP_ACCEPT_CHARSET'])), $matches))
+						{
+							// Found a result
+							$return = $matches[0];
+						}
+					}
+				break;
+				case 'referrer':
+					if ( ! empty($_SERVER['HTTP_REFERER']))
+					{
+						// Found a result
+						$return = trim($_SERVER['HTTP_REFERER']);
+					}
+				break;
+			}
+
+			// Cache the return value
+			isset($return) and $info[$key] = $return;
+		}
+
+		if ( ! empty($compare))
+		{
+			// The comparison must always be lowercase
+			$compare = strtolower($compare);
+
+			switch ($key)
+			{
+				case 'accept_lang':
+					// Check if the lange is accepted
+					return in_array($compare, Kohana::user_agent('languages'));
+				break;
+				case 'accept_charset':
+					// Check if the charset is accepted
+					return in_array($compare, Kohana::user_agent('charsets'));
+				break;
+				default:
+					// Invalid comparison
+					return FALSE;
+				break;
+			}
+		}
+
+		// Return the key, if set
+		return isset($info[$key]) ? $info[$key] : NULL;
 	}
 
 	/**
