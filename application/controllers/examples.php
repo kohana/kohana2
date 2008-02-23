@@ -48,8 +48,8 @@ class Examples_Controller extends Controller {
 			// Load archive
 			$archive = new Archive('zip');
 
-			// Add welcome.php with the name of test.php
-			$archive->add(APPPATH.'views/', 'shitty/views', TRUE);
+			// Download the application/views directory
+			$archive->add(APPPATH.'views/', 'app_views/', TRUE);
 
 			// Download the built archive
 			$archive->download('test.zip');
@@ -327,13 +327,20 @@ class Examples_Controller extends Controller {
 	{
 		$profiler = new Profiler;
 
-		$dir = str_replace('\\', '/', realpath(dirname(__FILE__).'/../upload')).'/';
+		// Upload directory
+		$dir = realpath(DOCROOT.'upload').'/';
 
-		$image = new Image($dir.'moo.jpg');
+		// Image filename
+		$image = $dir.'mypic.jpg';
 
-		$image->resize(400, NULL)->crop(400, 350, 'top')->sharpen(20);
+		// Create an instance of Image, with file
+		$image = new Image($image);
 
-		$image->save($dir.'super-cow-crop.jpg');
+		// Resize the image
+		$image->resize(100, 100);
+
+		// Save the image
+		$image->save($dir.'mypic_thumb.jpg');
 
 		echo Kohana::debug($image);
 	}
