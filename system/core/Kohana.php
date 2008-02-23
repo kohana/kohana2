@@ -705,13 +705,13 @@ class Kohana {
 		else
 		{
 			// Users can define their own extensions, .css, etc
-			$ext = ($ext == FALSE) ? EXT : $ext;
+			$ext = ($ext == FALSE) ? ltrim(EXT, '.') : $ext;
 
 			// Find the file and return its filename
 			foreach (Config::include_paths() as $path)
 			{
-				if (is_file($path.$search.$ext))
-					return $found[$hash] = $path.$search.$ext;
+				if (is_file($path.$search.'.'.$ext))
+					return $found[$hash] = $path.$search.'.'.$ext;
 			}
 
 			// If the file is required, throw an exception

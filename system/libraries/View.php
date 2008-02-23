@@ -56,7 +56,7 @@ class View_Core {
 				throw new Kohana_Exception('core.invalid_filetype', $type);
 
 			// Load the filename and set the content type
-			$this->kohana_filename = Kohana::find_file('views', $name.'.'.$type, TRUE, $type);
+			$this->kohana_filename = Kohana::find_file('views', $name, TRUE, $type);
 			$this->kohana_filetype = Config::item('mimes.'.$type);
 			$this->kohana_filetype = empty($this->kohana_filetype) ? $type : $this->kohana_filetype;
 		}
