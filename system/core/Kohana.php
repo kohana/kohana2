@@ -711,7 +711,7 @@ class Kohana {
 			foreach (Config::include_paths() as $path)
 			{
 				if (is_file($path.$search.$ext))
-					return $found[$hash] = $path.$search.'.'.$ext;
+					return $found[$hash] = $path.$search.$ext;
 			}
 
 			// If the file is required, throw an exception
