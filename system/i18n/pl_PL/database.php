@@ -10,5 +10,6 @@ $lang = array
 	'must_use_set'          => 'Proszę ustawić sekcję SET dla zapytania.',
 	'must_use_where'        => 'Proszę ustawić sekcję WHERE dla zapytania.',
 	'must_use_table'        => 'Proszę wybrać tabelę dla zapytania.',
+	'table_not_found'       => 'Tabeli %s nie ma w bazie danych.',
 	'not_implemented'       => 'Wywołana metoda, %s, nie jest obsługiwana przez sterownik.'
 );
