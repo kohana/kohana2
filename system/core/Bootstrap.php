@@ -13,6 +13,9 @@
 define('KOHANA_VERSION',  '2.1.1');
 define('KOHANA_CODENAME', 'Schneefeier');
 
+// Test of Kohana is running in Windows
+define('KOHANA_IS_WIN', PHP_SHLIB_SUFFIX === 'dll');
+
 // Kohana benchmarks are prefixed by a random string to prevent collisions
 define('SYSTEM_BENCHMARK', uniqid());
 
