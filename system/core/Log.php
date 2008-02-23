@@ -61,7 +61,7 @@ final class Log {
 		if ($threshold < 1 OR count(self::$messages) === 0) return;
 
 		// Set the log filename
-		$filename = self::$log_directory.date('Y-m-d').'.log'.EXT;
+		$filename = self::$log_directory.Config::item('log.prefix').date('Y-m-d').'.log'.EXT;
 
 		// Compile the messages
 		$messages = '';

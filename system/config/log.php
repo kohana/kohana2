@@ -27,6 +27,11 @@ $config['threshold'] = 1;
 $config['directory'] = 'logs';
 
 /**
+ * Log file name prefix; can be blank.
+ */
+$config['prefix'] = '';
+
+/**
  * PHP date format for timestamps.
  * @see http://php.net/date
  */
