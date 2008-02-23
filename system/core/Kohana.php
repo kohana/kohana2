@@ -704,13 +704,13 @@ class Kohana {
 		}
 		else
 		{
-			// Users can define their own extensions, .css, etc
-			$ext = ($ext == FALSE) ? ltrim(EXT, '.') : $ext;
+			// Users can define their own extensions, css, xml, html, etc
+			$ext = ($ext == FALSE) ? EXT : '.'.ltrim($ext, '.');
 
 			// Find the file and return its filename
 			foreach (Config::include_paths() as $path)
 			{
-				if (is_file($path.$search.'.'.$ext))
+				if (is_file($path.$search.$ext))
 					return $found[$hash] = $path.$search.'.'.$ext;
 			}
 

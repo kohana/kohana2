@@ -35,7 +35,7 @@ class Google_Map_Controller extends Controller {
 	public function feed()
 	{
 		header('Content-Type: text/xml; charset=utf-8');
-		require Kohana::find_file('views', 'gmaps/rss', FALSE, '.xml');
+		require Kohana::find_file('views', 'gmaps/rss', FALSE, 'xml');
 	}
 
 } // End Google Map Controller
