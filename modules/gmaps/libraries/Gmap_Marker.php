@@ -5,41 +5,50 @@ class Gmap_Marker_Core {
 	// Marker HTML
 	public $html;
 
-	// Address
-	public $address;
-
 	// Latitude and longitude
 	public $latitude;
 	public $longitude;
 
-	public function __construct($lon, $lat)
+	/**
+	 * Create a new GMap marker.
+	 *
+	 * @param   float   latitude
+	 * @param   float   longitude
+	 * @param   string  HTML of info window
+	 * @return  void
+	 */
+	public function __construct($lat, $lon, $html)
 	{
 		if ( ! is_numeric($lat) OR ! is_numeric($lon))
 			throw new Kohana_Exception('gmaps.invalid_marker', $lat, $lon);
 
-		//http://maps.google.com/?q=South+Africa&ie=UTF8&ll=-32.175612,21.42334&spn=5.503756,11.260986&t=h&z=7
+		// Set the latitude and longitude
+		$this->latitude = $lat;
+		$this->longitude = $lon;
 
-		$this->longitude = ($lon < 0) ? min(0, max($lon, -90))  : min(90, max($lon, 0));
-		$this->latitude  = ($lat < 0) ? min(0, max($lat, -180)) : min(180, max($lat, 0));
+		// Set the info window HTML
+		$this->html = $html;
 	}
 
-	public function __get($key)
+	public function render($tabs = 0)
 	{
-		if ($key === 'lat' OR $key === 'latitude')
-		{
-			return $this->latitude;
-		}
-		elseif ($key === 'lon' OR $key === 'longitude')
-		{
-			return $this->longitude;
-		}
+		// Create the tabs
+		$tabs = empty($tabs) ? '' : str_repeat("\t", $tabs);
 
-		return NULL;
-	}
+		$output = array();
+		$output[] = 'var m = new GMarker(new GLatLng('.$this->latitude.', '.$this->longitude.'));';
+		if ($html = $this->html)
+		{
+			$output[] = 'GEvent.addListener(m, "click", function()';
+			$output[] = '{';
+			$output[] = "\t".'m.openInfoWindowHtml(';
+			$output[] = "\t\t'".implode("'+\n\t\t$tabs'", explode("\n", $html))."'";
+			$output[] = "\t);";
+			$output[] = '});';
+		}
+		$output[] = 'map.addOverlay(m);';
 
-	public function __set($key, $value)
-	{
-		
+		return implode("\n".$tabs, $output);
 	}
 
 } // End Gmap Marker

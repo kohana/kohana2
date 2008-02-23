@@ -2,37 +2,14 @@
 /**
  * Google Maps API integration.
  *
- *  License:
- *  author    - Woody Gilk
- *  copyright - (c) 2007 Kohana Team
- *  license   - <http://kohanaphp.com/license.html>
+ * $Id$
+ *
+ * @package    Gmaps
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 class Gmap_Core {
-
-	/**
-	 * Creates a new marker to place on a map.
-	 *
-	 * @param   string|float  address|longitude
-	 * @param   float         latitude
-	 * @return  object        Gmap_Marker
-	 */
-	public static function marker($lon, $lat = NULL)
-	{
-		if ($lat === NULL)
-		{
-			// Get the latitude and longitude by address
-			list ($lon, $lat) = Gmap::address_to_ll($address = $lon);
-		}
-
-		// Create a new marker
-		$marker = new Gmap_Marker((float) $lat, (float) $lon);
-
-		// Set the address of the marker
-		isset($address) and $marker->address = $address;
-
-		return $marker;
-	}
-
 
 	/**
 	 * Retrieves the latitude and longitude of an address.
@@ -42,16 +19,17 @@ class Gmap_Core {
 	 */
 	public static function address_to_ll($address)
 	{
-		$lon = NULL;
 		$lat = NULL;
+		$lon = NULL;
 
 		if ($xml = Gmap::address_to_xml($address))
 		{
 			// Get the latitude and longitude from the Google Maps XML
+			// NOTE: the order (lon, lat) is the correct order
 			list ($lon, $lat) = explode(',', $xml->Response->Placemark->Point->coordinates);
 		}
 
-		return array($lon, $lat);
+		return array($lat, $lon);
 	}
 
 	/**
@@ -114,14 +92,111 @@ class Gmap_Core {
 		return $xml;
 	}
 
-	public function __construct($config = NULL)
+	// Map settings
+	protected $id;
+	protected $options;
+	protected $center;
+	protected $control;
+
+	// Map markers
+	protected $markers;
+
+	/**
+	 * Set the GMap center point.
+	 *
+	 * @param   string  HTML map id attribute
+	 * @param   array   array of GMap constructor options
+	 * @return  void
+	 */
+	public function __construct($id = 'map', $options = NULL)
 	{
-		empty($config) and $config = Config::item('gmaps');
+		// Set map ID and options
+		$this->id = $id;
+		$this->options = new Gmap_Options((array) $options);
 	}
 
-	public function add_marker($value='')
+	/**
+	 * Set the GMap center point.
+	 *
+	 * @chainable
+	 * @param   float    latitude
+	 * @param   float    longitude
+	 * @param   integer  zoom level (1-16)
+	 * @return  object
+	 */
+	public function center($lat, $lon, $zoom = 6)
 	{
-		# code...
+		// Set center location and zoom
+		$this->center = array($lat, $lon, $zoom);
+
+		return $this;
+	}
+
+	/**
+	 * Set the GMap controls size.
+	 *
+	 * @chainable
+	 * @param   string   small or large
+	 * @return  object
+	 */
+	public function controls($size = NULL)
+	{
+		// Set the control type
+		$this->controls = (strtolower($size) === 'small') ? 'Small' : 'Large';
+
+		return $this;
+	}
+
+	/**
+	 * Set the GMap marker point.
+	 *
+	 * @chainable
+	 * @param   float   latitude
+	 * @param   float   longitude
+	 * @param   string  HTML for info window
+	 * @return  object
+	 */
+	public function add_marker($lat, $lon, $html = '')
+	{
+		// Add a new marker
+		$this->markers[] = new Gmap_Marker($lat, $lon, $html);
+
+		return $this;
+	}
+
+	/**
+	 * Render the map into GMap Javascript.
+	 *
+	 * @return  string
+	 */
+	public function render()
+	{
+		// Latitude, longitude, and zoom
+		list ($lat, $lon, $zoom) = $this->center;
+
+		// Map
+		$map = 'map = new GMap2(document.getElementById("'.$this->id.'"));';
+
+		// Map controls
+		$controls = empty($this->controls) ? '' : 'map.addControl(new G'.$this->controls.'MapControl());';
+
+		// Map centering
+		$center = 'map.setCenter(new GLatLng('.$lat.', '.$lon.'));';
+
+		// Map zoom
+		$zoom = 'map.setZoom('.$zoom.');';
+
+		// Render the Javascript
+		return View::factory('gmaps/javascript', array
+			(
+				'map' => $map,
+				'options' => $this->options,
+				'controls' => $controls,
+				'center' => $center,
+				'zoom' => $zoom,
+				'markers' => $this->markers,
+			))
+			->render();
 	}
 
 } // End Gmap
