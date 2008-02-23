@@ -74,14 +74,6 @@ class Router_Core {
 				{
 					if ($key == '_default') continue;
 
-					// Replace helper strings
-					$key = str_replace
-					(
-						array(':any', ':num'),
-						array('.+',   '[0-9]+'),
-						$key
-					);
-
 					// Does this route match the current URI?
 					if (preg_match('#^'.$key.'$#u', self::$segments))
 					{
