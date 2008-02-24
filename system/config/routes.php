@@ -2,12 +2,6 @@
 /**
  * @package  Core
  *
- * Supported Shortcuts:
- *  :any - matches any non-blank string
- *  :num - matches any number
- */
-
-/**
  * Permitted URI characters. Note that "?", "#", and "=" are URL characters, and
  * should not be added here.
  */
