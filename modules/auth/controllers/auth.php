@@ -78,8 +78,8 @@ class Auth_Controller extends Controller {
 				// Attempt a login
 				if ($this->auth->login($user, $form->password->value))
 				{
-					echo "<h4>Login Success!</h4>";
-					echo "<p>Your roles are:</p>";
+					echo '<h4>Login Success!</h4>';
+					echo '<p>Your roles are:</p>';
 					echo Kohana::debug($user->roles);
 					return;
 				}

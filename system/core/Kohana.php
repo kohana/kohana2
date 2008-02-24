@@ -1009,7 +1009,7 @@ class Kohana {
 
 		foreach($params as $var)
 		{
-			$output[] = '<pre>'.html::specialchars(print_r($var, TRUE)).'</pre>';
+			$output[] = '<pre>('.gettype($var).') '.html::specialchars(print_r($var, TRUE)).'</pre>';
 		}
 
 		return implode("\n", $output);
@@ -1067,7 +1067,7 @@ class Kohana {
 						$arg = preg_replace('!^'.preg_quote(DOCROOT).'!', '', $arg);
 					}
 
-					$temp .= $sep.print_r($arg, TRUE);
+					$temp .= $sep.html::specialchars(print_r($arg, TRUE));
 
 					// Change separator to a comma
 					$sep = ', ';

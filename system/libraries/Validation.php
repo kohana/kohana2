@@ -134,7 +134,7 @@ class Validation_Core extends ArrayObject {
 		if ( ! is_callable($filter))
 			throw new Kohana_Exception('validation.filter_not_callable');
 
-		$filter = (is_string($filter) AND strpos($filter, '::') !== FALSE) ? explode('::', $filter) : $filter;			
+		$filter = (is_string($filter) AND strpos($filter, '::') !== FALSE) ? explode('::', $filter) : $filter;
 
 		if ($field === TRUE)
 		{
@@ -278,9 +278,9 @@ class Validation_Core extends ArrayObject {
 			if ( ! is_callable($callback, TRUE))
 				throw new Kohana_Exception('validation.callback_not_callable');
 
-			$callback = (is_string($callback) AND strpos($callback, '::') !== FALSE) ? explode('::', $callback) : $callback;							
+			$callback = (is_string($callback) AND strpos($callback, '::') !== FALSE) ? explode('::', $callback) : $callback;
 
-			// Add the filter to specified field
+			// Add the callback to specified field
 			$this->callbacks[$field][] = $callback;
 		}
 
