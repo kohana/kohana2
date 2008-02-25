@@ -73,8 +73,8 @@ class Pagination_Core {
 		// Build generic URL with page in query string
 		if ($this->query_string !== '')
 		{
-			// Unvalidated current page
-			$this->current_page = (isset($_GET[$this->query_string])) ? (int) $_GET[$this->query_string] : 1;
+			// Extract current page
+			$this->current_page = isset($_GET[$this->query_string]) ? (int) $_GET[$this->query_string] : 1;
 
 			// Insert {page} placeholder
 			$_GET[$this->query_string] = '{page}';
@@ -110,7 +110,7 @@ class Pagination_Core {
 			// Create full URL
 			$this->url = url::site(implode('/', $this->url)).Router::$query_string;
 
-			// Unvalidated current page
+			// Extract current page
 			$this->current_page = URI::instance()->segment($this->uri_segment);
 		}
 
