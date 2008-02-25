@@ -681,7 +681,7 @@ class Kohana {
 		static $found = array();
 
 		$search = $directory.'/'.$filename;
-		$hash   = sha1($search);
+		$hash   = sha1($search.$ext);
 
 		if (isset($found[$hash]))
 			return $found[$hash];
