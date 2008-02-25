@@ -87,7 +87,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 
 	public function escape_table($table)
 	{
-		return '\''.str_replace('.', '"."', $table).'\'';
+		return '"'.str_replace('.', '"."', $table).'"';
 	}
 
 	public function escape_column($column)
@@ -350,24 +350,21 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		// If the query is a resource, it was a SELECT, SHOW, DESCRIBE, EXPLAIN query
 		if (is_resource($result))
 		{
-			$this->current_row = 0;
-			$this->total_rows  = pg_num_rows($this->result);
-			$this->fetch_type = ($object === TRUE) ? 'pg_fetch_object' : 'pg_fetch_array';
-		}
-		elseif (is_bool($result))
-		{
-			if ($result == FALSE)
+			// Its an DELETE, INSERT, REPLACE, or UPDATE query
+			if (preg_match('/^(?:delete|insert|replace|update)\s+/i', trim($sql), $matches))
 			{
-				// SQL error
-				throw new Kohana_Database_Exception('database.error', pg_last_error().' - '.$sql);
+				$this->insert_id  = (strtolower($matches[0]) == 'insert') ? $this->get_insert_id($link) : FALSE;
+				$this->total_rows = pg_affected_rows($link);
 			}
 			else
 			{
-				// Its an DELETE, INSERT, REPLACE, or UPDATE query
-				$this->insert_id  = $this->get_insert_id($link);
-				$this->total_rows = pg_affected_rows($link);
+				$this->current_row = 0;
+				$this->total_rows  = pg_num_rows($this->result);
+				$this->fetch_type = ($object === TRUE) ? 'pg_fetch_object' : 'pg_fetch_array';
 			}
 		}
+		else
+			throw new Kohana_Database_Exception('database.error', pg_last_error().' - '.$sql);
 
 		// Set result type
 		$this->result($object);

@@ -256,8 +256,15 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 			return $tables[$table];
 		}
 		else
-		{
-			return 'PRAGMA table_info('.$this->escape_table($table).')';
+		{ 
+			$result = $this->link->query( 'PRAGMA table_info('.$this->escape_table($table).')' );
+			
+			foreach($result as $row)
+			{
+				$tables[$table][$row['name']] = $this->sql_type($row['type']);
+			}	
+
+			return $tables[$table]; 
 		}
 	}
 

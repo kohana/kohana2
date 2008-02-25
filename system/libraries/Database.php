@@ -1056,6 +1056,28 @@ class Database_Core {
 	}
 
 	/**
+	 * Escapes a table name for a query.
+	 *
+	 * @param   string  string to escape
+	 * @return  string
+	 */
+	public function escape_table($table)
+	{
+		return $this->driver->escape_table($table);
+	}
+
+	/**
+	 * Escapes a column name for a query.
+	 *
+	 * @param   string  string to escape
+	 * @return  string
+	 */
+	public function escape_column($table)
+	{
+		return $this->driver->escape_column($table);
+	}
+
+	/**
 	 * Returns table prefix of current configuration.
 	 *
 	 * @return  string
