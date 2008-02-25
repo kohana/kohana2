@@ -87,7 +87,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 
 	public function escape_table($table)
 	{
-		return '\''.str_replace('.', '"."', $table).'\'';
+		return '"'.str_replace('.', '"."', $table).'"';
 	}
 
 	public function escape_column($column)
