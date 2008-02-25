@@ -472,6 +472,32 @@ class Validation_Core extends ArrayObject {
 	}
 
 	/**
+	 * Provides a generic interface to load the errors. Each field can have a
+	 * specific message, such as username.required, and a default message, such
+	 * as username.default.
+	 *
+	 * @param   string   language file to load errors from
+	 * @return  void
+	 */
+	public function load_errors($file = 'forms')
+	{
+		foreach ($this->errors as $input => $error)
+		{
+			// Key for this input error
+			$key = "$file.$input.$error";
+
+			if (($str = Kohana::lang($key)) === $key)
+			{
+				// Get the default error message
+				$str = Kohana::lang("$file.$input.default");
+			}
+
+			// Add the message
+			$this->message($input, $str);
+		}
+	}
+
+	/**
 	 * Rule: required. Generates an error if the field has an empty value.
 	 *
 	 * @param   mixed   input value
