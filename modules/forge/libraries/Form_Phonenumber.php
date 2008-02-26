@@ -59,15 +59,18 @@ class Form_Phonenumber_Core extends Form_Input {
 			{
 				case 'area_code':
 					$data['value'] = substr($this->data['value'], 0, 3);
+					$input .= form::input(array_merge(array('value' => $val), $data)).'-';
 					break;
 				case 'exchange':
 					$data['value'] = substr($this->data['value'], 3, 3);
+					$input .= form::input(array_merge(array('value' => $val), $data)).'-';
 					break;
 				case 'last_four':
 					$data['value'] = substr($this->data['value'], 6, 4);
+					$input .= form::input(array_merge(array('value' => $val), $data));
 					break;
 			}
-			$input .= form::input(array_merge(array('value' => $val), $data));
+			
 		}
 
 		return $input;
