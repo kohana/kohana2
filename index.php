@@ -69,7 +69,10 @@ version_compare(PHP_VERSION, '5.2', '<') and exit('Kohana requires PHP 5.2 or ne
 
 // Define the front controller name and docroot
 define('DOCROOT', getcwd().DIRECTORY_SEPARATOR);
-define('KOHANA',  substr(__FILE__, strlen(DOCROOT)));
+define('KOHANA',  basename(__FILE__));
+
+// If the front controller is a symlink, change to the real docroot
+is_link(KOHANA) and chdir(dirname(realpath(__FILE__)));
 
 // Define application and system paths
 define('APPPATH', str_replace('\\', '/', realpath($kohana_application)).'/');
