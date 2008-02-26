@@ -46,7 +46,7 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 		extract($this->db_config['connection']);
 
 		// Build the connection info
-		$host = (isset($host)) ? $host : $socket;
+		$host = isset($host) ? $host : $socket;
 
 		// Make the connection and select the database
 		if ($this->link = new mysqli($host, $user, $pass, $database))

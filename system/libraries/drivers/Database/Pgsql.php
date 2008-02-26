@@ -40,8 +40,8 @@ class Database_Pgsql_Driver extends Database_Driver {
 		$connect = ($this->db_config['persistent'] == TRUE) ? 'pg_pconnect' : 'pg_connect';
 
 		// Build the connection info
-		$port = (isset($port)) ? 'port=\''.$port.'\'' : '';
-		$host = (isset($host)) ? 'host=\''.$host.'\' '.$port : ''; // if no host, connect with the socket
+		$port = isset($port) ? 'port=\''.$port.'\'' : '';
+		$host = isset($host) ? 'host=\''.$host.'\' '.$port : ''; // if no host, connect with the socket
 
 		$connection_string = $host.' dbname=\''.$database.'\' user=\''.$user.'\' password=\''.$pass.'\'';
 		// Make the connection and select the database

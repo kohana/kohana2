@@ -131,8 +131,8 @@ class Router_Core {
 		{
 			self::$directory  = APPPATH.'controllers/';
 			self::$controller = self::$rsegments[0];
-			self::$method     = (isset(self::$rsegments[1])) ? self::$rsegments[1] : 'index';
-			self::$arguments  = (isset(self::$rsegments[2])) ? array_slice(self::$rsegments, 2) : array();
+			self::$method     = isset(self::$rsegments[1]) ? self::$rsegments[1] : 'index';
+			self::$arguments  = isset(self::$rsegments[2]) ? array_slice(self::$rsegments, 2) : array();
 		}
 		else
 		{

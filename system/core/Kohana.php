@@ -990,7 +990,7 @@ class Kohana {
 		}
 
 		// Return the key, if set
-		return (isset($info[$key])) ? $info[$key] : NULL;
+		return isset($info[$key]) ? $info[$key] : NULL;
 	}
 
 	/**

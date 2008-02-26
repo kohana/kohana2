@@ -10,5 +10,6 @@ $lang = array
 	'must_use_set'          => 'Vous devez spécifier une clause SET pour votre requête.',
 	'must_use_where'        => 'Vous devez spécifier une clause WHERE pour votre requête.',
 	'must_use_table'        => 'Vous devez spécifier une table de la base de données pour votre requête.',
-	'not_implemented'       => 'La méthode %s que vous avez appellée n\'est pas supportée par le driver de base de données.'
+	'table_not_found'       => 'La table %s n\'existe pas dans votre base de données.', 
+	'not_implemented'       => 'La méthode %s que vous avez appelée n\'est pas supportée par le driver de base de données.',
 );

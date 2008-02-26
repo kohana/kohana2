@@ -26,5 +26,5 @@ function _strcspn($str, $mask, $offset = NULL, $length = NULL)
 	$mask = preg_replace('#[-[\].:\\\\^/]#', '\\\\$0', $mask);
 	preg_match('/^[^'.$mask.']+/u', $str, $matches);
 
-	return (isset($matches[0])) ? utf8::strlen($matches[0]) : 0;
+	return isset($matches[0]) ? utf8::strlen($matches[0]) : 0;
 }

@@ -381,7 +381,7 @@ class Session_Core {
 		if (empty($key))
 			return $_SESSION;
 
-		$result = (isset($_SESSION[$key])) ? $_SESSION[$key] : Kohana::key_string($key, $_SESSION);
+		$result = isset($_SESSION[$key]) ? $_SESSION[$key] : Kohana::key_string($key, $_SESSION);
 
 		return ($result === NULL) ? $default : $result;
 	}

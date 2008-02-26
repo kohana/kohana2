@@ -58,7 +58,7 @@ class Media_Controller extends Controller {
 		$files = explode('+', $querystr);
 
 		$mimetype = config::item('mimes.css');
-		$mimetype = (isset($mimetype[0])) ? $mimetype[0] : 'text/stylesheet';
+		$mimetype = isset($mimetype[0]) ? $mimetype[0] : 'text/stylesheet';
 
 		$this->use_cache AND $data = $this->cache->get('media.css.'.$querystr);
 
@@ -122,7 +122,7 @@ class Media_Controller extends Controller {
 		}
 
 		$mimetype = Config::item('mimes.js');
-		$mimetype = (isset($mimetype[0])) ? $mimetype[0] : 'text/javascript';
+		$mimetype = isset($mimetype[0]) ? $mimetype[0] : 'text/javascript';
 
 		$this->use_cache AND $data = $this->cache->get('media.js.'.$filename);
 

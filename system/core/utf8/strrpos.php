@@ -21,7 +21,7 @@ function _strrpos($str, $search, $offset = 0)
 	if ($offset == 0)
 	{
 		$array = explode($search, $str, -1);
-		return (isset($array[0])) ? utf8::strlen(implode($search, $array)) : FALSE;
+		return isset($array[0]) ? utf8::strlen(implode($search, $array)) : FALSE;
 	}
 
 	$str = utf8::substr($str, $offset);
