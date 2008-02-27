@@ -21,10 +21,25 @@ class media_Core {
 	 */
 	public static function stylesheet($style, $media = FALSE, $index = TRUE)
 	{
-		if (is_array($style)) {
-			$style = implode('+', $style);
+		$separator = config::item('media.separator') OR $separator = ',';
+		
+		if (is_array($style)) 
+		{
+			$style = implode($separator, $style);
 		}
 		$style = 'media/css/'.$style;
 		return html::stylesheet($style, $media, $index);
+	}
+	
+	public static function script($script) 
+	{
+		$separator = config::item('media.separator') OR $separator = ',';
+		
+		if (is_array($script)) 
+		{
+			$script = implode($separator, $script);
+		}
+		$script = 'media/js/'.$script;
+		return html::script($script);
 	}
 }

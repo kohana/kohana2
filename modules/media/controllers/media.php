@@ -10,23 +10,26 @@
  * $Id$
  *
  * @package	   Media Module
- * @author	   Kohana Team
+ * @author	   Greg MacLellan
  * @copyright  (c) 2007-2008 Kohana Team
  * @license	   http://kohanaphp.com/license.html
  */
 class Media_Controller extends Controller {
-
+	protected $separator = FALSE;
+	
 	protected $use_cache = FALSE;
 	protected $cache_lifetime;
 
 	protected $pack_css = FALSE;
 	protected $pack_js = FALSE;
-
+	
 	public function __construct()
 	{
 		parent::__construct();
-
-		$cache           = Config::item('media.cache');
+		
+		$this->separator = config::item('media.separator') OR $this->separator = ',';
+		
+		$cache = Config::item('media.cache');
 		$this->use_cache = ($cache > 0);
 
 		if (is_int($cache))
@@ -35,7 +38,7 @@ class Media_Controller extends Controller {
 		}
 		else
 		{
-			Config::item('cache.lifetime') OR $this->cache_lifetime = 1800;
+			$this->cache_lifetime = Config::item('cache.lifetime') OR $this->cache_lifetime = 1800;
 		}
 
 		if ($this->use_cache AND ! isset($this->cache))
@@ -44,150 +47,134 @@ class Media_Controller extends Controller {
 		}
 
 		$this->pack_css = (bool) Config::item('media.pack_css');
-		$this->pack_js  = Config::item('media.pack_js');
+		$this->pack_js = Config::item('media.pack_js');
 
-		if ($this->pack_js === TRUE)
-		{
-			$this->pack_js = 'Normal';
-		}
+		($this->pack_js === TRUE) AND $this->pack_js = 'Normal';
 	}
-
-	public function css($querystr) 
-	{
-		// Find all the individual files
-		$files = explode('+', $querystr);
-
+	
+	public function css($querystr) {
+		// find all the individual files
+		$files = explode($this->separator, $querystr);
+			
 		$mimetype = config::item('mimes.css');
-		$mimetype = isset($mimetype[0]) ? $mimetype[0] : 'text/stylesheet';
+		$mimetype = (isset($mimetype[0])) ? $mimetype[0] : 'text/stylesheet';
 
-		$this->use_cache AND $data = $this->cache->get('media.css.'.$querystr);
-
-		if ( ! isset($data) OR empty($data))
+		$this->use_cache AND $output = $this->cache->get('media.css.'.$querystr);
+		
+		if ( ! isset($output) OR empty($output))
 		{
-			$data = '';
-			foreach ($files as $orig_filename) 
+			$output = '';
+			$filedata = $this->_load_filedata($files, 'css');
+			foreach ($filedata as $filename=>$data) 
 			{
-				$filename = $orig_filename;
-
-				if (substr($filename, -4) == ".css")
+				if ($this->pack_css)
 				{
-					$filename = substr($filename, 0, -4);
+					$data = $this->_css_compress($data);
 				}
-
-				try
-				{
-					$view = new View('media/css/'.$filename, null, 'css');
-				}
-				catch (Kohana_Exception $exception)
-				{
-					// Try to load the file as a php view (eg, file.css.php)
-					try
-					{
-						$view = new View('media/css/'.$orig_filename);
-					}
-					catch (Kohana_Exception $exception)
-					{
-						// Not found
-						unset($view);
-					}
-				}
-
-				if (isset($view)) {
-					$filedata = $view->render();
-
-					($this->pack_css) AND $filedata = $this->_css_compress($filedata);
-
-					$data .= $filedata;
-				}
-				else
-				{
-					$data .= "\n/**** stylesheet ".$filename." not found ****/\n\n\n";
-				}
+				$output .= $data;
 			}
-
-			($this->use_cache) AND $this->cache->set('media.css.'.$querystr, $data, array('media'), $this->cache_lifetime);
+			
+			($this->use_cache) and $this->cache->set('media.css.'.$querystr, $data, array('media'), $this->cache_lifetime);
 		}
-
+		
 		$mimetype AND header('Content-type: '.$mimetype);
-		echo $data;
+		echo $output;
 	}
+	
+	public function js($querystr) {
+		// find all the individual files
+		$files = explode($this->separator, $querystr);
 
-	public function js($orig_filename) 
-	{
-		$filename = $orig_filename;
+		$mimetype = config::item('mimes.js');
+		$mimetype = (isset($mimetype[0])) ? $mimetype[0] : 'text/javascript';
 
-		if (substr($filename, -3) == '.js')
+		$this->use_cache AND $output = $this->cache->get('media.js.'.$querystr);
+
+		if ( ! isset($output) OR empty($output))
 		{
-			$filename = substr($filename, 0, -3);
+			$output = '';
+			$filedata = $this->_load_filedata($files, 'js');
+			foreach ($filedata as $filename=>$data) 
+			{
+				$output .= $data;
+			}
+			
+			if ($this->pack_js)
+			{
+				$output = $this->_js_compress($output);
+			}
+			
+			($this->use_cache) and $this->cache->set('media.js.'.$querystr, $data, array('media'), $this->cache_lifetime);
 		}
-
-		$mimetype = Config::item('mimes.js');
-		$mimetype = isset($mimetype[0]) ? $mimetype[0] : 'text/javascript';
-
-		$this->use_cache AND $data = $this->cache->get('media.js.'.$filename);
-
-		if ( ! isset($data) OR empty($data))
-		{
-			try
-			{
-				$view = new View('media/js/'.$filename, NULL, 'js');
-			}
-			catch (Kohana_Exception $exception)
-			{
-				// Try to load the file as a php view (eg, file.js.php)
-				try
-				{
-					$view = new View('media/js/'.$orig_filename);
-				}
-				catch (Kohana_Exception $exception)
-				{
-					// Not found
-					unset($view);
-				}
-			}
-
-			if (isset($view))
-			{
-				$data = $view->render();
-
-				if ($this->pack_js)
-				{
-					$packer = new JavaScriptPacker($data, $this->pack_js);
-					$data = $packer->pack();
-				}
-
-				($this->use_cache) AND $this->cache->set('media.js.'.$filename, $data, array('media'), $this->cache_lifetime);
-			}
-			else
-			{
-				$data = '/* script not found */';
-			}
-		}
-
+		
 		$mimetype AND header('Content-type: '.$mimetype);
-		echo $data;
+		echo $output;
 	}
+	
 
 	public function _default()
 	{
-		$type = $this->uri->segment(2);
-		$filename = $this->uri->segment(3);
-		// TODO:   Finish this for generic types
-		// ISSUES: Getting View to work with any types of files
-
+		$segments = $this->uri->argument_array();
+		
+		$filename = array_pop($segments);
+		$type = implode('/',$segments);
+		
+		if (($pos = strrpos($filename, '.')) !== false) 
+		{
+			$extension = substr($filename, $pos+1);
+			$filename = substr($filename, 0, $pos);
+		} 
+		else
+		{
+			$extension = '';
+		}
+		
 		try
 		{
-			$view = new View('media/'.$type.'/'.$filename);
+			$view = new View('media/'.$type.'/'.$filename, null, $extension);
+			echo $view->render();
 		}
 		catch (Kohana_Exception $exception)
 		{
 			Event::run('system.404');
 		}
 	}
-
-	/**
-	 * @based_on   http://www.ibloomstudios.com/articles/php_css_compressor/
-	 */
+	
+	public function _load_filedata($files, $resource_type) 
+	{
+		$filedata = array();
+		foreach ($files as $orig_filename) 
+		{
+			$filename = $orig_filename;
+			if (substr($filename, -1 * strlen($resource_type) - 1) == '.'.$resource_type)
+			{
+				$filename = substr($filename, 0, -1 * strlen($resource_type) - 1);
+			}
+			
+			try
+			{
+				$view = new View('media/'.$resource_type.'/'.$filename, null, $resource_type);
+			}
+			catch (Kohana_Exception $exception)
+			{
+				// try to load the file as a php view (eg, file.css.php)
+				try
+				{
+					$view = new View('media/'.$resource_type.'/'.$orig_filename);
+				}
+				catch (Kohana_Exception $exception)
+				{
+					// not found
+					unset($view);
+				}
+			}
+			
+			(isset($view)) and $filedata[$filename] = $view->render();
+		}
+		return $filedata;
+	}
+	
+	// Based on http://www.ibloomstudios.com/articles/php_css_compressor/
 	public function _css_compress($data)
 	{
 		// Remove comments
@@ -207,5 +194,9 @@ class Media_Controller extends Controller {
 
 		return $data;
 	}
-
+	
+	public function _js_compress($data) {
+		$packer = new JavaScriptPacker($data, $this->pack_js);
+		return $packer->pack();
+	}
 } // End Media_Controller
