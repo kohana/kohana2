@@ -129,19 +129,27 @@ class ORM_Core {
 		{
 			return $this->object->$key;
 		}
-		elseif ( ! empty($this->object->id) AND (in_array($key, $this->has_one) OR in_array($key, $this->belongs_to)))
+		elseif (in_array($key, $this->has_one) OR in_array($key, $this->belongs_to))
 		{
 			// Set the model name
 			$model = ucfirst($key).'_Model';
 
-			// Set the child id name
-			$child_id = $key.'_id';
+			if (empty($this->object->id))
+			{
+				// Load an empty model
+				$this->object->$key = new $model;
+			}
+			else
+			{
+				// Set the child id name
+				$child_id = $key.'_id';
 
-			$this->object->$key = new $model(isset($this->object->$child_id)
-				// Get the foreign object using the key defined in this object
-				? $this->object->$child_id
-				// Get the foreign object using the primary key of this object
-				: array($this->class.'_id', $this->object->id));
+				$this->object->$key = new $model(isset($this->object->$child_id)
+					// Get the foreign object using the key defined in this object
+					? $this->object->$child_id
+					// Get the foreign object using the primary key of this object
+					: array($this->class.'_id', $this->object->id));
+			}
 
 			// Return the model
 			return $this->object->$key;
