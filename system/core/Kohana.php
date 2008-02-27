@@ -507,7 +507,7 @@ class Kohana {
 		if ($PHP_ERROR)
 		{
 			$description = Kohana::lang('errors.'.E_RECOVERABLE_ERROR);
-			$description = $description[2];
+			$description = is_array($description) ? $description[2] : '';
 		}
 		else
 		{
@@ -793,9 +793,9 @@ class Kohana {
 
 			// Loop through the files and include each one, so SYSPATH files
 			// can be overloaded by more localized files
-			foreach(self::find_file('i18n', $filename) as $filename)
+			foreach(self::find_file('i18n', $filename) as $file)
 			{
-				include $filename;
+				include $file;
 
 				// Merge in configuration
 				if ( ! empty($lang) AND is_array($lang))
