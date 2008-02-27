@@ -53,20 +53,21 @@ class Form_Phonenumber_Core extends Form_Input {
 		$input = '';
 		foreach($this->parts as $type => $val)
 		{
+			isset($data['value']) OR $data['value'] = '';
 			$data['name'] = $this->data['name'].'['.$type.']';
 			$data['class'] = $type;
 			switch ($type)
 			{
 				case 'area_code':
-					$data['value'] = substr($this->data['value'], 0, 3);
+					$data['value'] = substr($data['value'], 0, 3);
 					$input .= form::input(array_merge(array('value' => $val), $data)).'-';
 					break;
 				case 'exchange':
-					$data['value'] = substr($this->data['value'], 3, 3);
+					$data['value'] = substr($data['value'], 3, 3);
 					$input .= form::input(array_merge(array('value' => $val), $data)).'-';
 					break;
 				case 'last_four':
-					$data['value'] = substr($this->data['value'], 6, 4);
+					$data['value'] = substr($data['value'], 6, 4);
 					$input .= form::input(array_merge(array('value' => $val), $data));
 					break;
 			}
