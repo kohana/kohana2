@@ -1,6 +1,8 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Domain name, with the installation directory. Default: localhost/kohana/
+ * If this starts with a /, Kohana will try to get the domain from HTTP_HOST
+ * from  the web server.
  */
 $config['site_domain'] = 'localhost/kohana/';
 

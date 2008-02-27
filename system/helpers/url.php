@@ -21,9 +21,17 @@ class url_Core {
 	public static function base($index = FALSE, $protocol = FALSE)
 	{
 		$protocol = ($protocol == FALSE) ? Config::item('core.site_protocol') : strtolower($protocol);
+		// try to auto-detect protocol
+		empty($protocol) AND $protocol = (isset($_SERVER['HTTPS']) AND ($_SERVER['HTTPS'] != '')) ? 'https' : 'http';
 
-		$base_url = $protocol.'://'.Config::item('core.site_domain', TRUE);
-
+		$site_domain = Config::item('core.site_domain', TRUE);
+		// Add current servername if site_domain starts with a /
+		(strlen($site_domain) > 0 AND $site_domain[0] == '/') AND $site_domain = $_SERVER['HTTP_HOST'].$site_domain;
+		
+		// if site_domain is empty, no base url. This results in 
+		// a relative path (eg, "index.php/") being returned
+		$base_url = (!empty($site_domain)) ? $protocol.'://'.$site_domain : '';
+		
 		if ($index == TRUE AND $index = Config::item('core.index_page'))
 		{
 			$base_url = $base_url.$index.'/';
