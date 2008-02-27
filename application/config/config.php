@@ -1,15 +1,17 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Domain name, with the installation directory. Default: localhost/kohana/
- * If this starts with a /, Kohana will try to get the domain from HTTP_HOST
- * from  the web server.
+ * Base path of the web site. If this includes a domain, (eg, "localhost/kohana/") then
+ * a full URL will be used (eg, "http://localhost/kohana/"). If it only includes the path, 
+ * and a site_protocol is specified, the domain will be auto-detected.
  */
-$config['site_domain'] = 'localhost/kohana/';
+$config['site_domain'] = '/kohana/';
 
 /**
- * Default protocol used to access the website. Default: http
+ * Force a default protocol to be used by the site. If no site_protocol is specified, then the 
+ * current protocol is used, or when possible, only an absolute path (with no protocol/domain) 
+ * is used.
  */
-$config['site_protocol'] = 'http';
+$config['site_protocol'] = '';
 
 /**
  * Name of the front controller for this application. Default: index.php
