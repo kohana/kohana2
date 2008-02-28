@@ -20,10 +20,11 @@ class Router_Core {
 	public static $query_string = '';
 	public static $url_suffix   = '';
 
-	public static $directory  = FALSE;
-	public static $controller = FALSE;
-	public static $method     = FALSE;
-	public static $arguments  = FALSE;
+	public static $directory       = FALSE;
+	public static $controller      = FALSE;
+	public static $controller_path = FALSE;
+	public static $method          = FALSE;
+	public static $arguments       = FALSE;
 
 	/**
 	 * Router setup routine. Automatically called during Kohana setup process.
@@ -141,7 +142,10 @@ class Router_Core {
 
 			// Path to be added to as we search deeper
 			$search = 'controllers';
-
+			
+			// controller path to be added to as we search deeper
+			$controller_path = '';
+			
 			// Use the rsegments to find the controller
 			foreach(self::$rsegments as $key => $segment)
 			{
@@ -151,6 +155,7 @@ class Router_Core {
 					if (is_file($path.$search.'/'.$segment.EXT))
 					{
 						self::$directory  = $path.$search.'/';
+						self::$controller_path = $controller_path;
 						self::$controller = $segment;
 						self::$method     = isset(self::$rsegments[$key + 1]) ? self::$rsegments[$key + 1] : 'index';
 						self::$arguments  = isset(self::$rsegments[$key + 2]) ? array_slice(self::$rsegments, $key + 2) : array();
@@ -162,6 +167,7 @@ class Router_Core {
 
 				// Add the segment to the search
 				$search .= '/'.$segment;
+				$controller_path .= $segment.'/';
 			}
 		}
 

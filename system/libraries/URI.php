@@ -236,5 +236,45 @@ class URI_Core extends Router {
 
 		return self::$rsegments[$end - 1];
 	}
+	
+	/** 
+	 * Returns the path to the current controller (not including the actual 
+	 * controller), as a web path
+	 * 
+	 * @param  bool    If a full url should be returned, or only the path specifically
+	 */
+	public function controller_path($full = TRUE) {
+		if ($full)
+		{
+			return url::site(self::$controller_path);
+		}
+		return self::$controller_path;
+	}
+	
+	/** 
+	 * Returns the current controller, as a web path 
+	 * 
+	 * @param  bool    If a full url should be returned, or only the controller specifically
+	 */
+	public function controller($full = TRUE) {
+		if ($full)
+		{
+			return url::site(self::$controller_path.self::$controller);
+		}
+		return self::$controller;
+	}
+	
+	/** 
+	 * Returns the current method, as a web path
+	 * 
+	 * @param  bool    If a full url should be returned, or only the method specifically
+	 */
+	public function method($full = TRUE) {
+		if ($full)
+		{
+			return url::site(self::$controller_path.self::$controller.'/'.self::$method);
+		}
+		return self::$method;
+	}
 
 } // End URI Class
