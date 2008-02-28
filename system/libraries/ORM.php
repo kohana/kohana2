@@ -30,6 +30,9 @@ class ORM_Core {
 	
 	// Primary column name
 	protected $primary_column = 'id';
+	
+	// if the primary column is auto-increment
+	protected $primary_autoincrement = TRUE;
 
 	// SQL building status
 	protected $select = FALSE;
@@ -40,6 +43,9 @@ class ORM_Core {
 
 	// Changed object keys
 	protected $changed = array();
+	
+	// the primary ID of the row that was loaded
+	protected $loaded_id = null;
 
 	// Object Relationships
 	protected $has_one = array();
@@ -226,6 +232,8 @@ class ORM_Core {
 			return (array) $this->object;
 		}
 
+		$idcolumn = $this->primary_column;
+
 		if (substr($method, 0, 8) === 'find_by_' OR ($all = substr($method, 0, 12)) === 'find_all_by_')
 		{
 			$method = isset($all) ? substr($method, 12) : substr($method, 8);
@@ -286,7 +294,7 @@ class ORM_Core {
 			$model = $this->load_model($table);
 
 			// Remote reference to this object
-			$remote = array($this->class.'_id' => $this->object->id);
+			$remote = array($this->class.'_id' => $this->object->$idcolumn);
 
 			if (in_array($table, $this->has_one))
 			{
@@ -360,7 +368,7 @@ class ORM_Core {
 					if ($ownership === 1 OR $ownership === 2)
 					{
 						// Make sure the related key matches this object id
-						self::$db->where($primary, $this->object->id);
+						self::$db->where($primary, $this->object->$idcolumn);
 					}
 
 					// Load the related object
@@ -370,11 +378,12 @@ class ORM_Core {
 
 			if ($ownership === 3)
 			{
+				$foreign_idcolumn = $model->$primary_column;
 				// The many<>many relationship, via a joining table
 				$relationship = array
 				(
-					$primary => $this->object->id,
-					$foreign => $model->id
+					$primary => $this->object->$idcolumn,
+					$foreign => $model->$foreign_idcolumn,
 				);
 			}
 
@@ -389,7 +398,7 @@ class ORM_Core {
 					else
 					{
 						// Set the related key to this object id
-						$model->$primary = $this->object->id;
+						$model->$primary = $this->object->$idcolumn;
 					}
 
 					return $model->save();
@@ -409,7 +418,7 @@ class ORM_Core {
 						);
 					}
 
-					return ($model->$primary === $this->object->id);
+					return ($model->$primary === $this->object->$idcolumn);
 				break;
 				case 'remove':
 					if (isset($relationship))
@@ -417,7 +426,7 @@ class ORM_Core {
 						// Attempt to delete the many<>many relationship
 						return (bool) count(self::$db->delete($this->related_table($table), $relationship));
 					}
-					elseif ($model->$primary === $this->object->id)
+					elseif ($model->$primary === $this->object->$idcolumn)
 					{
 						// Delete the related object
 						return $model->delete();
@@ -526,19 +535,20 @@ class ORM_Core {
 		
 		$idcolumn = $this->primary_column;
 
+			debug::dump('here');
 		$data = array();
 		foreach($this->changed as $key)
 		{
 			// Get changed data
 			$data[$key] = $this->object->$key;
 		}
-
-		if ($this->object->$idcolumn == '')
+		
+		if (empty($this->loaded_id))
 		{
 			// Perform an insert
 			$query = self::$db->insert($this->table, $data);
 
-			if (count($query) === 1)
+			if ($this->primary_autoincrement && (count($query) === 1))
 			{
 				// Set current object id by the insert id
 				$this->object->$idcolumn = $query->insert_id();
@@ -547,11 +557,13 @@ class ORM_Core {
 		else
 		{
 			// Perform an update
-			$query = self::$db->update($this->table, $data, array($idcolumn => $this->object->$idcolumn));
+			$query = self::$db->update($this->table, $data, array($idcolumn => $this->loaded_id));
+			debug::dump($query);
 		}
-
+		
 		if (count($query) === 1)
 		{
+			
 			// Reset changed data
 			$this->changed = array();
 
@@ -637,6 +649,7 @@ class ORM_Core {
 		$this->changed = array();
 		$this->select  = FALSE;
 		$this->where   = FALSE;
+		$this->loaded  = FALSE;
 	}
 
 	/**
@@ -688,6 +701,9 @@ class ORM_Core {
 			{
 				// Load the first result, if there is only one result
 				$this->object = $result->current();
+				
+				$idcolumn = $this->primary_column;
+				$this->loaded_id = $this->object->$idcolumn;
 			}
 			else
 			{
