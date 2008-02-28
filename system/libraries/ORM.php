@@ -27,6 +27,9 @@ class ORM_Core {
 	// This table
 	protected $class;
 	protected $table;
+	
+	// Primary column name
+	protected $primary_column = 'id';
 
 	// SQL building status
 	protected $select = FALSE;
@@ -133,8 +136,10 @@ class ORM_Core {
 		{
 			// Set the model name
 			$model = ucfirst($key).'_Model';
-
-			if (empty($this->object->id))
+			
+			$idcolumn = $this->primary_column;
+			
+			if (empty($this->object->$idcolumn))
 			{
 				// Load an empty model
 				$this->object->$key = new $model;
@@ -148,7 +153,7 @@ class ORM_Core {
 					// Get the foreign object using the key defined in this object
 					? $this->object->$child_id
 					// Get the foreign object using the primary key of this object
-					: array($this->class.'_id', $this->object->id));
+					: array($this->class.'_id', $this->object->$idcolumn));
 			}
 
 			// Return the model
@@ -170,6 +175,7 @@ class ORM_Core {
 			}
 		}
 	}
+
 
 	/**
 	 * Magic method for setting object and model keys.
@@ -469,7 +475,7 @@ class ORM_Core {
 	 */
 	protected function where_key($id = NULL)
 	{
-		return $this->table.'.id';
+		return $this->table.'.'.$this->primary_column;
 	}
 
 	/**
@@ -517,6 +523,8 @@ class ORM_Core {
 		// No data was changed
 		if (empty($this->changed))
 			return TRUE;
+		
+		$idcolumn = $this->primary_column;
 
 		$data = array();
 		foreach($this->changed as $key)
@@ -525,7 +533,7 @@ class ORM_Core {
 			$data[$key] = $this->object->$key;
 		}
 
-		if ($this->object->id == '')
+		if ($this->object->$idcolumn == '')
 		{
 			// Perform an insert
 			$query = self::$db->insert($this->table, $data);
@@ -533,13 +541,13 @@ class ORM_Core {
 			if (count($query) === 1)
 			{
 				// Set current object id by the insert id
-				$this->object->id = $query->insert_id();
+				$this->object->$idcolumn = $query->insert_id();
 			}
 		}
 		else
 		{
 			// Perform an update
-			$query = self::$db->update($this->table, $data, array('id' => $this->object->id));
+			$query = self::$db->update($this->table, $data, array($idcolumn => $this->object->$idcolumn));
 		}
 
 		if (count($query) === 1)
@@ -789,7 +797,6 @@ class ORM_Core {
 		// Execute the join
 		self::$db->where("$join.$primary", $this->object->id)->join($join, "$join.$foreign", "$table.id");
 	}
-
 } // End ORM
 
 /**
