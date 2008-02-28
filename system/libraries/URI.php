@@ -244,11 +244,9 @@ class URI_Core extends Router {
 	 * @param  bool    If a full url should be returned, or only the path specifically
 	 */
 	public function controller_path($full = TRUE) {
-		if ($full)
-		{
-			return url::site(self::$controller_path);
-		}
-		return self::$controller_path;
+		return ((bool) $full) 
+		        ? url::site(self::$controller_path)
+		        : self::$controller_path;
 	}
 	
 	/** 
@@ -257,11 +255,9 @@ class URI_Core extends Router {
 	 * @param  bool    If a full url should be returned, or only the controller specifically
 	 */
 	public function controller($full = TRUE) {
-		if ($full)
-		{
-			return url::site(self::$controller_path.self::$controller);
-		}
-		return self::$controller;
+		return ((bool) $full) 
+		        ? url::site(self::$controller_path.self::$controller)
+		        : self::$controller;
 	}
 	
 	/** 
@@ -270,11 +266,9 @@ class URI_Core extends Router {
 	 * @param  bool    If a full url should be returned, or only the method specifically
 	 */
 	public function method($full = TRUE) {
-		if ($full)
-		{
-			return url::site(self::$controller_path.self::$controller.'/'.self::$method);
-		}
-		return self::$method;
+		return ((bool) $full) 
+		        ? url::site(self::$controller_path.self::$controller.'/'.self::$method) 
+		        : self::$method;
 	}
 
 } // End URI Class
