@@ -285,7 +285,7 @@ FROM pg_class
     ON (pg_attribute.atttypid=pg_type.oid)
   LEFT JOIN pg_attrdef
     ON (pg_class.oid=pg_attrdef.adrelid AND pg_attribute.attnum=pg_attrdef.adnum)
-WHERE pg_class.relname=\''.$this->escape_table($table).'\' AND pg_attribute.attnum>=1 AND NOT pg_attribute.attisdropped
+WHERE pg_class.relname=\''.$this->escape_str($table).'\' AND pg_attribute.attnum>=1 AND NOT pg_attribute.attisdropped
 ORDER BY pg_attribute.attnum');
                 $fields = array();
                 foreach ($query as $row)
