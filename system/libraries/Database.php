@@ -762,7 +762,7 @@ class Database_Core {
 	 * @param   string  table name
 	 * @param   string  limit clause
 	 * @param   string  offset clause
-	 * @return  object  Database_Result
+	 * @return  string  sql string
 	 */
 	public function compile($table = '', $limit = NULL, $offset = NULL)
 	{
