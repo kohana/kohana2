@@ -535,7 +535,6 @@ class ORM_Core {
 		
 		$idcolumn = $this->primary_column;
 
-			debug::dump('here');
 		$data = array();
 		foreach($this->changed as $key)
 		{
@@ -558,7 +557,6 @@ class ORM_Core {
 		{
 			// Perform an update
 			$query = self::$db->update($this->table, $data, array($idcolumn => $this->loaded_id));
-			debug::dump($query);
 		}
 		
 		if (count($query) === 1)
