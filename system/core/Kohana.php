@@ -541,6 +541,11 @@ class Kohana {
 				// Beautify backtrace
 				$trace = self::backtrace($trace);
 			}
+			
+			if (class_exists('debug') AND !empty(debug::$output))
+			{
+				$debug_output = debug::$output;
+			}
 
 			// Load the error
 			include self::find_file('views', empty($template) ? 'kohana_error_page' : $template);

@@ -42,6 +42,10 @@ strong {color:#700;}
 <h2><?php echo Kohana::lang('core.stack_trace') ?></h2>
 <?php echo $trace ?>
 <?php endif; ?>
+<?php if (isset($debug_output)): ?>
+<h2><?php echo Kohana::lang('core.debug_output') ?></h2>
+<?php echo $debug_output ?>
+<?php endif; ?>
 <p id="stats"><?php echo Kohana::lang('core.stats_footer') ?></p>
 </div>
 </body>
