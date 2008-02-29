@@ -833,6 +833,61 @@ class Kohana {
 	}
 
 	/**
+	 * Fetch an i10n locale item.
+	 *
+	 * @param   string  locale key to fetch
+	 * @return  mixed   NULL if the key is not found
+	 */
+	public static function locale($key)
+	{
+		static $locale = array();
+
+		// Extract the main group from the key
+		$group = explode('.', $key, 2);
+		$group = $group[0];
+
+		if (empty($language[$group]))
+		{
+			// Messages from this file
+			$messages = array();
+
+			// The name of the file to search for
+			$filename = Config::item('locale.country');
+
+			// Loop through the files and include each one, so SYSPATH files
+			// can be overloaded by more localized files
+			foreach(self::find_file('i10n', $filename) as $file)
+			{
+				include $file;
+
+				// Merge in configuration
+				if ( ! empty($locale) AND is_array($locale))
+				{
+					foreach($locale as $k => $v)
+					{
+						$messages[$k] = $v;
+					}
+				}
+			}
+
+			// Cache the type
+			$language[$group] = $messages;
+		}
+
+		// Get the line from the language
+		$line = self::key_string($key, $language);
+
+		// Return the key string as fallback
+		if ($line === NULL)
+		{
+			Log::add('error', 'Missing i10n entry '.$key.' for locale '.$filename);
+			return NULL;
+		}
+
+		return $line;
+	}
+
+	/**
 	 * Returns the value of a key, defined by a 'dot-noted' string, from an array.
 	 *
 	 * @param   string  dot-noted string: foo.bar.baz
