@@ -277,6 +277,9 @@ abstract class Database_Driver {
 	 */
 	public function escape($value)
 	{
+		if (!$this->db_config['escape'])
+			return $value;
+
 		switch (gettype($value))
 		{
 			case 'string':

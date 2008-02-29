@@ -99,6 +99,9 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 
 	public function escape_str($str)
 	{
+		if (!$this->db_config['escape'])
+			return $str;
+
 		is_object($this->link) or $this->connect();
 
 		return $this->link->real_escape_string($str);

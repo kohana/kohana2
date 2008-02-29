@@ -101,6 +101,9 @@ class Database_Mysql_Driver extends Database_Driver {
 
 	public function escape_table($table)
 	{
+		if (!$this->db_config['escape'])
+			return $table;
+
 		if (stripos($table, ' AS ') !== FALSE)
 		{
 			// Force 'AS' to uppercase
@@ -117,6 +120,9 @@ class Database_Mysql_Driver extends Database_Driver {
 
 	public function escape_column($column)
 	{
+		if (!$this->db_config['escape'])
+			return $column;
+
 		if (strtolower($column) == 'count(*)' OR $column == '*')
 			return $column;
 
@@ -246,6 +252,9 @@ class Database_Mysql_Driver extends Database_Driver {
 
 	public function escape_str($str)
 	{
+		if (!$this->config['escape'])
+			return $str;
+
 		is_resource($this->link) or $this->connect();
 
 		return mysql_real_escape_string($str, $this->link);

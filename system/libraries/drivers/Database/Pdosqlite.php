@@ -81,11 +81,17 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 
 	public function escape_table($table)
 	{
+		if (!$this->config['escape'])
+			return $table;
+
 		return '`'.str_replace('.', '`.`', $table).'`';
 	}
 
 	public function escape_column($column)
 	{
+		if (!$this->config['escape'])
+			return $column;
+
 		if (strtolower($column) == 'count(*)' OR $column == '*')
 			return $column;
 
@@ -202,6 +208,9 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 
 	public function escape_str($str)
 	{
+		if (!$this->config['escape'])
+			return $str;
+
 		if(function_exists('sqlite_escape_string'))
 		{
 			$res = sqlite_escape_string($str);
