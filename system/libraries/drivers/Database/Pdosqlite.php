@@ -208,7 +208,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 
 	public function escape_str($str)
 	{
-		if (!$this->config['escape'])
+		if (!$this->db_config['escape'])
 			return $str;
 
 		if(function_exists('sqlite_escape_string'))

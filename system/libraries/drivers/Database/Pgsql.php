@@ -87,7 +87,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 
 	public function escape_table($table)
 	{
-		if (!$this->config['escape'])
+		if (!$this->db_config['escape'])
 			return $table;
 
 		return '"'.str_replace('.', '"."', $table).'"';
@@ -95,7 +95,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 
 	public function escape_column($column)
 	{
-		if (!$this->config['escape'])
+		if (!$this->db_config['escape'])
 			return $column;
 
 		if (strtolower($column) == 'count(*)' OR $column == '*')
@@ -219,7 +219,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 
 	public function escape_str($str)
 	{
-		if (!$this->config['escape'])
+		if (!$this->db_config['escape'])
 			return $str;
 
 		is_resource($this->link) or $this->connect();
