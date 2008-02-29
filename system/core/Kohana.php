@@ -59,6 +59,9 @@ class Kohana {
 
 		// Define database error constant
 		defined('E_DATABASE_ERROR') or define('E_DATABASE_ERROR', 44);
+		
+		// Define E_RECOVERABLE_ERROR constant
+		defined('E_RECOVERABLE_ERROR') or define('E_RECOVERABLE_ERROR', 4096);
 
 		// Disable error reporting
 		$ER = error_reporting(0);
