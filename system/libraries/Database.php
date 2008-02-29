@@ -757,6 +757,33 @@ class Database_Core {
 	}
 
 	/**
+	 * Compiles the select statement based on the other functions called and returns the query string.
+	 *
+	 * @param   string  table name
+	 * @param   string  limit clause
+	 * @param   string  offset clause
+	 * @return  object  Database_Result
+	 */
+	public function compile($table = '', $limit = NULL, $offset = NULL)
+	{
+		if ($table != '')
+		{
+			$this->from($table);
+		}
+
+		if ( ! is_null($limit))
+		{
+			$this->limit($limit, $offset);
+		}
+
+		$sql = $this->driver->compile_select(get_object_vars($this));
+
+		$this->reset_select();
+
+		return $sql;
+	}
+
+	/**
 	 * Compiles an insert string and runs the query.
 	 *
 	 * @param   string  table name
