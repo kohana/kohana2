@@ -17,6 +17,7 @@
  *  table_prefix  - Database table prefix
  *  object        - Enable or disable object results
  *  cache         - Enable or disable query caching
+ *	escape        - Enable automatic query builder escaping
  */
 $config['default'] = array
 (
@@ -26,5 +27,6 @@ $config['default'] = array
 	'character_set' => 'utf8',
 	'table_prefix'  => '',
 	'object'        => TRUE,
-	'cache'         => FALSE
+	'cache'         => FALSE,
+	'escape'        => TRUE
 );
