@@ -686,7 +686,7 @@ class Kohana {
 		if (isset($found[$hash]))
 			return $found[$hash];
 
-		if ($directory == 'config' OR $directory == 'i18n')
+		if ($directory == 'config' OR $directory == 'i18n' OR $directory === 'l10n')
 		{
 			$fnd = array();
 
@@ -842,11 +842,7 @@ class Kohana {
 	{
 		static $locale = array();
 
-		// Extract the main group from the key
-		$group = explode('.', $key, 2);
-		$group = $group[0];
-
-		if (empty($language[$group]))
+		if (empty($locale))
 		{
 			// Messages from this file
 			$messages = array();
@@ -856,7 +852,7 @@ class Kohana {
 
 			// Loop through the files and include each one, so SYSPATH files
 			// can be overloaded by more localized files
-			foreach(self::find_file('i10n', $filename) as $file)
+			foreach(self::find_file('l10n', $filename) as $file)
 			{
 				include $file;
 
@@ -865,17 +861,14 @@ class Kohana {
 				{
 					foreach($locale as $k => $v)
 					{
-						$messages[$k] = $v;
+						$locale[$k] = $v;
 					}
 				}
 			}
-
-			// Cache the type
-			$language[$group] = $messages;
 		}
 
 		// Get the line from the language
-		$line = self::key_string($key, $language);
+		$line = self::key_string($key, $locale);
 
 		// Return the key string as fallback
 		if ($line === NULL)
