@@ -191,11 +191,6 @@ class Database_Mysql_Driver extends Database_Driver {
 		return 'LIMIT '.$offset.', '.$limit;
 	}
 
-	public function stmt_prepare($sql = '')
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
-	}
-
 	public function compile_select($database)
 	{
 		$sql = ($database['distinct'] == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';

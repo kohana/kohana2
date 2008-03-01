@@ -63,7 +63,10 @@ abstract class Database_Driver {
 	 *
 	 * @param  string  character set to use
 	 */
-	abstract public function set_charset($charset);
+	public function set_charset($charset)
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
 
 	/**
 	 * Wrap the tablename in backticks, has support for: table.field syntax.
@@ -190,7 +193,10 @@ abstract class Database_Driver {
 	 * @param   integer  number of regexes
 	 * @return  string
 	 */
-	abstract public function regex($field, $match, $type, $num_regexs);
+	public function regex($field, $match, $type, $num_regexs)
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
 
 	/**
 	 * Builds a NOT REGEX portion of a query.
@@ -201,7 +207,10 @@ abstract class Database_Driver {
 	 * @param   integer  number of regexes
 	 * @return  string
 	 */
-	abstract public function notregex($field, $match, $type, $num_regexs);
+	public function notregex($field, $match, $type, $num_regexs)
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
 
 	/**
 	 * Builds an INSERT query.
@@ -229,7 +238,10 @@ abstract class Database_Driver {
 	 * @param   array   values
 	 * @return  string
 	 */
-	abstract public function merge($table, $keys, $values);
+	public function merge($table, $keys, $values)
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
 
 	/**
 	 * Builds a LIMIT portion of a query.
@@ -246,7 +258,10 @@ abstract class Database_Driver {
 	 * @param   string  SQL query
 	 * @return  Database_Stmt
 	 */
-	abstract public function stmt_prepare($sql = '');
+	public function stmt_prepare($sql = '')
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
 
 	/**
 	 *  Compiles the SELECT statement.
