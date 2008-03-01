@@ -354,7 +354,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 			if (preg_match('/^(?:delete|insert|replace|update)\s+/i', trim($sql), $matches))
 			{
 				$this->insert_id  = (strtolower($matches[0]) == 'insert') ? $this->get_insert_id($link) : FALSE;
-				$this->total_rows = pg_affected_rows($link);
+				$this->total_rows = pg_affected_rows($this->result);
 			}
 			else
 			{
