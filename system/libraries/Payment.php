@@ -67,7 +67,7 @@ class Payment_Core {
 		}
 
 		// Merge the default config with the passed config
-		$this->config = array_merge($this->config, $config);
+		is_array($config) AND $this->config = array_merge($this->config, $config);
 
 		// Set driver name
 		$driver = 'Payment_'.ucfirst($this->config['driver']).'_Driver';
