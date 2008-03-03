@@ -74,32 +74,3 @@ $locale['all_states'] = array_merge($locale['states'], array
 ));
 // Re-sort the list
 ksort($locale['all_states']);
-
-// Month names
-$locale['months'] = array
-(
-	1  => array('short' => 'Jan', 'long' => 'January'),
-	2  => array('short' => 'Feb', 'long' => 'February'),
-	3  => array('short' => 'Mar', 'long' => 'March'),
-	4  => array('short' => 'Apr', 'long' => 'April'),
-	5  => array('short' => 'May', 'long' => 'May'),
-	6  => array('short' => 'Jun', 'long' => 'June'),
-	7  => array('short' => 'Jul', 'long' => 'July'),
-	8  => array('short' => 'Aug', 'long' => 'August'),
-	9  => array('short' => 'Sep', 'long' => 'September'),
-	10 => array('short' => 'Oct', 'long' => 'October'),
-	11 => array('short' => 'Nov', 'long' => 'November'),
-	12 => array('short' => 'Dec', 'long' => 'December'),
-);
-
-// Day names
-$locale['days'] = array
-(
-	0 => array('short' => 'Sun', 'long' => 'Sunday'),
-	1 => array('short' => 'Mon', 'long' => 'Monday'),
-	2 => array('short' => 'Tue', 'long' => 'Tuesday'),
-	3 => array('short' => 'Wed', 'long' => 'Wednesday'),
-	4 => array('short' => 'Thu', 'long' => 'Thursday'),
-	5 => array('short' => 'Fri', 'long' => 'Friday'),
-	6 => array('short' => 'Sat', 'long' => 'Saturday'),
-);
