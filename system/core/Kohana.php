@@ -852,7 +852,7 @@ class Kohana {
 
 			// Loop through the files and include each one, so SYSPATH files
 			// can be overloaded by more localized files
-			foreach(self::find_file('l10n', $filename) as $file)
+			foreach(self::find_file('l10n', Config::item('locale.language').'/'.$filename) as $file)
 			{
 				include $file;
 
