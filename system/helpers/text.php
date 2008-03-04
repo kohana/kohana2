@@ -195,8 +195,7 @@ class text_Core {
 		// First word is the word to match against
 		$word = current($words);
 
-		$similar = '';
-		for ($i = 0, $max = strlen($word); $i < $max; $i++)
+		for ($i = 0, $max = strlen($word); $i < $max; ++$i)
 		{
 			foreach ($words as $w)
 			{
@@ -204,12 +203,10 @@ class text_Core {
 				if ( ! isset($w[$i]) OR $w[$i] !== $word[$i])
 					break 2;
 			}
-
-			$similar .= $word[$i];
 		}
 
 		// Return the similar text
-		return $similar;
+		return substr($word, 0, $i);
 	}
 
 	/**
