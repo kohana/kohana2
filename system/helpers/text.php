@@ -185,6 +185,34 @@ class text_Core {
 	}
 
 	/**
+	 * Finds the text that is similar between a set of words.
+	 *
+	 * @param   array   words to find similar text of
+	 * @return  string
+	 */
+	public static function similar(array $words)
+	{
+		// First word is the word to match against
+		$word = current($words);
+
+		$similar = '';
+		for ($i = 0, $max = strlen($word); $i < $max; $i++)
+		{
+			foreach ($words as $w)
+			{
+				// Once a difference is found, break out of the loops
+				if ( ! isset($w[$i]) OR $w[$i] !== $word[$i])
+					break 2;
+			}
+
+			$similar .= $word[$i];
+		}
+
+		// Return the similar text
+		return $similar;
+	}
+
+	/**
 	 * Converts text email addresses and anchors into links.
 	 *
 	 * @param   string   text to auto link
