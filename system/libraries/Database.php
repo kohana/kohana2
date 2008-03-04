@@ -23,7 +23,8 @@ class Database_Core {
 		'character_set' => 'utf8',
 		'table_prefix'  => '',
 		'object'        => TRUE,
-		'cache'         => FALSE
+		'cache'         => FALSE,
+		'escape'        => TRUE,
 	);
 
 	// Database driver object
