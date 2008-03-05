@@ -401,7 +401,7 @@ class form_Core {
 			$data = array('name' => $data);
 		}
 
-		if (isset($data['value']))
+		if (isset($data['value']) AND empty($value))
 		{
 			$value = arr::remove('value', $data);
 		}
