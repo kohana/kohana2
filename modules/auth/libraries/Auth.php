@@ -89,7 +89,7 @@ class Auth_Core {
 			if ( ! empty($role))
 			{
 				// Check that the user has the given role
-				$status = $user->has_role($role);
+				$status = $_SESSION['auth_user']->has_role($role);
 			}
 		}
 
