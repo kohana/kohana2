@@ -235,17 +235,10 @@ class Database_Mssql_Driver extends Database_Driver
 
 		is_resource($this->link) or $this->connect();
 		//mssql_real_escape_string($str, $this->link); <-- this function doesn't exist
-		
-		/* Below is my test of the addcslashes function to mimic the mysql_real_escape_string function
-		 * 
-		 * $array	= array('\x00', '\x1a', '\n', '\r', '\\', "'", '"');
-		 * foreach($array as $item)
-		 * {
-		 * 	  echo addcslashes($item, '\\\'"').'<br />';
-		 * }
-		 */
-		$characters	= array('/\x00/', '/\x1a/', '/\n/', '/\r/', '/\\\/', '/\'/', '/\"/');
-		return preg_replace($characters, '\\', $str);
+
+		$characters = array('/\x00/', '/\x1a/', '/\n/', '/\r/', '/\\\/', '/\'/');
+		$replace    = array('\\\x00', '\\x1a', '\\n', '\\r', '\\\\', "''");
+		return preg_replace($characters, $replace, $str);
 	}
 
 	public function list_tables()
