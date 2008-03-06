@@ -14,7 +14,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Template_Controller extends Controller {
+abstract class Template_Controller extends Controller {
 
 	// Template view name
 	public $template = 'template';
