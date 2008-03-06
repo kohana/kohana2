@@ -233,6 +233,11 @@ class Validation_Core extends ArrayObject {
 					// Make the rule a valid callback
 					$rule = array($this, $rule);
 				}
+				elseif (method_exists('valid', $rule))
+				{
+					// Make the rule a callback for the valid:: helper
+					$rule = array('valid', $rule);
+				}
 			}
 
 			if ( ! is_callable($rule, TRUE))
