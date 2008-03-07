@@ -215,6 +215,9 @@ class Kohana {
 			// Make sure the controller class exists
 			class_exists($controller, FALSE) or Event::run('system.404');
 
+			// Production enviroment protection, based on the IN_PRODUCTION flag
+			(IN_PRODUCTION AND constant($controller.'::ALLOW_PRODUCTION') === FALSE) and Event::run('system.404');
+
 			// Run system.pre_controller
 			Event::run('system.pre_controller');
 
