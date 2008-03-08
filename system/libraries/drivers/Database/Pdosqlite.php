@@ -39,9 +39,9 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 
 		try
 		{
-			$this->link = ($this->db_config['persistent'] == TRUE)
-			            ? new PDO ('sqlite:'.$socket.$database, $user, $pass, array(PDO::ATTR_PERSISTENT => true))
-			            : new PDO ('sqlite:'.$socket.$database, $user, $pass);
+			$this->link = new PDO('sqlite:'.$socket.$database, $user, $pass,
+				array(PDO::ATTR_PERSISTENT => $this->db_config['persistent']));
+
 			$this->link->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
 			$this->link->query('PRAGMA count_changes=1;');
 
