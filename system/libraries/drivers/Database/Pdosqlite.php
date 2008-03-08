@@ -394,6 +394,11 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 		return $this;
 	}
 
+	public function as_array($object = NULL, $type = PDO::FETCH_ASSOC)
+	{
+		return $this->result_array($object, $type);
+	}
+
 	public function result_array($object = NULL, $type = PDO::FETCH_ASSOC)
 	{
 		$rows = array();

@@ -400,6 +400,11 @@ class Mssql_Result implements Database_Result, ArrayAccess, Iterator, Countable
 		return $this;
 	}
 
+	public function as_array($object = NULL, $type = MSSQL_ASSOC)
+	{
+		return $this->result_array($object, $type);
+	}
+
 	public function result_array($object = NULL, $type = MSSQL_ASSOC)
 	{
 		$rows = array();
@@ -605,4 +610,5 @@ class Mssql_Result implements Database_Result, ArrayAccess, Iterator, Countable
 		return $this->offsetExists($this->current_row);
 	}
 	// End Interface
+
 } // End mssql_Result Class

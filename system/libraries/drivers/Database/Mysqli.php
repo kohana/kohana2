@@ -236,6 +236,11 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 		return $this;
 	}
 
+	public function as_array($object = NULL, $type = MYSQLI_ASSOC)
+	{
+		return $this->result_array($object, $type);
+	}
+
 	public function result_array($object = NULL, $type = MYSQLI_ASSOC)
 	{
 		$rows = array();

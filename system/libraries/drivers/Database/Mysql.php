@@ -415,6 +415,11 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		return $this;
 	}
 
+	public function as_array($object = NULL, $type = MYSQL_ASSOC)
+	{
+		return $this->result_array($object, $type);
+	}
+
 	public function result_array($object = NULL, $type = MYSQL_ASSOC)
 	{
 		$rows = array();
