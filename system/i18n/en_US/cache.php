@@ -2,6 +2,7 @@
 
 $lang = array
 (
+	'undefined_group'      => 'The %s group is not defined in your configuration.',
 	'driver_not_supported' => 'The requested Cache driver, %s, was not found.',
 	'extension_not_loaded' => 'The %s PHP extension must be loaded to use this driver.',
 	'unwritable'           => 'The configured storage location, <tt>%s</tt>, is not writable.',
