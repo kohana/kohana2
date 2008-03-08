@@ -12,6 +12,9 @@
  */
 class Examples_Controller extends Controller {
 
+	// Do not allow to run in production
+	const ALLOW_PRODUCTION = FALSE;
+
 	/**
 	 * Displays a list of available examples
 	 */

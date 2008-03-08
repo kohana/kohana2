@@ -6,6 +6,10 @@
  */
 class Welcome_Controller extends Controller {
 
+	// Disable this controller when Kohana is set to production mode.
+	// See http://doc.kohanaphp.com/installation/deployment for more details.
+	const ALLOW_PRODUCTION = FALSE;
+
 	public function index()
 	{
 		// In Kohana, all views are loaded and treated as objects.
