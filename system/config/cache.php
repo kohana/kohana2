@@ -15,7 +15,7 @@
  *
  *  params   - Driver parameters, specific to each driver.
  *
- *  lifetime - Default lifetime to of caches, seconds. By default, caches are stored for
+ *  lifetime - Default lifetime of caches in seconds. By default caches are stored for
  *             thirty minutes. Specific lifetime can also be set when creating a new cache.
  *             Setting this to 0 will never automatically delete caches.
  *
