@@ -66,8 +66,8 @@ ini_set('display_errors', TRUE);
  */
 define('KOHANA_ERROR_CSS',
 	// Any of these styles can be changed to affect all error messages.
-	'div#kohana_error { background: #fff; border:solid 1px #ccc; font-family:sans-serif; color:#111; font-size: 14px; line-height: 130%; vertical-align: baseline; }'.
-	'div#kohana_error h3 { color:#fff; font-size:16px; padding:8px 6px; margin:0 0 8px; background: #f15a00; text-align: center; }'.
+	'div#kohana_error { background:#fff; border:solid 1px #ccc; font-family:sans-serif; color:#111; font-size:14px; line-height:130%; }'.
+	'div#kohana_error h3 { color:#fff; font-size:16px; padding:8px 6px; margin:0 0 8px; background:#f15a00; text-align:center; }'.
 	'div#kohana_error a { color:#228; text-decoration:none; }'.
 	'div#kohana_error a:hover { text-decoration:underline; }'.
 	'div#kohana_error strong { color:#900; }'.
@@ -81,7 +81,7 @@ define('KOHANA_ERROR_CSS',
 	'div#kohana_error pre,'.
 	'div#kohana_error code { background:#eaeee5; border:solid 0 #D6D8D1; border-width:0 1px 1px 0; }'.
 	'div#kohana_error .block { display:block; text-align:left; }'.
-	'div#kohana_error .stats { padding: 4px; background: #eee; border-top:solid 1px #ccc; text-align:center; font-size:10px; color: #888; }'.
+	'div#kohana_error .stats { padding:4px; background: #eee; border-top:solid 1px #ccc; text-align:center; font-size:10px; color:#888; }'.
 	'div#kohana_error .backtrace { margin:0; padding:0 6px; list-style:none; line-height:12px; }'
 );
 
