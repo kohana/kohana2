@@ -96,7 +96,7 @@ if ( ! IN_PRODUCTION)
 	{
 		die
 		(
-			'<div id="framework_error" style="width:80%;margin:50px auto;text-align:center;">'.
+			'<div style="width:80%;margin:50px auto;text-align:center;">'.
 				'<h3>Application Directory Not Found</h3>'.
 				'<p>The <code>$kohana_application</code> directory does not exist.</p>'.
 				'<p>Set <code>$kohana_application</code> in <tt>'.KOHANA.'</tt> to a valid directory and refresh the page.</p>'.
@@ -109,7 +109,7 @@ if ( ! IN_PRODUCTION)
 	{
 		die
 		(
-			'<div id="framework_error" style="width:80%;margin:50px auto;text-align:center;">'.
+			'<div style="width:80%;margin:50px auto;text-align:center;">'.
 				'<h3>System Directory Not Found</h3>'.
 				'<p>The <code>$kohana_system</code> directory does not exist.</p>'.
 				'<p>Set <code>$kohana_system</code> in <tt>'.KOHANA.'</tt> to a valid directory and refresh the page.</p>'.
