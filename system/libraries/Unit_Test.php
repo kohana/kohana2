@@ -1,10 +1,10 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Unittest library.
+ * Unit_Test library.
  *
  * $Id$
  *
- * @package    Unittest
+ * @package    Unit_Test
  * @author     Kohana Team
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
@@ -37,7 +37,7 @@ class Unit_Test_Core {
 			}
 		}
 
-		Log::add('debug', 'Unittest Library initialized');
+		Log::add('debug', 'Unit_Test Library initialized');
 	}
 
 	/**
@@ -249,4 +249,4 @@ class Unit_Test_Core {
 			throw new Exception;
 	}
 
-} // End Unittest
+} // End Unit_Test
