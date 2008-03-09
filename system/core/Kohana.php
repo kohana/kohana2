@@ -533,7 +533,7 @@ class Kohana {
 		// Test if display_errors is on
 		if (Config::item('core.display_errors'))
 		{
-			if ($line != FALSE)
+			if ( ! IN_PRODUCTION AND $line != FALSE)
 			{
 				// Remove the first entry of debug_backtrace(), it is the exception_handler call
 				$trace = $PHP_ERROR ? array_slice(debug_backtrace(), 1) : $exception->getTrace();
@@ -1087,10 +1087,7 @@ class Kohana {
 
 			if (isset($entry['file']))
 			{
-				// Add file (without docroot)
-				$temp .= '<strong>'.preg_replace('!^'.preg_quote(DOCROOT).'!', '', $entry['file']);
-				// Add line
-				$temp .= ' ['.$entry['line'].']:</strong>';
+				$temp .= Kohana::lang('core.error_file_line', preg_replace('!^'.preg_quote(DOCROOT).'!', '', $entry['file']), $entry['line']);
 			}
 
 			$temp .= '<pre>';
