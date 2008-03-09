@@ -809,6 +809,9 @@ class Database_Core {
 			$table = $this->from[0];
 		}
 
+		// Clear the database cache, if caching is enabled
+		($this->config['cache'] === TRUE) and $this->clear_cache();
+
 		$sql = $this->driver->insert($this->config['table_prefix'].$table, array_keys($this->set), array_values($this->set));
 
 		$this->reset_write();
