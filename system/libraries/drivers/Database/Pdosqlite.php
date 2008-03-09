@@ -245,15 +245,15 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 			return $tables[$table];
 		}
 		else
-		{ 
+		{
 			$result = $this->link->query( 'PRAGMA table_info('.$this->escape_table($table).')' );
-			
+
 			foreach($result as $row)
 			{
 				$tables[$table][$row['name']] = $this->sql_type($row['type']);
-			}	
+			}
 
-			return $tables[$table]; 
+			return $tables[$table];
 		}
 	}
 
@@ -349,7 +349,7 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 		$this->result($object);
 	}
 
-	private function sqlite_row_count() 
+	private function sqlite_row_count()
 	{
 		// workaround for PDO not supporting RowCount with SQLite - we manually count
 		//TODO : can this be fixed?

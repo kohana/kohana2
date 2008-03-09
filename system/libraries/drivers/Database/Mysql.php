@@ -284,6 +284,12 @@ class Database_Mysql_Driver extends Database_Driver {
 			{
 				// Make an associative array
 				$tables[$table][$row->Field] = $this->sql_type($row->Type);
+
+				if ($row->Key === 'PRI' AND $row->Extra === 'auto_increment')
+				{
+					// For sequenced (AUTO_INCREMENT) tables
+					$tables[$table][$row->Field]['sequenced'] = TRUE;
+				}
 			}
 		}
 
