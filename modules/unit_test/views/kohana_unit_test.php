@@ -73,29 +73,38 @@ foreach ($results as $class => $methods):
 
 		<?php
 
+		text::alternate();
 		foreach ($methods as $method => $result):
 
 		?>
 
 			<tr class="<?php echo text::alternate('', 'k-altrow') ?>">
 				<td class="k-name"><?php echo $method ?></td>
-				<td class="<?php echo ($result === TRUE) ? 'k-passed' : 'k-failed' ?>">
-					<?php echo ($result === TRUE) ? 'Passed' : 'Failed' ?>
-				</td>
+
+				<?php if ($result === TRUE): ?>
+
+					<td class="k-passed">Passed</td>
+
+				<?php else: ?>
+
+					<td class="k-failed">
+						Failed:
+						<?php
+
+						$trace = $result->getTrace();
+						echo '<span title="', $trace[0]['file'], '">', $class, EXT, ' (line&nbsp;', $trace[0]['line'], ')</span>';
+
+						?>
+					</td>
+
+				<?php endif ?>
+
 			</tr>
 
-		<?php
-
-		endforeach;
-
-		?>
+		<?php endforeach ?>
 
 	</table>
 
-<?php
-
-endforeach;
-
-?>
+<?php endforeach ?>
 
 </div>
