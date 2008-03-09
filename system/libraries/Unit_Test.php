@@ -20,24 +20,18 @@ class Unit_Test_Core {
 	 * @param   string|array  test path(s)
 	 * @return  void
 	 */
-	public function __construct($paths = NULL)
+	public function __construct($paths)
 	{
-		// Use default test path: application/tests/
-		if ($paths === NULL)
-		{
-			$this->paths = array(APPPATH.'tests/');
-		}
-
 		// Normalize all given test paths
-		else
+		foreach ((array) $paths as $path)
 		{
-			foreach ((array) $paths as $path)
-			{
-				$this->paths[] = str_replace('\\', '/', realpath($path)).'/';
-			}
+			$this->paths[] = str_replace('\\', '/', realpath($path)).'/';
 		}
 
 		Log::add('debug', 'Unit_Test Library initialized');
+
+		// Automatically run tests
+		$this->run();
 	}
 
 	/**
@@ -82,8 +76,12 @@ class Unit_Test_Core {
 					if (substr($method_name = $method->getName(), -5) != '_test')
 						continue;
 
-					// Instantiate class
+					// Instantiate Test class
 					$object = new $class;
+
+					// Test classes must extend Unit_Test_Case
+					if ( ! $object instanceof Unit_Test_Case)
+						break;
 
 					// Run setup method
 					if ($reflector->hasMethod('setup'))
@@ -107,41 +105,46 @@ class Unit_Test_Core {
 					{
 						$object->teardown();
 					}
+
+					// Cleanup
+					unset($object);
 				}
 			}
 		}
 
+		// Return raw results array
 		return $this->results;
 	}
 
 	/**
 	 * Generates nice test results.
 	 *
-	 * @param   boolean  set to TRUE to echo the output instead of returning it
-	 * @return  string   if print is FALSE
-	 * @return  void     if print is TRUE
+	 * @param   boolean      set to TRUE to echo the output instead of returning it
+	 * @return  string|void  rendered test results html
 	 */
-	public function results($print = FALSE)
+	public function render($print = FALSE)
 	{
-		foreach ($this->results as $class => $methods)
-		{
-			echo '<p style="font-weight:bold">', html::specialchars($class), ':</p>';
-			echo '<ul>';
-
-			foreach ($methods as $method => $result)
-			{
-				echo '<li style="color:', ($result === TRUE) ? 'green' : 'red', '">';
-				echo html::specialchars($method), ': ', ($result === TRUE) ? 'passed' : 'failed';
-				echo '</li>';
-			}
-
-			echo '</ul>';
-			echo '<hr />';
-		}
+		$view = new View('kohana_unit_test');
+		$view->results = $this->results;
+		return $view->render($print);
 	}
 
+	/**
+	 * Magically convert this object to a string.
+	 *
+	 * @return  string
+	 */
+	public function __toString()
+	{
+		return $this->render();
+	}
 
-	public function assert_true($value, $strict = TRUE)
+} // End Unit_Test_Core
+
+
+class Unit_Test_Case {
+
+	public function assert_true($value, $strict = FALSE)
 	{
 		if ($strict === TRUE AND $value !== TRUE)
 			throw new Exception;
@@ -150,7 +153,7 @@ class Unit_Test_Core {
 			throw new Exception;
 	}
 
-	public function assert_false($value, $strict = TRUE)
+	public function assert_false($value, $strict = FALSE)
 	{
 		if ($strict === TRUE AND $value !== FALSE)
 			throw new Exception;
@@ -159,7 +162,7 @@ class Unit_Test_Core {
 			throw new Exception;
 	}
 
-	public function assert_equal($value1, $value2, $strict = TRUE)
+	public function assert_equal($value1, $value2, $strict = FALSE)
 	{
 		if ($strict === TRUE AND $value1 !== $value2)
 			throw new Exception;
@@ -168,7 +171,7 @@ class Unit_Test_Core {
 			throw new Exception;
 	}
 
-	public function assert_not_equal($value1, $value2, $strict = TRUE)
+	public function assert_not_equal($value1, $value2, $strict = FALSE)
 	{
 		if ($strict === TRUE AND $value1 === $value2)
 			throw new Exception;
@@ -249,4 +252,28 @@ class Unit_Test_Core {
 			throw new Exception;
 	}
 
-} // End Unit_Test
+	public function assert_empty($value)
+	{
+		if ( ! empty($value))
+			throw new Exception;
+	}
+
+	public function assert_not_empty($value)
+	{
+		if (empty($value))
+			throw new Exception;
+	}
+
+	public function assert_pattern($value, $regex)
+	{
+		if ( ! preg_match($regex, $value))
+			throw new Exception;
+	}
+
+	public function assert_not_pattern($value, $regex)
+	{
+		if (preg_match($regex, $value))
+			throw new Exception;
+	}
+
+} // End Unit_Test_Case
