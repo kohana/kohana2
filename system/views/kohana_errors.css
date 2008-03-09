@@ -6,7 +6,11 @@ div#framework_error strong { color:#900; }
 div#framework_error p { margin:0; padding:4px 6px 10px; }
 div#framework_error tt,
 div#framework_error pre,
-div#framework_error code { font-family:monospace; padding:2px 4px; white-space:pre; font-size:12px; color:#333; }
+div#framework_error code { font-family:monospace; padding:2px 4px; font-size:12px; color:#333;
+	white-space:pre-wrap; /* CSS 2.1 */
+	white-space:-moz-pre-wrap; /* For Mozilla */
+	word-wrap:break-word; /* For IE5.5+ */
+}
 div#framework_error tt { font-style:italic; }
 div#framework_error tt:before { content:">"; color:#aaa; }
 div#framework_error code tt:before { content:""; }
