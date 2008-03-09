@@ -12,6 +12,7 @@ class Welcome_Controller extends Controller {
 
 	public function index()
 	{
+		echo $foo;
 		// In Kohana, all views are loaded and treated as objects.
 		$welcome = new View('welcome');
 

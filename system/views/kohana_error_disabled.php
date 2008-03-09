@@ -6,9 +6,9 @@
 </head>
 <body>
 <style type="text/css">
-<?php echo KOHANA_ERROR_CSS ?>
+<?php include Kohana::find_file('views', 'kohana_errors', FALSE, 'css') ?>
 </style>
-<div id="kohana_error" style="width:24em;margin:50px auto;">
+<div id="framework_error" style="width:24em;margin:50px auto;">
 <h3><?php echo $error ?></h3>
 <p><?php echo $message ?></p>
 </div>

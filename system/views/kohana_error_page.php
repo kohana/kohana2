@@ -7,9 +7,9 @@
 </head>
 <body>
 <style type="text/css">
-<?php echo KOHANA_ERROR_CSS ?>
+<?php include Kohana::find_file('views', 'kohana_errors', FALSE, 'css') ?>
 </style>
-<div id="kohana_error" style="width:42em;margin:20px auto;">
+<div id="framework_error" style="width:42em;margin:20px auto;">
 <h3><?php echo $error ?></h3>
 <p><?php echo $description ?></p>
 <?php if ( ! empty($line) AND ! empty($file)): ?>
