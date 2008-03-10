@@ -7,27 +7,18 @@ class User_Model extends ORM {
 	protected $has_and_belongs_to_many = array('roles');
 
 	// User roles
-	protected $roles = array();
-
-	public function __construct($id = FALSE)
-	{
-		parent::__construct($id);
-
-		if ($this->object->id != 0)
-		{
-			// Preload the roles, so that we can optimize has_role
-			foreach($this->find_related_roles() as $role)
-			{
-				$this->roles[$role->id] = $role->name;
-			}
-		}
-	}
+	protected $roles = NULL;
 
 	public function __get($key)
 	{
-		// Allow roles to be fetched as array(id => name)
+		// Allow roles to be fetched as a simple array
 		if ($key === 'roles')
+		{
+			// Force the roles to load if they are empty
+			($this->roles === NULL) and $this->has_role('login');
+
 			return $this->roles;
+		}
 
 		return parent::__get($key);
 	}
@@ -38,14 +29,8 @@ class User_Model extends ORM {
 
 		if ($key === 'password')
 		{
-			if ($auth === NULL)
-			{
-				// Load Auth, attempting to use the controller copy
-				$auth = isset(Kohana::instance()->auth) ? Kohana::instance()->auth : new Auth();
-			}
-
 			// Use Auth to hash the password
-			$value = $auth->hash_password($value);
+			$value = Auth::instance()->hash_password($value);
 		}
 
 		parent::__set($key, $value);
@@ -59,6 +44,23 @@ class User_Model extends ORM {
 		// Don't mess with these calls, they are too complex
 		if (is_object($role))
 			return parent::has_role($role);
+
+		if ($this->roles === NULL)
+		{
+			// Make the roles into an array. This serves a dual purpose
+			// of preventing the roles from being re-queried unnecessarily
+			// as well as optimizing has_role() calls.
+			$this->roles = array();
+
+			if ($this->id > 0)
+			{
+				foreach($this->find_related_roles() as $r)
+				{
+					// Load all the user roles
+					$this->roles[$r->id] = $r->name;
+				}
+			}
+		}
 
 		// Make sure the role name is a string
 		$role = (string) $role;
