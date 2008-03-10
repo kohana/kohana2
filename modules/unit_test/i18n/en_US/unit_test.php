@@ -2,6 +2,10 @@
 
 $lang = array
 (
+	'invalid_test_path'    => 'Failed to open test path: %s.',
+	'duplicate_test_class' => 'Duplicate test class named %s found in %s.',
+	'test_class_not_found' => 'No test class by the name of %s found in %s.',
+	'test_class_extends'   => '%s must extend Unit_Test_Case.',
 	'passed'               => 'Passed',
 	'failed'               => 'Failed',
 	'line'                 => 'line',

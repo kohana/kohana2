@@ -22,15 +22,17 @@ class Unit_Test_Core {
 	 */
 	public function __construct()
 	{
-		// Normalize all given test paths
+		// Loop over each given test path
 		foreach (func_get_args() as $path)
 		{
-			$this->paths[] = str_replace('\\', '/', realpath($path));
-		}
+			// Normalize all given test paths and store them
+			$this->paths[] = $test_path = str_replace('\\', '/', realpath((string) $path));
 
-		// Recursively iterate over all test paths
-		foreach ($this->paths as $test_path)
-		{
+			// Validate test path
+			if ( ! is_dir($test_path))
+				throw new Kohana_Exception('unit_test.invalid_test_path', $test_path);
+
+			// Recursively iterate over each file in the test path
 			foreach
 			(
 				new RecursiveIteratorIterator(new RecursiveDirectoryIterator($test_path, RecursiveDirectoryIterator::KEY_AS_PATHNAME))
@@ -47,19 +49,23 @@ class Unit_Test_Core {
 				// The class name should be the same as the file name
 				$class = substr($path, strrpos($path, '/') + 1, -(strlen(EXT)));
 
+				// Check for duplicate test class name
+				if (class_exists($class, FALSE))
+					throw new Kohana_Exception('unit_test.duplicate_test_class', $class, $path);
+
 				// Include the test class
 				include_once $path;
 
-				// Validate the class name
+				// Check whether the test class has been found and loaded
 				if ( ! class_exists($class, FALSE))
-					continue;
+					throw new Kohana_Exception('unit_test.test_class_not_found', $class, $path);
 
 				// Reverse-engineer Test class
 				$reflector = new ReflectionClass($class);
 
 				// Test classes must extend Unit_Test_Case
 				if ( ! $reflector->isSubclassOf(new ReflectionClass('Unit_Test_Case')))
-					break;
+					throw new Kohana_Exception('unit_test.test_class_extends', $class);
 
 				// Loop through all the class methods
 				foreach ($reflector->getMethods() as $method)
