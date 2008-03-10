@@ -17,13 +17,13 @@ class Unit_Test_Core {
 	/**
 	 * Sets the test path(s), runs the tests inside and stores the results.
 	 *
-	 * @param   string|array  test path(s)
+	 * @param   string(s)  test path(s)
 	 * @return  void
 	 */
-	public function __construct($paths = NULL)
+	public function __construct()
 	{
 		// Normalize all given test paths
-		foreach ((array) $paths as $path)
+		foreach (func_get_args() as $path)
 		{
 			$this->paths[] = str_replace('\\', '/', realpath($path));
 		}
@@ -38,7 +38,7 @@ class Unit_Test_Core {
 			)
 			{
 				// Normalize path
-				$path = str_replace('\\', '/', realpath($path));
+				$path = str_replace('\\', '/', $path);
 
 				// Skip files without "_Test" suffix
 				if ( ! $file->isFile() OR substr($path, -9) !== '_Test'.EXT)
