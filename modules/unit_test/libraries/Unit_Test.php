@@ -144,144 +144,192 @@ abstract class Unit_Test_Case {
 	{
 		if ($value != TRUE)
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_true', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_true_strict($value, $debug = NULL)
 	{
 		if ($value !== TRUE)
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_true_strict', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_false($value, $debug = NULL)
 	{
 		if ($value != FALSE)
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_false', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_false_strict($value, $debug = NULL)
 	{
 		if ($value !== FALSE)
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_false_strict', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_equal($value1, $value2, $debug = NULL)
 	{
 		if ($value1 != $value2)
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_equal', gettype($value1), var_export($value1, TRUE), gettype($value2), var_export($value2, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_not_equal($value1, $value2, $debug = NULL)
 	{
 		if ($value1 == $value2)
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_not_equal', gettype($value1), var_export($value1, TRUE), gettype($value2), var_export($value2, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_identical($value1, $value2, $debug = NULL)
 	{
 		if ($value1 !== $value2)
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_identical', gettype($value1), var_export($value1, TRUE), gettype($value2), var_export($value2, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_not_identical($value1, $value2, $debug = NULL)
 	{
 		if ($value1 === $value2)
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_not_identical', gettype($value1), var_export($value1, TRUE), gettype($value2), var_export($value2, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_boolean($value, $debug = NULL)
 	{
 		if ( ! is_bool($value))
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_boolean', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_not_boolean($value, $debug = NULL)
 	{
 		if (is_bool($value))
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_not_boolean', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_integer($value, $debug = NULL)
 	{
 		if ( ! is_int($value))
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_integer', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_not_integer($value, $debug = NULL)
 	{
 		if (is_int($value))
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_not_integer', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_float($value, $debug = NULL)
 	{
 		if ( ! is_float($value))
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_float', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_not_float($value, $debug = NULL)
 	{
 		if (is_float($value))
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_not_float', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_array($value, $debug = NULL)
 	{
 		if ( ! is_array($value))
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_array', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_not_array($value, $debug = NULL)
 	{
 		if (is_array($value))
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_not_array', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_object($value, $debug = NULL)
 	{
 		if ( ! is_object($value))
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_object', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_not_object($value, $debug = NULL)
 	{
 		if (is_object($value))
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_not_object', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_null($value, $debug = NULL)
 	{
 		if ($value !== NULL)
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_null', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_not_null($value, $debug = NULL)
 	{
 		if ($value === NULL)
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_not_null', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_empty($value, $debug = NULL)
 	{
 		if ( ! empty($value))
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_empty', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_not_empty($value, $debug = NULL)
 	{
 		if (empty($value))
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_empty', gettype($value), var_export($value, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_pattern($value, $regex, $debug = NULL)
 	{
 		if ( ! is_string($value) OR ! is_string($regex) OR ! preg_match($regex, $value))
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_pattern', var_export($value, TRUE), var_export($regex, TRUE)), $debug);
+
+		return $this;
 	}
 
 	public function assert_not_pattern($value, $regex, $debug = NULL)
 	{
 		if ( ! is_string($value) OR ! is_string($regex) OR preg_match($regex, $value))
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_not_pattern', var_export($value, TRUE), var_export($regex, TRUE)), $debug);
+
+		return $this;
 	}
 
 } // End Unit_Test_Case
