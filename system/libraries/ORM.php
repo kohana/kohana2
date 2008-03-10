@@ -539,7 +539,17 @@ class ORM_Core {
 			return $this->find_all();
 
 		// Generate WHERE
-		($this->where AND empty($id)) or self::$db->where($this->where_key($id), $id);
+		if ($this->where === FALSE AND ! empty($id))
+		{
+			if (is_array($id))
+			{
+				self::$db->where($id);
+			}
+			else
+			{
+				self::$db->where($this->where_key($id), $id);
+			}
+		}
 
 		// Only one result will be returned
 		self::$db->limit(1);
