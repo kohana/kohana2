@@ -2,6 +2,7 @@
 
 $lang = array
 (
+	'undefined_group'      => 'De %s groep is niet gedefinieerd in uw configuratie.',
 	'driver_not_supported' => 'De %s cache driver werd niet gevonden.',
 	'extension_not_loaded' => 'De %s PHP extensie moet geladen zijn om deze driver te gebruiken.',
 	'unwritable'           => 'De geconfigureerde opslaglocatie, <tt>%s</tt>, is niet schrijfbaar.',
