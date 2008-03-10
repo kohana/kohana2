@@ -896,7 +896,7 @@ class ORM_Core {
 /**
  * ORM iterator.
  */
-class ORM_Iterator implements Iterator, Countable {
+class ORM_Iterator implements Iterator, ArrayAccess, Countable {
 
 	// ORM class name
 	protected $class;
@@ -927,6 +927,42 @@ class ORM_Iterator implements Iterator, Countable {
 	}
 
 	/**
+	 * Return a range of offsets.
+	 *
+	 * @param   integer  start
+	 * @param   integer  end
+	 * @return  array
+	 */
+	public function range($start, $end)
+	{
+		$array = array();
+
+		if ($this->result->offsetExists($start))
+		{
+			// Import the class name
+			$class = $this->class;
+
+			// Set the end offset
+			$end = $this->result->offsetExists($end) ? $end : $this->count();
+
+			for ($i = $start; $i < $end; $i++)
+			{
+				$array[] = new $class($this->result->offsetGet($i));
+			}
+		}
+
+		return $array;
+	}
+
+	/**
+	 * Countable: count
+	 */
+	public function count()
+	{
+		return $this->result->count();
+	}
+
+	/**
 	 * Iterator: current
 	 */
 	public function current()
@@ -934,7 +970,7 @@ class ORM_Iterator implements Iterator, Countable {
 		// Import class name
 		$class = $this->class;
 
-		return ($row = $this->result->current()) ? new $class($row) : FALSE;
+		return $this->result->offsetExists(0) ? new $class($this->result->offsetGet(0)) : FALSE;
 	}
 
 	/**
@@ -970,11 +1006,45 @@ class ORM_Iterator implements Iterator, Countable {
 	}
 
 	/**
-	 * Countable: count
+	 * ArrayAccess: offsetExists
 	 */
-	public function count()
+	public function offsetExists($offset)
 	{
-		return $this->result->count();
+		return $this->result->offsetExists($offset);
+	}
+
+	/**
+	 * ArrayAccess: offsetGet
+	 */
+	public function offsetGet($offset)
+	{
+		// Import class name
+		$class = $this->class;
+
+		if ($this->result->offsetExists($offset))
+		{
+			return new $class($this->result->offsetGet($offset));
+		}
+	}
+
+	/**
+	 * ArrayAccess: offsetSet
+	 *
+	 * @throws  Kohana_Database_Exception
+	 */
+	public function offsetSet($offset, $value)
+	{
+		throw new Kohana_Database_Exception('database.result_read_only');
+	}
+
+	/**
+	 * ArrayAccess: offsetUnset
+	 *
+	 * @throws  Kohana_Database_Exception
+	 */
+	public function offsetUnset($offset)
+	{
+		throw new Kohana_Database_Exception('database.result_read_only');
 	}
 
 } // End ORM Iterator
