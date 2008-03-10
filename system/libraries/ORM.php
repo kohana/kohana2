@@ -219,86 +219,14 @@ class ORM_Core {
 		{
 			$method = isset($all) ? substr($method, 12) : substr($method, 8);
 
-			// WHERE is manually set
-			$this->where = TRUE;
-
-			// split method name into $keys array by "_and_" or "_or_"
-			if (is_array($keys = $this->find_keys($method)))
-			{
-				if (strpos($method, '_or_') === FALSE)
-				{
-					// Use AND WHERE
-					self::$db->where(array_combine($keys, $args));
-				}
-				else
-				{
-					if (count($args) === 1)
-					{
-						$val = current($args);
-						foreach($keys as $key)
-						{
-							// Use OR WHERE, with a single value
-							self::$db->orwhere(array($key => $val));
-						}
-					}
-					else
-					{
-						// Use OR WHERE, with multiple values
-						self::$db->orwhere(array_combine($keys, $args));
-					}
-				}
-			}
-			else
-			{
-				// Set WHERE
-				self::$db->where(array($keys => current($args)));
-			}
-
-			if (isset($all))
-			{
-				// Array of results
-				return $this->load_result(TRUE);
-			}
-			else
-			{
-				// Allow chains
-				return $this->find();
-			}
+			// Make a find_by call
+			return $this->call_find_by($method, $args);
 		}
 
 		if (substr($method, 0, 13) === 'find_related_')
 		{
-			// Get table name
-			$table = substr($method, 13);
-
-			// Construct a new model
-			$model = $this->load_model($table);
-
-			// Remote reference to this object
-			$remote = array($this->class.'_id' => $this->object->id);
-
-			if (in_array($table, $this->has_one))
-			{
-				// Find one<>one relationships
-				return $model->where($remote)->find();
-			}
-			elseif (in_array($table, $this->has_many))
-			{
-				// Find one<>many relationships
-				$model->where($remote);
-			}
-			elseif (in_array($table, $this->has_and_belongs_to_many))
-			{
-				// Find many<>many relationships, via a JOIN
-				$this->related_join($table);
-			}
-			else
-			{
-				// This table does not have ownership
-				return FALSE;
-			}
-
-			return $model->load_result(TRUE);
+			// Make a find_related call
+			return $this->call_find_related(substr($method, 13));
 		}
 
 		if (preg_match('/^(has|add|remove)_(.+)/', $method, $matches))
@@ -306,121 +234,8 @@ class ORM_Core {
 			$action = $matches[1];
 			$model  = is_object(current($args)) ? current($args) : $this->load_model($matches[2]);
 
-			// Real foreign table name
-			$table = $model->table_name;
-
-			// Sanity check, make sure that this object has ownership
-			if (in_array($matches[2], $this->has_one))
-			{
-				$ownership = 1;
-			}
-			elseif (in_array($table, $this->has_many))
-			{
-				$ownership = 2;
-			}
-			elseif (in_array($table, $this->has_and_belongs_to_many))
-			{
-				$ownership = 3;
-			}
-			else
-			{
-				// Model does not have ownership, abort now
-				return FALSE;
-			}
-
-			// Primary key related to this object
-			$primary = $this->class.'_id';
-
-			// Related foreign key
-			$foreign = $model->class_name.'_id';
-
-			if ( ! is_object(current($args)))
-			{
-				if ($action === 'add' AND is_array(current($args)))
-				{
-					foreach(current($args) as $key => $val)
-					{
-						// Fill object with data from array
-						$model->$key = $val;
-					}
-				}
-				else
-				{
-					if ($ownership === 1 OR $ownership === 2)
-					{
-						// Make sure the related key matches this object id
-						self::$db->where($primary, $this->object->id);
-					}
-
-					// Load the related object
-					$model->find(current($args));
-				}
-			}
-
-			if ($ownership === 3)
-			{
-				// The many<>many relationship, via a joining table
-				$relationship = array
-				(
-					$primary => $this->object->id,
-					$foreign => $model->id
-				);
-			}
-
-			switch($action)
-			{
-				case 'add':
-					if (isset($relationship))
-					{
-						// Insert for many<>many relationship
-						self::$db->insert($this->related_table($table), $relationship);
-					}
-					else
-					{
-						// Set the related key to this object id
-						$model->$primary = $this->object->id;
-					}
-
-					return $model->save();
-				break;
-				case 'has':
-					if (isset($relationship))
-					{
-						// Find the many<>many relationship
-						return (bool) count
-						(
-							self::$db
-							->select($primary)
-							->from($this->related_table($table))
-							->where($relationship)
-							->limit(1)
-							->get()
-						);
-					}
-
-					return ($model->$primary === $this->object->id);
-				break;
-				case 'remove':
-					if (isset($relationship))
-					{
-						// Attempt to delete the many<>many relationship
-						return (bool) count(self::$db->delete($this->related_table($table), $relationship));
-					}
-					elseif ($model->$primary === $this->object->id)
-					{
-						// Delete the related object
-						return $model->delete();
-					}
-					else
-					{
-						// Massive failure
-						return FALSE;
-					}
-				break;
-			}
-
-			// This should never be executed
-			return FALSE;
+			// Make a has/add/remove call
+			return $this->call_has_add_remove($action, $model);
 		}
 
 		if (method_exists(self::$db, $method))
@@ -454,6 +269,245 @@ class ORM_Core {
 
 			return $this;
 		}
+	}
+
+	/**
+	 * __call: find_by_*, find_all_by_*
+	 *
+	 * @param   string  column names to find by
+	 * @param   array   arguments
+	 * @return  object
+	 */
+	protected function call_find_by($method, $args)
+	{
+		// WHERE is manually set
+		$this->where = TRUE;
+
+		// split method name into $keys array by "_and_" or "_or_"
+		if (is_array($keys = $this->find_keys($method)))
+		{
+			if (strpos($method, '_or_') === FALSE)
+			{
+				// Use AND WHERE
+				self::$db->where(array_combine($keys, $args));
+			}
+			else
+			{
+				if (count($args) === 1)
+				{
+					$val = current($args);
+					foreach($keys as $key)
+					{
+						// Use OR WHERE, with a single value
+						self::$db->orwhere(array($key => $val));
+					}
+				}
+				else
+				{
+					// Use OR WHERE, with multiple values
+					self::$db->orwhere(array_combine($keys, $args));
+				}
+			}
+		}
+		else
+		{
+			// Set WHERE
+			self::$db->where(array($keys => current($args)));
+		}
+
+		if (isset($all))
+		{
+			// Array of results
+			return $this->load_result(TRUE);
+		}
+		else
+		{
+			// Allow chains
+			return $this->find();
+		}
+	}
+
+	/**
+	 * __call: find_related_*
+	 *
+	 * @param   string  table name
+	 * @return  object
+	 */
+	protected function call_find_related($table)
+	{
+		// Construct a new model
+		$model = $this->load_model($table);
+
+		// Remote reference to this object
+		$remote = array($this->class.'_id' => $this->object->id);
+
+		if (in_array($table, $this->has_one))
+		{
+			// Find one<>one relationships
+			return $model->where($remote)->find();
+		}
+		elseif (in_array($table, $this->has_many))
+		{
+			// Find one<>many relationships
+			$model->where($remote);
+		}
+		elseif (in_array($table, $this->has_and_belongs_to_many))
+		{
+			// Find many<>many relationships, via a JOIN
+			$this->related_join($table);
+		}
+		elseif (in_array($table, $this->belongs_to_many))
+		{
+			// Use the foreign column name to check the relationship
+			$id = $this->class.'_id';
+
+			if ($model->$id === NULL)
+			{
+				// Find many<>many relationships, via a JOIN
+				$this->related_join($table);
+			}
+			else
+			{
+				// Find one<>many relationships
+				$model->where($remote);
+			}
+		}
+		else
+		{
+			// This table does not have ownership
+			return FALSE;
+		}
+
+		return $model->load_result(TRUE);
+	}
+
+	/**
+	 * __call: has_*, add_*, remove_*
+	 *
+	 * @param   string   action: has, add, remove
+	 * @param   object   model
+	 * @return  boolean
+	 */
+	protected function call_has_add_remove($action, $model)
+	{
+		// Real foreign table name
+		$table = $model->table_name;
+
+		// Sanity check, make sure that this object has ownership
+		if (in_array($matches[2], $this->has_one))
+		{
+			$ownership = 1;
+		}
+		elseif (in_array($table, $this->has_many))
+		{
+			$ownership = 2;
+		}
+		elseif (in_array($table, $this->has_and_belongs_to_many))
+		{
+			$ownership = 3;
+		}
+		else
+		{
+			// Model does not have ownership, abort now
+			return FALSE;
+		}
+
+		// Primary key related to this object
+		$primary = $this->class.'_id';
+
+		// Related foreign key
+		$foreign = $model->class_name.'_id';
+
+		if ( ! is_object(current($args)))
+		{
+			if ($action === 'add' AND is_array(current($args)))
+			{
+				foreach(current($args) as $key => $val)
+				{
+					// Fill object with data from array
+					$model->$key = $val;
+				}
+			}
+			else
+			{
+				if ($ownership === 1 OR $ownership === 2)
+				{
+					// Make sure the related key matches this object id
+					self::$db->where($primary, $this->object->id);
+				}
+
+				// Load the related object
+				$model->find(current($args));
+			}
+		}
+
+		if ($ownership === 3)
+		{
+			// Save the model before finishing the action
+			$model->save();
+
+			// The many<>many relationship, via a joining table
+			$relationship = array
+			(
+				$primary => $this->object->id,
+				$foreign => $model->id
+			);
+		}
+
+		switch($action)
+		{
+			case 'add':
+				if (isset($relationship))
+				{
+					// Insert for many<>many relationship
+					self::$db->insert($this->related_table($table), $relationship);
+				}
+				else
+				{
+					// Set the related key to this object id
+					$model->$primary = $this->object->id;
+				}
+
+				return $model->save();
+			break;
+			case 'has':
+				if (isset($relationship))
+				{
+					// Find the many<>many relationship
+					return (bool) count
+					(
+						self::$db
+						->select($primary)
+						->from($this->related_table($table))
+						->where($relationship)
+						->limit(1)
+						->get()
+					);
+				}
+
+				return ($model->$primary === $this->object->id);
+			break;
+			case 'remove':
+				if (isset($relationship))
+				{
+					// Attempt to delete the many<>many relationship
+					return (bool) count(self::$db->delete($this->related_table($table), $relationship));
+				}
+				elseif ($model->$primary === $this->object->id)
+				{
+					// Delete the related object
+					return $model->delete();
+				}
+				else
+				{
+					// Massive failure
+					return FALSE;
+				}
+			break;
+		}
+
+		// This should never be executed
+		return FALSE;
 	}
 
 	/**
@@ -723,7 +777,7 @@ class ORM_Core {
 			{
 				if ( ! empty($data['binary']) AND ! empty($data['exact']) AND $data['length'] == 1)
 				{
-					// Use boolean for an binary(1) field
+					// Use boolean for binary(1) fields
 					$data['type'] = 'boolean';
 				}
 
