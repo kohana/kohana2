@@ -76,6 +76,9 @@ class ORM_Core {
 		{
 			// Preloaded object
 			$this->object = $id;
+
+			// Convert the value to the correct type
+			$this->load_object_types();
 		}
 		else
 		{
@@ -617,6 +620,9 @@ class ORM_Core {
 			$this->object->$field = '';
 		}
 
+		// Convert the value to the correct type
+		$this->load_object_types();
+
 		// Reset object status
 		$this->changed = array();
 		$this->select  = FALSE;
@@ -672,6 +678,9 @@ class ORM_Core {
 			{
 				// Load the first result, if there is only one result
 				$this->object = $result->current();
+
+				// Convert the value to the correct type
+				$this->load_object_types();
 			}
 			else
 			{
@@ -699,6 +708,39 @@ class ORM_Core {
 	{
 		// Create and return the object
 		return ORM::factory(inflector::singular($table));
+	}
+
+	/**
+	 * Converts the loaded object values to correct types.
+	 *
+	 * @return void
+	 */
+	protected function load_object_types()
+	{
+		foreach (self::$fields[$this->table] as $field => $data)
+		{
+			if (isset($this->object->$field))
+			{
+				if ( ! empty($data['binary']) AND ! empty($data['exact']) AND $data['length'] == 1)
+				{
+					// Use boolean for an binary(1) field
+					$data['type'] = 'boolean';
+				}
+
+				switch ($data['type'])
+				{
+					case 'int':
+						$this->object->$field = (int) $this->object->$field;
+					break;
+					case 'float':
+						$this->object->$field = (float) $this->object->$field;
+					break;
+					case 'boolean':
+						$this->object->$field = (bool) $this->object->$field;
+					break;
+				}
+			}
+		}
 	}
 
 	/**
