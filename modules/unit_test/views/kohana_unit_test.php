@@ -39,6 +39,12 @@
 	border-bottom: 1px solid #E5EFF8;
 	padding: 3px;
 }
+#kohana-unit-test .k-stats
+{
+	font-weight: normal;
+	color: #83919C;
+	text-align: right;
+}
 #kohana-unit-test .k-debug
 {
 	padding: 3px;
@@ -86,7 +92,10 @@ text::alternate();
 
 	<table>
 		<tr>
-			<th colspan="2"><?php echo $class ?></th>
+			<th><?php echo $class ?></th>
+			<th class="k-stats">
+				<?php echo Kohana::lang('unit_test.stats', $stats[$class]['passed'], array_sum($stats[$class])) ?>
+			</th>
 		</tr>
 
 		<?php if (empty($methods)): ?>

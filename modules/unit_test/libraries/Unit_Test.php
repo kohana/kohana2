@@ -11,8 +11,14 @@
  */
 class Unit_Test_Core {
 
+	// The path(s) to recursively scan for tests
 	protected $paths = array();
+
+	// The results of all tests from every test class
 	protected $results = array();
+
+	// Statistics for every test class
+	protected $stats = array();
 
 	/**
 	 * Sets the test path(s), runs the tests inside and stores the results.
@@ -60,15 +66,16 @@ class Unit_Test_Core {
 				if ( ! class_exists($class, FALSE))
 					throw new Kohana_Exception('unit_test.test_class_not_found', $class, $path);
 
-				// Instantiate test class results
-				$this->results[$class] = array();
-
 				// Reverse-engineer Test class
 				$reflector = new ReflectionClass($class);
 
 				// Test classes must extend Unit_Test_Case
 				if ( ! $reflector->isSubclassOf(new ReflectionClass('Unit_Test_Case')))
 					throw new Kohana_Exception('unit_test.test_class_extends', $class);
+
+				// Initialize test class results and stats
+				$this->results[$class] = array();
+				$this->stats[$class] = array('passed' => 0, 'failed' => 0);
 
 				// Loop through all the class methods
 				foreach ($reflector->getMethods() as $method)
@@ -94,11 +101,16 @@ class Unit_Test_Core {
 					try
 					{
 						$object->$method_name();
+
+						// Test passed
 						$this->results[$class][$method_name] = TRUE;
+						$this->stats[$class]['passed']++;
 					}
 					catch (Kohana_Unit_Test_Exception $e)
 					{
+						// Test failed
 						$this->results[$class][$method_name] = $e;
+						$this->stats[$class]['failed']++;
 					}
 
 					// Run teardown method
@@ -121,7 +133,13 @@ class Unit_Test_Core {
 	 */
 	public function report()
 	{
-		return empty($this->results) ? '' : View::factory('kohana_unit_test')->set('results', $this->results)->render();
+		if (empty($this->results))
+			return '';
+
+		return View::factory('kohana_unit_test')
+			->set('results', $this->results)
+			->set('stats', $this->stats)
+			->render();
 	}
 
 	/**
