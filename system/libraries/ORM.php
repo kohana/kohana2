@@ -218,10 +218,8 @@ class ORM_Core {
 			return (array) $this->object;
 		}
 
-		if (substr($method, 0, 8) === 'find_by_' OR ($all = substr($method, 0, 12)) === 'find_all_by_')
+		if (substr($method, 0, 8) === 'find_by_' OR substr($method, 0, 12) === 'find_all_by_')
 		{
-			$method = isset($all) ? substr($method, 12) : substr($method, 8);
-
 			// Make a find_by call
 			return $this->call_find_by($method, $args);
 		}
@@ -229,16 +227,13 @@ class ORM_Core {
 		if (substr($method, 0, 13) === 'find_related_')
 		{
 			// Make a find_related call
-			return $this->call_find_related(substr($method, 13));
+			return $this->call_find_related($method, $args);
 		}
 
 		if (preg_match('/^(has|add|remove)_(.+)/', $method, $matches))
 		{
-			$action = $matches[1];
-			$model  = is_object(current($args)) ? current($args) : $this->load_model($matches[2]);
-
 			// Make a has/add/remove call
-			return $this->call_has_add_remove($action, $model);
+			return $this->call_has_add_remove($method, $args, $matches);
 		}
 
 		if (method_exists(self::$db, $method))
@@ -277,12 +272,18 @@ class ORM_Core {
 	/**
 	 * __call: find_by_*, find_all_by_*
 	 *
-	 * @param   string  column names to find by
+	 * @param   string  method
 	 * @param   array   arguments
 	 * @return  object
 	 */
 	protected function call_find_by($method, $args)
 	{
+		// Use ALL
+		$ALL = (substr($method, 0, 12) === 'find_all_by_');
+
+		// Method args
+		$method = $ALL ? substr($method, 12) : substr($method, 8);
+
 		// WHERE is manually set
 		$this->where = TRUE;
 
@@ -318,7 +319,7 @@ class ORM_Core {
 			self::$db->where(array($keys => current($args)));
 		}
 
-		if (isset($all))
+		if ($ALL)
 		{
 			// Array of results
 			return $this->load_result(TRUE);
@@ -333,11 +334,15 @@ class ORM_Core {
 	/**
 	 * __call: find_related_*
 	 *
-	 * @param   string  table name
+	 * @param   string   method name
+	 * @param   array    arguments
 	 * @return  object
 	 */
-	protected function call_find_related($table)
+	protected function call_find_related($method, $args)
 	{
+		// Extract table name
+		$table = substr($method, 13)
+
 		// Construct a new model
 		$model = $this->load_model($table);
 
@@ -387,12 +392,16 @@ class ORM_Core {
 	/**
 	 * __call: has_*, add_*, remove_*
 	 *
-	 * @param   string   action: has, add, remove
-	 * @param   object   model
+	 * @param   string   method
+	 * @param   array    arguments
+	 * @param   array    action matches
 	 * @return  boolean
 	 */
-	protected function call_has_add_remove($action, $model)
+	protected function call_has_add_remove($method, $args, $matches)
 	{
+		$action = $matches[1];
+		$model  = is_object(current($args)) ? current($args) : $this->load_model($matches[2]);
+
 		// Real foreign table name
 		$table = $model->table_name;
 
@@ -906,7 +915,10 @@ class ORM_Iterator implements Iterator, ArrayAccess, Countable {
 
 	public function __construct($class, $result)
 	{
+		// Class name
 		$this->class = $class;
+
+		// Database result
 		$this->result = $result;
 	}
 
@@ -935,6 +947,7 @@ class ORM_Iterator implements Iterator, ArrayAccess, Countable {
 	 */
 	public function range($start, $end)
 	{
+		// Array of objects
 		$array = array();
 
 		if ($this->result->offsetExists($start))
@@ -947,6 +960,7 @@ class ORM_Iterator implements Iterator, ArrayAccess, Countable {
 
 			for ($i = $start; $i < $end; $i++)
 			{
+				// Insert each object in the range
 				$array[] = new $class($this->result->offsetGet($i));
 			}
 		}
@@ -970,7 +984,7 @@ class ORM_Iterator implements Iterator, ArrayAccess, Countable {
 		// Import class name
 		$class = $this->class;
 
-		return $this->result->offsetExists(0) ? new $class($this->result->offsetGet(0)) : FALSE;
+		return ($row = $this->result->current()) ? new $class($row) : FALSE;
 	}
 
 	/**
