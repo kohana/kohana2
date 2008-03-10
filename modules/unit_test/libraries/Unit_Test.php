@@ -28,20 +28,29 @@ class Unit_Test_Core {
 	 */
 	public function __construct()
 	{
-		// Loop over each given test path
-		foreach (func_get_args() as $path)
-		{
-			// Normalize all given test paths and store them
-			$this->paths[] = $test_path = str_replace('\\', '/', realpath((string) $path));
+		// Merge possible default test path(s) from config with the rest
+		$paths = array_merge(func_get_args(), Config::item('unit_test.paths', FALSE, FALSE));
 
+		// Normalize all test paths
+		foreach ($paths as $path)
+		{
+			$path = str_replace('\\', '/', realpath((string) $path));
+		}
+
+		// Take out duplicate test paths after normalization
+		$this->paths = array_unique($paths);
+
+		// Loop over each given test path
+		foreach ($this->paths as $path)
+		{
 			// Validate test path
-			if ( ! is_dir($test_path))
-				throw new Kohana_Exception('unit_test.invalid_test_path', $test_path);
+			if ( ! is_dir($path))
+				throw new Kohana_Exception('unit_test.invalid_test_path', $path);
 
 			// Recursively iterate over each file in the test path
 			foreach
 			(
-				new RecursiveIteratorIterator(new RecursiveDirectoryIterator($test_path, RecursiveDirectoryIterator::KEY_AS_PATHNAME))
+				new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::KEY_AS_PATHNAME))
 				as $path => $file
 			)
 			{
