@@ -80,6 +80,7 @@
 <?php
 
 foreach ($results as $class => $methods):
+text::alternate();
 
 ?>
 
@@ -88,38 +89,45 @@ foreach ($results as $class => $methods):
 			<th colspan="2"><?php echo $class ?></th>
 		</tr>
 
-		<?php
+		<?php if (empty($methods)): ?>
 
-		text::alternate();
-		foreach ($methods as $method => $result):
-
-		?>
-
-			<tr class="<?php echo text::alternate('', 'k-altrow') ?>">
-				<td class="k-name"><?php echo $method ?></td>
-
-				<?php if ($result === TRUE): ?>
-
-					<td class="k-passed"><strong><?php echo Kohana::lang('unit_test.passed') ?></strong></td>
-
-				<?php else: /* $result == Kohana_Unit_Test_Exception */ ?>
-
-					<td class="k-failed">
-						<strong><?php echo Kohana::lang('unit_test.failed') ?></strong>
-						<pre><?php echo html::specialchars($result->message) ?></pre>
-						<?php echo html::specialchars($result->file) ?> (<?php echo Kohana::lang('unit_test.line') ?>&nbsp;<?php echo $result->line ?>)
-
-						<?php if ($result->debug !== NULL): ?>
-							<pre class="k-debug" title="Debug info"><?php echo '(', gettype($result->debug), ') ', html::specialchars(var_export($result->debug, TRUE)) ?></pre>
-						<?php endif ?>
-
-					</td>
-
-				<?php endif ?>
-
+			<tr>
+				<td colspan="2"><?php echo Kohana::lang('unit_test.no_tests_found') ?></td>
 			</tr>
 
-		<?php endforeach ?>
+		<?php else:
+
+			foreach ($methods as $method => $result):
+
+			?>
+
+				<tr class="<?php echo text::alternate('', 'k-altrow') ?>">
+					<td class="k-name"><?php echo $method ?></td>
+
+					<?php if ($result === TRUE): ?>
+
+						<td class="k-passed"><strong><?php echo Kohana::lang('unit_test.passed') ?></strong></td>
+
+					<?php else: /* $result == Kohana_Unit_Test_Exception */ ?>
+
+						<td class="k-failed">
+							<strong><?php echo Kohana::lang('unit_test.failed') ?></strong>
+							<pre><?php echo html::specialchars($result->message) ?></pre>
+							<?php echo html::specialchars($result->file) ?> (<?php echo Kohana::lang('unit_test.line') ?>&nbsp;<?php echo $result->line ?>)
+
+							<?php if ($result->debug !== NULL): ?>
+								<pre class="k-debug" title="Debug info"><?php echo '(', gettype($result->debug), ') ', html::specialchars(var_export($result->debug, TRUE)) ?></pre>
+							<?php endif ?>
+
+						</td>
+
+					<?php endif ?>
+
+				</tr>
+
+			<?php endforeach ?>
+
+		<?php endif ?>
 
 	</table>
 

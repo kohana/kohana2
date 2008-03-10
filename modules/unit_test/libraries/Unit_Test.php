@@ -59,7 +59,7 @@ class Unit_Test_Core {
 				// Check whether the test class has been found and loaded
 				if ( ! class_exists($class, FALSE))
 					throw new Kohana_Exception('unit_test.test_class_not_found', $class, $path);
-
+$this->results[$class] = array();
 				// Reverse-engineer Test class
 				$reflector = new ReflectionClass($class);
 
