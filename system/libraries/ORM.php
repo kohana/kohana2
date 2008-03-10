@@ -140,11 +140,14 @@ class ORM_Core {
 			// Set the child id name
 			$child_id = $key.'_id';
 
-			$this->object->$key = new $model(isset($this->object->$child_id)
+			$this->object->$key = new $model
+			(
+				isset($this->object->$child_id)
 				// Get the foreign object using the key defined in this object
 				? $this->object->$child_id
 				// Get the foreign object using the primary key of this object
-				: array($this->class.'_id', $this->object->id));
+				: array($this->class.'_id' => $this->object->id)
+			);
 
 			// Return the model
 			return $this->object->$key;
