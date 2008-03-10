@@ -341,7 +341,7 @@ class ORM_Core {
 	protected function call_find_related($method, $args)
 	{
 		// Extract table name
-		$table = substr($method, 13)
+		$table = substr($method, 13);
 
 		// Construct a new model
 		$model = $this->load_model($table);
