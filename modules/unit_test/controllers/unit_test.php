@@ -1,6 +1,8 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Unit_test controller
+ * Unit_Test controller.
+ *
+ * $Id$
  *
  * @package    Unit_Test
  * @author     Kohana Team

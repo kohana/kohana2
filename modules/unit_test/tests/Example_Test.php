@@ -1,5 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+/**
+ * Example Test.
+ *
+ * $Id$
+ *
+ * @package    Unit_Test
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
 class Example_Test extends Unit_Test_Case {
 
 	public function true_false_test()
@@ -50,7 +59,7 @@ class Example_Test extends Unit_Test_Case {
 		foreach (array(1, 5, 6, 12, 65, 128, 9562) as $var)
 		{
 			// By supplying $var in the debug parameter,
-			// we can on which number this test fails.
+			// we can see on which number this test fails.
 			$this->assert_true($var < 100, $var);
 		}
 	}
