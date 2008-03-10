@@ -2,8 +2,6 @@
 /**
  * Unit_test controller
  *
- * $Id$
- *
  * @package    Unit_Test
  * @author     Kohana Team
  * @copyright  (c) 2007-2008 Kohana Team
@@ -15,9 +13,6 @@ class Unit_test_Controller extends Controller {
 
 	public function index()
 	{
-		// Enable Profiler
-		new Profiler;
-
 		// Run tests and show results!
 		$test = new Unit_Test(MODPATH.'unit_test/tests/');
 		echo $test->report();

@@ -39,6 +39,15 @@
 	border-bottom: 1px solid #E5EFF8;
 	padding: 3px;
 }
+#kohana-unit-test .k-debug
+{
+	padding: 3px;
+	background-color: #FFF0F0;
+	border: 1px solid #FFD0D0;
+	border-right-color: #FFFBFB;
+	border-bottom-color: #FFFBFB;
+	color: #83919C;
+}
 #kohana-unit-test .k-altrow td
 {
 	background-color: #F7FBFF;
@@ -48,13 +57,21 @@
 	width: 25%;
 	border-right: 1px solid #E5EFF8;
 }
-#kohana-unit-test .k-passed, #kohana-unit-test .k-altrow .k-passed
+#kohana-unit-test .k-passed
 {
 	background-color: #E0FFE0;
 }
-#kohana-unit-test .k-failed, #kohana-unit-test .k-altrow .k-failed
+#kohana-unit-test .k-altrow .k-passed
+{
+	background-color: #D0FFD0;
+}
+#kohana-unit-test .k-failed
 {
 	background-color: #FFE0E0;
+}
+#kohana-unit-test .k-altrow .k-failed
+{
+	background-color: #FFD0D0;
 }
 </style>
 
@@ -83,18 +100,19 @@ foreach ($results as $class => $methods):
 
 				<?php if ($result === TRUE): ?>
 
-					<td class="k-passed">Passed</td>
+					<td class="k-passed"><strong><?php echo Kohana::lang('unit_test.passed') ?></strong></td>
 
-				<?php else: ?>
+				<?php else: /* $result == Kohana_Unit_Test_Exception */ ?>
 
 					<td class="k-failed">
-						Failed:
-						<?php
+						<strong><?php echo Kohana::lang('unit_test.failed') ?></strong>
+						<pre><?php echo html::specialchars($result->message) ?></pre>
+						<?php echo html::specialchars($result->file) ?> (<?php echo Kohana::lang('unit_test.line') ?>&nbsp;<?php echo $result->line ?>)
 
-						$trace = $result->getTrace();
-						echo '<span title="', $trace[0]['file'], '">', $class, EXT, ' (line&nbsp;', $trace[0]['line'], ')</span>';
+						<?php if ($result->debug !== NULL): ?>
+							<pre class="k-debug" title="Debug info"><?php echo '(', gettype($result->debug), ') ', html::specialchars(var_export($result->debug, TRUE)) ?></pre>
+						<?php endif ?>
 
-						?>
 					</td>
 
 				<?php endif ?>
