@@ -1157,7 +1157,7 @@ class Kohana_Exception extends Exception {
 	 * @param  string  i18n language key for the message
 	 * @param  array   addition line parameters
 	 */
-	function __construct($error)
+	public function __construct($error)
 	{
 		$args = array_slice(func_get_args(), 1);
 
