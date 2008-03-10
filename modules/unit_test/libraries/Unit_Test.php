@@ -25,7 +25,7 @@ class Unit_Test_Core {
 		// Normalize all given test paths
 		foreach ((array) $paths as $path)
 		{
-			$this->paths[] = str_replace('\\', '/', realpath($path)).'/';
+			$this->paths[] = str_replace('\\', '/', realpath($path));
 		}
 
 		// Recursively iterate over all test paths
@@ -37,6 +37,9 @@ class Unit_Test_Core {
 				as $path => $file
 			)
 			{
+				// Normalize path
+				$path = str_replace('\\', '/', realpath($path));
+
 				// Skip files without "_Test" suffix
 				if ( ! $file->isFile() OR substr($path, -9) !== '_Test'.EXT)
 					continue;
