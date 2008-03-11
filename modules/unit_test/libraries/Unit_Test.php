@@ -138,16 +138,23 @@ class Unit_Test_Core {
 	/**
 	 * Generates nice test results.
 	 *
-	 * @return  string  rendered test results html
+	 * @param   boolean  hide passed tests from the report
+	 * @return  string   rendered test results html
 	 */
-	public function report()
+	public function report($hide_passed = NULL)
 	{
+		// No tests found
 		if (empty($this->results))
-			return '';
+			return Kohana::lang('unit_test.no_tests_found');
 
+		// Hide passed tests from the report?
+		$hide_passed = (bool) (($hide_passed !== NULL) ? $hide_passed : Config::item('unit_test.hide_passed', FALSE, FALSE));
+
+		// Render unit_test report
 		return View::factory('kohana_unit_test')
 			->set('results', $this->results)
 			->set('stats', $this->stats)
+			->set('hide_passed', $hide_passed)
 			->render();
 	}
 

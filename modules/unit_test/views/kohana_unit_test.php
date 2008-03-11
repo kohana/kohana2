@@ -108,7 +108,11 @@ text::alternate();
 
 			foreach ($methods as $method => $result):
 
-			?>
+				// Hide passed tests from report
+				if ($result === TRUE AND $hide_passed === TRUE)
+					continue;
+
+				?>
 
 				<tr class="<?php echo text::alternate('', 'k-altrow') ?>">
 					<td class="k-name"><?php echo $method ?></td>
@@ -117,7 +121,7 @@ text::alternate();
 
 						<td class="k-passed"><strong><?php echo Kohana::lang('unit_test.passed') ?></strong></td>
 
-					<?php else: /* $result == Kohana_Unit_Test_Exception */ ?>
+					<?php elseif ($result instanceof Kohana_Unit_Test_Exception): ?>
 
 						<td class="k-failed">
 							<strong><?php echo Kohana::lang('unit_test.failed') ?></strong>
