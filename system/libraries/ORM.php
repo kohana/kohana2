@@ -683,6 +683,7 @@ class ORM_Core {
 	 * values to each of the object fields. At the same time, the WHERE and
 	 * SELECT statements are cleared and the changed keys are reset.
 	 *
+	 * @chainable
 	 * @return  void
 	 */
 	public function clear()
@@ -703,6 +704,8 @@ class ORM_Core {
 		$this->changed = array();
 		$this->select  = FALSE;
 		$this->where   = FALSE;
+
+		return $this;
 	}
 
 	/**
