@@ -16,7 +16,7 @@ class Unit_test_Controller extends Controller {
 	public function index()
 	{
 		// Run tests and show results!
-		echo new Unit_Test(MODPATH.'unit_test/tests');
+		echo new Unit_Test;
 	}
 
 }
