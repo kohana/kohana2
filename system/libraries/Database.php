@@ -839,7 +839,7 @@ class Database_Core {
 				}
 				else
 				{
-					$escaped_values[] = "'".$this->driver->escape_string($v)."'";
+					$escaped_values[] = "'".$this->driver->escape_str($v)."'";
 				}
 			}
 			$values = implode(",", $escaped_values);
