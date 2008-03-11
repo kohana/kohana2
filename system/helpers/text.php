@@ -24,7 +24,7 @@ class text_Core {
 		$limit = (int) $limit;
 		$end_char = ($end_char === NULL) ? '&#8230;' : $end_char;
 
-		if (trim($str) == '')
+		if (trim($str) === '')
 			return $str;
 
 		if ($limit <= 0)
@@ -34,7 +34,7 @@ class text_Core {
 
 		// Only attach the end character if the matched string is shorter
 		// than the starting string.
-		return rtrim($matches[0]).(strlen($matches[0]) == strlen($str) ? '' : $end_char);
+		return rtrim($matches[0]).(strlen($matches[0]) === strlen($str) ? '' : $end_char);
 	}
 
 	/**
@@ -52,7 +52,7 @@ class text_Core {
 
 		$limit = (int) $limit;
 
-		if (trim($str) == '' OR utf8::strlen($str) <= $limit)
+		if (trim($str) === '' OR utf8::strlen($str) <= $limit)
 			return $str;
 
 		if ($limit <= 0)
@@ -78,7 +78,7 @@ class text_Core {
 	{
 		static $i;
 
-		if (func_num_args() == 0)
+		if (func_num_args() === 0)
 		{
 			$i = 0;
 			return '';
