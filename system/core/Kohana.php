@@ -1167,12 +1167,11 @@ class Kohana_Exception extends Exception {
 		// Handle error messages that are not set
 		if ($message == $error)
 		{
-			$this->message .= $error;
+			$message .= $error;
 		}
-		else
-		{
-			$this->message = $message;
-		}
+
+		// Sets $this->message the proper way
+		parent::__construct($message);
 	}
 
 	/**
@@ -1222,8 +1221,9 @@ class Kohana_User_Exception extends Kohana_Exception {
 	 */
 	public function __construct($title, $message, $template = FALSE)
 	{
-		$this->code     = $title;
-		$this->message  = $message;
+		Exception::__construct($message);
+
+		$this->code = $title;
 
 		if ($template != FALSE)
 		{
@@ -1254,9 +1254,10 @@ class Kohana_404_Exception extends Kohana_Exception {
 			$page = Router::$current_uri.Router::$url_suffix.Router::$query_string;
 		}
 
-		$this->message = Kohana::lang('core.page_not_found', $page);
-		$this->file    = FALSE;
-		$this->line    = FALSE;
+		Exception::__construct(Kohana::lang('core.page_not_found', $page));
+
+		$this->file = FALSE;
+		$this->line = FALSE;
 
 		$this->template = $template;
 	}
