@@ -84,7 +84,7 @@ class Unit_Test_Core {
 
 				// Initialize test class results and stats
 				$this->results[$class] = array();
-				$this->stats[$class] = array('passed' => 0, 'failed' => 0);
+				$this->stats[$class] = array('passed' => 0, 'failed' => 0, 'errors' => 0);
 
 				// Loop through all the class methods
 				foreach ($reflector->getMethods() as $method)
@@ -120,6 +120,12 @@ class Unit_Test_Core {
 						// Test failed
 						$this->results[$class][$method_name] = $e;
 						$this->stats[$class]['failed']++;
+					}
+					catch (Exception $e)
+					{
+						// Test error
+						$this->results[$class][$method_name] = $e;
+						$this->stats[$class]['errors']++;
 					}
 
 					// Run teardown method

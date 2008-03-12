@@ -79,6 +79,14 @@
 {
 	background-color: #FFD0D0;
 }
+#kohana-unit-test .k-error
+{
+	background-color: #FFFFE0;
+}
+#kohana-unit-test .k-altrow .k-error
+{
+	background-color: #FFFFD1;
+}
 </style>
 
 <div id="kohana-unit-test">
@@ -94,7 +102,9 @@ text::alternate();
 		<tr>
 			<th><?php echo $class ?></th>
 			<th class="k-stats">
-				<?php echo Kohana::lang('unit_test.stats', $stats[$class]['passed'], array_sum($stats[$class])) ?>
+				<?php echo Kohana::lang('unit_test.passed'), ': ', $stats[$class]['passed'] ?>,
+				<?php echo Kohana::lang('unit_test.failed'), ': ', $stats[$class]['failed'] ?>,
+				<?php echo Kohana::lang('unit_test.errors'), ': ', $stats[$class]['errors'] ?>
 			</th>
 		</tr>
 
@@ -132,6 +142,14 @@ text::alternate();
 								<pre class="k-debug" title="Debug info"><?php echo '(', gettype($result->debug), ') ', html::specialchars(var_export($result->debug, TRUE)) ?></pre>
 							<?php endif ?>
 
+						</td>
+
+					<?php elseif ($result instanceof Exception): ?>
+
+						<td class="k-error">
+							<strong><?php echo Kohana::lang('unit_test.error') ?></strong>
+							<pre><?php echo html::specialchars($result->getMessage()) ?></pre>
+							<?php echo html::specialchars($result->getFile()) ?> (<?php echo Kohana::lang('unit_test.line') ?>&nbsp;<?php echo $result->getLine() ?>)
 						</td>
 
 					<?php endif ?>

@@ -68,4 +68,9 @@ class Example_Test extends Unit_Test_Case {
 		}
 	}
 
+	public function error_test()
+	{
+		throw new Exception;
+	}
+
 }
