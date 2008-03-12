@@ -401,7 +401,7 @@ class Kohana_Unit_Test_Exception extends Exception {
 	public function __construct($message, $debug = NULL)
 	{
 		// Failure message
-		parent::__construct($message);
+		parent::__construct((string) $message);
 
 		// Extra user-defined debug info
 		$this->debug = $debug;
