@@ -389,13 +389,10 @@ abstract class Unit_Test_Case {
 
 class Kohana_Unit_Test_Exception extends Exception {
 
-	protected $message = '';
 	protected $debug = NULL;
-	protected $file = '';
-	protected $line = '';
 
 	/**
-	 * Set exception message and debug
+	 * Sets exception message and debug info.
 	 *
 	 * @param   string  message
 	 * @param   mixed   debug info
@@ -404,28 +401,25 @@ class Kohana_Unit_Test_Exception extends Exception {
 	public function __construct($message, $debug = NULL)
 	{
 		// Failure message
-		$this->message = (string) $message;
+		parent::__construct($message);
 
 		// Extra user-defined debug info
 		$this->debug = $debug;
 
-		// Retrieve failure location
+		// Overwrite failure location
 		$trace = $this->getTrace();
 		$this->file = $trace[0]['file'];
 		$this->line = $trace[0]['line'];
 	}
 
 	/**
-	 * Magically gets an object property.
+	 * Returns the user-defined debug info
 	 *
-	 * @param   string  property key
-	 * @return  mixed   variable value if the key is found
-	 * @return  void    if the key is not found
+	 * @return  mixed  debug property
 	 */
-	public function __get($key)
+	public function getDebug()
 	{
-		if (isset($this->$key))
-			return $this->$key;
+		return $this->debug;
 	}
 
 } // End Kohana_Unit_Test_Exception

@@ -135,11 +135,11 @@ text::alternate();
 
 						<td class="k-failed">
 							<strong><?php echo Kohana::lang('unit_test.failed') ?></strong>
-							<pre><?php echo html::specialchars($result->message) ?></pre>
-							<?php echo html::specialchars($result->file) ?> (<?php echo Kohana::lang('unit_test.line') ?>&nbsp;<?php echo $result->line ?>)
+							<pre><?php echo html::specialchars($result->getMessage()) ?></pre>
+							<?php echo html::specialchars($result->getFile()) ?> (<?php echo Kohana::lang('unit_test.line') ?>&nbsp;<?php echo $result->getLine() ?>)
 
-							<?php if ($result->debug !== NULL): ?>
-								<pre class="k-debug" title="Debug info"><?php echo '(', gettype($result->debug), ') ', html::specialchars(var_export($result->debug, TRUE)) ?></pre>
+							<?php if ($result->getDebug() !== NULL): ?>
+								<pre class="k-debug" title="Debug info"><?php echo '(', gettype($result->getDebug()), ') ', html::specialchars(var_export($result->getDebug(), TRUE)) ?></pre>
 							<?php endif ?>
 
 						</td>
