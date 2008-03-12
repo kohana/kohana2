@@ -82,6 +82,19 @@ class Unit_Test_Core {
 				if ( ! $reflector->isSubclassOf(new ReflectionClass('Unit_Test_Case')))
 					throw new Kohana_Exception('unit_test.test_class_extends', $class);
 
+				// Initialize setup and teardown method triggers
+				$setup = $teardown = FALSE;
+
+				// Look for valid setup and teardown methods
+				foreach (array('setup', 'teardown') as $method_name)
+				{
+					if ($reflector->hasMethod($method_name))
+					{
+						$method = new ReflectionMethod($class, $method_name);
+						$$method_name = ($method->isPublic() AND ! $method->isStatic() AND $method->getNumberOfRequiredParameters() === 0);
+					}
+				}
+
 				// Initialize test class results and stats
 				$this->results[$class] = array();
 				$this->stats[$class] = array('passed' => 0, 'failed' => 0, 'errors' => 0);
@@ -90,18 +103,18 @@ class Unit_Test_Core {
 				foreach ($reflector->getMethods() as $method)
 				{
 					// Skip invalid test methods
-					if ( ! $method->isPublic() OR $method->isStatic() OR $method->getNumberOfParameters() != 0)
+					if ( ! $method->isPublic() OR $method->isStatic() OR $method->getNumberOfRequiredParameters() !== 0)
 						continue;
 
 					// Test methods should be suffixed with "_test"
-					if (substr($method_name = $method->getName(), -5) != '_test')
+					if (substr($method_name = $method->getName(), -5) !== '_test')
 						continue;
 
 					// Instantiate Test class
 					$object = new $class;
 
 					// Run setup method
-					if ($reflector->hasMethod('setup'))
+					if ($setup === TRUE)
 					{
 						$object->setup();
 					}
@@ -129,7 +142,7 @@ class Unit_Test_Core {
 					}
 
 					// Run teardown method
-					if ($reflector->hasMethod('teardown'))
+					if ($teardown === TRUE)
 					{
 						$object->teardown();
 					}

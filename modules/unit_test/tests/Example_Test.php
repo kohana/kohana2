@@ -11,6 +11,8 @@
  */
 class Example_Test extends Unit_Test_Case {
 
+	public $setup_has_run = FALSE;
+
 	public function setup()
 	{
 		$this->setup_has_run = TRUE;
