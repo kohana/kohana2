@@ -1140,16 +1140,11 @@ class Kohana_Exception extends Exception {
 	// Template file
 	protected $template = 'kohana_error_page';
 
-	// Message
-	protected $message = 'Unknown Exception: ';
-
 	// Header
 	protected $header = FALSE;
 
-	// Error code, filename, line number
+	// Error code
 	protected $code = E_KOHANA;
-	protected $file = FALSE;
-	protected $line = FALSE;
 
 	/**
 	 * Set exception message.
@@ -1165,9 +1160,9 @@ class Kohana_Exception extends Exception {
 		$message = Kohana::lang($error, $args);
 
 		// Handle error messages that are not set
-		if ($message == $error)
+		if ($message === $error OR $message === array())
 		{
-			$message .= $error;
+			$message = 'Unknown Exception: '.$error;
 		}
 
 		// Sets $this->message the proper way
@@ -1225,7 +1220,7 @@ class Kohana_User_Exception extends Kohana_Exception {
 
 		$this->code = $title;
 
-		if ($template != FALSE)
+		if ($template !== FALSE)
 		{
 			$this->template = $template;
 		}
@@ -1255,9 +1250,6 @@ class Kohana_404_Exception extends Kohana_Exception {
 		}
 
 		Exception::__construct(Kohana::lang('core.page_not_found', $page));
-
-		$this->file = FALSE;
-		$this->line = FALSE;
 
 		$this->template = $template;
 	}
