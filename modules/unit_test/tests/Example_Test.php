@@ -11,6 +11,16 @@
  */
 class Example_Test extends Unit_Test_Case {
 
+	public function setup()
+	{
+		$this->setup_has_run = TRUE;
+	}
+
+	public function setup_test()
+	{
+		$this->assert_true_strict($this->setup_has_run);
+	}
+
 	public function true_false_test()
 	{
 		$var = TRUE;
@@ -21,14 +31,14 @@ class Example_Test extends Unit_Test_Case {
 			->assert_false_strict( ! $var);
 	}
 
-	public function equal_identical_test()
+	public function equal_same_test()
 	{
 		$var = '5';
 		$this
 			->assert_equal($var, 5)
 			->assert_not_equal($var, 6)
-			->assert_identical($var, '5')
-			->assert_not_identical($var, 5);
+			->assert_same($var, '5')
+			->assert_not_same($var, 5);
 	}
 
 	public function type_test()
