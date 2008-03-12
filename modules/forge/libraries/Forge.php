@@ -175,7 +175,27 @@ class Forge_Core {
 		$data = array();
 		foreach(array_merge($this->hidden, $this->inputs) as $input)
 		{
-			if ($name = $input->name)
+			if (is_object($input->name)) // It's a Forge_Group object (hopefully)
+			{
+				foreach ($input->inputs as $group_input)
+				{
+					if ($name = $group_input->name)
+					{
+						$data[$name] = $group_input->value;
+					}
+				}
+			}
+			else if (is_array($input->inputs))
+			{
+				foreach ($input->inputs as $group_input)
+				{
+					if ($name = $group_input->name)
+					{
+						$data[$name] = $group_input->value;
+					}
+				}
+			}
+			else if ($name = $input->name) // It's a normal input
 			{
 				// Return only named inputs
 				$data[$name] = $input->value;
