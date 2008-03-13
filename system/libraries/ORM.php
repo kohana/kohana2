@@ -497,15 +497,12 @@ class ORM_Core {
 				if (isset($relationship))
 				{
 					// Find the many<>many relationship
-					return (bool) count
-					(
-						self::$db
+					return (bool) self::$db
 						->select($primary)
 						->from($this->related_table($table))
 						->where($relationship)
 						->limit(1)
-						->get()
-					);
+						->get()->count();
 				}
 
 				return ($model->$primary === $this->object->id);
@@ -514,7 +511,7 @@ class ORM_Core {
 				if (isset($relationship))
 				{
 					// Attempt to delete the many<>many relationship
-					return (bool) count(self::$db->delete($this->related_table($table), $relationship));
+					return (bool) self::$db->delete($this->related_table($table), $relationship)->count();
 				}
 				elseif ($model->$primary === $this->object->id)
 				{
@@ -612,7 +609,7 @@ class ORM_Core {
 			// Perform an insert
 			$query = self::$db->insert($this->table, $data);
 
-			if (count($query) === 1)
+			if ($query->count() === 1)
 			{
 				// Set current object id by the insert id
 				$this->object->id = $query->insert_id();
@@ -624,7 +621,7 @@ class ORM_Core {
 			$query = self::$db->update($this->table, $data, array('id' => $this->object->id));
 		}
 
-		if (count($query) === 1)
+		if ($query->count() === 1)
 		{
 			// Reset changed data
 			$this->changed = array();
@@ -675,7 +672,7 @@ class ORM_Core {
 		$this->clear();
 
 		// Return the number of rows deleted
-		return count(self::$db->delete($this->table, $where));
+		return self::$db->delete($this->table, $where)->count();
 	}
 
 	/**
