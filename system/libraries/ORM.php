@@ -31,6 +31,7 @@ class ORM_Core {
 	// SQL building status
 	protected $select = FALSE;
 	protected $where = FALSE;
+	protected $from = FALSE;
 
 	// Currently loaded object
 	protected $object;
@@ -232,6 +233,12 @@ class ORM_Core {
 
 		if (preg_match('/^(has|add|remove)_(.+)/', $method, $matches))
 		{
+			if (empty($this->object->id))
+			{
+				// many<>many relationships only work when the object has been saved
+				return FALSE;
+			}
+
 			// Make a has/add/remove call
 			return $this->call_has_add_remove($method, $args, $matches);
 		}
@@ -246,9 +253,13 @@ class ORM_Core {
 			{
 				$this->select = TRUE;
 			}
-			elseif (preg_match('/where|like|regex/', $method))
+			elseif (preg_match('/where|like|in|regex/', $method))
 			{
 				$this->where = TRUE;
+			}
+			elseif ($method === 'from')
+			{
+				$this->from = TRUE;
 			}
 
 			// Pass through to Database, manually calling up to 2 args, for speed.
@@ -702,8 +713,7 @@ class ORM_Core {
 
 		// Reset object status
 		$this->changed = array();
-		$this->select  = FALSE;
-		$this->where   = FALSE;
+		$this->select = $this->where = $this->from = FALSE;
 
 		return $this;
 	}
@@ -737,8 +747,11 @@ class ORM_Core {
 		// Make sure there is something to select
 		$this->select or self::$db->select($this->table.'.*');
 
+		// Make sure there is a table to select from
+		$this->from or self::$db->from($this->table);
+
 		// Fetch the query result
-		$result = self::$db->get($this->table)->result(TRUE);
+		$result = self::$db->get()->result(TRUE);
 
 		if ($array === TRUE)
 		{
@@ -770,8 +783,7 @@ class ORM_Core {
 
 		// Clear the changed keys, a new object has been loaded
 		$this->changed = array();
-		$this->select = FALSE;
-		$this->where = FALSE;
+		$this->select = $this->where = $this->from = FALSE;
 
 		// Return this object
 		return $this;
