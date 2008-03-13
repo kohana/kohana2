@@ -147,19 +147,24 @@ abstract class Database_Driver {
 	/**
 	 * Builds a LIKE portion of a query.
 	 *
-	 * @param   mixed   field name
-	 * @param   string  value to match with field
-	 * @param   string  clause type (AND or OR)
-	 * @param   int     number of likes
+	 * @param   mixed    field name
+	 * @param   string   value to match with field
+	 * @param   boolean  add wildcards before and after the match
+	 * @param   string   clause type (AND or OR)
+	 * @param   int      number of likes
 	 * @return  string
 	 */
-	public function like($field, $match = '', $type = 'AND ', $num_likes)
+	public function like($field, $match = '', $auto = TRUE, $type = 'AND ', $num_likes)
 	{
 		$prefix = ($num_likes == 0) ? '' : $type;
 
-		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%')
-		       ? $this->escape_str($match)
-		       : '%'.$this->escape_str($match).'%';
+		$match = $this->escape_str($match);
+
+		if ($auto === TRUE)
+		{
+			// Add the start and end quotes
+			$match = '%'.$match.'%';
+		}
 
 		return $prefix.' '.$this->escape_column($field).' LIKE \''.$match . '\'';
 	}
@@ -177,9 +182,13 @@ abstract class Database_Driver {
 	{
 		$prefix = ($num_likes == 0) ? '' : $type;
 
-		$match = (substr($match, 0, 1) == '%' OR substr($match, (strlen($match)-1), 1) == '%')
-		       ? $this->escape_str($match)
-		       : '%'.$this->escape_str($match).'%';
+		$match = $this->escape_str($match);
+
+		if ($auto === TRUE)
+		{
+			// Add the start and end quotes
+			$match = '%'.$match.'%';
+		}
 
 		return $prefix.' '.$this->escape_column($field).' NOT LIKE \''.$match.'\'';
 	}
