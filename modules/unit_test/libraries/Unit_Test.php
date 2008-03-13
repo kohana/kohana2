@@ -113,16 +113,22 @@ class Unit_Test_Core {
 					// Instantiate Test class
 					$object = new $class;
 
-					// Run setup method
-					if ($setup === TRUE)
-					{
-						$object->setup();
-					}
-
-					// Run the actual test
 					try
 					{
+						// Run setup method
+						if ($setup === TRUE)
+						{
+							$object->setup();
+						}
+
+						// Run the actual test
 						$object->$method_name();
+
+						// Run teardown method
+						if ($teardown === TRUE)
+						{
+							$object->teardown();
+						}
 
 						// Test passed
 						$this->results[$class][$method_name] = TRUE;
@@ -139,12 +145,6 @@ class Unit_Test_Core {
 						// Test error
 						$this->results[$class][$method_name] = $e;
 						$this->stats[$class]['errors']++;
-					}
-
-					// Run teardown method
-					if ($teardown === TRUE)
-					{
-						$object->teardown();
 					}
 
 					// Cleanup
