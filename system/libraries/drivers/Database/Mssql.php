@@ -359,8 +359,10 @@ class Mssql_Result implements Database_Result, ArrayAccess, Iterator, Countable
 			}
 			else
 			{
-				// Its an DELETE, INSERT, REPLACE, or UPDATE query
-				$this->insert_id  = null;//mssql_insert_id($link);
+				// Its an DELETE, INSERT, REPLACE, or UPDATE querys
+				$last_id          = mssql_query('SELECT @@IDENTITY AS last_id', $link);
+				$result           = mssql_fetch_assoc($last_id);
+				$this->insert_id  = $result['last_id'];
 				$this->total_rows = mssql_rows_affected($link);
 			}
 		}
