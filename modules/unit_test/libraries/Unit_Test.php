@@ -82,6 +82,14 @@ class Unit_Test_Core {
 				if ( ! $reflector->isSubclassOf(new ReflectionClass('Unit_Test_Case')))
 					throw new Kohana_Exception('unit_test.test_class_extends', $class);
 
+				// Skip disabled Tests
+				if ($reflector->hasProperty('DISABLED'))
+				{
+					$property = new ReflectionProperty($class, 'DISABLED');
+					if ($property->getValue(new $class) === TRUE)
+						continue;
+				}
+
 				// Initialize setup and teardown method triggers
 				$setup = $teardown = FALSE;
 
@@ -180,7 +188,7 @@ class Unit_Test_Core {
 	/**
 	 * Magically convert this object to a string.
 	 *
-	 * @return  string
+	 * @return  string  test report
 	 */
 	public function __toString()
 	{
