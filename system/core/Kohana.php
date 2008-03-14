@@ -215,6 +215,9 @@ class Kohana {
 			// Make sure the controller class exists
 			class_exists($controller, FALSE) or Event::run('system.404');
 
+			// Production enviroment protection, based on the IN_PRODUCTION flag
+			(IN_PRODUCTION AND constant($controller.'::ALLOW_PRODUCTION') === FALSE) and Event::run('system.404');
+
 			// Run system.pre_controller
 			Event::run('system.pre_controller');
 
@@ -530,7 +533,7 @@ class Kohana {
 		// Test if display_errors is on
 		if (Config::item('core.display_errors'))
 		{
-			if ($line != FALSE)
+			if ( ! IN_PRODUCTION AND $line != FALSE)
 			{
 				// Remove the first entry of debug_backtrace(), it is the exception_handler call
 				$trace = $PHP_ERROR ? array_slice(debug_backtrace(), 1) : $exception->getTrace();
@@ -852,7 +855,7 @@ class Kohana {
 
 			// Loop through the files and include each one, so SYSPATH files
 			// can be overloaded by more localized files
-			foreach(self::find_file('l10n', $filename) as $file)
+			foreach(self::find_file('l10n', Config::item('locale.language').'/'.$filename) as $file)
 			{
 				include $file;
 
@@ -1084,10 +1087,7 @@ class Kohana {
 
 			if (isset($entry['file']))
 			{
-				// Add file (without docroot)
-				$temp .= '<strong>'.preg_replace('!^'.preg_quote(DOCROOT).'!', '', $entry['file']);
-				// Add line
-				$temp .= ' ['.$entry['line'].']:</strong>';
+				$temp .= Kohana::lang('core.error_file_line', preg_replace('!^'.preg_quote(DOCROOT).'!', '', $entry['file']), $entry['line']);
 			}
 
 			$temp .= '<pre>';
@@ -1140,16 +1140,11 @@ class Kohana_Exception extends Exception {
 	// Template file
 	protected $template = 'kohana_error_page';
 
-	// Message
-	protected $message = 'Unknown Exception: ';
-
 	// Header
 	protected $header = FALSE;
 
-	// Error code, filename, line number
+	// Error code
 	protected $code = E_KOHANA;
-	protected $file = FALSE;
-	protected $line = FALSE;
 
 	/**
 	 * Set exception message.
@@ -1157,7 +1152,7 @@ class Kohana_Exception extends Exception {
 	 * @param  string  i18n language key for the message
 	 * @param  array   addition line parameters
 	 */
-	function __construct($error)
+	public function __construct($error)
 	{
 		$args = array_slice(func_get_args(), 1);
 
@@ -1165,14 +1160,13 @@ class Kohana_Exception extends Exception {
 		$message = Kohana::lang($error, $args);
 
 		// Handle error messages that are not set
-		if ($message == $error)
+		if ($message === $error OR $message === array())
 		{
-			$this->message .= $error;
+			$message = 'Unknown Exception: '.$error;
 		}
-		else
-		{
-			$this->message = $message;
-		}
+
+		// Sets $this->message the proper way
+		parent::__construct($message);
 	}
 
 	/**
@@ -1222,10 +1216,11 @@ class Kohana_User_Exception extends Kohana_Exception {
 	 */
 	public function __construct($title, $message, $template = FALSE)
 	{
-		$this->code     = $title;
-		$this->message  = $message;
+		Exception::__construct($message);
 
-		if ($template != FALSE)
+		$this->code = $title;
+
+		if ($template !== FALSE)
 		{
 			$this->template = $template;
 		}
@@ -1254,9 +1249,7 @@ class Kohana_404_Exception extends Kohana_Exception {
 			$page = Router::$current_uri.Router::$url_suffix.Router::$query_string;
 		}
 
-		$this->message = Kohana::lang('core.page_not_found', $page);
-		$this->file    = FALSE;
-		$this->line    = FALSE;
+		Exception::__construct(Kohana::lang('core.page_not_found', $page));
 
 		$this->template = $template;
 	}

@@ -31,6 +31,7 @@ class ORM_Core {
 	// SQL building status
 	protected $select = FALSE;
 	protected $where = FALSE;
+	protected $from = FALSE;
 
 	// Currently loaded object
 	protected $object;
@@ -76,6 +77,9 @@ class ORM_Core {
 		{
 			// Preloaded object
 			$this->object = $id;
+
+			// Convert the value to the correct type
+			$this->load_object_types();
 		}
 		else
 		{
@@ -134,22 +138,17 @@ class ORM_Core {
 			// Set the model name
 			$model = ucfirst($key).'_Model';
 
-			if (empty($this->object->id))
-			{
-				// Load an empty model
-				$this->object->$key = new $model;
-			}
-			else
-			{
-				// Set the child id name
-				$child_id = $key.'_id';
+			// Set the child id name
+			$child_id = $key.'_id';
 
-				$this->object->$key = new $model(isset($this->object->$child_id)
-					// Get the foreign object using the key defined in this object
-					? $this->object->$child_id
-					// Get the foreign object using the primary key of this object
-					: array($this->class.'_id', $this->object->id));
-			}
+			$this->object->$key = new $model
+			(
+				isset($this->object->$child_id)
+				// Get the foreign object using the key defined in this object
+				? $this->object->$child_id
+				// Get the foreign object using the primary key of this object
+				: array($this->class.'_id' => $this->object->id)
+			);
 
 			// Return the model
 			return $this->object->$key;
@@ -220,212 +219,28 @@ class ORM_Core {
 			return (array) $this->object;
 		}
 
-		if (substr($method, 0, 8) === 'find_by_' OR ($all = substr($method, 0, 12)) === 'find_all_by_')
+		if (substr($method, 0, 8) === 'find_by_' OR substr($method, 0, 12) === 'find_all_by_')
 		{
-			$method = isset($all) ? substr($method, 12) : substr($method, 8);
-
-			// WHERE is manually set
-			$this->where = TRUE;
-
-			// split method name into $keys array by "_and_" or "_or_"
-			if (is_array($keys = $this->find_keys($method)))
-			{
-				if (strpos($method, '_or_') === FALSE)
-				{
-					// Use AND WHERE
-					self::$db->where(array_combine($keys, $args));
-				}
-				else
-				{
-					if (count($args) === 1)
-					{
-						$val = current($args);
-						foreach($keys as $key)
-						{
-							// Use OR WHERE, with a single value
-							self::$db->orwhere(array($key => $val));
-						}
-					}
-					else
-					{
-						// Use OR WHERE, with multiple values
-						self::$db->orwhere(array_combine($keys, $args));
-					}
-				}
-			}
-			else
-			{
-				// Set WHERE
-				self::$db->where(array($keys => current($args)));
-			}
-
-			if (isset($all))
-			{
-				// Array of results
-				return $this->load_result(TRUE);
-			}
-			else
-			{
-				// Allow chains
-				return $this->find();
-			}
+			// Make a find_by call
+			return $this->call_find_by($method, $args);
 		}
 
 		if (substr($method, 0, 13) === 'find_related_')
 		{
-			// Get table name
-			$table = substr($method, 13);
-
-			// Construct a new model
-			$model = $this->load_model($table);
-
-			// Remote reference to this object
-			$remote = array($this->class.'_id' => $this->object->id);
-
-			if (in_array($table, $this->has_one))
-			{
-				// Find one<>one relationships
-				return $model->where($remote)->find();
-			}
-			elseif (in_array($table, $this->has_many))
-			{
-				// Find one<>many relationships
-				$model->where($remote);
-			}
-			elseif (in_array($table, $this->has_and_belongs_to_many))
-			{
-				// Find many<>many relationships, via a JOIN
-				$this->related_join($table);
-			}
-			else
-			{
-				// This table does not have ownership
-				return FALSE;
-			}
-
-			return $model->load_result(TRUE);
+			// Make a find_related call
+			return $this->call_find_related($method, $args);
 		}
 
 		if (preg_match('/^(has|add|remove)_(.+)/', $method, $matches))
 		{
-			$action = $matches[1];
-			$model  = is_object(current($args)) ? current($args) : $this->load_model($matches[2]);
-
-			// Real foreign table name
-			$table = $model->table_name;
-
-			// Sanity check, make sure that this object has ownership
-			if (in_array($matches[2], $this->has_one))
+			if (empty($this->object->id))
 			{
-				$ownership = 1;
-			}
-			elseif (in_array($table, $this->has_many))
-			{
-				$ownership = 2;
-			}
-			elseif (in_array($table, $this->has_and_belongs_to_many))
-			{
-				$ownership = 3;
-			}
-			else
-			{
-				// Model does not have ownership, abort now
+				// many<>many relationships only work when the object has been saved
 				return FALSE;
 			}
 
-			// Primary key related to this object
-			$primary = $this->class.'_id';
-
-			// Related foreign key
-			$foreign = $model->class_name.'_id';
-
-			if ( ! is_object(current($args)))
-			{
-				if ($action === 'add' AND is_array(current($args)))
-				{
-					foreach(current($args) as $key => $val)
-					{
-						// Fill object with data from array
-						$model->$key = $val;
-					}
-				}
-				else
-				{
-					if ($ownership === 1 OR $ownership === 2)
-					{
-						// Make sure the related key matches this object id
-						self::$db->where($primary, $this->object->id);
-					}
-
-					// Load the related object
-					$model->find(current($args));
-				}
-			}
-
-			if ($ownership === 3)
-			{
-				// The many<>many relationship, via a joining table
-				$relationship = array
-				(
-					$primary => $this->object->id,
-					$foreign => $model->id
-				);
-			}
-
-			switch($action)
-			{
-				case 'add':
-					if (isset($relationship))
-					{
-						// Insert for many<>many relationship
-						self::$db->insert($this->related_table($table), $relationship);
-					}
-					else
-					{
-						// Set the related key to this object id
-						$model->$primary = $this->object->id;
-					}
-
-					return $model->save();
-				break;
-				case 'has':
-					if (isset($relationship))
-					{
-						// Find the many<>many relationship
-						return (bool) count
-						(
-							self::$db
-							->select($primary)
-							->from($this->related_table($table))
-							->where($relationship)
-							->limit(1)
-							->get()
-						);
-					}
-
-					return ($model->$primary === $this->object->id);
-				break;
-				case 'remove':
-					if (isset($relationship))
-					{
-						// Attempt to delete the many<>many relationship
-						return (bool) count(self::$db->delete($this->related_table($table), $relationship));
-					}
-					elseif ($model->$primary === $this->object->id)
-					{
-						// Delete the related object
-						return $model->delete();
-					}
-					else
-					{
-						// Massive failure
-						return FALSE;
-					}
-				break;
-			}
-
-			// This should never be executed
-			return FALSE;
+			// Make a has/add/remove call
+			return $this->call_has_add_remove($method, $args, $matches);
 		}
 
 		if (method_exists(self::$db, $method))
@@ -438,9 +253,13 @@ class ORM_Core {
 			{
 				$this->select = TRUE;
 			}
-			elseif (preg_match('/where|like|regex/', $method))
+			elseif (preg_match('/where|like|in|regex/', $method))
 			{
 				$this->where = TRUE;
+			}
+			elseif ($method === 'from')
+			{
+				$this->from = TRUE;
 			}
 
 			// Pass through to Database, manually calling up to 2 args, for speed.
@@ -459,6 +278,256 @@ class ORM_Core {
 
 			return $this;
 		}
+	}
+
+	/**
+	 * __call: find_by_*, find_all_by_*
+	 *
+	 * @param   string  method
+	 * @param   array   arguments
+	 * @return  object
+	 */
+	protected function call_find_by($method, $args)
+	{
+		// Use ALL
+		$ALL = (substr($method, 0, 12) === 'find_all_by_');
+
+		// Method args
+		$method = $ALL ? substr($method, 12) : substr($method, 8);
+
+		// WHERE is manually set
+		$this->where = TRUE;
+
+		// split method name into $keys array by "_and_" or "_or_"
+		if (is_array($keys = $this->find_keys($method)))
+		{
+			if (strpos($method, '_or_') === FALSE)
+			{
+				// Use AND WHERE
+				self::$db->where(array_combine($keys, $args));
+			}
+			else
+			{
+				if (count($args) === 1)
+				{
+					$val = current($args);
+					foreach($keys as $key)
+					{
+						// Use OR WHERE, with a single value
+						self::$db->orwhere(array($key => $val));
+					}
+				}
+				else
+				{
+					// Use OR WHERE, with multiple values
+					self::$db->orwhere(array_combine($keys, $args));
+				}
+			}
+		}
+		else
+		{
+			// Set WHERE
+			self::$db->where(array($keys => current($args)));
+		}
+
+		if ($ALL)
+		{
+			// Array of results
+			return $this->load_result(TRUE);
+		}
+		else
+		{
+			// Allow chains
+			return $this->find();
+		}
+	}
+
+	/**
+	 * __call: find_related_*
+	 *
+	 * @param   string   method name
+	 * @param   array    arguments
+	 * @return  object
+	 */
+	protected function call_find_related($method, $args)
+	{
+		// Extract table name
+		$table = substr($method, 13);
+
+		// Construct a new model
+		$model = $this->load_model($table);
+
+		// Remote reference to this object
+		$remote = array($this->class.'_id' => $this->object->id);
+
+		if (in_array($table, $this->has_one))
+		{
+			// Find one<>one relationships
+			return $model->where($remote)->find();
+		}
+		elseif (in_array($table, $this->has_many))
+		{
+			// Find one<>many relationships
+			$model->where($remote);
+		}
+		elseif (in_array($table, $this->has_and_belongs_to_many))
+		{
+			// Find many<>many relationships, via a JOIN
+			$this->related_join($table);
+		}
+		elseif (in_array($table, $this->belongs_to_many))
+		{
+			// Use the foreign column name to check the relationship
+			$id = $this->class.'_id';
+
+			if ($model->$id === NULL)
+			{
+				// Find many<>many relationships, via a JOIN
+				$this->related_join($table);
+			}
+			else
+			{
+				// Find one<>many relationships
+				$model->where($remote);
+			}
+		}
+		else
+		{
+			// This table does not have ownership
+			return FALSE;
+		}
+
+		return $model->load_result(TRUE);
+	}
+
+	/**
+	 * __call: has_*, add_*, remove_*
+	 *
+	 * @param   string   method
+	 * @param   array    arguments
+	 * @param   array    action matches
+	 * @return  boolean
+	 */
+	protected function call_has_add_remove($method, $args, $matches)
+	{
+		$action = $matches[1];
+		$model  = is_object(current($args)) ? current($args) : $this->load_model($matches[2]);
+
+		// Real foreign table name
+		$table = $model->table_name;
+
+		// Sanity check, make sure that this object has ownership
+		if (in_array($matches[2], $this->has_one))
+		{
+			$ownership = 1;
+		}
+		elseif (in_array($table, $this->has_many))
+		{
+			$ownership = 2;
+		}
+		elseif (in_array($table, $this->has_and_belongs_to_many))
+		{
+			$ownership = 3;
+		}
+		else
+		{
+			// Model does not have ownership, abort now
+			return FALSE;
+		}
+
+		// Primary key related to this object
+		$primary = $this->class.'_id';
+
+		// Related foreign key
+		$foreign = $model->class_name.'_id';
+
+		if ( ! is_object(current($args)))
+		{
+			if ($action === 'add' AND is_array(current($args)))
+			{
+				foreach(current($args) as $key => $val)
+				{
+					// Fill object with data from array
+					$model->$key = $val;
+				}
+			}
+			else
+			{
+				if ($ownership === 1 OR $ownership === 2)
+				{
+					// Make sure the related key matches this object id
+					self::$db->where($primary, $this->object->id);
+				}
+
+				// Load the related object
+				$model->find(current($args));
+			}
+		}
+
+		if ($ownership === 3)
+		{
+			// Save the model before finishing the action
+			$model->save();
+
+			// The many<>many relationship, via a joining table
+			$relationship = array
+			(
+				$primary => $this->object->id,
+				$foreign => $model->id
+			);
+		}
+
+		switch($action)
+		{
+			case 'add':
+				if (isset($relationship))
+				{
+					// Insert for many<>many relationship
+					self::$db->insert($this->related_table($table), $relationship);
+				}
+				else
+				{
+					// Set the related key to this object id
+					$model->$primary = $this->object->id;
+				}
+
+				return $model->save();
+			break;
+			case 'has':
+				if (isset($relationship))
+				{
+					// Find the many<>many relationship
+					return (bool) self::$db
+						->select($primary)
+						->from($this->related_table($table))
+						->where($relationship)
+						->limit(1)
+						->get()->count();
+				}
+
+				return ($model->$primary === $this->object->id);
+			break;
+			case 'remove':
+				if (isset($relationship))
+				{
+					// Attempt to delete the many<>many relationship
+					return (bool) self::$db->delete($this->related_table($table), $relationship)->count();
+				}
+				elseif ($model->$primary === $this->object->id)
+				{
+					// Delete the related object
+					return $model->delete();
+				}
+				else
+				{
+					// Massive failure
+					return FALSE;
+				}
+			break;
+		}
+
+		// This should never be executed
+		return FALSE;
 	}
 
 	/**
@@ -487,7 +556,17 @@ class ORM_Core {
 			return $this->find_all();
 
 		// Generate WHERE
-		($this->where AND empty($id)) or self::$db->where($this->where_key($id), $id);
+		if ($this->where === FALSE AND ! empty($id))
+		{
+			if (is_array($id))
+			{
+				self::$db->where($id);
+			}
+			else
+			{
+				self::$db->where($this->where_key($id), $id);
+			}
+		}
 
 		// Only one result will be returned
 		self::$db->limit(1);
@@ -530,7 +609,7 @@ class ORM_Core {
 			// Perform an insert
 			$query = self::$db->insert($this->table, $data);
 
-			if (count($query) === 1)
+			if ($query->count() === 1)
 			{
 				// Set current object id by the insert id
 				$this->object->id = $query->insert_id();
@@ -542,7 +621,7 @@ class ORM_Core {
 			$query = self::$db->update($this->table, $data, array('id' => $this->object->id));
 		}
 
-		if (count($query) === 1)
+		if ($query->count() === 1)
 		{
 			// Reset changed data
 			$this->changed = array();
@@ -593,7 +672,7 @@ class ORM_Core {
 		$this->clear();
 
 		// Return the number of rows deleted
-		return count(self::$db->delete($this->table, $where));
+		return self::$db->delete($this->table, $where)->count();
 	}
 
 	/**
@@ -612,6 +691,7 @@ class ORM_Core {
 	 * values to each of the object fields. At the same time, the WHERE and
 	 * SELECT statements are cleared and the changed keys are reset.
 	 *
+	 * @chainable
 	 * @return  void
 	 */
 	public function clear()
@@ -625,10 +705,14 @@ class ORM_Core {
 			$this->object->$field = '';
 		}
 
+		// Convert the value to the correct type
+		$this->load_object_types();
+
 		// Reset object status
 		$this->changed = array();
-		$this->select  = FALSE;
-		$this->where   = FALSE;
+		$this->select = $this->where = $this->from = FALSE;
+
+		return $this;
 	}
 
 	/**
@@ -660,8 +744,11 @@ class ORM_Core {
 		// Make sure there is something to select
 		$this->select or self::$db->select($this->table.'.*');
 
+		// Make sure there is a table to select from
+		$this->from or self::$db->from($this->table);
+
 		// Fetch the query result
-		$result = self::$db->get($this->table)->result(TRUE);
+		$result = self::$db->get()->result(TRUE);
 
 		if ($array === TRUE)
 		{
@@ -680,6 +767,9 @@ class ORM_Core {
 			{
 				// Load the first result, if there is only one result
 				$this->object = $result->current();
+
+				// Convert the value to the correct type
+				$this->load_object_types();
 			}
 			else
 			{
@@ -690,8 +780,7 @@ class ORM_Core {
 
 		// Clear the changed keys, a new object has been loaded
 		$this->changed = array();
-		$this->select = FALSE;
-		$this->where = FALSE;
+		$this->select = $this->where = $this->from = FALSE;
 
 		// Return this object
 		return $this;
@@ -707,6 +796,39 @@ class ORM_Core {
 	{
 		// Create and return the object
 		return ORM::factory(inflector::singular($table));
+	}
+
+	/**
+	 * Converts the loaded object values to correct types.
+	 *
+	 * @return void
+	 */
+	protected function load_object_types()
+	{
+		foreach (self::$fields[$this->table] as $field => $data)
+		{
+			if (isset($this->object->$field))
+			{
+				if ( ! empty($data['binary']) AND ! empty($data['exact']) AND $data['length'] == 1)
+				{
+					// Use boolean for binary(1) fields
+					$data['type'] = 'boolean';
+				}
+
+				switch ($data['type'])
+				{
+					case 'int':
+						$this->object->$field = (int) $this->object->$field;
+					break;
+					case 'float':
+						$this->object->$field = (float) $this->object->$field;
+					break;
+					case 'boolean':
+						$this->object->$field = (bool) $this->object->$field;
+					break;
+				}
+			}
+		}
 	}
 
 	/**
@@ -795,7 +917,7 @@ class ORM_Core {
 /**
  * ORM iterator.
  */
-class ORM_Iterator implements Iterator, Countable {
+class ORM_Iterator implements Iterator, ArrayAccess, Countable {
 
 	// ORM class name
 	protected $class;
@@ -805,7 +927,10 @@ class ORM_Iterator implements Iterator, Countable {
 
 	public function __construct($class, $result)
 	{
+		// Class name
 		$this->class = $class;
+
+		// Database result
 		$this->result = $result;
 	}
 
@@ -823,6 +948,44 @@ class ORM_Iterator implements Iterator, Countable {
 			$array[] = new $class($obj);
 		}
 		return $array;
+	}
+
+	/**
+	 * Return a range of offsets.
+	 *
+	 * @param   integer  start
+	 * @param   integer  end
+	 * @return  array
+	 */
+	public function range($start, $end)
+	{
+		// Array of objects
+		$array = array();
+
+		if ($this->result->offsetExists($start))
+		{
+			// Import the class name
+			$class = $this->class;
+
+			// Set the end offset
+			$end = $this->result->offsetExists($end) ? $end : $this->count();
+
+			for ($i = $start; $i < $end; $i++)
+			{
+				// Insert each object in the range
+				$array[] = new $class($this->result->offsetGet($i));
+			}
+		}
+
+		return $array;
+	}
+
+	/**
+	 * Countable: count
+	 */
+	public function count()
+	{
+		return $this->result->count();
 	}
 
 	/**
@@ -869,11 +1032,45 @@ class ORM_Iterator implements Iterator, Countable {
 	}
 
 	/**
-	 * Countable: count
+	 * ArrayAccess: offsetExists
 	 */
-	public function count()
+	public function offsetExists($offset)
 	{
-		return $this->result->count();
+		return $this->result->offsetExists($offset);
+	}
+
+	/**
+	 * ArrayAccess: offsetGet
+	 */
+	public function offsetGet($offset)
+	{
+		// Import class name
+		$class = $this->class;
+
+		if ($this->result->offsetExists($offset))
+		{
+			return new $class($this->result->offsetGet($offset));
+		}
+	}
+
+	/**
+	 * ArrayAccess: offsetSet
+	 *
+	 * @throws  Kohana_Database_Exception
+	 */
+	public function offsetSet($offset, $value)
+	{
+		throw new Kohana_Database_Exception('database.result_read_only');
+	}
+
+	/**
+	 * ArrayAccess: offsetUnset
+	 *
+	 * @throws  Kohana_Database_Exception
+	 */
+	public function offsetUnset($offset)
+	{
+		throw new Kohana_Database_Exception('database.result_read_only');
 	}
 
 } // End ORM Iterator

@@ -24,7 +24,7 @@ class text_Core {
 		$limit = (int) $limit;
 		$end_char = ($end_char === NULL) ? '&#8230;' : $end_char;
 
-		if (trim($str) == '')
+		if (trim($str) === '')
 			return $str;
 
 		if ($limit <= 0)
@@ -34,7 +34,7 @@ class text_Core {
 
 		// Only attach the end character if the matched string is shorter
 		// than the starting string.
-		return rtrim($matches[0]).(strlen($matches[0]) == strlen($str) ? '' : $end_char);
+		return rtrim($matches[0]).(strlen($matches[0]) === strlen($str) ? '' : $end_char);
 	}
 
 	/**
@@ -52,7 +52,7 @@ class text_Core {
 
 		$limit = (int) $limit;
 
-		if (trim($str) == '' OR utf8::strlen($str) <= $limit)
+		if (trim($str) === '' OR utf8::strlen($str) <= $limit)
 			return $str;
 
 		if ($limit <= 0)
@@ -78,7 +78,7 @@ class text_Core {
 	{
 		static $i;
 
-		if (func_num_args() == 0)
+		if (func_num_args() === 0)
 		{
 			$i = 0;
 			return '';
@@ -182,6 +182,31 @@ class text_Core {
 		}
 
 		return preg_replace($regex, $replacement, $str);
+	}
+
+	/**
+	 * Finds the text that is similar between a set of words.
+	 *
+	 * @param   array   words to find similar text of
+	 * @return  string
+	 */
+	public static function similar(array $words)
+	{
+		// First word is the word to match against
+		$word = current($words);
+
+		for ($i = 0, $max = strlen($word); $i < $max; ++$i)
+		{
+			foreach ($words as $w)
+			{
+				// Once a difference is found, break out of the loops
+				if ( ! isset($w[$i]) OR $w[$i] !== $word[$i])
+					break 2;
+			}
+		}
+
+		// Return the similar text
+		return substr($word, 0, $i);
 	}
 
 	/**

@@ -39,9 +39,9 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 
 		try
 		{
-			$this->link = ($this->db_config['persistent'] == TRUE)
-			            ? new PDO ('sqlite:'.$socket.$database, $user, $pass, array(PDO::ATTR_PERSISTENT => true))
-			            : new PDO ('sqlite:'.$socket.$database, $user, $pass);
+			$this->link = new PDO('sqlite:'.$socket.$database, $user, $pass,
+				array(PDO::ATTR_PERSISTENT => $this->db_config['persistent']));
+
 			$this->link->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
 			$this->link->query('PRAGMA count_changes=1;');
 
@@ -56,7 +56,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 		}
 
 		// Clear password after successful connect
-		$this->config['connection']['pass'] = NULL;
+		$this->db_config['connection']['pass'] = NULL;
 
 		return $this->link;
 	}
@@ -81,7 +81,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 
 	public function escape_table($table)
 	{
-		if (!$this->config['escape'])
+		if ( ! $this->db_config['escape'])
 			return $table;
 
 		return '`'.str_replace('.', '`.`', $table).'`';
@@ -89,7 +89,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 
 	public function escape_column($column)
 	{
-		if (!$this->config['escape'])
+		if ( ! $this->db_config['escape'])
 			return $column;
 
 		if (strtolower($column) == 'count(*)' OR $column == '*')
@@ -131,29 +131,9 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 		return $column;
 	}
 
-	public function regex($field, $match = '', $type = 'AND ', $num_regexs)
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
-	}
-
-	public function notregex($field, $match = '', $type = 'AND ', $num_regexs)
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
-	}
-
-	public function merge($table, $keys, $values)
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
-	}
-
 	public function limit($limit, $offset = 0)
 	{
 		return 'LIMIT '.$offset.', '.$limit;
-	}
-
-	public function stmt_prepare($sql = '')
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
 	}
 
 	public function compile_select($database)
@@ -208,7 +188,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 
 	public function escape_str($str)
 	{
-		if (!$this->db_config['escape'])
+		if ( ! $this->db_config['escape'])
 			return $str;
 
 		if(function_exists('sqlite_escape_string'))
@@ -265,15 +245,15 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 			return $tables[$table];
 		}
 		else
-		{ 
+		{
 			$result = $this->link->query( 'PRAGMA table_info('.$this->escape_table($table).')' );
-			
+
 			foreach($result as $row)
 			{
 				$tables[$table][$row['name']] = $this->sql_type($row['type']);
-			}	
+			}
 
-			return $tables[$table]; 
+			return $tables[$table];
 		}
 	}
 
@@ -369,7 +349,7 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 		$this->result($object);
 	}
 
-	private function sqlite_row_count() 
+	private function sqlite_row_count()
 	{
 		// workaround for PDO not supporting RowCount with SQLite - we manually count
 		//TODO : can this be fixed?
@@ -412,6 +392,11 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 			$this->return_type = $type;
 		}
 		return $this;
+	}
+
+	public function as_array($object = NULL, $type = PDO::FETCH_ASSOC)
+	{
+		return $this->result_array($object, $type);
 	}
 
 	public function result_array($object = NULL, $type = PDO::FETCH_ASSOC)

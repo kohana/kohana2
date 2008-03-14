@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana Controller class.
+ * Kohana Controller class. The controller class must be extended to work
+ * properly, so this class is defined as abstract.
  *
  * $Id$
  *
@@ -9,7 +10,10 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Controller_Core {
+abstract class Controller_Core {
+
+	// Allow all controllers to run in production by default
+	const ALLOW_PRODUCTION = TRUE;
 
 	/**
 	 * Loads URI, and Input into this controller.

@@ -100,11 +100,6 @@ class Database_Mssql_Driver extends Database_Driver
 		return new Mssql_Result(mssql_query($sql, $this->link), $this->link, $this->db_config['object'], $sql);
 	}
 
-	public function set_charset($charset)
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
-	}
-
 	public function escape_table($table)
 	{
 		if (stripos($table, ' AS ') !== FALSE)
@@ -165,28 +160,6 @@ class Database_Mssql_Driver extends Database_Driver
 		return $column;
 	}
 	
-	/* As far as I know, T-SQL doesn't have the REGEXP or NOT REGEXP keywords
-	 * 
-	 */
-	public function regex($field, $match = '', $type = 'AND ', $num_regexs)
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
-	}
-
-	public function notregex($field, $match = '', $type = 'AND ', $num_regexs)
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
-	}
-
-	/* MERGE (or UPSERT) not supported in SQL SERVER 2000
-	 * somone with a more recent version should add this
-	 * feature in.
-	 */
-	public function merge($table, $keys, $values)
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
-	}
-	
 	/**
 	 * Limit in SQL Server 2000 only uses the keyword
 	 * 'TOP'; 2007 may have an offset keyword, but
@@ -199,11 +172,6 @@ class Database_Mssql_Driver extends Database_Driver
 	public function limit($limit, $offset=null)
 	{
 		return 'TOP '.$limit;
-	}
-
-	public function stmt_prepare($sql = '')
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
 	}
 
 	public function compile_select($database)
@@ -267,17 +235,10 @@ class Database_Mssql_Driver extends Database_Driver
 
 		is_resource($this->link) or $this->connect();
 		//mssql_real_escape_string($str, $this->link); <-- this function doesn't exist
-		
-		/* Below is my test of the addcslashes function to mimic the mysql_real_escape_string function
-		 * 
-		 * $array	= array('\x00', '\x1a', '\n', '\r', '\\', "'", '"');
-		 * foreach($array as $item)
-		 * {
-		 * 	  echo addcslashes($item, '\\\'"').'<br />';
-		 * }
-		 */
-		$characters	= array('/\x00/', '/\x1a/', '/\n/', '/\r/', '/\\\/', '/\'/', '/\"/');
-		return preg_replace($characters, '\\', $str);
+
+		$characters = array('/\x00/', '/\x1a/', '/\n/', '/\r/', '/\\\/', '/\'/');
+		$replace    = array('\\\x00', '\\x1a', '\\n', '\\r', '\\\\', "''");
+		return preg_replace($characters, $replace, $str);
 	}
 
 	public function list_tables()
@@ -437,6 +398,11 @@ class Mssql_Result implements Database_Result, ArrayAccess, Iterator, Countable
 		}
 
 		return $this;
+	}
+
+	public function as_array($object = NULL, $type = MSSQL_ASSOC)
+	{
+		return $this->result_array($object, $type);
 	}
 
 	public function result_array($object = NULL, $type = MSSQL_ASSOC)
@@ -644,4 +610,5 @@ class Mssql_Result implements Database_Result, ArrayAccess, Iterator, Countable
 		return $this->offsetExists($this->current_row);
 	}
 	// End Interface
+
 } // End mssql_Result Class

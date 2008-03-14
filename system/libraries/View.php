@@ -26,6 +26,7 @@ class View_Core {
 	 * @param   string  view name
 	 * @param   array   pre-load data
 	 * @param   string  type of file: html, css, js, etc.
+	 * @return  object
 	 */
 	public static function factory($name, $data = NULL, $type = NULL)
 	{

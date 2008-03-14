@@ -3,6 +3,9 @@
 
 class User_Guide_Controller extends Controller {
 
+	// Do not allow to run in production
+	const ALLOW_PRODUCTION = FALSE;
+
 	public function __construct()
 	{
 		parent::__construct();

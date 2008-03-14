@@ -2,6 +2,9 @@
 
 class Auth_Controller extends Controller {
 
+	// Do not allow to run in production
+	const ALLOW_PRODUCTION = FALSE;
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -56,7 +59,7 @@ class Auth_Controller extends Controller {
 
 	public function login()
 	{
-		if ($this->session->get('user_id'))
+		if ($this->auth->logged_in())
 		{
 			$form = new Forge('auth/logout', 'Log Out');
 

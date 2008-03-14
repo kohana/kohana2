@@ -1,10 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
+// Phone prefix and format
+$locale['phone_prefix'] = '1';
+$locale['phone_format'] = '3-3-4';
+
+// State names
 $locale['states'] = array
 (
 	'AL' => 'Alabama',
 	'AK' => 'Alaska',
-	// 'AS' => 'American Samoa',
 	'AZ' => 'Arizona',
 	'AR' => 'Arkansas',
 	'CA' => 'California',
@@ -12,7 +16,6 @@ $locale['states'] = array
 	'CT' => 'Connecticut',
 	'DE' => 'Delaware',
 	'DC' => 'District of Columbia',
-	// 'FM' => 'Federated States of Micronesia',
 	'FL' => 'Florida',
 	'GA' => 'Georgia',
 	'GU' => 'Guam',
@@ -25,7 +28,6 @@ $locale['states'] = array
 	'KY' => 'Kentucky',
 	'LA' => 'Louisiana',
 	'ME' => 'Maine',
-	// 'MH' => 'Marshall Islands',
 	'MD' => 'Maryland',
 	'MA' => 'Massachusetts',
 	'MI' => 'Michigan',
@@ -41,13 +43,10 @@ $locale['states'] = array
 	'NY' => 'New York',
 	'NC' => 'North Carolina',
 	'ND' => 'North Dakota',
-	// 'MP' => 'Northern Mariana Islands',
 	'OH' => 'Ohio',
 	'OK' => 'Oklahoma',
 	'OR' => 'Oregon',
-	// 'PW' => 'Palau',
 	'PA' => 'Pennsylvania',
-	// 'PR' => 'Puerto Rico',
 	'RI' => 'Rhode Island',
 	'SC' => 'South Carolina',
 	'SD' => 'South Dakota',
@@ -55,10 +54,23 @@ $locale['states'] = array
 	'TX' => 'Texas',
 	'UT' => 'Utah',
 	'VT' => 'Vermont',
-	// 'VI' => 'Virgin Islands',
 	'VA' => 'Virginia',
 	'WA' => 'Washington',
 	'WV' => 'West Virginia',
 	'WI' => 'Wisconsin',
 	'WY' => 'Wyoming',
 );
+
+// States with territories
+$locale['all_states'] = array_merge($locale['states'], array
+(
+	'AS' => 'American Samoa',
+	'FM' => 'Federated States of Micronesia',
+	'MH' => 'Marshall Islands',
+	'MP' => 'Northern Mariana Islands',
+	'PW' => 'Palau',
+	'PR' => 'Puerto Rico',
+	'VI' => 'Virgin Islands',
+));
+// Re-sort the list
+ksort($locale['all_states']);

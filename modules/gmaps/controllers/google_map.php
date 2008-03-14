@@ -11,6 +11,9 @@
  */
 class Google_Map_Controller extends Controller {
 
+	// Do not allow to run in production
+	const ALLOW_PRODUCTION = FALSE;
+
 	public function index()
 	{
 		$this->db = Database::instance('mysql://root:r00tdb@localhost/azmap');
@@ -51,6 +54,65 @@ class Google_Map_Controller extends Controller {
 
 		header('Content-type: text/javascript');
 		echo $map->render();
+	}
+
+	public function admin()
+	{
+		$valid = ! empty($_POST);
+
+		$_POST = Validation::factory($_POST)
+			->pre_filter('trim')
+			->add_rules('title', 'required', 'length[4,32]')
+			->add_rules('description', 'required', 'length[4,127]')
+			->add_rules('link', 'length[6,127]', 'valid::url')
+			->add_rules('address', 'required', 'length[4,127]')
+			->add_callbacks('address', array($this, '_admin_check_address'));
+
+		if ($_POST->validate())
+		{
+			// Create a new location
+			$location = ORM::factory('location');
+
+			//
+			foreach ($_POST->as_array() as $key => $val)
+			{
+				$location->$key = $val;
+			}
+
+			echo Kohana::debug($_POST->as_array());
+		}
+
+		if ($errors = $_POST->errors())
+		{
+			foreach ($errors as $input => $rule)
+			{
+				// Add the errors
+				$_POST->message($input, Kohana::lang("gmaps.form.$input"));
+			}
+		}
+
+		View::factory('gmaps/admin')->render(TRUE);
+	}
+
+	public function _admin_check_address(Validation $array, $input)
+	{
+		if ($array[$input] == '')
+			return;
+
+		// Fetch the lat and lon via Gmap
+		list ($lat, $lon) = Gmap::address_to_ll($array[$input]);
+
+		if ($lat === NULL OR $lon === NULL)
+		{
+			// Add an error
+			$array->add_error($input, 'address');
+		}
+		else
+		{
+			// Set the latitude and longitude
+			$_POST['lat'] = $lat;
+			$_POST['lon'] = $lon;
+		}
 	}
 
 	public function jquery()

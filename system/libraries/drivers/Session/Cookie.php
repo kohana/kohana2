@@ -20,7 +20,7 @@ class Session_Cookie_Driver implements Session_Driver {
 
 		if (Config::item('session.encryption'))
 		{
-			$this->encrypt = new Encrypt;
+			$this->encrypt = Encrypt::instance();
 		}
 
 		Log::add('debug', 'Session Cookie Driver Initialized');
@@ -43,16 +43,16 @@ class Session_Cookie_Driver implements Session_Driver {
 		if ($data == '')
 			return $data;
 
-		return (Config::item('session.encryption')) ? $this->encrypt->decode($data) : base64_decode($data);
+		return empty($this->encrypt) ? base64_decode($data) : $this->encrypt->decode($data);
 	}
 
 	public function write($id, $data)
 	{
-		$data = (Config::item('session.encryption')) ? $this->encrypt->encode($data) : base64_encode($data);
+		$data = empty($this->encrypt) ? base64_encode($data) : $this->encrypt->encode($data);
 
 		if (strlen($data) > 4048)
 		{
-			Log::add('error', 'Session data exceeds the 4kB limit, ignoring write.');
+			Log::add('error', 'Session ('.$id.') data exceeds the 4KB limit, ignoring write.');
 			return FALSE;
 		}
 

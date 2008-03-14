@@ -23,7 +23,8 @@ class Database_Core {
 		'character_set' => 'utf8',
 		'table_prefix'  => '',
 		'object'        => TRUE,
-		'cache'         => FALSE
+		'cache'         => FALSE,
+		'escape'        => TRUE,
 	);
 
 	// Database driver object
@@ -298,7 +299,7 @@ class Database_Core {
 	{
 		foreach((array) $sql as $val)
 		{
-			if (($val = trim($val)) == '') continue;
+			if (($val = trim($val)) === '') continue;
 
 			$this->from[] = $this->config['table_prefix'].$val;
 		}
@@ -393,16 +394,17 @@ class Database_Core {
 	 *
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
+	 * @param   boolean       automatically add starting and ending wildcards
 	 * @return  object        This Database object.
 	 */
-	public function like($field, $match = '')
+	public function like($field, $match = '', $auto = TRUE)
 	{
 		$fields = is_array($field) ? $field : array($field => $match);
 
 		foreach ($fields as $field => $match)
 		{
 			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
-			$this->where[] = $this->driver->like($field, $match, 'AND ', count($this->where));
+			$this->where[] = $this->driver->like($field, $match, $auto, 'AND ', count($this->where));
 		}
 
 		return $this;
@@ -413,16 +415,17 @@ class Database_Core {
 	 *
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
+	 * @param   boolean       automatically add starting and ending wildcards
 	 * @return  object        This Database object.
 	 */
-	public function orlike($field, $match = '')
+	public function orlike($field, $match = '', $auto = TRUE)
 	{
 		$fields = is_array($field) ? $field : array($field => $match);
 
 		foreach ($fields as $field => $match)
 		{
 			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
-			$this->where[] = $this->driver->like($field, $match, 'OR ', count($this->where));
+			$this->where[] = $this->driver->like($field, $match, $auto, 'OR ', count($this->where));
 		}
 
 		return $this;
@@ -433,9 +436,10 @@ class Database_Core {
 	 *
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
+	 * @param   boolean       automatically add starting and ending wildcards
 	 * @return  object        This Database object.
 	 */
-	public function notlike($field, $match = '')
+	public function notlike($field, $match = '', $auto = TRUE)
 	{
 		$fields = is_array($field) ? $field : array($field => $match);
 
@@ -808,6 +812,9 @@ class Database_Core {
 			$table = $this->from[0];
 		}
 
+		// If caching is enabled, clear the cache before inserting
+		($this->config['cache'] === TRUE) and $this->clear_cache();
+
 		$sql = $this->driver->insert($this->config['table_prefix'].$table, array_keys($this->set), array_values($this->set));
 
 		$this->reset_write();
@@ -835,7 +842,7 @@ class Database_Core {
 				}
 				else
 				{
-					$escaped_values[] = "'".$this->driver->escape_string($v)."'";
+					$escaped_values[] = "'".$this->driver->escape_str($v)."'";
 				}
 			}
 			$values = implode(",", $escaped_values);

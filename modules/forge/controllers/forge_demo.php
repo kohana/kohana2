@@ -2,6 +2,9 @@
 
 class Forge_demo_Controller extends Controller {
 
+	// Do not allow to run in production
+	const ALLOW_PRODUCTION = FALSE;
+
 	public function index()
 	{
 		$profiler = new Profiler;

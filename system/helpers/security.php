@@ -19,14 +19,7 @@ class security_Core {
 	 */
 	public static function xss_clean($str)
 	{
-		static $input;
-
-		if ($input === NULL)
-		{
-			$input = new Input();
-		}
-
-		return $input->xss_clean($str);
+		return Input::instance()->xss_clean($str);
 	}
 
 	/**
@@ -37,9 +30,7 @@ class security_Core {
 	 */
 	public static function strip_image_tags($str)
 	{
-		$str = preg_replace('#<img\b.*?(?:src\s*=\s*["\']?([^"\'<>\s]*)["\']?[^>]*)?>#is', '$1', $str);
-
-		return trim($str);
+		return preg_replace('#<img\s.*?(?:src\s*=\s*["\']?([^"\'<>\s]*)["\']?[^>]*)?>#is', '$1', $str);
 	}
 
 	/**
@@ -50,7 +41,7 @@ class security_Core {
 	 */
 	public static function encode_php_tags($str)
 	{
-		return str_replace(array('<?', '?>'),  array('&lt;?', '?&gt;'), $str);
+		return str_replace(array('<?', '?>'), array('&lt;?', '?&gt;'), $str);
 	}
 
 } // End security

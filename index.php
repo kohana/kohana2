@@ -4,11 +4,17 @@
  * configure your application, modules, and system directories here.
  * PHP error_reporting level may also be changed.
  *
- * @package    Core
- * @author     Kohana Team
- * @copyright  (c) 2007-2008 Kohana Team
- * @license    http://kohanaphp.com/license.html
+ * @see http://kohanaphp.com
  */
+
+/**
+ * Define the website environment status. When this flag is set to TRUE, some
+ * module demonstration controllers will result in 404 errors. For more information
+ * about this option, read the documentation about deploying Kohana.
+ *
+ * @see http://doc.kohanaphp.com/installation/deployment
+ */
+define('IN_PRODUCTION', FALSE);
 
 /**
  * Website application directory. This directory should contain your application
@@ -35,6 +41,13 @@ $kohana_modules = 'modules';
  */
 $kohana_system = 'system';
 
+/**
+ * Test to make sure that Kohana is running on PHP 5.2 or newer. Once you are
+ * sure that your environment is compatible with Kohana, you can comment this
+ * line out. When running an application on a new server, uncomment this line
+ * to check the PHP version quickly.
+ */
+version_compare(PHP_VERSION, '5.2', '<') and exit('Kohana requires PHP 5.2 or newer.');
 
 /**
  * Set the error reporting level. Unless you have a special need, E_ALL is a
@@ -54,12 +67,6 @@ ini_set('display_errors', TRUE);
  * different extension.
  */
 define('EXT', '.php');
-
-/**
- * Test to make sure that Kohana is running on PHP 5.1.3 or newer. Once you are
- * sure that your environment is compatible with Kohana, you can disable this.
- */
-version_compare(PHP_VERSION, '5.2', '<') and exit('Kohana requires PHP 5.2 or newer.');
 
 //
 // DO NOT EDIT BELOW THIS LINE, UNLESS YOU FULLY UNDERSTAND THE IMPLICATIONS.
@@ -82,16 +89,34 @@ define('SYSPATH', str_replace('\\', '/', realpath($kohana_system)).'/');
 // Clean up
 unset($kohana_application, $kohana_modules, $kohana_system);
 
-(is_dir(APPPATH) AND is_dir(APPPATH.'/config')) or die
-(
-	'Your <code>$kohana_application</code> directory does not exist. '.
-	'Set a valid <code>$kohana_application</code> in <tt>'.KOHANA.'</tt> and refresh the page.'
-);
+if ( ! IN_PRODUCTION)
+{
+	// Check APPPATH
+	if ( ! (is_dir(APPPATH) AND file_exists(APPPATH.'/config/config'.EXT)))
+	{
+		die
+		(
+			'<div style="width:80%;margin:50px auto;text-align:center;">'.
+				'<h3>Application Directory Not Found</h3>'.
+				'<p>The <code>$kohana_application</code> directory does not exist.</p>'.
+				'<p>Set <code>$kohana_application</code> in <tt>'.KOHANA.'</tt> to a valid directory and refresh the page.</p>'.
+			'</div>'
+		);
+	}
 
-(is_dir(SYSPATH) AND file_exists(SYSPATH.'/core/'.'Bootstrap'.EXT)) or die
-(
-	'Your <code>$kohana_system</code> directory does not exist. '.
-	'Set a valid <code>$kohana_system</code> in <tt>'.KOHANA.'</tt> and refresh the page.'
-);
+	// Check SYSPATH
+	if ( ! (is_dir(SYSPATH) AND file_exists(SYSPATH.'/core/Bootstrap'.EXT)))
+	{
+		die
+		(
+			'<div style="width:80%;margin:50px auto;text-align:center;">'.
+				'<h3>System Directory Not Found</h3>'.
+				'<p>The <code>$kohana_system</code> directory does not exist.</p>'.
+				'<p>Set <code>$kohana_system</code> in <tt>'.KOHANA.'</tt> to a valid directory and refresh the page.</p>'.
+			'</div>'
+		);
+	}
+}
 
+// Initialize.
 require SYSPATH.'core/Bootstrap'.EXT;

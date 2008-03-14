@@ -10,7 +10,7 @@ $config['language'] = 'en_US';
 /**
  * Default country locale.
  */
-$config['country'] = 'US';
+$config['country'] = 'USA';
 
 /**
  * Locale timezone. Defaults to use the server timezone.

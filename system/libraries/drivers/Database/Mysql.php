@@ -191,11 +191,6 @@ class Database_Mysql_Driver extends Database_Driver {
 		return 'LIMIT '.$offset.', '.$limit;
 	}
 
-	public function stmt_prepare($sql = '')
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
-	}
-
 	public function compile_select($database)
 	{
 		$sql = ($database['distinct'] == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
@@ -289,6 +284,12 @@ class Database_Mysql_Driver extends Database_Driver {
 			{
 				// Make an associative array
 				$tables[$table][$row->Field] = $this->sql_type($row->Type);
+
+				if ($row->Key === 'PRI' AND $row->Extra === 'auto_increment')
+				{
+					// For sequenced (AUTO_INCREMENT) tables
+					$tables[$table][$row->Field]['sequenced'] = TRUE;
+				}
 			}
 		}
 
@@ -418,6 +419,11 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		}
 
 		return $this;
+	}
+
+	public function as_array($object = NULL, $type = MYSQL_ASSOC)
+	{
+		return $this->result_array($object, $type);
 	}
 
 	public function result_array($object = NULL, $type = MYSQL_ASSOC)

@@ -19,7 +19,7 @@ class valid_Core {
 	 */
 	public static function email($email)
 	{
-		return (bool) preg_match('/^[-_a-z0-9\'+*$^&%=~!?{}]++(?:\.[-_a-z0-9\'+*$^&%=~!?{}]+)*+@(?:(?![-.])[-a-z0-9.]+(?<![-.])\.[a-z]{2,6}|\d{1,3}(?:\.\d{1,3}){3})(?::\d++)?$/iD', $email);
+		return (bool) preg_match('/^[-_a-z0-9\'+*$^&%=~!?{}]++(?:\.[-_a-z0-9\'+*$^&%=~!?{}]+)*+@(?:(?![-.])[-a-z0-9.]+(?<![-.])\.[a-z]{2,6}|\d{1,3}(?:\.\d{1,3}){3})(?::\d++)?$/iD', (string) $email);
 	}
 
 	/**
@@ -48,7 +48,7 @@ class valid_Core {
 		$local_part     = "$word(\\x2e$word)*";
 		$addr_spec      = "$local_part\\x40$domain";
 
-		return (bool) preg_match('/^'.$addr_spec.'$/D', $email);
+		return (bool) preg_match('/^'.$addr_spec.'$/D', (string) $email);
 	}
 
 	/**
@@ -230,7 +230,7 @@ class valid_Core {
 	 */
 	public static function numeric($str)
 	{
-		return (is_numeric($str) AND preg_match('/^[-0-9.]++$/D', $str));
+		return (is_numeric($str) AND preg_match('/^[-0-9.]++$/D', (string) $str));
 	}
 
 	/**

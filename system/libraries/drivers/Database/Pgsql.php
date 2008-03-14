@@ -151,11 +151,6 @@ class Database_Pgsql_Driver extends Database_Driver {
 		return $prefix.' '.$this->escape_column($field).' NOT REGEXP \''.$this->escape_str($match) . '\'';
 	}
 
-	public function merge($table, $keys, $values)
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
-	}
-
 	public function limit($limit, $offset = 0)
 	{
 		return 'LIMIT '.$limit.' OFFSET '.$offset;
@@ -408,6 +403,11 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		}
 
 		return $this;
+	}
+
+	public function as_array($object = NULL, $type = PGSQL_ASSOC)
+	{
+		return $this->result_array($object, $type);
 	}
 
 	public function result_array($object = NULL, $type = PGSQL_ASSOC)

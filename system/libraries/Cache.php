@@ -46,6 +46,20 @@ class Cache_Core {
 	 */
 	public function __construct($config = array())
 	{
+		if (empty($config))
+		{
+			// Load the default group
+			$config = Config::item('cache.default');
+		}
+		elseif (is_string($config))
+		{
+			$name = $config;
+
+			// Test the config group name
+			if (($config = Config::item('cache.'.$config)) === NULL)
+				throw new Kohana_Exception('cache.undefined_group', $name);
+		}
+
 		// Load configuration
 		$this->config = (array) $config + Config::item('cache');
 

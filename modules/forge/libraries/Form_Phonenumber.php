@@ -54,21 +54,30 @@ class Form_Phonenumber_Core extends Form_Input {
 		foreach($this->parts as $type => $val)
 		{
 			isset($data['value']) OR $data['value'] = '';
-			$data['name'] = $this->data['name'].'['.$type.']';
-			$data['class'] = $type;
+			$temp = $data;
+			$temp['name'] = $this->data['name'].'['.$type.']';
+			$offset = (strlen($data['value']) == 10) ? 0 : 3;
 			switch ($type)
 			{
 				case 'area_code':
-					$data['value'] = substr($data['value'], 0, 3);
-					$input .= form::input(array_merge(array('value' => $val), $data)).'-';
+					if (strlen($data['value']) == 10)
+					{
+						$temp['value'] = substr($data['value'], 0, 3);
+					}
+					else
+						$temp['value'] = '';
+					$temp['class'] = 'area_code';
+					$input .= form::input(array_merge(array('value' => $val), $temp)).'-';
 					break;
 				case 'exchange':
-					$data['value'] = substr($data['value'], 3, 3);
-					$input .= form::input(array_merge(array('value' => $val), $data)).'-';
+					$temp['value'] = substr($data['value'], (3-$offset), 3);
+					$temp['class'] = 'exchange';
+					$input .= form::input(array_merge(array('value' => $val), $temp)).'-';
 					break;
 				case 'last_four':
-					$data['value'] = substr($data['value'], 6, 4);
-					$input .= form::input(array_merge(array('value' => $val), $data));
+					$temp['value'] = substr($data['value'], (6-$offset), 4);
+					$temp['class'] = 'last_four';
+					$input .= form::input(array_merge(array('value' => $val), $temp));
 					break;
 			}
 			

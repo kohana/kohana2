@@ -2,6 +2,9 @@
 
 class Kodoc_Controller extends Template_Controller {
 
+	// Do not allow to run in production
+	const ALLOW_PRODUCTION = FALSE;
+
 	public $template = 'kodoc/template';
 
 	// Kodoc instance
