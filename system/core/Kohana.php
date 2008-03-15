@@ -675,18 +675,19 @@ class Kohana {
 	 * @param   string   filename to look for (including extension only if 4th parameter is TRUE)
 	 * @param   boolean  is the file required?
 	 * @param   boolean  use custom file extension?
+	 * @param   boolean  use cache
 	 * @return  array    if the type is i18n or config
 	 * @return  string   if the file is found
 	 * @return  FALSE    if the file is not found
 	 */
-	public static function find_file($directory, $filename, $required = FALSE, $ext = FALSE)
+	public static function find_file($directory, $filename, $required = FALSE, $ext = FALSE, $use_cache = TRUE)
 	{
 		static $found = array();
 
 		$search = $directory.'/'.$filename;
 		$hash   = sha1($search.$ext);
 
-		if (isset($found[$hash]))
+		if ($use_cache AND isset($found[$hash]))
 			return $found[$hash];
 
 		if ($directory == 'config' OR $directory == 'i18n' OR $directory === 'l10n')
