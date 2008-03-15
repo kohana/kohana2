@@ -2,6 +2,7 @@
 
 $lang = array
 (
+	'undefined_group'      => 'Grupa %s nie jest zdefiniowana w konfiguracji.',
 	'driver_not_supported' => 'Sterownik %s pamięci podręcznej nie istnieje',
 	'extension_not_loaded' => 'Aby użyć tego sterownika musi zostać załadowane rozszerzenie PHP %s.',
 	'unwritable'           => 'Wybrane w konfiguracji miejsce, <tt>%s</tt>, jest tylko do odczytu.',

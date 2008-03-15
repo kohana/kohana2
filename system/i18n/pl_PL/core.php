@@ -12,7 +12,7 @@ $lang = array
 	'no_controller'         => 'Kohana nie była w stanie określić kontrolera obsługującego wywołanie: %s',
 	'page_not_found'        => 'Wywołana strona, <tt>%s</tt>, nie może zostać znaleziona.',
 	'stats_footer'          => 'Czas wywołania: {execution_time} sekund, użyto {memory_usage} pamięci. Wygenerowano przez Kohana v{kohana_version}.',
-	'error_message'         => 'Wystąpił błąd w <strong>lini %s</strong> z <strong>%s</strong>.',
+	'error_file_line'       => '<tt>%s <strong>[%s]:</strong></tt>',
 	'stack_trace'           => 'Zrzut stosu (Stack Trace)',
 	'generic_error'         => 'Nie można zakończyć żądania',
 	'errors_disabled'       => 'Przejdź na <a href="%s">stronę główną</a> lub <a href="%s">spróbuj znowu</a>.',
