@@ -34,7 +34,10 @@ class Input_Core {
 	}
 
 	/**
-	 * Sets whether to globally enable the XSS processing.
+	 * Sanitizes global GET, POST and COOKIE data. Also takes care of
+	 * register_globals, if it has been enabled.
+	 *
+	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -218,7 +221,7 @@ class Input_Core {
 	{
 		$chars = (PCRE_UNICODE_PROPERTIES) ? '\pL' : 'a-zA-Z';
 
-		if ( ! preg_match('#^['.$chars.'0-9:_/-]+$#uD', $str))
+		if ( ! preg_match('#^['.$chars.'0-9:_/-]++$#uD', $str))
 		{
 			exit('Disallowed key characters in global data.');
 		}
@@ -254,10 +257,7 @@ class Input_Core {
 		}
 
 		if ($this->ip_address === FALSE)
-		{
-			$this->ip_address = '0.0.0.0';
-			return $this->ip_address;
-		}
+			return $this->ip_address = '0.0.0.0';
 
 		if (strstr($this->ip_address, ','))
 		{
@@ -265,7 +265,7 @@ class Input_Core {
 			$this->ip_address = end($x);
 		}
 
-		if ( ! $this->valid_ip($this->ip_address))
+		if ( ! valid::ip($this->ip_address))
 		{
 			$this->ip_address = '0.0.0.0';
 		}
@@ -320,7 +320,7 @@ class Input_Core {
 		$string = $data;
 
 		// Do not clean empty strings
-		if (trim($string) == '')
+		if (trim($string) === '')
 			return $string;
 
 		if ( ! is_string($tool))
@@ -405,7 +405,8 @@ class Input_Core {
 				do {
 					$oldstring = $string;
 					$string = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*>#i', '', $string);
-				} while ($oldstring != $string);
+				}
+				while ($oldstring !== $string);
 			break;
 		}
 
