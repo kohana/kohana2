@@ -555,14 +555,13 @@ class ORM_Core {
 		if ($id === ALL)
 			return $this->find_all();
 
+		// To allow the object to be reloaded
+		($id === TRUE) and $id = $this->id;
+
 		// Generate WHERE
 		if ($this->where === FALSE AND ! empty($id))
 		{
-			if ($id === TRUE)
-			{
-				self::$db->where($this->object->id);
-			}
-			elseif (is_array($id))
+			if (is_array($id))
 			{
 				self::$db->where($id);
 			}
@@ -608,12 +607,12 @@ class ORM_Core {
 			$data[$key] = $this->object->$key;
 		}
 
-		if ($this->object->id == '')
+		if (empty($this->object->id))
 		{
 			// Perform an insert
 			$query = self::$db->insert($this->table, $data);
 
-			if ($query->count() === 1)
+			if ($query->count())
 			{
 				// Set current object id by the insert id
 				$this->object->id = $query->insert_id();
@@ -625,10 +624,13 @@ class ORM_Core {
 			$query = self::$db->update($this->table, $data, array('id' => $this->object->id));
 		}
 
-		if ($query->count() === 1)
+		if ($query->count())
 		{
 			// Reset changed data
 			$this->changed = array();
+
+			// Reset SELECT, WHERE, and FROM
+			$this->select = $this->where = $this->from = FALSE;
 
 			return TRUE;
 		}
