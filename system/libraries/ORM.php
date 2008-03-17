@@ -544,7 +544,7 @@ class ORM_Core {
 	/**
 	 * Find and load data for the current object.
 	 *
-	 * @param   string   id of the object to find, or ALL
+	 * @param   string   id of the object to find, an array, or TRUE to reload
 	 * @param   boolean  return the result, or load it into the current object
 	 * @return  object   object instance
 	 * @return  array    if ALL is used
@@ -558,7 +558,11 @@ class ORM_Core {
 		// Generate WHERE
 		if ($this->where === FALSE AND ! empty($id))
 		{
-			if (is_array($id))
+			if ($id === TRUE)
+			{
+				self::$db->where($this->object->id);
+			}
+			elseif (is_array($id))
 			{
 				self::$db->where($id);
 			}
