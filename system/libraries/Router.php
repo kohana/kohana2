@@ -28,6 +28,8 @@ class Router_Core {
 
 	/**
 	 * Router setup routine. Automatically called during Kohana setup process.
+	 *
+	 * @return  void
 	 */
 	public static function setup()
 	{
@@ -38,9 +40,9 @@ class Router_Core {
 			throw new Kohana_Exception('core.no_default_route');
 
 		// Use the default route when no segments exist
-		if (self::$current_uri == '' OR self::$current_uri == '/')
+		if (self::$current_uri === '')
 		{
-			self::$current_uri = self::$routes['_default'];
+			self::$current_uri = trim(self::$routes['_default'], '/');
 			$default_route = TRUE;
 		}
 		else
@@ -61,7 +63,7 @@ class Router_Core {
 		(self::$segments === 'L0LEAST3R') and include SYSPATH.'views/kohana_holiday.php';
 
 		// Custom routing
-		if ($default_route == FALSE AND count(self::$routes) > 1)
+		if ($default_route === FALSE AND count(self::$routes) > 1)
 		{
 			if (isset(self::$routes[self::$current_uri]))
 			{
@@ -74,6 +76,10 @@ class Router_Core {
 				foreach(self::$routes as $key => $val)
 				{
 					if ($key === '_default') continue;
+
+					// Trim slashes
+					$key = trim($key, '/');
+					$val = trim($val, '/');
 
 					// Does this route match the current URI?
 					if (preg_match('#^'.$key.'$#u', self::$segments))
@@ -95,11 +101,14 @@ class Router_Core {
 			}
 
 			// Check router one more time to do some magic
-			self::$rsegments = isset(self::$routes[self::$rsegments]) ? self::$routes[self::$rsegments] : self::$rsegments;
+			if (isset(self::$routes[self::$rsegments]))
+			{
+				self::$rsegments = self::$routes[self::$rsegments];
+			}
 		}
 
 		// Explode the segments by slashes
-		if ($default_route == TRUE OR self::$segments == '')
+		if ($default_route === TRUE OR self::$segments === '')
 		{
 			self::$segments = array();
 		}
@@ -107,6 +116,7 @@ class Router_Core {
 		{
 			self::$segments = explode('/', self::$segments);
 		}
+
 		// Routed segments will never be blank
 		self::$rsegments = explode('/', self::$rsegments);
 
@@ -177,6 +187,8 @@ class Router_Core {
 
 	/**
 	 * Attempts to determine the current URI using CLI, GET, PATH_INFO, ORIG_PATH_INFO, or PHP_SELF.
+	 *
+	 * @return  void
 	 */
 	public static function find_uri()
 	{
@@ -268,7 +280,7 @@ class Router_Core {
 	{
 		$str = trim($str);
 
-		if ($str != '' AND ($allowed = Config::item('routes._allowed')) != '')
+		if ($str !== '' AND ($allowed = Config::item('routes._allowed')) != '')
 		{
 			if ( ! preg_match('|^['.preg_quote($allowed).']++$|iuD', $str))
 			{

@@ -236,39 +236,39 @@ class URI_Core extends Router {
 
 		return self::$rsegments[$end - 1];
 	}
-	
-	/** 
-	 * Returns the path to the current controller (not including the actual 
-	 * controller), as a web path
-	 * 
-	 * @param  bool    If a full url should be returned, or only the path specifically
+
+	/**
+	 * Returns the path to the current controller (not including the actual
+	 * controller), as a web path.
+	 *
+	 * @param   boolean  return a full url, or only the path specifically
+	 * @return  string
 	 */
-	public function controller_path($full = TRUE) {
-		return ((bool) $full) 
-		        ? url::site(self::$controller_path)
-		        : self::$controller_path;
+	public function controller_path($full = TRUE)
+	{
+		return ($full) ? url::site(self::$controller_path) : self::$controller_path;
 	}
-	
-	/** 
-	 * Returns the current controller, as a web path 
-	 * 
-	 * @param  bool    If a full url should be returned, or only the controller specifically
+
+	/**
+	 * Returns the current controller, as a web path.
+	 *
+	 * @param   boolean  return a full url, or only the controller specifically
+	 * @return  string
 	 */
-	public function controller($full = TRUE) {
-		return ((bool) $full) 
-		        ? url::site(self::$controller_path.self::$controller)
-		        : self::$controller;
+	public function controller($full = TRUE)
+	{
+		return ($full) ? url::site(self::$controller_path.self::$controller) : self::$controller;
 	}
-	
-	/** 
-	 * Returns the current method, as a web path
-	 * 
-	 * @param  bool    If a full url should be returned, or only the method specifically
+
+	/**
+	 * Returns the current method, as a web path.
+	 *
+	 * @param   boolean  return a full url, or only the method specifically
+	 * @return  string
 	 */
-	public function method($full = TRUE) {
-		return ((bool) $full) 
-		        ? url::site(self::$controller_path.self::$controller.'/'.self::$method) 
-		        : self::$method;
+	public function method($full = TRUE)
+	{
+		return ($full) ? url::site(self::$controller_path.self::$controller.'/'.self::$method) : self::$method;
 	}
 
 } // End URI Class
