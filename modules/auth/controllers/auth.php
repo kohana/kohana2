@@ -1,6 +1,16 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
-class Auth_Controller extends Controller {
+/**
+ * Auth module demo controller. This controller should NOT be used in production.
+ * It is for demonstration purposes only!
+ *
+ * $Id$
+ *
+ * @package    Auth
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
+class Auth_Demo_Controller extends Controller {
 
 	// Do not allow to run in production
 	const ALLOW_PRODUCTION = FALSE;

@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Gmaps module demo controller.
+ * Gmaps module demo controller. This controller should NOT be used in production.
+ * It is for demonstration purposes only!
  *
  * $Id$
  *
