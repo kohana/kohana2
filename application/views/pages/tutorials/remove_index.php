@@ -1,12 +1,14 @@
-<h2><span>&copy;2007, Christophe Prudent and Woody Gilk</span>Removing index.php From URLs</h2>
+<h2><span>&copy;2007 &amp; 2008, Christophe Prudent, Woody Gilk, and Jim Auldridge</span>Removing index.php From URLs</h2>
 
-<p>Removing the <tt>index.php</tt> from your website URLs look better, and can is better for <abbr title="Search Engine Optimization">SEO</abbr>.</p>
+<p>Removing the <tt>index.php</tt> from your website URLs look better, and can help with <abbr title="Search Engine Optimization">SEO</abbr>.</p>
 
 <p><strong>Note:</strong> This tutorial only focuses on Apache, but can be adapted for other HTTP servers.</p>
 
 <h4>.htaccess</h4>
 
-<p>First, you will need to create an <tt>.htaccess</tt> document to enable URL rewriting:</p>
+<p>We should start out by reminding you that in programming and computing there is always more than one way to accomplish the same job.  The same goes for this particular task and, as is always the case, each has its own pros and cons.  Let's look at a few to help you decide which is best for your situation.</p>
+
+<p>First, you will need to create a <tt>.htaccess</tt> document to enable URL rewriting:</p>
 
 <?php
 
@@ -15,21 +17,23 @@ echo geshi_highlight(
 RewriteEngine On
 
 # Put your installation directory here:
-# If your URL is www.example.com/kohana/, use /kohana/
 # If your URL is www.example.com/, use /
-RewriteBase /kohana/
+# If your URL is www.example.com/kohana/, use /kohana/
+RewriteBase /
 
-# Do not enable rewriting for files that exist
+# Do not enable rewriting for files or directories that exist
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
+# For reuests that are not actual files or directories,
 # Rewrite to index.php/URL
 RewriteRule ^(.*)$ index.php/$1 [PT,L]
 ', 'apache', NULL, TRUE);
 
 ?>
 
-<p>That's it, we're done! Just kidding. Although this example works, it does not protect your PHP files against access, so someone could enter <tt>http://www.example.com/application/views/</tt> and get a list of all your view files.</p>
+<p>This example is quite dynamic in that you can add files and directories to your document root as you desire and you'll never need to modify the rewrite rules.  Any files and directories that exist under your document root will be served.  If a request is made for a non-existant file or directory (which is really what the index.php-less Kohana URLs are), the request is rewritten to be routed through index.php transparently.  If it can be routed by Kohana, the page is served.  Finally, if it wasn't a request for an existing file or directory and could not be routed by Kohana, a Kohana error page (ex: 404) is displayed.  So you not only have dynamic rewrite rules, but you consisteny in your error pages site wide.</p>
+<p><em>However</em>em>, this approch does not protect your more sensitive an unintended PHP files against access, so someone could enter <tt>http://www.example.com/application/views/</tt> and get a list of all your view files.  Ideally, you should never have your system or application directories, or any other files you do not want accessed, under your document root.  But some servers are setup such that your access ot the server is restricted to the document root and you have no choice.  Read '<?php echo html::anchor('http://doc.kohanaphp.com/installation','Moving system and application directory out of webroot'); ?>' to learn how to move these files out of your document root.  If you find that you do not have proper access on your server to change your file system setup, continue on in this tutorial for other options.</p>
 
 <h4>.htaccess</h4>
 
