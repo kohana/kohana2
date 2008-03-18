@@ -14,8 +14,8 @@ class url_Core {
 	/**
 	 * Base URL, with or without the index page.
 	 *
-	 * If protocol (and core.site_protocol) and core.site_domain are both empty, 
-	 * then 
+	 * If protocol (and core.site_protocol) and core.site_domain are both empty,
+	 * then
 	 *
 	 * @param   boolean  include the index page
 	 * @param   boolean  non-default protocol
@@ -24,42 +24,40 @@ class url_Core {
 	public static function base($index = FALSE, $protocol = FALSE)
 	{
 		$protocol = ($protocol == FALSE) ? Config::item('core.site_protocol') : strtolower($protocol);
-		
+
 		$site_domain = Config::item('core.site_domain', TRUE);
-		
+
 		if (empty($protocol))
 		{
-			if (strlen($site_domain) > 0 AND $site_domain[0] != '/') 
+			if (strlen($site_domain) > 0 AND $site_domain[0] != '/')
 			{
 				// try to guess protocol, provide full http://domain/path...
-				$base_url = (!empty($_SERVER['HTTPS']) ? 'https' : 'http').'://'.$site_domain;
+				$base_url = (empty($_SERVER['HTTPS']) OR $_SERVER['HTTPS'] === 'off') ? 'http' : 'https').'://'.$site_domain;
 			}
 			else
 			{
 				// provide only path, eg /path...
-				$base_url = !empty($site_domain) ? $site_domain : '';
+				$base_url = empty($site_domain) ? '' : $site_domain;
 			}
 		}
 		else
 		{
-			// return a full url
-			
 			// Add current servername if site_domain starts with a /
 			if (empty($site_domain) OR $site_domain[0] == '/')
 			{
-				$base_url = $protocol.'://'.$_SERVER['HTTP_HOST'].(!empty($site_domain) ? $site_domain : '');
+				$base_url = $protocol.'://'.$_SERVER['HTTP_HOST'].(empty($site_domain) ? '' : $site_domain);
 			}
-			else 
+			else
 			{
-				$base_url = $protocol.'://'.(!empty($site_domain) ? $site_domain : '');
+				$base_url = $protocol.'://'.(empty($site_domain) ? '' : $site_domain);
 			}
 		}
-		
+
 		// make sure base_url ends in a slash
-		(!empty($base_url) AND ($base_url[strlen($base_url)-1] != '/')) AND $base_url .= '/';
-		
+		$base_url = rtrim($base_url, '/').'/';
+
 		// add index.php if needed
-		if ($index == TRUE AND $index = Config::item('core.index_page'))
+		if ($index === TRUE AND $index = Config::item('core.index_page'))
 		{
 			$base_url = $base_url.$index.'/';
 		}
