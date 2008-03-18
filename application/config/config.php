@@ -1,15 +1,15 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Base path of the web site. If this includes a domain, (eg, "localhost/kohana/") then
- * a full URL will be used (eg, "http://localhost/kohana/"). If it only includes the path, 
- * and a site_protocol is specified, the domain will be auto-detected.
+ * Base path of the web site. If this includes a domain, eg: localhost/kohana/
+ * then a full URL will be used, eg: http://localhost/kohana/. If it only includes
+ * the path, and a site_protocol is specified, the domain will be auto-detected.
  */
-$config['site_domain'] = '/kohana/trunk/';
+$config['site_domain'] = '/kohana/';
 
 /**
- * Force a default protocol to be used by the site. If no site_protocol is specified, then the 
- * current protocol is used, or when possible, only an absolute path (with no protocol/domain) 
- * is used.
+ * Force a default protocol to be used by the site. If no site_protocol is
+ * specified, then the current protocol is used, or when possible, only an
+ * absolute path (with no protocol/domain) is used.
  */
 $config['site_protocol'] = '';
 
@@ -65,7 +65,7 @@ $config['extension_prefix'] = 'MY_';
  */
 $config['modules'] = array
 (
-	MODPATH.'auth',   // Authentication
+	// MODPATH.'auth',   // Authentication
 	// MODPATH.'forge',  // Form generation
 	// MODPATH.'kodoc',  // Self-generating documentation
 	// MODPATH.'media',  // Media caching and compression

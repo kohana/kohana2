@@ -32,7 +32,7 @@ class url_Core {
 			if (strlen($site_domain) > 0 AND $site_domain[0] != '/')
 			{
 				// try to guess protocol, provide full http://domain/path...
-				$base_url = (empty($_SERVER['HTTPS']) OR $_SERVER['HTTPS'] === 'off') ? 'http' : 'https').'://'.$site_domain;
+				$base_url = ((empty($_SERVER['HTTPS']) OR $_SERVER['HTTPS'] === 'off') ? 'http' : 'https').'://'.$site_domain;
 			}
 			else
 			{
