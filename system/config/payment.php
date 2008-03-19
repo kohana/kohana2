@@ -90,3 +90,49 @@ $config['Paypal'] = array
 	'CANCELURL' => '',
 	'CURRENCYCODE' => 'USD'
 );
+
+/**
+ * PayPalpro Options:
+ *  USER      - API user name to use
+ *  PWD       - API password to use
+ *  SIGNATURE - API signature to use
+ *
+ *  ENDPOINT  - API url used by live transaction
+ *
+ *  SANDBOX_USER      - User name used in test mode
+ *  SANDBOX_PWD       - Pass word used in test mode
+ *  SANDBOX_SIGNATURE - Security signiature used in test mode
+ *  SANDBOX_ENDPOINT  - API url used for test mode transaction
+ *
+ *  VERSION   - API version to use
+ *  CURRENCYCODE - can only currently be USD
+ *
+ */
+$config['Paypalpro'] = array
+(
+
+	'USER'         => '-your-paypal-api-username',
+	'PWD'          => '-your-paypal-api-password',
+	'SIGNATURE'    => '-your-paypal-api-security-signiature',
+	'ENDPOINT'     => 'https://api-3t.paypal.com/nvp',
+
+	// -- sandbox authorization details are generic
+	'SANDBOX_USER'      => 'sdk-three_api1.sdk.com',
+	'SANDBOX_PWD'       => 'QFZCWN5HZM8VBG7Q',
+	'SANDBOX_SIGNATURE' => 'A.d9eRKfd1yVkRrtmMfCFLTqa6M9AyodL0SJkhYztxUi8W9pCXF6.4NI',
+	'SANDBOX_ENDPOINT'  => 'https://api-3t.sandbox.paypal.com/nvp',
+
+	'VERSION'      => '3.2',
+	'CURRENCYCODE' => 'USD',
+
+	'curl_config'  => array
+	(
+		CURLOPT_HEADER         => FALSE,
+		CURLOPT_SSL_VERIFYPEER => FALSE,
+		CURLOPT_SSL_VERIFYHOST => FALSE,
+		CURLOPT_VERBOSE        => TRUE,
+		CURLOPT_RETURNTRANSFER => TRUE,
+		CURLOPT_POST           => TRUE
+	)
+
+);
