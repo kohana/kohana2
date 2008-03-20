@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Database_Query_Builder_Core extends Database {
+abstract class Database_Query_Builder_Core {
 
 	// Un-compiled parts of the SQL query
 	protected $select     = array();
