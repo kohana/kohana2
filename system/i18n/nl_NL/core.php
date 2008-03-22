@@ -12,7 +12,7 @@ $lang = array
 	'no_controller'         => 'Kohana kon geen controller aanduiden om deze pagina te verwerken: %s',
 	'page_not_found'        => 'De opgevraagde pagina, <tt>%s</tt>, kon niet gevonden worden.',
 	'stats_footer'          => 'Geladen in {execution_time} seconden, met een geheugengebruik van {memory_usage}. Aangedreven door Kohana v{kohana_version}.',
-	'error_message'         => 'Fout vond plaats op <strong>lijn %s</strong> van <strong>%s</strong>.',
+	'error_file_line'       => '<tt>%s <strong>[%s]:</strong></tt>',
 	'stack_trace'           => 'Stack Trace',
 	'generic_error'         => 'Oproep kon niet afgewerkt worden',
 	'errors_disabled'       => 'Ga naar de <a href="%s">homepage</a> of <a href="%s">probeer opnieuw</a>.',
