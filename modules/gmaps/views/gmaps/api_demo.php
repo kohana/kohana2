@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 <title>Google Maps JavaScript API Example</title>
-<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=<?php echo Config::item('gmaps.api_key') ?>" type="text/javascript"></script>
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=<?php echo Config::item('gmaps.api_key') ?>&amp;hl=<?php echo substr(Config::item('locale.language'), 0, 2) ?>" type="text/javascript"></script>
 </head>
 <body>
 <p>You can use your scroll wheel to zoom in and out of the map.</p>

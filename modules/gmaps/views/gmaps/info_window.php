@@ -3,7 +3,7 @@
 <h6 class="title"><?php echo $location->title ?></h6>
 <?php
 
-echo '<p>'.implode("</p>\n<p>", explode("\n\n", $location->description))."</p>\n";
+echo '<p>', implode("</p>\n<p>", explode("\n\n", $location->description)), "</p>\n";
 
 ?>
 <p class="link"><?php echo html::anchor($location->link, $location->title) ?></p>
