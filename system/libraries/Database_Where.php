@@ -31,22 +31,26 @@ class Database_Where_Core {
 
 	private function add($args, $type)
 	{
+		// Count the arguments: one, two or three?
 		$num_args = count($args);
-		// Get the arguments. We can have one, two or three
-		if ($num_args == 1 AND is_object($args[0])) // A where object was passed
+
+		// A where object was passed
+		if ($num_args === 1 AND is_object($args[0]))
 		{
 			$this->where[] = array($args[0], $type);
 		}
-		elseif ($num_args == 2 OR ($num_args == 1 AND is_array($args[0]))) // An array for the conditions
+		// An array for the conditions
+		elseif ($num_args === 2 OR ($num_args === 1 AND is_array($args[0])))
 		{
-			$operator = $num_args == 2 ? $args[1] : '=';
+			$operator = $num_args === 2 ? $args[1] : '=';
 
 			foreach ($args as $key => $value)
 			{
 				$this->where[] = array(array('key' => $key, 'value' => $value, 'op' => $operator), $type);
 			}
 		}
-		elseif ($num_args == 3) // Seperate conditions
+		// Separate conditions
+		elseif ($num_args === 3)
 		{
 			$this->where[] = array(array('key' => $args[0], 'value' => $args[1], 'op' => $args[2]), $type);
 		}
@@ -71,9 +75,9 @@ class Database_Where_Core {
 		$where_string = '(';
 		foreach ($this->where as $where)
 		{
-			$where_string.=$this->db->driver->escape_column($where[0]['key']).' '.$where[0]['op'].' '.$this->db->driver->escape($where[0]['value']).(count($this->where) > 1 ? ' '.$where[1].' ' : '');
+			$where_string .= $this->db->driver->escape_column($where[0]['key']).' '.$where[0]['op'].' '.$this->db->driver->escape($where[0]['value']).(count($this->where) > 1 ? ' '.$where[1].' ' : '');
 		}
-		$where_string.=')';
+		$where_string .= ')';
 
 		return $where_string;
 	}

@@ -20,11 +20,11 @@ class Database_Update_Core extends Database_Query_Builder {
 	 * @param   string  table name
 	 * @param   array   associative array of update values
 	 * @param   array   where clause
-	 * @return  object  This Database object.
+	 * @return  object  Database_Result
 	 */
 	public function update($table = '', $set = NULL, $where = NULL)
 	{
-		if ( is_array($set))
+		if (is_array($set))
 		{
 			$this->set($set);
 		}

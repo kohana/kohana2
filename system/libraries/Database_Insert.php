@@ -16,7 +16,7 @@ class Database_Insert_Core extends Database_Query_Builder {
 	 *
 	 * @param   string  table name
 	 * @param   array   array of key/value pairs to insert
-	 * @return  object  This Database object.
+	 * @return  object  Database_Result
 	 */
 	public function insert($table = '', $set = NULL)
 	{
@@ -25,7 +25,7 @@ class Database_Insert_Core extends Database_Query_Builder {
 			$this->set($set);
 		}
 
-		if ($this->set == NULL)
+		if ($this->set === NULL)
 			throw new Kohana_Database_Exception('database.must_use_set');
 
 		if ($table == '')

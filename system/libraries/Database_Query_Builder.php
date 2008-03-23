@@ -28,6 +28,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Selects the column names for a database query.
 	 *
+	 * @chainable
 	 * @param   string  string or array of column names to select
 	 * @return  object  This Database object.
 	 */
@@ -57,9 +58,9 @@ abstract class Database_Query_Builder_Core {
 					$val            = $this->config['table_prefix'].$matches[1];
 					$this->distinct = TRUE;
 				}
-				else
+				elseif (strpos($val, '.') !== FALSE)
 				{
-					$val = (strpos($val, '.') !== FALSE) ? $this->config['table_prefix'].$val : $val;
+					$val = $this->config['table_prefix'].$val;
 				}
 
 				$val = $this->driver->escape_column($val);
@@ -74,6 +75,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Selects the from table(s) for a database query.
 	 *
+	 * @chainable
 	 * @param   string  string or array of tables to select
 	 * @return  object  This Database object.
 	 */
@@ -81,7 +83,7 @@ abstract class Database_Query_Builder_Core {
 	{
 		foreach((array) $sql as $val)
 		{
-			if (($val = trim($val)) == '') continue;
+			if (($val = trim($val)) === '') continue;
 
 			$this->from[] = $this->config['table_prefix'].$val;
 		}
@@ -92,6 +94,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Generates the JOIN portion of the query.
 	 *
+	 * @chainable
 	 * @param   string        table name
 	 * @param   string|array  where key or array of key => value pairs
 	 * @param   string        where value
@@ -108,21 +111,18 @@ abstract class Database_Query_Builder_Core {
 			{
 				$type = '';
 			}
-			else
-			{
-				$type .= ' ';
-			}
 		}
 
 		$cond = array();
-		$keys  = is_array($key) ? $key : array($key => $value);
+		$keys = is_array($key) ? $key : array($key => $value);
+
 		foreach ($keys as $key => $value)
 		{
 			$key    = (strpos($key, '.') !== FALSE) ? $this->config['table_prefix'].$key : $key;
 			$cond[] = $this->driver->where($key, $this->driver->escape_column($this->config['table_prefix'].$value), 'AND ', count($cond), FALSE);
 		}
 
-		$this->join[] = $type.'JOIN '.$this->driver->escape_column($this->config['table_prefix'].$table).' ON '.implode(' ', $cond);
+		$this->join[] = $type.' JOIN '.$this->driver->escape_column($this->config['table_prefix'].$table).' ON '.implode(' ', $cond);
 
 		return $this;
 	}
@@ -130,6 +130,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Selects the where(s) for a database query.
 	 *
+	 * @chainable
 	 * @param   string|array  key name or array of key => value pairs
 	 * @param   string        value to match with key
 	 * @param   boolean       disable quoting of WHERE clause
@@ -152,6 +153,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Selects the or where(s) for a database query.
 	 *
+	 * @chainable
 	 * @param   string|array  key name or array of key => value pairs
 	 * @param   string        value to match with key
 	 * @param   boolean       disable quoting of WHERE clause
@@ -174,6 +176,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Selects the like(s) for a database query.
 	 *
+	 * @chainable
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
 	 * @return  object        This Database object.
@@ -194,6 +197,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Selects the or like(s) for a database query.
 	 *
+	 * @chainable
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
 	 * @return  object        This Database object.
@@ -214,6 +218,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Selects the not like(s) for a database query.
 	 *
+	 * @chainable
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
 	 * @return  object        This Database object.
@@ -234,6 +239,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Selects the or not like(s) for a database query.
 	 *
+	 * @chainable
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
 	 * @return  object        This Database object.
@@ -254,6 +260,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Selects the like(s) for a database query.
 	 *
+	 * @chainable
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
 	 * @return  object        This Database object.
@@ -274,6 +281,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Selects the or like(s) for a database query.
 	 *
+	 * @chainable
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
 	 * @return  object        This Database object.
@@ -294,6 +302,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Selects the not regex(s) for a database query.
 	 *
+	 * @chainable
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        regex value to match with field
 	 * @return  object        This Database object.
@@ -314,6 +323,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Selects the or not regex(s) for a database query.
 	 *
+	 * @chainable
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        regex value to match with field
 	 * @return  object        This Database object.
@@ -334,6 +344,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Chooses the column to group by in a select query.
 	 *
+	 * @chainable
 	 * @param   string  column name to group by
 	 * @return  object  This Database object.
 	 */
@@ -346,9 +357,7 @@ abstract class Database_Query_Builder_Core {
 
 		foreach ($by as $val)
 		{
-			$val = trim($val);
-
-			if ($val != '')
+			if (($val = trim($val)) !== '')
 			{
 				$this->groupby[] = $val;
 			}
@@ -360,6 +369,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Selects the having(s) for a database query.
 	 *
+	 * @chainable
 	 * @param   string|array  key name or array of key => value pairs
 	 * @param   string        value to match with key
 	 * @param   boolean       disable quoting of WHERE clause
@@ -368,12 +378,14 @@ abstract class Database_Query_Builder_Core {
 	public function having($key, $value = '', $quote = TRUE)
 	{
 		$this->having[] = $this->driver->where($key, $value, 'AND', count($this->having), TRUE);
+
 		return $this;
 	}
 
 	/**
 	 * Selects the or having(s) for a database query.
 	 *
+	 * @chainable
 	 * @param   string|array  key name or array of key => value pairs
 	 * @param   string        value to match with key
 	 * @param   boolean       disable quoting of WHERE clause
@@ -382,12 +394,14 @@ abstract class Database_Query_Builder_Core {
 	public function orhaving($key, $value = '', $quote = TRUE)
 	{
 		$this->having[] = $this->driver->where($key, $value, 'OR', count($this->having), TRUE);
+
 		return $this;
 	}
 
 	/**
 	 * Chooses which column(s) to order the select query by.
 	 *
+	 * @chainable
 	 * @param   string|array  column(s) to order on, can be an array, single column, or comma seperated list of columns
 	 * @param   string        direction of the order
 	 * @return  object        This Database object.
@@ -415,28 +429,28 @@ abstract class Database_Query_Builder_Core {
 		$order = array();
 		foreach ($orderby as $field)
 		{
-			$field = trim($field);
-
-			if ($field != '')
+			if (($field = trim($field)) !== '')
 			{
 				$order[] = $this->driver->escape_column($field);
 			}
 		}
 		$this->orderby[] = implode(',', $order).$direction;
+
 		return $this;
 	}
 
 	/**
 	 * Selects the limit section of a query.
 	 *
+	 * @chainable
 	 * @param   integer  number of rows to limit result to
 	 * @param   integer  offset in result to start returning rows from
 	 * @return  object   This Database object.
 	 */
 	public function limit($limit, $offset = FALSE)
 	{
-		$this->limit  = (int) $limit;
-		$this->offset(($offset === FALSE)? 0 : $offset);
+		$this->limit = (int) $limit;
+		$this->offset($offset);
 
 		return $this;
 	}
@@ -444,6 +458,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Sets the offset portion of a query.
 	 *
+	 * @chainable
 	 * @param   integer  offset value
 	 * @return  object   This Database object.
 	 */
@@ -457,6 +472,7 @@ abstract class Database_Query_Builder_Core {
 	/**
 	 * Allows key/value pairs to be set for inserting or updating.
 	 *
+	 * @chainable
 	 * @param   string|array  key name or array of key => value pairs
 	 * @param   string        value to match with key
 	 * @return  object        This Database object.
@@ -478,7 +494,8 @@ abstract class Database_Query_Builder_Core {
 
 	/**
 	 * Adds an "IN" condition to the where clause
-	 * 
+	 *
+	 * @chainable
 	 * @param   string  Name of the column being examined
 	 * @param   mixed   An array or string to match against
 	 * @param   bool    Generate a NOT IN clause instead
@@ -500,7 +517,7 @@ abstract class Database_Query_Builder_Core {
 					$escaped_values[] = "'".$this->driver->escape_string($v)."'";
 				}
 			}
-			$values = implode(",", $escaped_values);
+			$values = implode(',', $escaped_values);
 		}
 		$this->where($this->driver->escape_column($field).' '.($not === TRUE ? 'NOT ' : '').'IN ('.$values.')');
 
@@ -509,7 +526,8 @@ abstract class Database_Query_Builder_Core {
 
 	/**
 	 * Adds a "NOT IN" condition to the where clause
-	 * 
+	 *
+	 * @chainable
 	 * @param   string  Name of the column being examined
 	 * @param   mixed   An array or string to match against
 	 * @return  object  This Database object.
@@ -524,7 +542,7 @@ abstract class Database_Query_Builder_Core {
 	 *
 	 * @param   string  table name
 	 * @param   array   array of key/value pairs to merge
-	 * @return  object  This Database object.
+	 * @return  object  Database_Result
 	 */
 	public function merge($table = '', $set = NULL)
 	{
@@ -533,7 +551,7 @@ abstract class Database_Query_Builder_Core {
 			$this->set($set);
 		}
 
-		if ($this->set == NULL)
+		if ($this->set === NULL)
 			throw new Kohana_Database_Exception('database.must_use_set');
 
 		if ($table == '')
@@ -560,7 +578,7 @@ abstract class Database_Query_Builder_Core {
 	 */
 	public function compile($table = '', $limit = NULL, $offset = NULL)
 	{
-		if ($table != '')
+		if ($table !== '')
 		{
 			$this->from($table);
 		}
@@ -573,7 +591,6 @@ abstract class Database_Query_Builder_Core {
 		$sql = $this->driver->compile_select(get_object_vars($this));
 
 		$this->reset();
-
 		return $sql;
 	}
 
