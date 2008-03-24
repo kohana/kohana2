@@ -189,7 +189,7 @@ class html_Core {
 	 * Creates a meta tag.
 	 *
 	 * @param   string|array   tag name, or an array of tags
-	 * @param   string         tag value
+	 * @param   string         tag "content" value
 	 * @return  string
 	 */
 	public static function meta($tag, $value = NULL)
@@ -207,13 +207,10 @@ class html_Core {
 			return implode("\n", $tags);
 		}
 
-		// HTTP type meta tags
-		$http = array('content-type', 'expires', 'refresh', 'set-cookie');
+		// Set the meta attribute value
+		$attr = in_array(strtolower($tag), Config::item('http.meta_equiv')) ? 'http-equiv' : 'name';
 
-		// Set the type attribute
-		$attr = in_array($tag, $http) ? 'http-equiv' : 'name';
-
-		return '<meta '.$attr.'="'.$value.'" />';
+		return '<meta '.$attr.'="'.$tag.'" content="'.$value.'" />';
 	}
 
 	/**
