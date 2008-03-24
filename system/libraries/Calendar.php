@@ -224,7 +224,7 @@ class Calendar_Core extends Event_Subject {
 	/**
 	 * Resets the observed data and sends a notify to all attached events.
 	 *
-	 * @param   integer  UNIX timestamp
+	 * @param   array  UNIX timestamp
 	 * @return  void
 	 */
 	public function notify($data)
