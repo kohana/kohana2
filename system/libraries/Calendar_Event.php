@@ -127,10 +127,6 @@ class Calendar_Event_Core extends Event_Observer {
 				// 1876. This algorithm has also been published in the 1922 book General Astronomy by
 				// Spencer Jones; in The Journal of the British Astronomical Association (Vol.88, page
 				// 91, December 1977); and in Astronomical Algorithms (1991) by Jean Meeus.
-
-				/**
-				 * @todo I imagine Geert will have a party with this one...
-				 */
 				$a = $condition['year'] % 19;
 				$b = (int) ($condition['year'] / 100);
 				$c = $condition['year'] % 100;
