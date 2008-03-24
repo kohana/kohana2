@@ -73,7 +73,15 @@ class Calendar_Core extends Event_Subject {
 				$holiday = clone $event;
 				$this->attach($holiday->condition('month', 1)->condition('day', 1));
 
-				// Attach New Years
+				// Attach Valentine's Day
+				$holiday = clone $event;
+				$this->attach($holiday->condition('month', 2)->condition('day', 14));
+
+				// Attach St. Patrick's Day
+				$holiday = clone $event;
+				$this->attach($holiday->condition('month', 3)->condition('day', 17));
+
+				// Attach Easter
 				$holiday = clone $event;
 				$this->attach($holiday->condition('easter', TRUE));
 
