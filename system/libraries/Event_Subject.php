@@ -11,11 +11,11 @@
  */
 abstract class Event_Subject implements SplSubject {
 
-	// Attach of subject listeners
+	// Attached subject listeners
 	protected $listeners = array();
 
 	/**
-	 * Attach an observer to the Eventable object.
+	 * Attach an observer to the object.
 	 *
 	 * @chainable
 	 * @param   object  Event_Observer
@@ -24,7 +24,7 @@ abstract class Event_Subject implements SplSubject {
 	public function attach(SplObserver $obj)
 	{
 		if ( ! ($obj instanceof Event_Observer))
-			throw new Kohana_Exception('eventable.invalid_observer');
+			throw new Kohana_Exception('eventable.invalid_observer', get_class($obj), get_class($this));
 
 		// Add a new listener
 		$this->listeners[spl_object_hash($obj)] = $obj;
@@ -33,7 +33,7 @@ abstract class Event_Subject implements SplSubject {
 	}
 
 	/**
-	 * Detach an observer from the the Eventable object.
+	 * Detach an observer from the object.
 	 *
 	 * @chainable
 	 * @param   object  Event_Observer
@@ -42,7 +42,7 @@ abstract class Event_Subject implements SplSubject {
 	public function detach(SplObserver $obj)
 	{
 		if ( ! ($obj instanceof Event_Observer))
-			throw new Kohana_Exception('eventable.invalid_observer');
+			throw new Kohana_Exception('eventable.invalid_observer', get_class($obj), get_class($this));
 
 		// Notify the observer of removal
 		$this->listeners[spl_object_hash($obj)]->remove();
@@ -70,4 +70,4 @@ abstract class Event_Subject implements SplSubject {
 		return $this;
 	}
 
-} // End Eventable
+} // End Event Subject
