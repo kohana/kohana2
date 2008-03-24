@@ -45,11 +45,65 @@ class Calendar_Core extends Event_Subject {
 	/**
 	 * Calendar_Event factory method.
 	 *
+	 * @param   string  standard event type
 	 * @return  object  Calendar_Event
 	 */
-	public function event()
+	public function event($type = NULL)
 	{
 		return new Calendar_Event($this);
+	}
+
+	public function standard($name)
+	{
+		switch ($name)
+		{
+			case 'today':
+				// Add an event for the current day
+				$this->attach($this->event()->condition('timestamp', strtotime('today'))->add_class('today'));
+			break;
+			case 'prev-next':
+				// Add an event for padding days
+				$this->attach($this->event()->condition('current', FALSE)->add_class('prev-next'));
+			break;
+			case 'holidays':
+				// Base event
+				$event = $this->event()->condition('current', TRUE)->add_class('holiday');
+
+				// Attach New Years
+				$holiday = clone $event;
+				$this->attach($holiday->condition('month', 1)->condition('day', 1));
+
+				// Attach Memorial Day
+				$holiday = clone $event;
+				$this->attach($holiday->condition('month', 5)->condition('day_of_week', 1)->condition('last_occurrence', TRUE));
+
+				// Attach Independance Day
+				$holiday = clone $event;
+				$this->attach($holiday->condition('month', 7)->condition('day', 4));
+
+				// Attach Labor Day
+				$holiday = clone $event;
+				$this->attach($holiday->condition('month', 9)->condition('day_of_week', 1)->condition('occurrence', 1));
+
+				// Attach Halloween
+				$holiday = clone $event;
+				$this->attach($holiday->condition('month', 10)->condition('day', 31));
+
+				// Attach Thanksgiving
+				$holiday = clone $event;
+				$this->attach($holiday->condition('month', 11)->condition('day_of_week', 4)->condition('occurrence', 4));
+
+				// Attach Christmas
+				$holiday = clone $event;
+				$this->attach($holiday->condition('month', 12)->condition('day', 25));
+			break;
+			case 'weekends':
+				// Weekend events
+				$this->attach($this->event()->condition('weekend', TRUE)->add_class('weekend'));
+			break;
+		}
+
+		return $this;
 	}
 
 	/**
@@ -75,6 +129,7 @@ class Calendar_Core extends Event_Subject {
 
 		// Number of days added. When this reaches 7, start a new month
 		$days = 0;
+		$week_number = 1;
 
 		if (($w = (int) date('w', $first)) > $this->week_start)
 		{
@@ -85,7 +140,7 @@ class Calendar_Core extends Event_Subject {
 			for($i = $n - $w, $t = $w - $this->week_start; $t > 0; $t--, $i++)
 			{
 				// Notify the listeners
-				$this->notify(array(mktime(0, 0, 0, $this->month - 1, $i, $this->year), FALSE));
+				$this->notify(array($this->month - 1, $i, $this->year, $week_number, FALSE));
 
 				// Add previous month padding days
 				$week[] = array($i, FALSE, $this->observed_data);
@@ -101,10 +156,12 @@ class Calendar_Core extends Event_Subject {
 				// Start a new week
 				$month[] = $week;
 				$week = array();
+
+				$week_number++;
 			}
 
 			// Notify the listeners
-			$this->notify(array(mktime(0, 0, 0, $this->month, $i, $this->year), TRUE));
+			$this->notify(array($this->month, $i, $this->year, $week_number, TRUE));
 
 			// Add days to this month
 			$week[] = array($i, TRUE, $this->observed_data);
@@ -117,12 +174,16 @@ class Calendar_Core extends Event_Subject {
 			for ($i = 1, $t = 6 - $w; $t > 0; $t--, $i++)
 			{
 				// Notify the listeners
-				$this->notify(array(mktime(0, 0, 0, $this->month + 1, $i, $this->year), FALSE));
+				$this->notify(array($this->month + 1, $i, $this->year, $week_number, FALSE));
 
 				// Add next month padding days
 				$week[] = array($i, FALSE, $this->observed_data);
 			}
+		}
 
+		if ( ! empty($week))
+		{
+			// Append the remaining days
 			$month[] = $week;
 		}
 
@@ -138,8 +199,14 @@ class Calendar_Core extends Event_Subject {
 	 */
 	public function add_data(array $data)
 	{
+		// Add new classes
 		$this->observed_data['classes'] += $data['classes'];
-		$this->observed_data['output'][] = $data['output'];
+
+		if ( ! empty($data['output']))
+		{
+			// Only add output if it's not empty
+			$this->observed_data['output'][] = $data['output'];
+		}
 	}
 
 	/**
@@ -148,7 +215,7 @@ class Calendar_Core extends Event_Subject {
 	 * @param   integer  UNIX timestamp
 	 * @return  void
 	 */
-	public function notify($date)
+	public function notify($data)
 	{
 		// Reset observed data
 		$this->observed_data = array
@@ -158,7 +225,7 @@ class Calendar_Core extends Event_Subject {
 		);
 
 		// Send a notify
-		parent::notify($date);
+		parent::notify($data);
 	}
 
 	/**
