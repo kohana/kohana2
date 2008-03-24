@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Calendar_Core {
+class Calendar_Core extends Event_Subject {
 
 	// Month and year to use for calendaring
 	protected $month;
@@ -18,8 +18,8 @@ class Calendar_Core {
 	// Start the calendar on Sunday by default
 	public $week_start = 0;
 
-	// Event data
-	public $events;
+	// Observed data
+	protected $observed_data;
 
 	/**
 	 * Create a new Calendar instance. A month and year can be specified.
@@ -42,12 +42,14 @@ class Calendar_Core {
 		($start_monday === TRUE) and $this->week_start = 1;
 	}
 
-	public function events()
+	/**
+	 * Calendar_Event factory method.
+	 *
+	 * @return  object  Calendar_Event
+	 */
+	public function event()
 	{
-		if (func_num_args() === 0)
-			return;
-
-		$this->events = func_get_args();
+		return new Calendar_Event($this);
 	}
 
 	/**
@@ -82,8 +84,11 @@ class Calendar_Core {
 			// i = number of day, t = number of days to pad
 			for($i = $n - $w, $t = $w - $this->week_start; $t > 0; $t--, $i++)
 			{
+				// Notify the listeners
+				$this->notify(array(mktime(0, 0, 0, $this->month - 1, $i, $this->year), FALSE));
+
 				// Add previous month padding days
-				$week[] = array($i, FALSE);
+				$week[] = array($i, FALSE, $this->observed_data);
 				$days++;
 			}
 		}
@@ -98,8 +103,11 @@ class Calendar_Core {
 				$week = array();
 			}
 
+			// Notify the listeners
+			$this->notify(array(mktime(0, 0, 0, $this->month, $i, $this->year), TRUE));
+
 			// Add days to this month
-			$week[] = array($i, TRUE);
+			$week[] = array($i, TRUE, $this->observed_data);
 			$days++;
 		}
 
@@ -108,14 +116,49 @@ class Calendar_Core {
 			// i = number of day, t = number of days to pad
 			for ($i = 1, $t = 6 - $w; $t > 0; $t--, $i++)
 			{
+				// Notify the listeners
+				$this->notify(array(mktime(0, 0, 0, $this->month + 1, $i, $this->year), FALSE));
+
 				// Add next month padding days
-				$week[] = array($i, FALSE);
+				$week[] = array($i, FALSE, $this->observed_data);
 			}
 
 			$month[] = $week;
 		}
 
 		return $month;
+	}
+
+	/**
+	 * Adds new data from an observer. All event data contains and array of CSS
+	 * classes and an array of output messages.
+	 *
+	 * @param   array  observer data.
+	 * @return  void
+	 */
+	public function add_data(array $data)
+	{
+		$this->observed_data['classes'] += $data['classes'];
+		$this->observed_data['output'][] = $data['output'];
+	}
+
+	/**
+	 * Resets the observed data and sends a notify to all attached events.
+	 *
+	 * @param   integer  UNIX timestamp
+	 * @return  void
+	 */
+	public function notify($date)
+	{
+		// Reset observed data
+		$this->observed_data = array
+		(
+			'classes' => array(),
+			'output' => array(),
+		);
+
+		// Send a notify
+		parent::notify($date);
 	}
 
 	/**
@@ -130,7 +173,6 @@ class Calendar_Core {
 			'month'  => $this->month,
 			'year'   => $this->year,
 			'weeks'  => $this->weeks(),
-			'events' => $this->events,
 		));
 
 		return $view->render();
