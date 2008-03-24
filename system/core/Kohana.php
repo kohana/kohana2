@@ -373,14 +373,16 @@ class Kohana {
 				'{kohana_version}',
 				'{kohana_codename}',
 				'{execution_time}',
-				'{memory_usage}'
+				'{memory_usage}',
+				'{included_files}',
 			),
 			array
 			(
 				KOHANA_VERSION,
 				KOHANA_CODENAME,
 				$benchmark['time'],
-				number_format($memory, 2).'MB'
+				number_format($memory, 2).'MB',
+				count(get_included_files()),
 			),
 			$output
 		);
