@@ -41,12 +41,6 @@ abstract class Event_Subject implements SplSubject {
 	 */
 	public function detach(SplObserver $obj)
 	{
-		if ( ! ($obj instanceof Event_Observer))
-			throw new Kohana_Exception('eventable.invalid_observer', get_class($obj), get_class($this));
-
-		// Notify the observer of removal
-		$this->listeners[spl_object_hash($obj)]->remove();
-
 		// Remove the listener
 		unset($this->listeners[spl_object_hash($obj)]);
 

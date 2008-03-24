@@ -1,8 +1,5 @@
 <?php
 
-$first_day = mktime(1, 0, 0, $month, 1, $year);
-$today = (date('Y/m') === date('Y/m', $first_day)) ? (int) date('j') : FALSE;
-
 /**
  * @todo This needs to be moved to an i18n file, or be configured in the library.
  */
@@ -10,7 +7,7 @@ $headings = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
 
 ?>
 <table class="calendar">
-<caption><?php echo strftime('%B %Y', $first_day) ?></caption>
+<caption><?php echo strftime('%B %Y', mktime(0, 0, 0, $month, 1, $year)) ?></caption>
 <tr>
 <?php
 
@@ -45,15 +42,6 @@ else
 {
 	$classes = array();
 	$output = '';
-}
-
-if ($current === FALSE)
-{
-	$classes[] = 'prev-next';
-}
-elseif ($today > 0 AND $day[0] === $today)
-{
-	$classes[] = 'today';;
 }
 
 ?>

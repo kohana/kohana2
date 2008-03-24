@@ -22,11 +22,8 @@ abstract class Event_Observer implements SplObserver {
 	 */
 	public function __construct(SplSubject $caller)
 	{
-		if ( ! ($caller instanceof Event_Subject))
-			throw new Kohana_Exception('event.invalid_subject', get_class($caller), get_class($this));
-
-		// Set the caller
-		$this->caller = $caller;
+		// Update the caller
+		$this->update($caller);
 	}
 
 	/**

@@ -73,6 +73,10 @@ class Calendar_Core extends Event_Subject {
 				$holiday = clone $event;
 				$this->attach($holiday->condition('month', 1)->condition('day', 1));
 
+				// Attach New Years
+				$holiday = clone $event;
+				$this->attach($holiday->condition('easter', TRUE));
+
 				// Attach Memorial Day
 				$holiday = clone $event;
 				$this->attach($holiday->condition('month', 5)->condition('day_of_week', 1)->condition('last_occurrence', TRUE));
