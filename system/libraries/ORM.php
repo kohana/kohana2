@@ -387,17 +387,6 @@ class ORM_Core {
 			}
 			else
 			{
-				// Possible other direction to search
-				$fk = inflector::singular($table).'_id';
-
-				echo Kohana::debug($fk);exit;
-
-				if (isset($this->object->$fk))
-				{
-					// Change the remote search
-					$remote = array($fk => $this->object->$fk);
-				}
-
 				// Find one<>many relationships
 				$model->where($remote);
 			}
