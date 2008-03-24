@@ -29,6 +29,9 @@ class Validation_Core extends ArrayObject {
 	protected $errors = array();
 	protected $messages = array();
 
+	// Checks if there is data to validate.
+	protected $submitted;
+
 	/**
 	 * Creates a new Validation instance.
 	 *
@@ -51,6 +54,9 @@ class Validation_Core extends ArrayObject {
 	{
 		// Set a dynamic, unique "any field" key
 		$this->any_field = uniqid(NULL, TRUE);
+
+		// Test if there is any actual data
+		$this->submitted = (count($array) > 0);
 
 		parent::__construct($array, ArrayObject::ARRAY_AS_PROPS | ArrayObject::STD_PROP_LIST);
 	}
@@ -311,9 +317,6 @@ class Validation_Core extends ArrayObject {
 			array_keys($this->post_filters)
 		));
 
-		// Only run validation when POST data exists
-		$run_validation = (count($this) > 0);
-
 		foreach ($all_fields as $i => $field)
 		{
 			if ($field === $this->any_field)
@@ -327,7 +330,7 @@ class Validation_Core extends ArrayObject {
 			isset($this[$field]) or $this[$field] = NULL;
 		}
 
-		if ($run_validation === FALSE)
+		if ($this->submitted === FALSE)
 			return FALSE;
 
 		// Reset all fields to ALL defined fields
