@@ -5,9 +5,21 @@
  */
 $headings = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
 
+// Previous and next month timestamps
+$next = mktime(0, 0, 0, $month + 1, 1, $year);
+$prev = mktime(0, 0, 0, $month - 1, 1, $year);
+
+// Previous and next month query URIs
+$prev = Router::$current_uri.'?'.http_build_query(array_merge($_GET, array('month' => date('n', $prev), 'year' => date('Y', $prev))));
+$next = Router::$current_uri.'?'.http_build_query(array_merge($_GET, array('month' => date('n', $next), 'year' => date('Y', $next))));
+
 ?>
 <table class="calendar">
-<caption><?php echo strftime('%B %Y', mktime(0, 0, 0, $month, 1, $year)) ?></caption>
+<tr class="controls">
+<td class="prev"><?php echo html::anchor($prev, '&laquo;') ?></td>
+<td class="title" colspan="5"><?php echo strftime('%B %Y', mktime(0, 0, 0, $month, 1, $year)) ?></td>
+<td class="next"><?php echo html::anchor($next, '&raquo;') ?></td>
+</tr>
 <tr>
 <?php
 
