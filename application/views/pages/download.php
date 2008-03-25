@@ -1,6 +1,6 @@
 <h2><span>Total Downloads: <?php echo $counter ?></span>Download Kohana v<?php echo $release_version ?></h2>
 
-<?php echo form::open('download', array('method' => 'get')) ?> 
+<?php echo form::open('download', array('method' => 'get', 'id' => 'downloadBuilder')) ?> 
 
 <p style="font-size:1.2em">All Kohana libraries, helpers, and views are included in this download, but you may select your modules, vendor tools, and languages below.</p>
 
@@ -76,5 +76,32 @@ endforeach;
 </ul>
 </fieldset>
 
-<?php echo form::button(array('type' => 'submit'), 'Download Kohana!') ?> 
-<?php echo form::close() ?> 
+<?php echo form::button(array('type' => 'submit', 'id' => 'downloadBuilderSubmit'), 'Download Kohana!') ?>
+<fieldset>
+  <span id="downloadUrlDisplay" class="legend" style="display: hidden"> </span>
+</fieldset>
+<?php echo form::close() ?>
+
+<script type="text/javascript">
+<![CDATA[
+<!--
+  $(document).ready(function(){
+    $('#downloadBuilderSubmit').after(' or <?php echo form::button(array('type' => 'button', 'id' => 'queryViewButton'), 'See download URL') ?>');
+
+    $('#queryViewButton').click(function()
+    {
+      $(this).html('Refresh download URL');
+      var queryString = '?';
+      jQuery.each($('#downloadBuilder input'), function(i, value)
+      {
+        if($(value).attr('checked'))
+          queryString += encodeURI($(value).attr('name'))+'='+encodeURI($(value).attr('value'));
+      });
+      var url = $('#downloadBuilder').attr('action') + queryString;
+      $('#downloadUrlDisplay').html(url).css({display:'inline'});
+    });
+
+  });
+//-->
+]]>
+</script>
