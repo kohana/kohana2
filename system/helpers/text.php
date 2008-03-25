@@ -95,10 +95,11 @@ class text_Core {
 	 * @param   integer  length of string to return
 	 * @return  string
 	 *
-	 * @tutorial  alnum   - alpha-numeric characters
-	 * @tutorial  alpha   - alphabetical characters
-	 * @tutorial  numeric - digit characters, 0-9
-	 * @tutorial  nozero  - digit characters, 1-9
+	 * @tutorial  alnum    - alpha-numeric characters
+	 * @tutorial  alpha    - alphabetical characters
+	 * @tutorial  numeric  - digit characters, 0-9
+	 * @tutorial  nozero   - digit characters, 1-9
+	 * @tutorial  distinct - clearly distinct alpha-numeric characters
 	 */
 	public static function random($type = 'alnum', $length = 8)
 	{
@@ -117,6 +118,9 @@ class text_Core {
 			break;
 			case 'nozero':
 				$pool = '123456789';
+			break;
+			case 'distinct':
+				$pool = '2345679ACDEFGHJKLMNPRSTUVWXYZ';
 			break;
 			default:
 				$pool = (string) $type;
