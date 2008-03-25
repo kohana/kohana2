@@ -171,6 +171,12 @@ class Calendar_Event_Core extends Event_Observer {
 			$condition['last_occurrence'] = ((int) date('n', $timestamp + 604800) !== $condition['month']);
 		}
 
+		if (isset($this->conditions['modulus']))
+		{
+			// Test if the week number matches
+			$condition['modulus'] = (date('W', $timestamp) === $this->conditions['modulus']);
+		}
+
 		if (isset($this->conditions['easter']))
 		{
 			if ($condition['month'] === 3 OR $condition['month'] === 4)
@@ -215,7 +221,7 @@ class Calendar_Event_Core extends Event_Observer {
 
 		foreach (array_diff_key($this->conditions, $tested) as $key => $value)
 		{
-			if ($key === 'callback')
+			if ($key === 'callback' OR $key === 'modulus')
 			{
 				// Callbacks are tested on a TRUE/FALSE basis
 				$value = TRUE;
