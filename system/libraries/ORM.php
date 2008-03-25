@@ -181,7 +181,7 @@ class ORM_Core {
 	{
 		if ($key != 'id' AND isset(self::$fields[$this->table][$key]))
 		{
-			if ($this->object->$key != $value)
+			if ($this->object->$key !== $value)
 			{
 				// Set new value
 				$this->object->$key = $value;
