@@ -1,4 +1,4 @@
-<p>The following tables must be installed in your database: users, roles, and users_roles. If you have no already installed these tables, please run the following query:</p>
+<p>The following tables must be installed in your database: users, roles, and users_roles. If you have not already installed these tables, please run the following query:</p>
 
 <pre>
 CREATE TABLE IF NOT EXISTS `roles` (
