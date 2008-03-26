@@ -92,7 +92,7 @@ class url_Core {
 		}
 
 		$index_page = Config::item('core.index_page', TRUE);
-		$url_suffix = ($uri != '') ? Config::item('core.url_suffix') : '';
+		$url_suffix = ($uri !== '') ? Config::item('core.url_suffix') : '';
 
 		return url::base(FALSE, $protocol).$index_page.$uri.$url_suffix.$qs.$id;
 	}

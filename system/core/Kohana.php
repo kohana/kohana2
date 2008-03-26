@@ -551,7 +551,7 @@ class Kohana {
 		{
 			// Get the i18n messages
 			$error = Kohana::lang('core.generic_error');
-			$message = sprintf(Kohana::lang('core.errors_disabled'), url::site(''), url::site(Router::$current_uri));
+			$message = sprintf(Kohana::lang('core.errors_disabled'), url::site(), url::site(Router::$current_uri));
 
 			// Load the errors_disabled view
 			include self::find_file('views', 'kohana_error_disabled');

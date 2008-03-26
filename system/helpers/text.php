@@ -269,6 +269,34 @@ class text_Core {
 	}
 
 	/**
+	 * Automatically adds <p> tags around paragraphs.
+	 *
+	 * @param   string   subject
+	 * @return  string
+	 */
+	public static function auto_p($str)
+	{
+		// Trim whitespace
+		if (($str = trim($str)) === '')
+			return '';
+
+		// Standardize newlines
+		$str = str_replace(array("\r\n", "\r"), "\n", $str);
+
+		// Kill stray whitespace
+		$str = preg_replace('~^[ \t]++$~m', '', $str);
+
+		// Do the <p> magic!
+		$str = '<p>'.$str.'</p>';
+		$str = preg_replace('~\n\n+~', "</p>\n\n<p>", $str);
+
+		// Some html elements should not be surrounded by <p> tags
+		$no_p = '(?:p|div|h[1-6r]|[uod]l|pre|blockquote|table|form|style)';
+		$str = preg_replace('~<p>(?=<'.$no_p.'[^>]*+>)~i', '', $str);
+		return preg_replace('~(</'.$no_p.'>)</p>~i', '$1', $str);
+	}
+
+	/**
 	 * Returns human readable sizes.
 	 * @see  Based on original functions written by:
 	 * @see  Aidan Lister: http://aidanlister.com/repos/v/function.size_readable.php
