@@ -571,7 +571,7 @@ class Database_Core {
 
 			if ($val != '')
 			{
-				$this->groupby[] = $val;
+				$this->groupby[] = $this->driver->escape_column($val);
 			}
 		}
 
