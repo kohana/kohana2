@@ -1005,7 +1005,7 @@ class Database_Core {
 	 *
 	 * @return  void
 	 */
-	private function reset_select()
+	protected function reset_select()
 	{
 		$this->select   = array();
 		$this->from     = array();
@@ -1024,7 +1024,7 @@ class Database_Core {
 	 *
 	 * @return  void
 	 */
-	private function reset_write()
+	protected function reset_write()
 	{
 		$this->set   = array();
 		$this->from  = array();
