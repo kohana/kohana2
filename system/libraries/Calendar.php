@@ -43,6 +43,20 @@ class Calendar_Core extends Event_Subject {
 	}
 
 	/**
+	 * Allows fetching the current month and year.
+	 *
+	 * @param   string  key to get
+	 * @return  mixed
+	 */
+	public function __get($key)
+	{
+		if ($key === 'month' OR $key === 'year')
+		{
+			return $this->$key;
+		}
+	}
+
+	/**
 	 * Calendar_Event factory method.
 	 *
 	 * @param   string  standard event type

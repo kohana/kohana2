@@ -9,9 +9,13 @@ $headings = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
 $next = mktime(0, 0, 0, $month + 1, 1, $year);
 $prev = mktime(0, 0, 0, $month - 1, 1, $year);
 
+// Import the GET query array locally and remove the day
+$qs = $_GET;
+unset($qs['day']);
+
 // Previous and next month query URIs
-$prev = Router::$current_uri.'?'.http_build_query(array_merge($_GET, array('month' => date('n', $prev), 'year' => date('Y', $prev))));
-$next = Router::$current_uri.'?'.http_build_query(array_merge($_GET, array('month' => date('n', $next), 'year' => date('Y', $next))));
+$prev = Router::$current_uri.'?'.http_build_query(array_merge($qs, array('month' => date('n', $prev), 'year' => date('Y', $prev))));
+$next = Router::$current_uri.'?'.http_build_query(array_merge($qs, array('month' => date('n', $next), 'year' => date('Y', $next))));
 
 ?>
 <table class="calendar">
