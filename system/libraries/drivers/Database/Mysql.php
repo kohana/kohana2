@@ -293,6 +293,9 @@ class Database_Mysql_Driver extends Database_Driver {
 			}
 		}
 
+		if (!isset($tables[$table]))
+			throw new Kohana_Database_Exception('database.table_not_found', $table);
+
 		return $tables[$table];
 	}
 
