@@ -221,7 +221,7 @@ class text_Core {
 	 */
 	public static function auto_link($text)
 	{
-		return text::auto_link_emails(text::auto_link_urls($text));
+		return text::auto_link_urls(text::auto_link_emails($text));
 	}
 
 	/**
