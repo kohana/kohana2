@@ -23,6 +23,19 @@ class valid_Core {
 	}
 
 	/**
+	 * Validate the domain of an email address by checking if the domain has a
+	 * valid MX record.
+	 *
+	 * @param   string   email address
+	 * @return  boolean
+	 */
+	public static function email_domain($email)
+	{
+		// Check if the email domain has a valid MX record
+		return (bool) checkdnsrr(preg_replace('/^.+@(.+)$/', '$1', $email), 'MX');
+	}
+
+	/**
 	 * Validate email, RFC compliant version
 	 * Note: This function is LESS strict than valid_email. Choose carefully.
 	 *
