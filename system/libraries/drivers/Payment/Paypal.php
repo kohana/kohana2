@@ -1,121 +1,274 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Paypal Payment Driver
+ * Paypal Payment Driver. Express Checkout transactions consist of 3 stages with
+ * a separate API call for each: SetExpressCheckout, GetExpressCheckout (optional)
+ * and DoExpressCheckout. This class has a corresponding array of fields for each
+ * call these are used to construct the required name value pairs for the request
+ * to each API call.
  *
- * You have to set payerid after authorizing with paypal:
- * $this->paypment->payerid = $this->input->get('payerid');
+ * $Id: Paypal.php 1978 2008-03-25 12:05:32GMT by atomless -
  *
- * $Id$
  *
  * @package    Payment
  * @author     Kohana Team
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
- */
+*/
 class Payment_Paypal_Driver implements Payment_Driver {
 
+	// this array details the required fields within the arrays $set_express_checkout_fields,
+	// $get_express_checkout_fields, $do_express_checkout_fields as well as the
+	// fields wihtin api_connection and api_authorization
 	private $required_fields = array
 	(
-		'API_UserName'  => FALSE,
-		'API_Password'  => FALSE,
-		'API_Signature' => FALSE,
-		'API_Endpoint'  => TRUE,
-		'version'       => TRUE,
-		'Amt'           => FALSE,
-		'PAYMENTACTION' => TRUE,
-		'ReturnUrl'     => FALSE,
+		'ENDPOINT'      => FALSE,
+
+		'USER'          => FALSE,
+		'PWD'           => FALSE,
+		'SIGNATURE'     => FALSE,
+		'VERSION'       => FALSE,
+
+		'RETURNURL'     => FALSE,
 		'CANCELURL'     => FALSE,
-		'CURRENCYCODE'  => TRUE
+		'PAYPALURL'     => FALSE,
+
+		'PAYMENTACTION' => FALSE,
+
+		'CURRENCYCODE'  => FALSE, // default is USD - only required if other currency needed
+		'AMT'           => FALSE, // payment amount
 	);
 
-	private $paypal_values = array
+
+	//-- RESPONSE to setExpressCheckout calls will take the form:
+	//-- https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token={20 single byte character timestamped token}
+	//-- this token is passed back and forth throughout the stages of the express checkout process
+
+	private $set_express_checkout_fields = array
 	(
-		'API_UserName'  => '',
-		'API_Password'  => '',
-		'API_Signature' => '',
-		'API_Endpoint'  => 'https://api-3t.paypal.com/nvp',
-		'version'       => '3.2',
-		'Amt'           => 0,
-		'PAYMENTACTION' => 'Sale',
-		'ReturnUrl'     => '',
+		//-- REQUIRED --//
+		'METHOD'        => 'SetExpressCheckout',
+
+		'RETURNURL'     => '',
 		'CANCELURL'     => '',
-		'error_url'     => '',
-		'CURRENCYCODE'  => 'USD',
-		'payerid'       => ''
+
+		'AMT'           => '', // payment amount - MUST include decimal point followed by two further digits
+
+		//-- OPTIONAL --//
+		'CURRENCYCODE'  => '', // default is USD - only required if other currency needed
+		'MAXAMT'        => '',
+
+		'PAYMENTACTION' => '', // 'Sale', 'Authorization' or 'Order' see: https://www.paypal.com/en_US/ebook/PP_NVPAPI_DeveloperGuide/Appx_fieldreference.html#2557853
+
+		// USERACTION defaults to 'continue'
+		// if set to 'commit' the submit button on the paypal site transaction page is labelled 'Pay'
+		// instead of 'continue' - meaning that you can just go ahead and call DoExpressCheckout
+		// right away on the RETURNURL page on your site without needing a further order review page
+		// with a 'pay now' button.
+		'USERACTION'    => 'continue',
+
+		'INVNUM'        => '', // Your own unique invoice / tracking number
+
+
+		//-- set ADDROVERRIDE to '1' if you want to collect the shipping address on your site
+		//-- and have that over-ride the user's stored details on paypal
+		//-- if set to '1' you will of course also need to pass the shipping details!
+		'ADDROVERRIDE'  => '0',
+
+		'SHIPTONAME'         => '',
+		'SHIPTOSTREET'       => '',
+		'SHIPTOSTREET2'      => '',
+		'SHIPTOCITY'         => '',
+		'SHIPTOSTATE'        => '',
+		'SHIPTOZIP'          => '',
+		'SHIPTOCOUNTRYCODE'  => '', // list of country codes here: https://www.paypal.com/en_US/ebook/PP_NVPAPI_DeveloperGuide/countrycodes_new.html#1006794
+
+		'LOCALECODE'    => 'US', // Defaults to 'US' - list of country codes here: https://www.paypal.com/en_US/ebook/PP_NVPAPI_DeveloperGuide/countrycodes_new.html#1006794
+
+		//-- If YOU WANT TO APPLY CUSTOM STYLING TO PAYAPAL PAGES - see under SetExpressCheckout Request for descriptions here: https://www.paypal.com/en_US/ebook/PP_NVPAPI_DeveloperGuide/Appx_fieldreference.html#2557853
+		'PAGESTYLE'     => '', //set this to match the name of any page style you set up in the profile subtab of your paypal account
+
+		'HDRIMG'        => '', //header image displayed top left, size: 750px x 90px. defaults to business name in text
+
+	// there are several other optional settings supported
+	// see under SetExpressCheckout Request here : https://www.paypal.com/en_US/ebook/PP_NVPAPI_DeveloperGuide/Appx_fieldreference.html#2557853
 	);
 
-	private $paypal_url = '';
+	private $get_express_checkout_fields = array
+	(
+		'METHOD' => 'GetExpressCheckoutDetails',
+		'TOKEN'  => '' // this token is retrieved from the response to the SetExpressCheckout call
+	);
+
+	//-- associative array filled by the paypal api response to a call to the GetExpressCheckout method
+	private $get_express_checkout_response = array();
+	// responses contain these fields:
+	// TOKEN
+	// EMAIL
+	// PAYERID     - paypal customer id -  13 single byte alpha numeric
+	// PAYERSTATUS - verified or unverified
+	// SALUTATION  - 20 single byte characters
+	// FIRSTNAME   - 25 single byte characters
+	// LASTNAME    - 25 single byte characters
+	// MIDDLENAME  - 25 single byte characters
+	// SUFFIX      - payer's suffix - 12 single byte character
+	// COUNTRYCODE - list of country codes here: https://www.paypal.com/en_US/ebook/PP_NVPAPI_DeveloperGuide/countrycodes_new.html#1006794
+	// BUSINESS    - payer's business name
+	// SHIPTONAME
+	// SHIPTOSTREET
+	// SHIPTOSTREET2
+	// SHIPTOCITY
+	// SHIPTOSTATE
+	// SHIPTOZIP
+	// SHIPTOCOUNTRYCODE
+	// ADDRESSSTATUS - status of the street address on file with paypal
+	// CUSTOM        - freeform field as optionally set by you in the setExpressCheckout call
+	// INVNUM        - invoice tracking number as optionally set by you in the setExpressCheckout call
+	// PHONENUM      -  Note: PayPal returns a contact telephone number only if your Merchant account profile settings require that the buyer enter one.
+	// REDIRECTREQUIRED - flag to indicate whether you need to redirect the customer to back to PayPal after completing the transaction.
+
+	private $do_express_checkout_fields = array
+	(
+		//-- REQUIRED --
+		'METHOD'        => 'DoExpressCheckoutPayment',
+		'TOKEN'         => '', // this token is retrieved from the response to the setExpressCheckout call
+		'PAYMENTACTION' => '', // 'Sale', 'Authorization' or 'Order' see: https://www.paypal.com/en_US/ebook/PP_NVPAPI_DeveloperGuide/Appx_fieldreference.html#2557853
+		'PAYERID'       => '',
+		'AMT'           => '', // payment amount - MUST include decimal point followed by two further digits
+
+		//-- OPTIONAL --
+		'CURRENCYCODE'  => '', // default is USD - only required if other currency needed
+		'INVNUM'        => '',
+		'ITEMAMT'       => '', // sum cost of all items in order not including shipping or handling
+		'SHIPPINGAMT'   => '',
+		'HANDLINGAMT'   => '',
+		'TAXAMT'        => '',
+
+		//-- OPTIONAL ORDER CONTENTS INFO
+		/* these fileds would obviously need setting dynamically but shown here as an example
+
+		'L_NAME0'   => '', // max 127 single-byte characters product/item name
+		'L_NUMBER0' => '', // max 127 single-byte characters product/item number
+		'L_QTY0'    => '', // positive integer
+		'L_TAXAMT0'  => '', // item sales tax amount
+		'L_AMT0'     => '', // cost of item
+
+		'L_NAME1'...
+
+		'L_NAME2'...
+
+		*/
+	);
+
+	private $api_authroization_fields = array
+	(
+		'USER'          => '',
+		'PWD'           => '',
+		'SIGNATURE'     => '',
+		'VERSION'       => '',
+	);
+
+
+	private $api_connection_fields = array
+	(
+		'ENDPOINT'      => '',
+		'PAYPALURL'     => '',
+		'ERRORURL'      => '',
+		'GETDETAILS'    => TRUE
+	);
+
+	private $array_of_arrays;
+
+	private $test_mode = TRUE;
+
+	private $nvp_response_array = array();
+	// after successful transaction $nvp_response_array will contain
+	// TOKEN           - The timestamped token value that was returned by SetExpressCheckout
+	// TRANSACTIONID   - Unique transaction ID of the payment. 19 single-byte characters
+	// TRANSACTIONTYPE - possible values: 'cart' or 'express-checkout'
+	// PAYMENTTYPE     - Indicates whether the payment is instant or delayed. possible values: 'non', 'echeck', 'instant'
+	// ORDERTIME       - Time/date stamp of payment
+	// AMT             - The final amount charged, including any generic shipping and taxes set in your Merchant Profile.
+	// CURRENCYCODE    - 3 char currency code:  https://www.paypal.com/en_US/ebook/PP_NVPAPI_DeveloperGuide/Appx_fieldreference.html#2557565
+	// FEEAMT          - PayPal fee amount charged for the transaction
+	// SETTLEAMT       - Amount deposited in your PayPal account after a currency conversion.
+	// TAXAMT          - Tax charged on the transaction.
+	// EXCHANGERATE    - Exchange rate if a currency conversion occurred.
+	// PAYMENTSTATUS   - possible values: 'Completed' or 'Pending'
+	// PENDINGREASON   - possible values: 'none', 'address', 'echeck', 'int1', 'multi-currency', 'verify', 'other'
+	// REASONCODE      - The reason for a reversal if TransactionType is reversal. possible values: 'none', 'chargeback', 'guarantee', 'buyer-complaint', 'refund', 'other'
+	// for more info see : https://www.paypal.com/en_US/ebook/PP_NVPAPI_DeveloperGuide/Appx_fieldreference.html#2557853
 
 	/**
-	 * Sets the config for the class.
-	 *
-	 * @param  array  config passed from the library
-	 */
+	* Sets the config for the class.
+	*
+	* @param  array  config passed from the library
+	*/
 	public function __construct($config)
 	{
-		$this->paypal_values['API_UserName']  = $config['API_UserName'];
-		$this->paypal_values['API_Password']  = $config['API_Password'];
-		$this->paypal_values['API_Signature'] = $config['API_Signature'];
-		$this->paypal_values['ReturnUrl']     = $config['ReturnUrl'];
-		$this->paypal_values['CANCELURL']     = $config['CANCELURL'];
-		$this->paypal_values['error_url']     = $config['CANCELURL'];
-		$this->paypal_values['CURRENCYCODE']  = $config['CURRENCYCODE'];
-		$this->paypal_values['API_Endpoint']  = ($config['test_mode']) ? 'https://api.sandbox.paypal.com/nvp' : 'https://api-3t.paypal.com/nvp';
+		$this->array_of_arrays = array
+		(
+			&$this->set_express_checkout_fields,
+			&$this->get_express_checkout_fields,
+			&$this->do_express_checkout_fields,
+			&$this->api_authroization_fields,
+			&$this->api_connection_fields
+		);
 
-		$this->paypal_url = ($config['test_mode'])
-		                  ? 'https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token='
-		                  : 'https://www.paypal.com/webscr&cmd=_express-checkout&token=';
+		$this->set_fields($config);
 
-		$this->required_fields['API_UserName']  = !empty($config['API_UserName']);
-		$this->required_fields['API_Password']  = !empty($config['API_Password']);
-		$this->required_fields['API_Signature'] = !empty($config['API_Signature']);
-		$this->required_fields['ReturnUrl']     = !empty($config['ReturnUrl']);
-		$this->required_fields['CANCELURL']     = !empty($config['CANCELURL']);
-		$this->required_fields['CURRENCYCODE']  = !empty($config['CURRENCYCODE']);
+		$this->test_mode = $config['test_mode'];
+
+		if($this->test_mode)
+		{
+			$this->api_authroization_fields['USER']      = $config['SANDBOX_USER'];
+			$this->api_authroization_fields['PWD']       = $config['SANDBOX_PWD'];
+			$this->api_authroization_fields['SIGNATURE'] = $config['SANDBOX_SIGNATURE'];
+
+			$this->api_connection_fields['ENDPOINT']     = $config['SANDBOX_ENDPOINT'];
+			$this->api_connection_fields['PAYPALURL']    = $config['SANDBOX_PAYPALURL'];
+		}
 
 		$this->curl_config = $config['curl_config'];
 
-		$this->session = new Session();
-		$this->input   = new Input();
+		$this->session = Session::instance();
 
 		Log::add('debug', 'PayPal Payment Driver Initialized');
 	}
 
-	public function set_fields($fields)
+	/**
+	*@desc set fields for nvp string
+	*/
+	public function set_fields($config)
 	{
-		foreach ((array) $fields as $key => $value)
+
+		foreach($config as $key => $val)
 		{
-			// Do variable translation
+			// Handle any necessary field name translation
 			switch($key)
 			{
 				case 'amount':
-					$key = 'Amt';
+				$key = 'AMT';
 				break;
 				default:
-				break;
 			}
 
-			$this->paypal_values[$key] = $value;
-
-			if (array_key_exists($key, $this->required_fields) AND !empty($value))
+			if(array_key_exists($key, $this->required_fields) AND !empty($val))
 			{
 				$this->required_fields[$key] = TRUE;
+			}
+
+			foreach($this->array_of_arrays as &$arr)
+			{
+				if(array_key_exists($key, $arr))
+				{
+					$arr[$key] = $val;
+				}
 			}
 		}
 	}
 
 	public function process()
 	{
-		// Make sure the payer ID is set. We do it here because it's not required the first time around.
-		if ($this->session->get('paypal_token') AND isset($this->paypal_values['payerid']))
-		{
-			$this->required_fields['payerid'] = TRUE;
-		}
-		elseif ($this->session->get('paypal_token'))
-		{
-			$this->required_fields['payerid'] = FALSE;
-		}
-
 		// Check for required fields
 		if (in_array(FALSE, $this->required_fields))
 		{
@@ -131,94 +284,168 @@ class Payment_Paypal_Driver implements Payment_Driver {
 			throw new Kohana_Exception('payment.required', implode(', ', $fields));
 		}
 
-		if ( ! $this->session->get('paypal_token'))
+		// stage 1 - if no token yet set then we know we just need to run set_express_checkout
+		$paypal_token = $this->session->get('paypal_token', FALSE);
+		if ( ! $paypal_token)
 		{
-			$this->paypal_login();
+			$this->set_express_checkout();
 			return FALSE;
 		}
+		else
+		{
+			$this->set_fields(array('TOKEN' => $paypal_token));
+		}
 
-		// Post data for submitting to server
-		$data = '&TOKEN='.$this->session->get('paypal_token').
-		        '&PAYERID='.$this->paypal_values['payerid'].
-		        '&IPADDRESS='.urlencode($_SERVER['SERVER_NAME']).
-		        '&Amt='.$this->paypal_values['Amt'].
-		        '&PAYMENTACTION='.$this->paypal_values['PAYMENTACTION'].
-		        '&ReturnUrl='.$this->paypal_values['ReturnUrl'].
-		        '&CANCELURL='.$this->paypal_values['CANCELURL'] .
-		        '&CURRENCYCODE='.$this->paypal_values['CURRENCYCODE'].'&COUNTRYCODE=US';
+		// stage 2 (optional) retrieve the user info from paypal and store it in the get_express_checkout_response array
+		// --------------------------------------------------------------------------------
+		// *note: if you don't wish to record the user info (shipping address etc)
+		//        then you can skip this stage by setting GETDETAILS to FALSE
+		//        like so:
+		//        $this->payment = new Payment('Paypal');
+		//        $this->payment->GETDETAILS = FALSE;
+		// IMPORTANT - if you do choose to skip this step you will need to extract
+		//             the PayerID from the $_GET array in the method targeted by RETURNURL
+		//             and use the value to set the PAYERID value of your payment object
+		//             eg:
+		//             $this->payment = new Payment('Paypal');
+		//             $this->payment->PAYERID = $this->input->get('PayerID');
+		// --------------------------------------------------------------------------------
+		if($this->api_connection_fields['GETDETAILS'])
+		{
+			$this->get_express_checkout();
+		}
 
-		$response    = $this->contact_paypal('DoExpressCheckoutPayment', $data);
-		$nvpResArray = $this->deformatNVP($response);
+		// stage 3
+		if(empty($this->do_express_checkout_fields['PAYERID']))
+		{
+			throw new Kohana_Exception('payment.required', 'PAYERID');
+		}
 
-		return ($nvpResArray['ACK'] == TRUE);
+		$this->do_express_checkout_payment();
+
+		return (strtoupper($this->nvp_response_array['ACK']) == 'Success') ? TRUE : array_merge($this->nvp_response_array, $this->get_express_checkout_response);
 	}
 
 	/**
-	 * Runs paypal authentication.
-	 */
-	protected function paypal_login()
+	* (stage 1)
+	* Runs paypal authentication and sets up express checkout options (stage 1)
+	*/
+	protected function set_express_checkout()
 	{
-		$data = '&AMT='.urlencode($this->paypal_values['Amt']).
-		        //'&PAYMENTACTION='.$this->paypal_values['PAYMENTACTION'].
-		        '&RETURNURL='.urlencode($this->paypal_values['ReturnUrl']).
-		        '&CANCELURL='.urlencode($this->paypal_values['CANCELURL']);
+		$nvp_str = http_build_query($this->remove_empty_optional_fields($this->set_express_checkout_fields));
 
-		$reply = $this->contact_paypal('SetExpressCheckout', $data);
-		$this->session->set(array('reshash' => $reply));
+		$response = $this->make_paypal_api_request($nvp_str);
 
-		$reply = $this->deformatNVP($reply);
-		$ack   = strtoupper($reply['ACK']);
+		parse_str(urldecode($response),$response_array);
 
-		if ($ack == 'SUCCESS')
+		if (strtoupper($response_array['ACK']) == 'SUCCESS')
 		{
-			$paypal_token = urldecode($reply['TOKEN']);
+			$paypal_token = $response_array['TOKEN'];
 
 			// Redirect to paypal.com here
-			$this->session->set(array('paypal_token' => $paypal_token));
+			$this->session->set('paypal_token', urldecode($paypal_token));
 
 			// We are off to paypal to login!
-			url::redirect($this->paypal_url.$paypal_token);
+			if($this->set_express_checkout_fields['USERACTION']=='commit')
+			{
+				url::redirect($this->api_connection_fields['PAYPALURL'].$paypal_token.'&useraction=commit');
+			}
+			else
+			{
+				url::redirect($this->api_connection_fields['PAYPALURL'].$paypal_token);
+			}
 		}
 		else // Something went terribly wrong...
 		{
-			Log::add('error', Kohana::debug($reply));
-			url::redirect($this->paypal_values['error_url']);
+			throw new Kohana_User_Exception('SetExpressCheckout ERROR', KOHANA::debug($response_array));
+
+			Log::add('error', Kohana::debug('SetExpressCheckout response:'.$response_array));
+			//url::redirect($this->api_connection_fields['ERRORURL']);
 		}
 	}
 
 	/**
-	 * Runs the CURL methods to communicate with paypal.
-	 *
-	 * @param   string  paypal API call to run
-	 * @param   string  any additional query string data to send to paypal
-	 * @return  mixed
-	 */
-	protected function contact_paypal($method, $data)
+	* (stage 2)
+	* Retrieves all the user info from paypal and stores it in the get_express_checkout_response array
+	*
+	*/
+	protected function get_express_checkout()
 	{
-		$final_data = 'USER='.urlencode($this->paypal_values['API_UserName']).
-		              '&PWD='.urlencode($this->paypal_values['API_Password']).
-		              '&SIGNATURE='.urlencode($this->paypal_values['API_Signature']).
-		              '&VERSION='.urlencode($this->paypal_values['version']).
-		              '&METHOD='.urlencode($method).$data;
+		$nvp_str = http_build_query($this->get_express_checkout_fields);
 
-		Log::add('debug', 'Connecting to '.$this->paypal_values['API_Endpoint']);
-		$ch = curl_init($this->paypal_values['API_Endpoint']);
+		$response = $this->make_paypal_api_request($nvp_str);
+
+		parse_str(urldecode($response),$this->get_express_checkout_response);
+
+		if (strtoupper($this->get_express_checkout_response['ACK']) == 'SUCCESS')
+		{
+			$this->set_fields(array('PAYERID' => $this->get_express_checkout_response['PAYERID']));
+		}
+		else // Something went terribly wrong...
+		{
+			throw new Kohana_User_Exception('GetExpressCheckout ERROR', KOHANA::debug($this->get_express_checkout_response));
+
+			Log::add('error', Kohana::debug('GetExpressCheckout response:'.$response));
+			url::redirect($this->api_connection_fields['ERRORURL']);
+		}
+	}
+
+	/**
+	* (stage 3)
+	* complete paypal transaction - store response in nvp_response_array
+	*
+	*/
+	protected function do_express_checkout_payment()
+	{
+		$nvp_qstr = http_build_query($this->remove_empty_optional_fields($this->do_express_checkout_fields));
+
+		$response = $this->make_paypal_api_request($nvp_qstr);
+
+		parse_str(urldecode($response),$this->nvp_response_array);
+
+		if (strtoupper($this->nvp_response_array['ACK']) != 'SUCCESS')
+		{
+			throw new Kohana_User_Exception('DoExpressCheckoutPayment ERROR', KOHANA::debug($this->nvp_response_array));
+
+			Log::add('error', Kohana::debug('GetExpressCheckout response:'.$response));
+			url::redirect($this->api_connection_fields['ERRORURL']);
+		}
+	}
+
+	/**
+	* Runs the CURL methods to communicate with paypal.
+	*
+	* @param   string  paypal API method to run
+	* @param   string  any additional name-value-pair query string data to send to paypal
+	* @return  mixed
+	*/
+	protected function make_paypal_api_request($nvp_str)
+	{
+		$postdata = http_build_query($this->api_authroization_fields).'&'.$nvp_str;
+
+		parse_str(urldecode($postdata),$nvpstr);
+		echo KOHANA::debug($nvpstr);
+
+		Log::add('debug', 'Connecting to '.$this->api_connection_fields['ENDPOINT']);
+
+		$ch = curl_init($this->api_connection_fields['ENDPOINT']);
 
 		// Set custom curl options
 		curl_setopt_array($ch, $this->curl_config);
-		curl_setopt($ch, CURLOPT_POST, 1);
 
 		// Setting the nvpreq as POST FIELD to curl
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $final_data);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
 
 		// Getting response from server
 		$response = curl_exec($ch);
 
 		if (curl_errno($ch))
 		{
+			throw new Kohana_User_Exception('CURL ERROR', KOHANA::debug(array('curl_error_no' => curl_errno($ch), 'curl_error_msg' => curl_error($ch))));
+
 			// Moving to error page to display curl errors
 			$this->session->set_flash(array('curl_error_no' => curl_errno($ch), 'curl_error_msg' => curl_error($ch)));
-			url::redirect($this->paypal_values['error_url']);
+			url::redirect($this->api_connection_fields['ERRORURL']);
 		}
 		else
 		{
@@ -229,35 +456,19 @@ class Payment_Paypal_Driver implements Payment_Driver {
 	}
 
 	/**
-	 * This is from paypal. It decodes their return string and converts it into an array.
-	 * We can probably rewrite this better, but it works, so its going in for now.
-	 *
-	 * @param   string  query string
-	 * @return  array
-	 */
-	protected function deformatNVP($nvpstr)
+	* What is says on the tin
+	* @param array
+	* @return edited array
+	*
+	*/
+	protected function remove_empty_optional_fields($arr)
 	{
-		$intial   = 0;
-		$nvpArray = array();
-
-		while (strlen($nvpstr))
+		foreach($arr as $key => $val)
 		{
-			// Postion of Key
-			$keypos = strpos($nvpstr, '=');
-
-			// Position of value
-			$valuepos = strpos($nvpstr, '&') ? strpos($nvpstr, '&') : strlen($nvpstr);
-
-			// Getting the Key and Value values and storing in a Associative Array
-			$keyval = substr($nvpstr, $intial, $keypos);
-			$valval = substr($nvpstr, $keypos + 1, $valuepos - $keypos - 1);
-
-			// Decoding the respose
-			$nvpArray[urldecode($keyval)] = urldecode( $valval);
-
-			$nvpstr = substr($nvpstr, $valuepos + 1, strlen($nvpstr));
+			// don't include unset optional fields in the name-value pair request string
+			if($val==='') unset($arr[$key]);
 		}
-
-		return $nvpArray;
+		return $arr;
 	}
+
 } // End Payment_Paypal_Driver Class
