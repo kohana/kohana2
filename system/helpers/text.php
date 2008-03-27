@@ -221,6 +221,7 @@ class text_Core {
 	 */
 	public static function auto_link($text)
 	{
+		// Auto link emails first to prevent problems with "www.domain.com@example.com"
 		return text::auto_link_urls(text::auto_link_emails($text));
 	}
 
@@ -302,8 +303,8 @@ class text_Core {
 
 		// Some html elements should not be surrounded by <p> tags
 		$no_p = '(?:p|div|h[1-6r]|[uod]l|pre|blockquote|table|form|style)';
-		$str = preg_replace('~<p>(?=<'.$no_p.'[^>]*+>)~i', '', $str);
-		return preg_replace('~(</'.$no_p.'>)</p>~i', '$1', $str);
+		$str = preg_replace('~<p>(?=\s*+<'.$no_p.'[^>]*+>)~i', '', $str);
+		return preg_replace('~(</'.$no_p.'>\s*+)</p>~i', '$1', $str);
 	}
 
 	/**
