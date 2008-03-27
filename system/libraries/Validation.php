@@ -606,11 +606,16 @@ class Validation_Core extends ArrayObject {
 	 */
 	public function prep_url($str = '')
 	{
-		if ($str === '' OR $str === 'http://' OR $str === 'https://')
+		// Clear protocol-only strings like "http://"
+		if ($str === '' OR substr($str, -3) === '://')
 			return '';
 
-		if (substr($str, 0, 7) !== 'http://' AND substr($str, 0, 8) !== 'https://')
+		// If no protocol given, prepend "http://" by default
+		if (strpos($str, '://') === FALSE)
 			return 'http://'.$str;
+
+		// Return the original URL
+		return $str;
 	}
 
 } // End Validation
