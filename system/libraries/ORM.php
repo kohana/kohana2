@@ -590,6 +590,28 @@ class ORM_Core {
 	}
 
 	/**
+	 * Creates a key/value array from all of the objects available. Uses find_all
+	 * to find the objects.
+	 *
+	 * @param   string  key column
+	 * @param   string  value column
+	 * @return  array
+	 */
+	public function select_list($key_col, $val_col)
+	{
+		// Select the key an val from all objects
+		$array = $this->select($key_col, $val_col)->find_all()->as_array();
+
+		$options = array();
+		foreach ($array as $row)
+		{
+			// Create a key/value pair array
+			$options[$row->$key_col] = $row->$val_col;
+		}
+		return $options;
+	}
+
+	/**
 	 * Saves the current object.
 	 *
 	 * @return  bool
