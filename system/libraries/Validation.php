@@ -342,9 +342,6 @@ class Validation_Core extends ArrayObject {
 			isset($this[$field]) or $this[$field] = NULL;
 		}
 
-		if ($this->submitted === FALSE)
-			return FALSE;
-
 		// Reset all fields to ALL defined fields
 		$all_fields = array_keys($this->getArrayCopy());
 
@@ -367,6 +364,9 @@ class Validation_Core extends ArrayObject {
 				}
 			}
 		}
+
+		if ($this->submitted === FALSE)
+			return FALSE;
 
 		foreach ($this->rules as $field => $calls)
 		{
