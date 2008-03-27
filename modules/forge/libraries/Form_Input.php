@@ -534,7 +534,7 @@ class Form_Input_Core {
 	protected function rule_length($min, $max = NULL)
 	{
 		// Get the length, return if zero
-		if (($length = strlen($this->value)) === 0)
+		if (($length = utf8::strlen($this->value)) === 0)
 			return;
 
 		if ($max == NULL)
