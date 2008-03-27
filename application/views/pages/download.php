@@ -78,30 +78,29 @@ endforeach;
 
 <?php echo form::button(array('type' => 'submit', 'id' => 'downloadBuilderSubmit'), 'Download Kohana!') ?>
 <fieldset>
-  <span id="downloadUrlDisplay" class="legend" style="display: hidden"> </span>
+	<span id="downloadUrlDisplay" class="legend" style="display: hidden"> </span>
 </fieldset>
 <?php echo form::close() ?>
 
 <script type="text/javascript">
 <![CDATA[
 <!--
-  $(document).ready(function(){
-    $('#downloadBuilderSubmit').after(' or <?php echo form::button(array('type' => 'button', 'id' => 'queryViewButton'), 'See download URL') ?>');
-
-    $('#queryViewButton').click(function()
-    {
-      $(this).html('Refresh download URL');
-      var queryString = '?';
-      jQuery.each($('#downloadBuilder input'), function(i, value)
-      {
-        if($(value).attr('checked'))
-          queryString += encodeURI($(value).attr('name'))+'='+encodeURI($(value).attr('value'));
-      });
-      var url = $('#downloadBuilder').attr('action') + queryString;
-      $('#downloadUrlDisplay').html(url).css({display:'inline'});
-    });
-
-  });
+	$(document).ready(function()
+	{
+		$('#downloadBuilderSubmit').after(' or <?php echo form::button(array('type' => 'button', 'id' => 'queryViewButton'), 'See download URL') ?>');
+		$('#queryViewButton').click(function()
+		{
+			$(this).html('Refresh download URL');
+			var queryString = '?';
+			jQuery.each($('#downloadBuilder input'), function(i, value)
+			{
+				if($(value).attr('checked'))
+				queryString += encodeURI($(value).attr('name'))+'='+encodeURI($(value).attr('value'));
+			});
+			var url = $('#downloadBuilder').attr('action') + queryString;
+			$('#downloadUrlDisplay').html(url).css({display:'inline'});
+		});
+	});
 //-->
 ]]>
 </script>
