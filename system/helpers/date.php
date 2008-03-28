@@ -143,15 +143,15 @@ class date_Core {
 		$hours = array();
 
 		// Set the default start if none was specified.
-		if (is_null($start))
+		if ($start === NULL)
 		{
-			$start = ($long == FALSE) ? 1 : 0;
+			$start = ($long === FALSE) ? 1 : 0;
 		}
 
 		$hours = array();
 
 		// 24-hour time has 24 hours, instead of 12
-		$size = ($long == TRUE) ? 23 : 12;
+		$size = ($long === TRUE) ? 23 : 12;
 
 		for ($i = $start; $i <= $size; $i += $step)
 		{
@@ -258,8 +258,8 @@ class date_Core {
 	public static function years($start = FALSE, $end = FALSE)
 	{
 		// Default values
-		$start = ($start == FALSE) ? date('Y') - 5 : (int) $start;
-		$end   = ($end   == FALSE) ? date('Y') + 5 : (int) $end;
+		$start = ($start === FALSE) ? date('Y') - 5 : (int) $start;
+		$end   = ($end   === FALSE) ? date('Y') + 5 : (int) $end;
 
 		$years = array();
 

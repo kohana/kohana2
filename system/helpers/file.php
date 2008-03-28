@@ -29,7 +29,7 @@ class file_Core {
 		// Get the extension from the filename
 		$extension = pathinfo($filename, PATHINFO_EXTENSION);
 
-		if (preg_match('/^(?:jpe?g|png|[gt]if|bmp|swf)$/', $extension))
+		if (preg_match('/^jpe?g|png|[gt]if|bmp|swf$/', $extension))
 		{
 			// Disable error reporting
 			$ER = error_reporting(0);

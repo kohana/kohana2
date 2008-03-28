@@ -79,7 +79,7 @@ class Cache_Core {
 
 		Log::add('debug', 'Cache Library initialized');
 
-		if (self::$loaded != TRUE)
+		if (self::$loaded !== TRUE)
 		{
 			if (mt_rand(0, (int) $this->config['requests']) === 1)
 			{
