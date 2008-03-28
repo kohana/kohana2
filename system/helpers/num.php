@@ -2,9 +2,9 @@
 /**
  * Number helper class.
  *
- * $Id:$
+ * $Id$
  *
- * @package    Number Helper
+ * @package    Core
  * @author     Kohana Team
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
@@ -23,4 +23,4 @@ class num_Core {
 		return round($number / $nearest) * $nearest;
 	}
 
-}
+} // End num
