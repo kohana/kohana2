@@ -41,6 +41,18 @@ class Image_Core {
 	protected $image = '';
 
 	/**
+	 * Creates a new Image instance and returns it.
+	 *
+	 * @param   string   filename of image
+	 * @param   array    non-default configurations
+	 * @return  object
+	 */
+	public static function factory($image, $config = NULL)
+	{
+		return new Image($image, $config);
+	}
+
+	/**
 	 * Creates a new image editor instance.
 	 *
 	 * @throws  Kohana_Exception
