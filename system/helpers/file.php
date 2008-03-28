@@ -12,6 +12,67 @@
 class file_Core {
 
 	/**
+	 * Attempt to get the mime type from a file. This method is horribly
+	 * unreliable, due to PHP being horribly unreliable when it comes to
+	 * determining the mime-type of a file.
+	 *
+	 * @param   string   filename
+	 * @return  string   mime-type, if found
+	 * @return  boolean  FALSE, if not found
+	 */
+	public static function mime($filename)
+	{
+		// Make sure the file is readable
+		if ( ! file_exists($filename) OR ! is_readable($filename))
+			return FALSE;
+
+		// Get the extension from the filename
+		$extension = pathinfo($filename, PATHINFO_EXTENSION);
+
+		if (preg_match('/^(?:jpe?g|png|[gt]if|bmp|swf)$/', $extension))
+		{
+			// Disable error reporting
+			$ER = error_reporting(0);
+
+			// Use getimagesize() to find the mime type on images
+			$mime = getimagesize($filename);
+
+			// Turn error reporting back on
+			error_reporting($ER);
+
+			// Return the mime type
+			if (isset($mime['mime']))
+				return $mime['mime'];
+		}
+
+		if (function_exists('finfo_open'))
+		{
+			// Use the fileinfo extension
+			$finfo = finfo_open(FILEINFO_MIME);
+			$mime  = finfo_file($finfo, $filename);
+			finfo_close($finfo);
+
+			// Return the mime type
+			return $mime;
+		}
+
+		if (ini_get('mime_magic.magicfile') AND function_exists('mime_content_type'))
+		{
+			// Return the mime type using mime_content_type
+			return mime_content_type($filename);
+		}
+
+		if ( ! empty($extension) AND is_array($mime = Config::item('mimes.'.$extension)))
+		{
+			// Return the mime-type guess, based on the extension
+			return $mime[0];
+		}
+
+		// Unable to find the mime-type
+		return FALSE;
+	}
+
+	/**
 	 * Split a file into pieces matching a specific size.
 	 *
 	 * @param   string   file to be split
