@@ -4,7 +4,7 @@
  *
  * This path is relative to your index file. Absolute paths are also supported.
  */
-$config['upload_directory'] = 'upload';
+$config['directory'] = $config['upload_directory'] = 'upload';
 
 /**
  * Remove spaces from uploaded filenames.
