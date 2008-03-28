@@ -61,7 +61,7 @@ class Cache_Core {
 		}
 
 		// Load configuration
-		$this->config = (array) $config + Config::item('cache');
+		$this->config = (array) $config + Config::item('cache.default');
 
 		// Set driver name
 		$driver = 'Cache_'.ucfirst($this->config['driver']).'_Driver';
