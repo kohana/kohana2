@@ -244,7 +244,7 @@ class text_Core {
 		}
 
 		// Find all naked www.links.com (without http://)
-		if (preg_match_all('~\b(?<!://)www\.[a-z][-a-z0-9]*+\.[a-z]{2,6}\b~i', $text, $matches))
+		if (preg_match_all('~\b(?<!://)www(?:\.[a-z0-9][-a-z0-9]*+)+\.[a-z]{2,6}\b~i', $text, $matches))
 		{
 			foreach ($matches[0] as $match)
 			{
