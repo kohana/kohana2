@@ -280,7 +280,7 @@ class text_Core {
 	}
 
 	/**
-	 * Automatically adds <p> tags around paragraphs.
+	 * Automatically applies <p> and <br /> markup to text. Basically nl2br() on steroids.
 	 *
 	 * @param   string   subject
 	 * @return  string
@@ -294,17 +294,29 @@ class text_Core {
 		// Standardize newlines
 		$str = str_replace(array("\r\n", "\r"), "\n", $str);
 
-		// Kill stray whitespace
-		$str = preg_replace('~^[ \t]++$~m', '', $str);
+		// Trim whitespace on each line
+		$str = preg_replace('~^[ \t]+~m', '', $str);
+		$str = preg_replace('~[ \t]+$~m', '', $str);
+
+		// Elements that should not be surrounded by p tags
+		$no_p = '(?:p|div|h[1-6r]|ul|ol|li|blockquote|d[dlt]|pre|t[dhr]|t(?:able|body|foot|head)|c(?:aption|olgroup)|form|s(?:elect|tyle)|a(?:ddress|rea)|ma(?:p|th))';
+
+		// Put at least two linebreaks before and after $no_p elements
+		$str = preg_replace('~^<'.$no_p.'[^>]*+>~im', "\n$0", $str);
+		$str = preg_replace('~</'.$no_p.'>$~im', "$0\n", $str);
 
 		// Do the <p> magic!
-		$str = '<p>'.$str.'</p>';
-		$str = preg_replace('~\n\n+~', "</p>\n\n<p>", $str);
+		$str = '<p>'.trim($str).'</p>';
+		$str = preg_replace('~\n{2,}~', "</p>\n\n<p>", $str);
 
-		// Some html elements should not be surrounded by <p> tags
-		$no_p = '(?:p|div|h[1-6r]|[uod]l|pre|blockquote|table|form|style)';
-		$str = preg_replace('~<p>(?=\s*+<'.$no_p.'[^>]*+>)~i', '', $str);
-		return preg_replace('~(</'.$no_p.'>\s*+)</p>~i', '$1', $str);
+		// Remove p tags around $no_p elements
+		$str = preg_replace('~<p>(?=</?'.$no_p.'[^>]*+>)~i', '', $str);
+		$str = preg_replace('~(</?'.$no_p.'>)</p>~i', '$1', $str);
+
+		// Convert single linebreaks to <br />
+		$str = preg_replace('~(?<!\n)\n(?!\n)~', "<br />\n", $str);
+
+		return $str;
 	}
 
 	/**
