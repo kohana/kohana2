@@ -23,7 +23,7 @@ class file_Core {
 	public static function mime($filename)
 	{
 		// Make sure the file is readable
-		if ( ! file_exists($filename) OR ! is_readable($filename))
+		if ( ! file_exists($filename) OR ! is_file($filename) OR ! is_readable($filename))
 			return FALSE;
 
 		// Get the extension from the filename
