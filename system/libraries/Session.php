@@ -213,7 +213,7 @@ class Session_Core {
 				{
 					if ($state == 'old')
 					{
-						self::del($key);
+						self::delete($key);
 						unset(self::$flash[$key]);
 					}
 					else
@@ -395,7 +395,7 @@ class Session_Core {
 	public function get_once($key)
 	{
 		$return = self::get($key);
-		self::del($key);
+		self::delete($key);
 
 		return $return;
 	}
@@ -406,7 +406,7 @@ class Session_Core {
 	 * @param   variable key(s)  $keys
 	 * @return  void
 	 */
-	public function del($keys)
+	public function delete($keys)
 	{
 		if (empty($keys))
 			return FALSE;
@@ -424,6 +424,18 @@ class Session_Core {
 			// Unset the key
 			unset($_SESSION[$key]);
 		}
+	}
+
+	/**
+	 * Delete one or more variables.
+	 * Note! This method is deprecated in favor of delete().
+	 *
+	 * @param   variable key(s)  $keys
+	 * @return  void
+	 */
+	public function del($keys)
+	{
+		self::delete($keys);
 	}
 
 } // End Session Class
