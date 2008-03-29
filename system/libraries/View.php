@@ -194,7 +194,7 @@ class View_Core {
 				$output = call_user_func($renderer, $output);
 			}
 
-			if ($print == TRUE)
+			if ($print === TRUE)
 			{
 				// Display the output
 				echo $output;
@@ -206,7 +206,7 @@ class View_Core {
 			// Set the content type and size
 			header('Content-Type: '.$this->kohana_filetype[0]);
 
-			if ($print == TRUE)
+			if ($print === TRUE)
 			{
 				if ($file = fopen($this->kohana_filename, 'rb'))
 				{

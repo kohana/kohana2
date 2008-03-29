@@ -87,7 +87,7 @@ class Pagination_Core {
 		else
 		{
 			// Use current URI if no base_url set
-			$this->url = ($this->base_url == '') ? Router::$segments : explode('/', trim($this->base_url, '/'));
+			$this->url = ($this->base_url === '') ? Router::$segments : explode('/', trim($this->base_url, '/'));
 
 			// Convert uri 'label' to corresponding integer if needed
 			if (is_string($this->uri_segment))
@@ -124,7 +124,7 @@ class Pagination_Core {
 
 		// If there is no first/last/previous/next page, relative to the
 		// current page, value is set to FALSE. Valid page number otherwise.
-		$this->first_page         = ($this->current_page == 1) ? FALSE : 1;
+		$this->first_page         = ($this->current_page === 1) ? FALSE : 1;
 		$this->last_page          = ($this->current_page >= $this->total_pages) ? FALSE : $this->total_pages;
 		$this->previous_page      = ($this->current_page > 1) ? $this->current_page - 1 : FALSE;
 		$this->next_page          = ($this->current_page < $this->total_pages) ? $this->current_page + 1 : FALSE;
@@ -143,7 +143,7 @@ class Pagination_Core {
 	public function render($style = NULL)
 	{
 		// Hide single page pagination
-		if ($this->auto_hide == TRUE AND $this->total_pages <= 1)
+		if ($this->auto_hide === TRUE AND $this->total_pages <= 1)
 			return '';
 
 		if ($style === NULL)
