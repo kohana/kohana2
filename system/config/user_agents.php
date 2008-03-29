@@ -94,7 +94,7 @@ $config['mobile'] = array
 );
 
 // There are hundreds of bots but these are the most common.
-$config['robots'] = array
+$config['robot'] = array
 (
 	'googlebot'   => 'Googlebot',
 	'msnbot'      => 'MSNBot',
