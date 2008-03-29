@@ -47,6 +47,7 @@ echo html::script(array
 <li><?php echo html::anchor('http://trac.kohanaphp.com/browser/trunk', 'Browse Source') ?></li>
 <li><?php echo html::anchor('http://trac.kohanaphp.com/report/1', 'Tickets') ?></li>
 <li><?php echo html::anchor('http://trac.kohanaphp.com/wiki/BeADev', 'Join') ?></li>
+<li><?php echo html::anchor('http://www.kohanajobs.com/', 'Jobs') ?></li>
 </ul>
 </div>
 <!-- End Developer Menu -->
