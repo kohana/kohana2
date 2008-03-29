@@ -182,19 +182,19 @@ class Media_Controller extends Controller {
 	public function css_compress($data)
 	{
 		// Remove comments
-		$data = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $data);
+		$data = preg_replace('~/\*[^*]*\*+([^/][^*]*\*+)*/~', '', $data);
 
-		// Remove tabs, spaces, newlines, etc.
-		$data = preg_replace('/\s+/s', ' ', $data);
-		$data = str_replace
-		(
-			array(' {', '{ ', ' }', '} ', ' +', '+ ', ' >', '> ', ' :', ': ', ' ;', '; ', ' ,', ', ', ';}'),
-			array('{',  '{',  '}',  '}',  '+',  '+',  '>',  '>',  ':',  ':',  ';',  ';',  ',',  ',',  '}' ),
-			$data
-		);
+		// Replace all whitespace by single spaces
+		$data = preg_replace('~\s+~', ' ', $data);
+
+		// Remove needless whitespace
+		$data = preg_replace('~ *+([{}+>:;,]) *~', '$1', trim($data));
+
+		// Remove ; that closes last property of each declaration
+		$data = str_replace(';}', '}', $data);
 
 		// Remove empty CSS declarations
-		$data = preg_replace('/[^{}]++\{\}/', '', $data);
+		$data = preg_replace('~[^{}]++\{\}~', '', $data);
 
 		return $data;
 	}
