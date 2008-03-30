@@ -32,7 +32,7 @@ class valid_Core {
 	public static function email_domain($email)
 	{
 		// Check if the email domain has a valid MX record
-		return (bool) checkdnsrr(preg_replace('/^.+@(.+)$/', '$1', $email), 'MX');
+		return (bool) checkdnsrr(preg_replace('/^[^@]+@/', '', $email), 'MX');
 	}
 
 	/**
