@@ -137,7 +137,7 @@ class Validation_Core extends ArrayObject {
 	 */
 	public function pre_filter($filter, $field = TRUE)
 	{
-		if (method_exists($this, $filter))
+		if (is_string($filter) AND method_exists($this, $filter))
 		{
 			// Make the filter a valid callback
 			$filter = array($this, $filter);
@@ -179,7 +179,7 @@ class Validation_Core extends ArrayObject {
 	 */
 	public function post_filter($filter, $field = TRUE)
 	{
-		if (method_exists($this, $filter))
+		if (is_string($filter) AND method_exists($this, $filter))
 		{
 			// Make the filter a valid callback
 			$filter = array($this, $filter);
