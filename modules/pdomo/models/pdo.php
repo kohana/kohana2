@@ -282,7 +282,7 @@ abstract class PDO_Model {
 		// Table name is always a string
 		$key = (string) $key;
 
-		if ( ! preg_match('/^=|(?:!|<|>)=?|(?:NOT )?(LIKE|REGEXP?|IN)$/', $op))
+		if ( ! preg_match('/^=|[!<>]=?|(?:NOT\s+)?(LIKE|REGEXP?|IN)$/i', $op))
 			throw new Kohana_Exception('pdo.invalid_operation', get_class($this), $op);
 
 		// Quote the value
