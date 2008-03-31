@@ -19,12 +19,8 @@ class Auth_Demo_Controller extends Controller {
 	{
 		parent::__construct();
 
-		// Load some libraries
-		foreach(array('auth', 'session') as $lib)
-		{
-			$class = ucfirst($lib);
-			$this->$lib = new $class();
-		}
+		// Load auth library
+		$this->auth = new Auth();
 	}
 
 	public function index()
@@ -58,7 +54,7 @@ class Auth_Demo_Controller extends Controller {
 				if ($user->save() AND $user->add_role('login'))
 				{
 					// Redirect to the login page
-					url::redirect('auth/login');
+					url::redirect('auth_demo/login');
 				}
 			}
 		}
@@ -71,7 +67,7 @@ class Auth_Demo_Controller extends Controller {
 	{
 		if ($this->auth->logged_in())
 		{
-			$form = new Forge('auth/logout', 'Log Out');
+			$form = new Forge('auth_demo/logout', 'Log Out');
 
 			$form->submit('Logout Now');
 		}
@@ -113,7 +109,7 @@ class Auth_Demo_Controller extends Controller {
 		$this->auth->logout(TRUE);
 
 		// Redirect back to the login page
-		url::redirect('auth/login');
+		url::redirect('auth_demo/login');
 	}
 
 } // End Auth Controller
