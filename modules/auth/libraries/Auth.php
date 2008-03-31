@@ -108,8 +108,8 @@ class Auth_Core {
 		// Create a hashed password using the salt from the stored password
 		$password = $this->hash_password($password, $this->find_salt($user->password));
 
-		// If the user has the "login" role and the passwords match, perform a login
-		if ($user->has_role('login') AND $user->password === $password)
+		// If the passwords match, perform a login
+		if ($user->password === $password)
 		{
 			if ($remember === TRUE)
 			{
@@ -147,7 +147,7 @@ class Auth_Core {
 			$token = new User_Token_Model($token);
 			$user = new User_Model($token->user_id);
 
-			if ($token->id != 0 AND $user->id != 0)
+			if ($token->id > 0 AND $user->id > 0)
 			{
 				if ($token->user_agent === sha1(Kohana::$user_agent))
 				{
