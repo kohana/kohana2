@@ -6,13 +6,9 @@ class Pdomo_Demo_Controller extends Controller {
 	{
 		pdomo::registry('default', new PDO('mysql:host=localhost;dbname=kohana', 'root', 'r00tdb'));
 
-		$model = pdomo::factory('user')->find('username', 'woody.gilk');
+		$m = pdomo::factory('user_token')->find(1);
 
-		$model->email = 'none';
-
-		echo Kohana::debug($model->save());
-
-		echo Kohana::debug($model);
+		echo Kohana::debug($m);
 		echo Kohana::debug('{execution_time}');
 	}
 

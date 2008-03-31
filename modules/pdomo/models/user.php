@@ -1,5 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+/**
+ * PDO User_Model, a replacement for the default Auth User_Model (ORM).
+ *
+ * $Id$
+ *
+ * @package    pdomo
+ * @author     Woody Gilk
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
 class User_Model extends PDO_Model {
 
 	protected $table = 'users';
@@ -11,6 +20,8 @@ class User_Model extends PDO_Model {
 		'password' => 'string',
 		'logins' => 'integer',
 	);
+
+	/* PDO_Model Methods */
 
 	protected function __validate()
 	{

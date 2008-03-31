@@ -1,16 +1,40 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+/**
+ * Kohana PDO Model helper. This manages database instances and acts as a
+ * factory for PDO models.
+ *
+ * $Id$
+ *
+ * @package    pdomo
+ * @author     Woody Gilk
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
 class pdomo_Core {
 
+	// Default database instance
 	protected static $instance;
 
+	// Database registry
 	protected static $registry = array();
 
+	/**
+	 * Returns the default database instance.
+	 *
+	 * @return  object
+	 */
 	public static function instance()
 	{
 		return self::$instance;
 	}
 
+	/**
+	 * Gets and sets database instances from the registry.
+	 *
+	 * @param   string  database name
+	 * @param   object  PDO instance
+	 * @return  object
+	 */
 	public static function registry($name, $db = NULL)
 	{
 		if (is_object($db) AND ($db instanceof PDO))
@@ -28,6 +52,16 @@ class pdomo_Core {
 		return isset(self::$registry[$name]) ? self::$registry[$name] : NULL;
 	}
 
+	/**
+	 * Acts as a factory for PDO models. By default, all models will be created
+	 * with the default database instance. To use a different database instance,
+	 * pass the instance name as the second parameter.
+	 *
+	 * @throws  Kohana_Exception
+	 * @param   string   model name
+	 * @param   string   database name
+	 * @return  object
+	 */
 	public static function factory($name, $db = NULL)
 	{
 		static $objects = array();
@@ -42,7 +76,7 @@ class pdomo_Core {
 		}
 		else
 		{
-			throw new Kohana_User_Exception('pdomo Error', 'No database instance found.');
+			throw new Kohana_Exception('pdo.no_database_instance');
 		}
 
 		// Get the object hash of the database

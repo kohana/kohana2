@@ -4,8 +4,10 @@
  *
  * $Id$
  *
- * @package  pdomo
- * @author   Woody Gilk
+ * @package    pdomo
+ * @author     Woody Gilk
+ * @copyright  (c) 2007 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
 abstract class PDO_Model {
 
@@ -38,7 +40,7 @@ abstract class PDO_Model {
 	 * @param   object  PDO datbase
 	 * @return  void
 	 */
-	public function __construct(PDO $db)
+	public function __construct($db = NULL)
 	{
 		if ($this->table === NULL)
 			throw new Kohana_Exception('pdo.invalid_table', get_class($this));
@@ -49,11 +51,21 @@ abstract class PDO_Model {
 		if (empty($this->types))
 			throw new Kohana_Exception('pdo.invalid_types', get_class($this));
 
+		// Get a database instance
+		($db === NULL) and $db = pdomo::instance();
+
+		// Makes sure the database instance is valid
+		if ( ! ($db instanceof PDO))
+			throw new Kohana_Exception('pdo.invalid_database', get_class($this));
+
 		// Set the database instance
 		$this->db = $db;
 
 		// Empty the data
 		$this->__empty_data();
+
+		// Call the on_construct event
+		$this->__on_construct();
 	}
 
 	/**
@@ -65,7 +77,7 @@ abstract class PDO_Model {
 	public function __get($key)
 	{
 		if ( ! isset($this->data[$key]))
-			throw new Kohana_Exception('pdo.invalid_get', get_class($this), $key);
+			throw new Kohana_Exception('pdo.invalid_get', $key, get_class($this));
 
 		// Return the key value
 		return $this->data[$key];
@@ -172,18 +184,22 @@ abstract class PDO_Model {
 	 * before executing the query. You can test the success of this method by
 	 * checking the return value of $this->loaded().
 	 *
-	 * @param   string  SQL query
+	 * @param   object  PDOStatement to be executed
+	 * @param   array   optional array of arguments to be passed to execute()
 	 * @return  void
 	 */
-	protected function __query($sql)
+	protected function __query(PDOStatement $query, $params = NULL)
 	{
 		// Empty the data
 		$this->__empty_data();
 
-		if ($result = $this->db->query($sql))
+		// Execute the query
+		$status = empty($params) ? $query->execute() : $query->execute($params);
+
+		if ($status > 0 AND $query->rowCount() > 0)
 		{
 			// Load the data of the object
-			$this->data = $result->fetch(PDO::FETCH_ASSOC);
+			$this->data = $query->fetch(PDO::FETCH_ASSOC);
 
 			// No data has been changed
 			$this->changed = array();
@@ -197,11 +213,57 @@ abstract class PDO_Model {
 	}
 
 	/**
-	 * Validation check. This must be defined in all models.
+	 * Called as the last step of __construct(), before a return.
 	 *
-	 * @return  boolean
+	 * @return  void
 	 */
-	abstract protected function __validate();
+	protected function __on_construct()
+	{
+		// No default action
+	}
+
+	/**
+	 * Called as the last step of find(), before a return.
+	 *
+	 * @return  void
+	 */
+	protected function __on_find()
+	{
+		// No default action
+	}
+
+	/**
+	 * Called as the last step of save(), before a return.
+	 *
+	 * @return  void
+	 */
+	protected function __on_save()
+	{
+		// No default action
+	}
+
+	/**
+	 * Called as the last step of delete(), before a return.
+	 *
+	 * @return  void
+	 */
+	protected function __on_delete()
+	{
+		// No default action
+	}
+
+	/**
+	 * Validation method, called by save() to determine if the model can be saved.
+	 * If validation is successful, TRUE should be returned. If validation fails,
+	 * an array(field => error) should be returned.
+	 *
+	 * @return  boolean  (success) TRUE
+	 * @return  array    (failure) array of errors
+	 */
+	protected function __validate()
+	{
+		return TRUE;
+	}
 
 	/**
 	 * Tests if the object is loaded.
@@ -283,13 +345,16 @@ abstract class PDO_Model {
 		$key = (string) $key;
 
 		if ( ! preg_match('/^=|[!<>]=?|(?:NOT\s+)?(LIKE|REGEXP?|IN)$/i', $op))
-			throw new Kohana_Exception('pdo.invalid_operation', get_class($this), $op);
+			throw new Kohana_Exception('pdo.invalid_operation', $op, get_class($this));
 
 		// Quote the value
 		$value = $this->__quote_value($value);
 
 		// Find a single row matching the criteria
-		$this->__query('SELECT '.$this->table.'.* FROM '.$this->table.' WHERE '.$key.' '.$op.' '.$value.' LIMIT 1 OFFSET 0');
+		$this->__query($this->db->prepare('SELECT '.$this->table.'.* FROM '.$this->table.' WHERE '.$key.' '.$op.' '.$value.' LIMIT 1 OFFSET 0'));
+
+		// Execute the on_find event
+		$this->__on_find();
 
 		return $this;
 	}
@@ -346,7 +411,7 @@ abstract class PDO_Model {
 			$sql = 'INSERT INTO '.$this->table.' ('.implode(', ', array_keys($data)).') VALUES ('.implode(', ', $data).')';
 		}
 
-		if ($result = $this->db->query($sql))
+		if ($count = $this->db->exec($sql))
 		{
 			if ($insert === TRUE AND $this->auto_increment === TRUE)
 			{
@@ -360,12 +425,51 @@ abstract class PDO_Model {
 			// Object is loaded and saved
 			$this->saved = $this->loaded = TRUE;
 
+			// Execute the on_save event
+			$this->__on_save();
+
 			// Success!
 			return TRUE;
 		}
 
 		// Failure!
 		return FALSE;
+	}
+
+	/**
+	 * Deletes the current object from the database.
+	 *
+	 * @return  boolean  (failure) FALSE
+	 * @return  integer  (success) number of rows deleted
+	 */
+	public function delete()
+	{
+		// Nothing is deleted by default
+		$status = FALSE;
+
+		if ( ! empty($this->data[$this->primary_key]))
+		{
+			// Primary key
+			$pk = $this->primary_key;
+
+			// SQL to delete this object
+			$sql = 'DELETE FROM '.$this->table.' WHERE '.$this->primary_key.' = '.$this->__quote_value($this->$pk);
+
+			if ($count = $this->db->exec($sql))
+			{
+				// Clear the object
+				$this->__empty_data();
+
+				// Return the count as the status
+				$status = $count;
+			}
+
+			// Call the on_delete event
+			$this->__on_delete();
+		}
+
+		// Return the status
+		return $status;
 	}
 
 } // End PDO_Model
