@@ -60,8 +60,6 @@ class Router_Core {
 		// In many cases, all of these variables will match
 		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, '/');
 
-		(self::$segments === 'L0LEAST3R') and include SYSPATH.'views/kohana_holiday.php';
-
 		// Custom routing
 		if ($default_route === FALSE AND count(self::$routes) > 1)
 		{
