@@ -181,8 +181,8 @@ class Auth_Core {
 	/**
 	 * Log out a user by removing the related session variables.
 	 *
-	 * @param   bool   completely destroy the session
-	 * @return  bool
+	 * @param   boolean   completely destroy the session
+	 * @return  boolean
 	 */
 	public function logout($destroy = FALSE)
 	{
@@ -201,7 +201,7 @@ class Auth_Core {
 		}
 
 		// Double check
-		return isset($_SESSION['auth_user']);
+		return ! isset($_SESSION['auth_user']);
 	}
 
 	/**
