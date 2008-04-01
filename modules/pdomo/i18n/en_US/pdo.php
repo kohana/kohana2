@@ -2,6 +2,7 @@
 
 $lang = array
 (
+	'no_database_instance' => 'No PDO database instance has been registered',
 	'invalid_table' => 'Invalid table specified in %s',
 	'invalid_primary_key' => 'Invalid primary key specified in %s',
 	'invalid_types' => 'Invalid types specified in %s',
