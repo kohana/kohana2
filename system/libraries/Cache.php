@@ -81,7 +81,9 @@ class Cache_Core {
 
 		if (self::$loaded !== TRUE)
 		{
-			if (mt_rand(0, (int) $this->config['requests']) === 1)
+			$this->config['requests'] = (int) $this->config['requests'];
+
+			if ($this->config['requests'] > 0 AND mt_rand(1, $this->config['requests']) === 1)
 			{
 				// Do garbage collection
 				$this->driver->delete_expired();

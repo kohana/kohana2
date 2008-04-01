@@ -21,7 +21,7 @@
  *
  *  requests - Average number of cache requests that will processed before all expired
  *             caches are deleted. This is commonly referred to as "garbage collection".
- *             Setting this to a negative number will disable automatic garbage collection.
+ *             Setting this to 0 or a negative number will disable automatic garbage collection.
  */
 $config['default'] = array
 (
