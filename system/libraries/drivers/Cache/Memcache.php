@@ -54,17 +54,12 @@ class Cache_Memcache_Driver implements Cache_Driver {
 	public function delete($id, $tag = FALSE)
 	{
 		if ($id === TRUE)
-		{
 			return $this->backend->flush();
-		}
-		elseif ($tag == FALSE)
-		{
+
+		if ($tag == FALSE)
 			return $this->backend->delete($id);
-		}
-		else
-		{
-			return TRUE;
-		}
+
+		return TRUE;
 	}
 
 	public function delete_expired()

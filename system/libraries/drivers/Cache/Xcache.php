@@ -29,6 +29,12 @@ class Cache_Xcache_Driver implements Cache_Driver {
 	{
 		count($tags) and Log::add('error', 'Cache: tags are unsupported by the Xcache driver');
 
+		// XCache expects time to live, not a unix timestamp
+		if ($expiration !== 0)
+		{
+			$expiration -= time();
+		}
+
 		return xcache_set($id, $data, $expiration);
 	}
 

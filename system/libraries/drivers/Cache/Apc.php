@@ -26,6 +26,12 @@ class Cache_Apc_Driver implements Cache_Driver {
 	{
 		count($tags) and Log::add('error', 'Cache: tags are unsupported by the APC driver');
 
+		// APC expects time to live, not a unix timestamp
+		if ($expiration !== 0)
+		{
+			$expiration -= time();
+		}
+
 		return apc_store($id, $data, $expiration);
 	}
 
@@ -37,17 +43,12 @@ class Cache_Apc_Driver implements Cache_Driver {
 	public function delete($id, $tag = FALSE)
 	{
 		if ($id === TRUE)
-		{
 			return apc_clear_cache('user');
-		}
-		elseif ($tag == FALSE)
-		{
+
+		if ($tag == FALSE)
 			return apc_delete($id);
-		}
-		else
-		{
-			return true;
-		}
+
+		return TRUE;
 	}
 
 	public function delete_expired()

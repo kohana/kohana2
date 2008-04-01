@@ -203,6 +203,8 @@ class Cache_File_Driver implements Cache_Driver {
 
 	/**
 	 * Deletes all cache files that are older than the current time.
+	 *
+	 * @return void
 	 */
 	public function delete_expired()
 	{
@@ -221,6 +223,9 @@ class Cache_File_Driver implements Cache_Driver {
 
 	/**
 	 * Check if a cache file has expired by filename.
+	 *
+	 * @param  string  filename
+	 * @return bool
 	 */
 	protected function expired($file)
 	{
