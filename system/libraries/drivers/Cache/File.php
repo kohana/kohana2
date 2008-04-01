@@ -230,7 +230,7 @@ class Cache_File_Driver implements Cache_Driver {
 	protected function expired($file)
 	{
 		// Get the expiration time
-		$expires = (int) end(explode('~', $file));
+		$expires = (int) substr($file, strrpos($file, '~') + 1);
 
 		// Expirations of 0 are "never expire"
 		return ($expires !== 0 AND $expires <= time());
