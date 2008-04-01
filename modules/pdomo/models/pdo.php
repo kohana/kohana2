@@ -69,6 +69,31 @@ abstract class PDO_Model {
 	}
 
 	/**
+	 * Magic __sleep method. Removes the database connection.
+	 *
+	 * @return  array
+	 */
+	public function __sleep()
+	{
+		// Remove the database
+		$this->db = pdomo::registry_name($this->db);
+
+		// Serialize everything
+		return array_keys((array) $this);
+	}
+
+	/**
+	 * Magic __wakeup method. Reconnects to the database.
+	 *
+	 * @return  void
+	 */
+	public function __wakeup()
+	{
+		// Reconnect to the database
+		$this->db = empty($this->db) ? pdomo::instance() : pdomo::registry($this->db);
+	}
+
+	/**
 	 * Magic __get method.
 	 *
 	 * @param   string  key name
@@ -139,76 +164,6 @@ abstract class PDO_Model {
 		{
 			// Make sure the value type is correct
 			settype($this->data[$key], $type);
-		}
-	}
-
-	/**
-	 * Quotes the value of a column. Integers are type casted, arrays are
-	 * made into a string of comma-separated values, strings are quoted
-	 * using the PDO quote() method, and NULL is made into a string value.
-	 *
-	 * @param   mixed   value to quote
-	 * @return  mixed
-	 */
-	protected function __quote_value($value)
-	{
-		if ($value === NULL)
-		{
-			// Make the value into a string for SQL
-			return 'NULL';
-		}
-		elseif (is_array($value))
-		{
-			$array = array();
-			foreach ($value as $val)
-			{
-				// Quote the value
-				$array[] = $this->__quote_value($val);
-			}
-			return '('.implode(', ', $array).')';
-		}
-		elseif (is_int($value) OR ctype_digit($value))
-		{
-			// No quoting for integers
-			return (int) $value;
-		}
-		else
-		{
-			// Quote the value
-			return $this->db->quote($value);
-		}
-	}
-
-	/**
-	 * Load data from an SQL query. This will always unload the current object
-	 * before executing the query. You can test the success of this method by
-	 * checking the return value of $this->loaded().
-	 *
-	 * @param   object  PDOStatement to be executed
-	 * @param   array   optional array of arguments to be passed to execute()
-	 * @return  void
-	 */
-	protected function __query(PDOStatement $query, $params = NULL)
-	{
-		// Empty the data
-		$this->__empty_data();
-
-		// Execute the query
-		$status = empty($params) ? $query->execute() : $query->execute($params);
-
-		if ($status > 0 AND $query->rowCount() > 0)
-		{
-			// Load the data of the object
-			$this->data = $query->fetch(PDO::FETCH_ASSOC);
-
-			// No data has been changed
-			$this->changed = array();
-
-			// Data has been loaded and is saved
-			$this->loaded = $this->saved = TRUE;
-
-			// Reset the types of loaded data
-			$this->__set_types();
 		}
 	}
 
@@ -344,14 +299,31 @@ abstract class PDO_Model {
 		// Table name is always a string
 		$key = (string) $key;
 
-		if ( ! preg_match('/^=|[!<>]=?|(?:NOT\s+)?(LIKE|REGEXP?|IN)$/i', $op))
-			throw new Kohana_Exception('pdo.invalid_operation', $op, get_class($this));
+		// Empty the data
+		$this->__empty_data();
 
-		// Quote the value
-		$value = $this->__quote_value($value);
+		// Quote all values
+		$table = $this->db->quote_identifier($this->table);
+		$key   = $this->db->quote_identifier($key);
+		$value = $this->db->quote($value);
 
 		// Find a single row matching the criteria
-		$this->__query($this->db->prepare('SELECT '.$this->table.'.* FROM '.$this->table.' WHERE '.$key.' '.$op.' '.$value.' LIMIT 1 OFFSET 0'));
+		$query = $this->db->prepare('SELECT '.$table.'.* FROM '.$table.' WHERE '.$key.' '.$op.' '.$value.' '.$this->db->limit(1));
+
+		if ($query->execute() AND $query->rowCount() > 0)
+		{
+			// Load the data of the object
+			$this->data = $query->fetch(PDO::FETCH_ASSOC);
+
+			// No data has been changed
+			$this->changed = array();
+
+			// Data has been loaded and is saved
+			$this->loaded = $this->saved = TRUE;
+
+			// Reset the types of loaded data
+			$this->__set_types();
+		}
 
 		// Execute the on_find event
 		$this->__on_find();
@@ -378,16 +350,16 @@ abstract class PDO_Model {
 			$insert = FALSE;
 
 			// Create the SQL
-			$sql = 'UPDATE '.$this->table.' SET';
+			$sql = 'UPDATE '.$this->db->quote_identifier($this->table).' SET';
 
 			foreach ($this->changed as $key)
 			{
 				// Add the new data
-				$sql .= ' '.$key.' = '.$this->__quote_value($this->data[$key]);
+				$sql .= ' '.$this->db->quote_identifier($key).' = '.$this->db->quote($this->data[$key]);
 			}
 
 			// Add the WHERE
-			$sql .= ' WHERE '.$this->primary_key.' = '.$this->data[$this->primary_key];
+			$sql .= ' WHERE '.$this->db->quote_identifier($this->primary_key).' = '.$this->db->quote($this->data[$this->primary_key]);
 		}
 		else
 		{
@@ -398,7 +370,7 @@ abstract class PDO_Model {
 			foreach ($this->changed as $key)
 			{
 				// Load the changed data
-				$data[$key] = $this->__quote_value($this->data[$key]);
+				$data[$this->db->quote_identifier($key)] = $this->db->quote($this->data[$key]);
 			}
 
 			if ($this->auto_increment === TRUE)
@@ -408,7 +380,7 @@ abstract class PDO_Model {
 			}
 
 			// Create the SQL statement
-			$sql = 'INSERT INTO '.$this->table.' ('.implode(', ', array_keys($data)).') VALUES ('.implode(', ', $data).')';
+			$sql = 'INSERT INTO '.$this->db->quote_identifier($this->table).' ('.implode(', ', array_keys($data)).') VALUES ('.implode(', ', $data).')';
 		}
 
 		if ($count = $this->db->exec($sql))
@@ -449,11 +421,8 @@ abstract class PDO_Model {
 
 		if ( ! empty($this->data[$this->primary_key]))
 		{
-			// Primary key
-			$pk = $this->primary_key;
-
 			// SQL to delete this object
-			$sql = 'DELETE FROM '.$this->table.' WHERE '.$this->primary_key.' = '.$this->__quote_value($this->$pk);
+			$sql = 'DELETE FROM '.$this->db->quote_identifier($this->table).' WHERE '.$this->db->quote_identifier($this->primary_key).' = '.$this->db->quote($this->data[$this->primary_key]);
 
 			if ($count = $this->db->exec($sql))
 			{

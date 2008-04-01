@@ -71,7 +71,7 @@ class User_Token_Model extends PDO_Model {
 	protected function create_token()
 	{
 		// SQL to find a token
-		$sql = 'SELECT id FROM '.$this->table.' WHERE token = %s LIMIT 1 OFFSET 0';
+		$sql = 'SELECT '.$this->db->quote_identifier($this->primary_key).' FROM '.$this->db->quote_identifier($this->table).' WHERE '.$this->db->quote_identifier('token').' = %s '.$this->db->limit(1);
 
 		while (TRUE)
 		{
@@ -79,7 +79,7 @@ class User_Token_Model extends PDO_Model {
 			$token = text::random('distinct', 32);
 
 			// Make the query
-			$query = $this->db->query(sprintf($sql, $this->__quote_value($this->__quote_value($token))));
+			$query = $this->db->query(sprintf($sql, $this->db->quote($token)));
 
 			if ($query->rowCount() === 0)
 			{

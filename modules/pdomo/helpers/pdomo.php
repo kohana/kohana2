@@ -25,6 +25,11 @@ class pdomo_Core {
 	 */
 	public static function instance()
 	{
+		if (self::$instance === NULL)
+		{
+			self::registry('default', new PDODB(Config::item('pdodb.default')));
+		}
+
 		return self::$instance;
 	}
 
@@ -42,14 +47,32 @@ class pdomo_Core {
 			// Set a new db in the registry
 			self::$registry[$name] = $db;
 
-			// Make all PDO databases throw exceptions for errors
-			self::$registry[$name]->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
 			// Set the instance if none has been created
 			empty(self::$instance) and self::$instance = self::$registry[$name];
 		}
 
 		return isset(self::$registry[$name]) ? self::$registry[$name] : NULL;
+	}
+
+	/**
+	 * Gets the registered name of a database instance.
+	 *
+	 * @param   string  database name
+	 * @param   object  PDO instance
+	 * @return  object
+	 */
+	public static function registry_name(PDO $db)
+	{
+		foreach (self::$registry as $name => $instance)
+		{
+			if (spl_object_hash($db) === spl_object_hash($instance))
+			{
+				// Found the name
+				return $name;
+			}
+		}
+
+		return FALSE;
 	}
 
 	/**
@@ -68,7 +91,7 @@ class pdomo_Core {
 
 		if ($db === NULL)
 		{
-			$db = self::$instance;
+			$db = self::instance();
 		}
 		elseif (isset(self::$registry[$db]))
 		{
