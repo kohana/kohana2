@@ -11,6 +11,9 @@
  */
 class Auth_Core {
 
+	// Session instance
+	protected $session;
+
 	// Configuration
 	protected $config;
 
@@ -46,6 +49,9 @@ class Auth_Core {
 	 */
 	public function __construct($config = array())
 	{
+		// Load libraries
+		$this->session = Session::instance();
+
 		// Append default auth configuration
 		$config += Config::item('auth');
 
