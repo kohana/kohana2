@@ -412,7 +412,7 @@ class form_Core {
 			$extra = ' '.ltrim($extra);
 		}
 
-		return '<button'.form::attributes($data, 'button').$extra.'>'.html::specialchars($value).'</button>';
+		return '<button'.form::attributes($data, 'button').$extra.'>'.$value.'</button>';
 	}
 
 	/**
