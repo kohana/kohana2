@@ -13,44 +13,35 @@ class PDODB_Core extends PDO {
 	 */
 	public function __construct(array $config)
 	{
+		// All keys must be set
+		$config += array('charset' => 'utf8', 'driver' => '', 'hostname' => '', 'database' => '', 'persistent' => FALSE);
+
 		// Construct the PDO DSN
 		$dsn = $config['driver'].':host='.$config['hostname'].';dbname='.$config['database'];
 
-		// Connect
-		parent::__construct($dsn, $config['username'], $config['password']);
+		// Driver-specific PDO options
+		$driver = array();
+
+		if ($config['persistent'] === TRUE)
+		{
+			// Turn on persistent connections
+			$driver[PDO::ATTR_PERSISTENT] = TRUE;
+		}
+
+		// Connect to the database
+		parent::__construct($dsn, $config['username'], $config['password'], $driver);
 
 		// Enable exceptions for errors
 		$this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		// Set the character set of the connection
+		$this->exec('SET NAMES '.$this->quote($config['charset']));
 
 		// Get the driver name
 		$driver = 'PDODB_'.ucfirst(strtolower($this->getAttribute(PDO::ATTR_DRIVER_NAME))).'_Driver';
 
 		// Load the driver
 		$this->driver = call_user_func(array($driver, 'instance'));
-	}
-
-	/**
-	 * Prepares an SQL string by replacing the parameters in the SQL with
-	 * the passed parameters.
-	 *
-	 * @param   string   SQL statement
-	 * @param   array    parameters to replace
-	 * @return  string
-	 */
-	public function prepare_sql($sql, $params)
-	{
-		// Search and replacement terms
-		$search = $replace = array();
-
-		foreach ($params as $key => $val)
-		{
-			// Convert the array into search and replace
-			$search[] = '{'.$key.'}';
-			$replace[] = $val;
-		}
-
-		// Replace the params in the SQL
-		return str_replace($search, $replace, $sql);
 	}
 
 	/**

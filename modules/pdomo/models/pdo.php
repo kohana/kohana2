@@ -350,16 +350,17 @@ abstract class PDO_Model {
 			$insert = FALSE;
 
 			// Create the SQL
-			$sql = 'UPDATE '.$this->db->quote_identifier($this->table).' SET';
+			$sql = 'UPDATE '.$this->db->quote_identifier($this->table).' SET ';
 
+			$set = array();
 			foreach ($this->changed as $key)
 			{
 				// Add the new data
-				$sql .= ' '.$this->db->quote_identifier($key).' = '.$this->db->quote($this->data[$key]);
+				$set[] = $this->db->quote_identifier($key).' = '.$this->db->quote($this->data[$key]);
 			}
 
 			// Add the WHERE
-			$sql .= ' WHERE '.$this->db->quote_identifier($this->primary_key).' = '.$this->db->quote($this->data[$this->primary_key]);
+			$sql .= implode(', ', $set).' WHERE '.$this->db->quote_identifier($this->primary_key).' = '.$this->db->quote($this->data[$this->primary_key]);
 		}
 		else
 		{
