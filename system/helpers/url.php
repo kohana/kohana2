@@ -135,46 +135,73 @@ class url_Core {
 	/**
 	 * Sends a page redirect header.
 	 *
-	 * @param  string  site URI or URL to redirect to
+	 * @param  mixed   string site URI or URL to redirect to, or array of strings if method is 300
 	 * @param  string  HTTP method of redirect
-	 * @return A HTML anchor, but sends HTTP headers. The anchor should never be seen
-	 *         by the user, unless their browser does not understand the headers sent.
+	 * @return void
 	 */
 	public static function redirect($uri = '', $method = '302')
 	{
-		if (Event::has_run('system.send_headers'))
-			return;
-
-		if (strpos($uri, '://') === FALSE)
+		if (!Event::has_run('system.send_headers'))
 		{
-			$uri = url::site($uri);
+			if(!is_array($uri))
+			{
+				$uri = array($uri);
+			}
+			
+			for($i=0; $i<count($uri); $i++)
+			{
+				if (strpos($uri[$i], '://') === FALSE)
+				{
+					$uri[$i] = url::site($uri[$i]);
+				}
+			}
+
+			if ($method == '300')
+			{
+				if(count($uri) > 0)
+				{
+					header('HTTP/1.1 300 Multiple Choices');
+					header('Location: '.$uri[0]);
+
+					$choices = '';
+					foreach($uri as $href)
+					{
+						$choices .= '<li><a href="'.$href.'">'.$href.'</a></li>';
+					}
+					
+					exit('<h1>301 - Multiple Choices:</h1><ul>'.$choices.'</ul>');
+				}
+			}
+			else
+			{
+				$uri = $uri[0];
+
+				if ($method == 'refresh')
+				{
+					header('Refresh: 0; url='.$uri);
+				}
+				else
+				{
+					$codes = array
+					(
+						'301' => 'Moved Permanently',
+						'302' => 'Found',
+						'303' => 'See Other',
+						'304' => 'Not Modified',
+						'305' => 'Use Proxy',
+						'307' => 'Temporary Redirect'
+					);
+
+					$method = isset($codes[$method]) ? $method : '302';
+
+					header('HTTP/1.1 '.$method.' '.$codes[$method]);
+					header('Location: '.$uri);
+				}
+
+				exit('<h1>'.$method.' - '.$codes[$method].'</h1><p><a href="'.$uri.'">'.$uri.'</a></p>');
+			}
 		}
-
-		if ($method == 'refresh')
-		{
-			header('Refresh: 0; url='.$uri);
-		}
-		else
-		{
-			$codes = array
-			(
-				'300' => 'Multiple Choices',
-				'301' => 'Moved Permanently',
-				'302' => 'Found',
-				'303' => 'See Other',
-				'304' => 'Not Modified',
-				'305' => 'Use Proxy',
-				'307' => 'Temporary Redirect'
-			);
-
-			$method = isset($codes[$method]) ? $method : '302';
-
-			header('HTTP/1.1 '.$method.' '.$codes[$method]);
-			header('Location: '.$uri);
-		}
-
-		// Last resort, exit and display the URL
-		exit('<a href="'.$uri.'">'.$uri.'</a>');
+		return;
 	}
 
 } // End url
