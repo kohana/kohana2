@@ -75,13 +75,7 @@ class form_Core {
 	 */
 	public static function open_fieldset($data = NULL, $extra = '')
 	{
-		if ( ! empty($extra))
-		{
-			// Make sure there is 1 space before extra
-			$extra = ' '.ltrim($extra);
-		}
-
-		return '<fieldset'.html::attributes((array) $data).$extra.'>'."\n";
+		return '<fieldset'.html::attributes((array) $data).' '.$extra.'>'."\n";
 	}
 
 	/**
@@ -104,13 +98,7 @@ class form_Core {
 	 */
 	public static function legend($text = '', $data = NULL, $extra = '')
 	{
-		if ( ! empty($extra))
-		{
-			// Make sure there is 1 space before extra
-			$extra = ' '.ltrim($extra);
-		}
-
-		return '<legend'.form::attributes((array) $data).$extra.'>'.$text.'</legend>'."\n";
+		return '<legend'.form::attributes((array) $data).' '.$extra.'>'.$text.'</legend>'."\n";
 	}
 
 	/**
@@ -169,16 +157,10 @@ class form_Core {
 			'value' => $value
 		);
 
-		if ( ! empty($extra))
-		{
-			// Make sure there is 1 space before extra
-			$extra = ' '.ltrim($extra);
-		}
-
 		// For safe form data
 		$data['value'] = html::specialchars($data['value']);
 
-		return '<input'.form::attributes($data).$extra.' />';
+		return '<input'.form::attributes($data).' '.$extra.' />';
 	}
 
 	/**
@@ -242,13 +224,7 @@ class form_Core {
 		// Value is not part of the attributes
 		unset($data['value']);
 
-		if ( ! empty($extra))
-		{
-			// Make sure there is 1 space before extra
-			$extra = ' '.ltrim($extra);
-		}
-
-		return '<textarea'.form::attributes($data, 'textarea').$extra.'>'.html::specialchars($value).'</textarea>';
+		return '<textarea'.form::attributes($data, 'textarea').' '.$extra.'>'.html::specialchars($value).'</textarea>';
 	}
 
 	/**
@@ -267,16 +243,10 @@ class form_Core {
 			$data = array('name' => $data);
 		}
 
-		if ( ! empty($extra))
-		{
-			// Make sure there is 1 space before extra
-			$extra = ' '.ltrim($extra);
-		}
-
 		// Selected value should always be a string
 		$selected = (string) $selected;
 
-		$input = '<select'.form::attributes($data, 'select').$extra.'>'."\n";
+		$input = '<select'.form::attributes($data, 'select').' '.$extra.'>'."\n";
 		foreach ($options as $key => $val)
 		{
 			// Key should always be a string
@@ -324,7 +294,7 @@ class form_Core {
 
 		$data['type'] = 'checkbox';
 
-		if ($checked == TRUE OR (isset($data['checked']) AND $data['checked'] == TRUE))
+		if ($checked === TRUE OR (isset($data['checked']) AND $data['checked'] === TRUE))
 		{
 			$data['checked'] = 'checked';
 		}
@@ -354,7 +324,7 @@ class form_Core {
 
 		$data['type'] = 'radio';
 
-		if ($checked == TRUE OR (isset($data['checked']) AND $data['checked'] == TRUE))
+		if ($checked === TRUE OR (isset($data['checked']) AND $data['checked'] === TRUE))
 		{
 			$data['checked'] = 'checked';
 		}
@@ -406,13 +376,7 @@ class form_Core {
 			$value = arr::remove('value', $data);
 		}
 
-		if ( ! empty($extra))
-		{
-			// Make sure there is 1 space before extra
-			$extra = ' '.ltrim($extra);
-		}
-
-		return '<button'.form::attributes($data, 'button').$extra.'>'.$value.'</button>';
+		return '<button'.form::attributes($data, 'button').' '.$extra.'>'.$value.'</button>';
 	}
 
 	/**
@@ -446,13 +410,7 @@ class form_Core {
 			$data = empty($data) ? array() : array('for' => $data);
 		}
 
-		if ( ! empty($extra))
-		{
-			// Make sure there is 1 space before extra
-			$extra = ' '.ltrim($extra);
-		}
-
-		return '<label'.form::attributes($data).$extra.'>'.$text.'</label>';
+		return '<label'.form::attributes($data).' '.$extra.'>'.$text.'</label>';
 	}
 
 	/**

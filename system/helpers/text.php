@@ -303,7 +303,7 @@ class text_Core {
 
 		// Put at least two linebreaks before and after $no_p elements
 		$str = preg_replace('~^<'.$no_p.'[^>]*+>~im', "\n$0", $str);
-		$str = preg_replace('~</'.$no_p.'>$~im', "$0\n", $str);
+		$str = preg_replace('~</'.$no_p.'\s*+>$~im', "$0\n", $str);
 
 		// Do the <p> magic!
 		$str = '<p>'.trim($str).'</p>';
@@ -311,7 +311,7 @@ class text_Core {
 
 		// Remove p tags around $no_p elements
 		$str = preg_replace('~<p>(?=</?'.$no_p.'[^>]*+>)~i', '', $str);
-		$str = preg_replace('~(</?'.$no_p.'>)</p>~i', '$1', $str);
+		$str = preg_replace('~(</?'.$no_p.'[^>]*+>)</p>~i', '$1', $str);
 
 		// Convert single linebreaks to <br />
 		$str = preg_replace('~(?<!\n)\n(?!\n)~', "<br />\n", $str);
