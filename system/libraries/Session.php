@@ -390,11 +390,12 @@ class Session_Core {
 	 * Get a variable, and delete it.
 	 *
 	 * @param   string  variable key
+	 * @param   mixed   default value returned if variable does not exist
 	 * @return  mixed
 	 */
-	public function get_once($key)
+	public function get_once($key, $default = FALSE)
 	{
-		$return = self::get($key);
+		$return = self::get($key, $default);
 		self::delete($key);
 
 		return $return;
