@@ -41,4 +41,4 @@ CREATE TABLE IF NOT EXISTS `user_tokens` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 </pre>
 
-<p>After the tables have been installed, <?php echo html::anchor('auth/create', 'create a user') ?>.</p>
+<p>After the tables have been installed, <?php echo html::anchor('auth_demo/create', 'create a user') ?>.</p>
