@@ -25,7 +25,7 @@ class arr_Core {
 		$new_array = array();
 		foreach ($source_array as $key => $value)
 		{
-			$value = ($keep_keys) ? $value : array_values($value);
+			$value = ($keep_keys === TRUE) ? $value : array_values($value);
 			foreach ($value as $k => $v)
 			{
 				$new_array[$k][$key] = $v;
@@ -81,7 +81,7 @@ class arr_Core {
 	 */
 	public function binary_search($needle, $haystack, $nearest = FALSE, $sort = FALSE)
 	{
-		if ($sort)
+		if ($sort === TRUE)
 		{
 			sort($haystack);
 		}
@@ -104,7 +104,7 @@ class arr_Core {
 
 		if ($high == count($haystack) OR $haystack[$high] != $needle)
 		{
-			if ($nearest == FALSE)
+			if ($nearest === FALSE)
 				return FALSE;
 
 			// return the nearest value
@@ -113,8 +113,8 @@ class arr_Core {
 
 			return ($high_distance >= $low_distance) ? $haystack[ceil($low)] : $haystack[floor($low)];
 		}
-		else
-			return $high;
+
+		return $high;
 	}
 
 	/**
@@ -163,6 +163,30 @@ class arr_Core {
 	}
 
 	/**
+	 * Overwrites an array with values from input array(s).
+	 * Non-existing keys will not be appended!
+	 *
+	 * @param   array   key array
+	 * @param   array   input array(s) that will overwrite key array values
+	 * @return  array
+	 */
+	public static function overwrite($array1)
+	{
+		foreach (array_slice(func_get_args(), 1) as $array2)
+		{
+			foreach ($array2 as $key => $value)
+			{
+				if (array_key_exists($key, $array1))
+				{
+					$array1[$key] = $value;
+				}
+			}
+		}
+
+		return $array1;
+	}
+
+	/**
 	 * Fill an array with a range of numbers.
 	 *
 	 * @param   integer  stepping
@@ -176,6 +200,7 @@ class arr_Core {
 		{
 			$array[$i] = $i;
 		}
+
 		return $array;
 	}
 
