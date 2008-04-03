@@ -88,13 +88,9 @@ class valid_Core {
 		$flags = FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE;
 
 		if ($ipv6 === TRUE)
-		{
 			return (bool) filter_var($ip, FILTER_VALIDATE_IP, $flags);
-		}
-		else
-		{
-			return (bool) filter_var($ip, FILTER_VALIDATE_IP, $flags | FILTER_FLAG_IPV4);
-		}
+
+		return (bool) filter_var($ip, FILTER_VALIDATE_IP, $flags | FILTER_FLAG_IPV4);
 	}
 
 	/**
@@ -188,8 +184,8 @@ class valid_Core {
 	 */
 	public static function alpha($str, $utf8 = FALSE)
 	{
-		return (bool) ($utf8 == TRUE)
-			? preg_match('/^\pL++$/uD', (string) $str)
+		return ($utf8 === TRUE)
+			? (bool) preg_match('/^\pL++$/uD', (string) $str)
 			: ctype_alpha((string) $str);
 	}
 
@@ -202,8 +198,8 @@ class valid_Core {
 	 */
 	public static function alpha_numeric($str, $utf8 = FALSE)
 	{
-		return (bool) ($utf8 == TRUE)
-			? preg_match('/^[\pL\pN]++$/uD', (string) $str)
+		return ($utf8 === TRUE)
+			? (bool) preg_match('/^[\pL\pN]++$/uD', (string) $str)
 			: ctype_alnum((string) $str);
 	}
 
@@ -216,9 +212,9 @@ class valid_Core {
 	 */
 	public static function alpha_dash($str, $utf8 = FALSE)
 	{
-		return (bool) ($utf8 == TRUE)
-			? preg_match('/^[-\pL\pN_]++$/uD', (string) $str)
-			: preg_match('/^[-a-z0-9_]++$/iD', (string) $str);
+		return ($utf8 === TRUE)
+			? (bool) preg_match('/^[-\pL\pN_]++$/uD', (string) $str)
+			: (bool) preg_match('/^[-a-z0-9_]++$/iD', (string) $str);
 	}
 
 	/**
@@ -230,8 +226,8 @@ class valid_Core {
 	 */
 	public static function digit($str, $utf8 = FALSE)
 	{
-		return (bool) ($utf8 == TRUE)
-			? preg_match('/^\pN++$/uD', (string) $str)
+		return ($utf8 === TRUE)
+			? (bool) preg_match('/^\pN++$/uD', (string) $str)
 			: ctype_digit((string) $str);
 	}
 
@@ -254,7 +250,7 @@ class valid_Core {
 	 */
 	public static function standard_text($str)
 	{
-		return preg_match('/^[-\pL\pN\pZ_]++$/uD', (string) $str);
+		return (bool) preg_match('/^[-\pL\pN\pZ_]++$/uD', (string) $str);
 	}
 
 } // End valid
