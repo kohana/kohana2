@@ -63,7 +63,7 @@ class Form_Upload_Core extends Form_Input {
 	public function directory($dir = NULL)
 	{
 		// Use the global upload directory by default
-		empty($dir) and $dir = Config::item('upload.upload_directory');
+		empty($dir) and $dir = Config::item('upload.directory');
 
 		// Make the path asbolute and normalize it
 		$dir = str_replace('\\', '/', realpath($dir)).'/';
