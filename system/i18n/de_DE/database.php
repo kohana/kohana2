@@ -11,5 +11,6 @@ $lang = array
 	'must_use_where'        => 'Sie müssen WHERE in Ihrem Query benutzen.',
 	'must_use_table'        => 'Sie müssen eine Tabelle für Ihren Query angeben.',
 	'table_not_found'       => 'Die Tabelle %s konnte nicht in der Datenbank gefunden werden.',
-	'not_implemented'       => 'Die von Ihnen aufgerufene Methode, %s, wird von diesem Treiber nicht unterstützt.'
+	'not_implemented'       => 'Die von Ihnen aufgerufene Methode, %s, wird von diesem Treiber nicht unterstützt.',
+	'result_read_only'      => 'Ergebnisse der Anfrage können nur gelesen werden.'
 );
