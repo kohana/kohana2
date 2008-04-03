@@ -12,4 +12,5 @@ $lang = array
 	'must_use_table'        => 'You must set a database table for your query.',
 	'table_not_found'       => 'Table %s does not exist in your database.',
 	'not_implemented'       => 'The method you called, %s, is not supported by this driver.',
+	'result_read_only'      => 'Query results are read only.'
 );
