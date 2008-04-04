@@ -3,7 +3,6 @@
 $lang = array
 (
 	// Class errors
-	'error_format'  => 'Ihre Nachricht muss {message} enthalten.',
 	'invalid_rule'  => 'Ungültige Gültigkeitsprüfung benutzt: %s',
 
 	// General errors
