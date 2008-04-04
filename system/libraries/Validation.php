@@ -72,62 +72,6 @@ class Validation_Core extends ArrayObject {
 	}
 
 	/**
-	 * Set the format of message strings.
-	 *
-	 * @chainable
-	 * @param   string   new message format
-	 * @return  object
-	 */
-	public function message_format($str)
-	{
-		if (strpos($str, '{message}') === FALSE)
-			throw new Kohana_Exception('validation.error_format');
-
-		// Set the new message format
-		$this->message_format = $str;
-
-		return $this;
-	}
-
-	/**
-	 * Sets or returns the message for an input.
-	 *
-	 * @chainable
-	 * @param   string   input key
-	 * @param   string   message to set
-	 * @return  string|object
-	 */
-	public function message($input = NULL, $message = NULL)
-	{
-		if ($message === NULL)
-		{
-			if ($input === NULL)
-			{
-				$messages = array();
-				foreach (array_keys($this->messages) as $input)
-				{
-					$messages[] = $this->message($input);
-				}
-
-				return implode("\n", $messages);
-			}
-
-			// Return nothing if no message exists
-			if (empty($this->messages[$input]))
-				return '';
-
-			// Return the HTML message string
-			return str_replace('{message}', $this->messages[$input], $this->message_format);
-		}
-		else
-		{
-			$this->messages[$input] = $message;
-		}
-
-		return $this;
-	}
-
-	/**
 	 * Add a pre-filter to one or more inputs.
 	 *
 	 * @chainable
@@ -481,38 +425,71 @@ class Validation_Core extends ArrayObject {
 	}
 
 	/**
-	 * Return the errors array.
+	 * Sets or returns the message for an input.
 	 *
-	 * @return array
+	 * @chainable
+	 * @param   string   input key
+	 * @param   string   message to set
+	 * @return  string|object
 	 */
-	public function errors()
+	public function message($input = NULL, $message = NULL)
 	{
-		return $this->errors;
+		if ($message === NULL)
+		{
+			if ($input === NULL)
+			{
+				$messages = array();
+				foreach (array_keys($this->messages) as $input)
+				{
+					$messages[] = $this->message($input);
+				}
+
+				return implode("\n", $messages);
+			}
+
+			// Return nothing if no message exists
+			if (empty($this->messages[$input]))
+				return '';
+
+			// Return the HTML message string
+			return str_replace('{message}', $this->messages[$input], $this->message_format);
+		}
+		else
+		{
+			$this->messages[$input] = $message;
+		}
+
+		return $this;
 	}
 
 	/**
-	 * Provides a generic interface to load the errors. Each field can have a
-	 * specific message, such as username.required, and a default message, such
-	 * as username.default.
+	 * Return the errors array.
 	 *
-	 * @param   string   language file to load errors from
-	 * @return  void
+	 * @param   boolean  load errors from the a lang file
+	 * @return  array
 	 */
-	public function load_errors($file = 'forms')
+	public function errors($file = NULL)
 	{
-		foreach ($this->errors as $input => $error)
+		if ($file === NULL)
 		{
-			// Key for this input error
-			$key = "$file.$input.$error";
-
-			if (($str = Kohana::lang($key)) === $key)
+			return $this->errors;
+		}
+		else
+		{
+			$errors = array();
+			foreach ($this->errors as $input => $error)
 			{
-				// Get the default error message
-				$str = Kohana::lang("$file.$input.default");
-			}
+				// Key for this input error
+				$key = "$file.$input.$error";
 
-			// Add the message
-			$this->message($input, $str);
+				if (($str = Kohana::lang($key)) === $key)
+				{
+					// Get the default error message
+					$errors[$input] = Kohana::lang("$file.$input.default");
+				}
+			}
+			
+			return $errors;
 		}
 	}
 

@@ -3,7 +3,6 @@
 $lang = array
 (
 	// Class errors
-	'error_format'  => 'Your error message string must contain the string {message} .',
 	'invalid_rule'  => 'Invalid validation rule used: %s',
 
 	// General errors
