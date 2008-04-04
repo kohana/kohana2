@@ -141,66 +141,64 @@ class url_Core {
 	 */
 	public static function redirect($uri = '', $method = '302')
 	{
-		if (!Event::has_run('system.send_headers'))
+		if (Event::has_run('system.send_headers'))
+			return;
+
+		$uri = (array) $uri;
+
+		for ($i = 0, $count_uri = count($uri); $i < $count_uri; $i++)
 		{
-			if(!is_array($uri))
+			if (strpos($uri[$i], '://') === FALSE)
 			{
-				$uri = array($uri);
+				$uri[$i] = url::site($uri[$i]);
 			}
-			
-			for($i=0; $i<count($uri); $i++)
+		}
+
+		if ($method == '300')
+		{
+			if ($count_uri > 0)
 			{
-				if (strpos($uri[$i], '://') === FALSE)
+				header('HTTP/1.1 300 Multiple Choices');
+				header('Location: '.$uri[0]);
+
+				$choices = '';
+				foreach($uri as $href)
 				{
-					$uri[$i] = url::site($uri[$i]);
+					$choices .= '<li><a href="'.$href.'">'.$href.'</a></li>';
 				}
+				
+				exit('<h1>301 - Multiple Choices:</h1><ul>'.$choices.'</ul>');
 			}
+		}
+		else
+		{
+			$uri = $uri[0];
 
-			if ($method == '300')
+			if ($method == 'refresh')
 			{
-				if(count($uri) > 0)
-				{
-					header('HTTP/1.1 300 Multiple Choices');
-					header('Location: '.$uri[0]);
-
-					$choices = '';
-					foreach($uri as $href)
-					{
-						$choices .= '<li><a href="'.$href.'">'.$href.'</a></li>';
-					}
-					
-					exit('<h1>301 - Multiple Choices:</h1><ul>'.$choices.'</ul>');
-				}
+				header('Refresh: 0; url='.$uri);
 			}
 			else
 			{
-				$uri = $uri[0];
+				$codes = array
+				(
+					'301' => 'Moved Permanently',
+					'302' => 'Found',
+					'303' => 'See Other',
+					'304' => 'Not Modified',
+					'305' => 'Use Proxy',
+					'307' => 'Temporary Redirect'
+				);
 
-				if ($method == 'refresh')
-				{
-					header('Refresh: 0; url='.$uri);
-				}
-				else
-				{
-					$codes = array
-					(
-						'301' => 'Moved Permanently',
-						'302' => 'Found',
-						'303' => 'See Other',
-						'304' => 'Not Modified',
-						'305' => 'Use Proxy',
-						'307' => 'Temporary Redirect'
-					);
+				$method = isset($codes[$method]) ? $method : '302';
 
-					$method = isset($codes[$method]) ? $method : '302';
-
-					header('HTTP/1.1 '.$method.' '.$codes[$method]);
-					header('Location: '.$uri);
-				}
-
-				exit('<h1>'.$method.' - '.$codes[$method].'</h1><p><a href="'.$uri.'">'.$uri.'</a></p>');
+				header('HTTP/1.1 '.$method.' '.$codes[$method]);
+				header('Location: '.$uri);
 			}
+
+			exit('<h1>'.$method.' - '.$codes[$method].'</h1><p><a href="'.$uri.'">'.$uri.'</a></p>');
 		}
+
 		return;
 	}
 

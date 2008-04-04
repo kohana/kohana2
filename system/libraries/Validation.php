@@ -287,8 +287,7 @@ class Validation_Core extends ArrayObject {
 		if (func_get_args() > 2)
 		{
 			// Multiple callback
-			$callbacks = func_get_args();
-			$callbacks = array_slice($callbacks, 1);
+			$callbacks = array_slice(func_get_args(), 1);
 		}
 		else
 		{

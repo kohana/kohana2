@@ -514,7 +514,7 @@ abstract class PDO_Model {
 			$result = $query->fetchAll(PDO::FETCH_OBJ);
 
 			// Set the cache
-			Cache::instance()->set($key, $result, array('database', 'result'), strtotime('now +1 hour'));
+			Cache::instance()->set($key, $result, array('database', 'result'), 3600);
 		}
 
 		// Return the cached result
