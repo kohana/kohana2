@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php //defined('SYSPATH') or die('No direct script access.');
 /**
  * Provides database access in a platform agnostic way, using simple query building blocks.
  *
@@ -22,11 +22,13 @@ class Database_Where_Core {
 	public function where()
 	{
 		$this->add(func_get_args(), 'AND');
+		return $this;
 	}
 
 	public function orwhere()
 	{
 		$this->add(func_get_args(), 'OR');
+		return $this;
 	}
 
 	private function add($args, $type)
@@ -44,7 +46,7 @@ class Database_Where_Core {
 		{
 			$operator = $num_args === 2 ? $args[1] : '=';
 
-			foreach ($args as $key => $value)
+			foreach ($args[0] as $key => $value)
 			{
 				$this->where[] = array(array('key' => $key, 'value' => $value, 'op' => $operator), $type);
 			}
@@ -56,7 +58,7 @@ class Database_Where_Core {
 		}
 	}
 
-	public function build($group == 'default')
+	public function build($group = 'default')
 	{
 		if (is_string($group))
 		{
@@ -72,10 +74,18 @@ class Database_Where_Core {
 		}
 
 		// Iterate the where array to build the query portion and return it
+		$wheres_left = count($this->where);
 		$where_string = '(';
 		foreach ($this->where as $where)
 		{
-			$where_string .= $this->db->driver->escape_column($where[0]['key']).' '.$where[0]['op'].' '.$this->db->driver->escape($where[0]['value']).(count($this->where) > 1 ? ' '.$where[1].' ' : '');
+			if (is_object($where[0]))
+			{
+				$where_string.=$where[0]->build();
+			}
+			else
+			{
+				$where_string.=$this->db->driver->escape_column($where[0]['key']).' '.$where[0]['op'].' '.$this->db->driver->escape($where[0]['value']).($wheres_left-- > 1 ? ' '.$where[1].' ' : '');
+			}
 		}
 		$where_string .= ')';
 
