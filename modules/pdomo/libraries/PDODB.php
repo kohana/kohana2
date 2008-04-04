@@ -45,6 +45,44 @@ class PDODB_Core extends PDO {
 	}
 
 	/**
+	 * Returns a database-specific JOIN statement
+	 *
+	 * @param   string  table to join
+	 * @param   string  column to join on
+	 * @param   string  column to join on
+	 * @param   string  join type
+	 * @return  string
+	 */
+	public function join($table, $col1, $col2, $type = 'LEFT')
+	{
+		// Return a JOIN clause
+		return $type.' JOIN '.$this->quote_identifier($table).' ON '.$this->quote_identifier($col1).' = '.$this->quote_identifier($col2);
+	}
+
+	/**
+	 * Returns a database-specific WHERE statement.
+	 *
+	 * @param   string  column name
+	 * @param   string  operation
+	 * @param   string  column value
+	 * @return  string
+	 */
+	public function where($key, $op, $value = NULL)
+	{
+		if ($value === NULL)
+		{
+			// Use the operator as the value
+			$value = $op;
+
+			// Use equals for the operator
+			$op = '=';
+		}
+
+		// Return a WHERE clause
+		return $this->quote_identifier($key).' '.$this->test_operator($op).' '.$this->quote($value);
+	}
+
+	/**
 	 * Returns a database-specific LIMIT statement.
 	 *
 	 * @param   integer  limit
@@ -103,6 +141,21 @@ class PDODB_Core extends PDO {
 			// Quote the value
 			return parent::quote($str);
 		}
+	}
+
+	/**
+	 * Tests the validity of an operator.
+	 *
+	 * @throws  Kohana_Exception
+	 * @param   string  operator to test
+	 * @return  string
+	 */
+	public function test_operator($op)
+	{
+		if ( ! preg_match('/^=|[!<>]=?|(?:NOT\s+)?(LIKE|REGEXP?|IN)$/i', $op))
+			throw new Kohana_Exception('pdo.invalid_operation', $op);
+
+		return strtoupper($op);
 	}
 
 } // End PDODB

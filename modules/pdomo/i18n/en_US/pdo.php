@@ -8,5 +8,5 @@ $lang = array
 	'invalid_types' => 'Invalid types specified in %s',
 	'invalid_database' => 'Invalid database used to construct %s (all databases must be instances of PDO)',
 	'invalid_get' => 'Requested key %s does not exist in %s',
-	'invalid_operation' => 'Invalid operation %s used in %s::find()',
+	'invalid_operation' => 'Invalid operation "%s" was attempted in PDODB',
 );

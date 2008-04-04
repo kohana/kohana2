@@ -34,7 +34,7 @@ class User_Token_Model extends PDO_Model {
 		}
 	}
 
-	protected function __on_find()
+	protected function __on_load()
 	{
 		if ($this->loaded AND $this->expires < time())
 		{

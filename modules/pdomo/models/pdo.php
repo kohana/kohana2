@@ -23,6 +23,9 @@ abstract class PDO_Model {
 	// Primary key
 	protected $primary_key = 'id';
 
+	// SQL statement to select rows
+	protected $select_sql;
+
 	// Object data status
 	protected $loaded = FALSE;
 	protected $saved = FALSE;
@@ -60,6 +63,13 @@ abstract class PDO_Model {
 
 		// Set the database instance
 		$this->db = $db;
+
+		if (empty($this->select_sql))
+		{
+			// Set the default SELECT statement
+			$table = $this->db->quote_identifier($this->table);
+			$this->select_sql = 'SELECT '.$table.'.* FROM '.$table;
+		}
 
 		// Empty the data
 		$this->__empty_data();
@@ -178,11 +188,11 @@ abstract class PDO_Model {
 	}
 
 	/**
-	 * Called as the last step of find(), before a return.
+	 * Called whenever the internal data is changed, before a return.
 	 *
 	 * @return  void
 	 */
-	protected function __on_find()
+	protected function __on_load()
 	{
 		// No default action
 	}
@@ -244,16 +254,69 @@ abstract class PDO_Model {
 	 * Load data from an external array into the object.
 	 *
 	 * @chainable
-	 * @param   array   key/value array
+	 * @param   array    key/value array
+	 * @param   boolean  replace the current data
 	 * @return  object
 	 */
-	public function load(array $data)
+	public function load($data, $replace = FALSE)
 	{
-		foreach ($data as $key => $val)
+		// Force the data to be an array
+		$data = (array) $data;
+
+		if ($replace === TRUE)
 		{
-			// Set each value separately
-			$this->__set($key, $val);
+			// Empty the data
+			$this->__empty_data();
+
+			// Replace the existing data with the loaded data
+			$this->data = $data;
+
+			// Set types
+			$this->__set_types();
+
+			// Object is loaded and saved
+			$this->loaded = $this->saved = TRUE;
 		}
+		else
+		{
+			foreach ($data as $key => $val)
+			{
+				// Set each value separately
+				$this->__set($key, $val);
+			}
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Loads the first result of a statement as a new data set.
+	 *
+	 * @param   object  PDOStatement to execute
+	 * @return  void
+	 */
+	protected function __load_query(PDOStatement $query)
+	{
+		// Empty the data
+		$this->__empty_data();
+
+		if ($query->execute() AND $query->rowCount() > 0)
+		{
+			// Load the data of the object
+			$this->data = $query->fetch(PDO::FETCH_ASSOC);
+
+			// No data has been changed
+			$this->changed = array();
+
+			// Data has been loaded and is saved
+			$this->loaded = $this->saved = TRUE;
+
+			// Reset the types of loaded data
+			$this->__set_types();
+		}
+
+		// Execute the on_load event
+		$this->__on_load();
 	}
 
 	/**
@@ -269,22 +332,22 @@ abstract class PDO_Model {
 	 * @param   mixed   column value (arrays will be collapsed for IN)
 	 * @return  object
 	 */
-	public function find($key, $op = '=', $value = NULL)
+	public function find($key, $op = '######', $value = '######')
 	{
-		if (($num_args = func_num_args()) < 3)
+		if ($value === '######')
 		{
-			if ($num_args === 2)
-			{
-				// Use the operator as the value
-				$value = $op;
-			}
-			else
+			if ($op === '######')
 			{
 				// Use the key as the value
 				$value = $key;
 
 				// Use the primary key
 				$key = $this->primary_key;
+			}
+			else
+			{
+				// Use the operator as the value
+				$value = $op;
 			}
 
 			// Use equals for the operator
@@ -303,30 +366,11 @@ abstract class PDO_Model {
 		$this->__empty_data();
 
 		// Quote all values
-		$table = $this->db->quote_identifier($this->table);
-		$key   = $this->db->quote_identifier($key);
+		$key   = $this->db->quote_identifier("{$this->table}.$key");
 		$value = $this->db->quote($value);
 
 		// Find a single row matching the criteria
-		$query = $this->db->prepare('SELECT '.$table.'.* FROM '.$table.' WHERE '.$key.' '.$op.' '.$value.' '.$this->db->limit(1));
-
-		if ($query->execute() AND $query->rowCount() > 0)
-		{
-			// Load the data of the object
-			$this->data = $query->fetch(PDO::FETCH_ASSOC);
-
-			// No data has been changed
-			$this->changed = array();
-
-			// Data has been loaded and is saved
-			$this->loaded = $this->saved = TRUE;
-
-			// Reset the types of loaded data
-			$this->__set_types();
-		}
-
-		// Execute the on_find event
-		$this->__on_find();
+		$this->__load_query($this->db->prepare($this->select_sql.' WHERE '.$key.' '.$op.' '.$value.' '.$this->db->limit(1)));
 
 		return $this;
 	}
@@ -440,6 +484,41 @@ abstract class PDO_Model {
 
 		// Return the status
 		return $status;
+	}
+
+	/**
+	 * Return the cached result of a query. If the result does not exist, it
+	 * will be created. The result will always be an array of objects.
+	 *
+	 * @param   string   cache key name
+	 * @param   string   SQL statement
+	 * @return  array
+	 */
+	protected function cached_result($key, $sql)
+	{
+		// Cache key
+		$key .= '-'.sha1($sql);
+
+		// Retrieve the cached result
+		$result = Cache::instance()->get($key);
+
+		if ( ! is_array($result))
+		{
+			// Prepare the query
+			$query = $this->db->prepare($sql);
+
+			// Execute the query
+			$query->execute();
+
+			// Return all the rows
+			$result = $query->fetchAll(PDO::FETCH_OBJ);
+
+			// Set the cache
+			Cache::instance()->set($key, $result, array('database', 'result'), strtotime('now +1 hour'));
+		}
+
+		// Return the cached result
+		return $result;
 	}
 
 } // End PDO_Model
