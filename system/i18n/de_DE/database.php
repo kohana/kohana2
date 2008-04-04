@@ -2,7 +2,7 @@
 
 $lang = array
 (
-	'undefined_group'       => 'Die Gruppe % ist in Ihrer Konfiguration nicht definiert worden.',
+	'undefined_group'       => 'Die Gruppe %s ist in Ihrer Konfiguration nicht definiert worden.',
 	'error'                 => 'Es gab einen SQL-Fehler: %s',
 	'connection'            => 'Es Gab einen Fehler bei der Verbindung mit der Datenbank: %s',
 	'driver_not_supported'  => 'Der Datenbanktreiber %s wurde nicht gefunden.',
@@ -11,6 +11,6 @@ $lang = array
 	'must_use_where'        => 'Sie müssen WHERE in Ihrem Query benutzen.',
 	'must_use_table'        => 'Sie müssen eine Tabelle für Ihren Query angeben.',
 	'table_not_found'       => 'Die Tabelle %s konnte in der Datenbank nicht gefunden werden.',
-	'not_implemented'       => 'Die von Ihnen aufgerufene Methode, %s, wird von diesem Treiber nicht unterstützt.',
+	'not_implemented'       => 'Die Methode %s wird von diesem Datenbanktreiber nicht unterstützt.',
 	'result_read_only'      => 'Ergebnisse der Anfrage können nur gelesen werden.'
 );
