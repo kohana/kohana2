@@ -276,6 +276,9 @@ abstract class PDO_Model {
 
 			// Object is loaded and saved
 			$this->loaded = $this->saved = TRUE;
+
+			// Execute the on_load event
+			$this->__on_load();
 		}
 		else
 		{
@@ -334,7 +337,14 @@ abstract class PDO_Model {
 	 */
 	public function find($key, $op = '######', $value = '######')
 	{
-		if ($value === '######')
+		if ($key === TRUE)
+		{
+			// Reload the current record
+			$key = $this->primary_key;
+			$op = '=';
+			$value = $this->data[$this->primary_key];
+		}
+		elseif ($value === '######')
 		{
 			if ($op === '######')
 			{

@@ -67,9 +67,9 @@ class PDODB_Core extends PDO {
 	 * @param   string  column value
 	 * @return  string
 	 */
-	public function where($key, $op, $value = NULL)
+	public function where($key, $op, $value = '{WHERE_VALUE_DEFAULT}')
 	{
-		if ($value === NULL)
+		if ($value === '{WHERE_VALUE_DEFAULT}')
 		{
 			// Use the operator as the value
 			$value = $op;
