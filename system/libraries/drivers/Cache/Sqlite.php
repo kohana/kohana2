@@ -31,11 +31,11 @@ class Cache_Sqlite_Driver implements Cache_Driver {
 	 */
 	public function __construct($filename)
 	{
-		// Find the real path to the directory
-		$filename = str_replace('\\', '/', realpath($filename));
+		// Get the directory name
+		$directory = str_replace('\\', '/', realpath(pathinfo($filename, PATHINFO_DIRNAME))).'/';
 
-		// Get the filename from the directory
-		$directory = substr($filename, 0, strrpos($filename, '/') + 1);
+		// Set the filename from the real directory path
+		$filename = $directory.basename($filename);
 
 		// Make sure the cache directory is writable
 		if ( ! is_dir($directory) OR ! is_writable($directory))
