@@ -3,7 +3,6 @@
 $lang = array
 (
 	// Class errors
-	'error_format'  => 'La plantilla de mensaje de error, debe contener la expresión {message} .',
 	'invalid_rule'  => 'La regla de validación usada es invalida: %s',
 
 	// General errors
