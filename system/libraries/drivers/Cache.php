@@ -9,13 +9,12 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-interface Cache_Driver
-{
+interface Cache_Driver {
 
 	/**
 	 * Set a cache item.
 	 */
-	public function set($id, $data, $tags, $expiration);
+	public function set($id, $data, $tags, $lifetime);
 
 	/**
 	 * Find all of the cache ids for a given tag.

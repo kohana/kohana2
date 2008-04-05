@@ -27,17 +27,11 @@ class Cache_Eaccelerator_Driver implements Cache_Driver {
 		return FALSE;
 	}
 
-	public function set($id, $data, $tags, $expiration)
+	public function set($id, $data, $tags, $lifetime)
 	{
 		count($tags) and Log::add('error', 'tags are unsupported by the eAccelerator driver');
 
-		// eAccelerator expects time to live, not a unix timestamp
-		if ($expiration !== 0)
-		{
-			$expiration -= time();
-		}
-
-		return eaccelerator_put($id, $data, $expiration);
+		return eaccelerator_put($id, $data, $lifetime);
 	}
 
 	public function delete($id, $tag = FALSE)

@@ -22,17 +22,11 @@ class Cache_Apc_Driver implements Cache_Driver {
 		return apc_fetch($key);
 	}
 
-	public function set($id, $data, $tags, $expiration)
+	public function set($id, $data, $tags, $lifetime)
 	{
 		count($tags) and Log::add('error', 'Cache: tags are unsupported by the APC driver');
 
-		// APC expects time to live, not a unix timestamp
-		if ($expiration !== 0)
-		{
-			$expiration -= time();
-		}
-
-		return apc_store($id, $data, $expiration);
+		return apc_store($id, $data, $lifetime);
 	}
 
 	public function find($tag)

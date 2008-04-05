@@ -187,12 +187,6 @@ class Cache_Core {
 			$lifetime = $this->config['lifetime'];
 		}
 
-		if ($lifetime !== 0)
-		{
-			// Lifetime is the current timestamp + the lifetime in seconds
-			$lifetime += time();
-		}
-
 		return $this->driver->set($id, $data, $tags, $lifetime);
 	}
 

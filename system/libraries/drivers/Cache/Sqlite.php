@@ -83,15 +83,15 @@ class Cache_Sqlite_Driver implements Cache_Driver {
 	}
 
 	/**
-	 * Sets a cache item to the given data, tags, and expiration.
+	 * Sets a cache item to the given data, tags, and lifetime.
 	 *
 	 * @param   string   cache id to set
 	 * @param   string   data in the cache
 	 * @param   array    cache tags
-	 * @param   integer  timestamp
+	 * @param   integer  lifetime
 	 * @return  bool
 	 */
-	public function set($id, $data, $tags, $expiration)
+	public function set($id, $data, $tags, $lifetime)
 	{
 		// Find the data hash
 		$hash = sha1($data);
@@ -102,9 +102,15 @@ class Cache_Sqlite_Driver implements Cache_Driver {
 		// Escape the tags
 		$tags = sqlite_escape_string(implode(',', $tags));
 
+		// Cache Sqlite driver expects unix timestamp
+		if ($lifetime !== 0)
+		{
+			$lifetime += time();
+		}
+
 		$query = $this->exists($id)
-			? "UPDATE caches SET hash = '$hash', tags = '$tags', expiration = '$expiration', cache = '$data' WHERE id = '$id'"
-			: "INSERT INTO caches VALUES('$id', '$hash', '$tags', '$expiration', '$data')";
+			? "UPDATE caches SET hash = '$hash', tags = '$tags', expiration = '$lifetime', cache = '$data' WHERE id = '$id'"
+			: "INSERT INTO caches VALUES('$id', '$hash', '$tags', '$lifetime', '$data')";
 
 		// Run the query
 		$this->db->unbufferedQuery($query, SQLITE_BOTH, $error);

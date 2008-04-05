@@ -79,21 +79,27 @@ class Cache_File_Driver implements Cache_Driver {
 	}
 
 	/**
-	 * Sets a cache item to the given data, tags, and expiration.
+	 * Sets a cache item to the given data, tags, and lifetime.
 	 *
 	 * @param   string   cache id to set
 	 * @param   string   data in the cache
 	 * @param   array    cache tags
-	 * @param   integer  timestamp
+	 * @param   integer  lifetime
 	 * @return  bool
 	 */
-	public function set($id, $data, $tags, $expiration)
+	public function set($id, $data, $tags, $lifetime)
 	{
 		// Remove old cache files
 		$this->delete($id);
 
+		// Cache File driver expects unix timestamp
+		if ($lifetime !== 0)
+		{
+			$lifetime += time();
+		}
+
 		// Construct the filename
-		$filename = $id.'~'.implode('+', $tags).'~'.$expiration;
+		$filename = $id.'~'.implode('+', $tags).'~'.$lifetime;
 
 		// Write the file, appending the sha1 signature to the beginning of the data
 		return (bool) file_put_contents($this->directory.$filename, sha1($data).$data);

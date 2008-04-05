@@ -44,11 +44,17 @@ class Cache_Memcache_Driver implements Cache_Driver {
 		return $this->backend->get($id);
 	}
 
-	public function set($id, $data, $tags, $expiration)
+	public function set($id, $data, $tags, $lifetime)
 	{
 		count($tags) and Log::add('error', 'Cache: Tags are unsupported by the memcache driver');
 
-		return $this->backend->set($id, $data, $this->flags, $expiration);
+		// Memcache driver expects unix timestamp
+		if ($lifetime !== 0)
+		{
+			$lifetime += time();
+		}
+
+		return $this->backend->set($id, $data, $this->flags, $lifetime);
 	}
 
 	public function delete($id, $tag = FALSE)
