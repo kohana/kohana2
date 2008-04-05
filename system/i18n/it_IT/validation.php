@@ -1,9 +1,8 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.'); 
 
 $lang = array
 (
 	// Class errors
-	'error_format'  => 'La striga del messaggio d\'errore deve contenere {message} .',
 	'invalid_rule'  => 'Regola di validazione usata non valida: %s',
 
 	// General errors
@@ -25,12 +24,15 @@ $lang = array
 	// Upload errors
 	'user_aborted'  => 'Il caricamento del file %s è stato interrotto.',
 	'invalid_type'  => 'Il file %s non è un tipo di file permesso.',
-	'max_size'      => 'Il file %s è troppo grande. La massima dimensione consentita è %s.',
-	'max_width'     => 'Il file %s deve avere una larghezza massima di %spx.',
-	'max_height'    => 'Il file %s deve avere un\'altezza massima di %spx.',
+	'max_size'      => 'Il file %s inviato è troppo grande. La dimensone massima consentita è %s.',
+	'max_width'     => 'Il file %s inviato è troppo grande. La larghezza massima consentita è %spx.',
+	'max_height'    => 'Il file %s inviato è troppo grande. L\'altezza massima consentita è %spx.',
+	'min_width'     => 'Il file %s inviato è troppo piccolo. La larghezza minima consentita è %spx.',
+	'min_height'    => 'Il file %s inviato è troppo piccolo. L\'altezza minima consentita è %spx.',
 
 	// Field types
 	'alpha'         => 'alfabetico',
+	'alpha_numeric' => 'caratteri alfabetici e numerici',
 	'alpha_dash'    => 'alfabetico, trattino e sottolineato',
 	'digit'         => 'cifra',
 	'numeric'       => 'numerico',

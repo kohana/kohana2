@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.'); 
 
 $lang = array
 (
@@ -12,6 +12,16 @@ $lang = array
 	'no_controller'         => 'Kohana non è in grado di determinare a quale controller inoltrare la richiesta: %s',
 	'page_not_found'        => 'La pagina richiesta, <tt>%s</tt>, non è stata trovata.',
 	'stats_footer'          => 'Caricato in {execution_time} secondi, usando {memory_usage} di memoria. Generato da Kohana v{kohana_version}.',
-	'error_message'         => 'Si è verificato un errore alla <strong>linea %s</strong> di <strong>%s</strong>.',
-	'stack_trace'           => 'Tracciato'
+	'error_file_line'       => 'Errore in <strong>%s</strong> linea: <strong>%s</strong>.',
+	'stack_trace'           => 'Tracciato',
+	'generic_error'         => 'Impossibile completare la richiesta',
+	'errors_disabled'       => 'Puoi andare alla <a href="%s">pagina iniziale</a> o <a href="%s">ritentare</a>.', 
+
+	// Resource names
+	'controller'            => 'controller',
+	'helper'                => 'helper',
+	'library'               => 'libreria',
+	'driver'                => 'driver',
+	'model'                 => 'modello',
+	'view'                  => 'vista',
 );

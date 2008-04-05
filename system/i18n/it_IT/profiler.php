@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.'); 
 
 $lang = array
 (
@@ -10,4 +10,6 @@ $lang = array
 	'queries'      => 'Query al database',
 	'no_queries'   => 'Non ci sono query al database',
 	'no_database'  => 'Database non caricato',
+	'cookie_data'  => 'Dati del cookie',
+	'no_cookie'    => 'I dati del cookie non sono stati trovati',
 );

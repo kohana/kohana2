@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.'); 
 
 $lang = array
 (
@@ -10,5 +10,7 @@ $lang = array
 	'must_use_set'          => 'È necessario definire una clausola SET per la query.',
 	'must_use_where'        => 'È necessario definire una clausola WHERE per la query.',
 	'must_use_table'        => 'È necessario definire una tabella per la query.',
-	'not_implemented'       => 'Il metodo chiamato, %s, non è supportato da questo driver.'
+	'table_not_found'       => 'La tabella %s non esiste nella base di dati.',
+	'not_implemented'       => 'Il metodo chiamato, %s, non è supportato da questo driver.',
+	'result_read_only'      => 'Il risultato della query è in sola lettura.',
 );

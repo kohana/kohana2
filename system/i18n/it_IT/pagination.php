@@ -1,11 +1,11 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.'); 
 
 $lang = array
 (
 	'page'     => 'pagina',
 	'pages'    => 'pagine',
-	'item'     => 'item',
-	'items'    => 'items',
+	'item'     => 'elemento',
+	'items'    => 'elementi',
 	'of'       => 'di',
 	'first'    => 'primo',
 	'last'     => 'ultimo',
