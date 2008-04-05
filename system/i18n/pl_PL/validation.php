@@ -3,7 +3,6 @@
 $lang = array
 (
 	// Class errors
-	'error_format'  => 'Twój komunikat błędu musi zawierać łańcuch {message} .',
 	'invalid_rule'  => 'Użyto niepoprawnej reguły walidacji: %s',
 
 	// General errors
