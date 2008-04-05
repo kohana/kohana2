@@ -3,7 +3,6 @@
 $lang = array
 (
 	// Class errors
-	'error_format'  => 'Je foutbericht string moet de string {message} bevatten.',
 	'invalid_rule'  => 'Ongeldige validatieregel gebruikt: %s',
 
 	// Algemene errors

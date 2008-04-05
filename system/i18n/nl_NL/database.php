@@ -12,4 +12,5 @@ $lang = array
 	'must_use_table'        => 'Je moet een database tabel opgeven voor je query.',
 	'table_not_found'       => 'De tabel %s bestaat niet in je database.',
 	'not_implemented'       => 'De method die je opriep, %s, wordt niet ondersteund door deze driver.',
+	'result_read_only'      => 'Query resultaten kunnen alleen maar gelezen worden.',
 );
