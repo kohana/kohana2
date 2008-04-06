@@ -14,9 +14,6 @@ class Validation_Core extends ArrayObject {
 	// Unique "any field" key
 	protected $any_field;
 
-	// Message output format
-	protected $message_format = '<p class="error">{message}</p>';
-
 	// Filters
 	protected $pre_filters = array();
 	protected $post_filters = array();
@@ -452,7 +449,7 @@ class Validation_Core extends ArrayObject {
 				return '';
 
 			// Return the HTML message string
-			return str_replace('{message}', $this->messages[$input], $this->message_format);
+			return $this->messages[$input];
 		}
 		else
 		{
