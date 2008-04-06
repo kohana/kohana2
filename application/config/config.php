@@ -65,7 +65,6 @@ $config['extension_prefix'] = 'MY_';
  */
 $config['modules'] = array
 (
-	// MODPATH.'pdomo',  // PDO Models
 	// MODPATH.'auth',   // Authentication
 	// MODPATH.'forge',  // Form generation
 	// MODPATH.'kodoc',  // Self-generating documentation
