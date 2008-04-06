@@ -85,7 +85,7 @@ class Auth_Demo_Controller extends Controller {
 				$user = ORM::factory('user', $form->username->value);
 
 				// Attempt a login
-				if ($user->has_role('login') AND $this->auth->login($user, $form->password->value))
+				if ($this->auth->login($user, $form->password->value))
 				{
 					echo '<h4>Login Success!</h4>';
 					echo '<p>Your roles are:</p>';

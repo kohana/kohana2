@@ -115,7 +115,7 @@ class Auth_Core {
 		$password = $this->hash_password($password, $this->find_salt($user->password));
 
 		// If the passwords match, perform a login
-		if ($user->password === $password)
+		if ($user->has_role('login') AND $user->password === $password)
 		{
 			if ($remember === TRUE)
 			{
@@ -309,6 +309,9 @@ class Auth_Core {
 	{
 		// Update the number of logins
 		$user->logins += 1;
+
+		// Set the last login date
+		$user->last_login = time();
 
 		// Save the user
 		$user->save();

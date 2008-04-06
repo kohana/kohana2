@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `username` varchar(32) NOT NULL default '',
   `password` char(50) NOT NULL,
   `logins` int(10) unsigned NOT NULL default '0',
+  `last_login` int(10) unsigned,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `uniq_username` (`username`),
   UNIQUE KEY `uniq_email` (`email`)
