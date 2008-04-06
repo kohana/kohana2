@@ -27,8 +27,8 @@ $lang = array
 	'max_size'      => 'Rozmiar pliku %s przekracza dozwoloną wartość. Maksymalna wielkość to %s.',
 	'max_width'     => 'Szerokość pliku %s przekracza dozwoloną wartość. Maksymalna szerokość to %spx.',
 	'max_height'    => 'Wysokość pliku %s przekracza dozwoloną wartość. Maksymalna wysokość to %spx.',
-	'min_width'     => 'Plik %s który próbujesz wgrać, jest zbyt mały. Minimalna dozwolona szerokość to %spx.',
-	'min_height'    => 'Plik %s który próbujesz wgrać, jest zbyt mały. Minimalna dozwolona wysokość to %spx.',
+	'min_width'     => 'Plik %s który próbujesz wysłać, jest zbyt mały. Minimalna dozwolona szerokość to %spx.',
+	'min_height'    => 'Plik %s który próbujesz wysłać, jest zbyt mały. Minimalna dozwolona wysokość to %spx.',
 
 	// Field types
 	'alpha'         => 'litera',
