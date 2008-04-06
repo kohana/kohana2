@@ -27,7 +27,7 @@ p.copyright { font-size: 0.8em; text-transform: uppercase; color: #44640b; }
 
 <ul>
 <?php foreach ($links as $title => $url): ?>
-<li><?php echo html::anchor($url, $title) ?></li>
+<li><?php echo ($title === 'License') ? html::file_anchor($url, $title) : html::anchor($url, $title) ?></li>
 <?php endforeach ?>
 </ul>
 

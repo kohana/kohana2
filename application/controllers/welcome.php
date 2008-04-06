@@ -29,11 +29,11 @@ class Welcome_Controller extends Controller {
 		// of data, including objects.
 		$welcome->links = array
 		(
-			'Home Page' => 'http://kohanaphp.com/',
+			'Home Page'     => 'http://kohanaphp.com/',
 			'Documentation' => 'http://doc.kohanaphp.com/',
-			'Forum' => 'http://forum.kohanaphp.com/',
-			'License' => url::base(FALSE).'Kohana License.html',
-			'Donate' => 'http://kohanaphp.com/donate.html',
+			'Forum'         => 'http://forum.kohanaphp.com/',
+			'License'       => 'Kohana License.html',
+			'Donate'        => 'http://kohanaphp.com/donate.html',
 		);
 
 		// Using views inside of views is completely transparent. In the welcome
