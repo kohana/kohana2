@@ -12,4 +12,5 @@ $lang = array
 	'must_use_table'        => 'Vous devez spécifier une table de la base de données pour votre requête.',
 	'table_not_found'       => 'La table %s n\'existe pas dans votre base de données.', 
 	'not_implemented'       => 'La méthode %s que vous avez appelée n\'est pas supportée par le driver de base de données.',
+	'result_read_only'      => 'Les résultats de la requête sont en lecture seule.'	
 );
