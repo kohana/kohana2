@@ -35,6 +35,8 @@ class ORM_Core {
 
 	// Currently loaded object
 	protected $object;
+	protected $loaded = FALSE;
+	protected $saved = FALSE;
 
 	// Changed object keys
 	protected $changed = array();
@@ -80,6 +82,9 @@ class ORM_Core {
 
 			// Convert the value to the correct type
 			$this->load_object_types();
+
+			// Object is loaded
+			$this->loaded = $this->saved = TRUE;
 		}
 		else
 		{
@@ -188,6 +193,9 @@ class ORM_Core {
 
 				// Data has changed
 				$this->changed[$key] = $key;
+
+				// Data has been changed
+				$this->saved = FALSE;
 			}
 		}
 		else
@@ -542,19 +550,34 @@ class ORM_Core {
 	}
 
 	/**
+	 * Test if an object is loaded.
+	 *
+	 * @return  boolean
+	 */
+	public function loaded()
+	{
+		return $this->loaded;
+	}
+
+	/**
+	 * Test if an object is saved.
+	 *
+	 * @return  boolean
+	 */
+	public function saved()
+	{
+		return $this->saved;
+	}
+
+	/**
 	 * Find and load data for the current object.
 	 *
 	 * @param   string   id of the object to find, an array, or TRUE to reload
 	 * @param   boolean  return the result, or load it into the current object
 	 * @return  object   object instance
-	 * @return  array    if ALL is used
 	 */
 	public function find($id = FALSE, $return = FALSE)
 	{
-		// Allows the use of find(ALL)
-		if ($id === ALL)
-			return $this->find_all();
-
 		// To allow the object to be reloaded
 		($id === TRUE) and $id = $this->id;
 
@@ -581,12 +604,31 @@ class ORM_Core {
 	/**
 	 * Find and load an array of objects.
 	 *
-	 * @return  array  all objects in a simple array
+	 * @param   integer  SQL limit
+	 * @param   integer  SQL offset
+	 * @return  array    all objects in a simple array
 	 */
-	public function find_all()
+	public function find_all($limit = NULL, $offset = 0)
 	{
+		if ($limit !== NULL)
+		{
+			// Add LIMIT
+			self::$db->limit($limit, $offset);
+		}
+
 		// Return an array of objects
 		return $this->load_result(TRUE, TRUE);
+	}
+
+	/**
+	 * Count the number of records in the table.
+	 *
+	 * @return  integer
+	 */
+	public function count_all()
+	{
+		// Return the 
+		return self::$db->count_records($this->table);
 	}
 
 	/**
@@ -663,15 +705,15 @@ class ORM_Core {
 	/**
 	 * Deletes this object, or all objects in this table.
 	 *
-	 * @param   int   use ALL to delete all rows in the table
+	 * @param   bool  delete all rows in table
 	 * @return  bool  FALSE if the object cannot be deleted
 	 * @return  int   number of rows deleted
 	 */
 	public function delete($all = FALSE)
 	{
-		if ($all === ALL)
+		if ($all === TRUE)
 		{
-			// WHERE for ALL: "WHERE 1" (h4x)
+			// WHERE for TRUE: "WHERE 1" (h4x)
 			$where = ($this->where === TRUE) ? NULL : TRUE;
 		}
 		else
@@ -710,8 +752,8 @@ class ORM_Core {
 	 */
 	public function delete_all()
 	{
-		// Proxy to delete(ALL)
-		return $this->delete(ALL);
+		// Proxy to delete(TRUE)
+		return $this->delete(TRUE);
 	}
 
 	/**
@@ -739,6 +781,7 @@ class ORM_Core {
 		// Reset object status
 		$this->changed = array();
 		$this->select = $this->where = $this->from = FALSE;
+		$this->loaded = $this->saved = FALSE;
 
 		return $this;
 	}
@@ -798,11 +841,16 @@ class ORM_Core {
 
 				// Convert the value to the correct type
 				$this->load_object_types();
+
+				// Object is loaded
+				$this->loaded = $this->saved = TRUE;
 			}
 			else
 			{
 				// Clear the object, nothing was loaded
 				$this->clear();
+
+				$this->loaded = $this->saved = FALSE;
 			}
 		}
 
@@ -874,9 +922,6 @@ class ORM_Core {
 
 			// Insert db into this object
 			self::$db = Kohana::$instance->db;
-
-			// Define ALL
-			defined('ALL') or define('ALL', -1);
 		}
 
 		if (empty(self::$fields[$this->table]))
