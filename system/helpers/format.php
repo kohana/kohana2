@@ -18,7 +18,7 @@ class format_Core {
 	 * @param   string  format string
 	 * @return  string
 	 */
-	public static function phone($number, $format = '0(3)-3-$-4')
+	public static function phone($number, $format = '3-3-4')
 	{
 		// Get rid of all non-digit characters in number string
 		$number_clean = preg_replace('/\D+/', '', (string) $number);
@@ -41,6 +41,26 @@ class format_Core {
 
 		// Hocus pocus!
 		return preg_replace('/^'.$regex.'$/', $format, $number_clean);
+	}
+
+	/**
+	 * Formats a URL to contain a protocol at the beginning.
+	 *
+	 * @param   string  possibly incomplete URL
+	 * @return  string
+	 */
+	public function url($str = '')
+	{
+		// Clear protocol-only strings like "http://"
+		if ($str === '' OR substr($str, -3) === '://')
+			return '';
+
+		// If no protocol given, prepend "http://" by default
+		if (strpos($str, '://') === FALSE)
+			return 'http://'.$str;
+
+		// Return the original URL
+		return $str;
 	}
 
 } // End format

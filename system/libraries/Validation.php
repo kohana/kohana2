@@ -78,12 +78,6 @@ class Validation_Core extends ArrayObject {
 	 */
 	public function pre_filter($filter, $field = TRUE)
 	{
-		if (is_string($filter) AND method_exists($this, $filter))
-		{
-			// Make the filter a valid callback
-			$filter = array($this, $filter);
-		}
-
 		if ( ! is_callable($filter))
 			throw new Kohana_Exception('validation.filter_not_callable');
 
@@ -120,12 +114,6 @@ class Validation_Core extends ArrayObject {
 	 */
 	public function post_filter($filter, $field = TRUE)
 	{
-		if (is_string($filter) AND method_exists($this, $filter))
-		{
-			// Make the filter a valid callback
-			$filter = array($this, $filter);
-		}
-
 		if ( ! is_callable($filter, TRUE))
 			throw new Kohana_Exception('validation.filter_not_callable');
 
@@ -569,26 +557,6 @@ class Validation_Core extends ArrayObject {
 		}
 
 		return TRUE;
-	}
-
-	/**
-	 * Filter: prep_url. Prepares a URL for valid::url().
-	 *
-	 * @param   string  possibly incomplete URL
-	 * @return  string
-	 */
-	public function prep_url($str = '')
-	{
-		// Clear protocol-only strings like "http://"
-		if ($str === '' OR substr($str, -3) === '://')
-			return '';
-
-		// If no protocol given, prepend "http://" by default
-		if (strpos($str, '://') === FALSE)
-			return 'http://'.$str;
-
-		// Return the original URL
-		return $str;
 	}
 
 } // End Validation
