@@ -18,17 +18,17 @@ class format_Core {
 	 * @param   string  format string
 	 * @return  string
 	 */
-	public static function phone($number, $format = '3-3-4')
+	public static function phone($number, $format = '0(3)-3-$-4')
 	{
 		// Get rid of all non-digit characters in number string
-		$number = preg_replace('/\D+/', '', (string) $number);
+		$number_clean = preg_replace('/\D+/', '', (string) $number);
 
 		// Array of digits we need for a valid format
-		$format_parts = preg_split('/\D+/', $format);
+		$format_parts = preg_split('/[^1-9][^0-9]*/', $format, -1, PREG_SPLIT_NO_EMPTY);
 
 		// Number must match digit count of a valid format
-		if (strlen($number) !== array_sum($format_parts))
-			return '';
+		if (strlen($number_clean) !== array_sum($format_parts))
+			return $number;
 
 		// Build regex
 		$regex = '(\d{'.implode('})(\d{', $format_parts).'})';
@@ -40,7 +40,7 @@ class format_Core {
 		}
 
 		// Hocus pocus!
-		return preg_replace('/^'.$regex.'$/', $format, $number);
+		return preg_replace('/^'.$regex.'$/', $format, $number_clean);
 	}
 
 } // End format
