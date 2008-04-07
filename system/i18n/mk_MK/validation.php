@@ -19,7 +19,7 @@ $lang = array
 	'valid_ip'      => 'Полето %s мора да содржи валидна IP адреса.',
 	'valid_type'    => 'Полето %s мора да содржи само %s карактери.',
 	'range'         => 'Полето %s мора да е помеѓу дефинираниот опсег.',
-	'regex'         => 'Полето %s field does not match accepted input.',
+	'regex'         => 'Полето %s има вредност која не се поклопува со прифатлива вредност.',
 	'depends_on'    => 'Полето %s е зависно од полето %s.',
 
 	// Upload errors
@@ -32,9 +32,9 @@ $lang = array
 	'min_height'    => 'Качената датотеката %s е премногу мала. Минимум дозволената висина е %spx.',
 
 	// Field types
-	'alpha'         => 'alphabetical',
-	'alpha_numeric' => 'alphabetical and numeric',
-	'alpha_dash'    => 'alphabetical, dash, and underscore',
-	'digit'         => 'digit',
-	'numeric'       => 'numeric',
+	'alpha'         => 'алфабетичко',
+	'alpha_numeric' => 'алфабетичко и нумерички',
+	'alpha_dash'    => 'алфабетичко, црта и под-црта',
+	'digit'         => 'цифра',
+	'numeric'       => 'нумеричко',
 );
