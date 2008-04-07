@@ -59,6 +59,16 @@ class Validation_Core extends ArrayObject {
 	}
 
 	/**
+	 * Test if the data has been submitted.
+	 *
+	 * @return  boolean
+	 */
+	public function submitted()
+	{
+		return $this->submitted;
+	}
+
+	/**
 	 * Returns the ArrayObject array values.
 	 *
 	 * @return  array
