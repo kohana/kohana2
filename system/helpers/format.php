@@ -2,7 +2,7 @@
 /**
  * Format helper class.
  *
- * $Id: form.php 2404 2008-04-02 09:24:52Z Geert $
+ * $Id$
  *
  * @package    Core
  * @author     Kohana Team
@@ -20,20 +20,27 @@ class format_Core {
 	 */
 	public static function phone($number, $format = '3-3-4')
 	{
-		if (empty($number))
+		// Get rid of all non-digit characters in number string
+		$number = preg_replace('/\D+/', '', (string) $number);
+
+		// Array of digits we need for a valid format
+		$format_parts = preg_split('/\D+/', $format);
+
+		// Number must match digit count of a valid format
+		if (strlen($number) !== array_sum($format_parts))
 			return '';
 
-		// Number of parts
-		// $parts = strlen(preg_replace('/\D+/', '', $format));
+		// Build regex
+		$regex = '(\d{'.implode('})(\d{', $format_parts).'})';
 
-		// Create the search string
-		// $search = preg_replace('/[()]/', '\\\\$0', $format);
-		// $search = preg_replace('/\d/', '(\d{$0})', $search);
+		// Build replace string
+		for ($i = 1, $c = count($format_parts); $i <= $c; $i++)
+		{
+			$format = preg_replace('/(?<!\$)[1-9][0-9]*/', '\$'.$i, $format, 1);
+		}
 
-		// Create the replace string
-		// $replace =
-
-		return preg_replace('/^(\d{3})(\d{3})(\d{4})$/', '$1-$2-$3', $number);
+		// Hocus pocus!
+		return preg_replace('/^'.$regex.'$/', $format, $number);
 	}
 
 } // End format

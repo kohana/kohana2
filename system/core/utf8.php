@@ -107,7 +107,7 @@ final class utf8 {
 				$str[self::clean($key)] = self::clean($val);
 			}
 		}
-		elseif (is_string($str) AND $str != '')
+		elseif (is_string($str) AND $str !== '')
 		{
 			// iconv is fairly expensive, so it is only used when needed
 			if ( ! self::is_ascii($str))
