@@ -218,6 +218,11 @@ class ORM_Core {
 	 *  - has_*
 	 *  - add_*
 	 *  - remove_*
+	 *
+	 * @throws  Kohana_Exception
+	 * @param   string  method name
+	 * @param   array   method arguments
+	 * @return  mixed
 	 */
 	public function __call($method, $args)
 	{
@@ -286,6 +291,9 @@ class ORM_Core {
 
 			return $this;
 		}
+
+		// Throw an exception to warn the user
+		throw new Kohana_Exception('orm.method_not_implemented', $method, get_class($this));
 	}
 
 	/**
