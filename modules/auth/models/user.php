@@ -25,8 +25,6 @@ class User_Model extends ORM {
 
 	public function __set($key, $value)
 	{
-		static $auth;
-
 		if ($key === 'password')
 		{
 			// Use Auth to hash the password

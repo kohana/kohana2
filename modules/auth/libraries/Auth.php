@@ -198,6 +198,9 @@ class Auth_Core {
 		{
 			// Remove the user object from the session
 			unset($_SESSION['auth_user']);
+
+			// Regenerate session_id
+			$this->session->regenerate();
 		}
 
 		// Double check
@@ -315,6 +318,9 @@ class Auth_Core {
 
 		// Save the user
 		$user->save();
+
+		// Regenerate session_id
+		$this->session->regenerate();
 
 		// Store session data
 		$_SESSION['auth_user'] = $user;
