@@ -49,7 +49,7 @@ class format_Core {
 	 * @param   string  possibly incomplete URL
 	 * @return  string
 	 */
-	public function url($str = '')
+	public static function url($str = '')
 	{
 		// Clear protocol-only strings like "http://"
 		if ($str === '' OR substr($str, -3) === '://')
