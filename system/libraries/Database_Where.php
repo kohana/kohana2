@@ -12,7 +12,7 @@
 class Database_Where_Core {
 
 	protected $where = array();
-	protected $db;
+	protected $drivers = array();
 
 	public function __construct($group = 'default')
 	{
@@ -62,15 +62,35 @@ class Database_Where_Core {
 	{
 		if (is_string($group))
 		{
-			$this->db = Database::instance($group);
+			$config = Config::item('database.'.$group);
+			$conn = Database::parse_con_string($config['connection']);
+			$driver = $conn['type'];
 		}
-		elseif (is_array($group))
+		elseif (is_array($group)) // DB Group was passed
 		{
-			$this->db = new Database($group);
+			$conn = Database::parse_con_string($group['connection']);
+			$driver = $conn['type'];
 		}
-		elseif ($group instanceof Database)
+		elseif ($group instanceof Database_Driver)
 		{
-			$this->db = $group;
+			$driver = $group;
+		}
+
+		if (!isset($this->drivers[$driver]))
+		{
+			// Set driver name
+			$driver_class_name = 'Database_'.ucfirst($driver).'_Driver';
+	
+			// Load the driver
+			if ( ! Kohana::auto_load($driver))
+				throw new Kohana_Database_Exception('database.driver_not_supported', $driver_class_name);
+	
+			// Initialize the driver
+			$this->drivers[$driver] = new $driver_class_name();
+	
+			// Validate the driver
+			if ( ! ($this->drivers[$driver] instanceof Database_Driver))
+				throw new Kohana_Database_Exception('database.driver_not_supported', 'Database drivers must use the Database_Driver interface.');
 		}
 
 		// Iterate the where array to build the query portion and return it
