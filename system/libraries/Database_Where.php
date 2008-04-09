@@ -104,7 +104,7 @@ class Database_Where_Core {
 			}
 			else
 			{
-				$where_string.=$this->db->driver->escape_column($where[0]['key']).' '.$where[0]['op'].' '.$this->db->driver->escape($where[0]['value']).($wheres_left-- > 1 ? ' '.$where[1].' ' : '');
+				$where_string.=$this->drivers[$driver]->escape_column($where[0]['key']).' '.$where[0]['op'].' '.$this->drivers[$driver]->escape($where[0]['value']).($wheres_left-- > 1 ? ' '.$where[1].' ' : '');
 			}
 		}
 		$where_string .= ')';
