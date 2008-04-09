@@ -1,4 +1,4 @@
-<?php //defined('SYSPATH') or die('No direct script access.');
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Provides database access in a platform agnostic way, using simple query building blocks.
  *
@@ -13,11 +13,6 @@ class Database_Where_Core {
 
 	protected $where = array();
 	protected $drivers = array();
-
-	public function __construct($group = 'default')
-	{
-		
-	}
 
 	public function where()
 	{
@@ -60,7 +55,7 @@ class Database_Where_Core {
 
 	public function build($group = 'default')
 	{
-		if (is_string($group))
+		if (is_string($group)) // group name was passed
 		{
 			$config = Config::item('database.'.$group);
 			$conn = Database::parse_con_string($config['connection']);
@@ -80,14 +75,14 @@ class Database_Where_Core {
 		{
 			// Set driver name
 			$driver_class_name = 'Database_'.ucfirst($driver).'_Driver';
-	
+
 			// Load the driver
 			if ( ! Kohana::auto_load($driver))
 				throw new Kohana_Database_Exception('database.driver_not_supported', $driver_class_name);
-	
+
 			// Initialize the driver
 			$this->drivers[$driver] = new $driver_class_name();
-	
+
 			// Validate the driver
 			if ( ! ($this->drivers[$driver] instanceof Database_Driver))
 				throw new Kohana_Database_Exception('database.driver_not_supported', 'Database drivers must use the Database_Driver interface.');
@@ -98,7 +93,7 @@ class Database_Where_Core {
 		$where_string = '(';
 		foreach ($this->where as $where)
 		{
-			if (is_object($where[0]))
+			if ($where[0] instanceof Database_Where_Core)
 			{
 				$where_string.=$where[0]->build();
 			}
