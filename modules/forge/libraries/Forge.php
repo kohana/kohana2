@@ -241,6 +241,10 @@ class Forge_Core {
 			{
 				$data[$input->name] = $input;
 
+				// Groups will never have errors, so skip them
+				if ($input instanceof Form_Group)
+					continue;
+
 				// Compile the error messages for this input
 				$messages = '';
 				$errors = $input->error_messages();
