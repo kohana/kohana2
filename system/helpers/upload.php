@@ -28,6 +28,12 @@ class upload_Core {
 			$filename = time().$_FILES[$name]['name'];
 		}
 
+		if (Config::item('upload.remove_spaces'))
+		{
+			// Remove spaces from the filename
+			$filename = preg_replace('/\s+/', '_', $filename);
+		}
+
 		if ($directory === NULL)
 		{
 			// Use the pre-configured upload directory
