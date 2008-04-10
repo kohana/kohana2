@@ -651,13 +651,13 @@ class ORM_Core {
 			if (stripos($sql, 'LIMIT') !== FALSE)
 			{
 				// Remove LIMIT from the SQL
-				$sql = preg_replace('/LIMIT [^a-z]+/im', '', $sql);
+				$sql = preg_replace('/\bLIMIT\s+[^a-z]+/i', '', $sql);
 			}
 
 			if (stripos($sql, 'OFFSET') !== FALSE)
 			{
 				// Remove OFFSET from the SQL
-				$sql = preg_replace('/OFFSET \d+/im', '', $sql);
+				$sql = preg_replace('/\bOFFSET\s+\d+/i', '', $sql);
 			}
 
 			// Get the total rows from the last query executed
@@ -666,7 +666,7 @@ class ORM_Core {
 			if ($result->count())
 			{
 				// Return the total number of rows from the query
-				return $result->current()->total_rows;
+				return (int) $result->current()->total_rows;
 			}
 		}
 
