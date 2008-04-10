@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Upload helper class.
+ * Upload helper class for working with the global $_FILES
+ * array and Validation library.
  *
  * $Id$
  *
@@ -10,6 +11,47 @@
  * @license    http://kohanaphp.com/license.html
  */
 class upload_Core {
+
+	/**
+	 * Save an uploaded file to a new location.
+	 *
+	 * @param   string   name of $_FILE input
+	 * @param   string   new filename
+	 * @param   string   new directory
+	 * @return  string   full path to new file
+	 */
+	public function save($name, $filename = NULL, $directory = NULL)
+	{
+		if ($filename === NULL)
+		{
+			// Use the default filename, with a timestamp pre-pended
+			$filename = time().$_FILES[$name]['name'];
+		}
+
+		if ($directory === NULL)
+		{
+			// Use the pre-configured upload directory
+			$directory = Config::item('upload.directory', TRUE);
+		}
+		else
+		{
+			// Make sure the directory ends with a slash
+			$directory = rtrim($directory, '/').'/';
+		}
+
+		if ( ! is_writable($directory))
+			throw new Kohana_Exception('upload.not_writable', $directory);
+
+		if (is_uploaded_file($_FILES[$name]['tmp_name']) AND move_uploaded_file($_FILES[$name]['tmp_name'], $filename = $directory.$filename))
+		{
+			// Move the file to the upload directory
+			return $filename;
+		}
+
+		return FALSE;
+	}
+
+	/* Validation Rules */
 
 	/**
 	 * Tests if a $_FILES item is valid.
@@ -25,6 +67,7 @@ class upload_Core {
 			AND isset($file['type'])
 			AND isset($file['tmp_name'])
 			AND isset($file['size'])
+			AND is_uploaded_file($file['tmp_name'])
 			AND $file['error'] === UPLOAD_ERR_OK);
 	}
 
