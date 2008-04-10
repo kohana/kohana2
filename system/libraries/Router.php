@@ -200,15 +200,13 @@ class Router_Core {
 				// Remove GET string from segments
 				if (($query = strpos(self::$current_uri, '?')) !== FALSE)
 				{
-					list (self::$current_uri, $query) = explode('?', self::$segments, 2);
+					list (self::$current_uri, $query) = explode('?', self::$current_uri, 2);
 
-					// Insert query into GET array
-					foreach(explode('&', $query) as $pair)
-					{
-						list ($key, $val) = array_pad(explode('=', $pair), 1, '');
+					// Parse the query string into $_GET
+					parse_str($query, $_GET);
 
-						$_GET[utf8::clean($key)] = utf8::clean($val);
-					}
+					// Convert $_GET to UTF-8
+					$_GET = utf8::clean($_GET);
 				}
 			}
 		}
