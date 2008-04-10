@@ -635,7 +635,7 @@ class ORM_Core {
 	 */
 	public function count_all()
 	{
-		// Return the 
+		// Return the total number of records in a table
 		return self::$db->count_records($this->table);
 	}
 
