@@ -1162,9 +1162,9 @@ class Kohana_Exception extends Exception {
 		// Fetch the error message
 		$message = Kohana::lang($error, $args);
 
-		// Handle error messages that are not set
-		if ($message === $error OR $message === array())
+		if ($message === $error OR empty($message))
 		{
+			// Unable to locate the message for the error
 			$message = 'Unknown Exception: '.$error;
 		}
 
