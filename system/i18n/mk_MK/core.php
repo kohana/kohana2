@@ -12,7 +12,7 @@ $lang = array
 	'no_controller'         => 'Kohana не пронајде контролер за да го процесира ова барање: %s',
 	'page_not_found'        => 'Страната која ја побаравте, <tt>%s</tt>, не е пронајдена.',
 	'stats_footer'          => 'Вчитано за {execution_time} секунди, употребено {memory_usage} меморија. Креирано со Kohana v{kohana_version}.',
-	'error_file_line'       => '<tt>%s <strong>[%s]:</strong></tt>',
+	'error_message'         => 'Грешка во <strong>линија %s</strong> во <strong>%s</strong>.',
 	'stack_trace'           => 'Stack Trace',
 	'generic_error'         => 'Барањето Не Може Да Биде Извршено',
 	'errors_disabled'       => 'Можете да отидете на <a href="%s">home page</a> или да <a href="%s">пробате повторно</a>.',
