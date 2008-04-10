@@ -640,6 +640,40 @@ class ORM_Core {
 	}
 
 	/**
+	 * Count the number of records in the last query, without LIMIT or OFFSET applied.
+	 *
+	 * @return  integer
+	 */
+	public function count_last_query()
+	{
+		if ($sql = self::$db->last_query())
+		{
+			if (stripos($sql, 'LIMIT') !== FALSE)
+			{
+				// Remove LIMIT from the SQL
+				$sql = preg_replace('/LIMIT [^a-z]+/im', '', $sql);
+			}
+
+			if (stripos($sql, 'OFFSET') !== FALSE)
+			{
+				// Remove OFFSET from the SQL
+				$sql = preg_replace('/OFFSET \d+/im', '', $sql);
+			}
+
+			// Get the total rows from the last query executed
+			$result = self::$db->query('SELECT COUNT(*) AS '.self::$db->escape_column('total_rows').' FROM ('.$sql.') AS '.self::$db->escape_table('counted_results'));
+
+			if ($result->count())
+			{
+				// Return the total number of rows from the query
+				return $result->current()->total_rows;
+			}
+		}
+
+		return FALSE;
+	}
+
+	/**
 	 * Creates a key/value array from all of the objects available. Uses find_all
 	 * to find the objects.
 	 *
