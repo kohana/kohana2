@@ -174,7 +174,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 		if (count($database['orderby']) > 0)
 		{
 			$sql .= "\nORDER BY ";
-			$sql .= str_ireplace('RAND()', 'RANDOM()', implode(', ', $database['orderby']));
+			$sql .= implode(', ', $database['orderby']);
 		}
 
 		if (is_numeric($database['limit']))

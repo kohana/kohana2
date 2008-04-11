@@ -619,7 +619,7 @@ class Database_Core {
 
 		if ($direction != '')
 		{
-			$direction = (in_array($direction, array('ASC', 'DESC', 'RAND()', 'NULL'))) ? ' '.$direction : ' ASC';
+			$direction = (in_array($direction, array('ASC', 'DESC', 'RAND()', 'RANDOM()', 'NULL'))) ? ' '.$direction : ' ASC';
 		}
 
 		if (empty($orderby))
