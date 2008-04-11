@@ -178,7 +178,7 @@ abstract class Database_Driver {
 	 * @param   int     number of likes
 	 * @return  string
 	 */
-	public function notlike($field, $match = '', $type = 'AND ', $num_likes)
+	public function notlike($field, $match = '', $auto = TRUE, $type = 'AND ', $num_likes)
 	{
 		$prefix = ($num_likes == 0) ? '' : $type;
 

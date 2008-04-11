@@ -446,7 +446,7 @@ class Database_Core {
 		foreach ($fields as $field => $match)
 		{
 			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
-			$this->where[] = $this->driver->notlike($field, $match, 'AND ', count($this->where));
+			$this->where[] = $this->driver->notlike($field, $match, $auto, 'AND ', count($this->where));
 		}
 
 		return $this;
@@ -459,14 +459,14 @@ class Database_Core {
 	 * @param   string        like value to match with field
 	 * @return  object        This Database object.
 	 */
-	public function ornotlike($field, $match = '')
+	public function ornotlike($field, $match = '', $auto = TRUE)
 	{
 		$fields = is_array($field) ? $field : array($field => $match);
 
 		foreach ($fields as $field => $match)
 		{
 			$field         = (strpos($field, '.') !== FALSE) ? $this->config['table_prefix'].$field : $field;
-			$this->where[] = $this->driver->notlike($field, $match, 'OR ', count($this->where));
+			$this->where[] = $this->driver->notlike($field, $match, $auto, 'OR ', count($this->where));
 		}
 
 		return $this;
