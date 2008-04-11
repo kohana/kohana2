@@ -11,6 +11,8 @@
  */
 class Auth_ORM_Driver implements Auth_Driver {
 
+	protected $config;
+
 	// Session library
 	protected $session;
 
@@ -19,8 +21,11 @@ class Auth_ORM_Driver implements Auth_Driver {
 	 *
 	 * @return  void
 	 */
-	public function __construct()
+	public function __construct(array $config)
 	{
+		// Load config
+		$this->config = $config;
+
 		// Load libraries
 		$this->session = Session::instance();
 	}
