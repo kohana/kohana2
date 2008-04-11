@@ -9,6 +9,11 @@
  */
 
 /**
+ * Driver to use for authentication. By default, LDAP and ORM are available.
+ */
+$config['driver'] = 'ORM';
+
+/**
  * Type of hash to use for passwords. Any algorithm supported by the hash function
  * can be used here. Note that the length of your password is determined by the
  * hash type + the number of salt characters.
