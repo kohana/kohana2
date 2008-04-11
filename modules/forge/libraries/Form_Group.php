@@ -14,6 +14,7 @@ class Form_Group_Core extends Forge {
 	protected $data = array
 	(
 		'type'  => 'group',
+		'name'  => '',
 		'class' => 'group',
 		'label' => '',
 		'message' => ''
@@ -22,8 +23,9 @@ class Form_Group_Core extends Forge {
 	// Input method
 	public $method;
 
-	public function __construct($class = 'group')
+	public function __construct($name = NULL, $class = 'group')
 	{
+		$this->data['name'] = $name;
 		$this->data['class'] = $class;
 
 		// Set dummy data so we don't get errors
@@ -33,9 +35,9 @@ class Form_Group_Core extends Forge {
 
 	public function __get($key)
 	{
-		if ($key == 'type')
+		if ($key == 'type' || $key == 'name')
 		{
-			return $this->data['type'];
+			return $this->data[$key];
 		}
 		return parent::__get($key);
 	}
