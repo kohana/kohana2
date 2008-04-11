@@ -160,7 +160,7 @@ class Calendar_Core extends Event_Subject {
 		if (($w = (int) date('w', $first)) > $this->week_start)
 		{
 			// Number of days in the previous month
-			$n = (int) date('t', mktime(1, 0, $this->month - 1, 1, $this->year));
+			$n = (int) date('t', mktime(1, 0, 0, $this->month - 1, 1, $this->year));
 
 			// i = number of day, t = number of days to pad
 			for($i = $n - $w, $t = $w - $this->week_start; $t > 0; $t--, $i++)
