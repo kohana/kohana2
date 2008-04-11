@@ -31,7 +31,7 @@ class media_Core {
 		return html::stylesheet('media/css/'.$style, $media, $index);
 	}
 
-	public static function script($script)
+	public static function script($script, $index = FALSE)
 	{
 		$separator = Config::item('media.separator') or $separator = ',';
 
@@ -40,7 +40,7 @@ class media_Core {
 			$script = implode($separator, $script);
 		}
 
-		return html::script('media/js/'.$script);
+		return html::script('media/js/'.$script, $index);
 	}
 
 } // End media
