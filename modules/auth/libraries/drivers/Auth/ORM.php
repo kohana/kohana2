@@ -100,6 +100,38 @@ class Auth_ORM_Driver implements Auth_Driver {
 		$this->complete_login($user);
 	}
 
+	public function auto_login()
+	{
+		if ($token = cookie::get('authautologin'))
+		{
+			// Load the token and user
+			$token = ORM::factory('user_token', $token);
+
+			if ($token->id > 0 AND $token->user->id > 0)
+			{
+				if ($token->user_agent === sha1(Kohana::$user_agent))
+				{
+					// Save the token to create a new unique token
+					$token->save();
+
+					// Set the new token
+					cookie::set('authautologin', $token->token, $token->expires - time());
+
+					// Complete the login with the found data
+					$this->complete_login($token->user);
+
+					// Automatic login was successful
+					return TRUE;
+				}
+
+				// Token is invalid
+				$token->delete();
+			}
+		}
+
+		return FALSE;
+	}
+
 	public function logout($destroy)
 	{
 		// Delete the autologin cookie if it exists

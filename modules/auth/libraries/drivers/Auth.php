@@ -30,6 +30,13 @@ interface Auth_Driver {
 	public function force_login($username);
 
 	/**
+	 * Logs a user in, based on stored credentials, typically cookies.
+	 *
+	 * @return  boolean
+	 */
+	public function auto_login();
+
+	/**
 	 * Log a user out.
 	 *
 	 * @param   boolean   complete destroy the session
