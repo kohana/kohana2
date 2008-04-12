@@ -301,7 +301,7 @@ abstract class Database_Driver {
 	 */
 	public function escape($value)
 	{
-		if (!$this->db_config['escape'])
+		if ( ! $this->db_config['escape'])
 			return $value;
 
 		switch (gettype($value))
@@ -450,7 +450,7 @@ abstract class Database_Driver {
 	 */
 	protected function query_hash($sql)
 	{
-		return sha1(trim(str_replace("\n", ' ', $sql)));
+		return sha1(str_replace("\n", ' ', trim($sql)));
 	}
 
 } // End Database Driver Interface

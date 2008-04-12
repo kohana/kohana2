@@ -990,14 +990,14 @@ class Database_Core {
 			$this->from($table);
 		}
 
-		if ( ! is_null($where))
+		if ($where !== NULL)
 		{
 			$this->where($where);
 		}
 
 		$query = $this->select('COUNT(*) AS records_found')->get()->result(TRUE);
 
-		return $query->current()->records_found;
+		return (int) $query->current()->records_found;
 	}
 
 	/**
