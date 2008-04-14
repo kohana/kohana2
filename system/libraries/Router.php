@@ -39,15 +39,13 @@ class Router_Core {
 		if ( ! isset(self::$routes['_default']))
 			throw new Kohana_Exception('core.no_default_route');
 
+		$default_route = FALSE;
+		
 		// Use the default route when no segments exist
 		if (self::$current_uri === '')
 		{
 			self::$current_uri = trim(self::$routes['_default'], '/');
 			$default_route = TRUE;
-		}
-		else
-		{
-			$default_route = FALSE;
 		}
 
 		if ( ! empty($_SERVER['QUERY_STRING']))
@@ -63,46 +61,7 @@ class Router_Core {
 		// Custom routing
 		if ($default_route === FALSE AND count(self::$routes) > 1)
 		{
-			if (isset(self::$routes[self::$current_uri]))
-			{
-				// Literal match, no need for regex
-				self::$rsegments = self::$routes[self::$current_uri];
-			}
-			else
-			{
-				// Loop through the routes and see if anything matches
-				foreach(self::$routes as $key => $val)
-				{
-					if ($key === '_default' OR $key === '_allowed') continue;
-
-					// Trim slashes
-					$key = trim($key, '/');
-					$val = trim($val, '/');
-
-					// Does this route match the current URI?
-					if (preg_match('#^'.$key.'$#u', self::$segments))
-					{
-						// If the regex contains a valid callback, we'll use it
-						if (strpos($val, '$') !== FALSE AND strpos($key, '(') !== FALSE)
-						{
-							self::$rsegments = preg_replace('#^'.$key.'$#u', $val, self::$segments);
-						}
-						else
-						{
-							self::$rsegments = $val;
-						}
-
-						// A valid route was found, stop parsing other routes
-						break;
-					}
-				}
-			}
-
-			// Check router one more time to do some magic
-			if (isset(self::$routes[self::$rsegments]))
-			{
-				self::$rsegments = self::$routes[self::$rsegments];
-			}
+			self::$rsegments = self::routed_uri(self::$current_uri);
 		}
 
 		// Validate segments to prevent malicious characters
@@ -281,5 +240,60 @@ class Router_Core {
 
 		return $str;
 	}
+
+	/**
+	 * Generates routed URI from given URI.
+	 *
+	 * @param  string  URI to convert
+	 * @return string  Routed uri
+	 */
+	public static function routed_uri($uri)
+	{
+		$routes = Config::item('routes');
+		$uri    = $routed_uri = trim($uri, '/');
+	
+		if (isset($routes[$uri]))
+		{
+			// Literal match, no need for regex
+			$routed_uri = $routes[$uri];
+		}
+		else
+		{
+			// Loop through the routes and see if anything matches
+			foreach ($routes as $key => $val)
+			{
+				if ($key === '_default' OR $key === '_allowed') continue;
+
+				// Trim slashes
+				$key = trim($key, '/');
+				$val = trim($val, '/');
+
+				// Does this route match the current URI?
+				if (preg_match('#^'.$key.'$#u', $uri))
+				{
+					// If the regex contains a valid callback, we'll use it
+					if (strpos($val, '$') !== FALSE AND strpos($key, '(') !== FALSE)
+					{
+						$routed_uri = preg_replace('#^'.$key.'$#u', $val, $uri);
+					}
+					else
+					{
+						$routed_uri = $val;
+					}
+
+					// A valid route was found, stop parsing other routes
+					break;
+				}
+			}
+		}
+
+		// Check router one more time to do some magic
+		if (isset($routes[$routed_uri]))
+		{
+			$routed_uri = $routes[$routed_uri];
+		}
+
+		return $routed_uri;
+	}    
 
 } // End Router class
