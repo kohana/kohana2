@@ -7,7 +7,7 @@
 $config['directory'] = 'pagination';
 
 /**
- * Style name (matches template filename).
+ * Pagination style template (matches view filename).
  */
 $config['style'] = 'classic';
 
@@ -17,6 +17,11 @@ $config['style'] = 'classic';
 $config['uri_segment'] = 3;
 
 /**
- * Number of items in a page of results.
+ * Number of items to display per page.
  */
 $config['items_per_page'] = 20;
+
+/**
+ * Automatically hide pagination completely for single pages.
+ */
+$config['auto_hide'] = FALSE;

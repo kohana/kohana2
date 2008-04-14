@@ -11,6 +11,8 @@
  */
 class Example_Test extends Unit_Test_Case {
 
+	// public $DISABLED = TRUE; // Disables this Test class
+
 	public $setup_has_run = FALSE;
 
 	public function setup()

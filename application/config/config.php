@@ -65,9 +65,10 @@ $config['extension_prefix'] = 'MY_';
  */
 $config['modules'] = array
 (
-	// MODPATH.'auth',   // Authentication
-	// MODPATH.'forge',  // Form generation
-	// MODPATH.'kodoc',  // Self-generating documentation
-	// MODPATH.'media',  // Media caching and compression
-	// MODPATH.'gmaps',  // Google Maps integration
+	// MODPATH.'auth',      // Authentication
+	// MODPATH.'forge',     // Form generation
+	// MODPATH.'kodoc',     // Self-generating documentation
+	// MODPATH.'media',     // Media caching and compression
+	// MODPATH.'gmaps',     // Google Maps integration
+	// MODPATH.'unit_test', // Unit testing
 );

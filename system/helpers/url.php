@@ -166,7 +166,7 @@ class url_Core {
 				{
 					$choices .= '<li><a href="'.$href.'">'.$href.'</a></li>';
 				}
-				
+
 				exit('<h1>301 - Multiple Choices:</h1><ul>'.$choices.'</ul>');
 			}
 		}
@@ -198,8 +198,6 @@ class url_Core {
 
 			exit('<h1>'.$method.' - '.$codes[$method].'</h1><p><a href="'.$uri.'">'.$uri.'</a></p>');
 		}
-
-		return;
 	}
 
 } // End url
