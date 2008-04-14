@@ -5,7 +5,7 @@
  * Permitted URI characters. Note that "?", "#", and "=" are URL characters, and
  * should not be added here.
  */
-$config['_allowed'] = '-a-z 0-9~%.,:+_';
+$config['_allowed'] = '-a-z 0-9~%.,:+_/';
 
 /**
  * Default route to use when no URI segments are available.

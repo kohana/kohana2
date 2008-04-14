@@ -105,6 +105,12 @@ class Router_Core {
 			}
 		}
 
+		// Validate segments to prevent malicious characters
+		self::$segments  = self::filter_uri(self::$segments);
+
+		// Yah, routed segments too, even though it should never happen
+		self::$rsegments = self::filter_uri(self::$rsegments);
+
 		// Explode the segments by slashes
 		if ($default_route === TRUE OR self::$segments === '')
 		{
@@ -117,18 +123,6 @@ class Router_Core {
 
 		// Routed segments will never be blank
 		self::$rsegments = explode('/', self::$rsegments);
-
-		// Validate segments to prevent malicious characters
-		foreach(self::$segments as $key => $segment)
-		{
-			self::$segments[$key] = self::filter_uri($segment);
-		}
-
-		// Yah, routed segments too, even though it should never happen
-		foreach(self::$rsegments as $key => $segment)
-		{
-			self::$rsegments[$key] = self::filter_uri($segment);
-		}
 
 		// Prepare for Controller search
 		self::$directory  = '';
