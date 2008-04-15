@@ -48,8 +48,26 @@ class email_Core {
 				empty($config['options']['username']) or $connection->setUsername($config['options']['username']);
 				empty($config['options']['password']) or $connection->setPassword($config['options']['password']);
 
+				if ( ! empty($config['options']['auth']))
+				{
+					// Get the class name and params
+					list ($class, $params) = arr::callback_string($config['options']['auth']);
+
+					if ($class === 'PopB4Smtp')
+					{
+						// Load the PopB4Smtp class manually, due to it's odd filename
+						require_once Kohana::find_file('vendor', 'swift/Swift/Authenticator/$PopB4Smtp$');
+					}
+
+					// Prepare the class name for auto-loading
+					$class = 'Swift_Authenticator_'.$class;
+
+					// Attach the authenticator
+					$connection->attachAuthenticator(($params === NULL) ? new $class : new $class($params[0]));
+				}
+
 				// Set the timeout to 5 seconds
-				$connection->setTimeout(5);
+				$connection->setTimeout(empty($config['options']['timeout']) ? 5 : (int) $config['options']['timeout']);
 			break;
 			case 'sendmail':
 				// Create a sendmail connection
