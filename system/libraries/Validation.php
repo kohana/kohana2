@@ -393,7 +393,7 @@ class Validation_Core extends ArrayObject {
 					if ( ! empty($this->errors[$field])) break;
 
 					// Don't process rules on empty fields
-					if (($func[1] !== 'required' AND $func[1] !== 'matches') AND $this[$field] == NULL)
+					if ( ! in_array($func[1], $this->empty_rules, TRUE) AND $this[$field] == NULL)
 						continue;
 
 					// Run each rule
