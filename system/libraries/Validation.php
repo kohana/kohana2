@@ -125,8 +125,11 @@ class Validation_Core extends ArrayObject {
 	 */
 	public function allow_empty_rules($rules)
 	{
+		// Any number of args are supported
+		$rules = func_get_args();
+
 		// Merge the allowed rules
-		$this->empty_rules = array_merge($this->empty_rules, func_get_args());
+		$this->empty_rules = array_merge($this->empty_rules, $rules);
 
 		return $this;
 	}
