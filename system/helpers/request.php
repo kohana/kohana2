@@ -33,9 +33,9 @@ class request_Core {
 	 *
 	 * @return  boolean
 	 */
-	public static function accepts_xhtml()
+	public static function accepts_xhtml($explicit_checking = FALSE)
 	{
-		 return self::accepts('xhtml');
+		 return self::accepts('xhtml',$explicit_checking);
 	}
 
 	/**
@@ -43,9 +43,9 @@ class request_Core {
 	 *
 	 * @return  boolean
 	 */
-	public static function accepts_xml()
+	public static function accepts_xml($explicit_checking = FALSE)
 	{
-		 return self::accepts('xml');
+		 return self::accepts('xml',$explicit_checking);
 	}
 
 	/**
@@ -53,9 +53,9 @@ class request_Core {
 	 *
 	 * @return  boolean
 	 */
-	public static function accepts_rss()
+	public static function accepts_rss($explicit_checking = FALSE)
 	{
-		 return self::accepts('rss');
+		 return self::accepts('rss',$explicit_checking);
 	}
 
 	/**
@@ -63,9 +63,9 @@ class request_Core {
 	 *
 	 * @return  boolean
 	 */
-	public static function accepts_atom()
+	public static function accepts_atom($explicit_checking = FALSE)
 	{
-		 return self::accepts('atom');
+		 return self::accepts('atom',$explicit_checking);
 	}
 
 	/**
