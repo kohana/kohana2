@@ -35,6 +35,17 @@ class Pagination_Core {
 	protected $sql_limit;
 
 	/**
+	 * Constructs and returns a new Pagination object.
+	 *
+	 * @param   array  configuration
+	 * @return  object
+	 */
+	public function factory($config = array())
+	{
+		return new Pagination($config);
+	}
+
+	/**
 	 * Constructs the Pagination object.
 	 *
 	 * @param   array  configuration
