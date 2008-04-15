@@ -8,6 +8,7 @@ $lang = array
 	'cannot_write_log'      => 'Tu configuración del &8220;log.directory&8221; no apunta a un directorio con permiso de escritura.',
 	'resource_not_found'    => 'El fichero de <tt>%s</tt> con nombre %s, no pudo ser encontrado.',
 	'invalid_filetype'      => 'El tipo de fichero solicitado, <tt>.%s</tt>, no esta permitido en la configuración de tus vistas.',
+	'view_set_filename'     => 'Tienes que definir el nombre de la vista antes de llamar al metodo render',
 	'no_default_route'      => 'Por favor, especifica la ruta en <tt>config/routes.php</tt>.',
 	'no_controller'         => 'Kohana no pudo determinar un controlador para procesar: %s',
 	'page_not_found'        => 'La página que solicitase, <tt>%s</tt>, no se encuentra.',
