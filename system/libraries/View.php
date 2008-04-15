@@ -57,6 +57,14 @@ class View_Core {
 		}
 	}
 
+	/**
+	 * Sets the view filename.
+	 *
+	 * @chainable
+	 * @param   string  view filename
+	 * @param   string  view file type
+	 * @return  object
+	 */
 	public function set_filename($name, $type = NULL)
 	{
 		if (empty($type))
@@ -76,6 +84,8 @@ class View_Core {
 			$this->kohana_filetype = Config::item('mimes.'.$type);
 			$this->kohana_filetype = empty($this->kohana_filetype) ? $type : $this->kohana_filetype;
 		}
+
+		return $this;
 	}
 
 	/**
