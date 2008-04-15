@@ -12,6 +12,37 @@
 class arr_Core {
 
 	/**
+	 * Return a callback array from a string, eg: limit[10,20] would become
+	 * array('limit', array('10', '20'))
+	 *
+	 * @param   string  callback string
+	 * @return  array
+	 */
+	public function callback_string($str)
+	{
+		// command[param,param]
+		if (preg_match('/([^\[]*+)\[(.+)\]/', (string) $str, $match))
+		{
+			// command
+			$command = $match[1];
+
+			// param,param
+			$params = preg_split('/(?<!\\\\),/', $match[2]);
+			$params = str_replace('\,', ',', $params);
+		}
+		else
+		{
+			// command
+			$command = $str;
+
+			// No params
+			$params = NULL;
+		}
+
+		return array($command, $params);
+	}
+
+	/**
 	 * Rotates a 2D array clockwise.
 	 * Example, turns a 2x3 array into a 3x2 array.
 	 *
