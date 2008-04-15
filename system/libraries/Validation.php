@@ -69,13 +69,42 @@ class Validation_Core extends ArrayObject {
 	}
 
 	/**
-	 * Returns the ArrayObject array values.
+	 * Returns the ArrayObject values.
 	 *
 	 * @return  array
 	 */
 	public function as_array()
 	{
 		return $this->getArrayCopy();
+	}
+
+	/**
+	 * Returns the ArrayObject values, removing all inputs without rules.
+	 *
+	 * @return  array
+	 */
+	public function safe_array()
+	{
+		// All the fields that are being validated
+		$all_fields = array_unique(array_merge
+		(
+			array_keys($this->pre_filters),
+			array_keys($this->rules),
+			array_keys($this->callbacks),
+			array_keys($this->post_filters)
+		));
+
+		$safe = array();
+		foreach ($all_fields as $i => $field)
+		{
+			// Ignore "any field" key
+			if ($field === $this->any_field) continue;
+
+			// Make sure all fields are defined
+			$safe[$field] = isset($this[$field]) ? $this[$field] : NULL;
+		}
+
+		return $safe;
 	}
 
 	/**
