@@ -22,6 +22,9 @@ class Validation_Core extends ArrayObject {
 	protected $rules = array();
 	protected $callbacks = array();
 
+	// Rules that are allowed to run on empty files
+	protected $empty_rules = array('required', 'matches');
+
 	// Errors
 	protected $errors = array();
 	protected $messages = array();
@@ -63,8 +66,13 @@ class Validation_Core extends ArrayObject {
 	 *
 	 * @return  boolean
 	 */
-	public function submitted()
+	public function submitted($value = NULL)
 	{
+		if (is_bool($value))
+		{
+			$this->submitted = $value;
+		}
+
 		return $this->submitted;
 	}
 
@@ -105,6 +113,22 @@ class Validation_Core extends ArrayObject {
 		}
 
 		return $safe;
+	}
+
+	/**
+	 * Add additional rules that will forced, even for empty fields. All arguments
+	 * passed will be appended to the list.
+	 *
+	 * @chainable
+	 * @param   string   rule name
+	 * @return  object
+	 */
+	public function allow_empty_rules($rules)
+	{
+		// Merge the allowed rules
+		$this->empty_rules = array_merge($this->empty_rules, func_get_args());
+
+		return $this;
 	}
 
 	/**
@@ -350,7 +374,7 @@ class Validation_Core extends ArrayObject {
 						if ( ! empty($this->errors[$f])) break;
 
 						// Don't process rules on empty fields
-						if (($func[1] !== 'required' AND $func[1] !== 'matches') AND $this[$f] == NULL)
+						if ( ! in_array($func[1], $this->empty_rules) AND $this[$f] == NULL)
 							continue;
 
 						// Run each rule
