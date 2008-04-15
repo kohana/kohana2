@@ -88,7 +88,7 @@ class request_Core {
 	 *
 	 * @return  booleanean
 	 */
-	public static function accepts ($type = NULL)
+	public static function accepts ($type = NULL, $explicit_checking = FALSE)
 	 {
 		self::parse_accept_header();
 
@@ -98,21 +98,22 @@ class request_Core {
 		if (is_string($type))
 		{
 			$type = strtolower($type);
-			if(strstr($type,'/') !== false)
+			if(strstr($type,'/') !== FALSE)
 			{
 				list($mime_major,$mime_minor) = explode('/',$type);
 
 				if(isset(self::$accept_types[$mime_major][$mime_minor]))
 					if (self::$accept_types[$mime_major][$mime_minor] > 0)
-						return true;
+						return TRUE;
 					else
-						return false;
+						return FALSE;
 
-				if(isset(self::$accept_types[$mime_major]['*']))
-					if (self::$accept_types[$mime_major]['*'] > 0)
-						return true;
-					else
-						return false;
+				if($explicit_checking === FALSE)
+					if(isset(self::$accept_types[$mime_major]['*']))
+						if (self::$accept_types[$mime_major]['*'] > 0)
+							return TRUE;
+						else
+							return FALSE;
 			}
 			else
 			{	
@@ -121,21 +122,22 @@ class request_Core {
 				{
 					foreach ($mapped_mime_types as $type)
 					{
-						if (self::accepts($type)===true)
-							return  true;
+						if (self::accepts($type) === TRUE)
+							return  TRUE;
 					}
 				}
 			}
 
-			if (isset(self::$accept_types['*']))
-				if (isset(self::$accept_types['*']['*']))
-					if (self::$accept_types['*']['*'] > 0)
-						return true;
-					else
-						return false;
+			if($explicit_checking === FALSE)
+				if (isset(self::$accept_types['*']))
+					if (isset(self::$accept_types['*']['*']))
+						if (self::$accept_types['*']['*'] > 0)
+							return TRUE;
+						else
+							return FALSE;
 		}
 		
-		return false;
+		return FALSE;
 	}
 
 	protected static function parse_accept_header()
