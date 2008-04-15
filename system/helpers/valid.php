@@ -155,24 +155,21 @@ class valid_Core {
 	/**
 	 * Checks if a phone number is valid.
 	 *
-	 * @todo  This function is not l10n-compatible.
-	 *
 	 * @param   string   phone number to check
 	 * @return  boolean
 	 */
-	public static function phone($number)
+	public static function phone($number, $lengths = NULL)
 	{
+		if ( ! is_array($lengths))
+		{
+			$lengths = array(7,10,11);
+		}
+
 		// Remove all non-digit characters from the number
 		$number = preg_replace('/\D+/', '', $number);
 
-		if (strlen($number) > 10 AND substr($number, 0, 1) === '1')
-		{
-			// Remove the "1" prefix from the number
-			$number = substr($number, 1);
-		}
-
-		// If the length is not 10, it's not a valid number
-		return (strlen($number) === 10);
+		// Check if the number is within range
+		return in_array(strlen($number), $lengths);
 	}
 
 	/**
