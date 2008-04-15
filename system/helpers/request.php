@@ -88,55 +88,87 @@ class request_Core {
 	 *
 	 * @return  booleanean
 	 */
-	 public static function accepts ($type = NULL)
+	public static function accepts ($type = NULL)
 	 {
-		 if (self::$accept_types === NULL)
-		 {
-			self::$accept_types = explode(',', $_SERVER['HTTP_ACCEPT']);
-
-			foreach (self::$accept_types as $key => $accept_type)
-			{
-				if (strpos($accept_type, ';'))
-				{
-					$accept_type = explode(';', $accept_type);
-					self::$accept_types[$key] = strtolower($accept_type[0]);
-				}
-			}
-		 }
+		self::parse_accept_header();
 
 		if ($type === NULL)
-		{
 			return self::$accept_types;
-		}
-		elseif (is_string($type))
+
+		if (is_string($type))
 		{
 			$type = strtolower($type);
-
-			// If client only accepts */*, then assume default HTML browser
-			if ($type === 'html' AND self::$accept_types === array('*/*'))
-				return FALSE;
-
-			if ( ! in_array($type, array_keys(self::$accept_types)))
-				return FALSE;
-
-			$accept_types = Config::item('mimes.'.$type);
-
-			if (is_array($accept_types))
+			if(strstr($type,'/') !== false)
 			{
-				foreach ($accept_types as $type)
+				list($mime_major,$mime_minor) = explode('/',$type);
+
+				if(isset(self::$accept_types[$mime_major][$mime_minor]))
+					if (self::$accept_types[$mime_major][$mime_minor] > 0)
+						return true;
+					else
+						return false;
+
+				if(isset(self::$accept_types[$mime_major]['*']))
+					if (self::$accept_types[$mime_major]['*'] > 0)
+						return true;
+					else
+						return false;
+			}
+			else
+			{	
+				$mapped_mime_types = Config::item('mimes.'.$type);
+				if(is_array($mapped_mime_types))
 				{
-					if (in_array($type, self::$accept_types))
-						return FALSE;
+					foreach ($mapped_mime_types as $type)
+					{
+						if (self::accepts($type)===true)
+							return  true;
+					}
+				}
+			}
+
+			if (isset(self::$accept_types['*']))
+				if (isset(self::$accept_types['*']['*']))
+					if (self::$accept_types['*']['*'] > 0)
+						return true;
+					else
+						return false;
+		}
+		
+		return false;
+	}
+
+	protected static function parse_accept_header()
+	{
+		if (self::$accept_types === NULL)
+		 {
+			self::$accept_types = array();
+		 	if (isset($_SERVER['HTTP_ACCEPT']) && !empty($_SERVER['HTTP_ACCEPT']))
+			{
+				$accept_entries = explode(',',$_SERVER['HTTP_ACCEPT']);
+				foreach ($accept_entries as $accept_entry)
+				{
+					$parameters_separated = explode(';', $accept_entry);
+					list($mime_major, $mime_minor) = explode('/',$parameters_separated[0],2);
+					$q = 1000;
+					if (isset($parameters_separated[1]) && !empty($parameters_separated[1]) && substr($parameters_separated[1],0,1)==='q')
+					{
+						list(,$q) = explode('=',$parameters_separated[1],2);
+						$q = (integer) ($q * 1000);
+					}
+
+					if (!isset(self::$accept_types[$mime_major]))
+						self::$accept_types[$mime_major] = array();
+
+					if (!isset(self::$accept_types[$mime_major][$mime_minor]) || $q > self::$accept_types[$mime_major][$mime_minor])
+						self::$accept_types[$mime_major][$mime_minor] = $q;
 				}
 			}
 			else
 			{
-				if (in_array($accept_types, self::$accept_types))
-					return FALSE;
+				self::$accept_types['*'] = array('*' => 1000);
 			}
-
-			return FALSE;
 		}
 	}
-
+	
 } // End request
