@@ -206,22 +206,8 @@ class Session_Core {
 				}
 			}
 
-			// Remove old flash data
-			if ( ! empty(self::$flash))
-			{
-				foreach(self::$flash as $key => $state)
-				{
-					if ($state == 'old')
-					{
-						self::delete($key);
-						unset(self::$flash[$key]);
-					}
-					else
-					{
-						self::$flash[$key] = 'old';
-					}
-				}
-			}
+			// Expire flash keys
+			$this->expire_flash();
 		}
 
 		// Update last activity
@@ -292,6 +278,9 @@ class Session_Core {
 
 			// Run the events that depend on the session being open
 			Event::run('system.session_write');
+
+			// Expire flash keys
+			$this->expire_flash();
 
 			// Close the session
 			session_write_close();
@@ -370,6 +359,40 @@ class Session_Core {
 	}
 
 	/**
+	 * Expires old flash data and removes it from the session.
+	 *
+	 * @return  void
+	 */
+	public function expire_flash()
+	{
+		static $run;
+
+		// Method can only be run once
+		if ($run === TRUE)
+			return;
+
+		if ( ! empty(self::$flash))
+		{
+			foreach(self::$flash as $key => $state)
+			{
+				if ($state === 'old')
+				{
+					// Flash has expired
+					unset(self::$flash[$key], $_SESSION[$key]);
+				}
+				else
+				{
+					// Flash will expire
+					self::$flash[$key] = 'old';
+				}
+			}
+		}
+
+		// Method has been run
+		$run = TRUE;
+	}
+
+	/**
 	 * Get a variable. Access to sub-arrays is supported with key.subkey.
 	 *
 	 * @param   string  variable key
@@ -412,12 +435,9 @@ class Session_Core {
 		if (empty($keys))
 			return FALSE;
 
-		if (func_num_args() > 1)
-		{
-			$keys = func_get_args();
-		}
+		$keys = func_get_args();
 
-		foreach((array) $keys as $key)
+		foreach($keys as $key)
 		{
 			if (isset(self::$protect[$key]))
 				continue;
@@ -425,18 +445,6 @@ class Session_Core {
 			// Unset the key
 			unset($_SESSION[$key]);
 		}
-	}
-
-	/**
-	 * Delete one or more variables.
-	 * Note! This method is deprecated in favor of delete().
-	 *
-	 * @param   variable key(s)  $keys
-	 * @return  void
-	 */
-	public function del($keys)
-	{
-		self::delete($keys);
 	}
 
 } // End Session Class
