@@ -122,7 +122,7 @@ class request_Core {
 				{
 					foreach ($mapped_mime_types as $type)
 					{
-						if (self::accepts($type) === TRUE)
+						if (self::accepts($type, $explicit_checking) === TRUE)
 							return  TRUE;
 					}
 				}
