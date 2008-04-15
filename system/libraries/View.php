@@ -28,7 +28,7 @@ class View_Core {
 	 * @param   string  type of file: html, css, js, etc.
 	 * @return  object
 	 */
-	public static function factory($name, $data = NULL, $type = NULL)
+	public static function factory($name = NULL, $data = NULL, $type = NULL)
 	{
 		return new View($name, $data, $type);
 	}
@@ -42,7 +42,22 @@ class View_Core {
 	 * @param   string  type of file: html, css, js, etc.
 	 * @return  void
 	 */
-	public function __construct($name, $data = NULL, $type = NULL)
+	public function __construct($name = NULL, $data = NULL, $type = NULL)
+	{
+		if ( ! empty($name))
+		{
+			// Set the filename
+			$this->set_filename($name, $type);
+		}
+
+		if (is_array($data) AND ! empty($data))
+		{
+			// Preload data using array_merge, to allow user extensions
+			$this->data = array_merge($this->data, $data);
+		}
+	}
+
+	public function set_filename($name, $type = NULL)
 	{
 		if (empty($type))
 		{
@@ -61,14 +76,6 @@ class View_Core {
 			$this->kohana_filetype = Config::item('mimes.'.$type);
 			$this->kohana_filetype = empty($this->kohana_filetype) ? $type : $this->kohana_filetype;
 		}
-
-		if (is_array($data) AND ! empty($data))
-		{
-			// Preload data using array_merge, to allow user extensions
-			$this->data = array_merge($this->data, $data);
-		}
-
-		Log::add('debug', 'View Class Initialized ['.$name.']');
 	}
 
 	/**
@@ -180,6 +187,9 @@ class View_Core {
 	 */
 	public function render($print = FALSE, $renderer = FALSE)
 	{
+		if (empty($this->kohana_filename))
+			throw new Kohana_Exception('core.view_set_filename');
+
 		if (is_string($this->kohana_filetype))
 		{
 			// Merge global and local data, local overrides global with the same name
