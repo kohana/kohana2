@@ -696,6 +696,56 @@ class ORM_Core {
 	}
 
 	/**
+	 * Validates the current object. This method should generally be called
+	 * via the model, after the $_POST Validation object has been created.
+	 *
+	 * @return  boolean
+	 */
+	public function validate( & $errors, $save = FALSE)
+	{
+		if ( ! $_POST->submitted())
+		{
+			foreach ($_POST->safe_array() as $key => $val)
+			{
+				// Pre-fill data
+				$_POST[$key] = $this->$key;
+			}
+		}
+
+		// Invalid by default
+		$valid = FALSE;
+
+		if ($_POST->validate())
+		{
+			foreach ($_POST->safe_array() as $key => $val)
+			{
+				// Set new data
+				$this->$key = $val;
+			}
+
+			if ($save === TRUE OR is_string($save))
+			{
+				// Save this object
+				$this->save();
+
+				if (is_string($save))
+				{
+					// Redirect to the saved page
+					url::redirect($save);
+				}
+			}
+
+			// Data is valid
+			$valid = TRUE;
+		}
+
+		// Load validation errors
+		$errors = $_POST->errors('forms');
+
+		return $valid;
+	}
+
+	/**
 	 * Saves the current object.
 	 *
 	 * @return  bool
