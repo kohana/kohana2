@@ -8,6 +8,7 @@ $lang = array
 	'cannot_write_log'      => 'Katalog dziennika w konfiguracji wskazuje na położenie tylko do odczytu.',
 	'resource_not_found'    => 'Żądany %s, <tt>%s</tt>, Nie może zostać znaleziony.',
 	'invalid_filetype'      => 'Żądany typ pliku, <tt>.%s</tt>, w konfiguracji widoków nie jest podany jako dozwolony.',
+	'view_set_filename'     => 'Musisz podać plik widoku przed wywołaniem funkcji render',
 	'no_default_route'      => 'Proszę ustawić domyślny adres wywołania w <tt>config/routes.php</tt>.',
 	'no_controller'         => 'Kohana nie była w stanie określić kontrolera obsługującego wywołanie: %s',
 	'page_not_found'        => 'Wywołana strona, <tt>%s</tt>, nie może zostać znaleziona.',
