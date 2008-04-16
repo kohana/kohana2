@@ -71,17 +71,15 @@ class inflector_Core {
 		if (is_int($count) AND $count === 0 OR $count > 1)
 			return $str;
 
-		$end = substr($str, -3);
-
-		if ($end == 'ies')
+		if (substr($str, -3) === 'ies')
 		{
 			$str = substr($str, 0, strlen($str) - 3).'y';
 		}
-		elseif ($end == 'ses' OR $end == 'zes' OR $end == 'xes')
+		elseif (substr($str, -4) === 'sses' OR substr($str, -3) === 'xes')
 		{
 			$str = substr($str, 0, strlen($str) - 2);
 		}
-		elseif (substr($str, -1) == 's')
+		elseif (substr($str, -1) === 's')
 		{
 			$str = substr($str, 0, strlen($str) - 1);
 		}
