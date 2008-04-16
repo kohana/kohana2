@@ -22,9 +22,6 @@ class email_Core {
 	 */
 	public static function connect($config = NULL)
 	{
-		// Load default configuration
-		($config === NULL) and $config = Config::item('email');
-
 		if ( ! class_exists('Swift', FALSE))
 		{
 			// Load SwiftMailer
@@ -34,6 +31,9 @@ class email_Core {
 			spl_autoload_register(array('Swift_ClassLoader', 'load'));
 		}
 
+		// Load default configuration
+		($config === NULL) and $config = Config::item('email');
+
 		switch ($config['driver'])
 		{
 			case 'smtp':
@@ -41,7 +41,7 @@ class email_Core {
 				$connection = new Swift_Connection_SMTP
 				(
 					$config['options']['hostname'],
-					empty($config['options']['port']) ? 25 : $config['options']['port']
+					empty($config['options']['port']) ? 25 : (int) $config['options']['port']
 				);
 
 				// Do authentication, if part of the DSN
