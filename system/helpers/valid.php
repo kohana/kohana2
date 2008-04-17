@@ -247,7 +247,7 @@ class valid_Core {
 	 */
 	public static function standard_text($str)
 	{
-		return (bool) preg_match('/^[-\pL\pN\pZ_]++$/uD', (string) $str);
+		return (bool) preg_match('/^[-\pL\pN\pZ_.]++$/uD', (string) $str);
 	}
 
 } // End valid
