@@ -28,6 +28,17 @@ class request_Core {
 	protected static $accept_types;
 
 	/**
+	 * Returns the HTTP referrer, or the default, if the referrer is not set.
+	 *
+	 * @param   mixed  default to return
+	 * @return  string
+	 */
+	public static function referrer($default = FALSE)
+	{
+		return (isset($_SERVER['HTTP_REFERER']) AND ! empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : $default;
+	}
+
+	/**
 	 * Tests if the current request is an AJAX request by checking the X-Requested-With HTTP
 	 * Request Header that most popular JS frameworks now set for AJAX calls
 	 *
