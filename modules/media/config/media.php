@@ -13,6 +13,12 @@
  *
  * Additionally, CSS and Javascript files can be packed and cached.
  */
+ 
+/**
+ Seperator character for multiple files
+ Make sure this is in your "allowed characters" configuration setting
+ */
+$config['separator'] = ',';
 
 /**
  * Enable media caching.
