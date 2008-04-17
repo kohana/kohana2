@@ -9,6 +9,7 @@ $lang = array
 	'resource_not_found'    => 'Побараниот %s, <tt>%s</tt>, не е пронајден.',
 	'invalid_filetype'      => 'Побараниот тип на датотека, <tt>.%s</tt>, не е дозволен во view конфигурационата датотека.',
 	'no_default_route'      => 'Подесете ја default рутата во <tt>config/routes.php</tt>.',
+	'view_set_filename'     => 'Мора да се сетира view датотеката пред са се повикува render',
 	'no_controller'         => 'Kohana не пронајде контролер за да го процесира ова барање: %s',
 	'page_not_found'        => 'Страната која ја побаравте, <tt>%s</tt>, не е пронајдена.',
 	'stats_footer'          => 'Вчитано за {execution_time} секунди, употребено {memory_usage} меморија. Креирано со Kohana v{kohana_version}.',
