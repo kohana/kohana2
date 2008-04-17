@@ -74,6 +74,13 @@ class Database_Core {
 			// Load the default group
 			$config = Config::item('database.default');
 		}
+		elseif (is_array($config) && count($config) > 0)
+		{
+			if ( ! array_key_exists('connection', $config))
+			{
+				$config = array('connection' => $config);
+			}
+		}
 		elseif (is_string($config))
 		{
 			// The config is a DSN string
@@ -95,75 +102,77 @@ class Database_Core {
 		// Merge the default config with the passed config
 		$this->config = array_merge($this->config, $config);
 
-		// Make sure the connection is valid
-		if (strpos($this->config['connection'], '://') === FALSE)
-			throw new Kohana_Database_Exception('database.invalid_dsn', $this->config['connection']);
-
-		// Parse the DSN, creating an array to hold the connection parameters
-		$db = array
-		(
-			'type'     => FALSE,
-			'user'     => FALSE,
-			'pass'     => FALSE,
-			'host'     => FALSE,
-			'port'     => FALSE,
-			'socket'   => FALSE,
-			'database' => FALSE
-		);
-
-		// Get the protocol and arguments
-		list ($db['type'], $connection) = explode('://', $this->config['connection'], 2);
-
-		if (strpos($connection, '@') !== FALSE)
+		if (is_string($this->config['connection']))
 		{
-			// Get the username and password
-			list ($db['pass'], $connection) = explode('@', $connection, 2);
-			// Check if a password is supplied
-			$logindata = explode(':', $db['pass'], 2);
-			$db['pass'] = (count($logindata) > 1) ? $logindata[1] : '';
-			$db['user'] = $logindata[0];
+			// Make sure the connection is valid
+			if (strpos($this->config['connection'], '://') === FALSE)
+				throw new Kohana_Database_Exception('database.invalid_dsn', $this->config['connection']);
 
-			// Prepare for finding the database
-			$connection = explode('/', $connection);
+			// Parse the DSN, creating an array to hold the connection parameters
+			$db = array
+			(
+				'type'     => FALSE,
+				'user'     => FALSE,
+				'pass'     => FALSE,
+				'host'     => FALSE,
+				'port'     => FALSE,
+				'socket'   => FALSE,
+				'database' => FALSE
+			);
 
-			// Find the database name
-			$db['database'] = array_pop($connection);
+			// Get the protocol and arguments
+			list ($db['type'], $connection) = explode('://', $this->config['connection'], 2);
 
-			// Reset connection string
-			$connection = implode('/', $connection);
-
-			// Find the socket
-			if (preg_match('/^unix\([^)]++\)/', $connection))
+			if (strpos($connection, '@') !== FALSE)
 			{
-				// This one is a little hairy: we explode based on the end of
-				// the socket, removing the 'unix(' from the connection string
-				list ($db['socket'], $connection) = explode(')', substr($connection, 5), 2);
-			}
-			elseif (strpos($connection, ':') !== FALSE)
-			{
-				// Fetch the host and port name
-				list ($db['host'], $db['port']) = explode(':', $connection, 2);
+				// Get the username and password
+				list ($db['pass'], $connection) = explode('@', $connection, 2);
+				// Check if a password is supplied
+				$logindata = explode(':', $db['pass'], 2);
+				$db['pass'] = (count($logindata) > 1) ? $logindata[1] : '';
+				$db['user'] = $logindata[0];
+
+				// Prepare for finding the database
+				$connection = explode('/', $connection);
+
+				// Find the database name
+				$db['database'] = array_pop($connection);
+
+				// Reset connection string
+				$connection = implode('/', $connection);
+
+				// Find the socket
+				if (preg_match('/^unix\([^)]++\)/', $connection))
+				{
+					// This one is a little hairy: we explode based on the end of
+					// the socket, removing the 'unix(' from the connection string
+					list ($db['socket'], $connection) = explode(')', substr($connection, 5), 2);
+				}
+				elseif (strpos($connection, ':') !== FALSE)
+				{
+					// Fetch the host and port name
+					list ($db['host'], $db['port']) = explode(':', $connection, 2);
+				}
+				else
+				{
+					$db['host'] = $connection;
+				}
 			}
 			else
 			{
-				$db['host'] = $connection;
+				// File connection
+				$connection = explode('/', $connection);
+
+				// Find database file name
+				$db['database'] = array_pop($connection);
+
+				// Find database directory name
+				$db['socket'] = implode('/', $connection).'/';
 			}
+
+			// Reset the connection array to the database config
+			$this->config['connection'] = $db;
 		}
-		else
-		{
-			// File connection
-			$connection = explode('/', $connection);
-
-			// Find database file name
-			$db['database'] = array_pop($connection);
-
-			// Find database directory name
-			$db['socket'] = implode('/', $connection).'/';
-		}
-
-		// Reset the connection array to the database config
-		$this->config['connection'] = $db;
-
 		// Set driver name
 		$driver = 'Database_'.ucfirst($this->config['connection']['type']).'_Driver';
 
