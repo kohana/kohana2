@@ -701,7 +701,7 @@ class ORM_Core {
 	 *
 	 * @return  boolean
 	 */
-	public function validate( & $errors, $save = FALSE)
+	public function validate( & $errors, $save = FALSE, $error_file = 'form_errors')
 	{
 		if ( ! $_POST->submitted())
 		{
@@ -740,7 +740,7 @@ class ORM_Core {
 		}
 
 		// Load validation errors
-		$errors = $_POST->errors('forms');
+		$errors = $_POST->errors($error_file);
 
 		return $valid;
 	}
