@@ -26,7 +26,7 @@ class Media_Controller extends Controller {
 	{
 		parent::__construct();
 
-		$cache = Config::item('media.cache');
+		$cache           = Config::item('media.cache');
 		$this->use_cache = ($cache > 0);
 
 		if (is_int($cache))
@@ -35,7 +35,7 @@ class Media_Controller extends Controller {
 		}
 		else
 		{
-			$this->cache_lifetime = config::item('cache.lifetime') OR $this->cache_lifetime = 1800;
+			Config::item('cache.lifetime') OR $this->cache_lifetime = 1800;
 		}
 
 		if ($this->use_cache AND ! isset($this->cache))
@@ -44,7 +44,7 @@ class Media_Controller extends Controller {
 		}
 
 		$this->pack_css = (bool) Config::item('media.pack_css');
-		$this->pack_js = Config::item('media.pack_js');
+		$this->pack_js  = Config::item('media.pack_js');
 
 		if ($this->pack_js === TRUE)
 		{
@@ -52,9 +52,10 @@ class Media_Controller extends Controller {
 		}
 	}
 
-	public function css($querystr) {
-		// find all the individual files
-		$files = explode("+", $querystr);
+	public function css($querystr) 
+	{
+		// Find all the individual files
+		$files = explode('+', $querystr);
 
 		$mimetype = config::item('mimes.css');
 		$mimetype = (isset($mimetype[0])) ? $mimetype[0] : 'text/stylesheet';
@@ -64,8 +65,10 @@ class Media_Controller extends Controller {
 		if ( ! isset($data) OR empty($data))
 		{
 			$data = '';
-			foreach ($files as $orig_filename) {
+			foreach ($files as $orig_filename) 
+			{
 				$filename = $orig_filename;
+
 				if (substr($filename, -4) == ".css")
 				{
 					$filename = substr($filename, 0, -4);
@@ -77,15 +80,14 @@ class Media_Controller extends Controller {
 				}
 				catch (Kohana_Exception $exception)
 				{
-					// try to load the file as a php view (eg, file.css.php)
+					// Try to load the file as a php view (eg, file.css.php)
 					try
 					{
 						$view = new View('media/css/'.$orig_filename);
-
 					}
 					catch (Kohana_Exception $exception)
 					{
-						// not found
+						// Not found
 						unset($view);
 					}
 				}
@@ -93,7 +95,7 @@ class Media_Controller extends Controller {
 				if (isset($view)) {
 					$filedata = $view->render();
 
-					($this->pack_css) and $filedata = $this->_css_compress($filedata);
+					($this->pack_css) AND $filedata = $this->_css_compress($filedata);
 
 					$data .= $filedata;
 				}
@@ -103,15 +105,17 @@ class Media_Controller extends Controller {
 				}
 			}
 
-			($this->use_cache) and $this->cache->set('media.css.'.$querystr, $data, array('media'), $this->cache_lifetime);
+			($this->use_cache) AND $this->cache->set('media.css.'.$querystr, $data, array('media'), $this->cache_lifetime);
 		}
 
 		$mimetype AND header('Content-type: '.$mimetype);
 		echo $data;
 	}
 
-	public function js($orig_filename) {
+	public function js($orig_filename) 
+	{
 		$filename = $orig_filename;
+
 		if (substr($filename, -3) == '.js')
 		{
 			$filename = substr($filename, 0, -3);
@@ -119,7 +123,6 @@ class Media_Controller extends Controller {
 
 		$mimetype = Config::item('mimes.js');
 		$mimetype = (isset($mimetype[0])) ? $mimetype[0] : 'text/javascript';
-
 
 		$this->use_cache AND $data = $this->cache->get('media.js.'.$filename);
 
@@ -153,7 +156,7 @@ class Media_Controller extends Controller {
 					$data = $packer->pack();
 				}
 
-				($this->use_cache) and $this->cache->set('media.js.'.$filename, $data, array('media'), $this->cache_lifetime);
+				($this->use_cache) AND $this->cache->set('media.js.'.$filename, $data, array('media'), $this->cache_lifetime);
 			}
 			else
 			{
@@ -169,8 +172,8 @@ class Media_Controller extends Controller {
 	{
 		$type = $this->uri->segment(2);
 		$filename = $this->uri->segment(3);
-		// TODO: finish this for generic types
-		/* issues: getting View to work with any types of files */
+		// TODO:   Finish this for generic types
+		// ISSUES: Getting View to work with any types of files
 
 		try
 		{
@@ -182,7 +185,9 @@ class Media_Controller extends Controller {
 		}
 	}
 
-	// Based on http://www.ibloomstudios.com/articles/php_css_compressor/
+	/**
+	 * @based_on   http://www.ibloomstudios.com/articles/php_css_compressor/
+	 */
 	public function _css_compress($data)
 	{
 		// Remove comments
