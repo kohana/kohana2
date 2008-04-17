@@ -175,6 +175,7 @@ class request_Core {
 				{
 					if ($q > $max_q)
 					{
+						$max_q = $q;
 						$preferred = $type;
 					}
 				}
