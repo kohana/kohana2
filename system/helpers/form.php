@@ -294,7 +294,7 @@ class form_Core {
 
 		$data['type'] = 'checkbox';
 
-		if ($checked === TRUE OR (isset($data['checked']) AND $data['checked'] === TRUE))
+		if ((bool) $checked === TRUE OR (isset($data['checked']) AND $data['checked'] === TRUE))
 		{
 			$data['checked'] = 'checked';
 		}
