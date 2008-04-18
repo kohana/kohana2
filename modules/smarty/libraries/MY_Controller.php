@@ -6,7 +6,8 @@ class Controller extends Controller_Core {
 	{
 		parent::__construct();
 	
-		if (Config::item('smarty.integration') == TRUE) {
+		if (Config::item('smarty.integration') == TRUE)
+		{
 			$this->MY_Smarty = new MY_Smarty;
 		}
 	}
@@ -21,7 +22,7 @@ class Controller extends Controller_Core {
 			// Assign variables to the template
 			if (is_array($vars) AND count($vars) > 0) 
 			{
-				foreach ($vars as $key => $val) 
+				foreach ($vars AS $key => $val)
 				{
 					$this->MY_Smarty->assign($key, $val);
 				}

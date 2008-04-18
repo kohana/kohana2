@@ -13,11 +13,11 @@ class MY_Smarty_Core extends Smarty {
 		// Okay, integration is enabled, so call the parent constructor
 		parent::Smarty();
 
-		$this->cache_dir      = Config::item('smarty.cache_path') . 'smarty_cache/';
-		$this->compile_dir    = Config::item('smarty.cache_path') . 'smarty_compile/';
-		$this->config_dir     = Config::item('smarty.global_templates_path') . 'smarty_configs/';
-		$this->plugins_dir[]  = Config::item('smarty.global_templates_path') . 'smarty_plugins/';
-		$this->debug_tpl      = Config::item('smarty.global_templates_path') . 'debug.tpl';
+		$this->cache_dir      = Config::item('smarty.cache_path');
+		$this->compile_dir    = Config::item('smarty.compile_path');
+		$this->config_dir     = Config::item('smarty.configs_path');
+		$this->plugins_dir[]  = Config::item('smarty.plugins_path');
+		$this->debug_tpl      = Config::item('smarty.debug_tpl');
 		$this->debugging_ctrl = Config::item('smarty.debugging_ctrl');
 		$this->debugging      = Config::item('smarty.debugging');
 		$this->caching        = Config::item('smarty.caching');
@@ -25,7 +25,7 @@ class MY_Smarty_Core extends Smarty {
 		$this->security       = Config::item('smarty.security');
 
 		// check if cache directory is exists
-		$this->checkDirectory(Config::item('smarty.cache_path'));
+		$this->checkDirectory($this->cache_dir);
 
 		// check if smarty_compile directory is exists
 		$this->checkDirectory($this->compile_dir);
