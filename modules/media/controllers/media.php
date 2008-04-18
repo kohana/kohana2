@@ -28,7 +28,7 @@ class Media_Controller extends Controller {
 	{
 		parent::__construct();
 
-		$this->separator = Config::item('media.separator') or $this->separator = ',';
+		$this->separator = Config::item('media.separator') OR $this->separator = ',';
 
 		$cache = Config::item('media.cache');
 		$this->use_cache = ($cache > 0);
@@ -39,7 +39,7 @@ class Media_Controller extends Controller {
 		}
 		else
 		{
-			$this->cache_lifetime = Config::item('cache.lifetime') or $this->cache_lifetime = 1800;
+			$this->cache_lifetime = Config::item('cache.lifetime') OR $this->cache_lifetime = 1800;
 		}
 
 		if ($this->use_cache AND ! isset($this->cache))
@@ -49,18 +49,23 @@ class Media_Controller extends Controller {
 
 		$this->pack_css = (bool) Config::item('media.pack_css');
 		$this->pack_js = Config::item('media.pack_js');
-		($this->pack_js === TRUE) and $this->pack_js = 'Normal';
+		($this->pack_js === TRUE) AND $this->pack_js = 'Normal';
 	}
 
-	public function css($querystr)
+	public function css($querystr = FALSE)
 	{
+		if( ! is_string($querystr))
+		{
+			$querystr = implode('/', $this->uri->argument_array());
+		}
+		
 		// Find all the individual files
 		$files = explode($this->separator, $querystr);
 
 		$mimetype = Config::item('mimes.css');
-		$mimetype = (isset($mimetype[0])) ? $mimetype[0] : 'text/stylesheet';
+		$mimetype = (isset($mimetype[0])) ? $mimetype[0] : 'text/css';
 
-		$this->use_cache and $output = $this->cache->get('media.css.'.$querystr);
+		$this->use_cache AND $output = $this->cache->get('media.css.'.$querystr);
 
 		if ( ! isset($output) OR empty($output))
 		{
@@ -76,20 +81,25 @@ class Media_Controller extends Controller {
 				$output .= $data;
 			}
 
-			($this->use_cache) and $this->cache->set('media.css.'.$querystr, $data, array('media'), $this->cache_lifetime);
+			($this->use_cache) AND $this->cache->set('media.css.'.$querystr, $data, array('media'), $this->cache_lifetime);
 		}
 
-		$mimetype and header('Content-type: '.$mimetype);
+		$mimetype AND header('Content-type: '.$mimetype);
 		echo $output;
 	}
 
-	public function js($querystr)
+	public function js($querystr = FALSE)
 	{
+		if( ! is_string($querystr))
+		{
+			$querystr = implode('/', $this->uri->argument_array());
+		}
+		
 		// Find all the individual files
 		$files = explode($this->separator, $querystr);
 
 		$mimetype = Config::item('mimes.js');
-		$mimetype = (isset($mimetype[0])) ? $mimetype[0] : 'text/javascript';
+		$mimetype = (isset($mimetype[0])) ? $mimetype[0] : 'application/x-javascript';
 
 		$this->use_cache AND $output = $this->cache->get('media.js.'.$querystr);
 
@@ -108,10 +118,10 @@ class Media_Controller extends Controller {
 				$output = $this->_js_compress($output);
 			}
 
-			($this->use_cache) and $this->cache->set('media.js.'.$querystr, $data, array('media'), $this->cache_lifetime);
+			($this->use_cache) AND $this->cache->set('media.js.'.$querystr, $data, array('media'), $this->cache_lifetime);
 		}
 
-		$mimetype and header('Content-type: '.$mimetype);
+		$mimetype AND header('Content-type: '.$mimetype);
 		echo $output;
 	}
 
@@ -173,7 +183,7 @@ class Media_Controller extends Controller {
 				}
 			}
 
-			(isset($view)) and $filedata[$filename] = $view->render();
+			(isset($view)) AND $filedata[$filename] = $view->render();
 		}
 
 		return $filedata;
