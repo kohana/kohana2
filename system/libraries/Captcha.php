@@ -39,7 +39,7 @@ class Captcha_Core {
 		static $check;
 
 		// Check that a suitable GD2 library is available
-		($check === NULL) and $check = function_exists('imageconvolution');
+		($check === NULL) and $check = function_exists('imagegd2');
 
 		if ($check === FALSE)
 			throw new Kohana_Exception('captcha.requires_GD2');
