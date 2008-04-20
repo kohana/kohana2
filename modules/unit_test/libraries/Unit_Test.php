@@ -64,6 +64,10 @@ class Unit_Test_Core {
 				// The class name should be the same as the file name
 				$class = substr($path, strrpos($path, '/') + 1, -(strlen(EXT)));
 
+				// Skip hidden files
+				if (substr($class, 0, 1) === '.')
+					continue;
+
 				// Check for duplicate test class name
 				if (class_exists($class, FALSE))
 					throw new Kohana_Exception('unit_test.duplicate_test_class', $class, $path);
