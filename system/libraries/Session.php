@@ -342,20 +342,20 @@ class Session_Core {
 	}
 
 	/**
-	 * Freshen a flash variable.
+	 * Freshen one or more flash variables.
 	 *
-	 * @param   string   variable key
-	 * @return  boolean
+	 * @param   string  variable key(s)
+	 * @return  void
 	 */
-	public function keep_flash($key)
+	public function keep_flash($keys)
 	{
-		if (isset(self::$flash[$key]))
+		foreach(func_get_args() as $key)
 		{
-			self::$flash[$key] = 'new';
-			return TRUE;
+			if (isset(self::$flash[$key]))
+			{
+				self::$flash[$key] = 'new';
+			}
 		}
-
-		return FALSE;
 	}
 
 	/**
@@ -427,17 +427,12 @@ class Session_Core {
 	/**
 	 * Delete one or more variables.
 	 *
-	 * @param   variable key(s)  $keys
+	 * @param   string  variable key(s)
 	 * @return  void
 	 */
 	public function delete($keys)
 	{
-		if (empty($keys))
-			return FALSE;
-
-		$keys = func_get_args();
-
-		foreach($keys as $key)
+		foreach(func_get_args() as $key)
 		{
 			if (isset(self::$protect[$key]))
 				continue;
