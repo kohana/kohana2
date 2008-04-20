@@ -52,8 +52,10 @@ class Media_Controller extends Controller {
 		($this->pack_js === TRUE) AND $this->pack_js = 'Normal';
 	}
 
-	public function css($querystr)
+	public function css()
 	{
+		$querystr = implode('/', $this->uri->argument_array());
+
 		// Find all the individual files
 		$files = explode($this->separator, $querystr);
 
@@ -83,8 +85,10 @@ class Media_Controller extends Controller {
 		echo $output;
 	}
 
-	public function js($querystr)
-	{	
+	public function js()
+	{
+		$querystr = implode('/', $this->uri->argument_array());
+
 		// Find all the individual files
 		$files = explode($this->separator, $querystr);
 
