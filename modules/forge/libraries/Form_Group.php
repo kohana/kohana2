@@ -60,7 +60,7 @@ class Form_Group_Core extends Forge {
 		}
 		else
 		{
-			$this->data['label'] = ($val === TRUE) ? ucwords(inflector::humanize($val)) : $val;
+			$this->data['label'] = ($val === TRUE) ? ucwords(inflector::humanize($this->data['class'])) : $val;
 			return $this;
 		}
 	}
