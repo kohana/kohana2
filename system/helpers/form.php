@@ -33,8 +33,7 @@ class form_Core {
 		if (empty($action) OR ! is_string($action))
 		{
 			// Use the current URL as the default action
-			// Apply htmlspecialchars to current URI to prevent XSS
-			$action = url::site(html::specialchars(Router::$current_uri));
+			$action = url::site(Router::$current_uri);
 		}
 		elseif (strpos($action, '://') === FALSE)
 		{
@@ -43,7 +42,7 @@ class form_Core {
 		}
 
 		// Form opening tag
-		$form = '<form action="'.$action.'"'.form::attributes($attr).'>'."\n";
+		$form = '<form action="'.html::specialchars($action, FALSE).'"'.form::attributes($attr).'>'."\n";
 
 		// Add hidden fields immediate after opening tag
 		empty($hidden) or $form .= form::hidden($hidden);

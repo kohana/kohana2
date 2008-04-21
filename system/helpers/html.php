@@ -21,7 +21,7 @@ class html_Core {
 	public static function specialchars($str, $double_encode = TRUE)
 	{
 		// Do encode existing HTML entities (default)
-		if ($double_encode == TRUE)
+		if ($double_encode === TRUE)
 		{
 			$str = htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
 		}

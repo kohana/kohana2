@@ -125,6 +125,9 @@ class Pagination_Core {
 			$this->current_page = URI::instance()->segment($this->uri_segment);
 		}
 
+		// Prevent XSS
+		$this->url = html::specialchars($this->url);
+
 		// Core pagination values
 		$this->total_items        = (int) max(0, $this->total_items);
 		$this->items_per_page     = (int) max(1, $this->items_per_page);
@@ -191,12 +194,13 @@ class Pagination_Core {
 	}
 
 	/**
-	 * So that users can use $pagination->total_pages() or $pagination->total_pages.
+	 * Adds a secondary interface for accessing properties, e.g. $pagination->total_pages().
+	 * Note that $pagination->total_pages is the recommended way to access properties.
 	 *
 	 * @param   string  function name
 	 * @return  string
 	 */
-	public function __call($func, $args = FALSE)
+	public function __call($func, $args = NULL)
 	{
 		return $this->__get($func);
 	}
