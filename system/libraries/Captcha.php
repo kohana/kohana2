@@ -128,7 +128,7 @@ class Captcha_Core {
 	 */
 	public static function valid_captcha($str)
 	{
-		return ((string) $str === Session::instance()->get('captcha_code'));
+		return (strtoupper($str) === strtoupper(Session::instance()->get('captcha_code')));
 	}
 
 	/**
