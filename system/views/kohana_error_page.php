@@ -10,12 +10,12 @@
 <?php include Kohana::find_file('views', 'kohana_errors', FALSE, 'css') ?>
 </style>
 <div id="framework_error" style="width:42em;margin:20px auto;">
-<h3><?php echo $error ?></h3>
-<p><?php echo $description ?></p>
+<h3><?php echo html::specialchars($error) ?></h3>
+<p><?php echo html::specialchars($description) ?></p>
 <?php if ( ! empty($line) AND ! empty($file)): ?>
 <p><?php echo Kohana::lang('core.error_file_line', $file, $line) ?></p>
 <?php endif ?>
-<p><code class="block"><?php echo $message ?></code></p>
+<p><code class="block"><?php echo html::specialchars($message) ?></code></p>
 <?php if ( ! empty($trace)): ?>
 <h3><?php echo Kohana::lang('core.stack_trace') ?></h3>
 <?php echo $trace ?>

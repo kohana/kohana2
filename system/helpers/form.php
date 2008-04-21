@@ -33,7 +33,8 @@ class form_Core {
 		if (empty($action) OR ! is_string($action))
 		{
 			// Use the current URL as the default action
-			$action = url::site(Router::$current_uri);
+			// Apply htmlspecialchars to current URI to prevent XSS
+			$action = url::site(html::specialchars(Router::$current_uri));
 		}
 		elseif (strpos($action, '://') === FALSE)
 		{
