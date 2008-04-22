@@ -20,6 +20,9 @@ class html_Core {
 	 */
 	public static function specialchars($str, $double_encode = TRUE)
 	{
+		// Force the string to be a string
+		$str = (string) $str;
+
 		// Do encode existing HTML entities (default)
 		if ($double_encode === TRUE)
 		{
