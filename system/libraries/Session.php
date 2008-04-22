@@ -342,14 +342,16 @@ class Session_Core {
 	}
 
 	/**
-	 * Freshen one or more flash variables.
+	 * Freshen one, multiple or all flash variables.
 	 *
 	 * @param   string  variable key(s)
 	 * @return  void
 	 */
-	public function keep_flash($keys)
+	public function keep_flash($keys = NULL)
 	{
-		foreach(func_get_args() as $key)
+		$keys = ($keys === NULL) ? array_keys(self::$flash) : func_get_args();
+
+		foreach($keys as $key)
 		{
 			if (isset(self::$flash[$key]))
 			{
