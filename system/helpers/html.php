@@ -290,7 +290,7 @@ class html_Core {
 			if (strpos($script, '://') === FALSE)
 			{
 				// Add the suffix only when it's not already present
-				$suffix = (substr($script, -3) === '.js') ? '.js' : '';
+				$suffix = (substr($script, -3) !== '.js') ? '.js' : '';
 				$script = url::base((bool) $index).$script.$suffix;
 			}
 
