@@ -286,9 +286,15 @@ class html_Core {
 		}
 		else
 		{
-			// Add the suffix only when it's not already present
-			$suffix   = (strpos($script, '.js') === FALSE) ? '.js' : '';
-			$compiled = '<script type="text/javascript" src="'.url::base((bool) $index).$script.$suffix.'"></script>';
+			// Do not touch full URLs
+			if (strpos($script, '://') === FALSE)
+			{
+				// Add the suffix only when it's not already present
+				$suffix = (substr($script, -3) === '.js') ? '.js' : '';
+				$script = url::base((bool) $index).$script.$suffix;
+			}
+
+			$compiled = '<script type="text/javascript" src="'.$script.'"></script>';
 		}
 
 		return $compiled."\n";
