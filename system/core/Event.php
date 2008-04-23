@@ -214,7 +214,7 @@ final class Event {
 
 			foreach(self::get($name) as $callback)
 			{
-				call_user_func($callback);
+				call_user_func_array($callback,array(&self::$data));
 			}
 
 			// Do this to prevent data from getting 'stuck'
