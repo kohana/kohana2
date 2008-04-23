@@ -175,6 +175,10 @@ class View_Core {
 		{
 			return $this->data[$key];
 		}
+		if(isset($this->$key))
+		{
+			return $this->$key;
+		}		
 	}
 
 	/**
