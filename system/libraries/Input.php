@@ -14,10 +14,11 @@ class Input_Core {
 	// Singleton instance
 	protected static $instance;
 
+	// Enable or disable automatic XSS cleaning
 	protected $use_xss_clean = FALSE;
 
+	// IP address of current user
 	public $ip_address = FALSE;
-	public $user_agent = FALSE;
 
 	/**
 	 * Retrieve a singleton instance of Input. This will always be the first
@@ -46,8 +47,6 @@ class Input_Core {
 
 		if (self::$instance === NULL)
 		{
-			$this->user_agent = Kohana::$user_agent;
-
 			if (ini_get('register_globals'))
 			{
 				// Prevent GLOBALS override attacks
@@ -121,8 +120,6 @@ class Input_Core {
 
 			Log::add('debug', 'Global GET, POST and COOKIE data sanitized');
 		}
-
-		Log::add('debug', 'Input Library initialized');
 	}
 
 	/**
@@ -178,58 +175,6 @@ class Input_Core {
 	}
 
 	/**
-	 * This is a helper function. It escapes data and standardizes newline characters to '\n'.
-	 *
-	 * @param   unknown_type  string to clean
-	 * @return  string
-	 */
-	protected function clean_input_data($str)
-	{
-		if (is_array($str))
-		{
-			$new_array = array();
-			foreach ($str as $key => $val)
-			{
-				$new_array[$this->clean_input_keys($key)] = $this->clean_input_data($val);
-			}
-			return $new_array;
-		}
-
-		if (get_magic_quotes_gpc())
-		{
-			$str = stripslashes($str);
-		}
-
-		if ($this->use_xss_clean === TRUE)
-		{
-			$str = $this->xss_clean($str);
-		}
-
-		// Standardize newlines
-		return str_replace(array("\r\n", "\r"), "\n", $str);
-	}
-
-	/**
-	 * This is a helper function. To prevent malicious users
-	 * from trying to exploit keys we make sure that keys are
-	 * only named with alpha-numeric text and a few other items.
-	 *
-	 * @param   string  string to clean
-	 * @return  string
-	 */
-	protected function clean_input_keys($str)
-	{
-		$chars = (PCRE_UNICODE_PROPERTIES) ? '\pL' : 'a-zA-Z';
-
-		if ( ! preg_match('#^['.$chars.'0-9:_.-]++$#uD', $str))
-		{
-			exit('Disallowed key characters in global data.');
-		}
-
-		return $str;
-	}
-
-	/**
 	 * Fetch the IP Address.
 	 *
 	 * @return string
@@ -256,10 +201,7 @@ class Input_Core {
 			 $this->ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
 		}
 
-		if ($this->ip_address === FALSE)
-			return $this->ip_address = '0.0.0.0';
-
-		if (strstr($this->ip_address, ','))
+		if (strpos($this->ip_address, ',') !== FALSE)
 		{
 			$x = explode(',', $this->ip_address);
 			$this->ip_address = end($x);
@@ -271,27 +213,6 @@ class Input_Core {
 		}
 
 		return $this->ip_address;
-	}
-
-	/**
-	 * Validates an IPv4 address based on RFC specifications.
-	 *
-	 * @param   string  IP to validate
-	 * @return  boolean
-	 */
-	public function valid_ip($ip)
-	{
-		return valid::ip($ip);
-	}
-
-	/**
-	 * Get the user agent of the current request.
-	 *
-	 * @return string
-	 */
-	public function user_agent()
-	{
-		return $this->user_agent;
 	}
 
 	/**
@@ -411,6 +332,65 @@ class Input_Core {
 		}
 
 		return $string;
+	}
+
+	/**
+	 * This is a helper method. It enforces W3C specifications for allowed
+	 * key name strings, to prevent malicious exploitation.
+	 *
+	 * @param   string  string to clean
+	 * @return  string
+	 */
+	public function clean_input_keys($str)
+	{
+		$chars = PCRE_UNICODE_PROPERTIES ? '\pL' : 'a-zA-Z';
+
+		if ( ! preg_match('#^['.$chars.'0-9:_.-]++$#uD', $str))
+		{
+			exit('Disallowed key characters in global data.');
+		}
+
+		return $str;
+	}
+
+	/**
+	 * This is a helper method. It escapes data and forces all newline
+	 * characters to "\n".
+	 *
+	 * @param   unknown_type  string to clean
+	 * @return  string
+	 */
+	public function clean_input_data($str)
+	{
+		if (is_array($str))
+		{
+			$new_array = array();
+			foreach ($str as $key => $val)
+			{
+				// Recursion!
+				$new_array[$this->clean_input_keys($key)] = $this->clean_input_data($val);
+			}
+			return $new_array;
+		}
+
+		if (get_magic_quotes_gpc())
+		{
+			// Remove annoying magic quotes
+			$str = stripslashes($str);
+		}
+
+		if ($this->use_xss_clean === TRUE)
+		{
+			$str = $this->xss_clean($str);
+		}
+
+		if (strpos("\r", $str) !== FALSE)
+		{
+			// Standardize newlines
+			$str = str_replace(array("\r\n", "\r"), "\n", $str);
+		}
+
+		return $str;
 	}
 
 } // End Input Class
