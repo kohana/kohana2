@@ -384,7 +384,7 @@ class Input_Core {
 			$str = $this->xss_clean($str);
 		}
 
-		if (strpos("\r", $str) !== FALSE)
+		if (strpos($str, "\r") !== FALSE)
 		{
 			// Standardize newlines
 			$str = str_replace(array("\r\n", "\r"), "\n", $str);
