@@ -703,6 +703,9 @@ class ORM_Core {
 	 */
 	public function validate( & $errors, $save = FALSE, $error_file = 'form_errors')
 	{
+		// if ( ! ($_POST instanceof Validation))
+			// throw new Kohana_Exception('orm.validate_post_not_object', get_class($this));
+
 		if ( ! $_POST->submitted())
 		{
 			foreach ($_POST->safe_array() as $key => $val)
