@@ -416,8 +416,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		{
 			if (is_string($type))
 			{
-				$loaded = Kohana::auto_load($type);
-				$this->return_type = $loaded ? $type : 'stdClass';
+				$this->return_type = Kohana::auto_load($type) ? $type : 'stdClass';
 			}
 			else
 			{
