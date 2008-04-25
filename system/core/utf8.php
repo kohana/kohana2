@@ -90,6 +90,9 @@ if (PHP_SAPI == 'cli')
 
 final class utf8 {
 
+	// Called methods
+	static $called = array();
+
 	/**
 	 * Recursively cleans arrays, objects, and strings. Removes ASCII control
 	 * codes and converts to UTF-8 while silently discarding incompatible
@@ -104,18 +107,26 @@ final class utf8 {
 		{
 			foreach($str as $key => $val)
 			{
+				// Recursion!
 				$str[self::clean($key)] = self::clean($val);
 			}
 		}
 		elseif (is_string($str) AND $str !== '')
 		{
-			// iconv is fairly expensive, so it is only used when needed
+			// Remove control characters
+			$str = self::strip_ascii_ctrl($str);
+
 			if ( ! self::is_ascii($str))
 			{
-				$str = @iconv('UTF-8', 'UTF-8//IGNORE', $str);
-			}
+				// Disable notices
+				$ER = error_reporting(~E_NOTICE);
 
-			$str = self::strip_ascii_ctrl($str);
+				// iconv is expensive, so it is only used when needed
+				$str = iconv('UTF-8', 'UTF-8//IGNORE', $str);
+
+				// Turn notices back on
+				error_reporting($ER);
+			}
 		}
 
 		return $str;
@@ -166,7 +177,14 @@ final class utf8 {
 	 */
 	public static function transliterate_to_ascii($str, $case = 0)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _transliterate_to_ascii($str, $case);
 	}
 
@@ -179,7 +197,14 @@ final class utf8 {
 	 */
 	public static function strlen($str)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _strlen($str);
 	}
 
@@ -197,7 +222,14 @@ final class utf8 {
 	 */
 	public static function strpos($str, $search, $offset = 0)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _strpos($str, $search, $offset);
 	}
 
@@ -215,7 +247,14 @@ final class utf8 {
 	 */
 	public static function strrpos($str, $search, $offset = 0)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _strrpos($str, $search, $offset);
 	}
 
@@ -232,7 +271,14 @@ final class utf8 {
 	 */
 	public static function substr($str, $offset, $length = NULL)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _substr($str, $offset, $length);
 	}
 
@@ -249,7 +295,14 @@ final class utf8 {
 	 */
 	public static function substr_replace($str, $replacement, $offset, $length = NULL)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _substr_replace($str, $replacement, $offset, $length);
 	}
 
@@ -264,7 +317,14 @@ final class utf8 {
 	 */
 	public static function strtolower($str)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _strtolower($str);
 	}
 
@@ -279,7 +339,14 @@ final class utf8 {
 	 */
 	public static function strtoupper($str)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _strtoupper($str);
 	}
 
@@ -294,7 +361,14 @@ final class utf8 {
 	 */
 	public static function ucfirst($str)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _ucfirst($str);
 	}
 
@@ -309,7 +383,14 @@ final class utf8 {
 	 */
 	public static function ucwords($str)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _ucwords($str);
 	}
 
@@ -327,7 +408,14 @@ final class utf8 {
 	 */
 	public static function strcasecmp($str1, $str2)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _strcasecmp($str1, $str2);
 	}
 
@@ -348,7 +436,14 @@ final class utf8 {
 	 */
 	public static function str_ireplace($search, $replace, $str, & $count = NULL)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _str_ireplace($search, $replace, $str, $count);
 	}
 
@@ -366,7 +461,14 @@ final class utf8 {
 	 */
 	public static function stristr($str, $search)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _stristr($str, $search);
 	}
 
@@ -384,7 +486,14 @@ final class utf8 {
 	 */
 	public static function strspn($str, $mask, $offset = NULL, $length = NULL)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _strspn($str, $mask, $offset, $length);
 	}
 
@@ -402,7 +511,14 @@ final class utf8 {
 	 */
 	public static function strcspn($str, $mask, $offset = NULL, $length = NULL)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _strcspn($str, $mask, $offset, $length);
 	}
 
@@ -420,7 +536,14 @@ final class utf8 {
 	 */
 	public static function str_pad($str, $final_str_length, $pad_str = ' ', $pad_type = STR_PAD_RIGHT)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _str_pad($str, $final_str_length, $pad_str, $pad_type);
 	}
 
@@ -436,7 +559,14 @@ final class utf8 {
 	 */
 	public static function str_split($str, $split_length = 1)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _str_split($str, $split_length);
 	}
 
@@ -451,7 +581,14 @@ final class utf8 {
 	 */
 	public static function strrev($str)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _strrev($str);
 	}
 
@@ -468,7 +605,14 @@ final class utf8 {
 	 */
 	public static function trim($str, $charlist = NULL)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _trim($str, $charlist);
 	}
 
@@ -484,7 +628,14 @@ final class utf8 {
 	 */
 	public static function ltrim($str, $charlist = NULL)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _ltrim($str, $charlist);
 	}
 
@@ -500,7 +651,14 @@ final class utf8 {
 	 */
 	public static function rtrim($str, $charlist = NULL)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _rtrim($str, $charlist);
 	}
 
@@ -515,7 +673,14 @@ final class utf8 {
 	 */
 	public static function ord($chr)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _ord($chr);
 	}
 
@@ -536,7 +701,14 @@ final class utf8 {
 	 */
 	public static function to_unicode($str)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _to_unicode($str);
 	}
 
@@ -557,7 +729,14 @@ final class utf8 {
 	 */
 	public static function from_unicode($arr)
 	{
-		require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+		if ( ! isset(self::$called[__FUNCTION__]))
+		{
+			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+
+			// Function has been called
+			self::$called[__FUNCTION__] = TRUE;
+		}
+
 		return _from_unicode($arr);
 	}
 
