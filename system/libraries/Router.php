@@ -33,17 +33,24 @@ class Router_Core {
 	 */
 	public static function setup()
 	{
-		self::$routes = Config::item('routes');
+		if ( ! empty($_SERVER['QUERY_STRING']))
+		{
+			// Set the query string to the current query string
+			self::$query_string = '?'.trim($_SERVER['QUERY_STRING'], '&');
+		}
 
-		// Make sure the default route is set
-		if ( ! isset(self::$routes['_default']))
-			throw new Kohana_Exception('core.no_default_route');
+		// Load routing configuration
+		self::$routes = Config::item('routes');
 
 		// Default route status
 		$default_route = FALSE;
 
 		if (self::$current_uri === '')
 		{
+			// Make sure the default route is set
+			if ( ! isset(self::$routes['_default']))
+				throw new Kohana_Exception('core.no_default_route');
+
 			// Use the default route when no segments exist
 			self::$current_uri = self::$routes['_default'];
 
@@ -53,12 +60,6 @@ class Router_Core {
 
 		// Make sure the URL is not tainted with HTML characters
 		self::$current_uri = html::specialchars(self::$current_uri, FALSE);
-
-		if ( ! empty($_SERVER['QUERY_STRING']))
-		{
-			// Set the query string to the current query string
-			self::$query_string = '?'.trim($_SERVER['QUERY_STRING'], '&');
-		}
 
 		// At this point segments, rsegments, and current URI are all the same
 		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, '/');
