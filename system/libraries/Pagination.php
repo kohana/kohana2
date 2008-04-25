@@ -125,9 +125,6 @@ class Pagination_Core {
 			$this->current_page = URI::instance()->segment($this->uri_segment);
 		}
 
-		// Prevent XSS
-		$this->url = html::specialchars($this->url);
-
 		// Core pagination values
 		$this->total_items        = (int) max(0, $this->total_items);
 		$this->items_per_page     = (int) max(1, $this->items_per_page);

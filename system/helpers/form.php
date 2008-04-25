@@ -42,7 +42,7 @@ class form_Core {
 		}
 
 		// Form opening tag
-		$form = '<form action="'.html::specialchars($action, FALSE).'"'.form::attributes($attr).'>'."\n";
+		$form = '<form action="'.$action.'"'.form::attributes($attr).'>'."\n";
 
 		// Add hidden fields immediate after opening tag
 		empty($hidden) or $form .= form::hidden($hidden);

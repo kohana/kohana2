@@ -172,13 +172,10 @@ class View_Core {
 	public function __get($key)
 	{
 		if (isset($this->data[$key]))
-		{
 			return $this->data[$key];
-		}
-		if(isset($this->$key))
-		{
+
+		if (isset($this->$key))
 			return $this->$key;
-		}		
 	}
 
 	/**
