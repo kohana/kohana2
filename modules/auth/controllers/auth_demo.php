@@ -20,7 +20,7 @@ class Auth_Demo_Controller extends Controller {
 		parent::__construct();
 
 		// Load auth library
-		$this->auth = new Auth();
+		$this->auth = new Auth;
 	}
 
 	public function index()
