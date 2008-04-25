@@ -412,9 +412,17 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		// know the state of fetch_type when $object = NULL
 		// NOTE - The class set by $type must be defined before fetching the result,
 		// autoloading is disabled to save a lot of stupid overhead.
-		if ($this->fetch_type == 'mysql_fetch_object')
+		if ($this->fetch_type == 'mysql_fetch_object' AND $object === TRUE)
 		{
-			$this->return_type = class_exists($type, FALSE) ? $type : 'stdClass';
+			if (is_string($type))
+			{
+				$loaded = Kohana::auto_load($type);
+				$this->return_type = $loaded ? $type : 'stdClass';
+			}
+			else
+			{
+				$this->return_type = 'stdClass';
+			}
 		}
 		else
 		{
