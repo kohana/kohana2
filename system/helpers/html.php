@@ -38,7 +38,7 @@ class html_Core {
 			}
 			else
 			{
-				$str = preg_replace('/&(?!(?:#\d++|[a-z]++);)/i', '&amp;', $str);
+				$str = preg_replace('/&(?!(?:#\d++|[a-z]++);)/ui', '&amp;', $str);
 				$str = str_replace(array('<', '>', '\'', '"'), array('&lt;', '&gt;', '&#39;', '&quot;'), $str);
 			}
 		}
