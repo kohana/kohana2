@@ -366,28 +366,31 @@ class Kohana {
 		// Fetch benchmark for page execution time
 		$benchmark = Benchmark::get(SYSTEM_BENCHMARK.'_total_execution');
 
-		// Replace the global template variables
-		$output = str_replace(
-			array
-			(
-				'{kohana_version}',
-				'{kohana_codename}',
-				'{execution_time}',
-				'{memory_usage}',
-				'{included_files}',
-			),
-			array
-			(
-				KOHANA_VERSION,
-				KOHANA_CODENAME,
-				$benchmark['time'],
-				number_format($memory, 2).'MB',
-				count(get_included_files()),
-			),
-			$output
-		);
+		if (Config::item('core.render_stats') === TRUE)
+		{
+			// Replace the global template variables
+			$output = str_replace(
+				array
+				(
+					'{kohana_version}',
+					'{kohana_codename}',
+					'{execution_time}',
+					'{memory_usage}',
+					'{included_files}',
+				),
+				array
+				(
+					KOHANA_VERSION,
+					KOHANA_CODENAME,
+					$benchmark['time'],
+					number_format($memory, 2).'MB',
+					count(get_included_files()),
+				),
+				$output
+			);
+		}
 
-		if (ini_get('output_handler') != 'ob_gzhandler' AND ini_get('zlib.output_compression') == 0 AND $level = Config::item('core.output_compression'))
+		if ($level = Config::item('core.output_compression') AND ini_get('output_handler') !== 'ob_gzhandler' AND (int) ini_get('zlib.output_compression') === 0)
 		{
 			if ($level < 1 OR $level > 9)
 			{
