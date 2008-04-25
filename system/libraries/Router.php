@@ -39,14 +39,20 @@ class Router_Core {
 		if ( ! isset(self::$routes['_default']))
 			throw new Kohana_Exception('core.no_default_route');
 
+		// Default route status
 		$default_route = FALSE;
-		
-		// Use the default route when no segments exist
+
 		if (self::$current_uri === '')
 		{
-			self::$current_uri = trim(self::$routes['_default'], '/');
+			// Use the default route when no segments exist
+			self::$current_uri = self::$routes['_default'];
+
+			// Default route is in use
 			$default_route = TRUE;
 		}
+
+		// Make sure the URL is not tainted with HTML characters
+		self::$current_uri = html::specialchars(self::$current_uri, FALSE);
 
 		if ( ! empty($_SERVER['QUERY_STRING']))
 		{
@@ -54,41 +60,26 @@ class Router_Core {
 			self::$query_string = '?'.trim($_SERVER['QUERY_STRING'], '&');
 		}
 
-		// At this point, set the segments, rsegments, and current URI
-		// In many cases, all of these variables will match
+		// At this point segments, rsegments, and current URI are all the same
 		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, '/');
 
-		// Custom routing
+		// Explode the segments by slashes
+		self::$segments = (self::$segments === '') ? array() : explode('/', self::$segments);
+
 		if ($default_route === FALSE AND count(self::$routes) > 1)
 		{
+			// Custom routing
 			self::$rsegments = self::routed_uri(self::$current_uri);
 		}
 
-		// Validate segments to prevent malicious characters
-		self::$segments  = self::filter_uri(self::$segments);
-
-		// Yah, routed segments too, even though it should never happen
-		self::$rsegments = self::filter_uri(self::$rsegments);
-
-		// Explode the segments by slashes
-		if ($default_route === TRUE OR self::$segments === '')
-		{
-			self::$segments = array();
-		}
-		else
-		{
-			self::$segments = explode('/', self::$segments);
-		}
-
-		// Routed segments will never be blank
+		// Routed segments will never be empty
 		self::$rsegments = explode('/', self::$rsegments);
 
 		// Prepare for Controller search
 		self::$directory  = '';
 		self::$controller = '';
 
-		// We check this path statically, because it's overwhelmingly the most
-		// common path for controllers to be located at
+		// Optimize the check for the most common controller location
 		if (is_file(APPPATH.'controllers/'.self::$rsegments[0].EXT))
 		{
 			self::$directory  = APPPATH.'controllers/';
@@ -121,7 +112,7 @@ class Router_Core {
 						self::$method     = isset(self::$rsegments[$key + 1]) ? self::$rsegments[$key + 1] : 'index';
 						self::$arguments  = isset(self::$rsegments[$key + 2]) ? array_slice(self::$rsegments, $key + 2) : array();
 
-						// Stop searching, two levels for foreach
+						// Stop searching, two levels
 						break 2;
 					}
 				}
@@ -132,8 +123,11 @@ class Router_Core {
 			}
 		}
 
-		// If the controller is empty, run the system.404 event
-		empty(self::$controller) and Event::run('system.404');
+		if (empty(self::$controller))
+		{
+			// No controller was found, so no page can be rendered
+			Event::run('system.404');
+		}
 	}
 
 	/**
@@ -217,28 +211,6 @@ class Router_Core {
 			// Reduce multiple slashes into single slashes
 			self::$current_uri = preg_replace('!//+!', '/', self::$current_uri);
 		}
-	}
-
-	/**
-	 * Filter a string for allowed URI characters.
-	 *
-	 * @param   string  string to filter
-	 * @return  string
-	 */
-	public static function filter_uri($str)
-	{
-		$str = trim($str);
-
-		if ($str !== '' AND ($allowed = Config::item('routes._allowed')) != '')
-		{
-			if ( ! preg_match('|^['.preg_quote($allowed).']++$|iuD', $str))
-			{
-				header('HTTP/1.1 400 Bad Request');
-				exit('The URI you submitted has disallowed characters.');
-			}
-		}
-
-		return $str;
 	}
 
 	/**
