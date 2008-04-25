@@ -124,6 +124,9 @@ class Router_Core {
 			}
 		}
 
+		//Last chance to set routing before a 404 is triggered
+		Event::run('system.post_routing');
+		
 		if (empty(self::$controller))
 		{
 			// No controller was found, so no page can be rendered
