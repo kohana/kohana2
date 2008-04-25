@@ -8,6 +8,7 @@ $lang = array
 	'cannot_write_log'      => 'Il parametro di configurazione log.directory non punta ad una cartella con permesso di scrittura.',
 	'resource_not_found'    => 'Il %s richiesto, <tt>%s</tt>, non è stato trovato.',
 	'invalid_filetype'      => 'Il tipo di file richiesto, <tt>.%s</tt>, non è presente nel file di configurazione.',
+	'view_set_filename'     => 'Bisogna definire il nome di una vista prima di chiamare il metodo render',
 	'no_default_route'      => 'Non è stato definito il default route in <tt>config/routes.php</tt>.',
 	'no_controller'         => 'Kohana non è in grado di determinare a quale controller inoltrare la richiesta: %s',
 	'page_not_found'        => 'La pagina richiesta, <tt>%s</tt>, non è stata trovata.',
