@@ -58,7 +58,7 @@ $config['display_errors'] = TRUE;
  *
  * @see http://doc.kohanaphp.com/general/configuration/config
  */
-$config['render_stats'] = FALSE;
+$config['render_stats'] = TRUE;
 
 /**
  * Filename prefixed used to determine extensions. For example, an
