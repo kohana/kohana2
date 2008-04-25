@@ -259,7 +259,7 @@ class ORM_Core {
 		if (method_exists(self::$db, $method))
 		{
 			// Do not allow query methods
-			if (preg_match('/query|get|list_fields|field_data/', $method))
+			if (preg_match('/query|get|insert|update|list_fields|field_data/', $method))
 				return $this;
 
 			if ($method === 'select')
