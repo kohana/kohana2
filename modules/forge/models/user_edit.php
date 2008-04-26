@@ -31,7 +31,7 @@ class User_Edit_Model extends User_Model {
 		}
 
 		// // Find all roles
-		// $roles = new Role_Model();
+		// $roles = new Role_Model;
 		// $roles = $roles->find(ALL);
 		// 
 		// $options = array();

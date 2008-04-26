@@ -257,6 +257,7 @@ class Examples_Controller extends Controller {
 		$pagination = new Pagination(array(
 			// 'base_url'    => 'welcome/pagination_example/page/', // base_url will default to current uri
 			'uri_segment'    => 'page', // pass a string as uri_segment to trigger former 'label' functionality
+			// 'query_string'   => 'pee',
 			'total_items'    => 254, // use db count query here of course
 			'items_per_page' => 10, // it may be handy to set defaults for stuff like this in config/pagination.php
 			'style'          => 'classic' // pick one from: classic (default), digg, extended, punbb, or add your own!
@@ -266,7 +267,7 @@ class Examples_Controller extends Controller {
 		echo 'Classic style: '.$pagination;
 
 		// You can also use the render() method and pick a style on the fly if you want
-		echo '<hr />Digg style:     '.$pagination->render('digg');
+		echo '<hr />Digg style:     '.$pagination->render();
 		echo '<hr />Extended style: '.$pagination->render('extended');
 		echo '<hr />PunBB style:    '.$pagination->render('punbb');
 		echo 'done in {execution_time} seconds';
@@ -291,7 +292,7 @@ class Examples_Controller extends Controller {
 	 */
 	/*function payment()
 	{
-		$credit_card = new Payment();
+		$credit_card = new Payment;
 
 		// You can also pass the driver name to the library to use multiple ones:
 		$credit_card = new Payment('Paypal');

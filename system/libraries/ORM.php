@@ -862,10 +862,10 @@ class ORM_Core {
 	public function clear()
 	{
 		// Create an empty object
-		$this->object = new StdClass();
+		$this->object = new StdClass;
 
 		// Empty the object
-		foreach(self::$fields[$this->table] as $field => $data)
+		foreach (self::$fields[$this->table] as $field => $data)
 		{
 			$this->object->$field = '';
 		}
