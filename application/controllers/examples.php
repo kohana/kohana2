@@ -255,21 +255,39 @@ class Examples_Controller extends Controller {
 	function pagination()
 	{
 		$pagination = new Pagination(array(
-			// 'base_url'    => 'welcome/pagination_example/page/', // base_url will default to current uri
-			'uri_segment'    => 'page', // pass a string as uri_segment to trigger former 'label' functionality
-			// 'query_string'   => 'pee',
-			'total_items'    => 254, // use db count query here of course
-			'items_per_page' => 10, // it may be handy to set defaults for stuff like this in config/pagination.php
-			'style'          => 'classic' // pick one from: classic (default), digg, extended, punbb, or add your own!
+			// Base_url will default to the current URI
+			// 'base_url'    => 'welcome/pagination_example/page/x',
+
+			// The URI segment (integer) in which the pagination number can be found
+			// The URI segment (string) that precedes the pagination number (aka "label")
+			'uri_segment'    => 'page',
+
+			// You could also use the query string for pagination instead of the URI segments
+			// Just set this to the $_GET key that contains the page number
+			// 'query_string'   => 'page',
+
+			// The total items to paginate through (probably need to use a database COUNT query here)
+			'total_items'    => 254,
+
+			// The amount of items you want to display per page
+			'items_per_page' => 10,
+
+			// The pagination style: classic (default), digg, extended or punbb
+			// Easily add your own styles to views/pagination and point to the view name here
+			'style'          => 'classic',
+
+			// If there is only one page, completely hide all pagination elements
+			// Pagination->render() will return an empty string
+			'auto_hide'      => TRUE,
 		));
 
-		// Just echoing it is enough to display the links (__toString() rocks!)
+		// Just echo to display the links (__toString() rocks!)
 		echo 'Classic style: '.$pagination;
 
 		// You can also use the render() method and pick a style on the fly if you want
-		echo '<hr />Digg style:     '.$pagination->render();
-		echo '<hr />Extended style: '.$pagination->render('extended');
-		echo '<hr />PunBB style:    '.$pagination->render('punbb');
+		echo '<hr /> Digg style:     ', $pagination->render('digg');
+		echo '<hr /> Extended style: ', $pagination->render('extended');
+		echo '<hr /> PunBB style:    ', $pagination->render('punbb');
 		echo 'done in {execution_time} seconds';
 	}
 
