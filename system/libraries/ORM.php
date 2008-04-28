@@ -186,6 +186,9 @@ class ORM_Core {
 	{
 		if ($key != 'id' AND isset(self::$fields[$this->table][$key]))
 		{
+			// Force the value to the correct type
+			$value = $this->set_value_type($key, $value);
+
 			if ($this->object->$key !== $value)
 			{
 				// Set new value
@@ -681,18 +684,10 @@ class ORM_Core {
 	 * @param   string  value column
 	 * @return  array
 	 */
-	public function select_list($key_col, $val_col)
+	public function select_list($key, $val)
 	{
-		// Select the key an val from all objects
-		$array = $this->select($key_col, $val_col)->find_all()->as_array();
-
-		$options = array();
-		foreach ($array as $row)
-		{
-			// Create a key/value pair array
-			$options[$row->$key_col] = $row->$val_col;
-		}
-		return $options;
+		// Return a select list from the results
+		return $this->select($key, $val)->find_all()->select_list($key, $val);
 	}
 
 	/**
@@ -790,11 +785,9 @@ class ORM_Core {
 
 			// Reset SELECT, WHERE, and FROM
 			$this->select = $this->where = $this->from = FALSE;
-
-			return TRUE;
 		}
 
-		return FALSE;
+		return TRUE;
 	}
 
 	/**
@@ -980,26 +973,47 @@ class ORM_Core {
 		{
 			if (isset($this->object->$field))
 			{
-				if ( ! empty($data['binary']) AND ! empty($data['exact']) AND $data['length'] == 1)
-				{
-					// Use boolean for binary(1) fields
-					$data['type'] = 'boolean';
-				}
-
-				switch ($data['type'])
-				{
-					case 'int':
-						$this->object->$field = (int) $this->object->$field;
-					break;
-					case 'float':
-						$this->object->$field = (float) $this->object->$field;
-					break;
-					case 'boolean':
-						$this->object->$field = (bool) $this->object->$field;
-					break;
-				}
+				// Set the value type
+				$this->object->$field = $this->set_value_type($field, $this->object->$field);
 			}
 		}
+	}
+
+	/**
+	 * Converts a value for a specific field to the correct type.
+	 *
+	 * @param   string  field name
+	 * @param   mixed   value
+	 * @return  mixed
+	 */
+	protected function set_value_type($field, $value)
+	{
+		if ( ! isset(self::$fields[$this->table][$field]))
+			return $value;
+
+		// Get field data
+		$data = self::$fields[$this->table][$field];
+
+		if ( ! empty($data['binary']) AND ! empty($data['exact']) AND $data['length'] == 1)
+		{
+			// Use boolean for binary(1) fields
+			$data['type'] = 'boolean';
+		}
+
+		switch ($data['type'])
+		{
+			case 'int':
+				$value = (int) $value;
+			break;
+			case 'float':
+				$value = (float) $value;
+			break;
+			case 'boolean':
+				$value = (bool) $value;
+			break;
+		}
+
+		return $value;
 	}
 
 	/**
