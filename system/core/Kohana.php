@@ -992,6 +992,7 @@ class Kohana {
 					$return = ! empty($info[substr($key, 3)]);
 				break;
 				case 'languages':
+					$return = array();
 					if ( ! empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
 					{
 						if (preg_match_all('/[-a-z]{2,}/', strtolower(trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])), $matches))
@@ -1002,6 +1003,7 @@ class Kohana {
 					}
 				break;
 				case 'charsets':
+					$return = array();
 					if ( ! empty($_SERVER['HTTP_ACCEPT_CHARSET']))
 					{
 						if (preg_match_all('/[-a-z0-9]{2,}/', strtolower(trim($_SERVER['HTTP_ACCEPT_CHARSET'])), $matches))
