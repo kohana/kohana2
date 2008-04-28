@@ -626,23 +626,15 @@ class Validation_Core extends ArrayObject {
 	}
 
 	/**
-	 * Rule: regex. Generates an error if the field does not match a specific regular
-	 * expression.
+	 * Rule: chars. Generates an error if the field contains characters outside of the list.
 	 *
 	 * @param   string  field value
-	 * @param   array   regular expression
+	 * @param   array   allowed characters
 	 * @return  bool
 	 */
-	public function regex($value, array $patterns)
+	public function chars($value, array $chars)
 	{
-		$patterns = preg_quote(implode(',', $patterns), '!');
-
-		if (preg_match('![^'.$patterns.']+!', $value))
-		{
-			return FALSE;
-		}
-
-		return TRUE;
+		return ! (bool) preg_match('![^'.preg_quote(implode(',', $chars)).']!', $value);
 	}
 
 } // End Validation
