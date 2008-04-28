@@ -290,6 +290,12 @@ class Database_Mysql_Driver extends Database_Driver {
 					// For sequenced (AUTO_INCREMENT) tables
 					$tables[$table][$row->Field]['sequenced'] = TRUE;
 				}
+
+				if ($row->Null === 'YES')
+				{
+					// Set NULL status
+					$tables[$table][$row->Field]['null'] = TRUE;
+				}
 			}
 		}
 
