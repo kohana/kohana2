@@ -634,7 +634,7 @@ class Validation_Core extends ArrayObject {
 	 */
 	public function chars($value, array $chars)
 	{
-		return ! (bool) preg_match('![^'.preg_quote(implode(',', $chars)).']!', $value);
+		return ! preg_match('![^'.preg_quote(implode(',', $chars)).']!', $value);
 	}
 
 } // End Validation

@@ -114,6 +114,31 @@ class html_Core {
 	}
 
 	/**
+	 * Generates an obfuscated version of an email address.
+	 *
+	 * @param   string  email address
+	 * @return  string
+	 */
+	public static function email($email)
+	{
+		$safe = '';
+		foreach (str_split($email) as $letter)
+		{
+			switch (($letter === '@') ? rand(1, 2) : rand(1, 3))
+			{
+				// HTML entity code
+				case 1: $safe .= '&#'.ord($letter).';'; break;
+				// Hex character code
+				case 2: $safe .= '&#x'.dechex(ord($letter)).';'; break;
+				// Raw (no) encoding
+				case 3: $safe .= $letter;
+			}
+		}
+
+		return $safe;
+	}
+
+	/**
 	 * Creates a email anchor.
 	 *
 	 * @param   string  email address to send to
@@ -138,19 +163,8 @@ class html_Core {
 			$params = '';
 		}
 
-		$safe = '';
-		foreach(str_split($email) as $i => $letter)
-		{
-			switch (($letter == '@') ? rand(1, 2) : rand(1, 3))
-			{
-				// HTML entity code
-				case 1: $safe .= '&#'.ord($letter).';'; break;
-				// Hex character code
-				case 2: $safe .= '&#x'.dechex(ord($letter)).';'; break;
-				// Raw (no) encoding
-				case 3: $safe .= $letter;
-			}
-		}
+		// Obfuscate email address
+		$safe = html::email($email);
 
 		// Title defaults to the encoded email address
 		empty($title) and $title = $safe;
