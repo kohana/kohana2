@@ -107,11 +107,11 @@ class Router_Core {
 					// The controller has been found, all arguments can be set
 					if (is_file($path.$search.'/'.$segment.EXT))
 					{
-						self::$directory  = $path.$search.'/';
+						self::$directory       = $path.$search.'/';
 						self::$controller_path = $controller_path;
-						self::$controller = $segment;
-						self::$method     = isset(self::$rsegments[$key + 1]) ? self::$rsegments[$key + 1] : 'index';
-						self::$arguments  = isset(self::$rsegments[$key + 2]) ? array_slice(self::$rsegments, $key + 2) : array();
+						self::$controller      = $segment;
+						self::$method          = isset(self::$rsegments[$key + 1]) ? self::$rsegments[$key + 1] : 'index';
+						self::$arguments       = isset(self::$rsegments[$key + 2]) ? array_slice(self::$rsegments, $key + 2) : array();
 
 						// Stop searching, two levels
 						break 2;

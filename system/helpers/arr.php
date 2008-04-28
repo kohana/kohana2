@@ -12,6 +12,37 @@
 class arr_Core {
 
 	/**
+	 * Return a callback array from a string, eg: limit[10,20] would become
+	 * array('limit', array('10', '20'))
+	 *
+	 * @param   string  callback string
+	 * @return  array
+	 */
+	public function callback_string($str)
+	{
+		// command[param,param]
+		if (preg_match('/([^\[]*+)\[(.+)\]/', (string) $str, $match))
+		{
+			// command
+			$command = $match[1];
+
+			// param,param
+			$params = preg_split('/(?<!\\\\),/', $match[2]);
+			$params = str_replace('\,', ',', $params);
+		}
+		else
+		{
+			// command
+			$command = $str;
+
+			// No params
+			$params = NULL;
+		}
+
+		return array($command, $params);
+	}
+
+	/**
 	 * Rotates a 2D array clockwise.
 	 * Example, turns a 2x3 array into a 3x2 array.
 	 *
@@ -51,6 +82,37 @@ class arr_Core {
 		unset($array[$key]);
 
 		return $val;
+	}
+
+	
+	/**
+	 * Extract one or more keys from an array. Each key given after the first
+	 * argument (the array) will be extracted. Keys that do not exist in the
+	 * search array will be NULL in the extracted data.
+	 *
+	 * @param   array   array to search
+	 * @param   string  key name
+	 * @return  array
+	 */
+	public function extract(array $search, $keys)
+	{
+		// Get the keys, removing the $search array
+		$keys = array_slice(func_get_args(), 1);
+
+		$found = array();
+		foreach ($keys as $key)
+		{
+			if (isset($search[$key]))
+			{
+				$found[$key] = $search[$key];
+			}
+			else
+			{
+				$found[$key] = NULL;
+			}
+		}
+
+		return $found;
 	}
 
 	/**

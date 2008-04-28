@@ -252,7 +252,7 @@ class Calendar_Event_Core extends Event_Observer {
 
 		// Reduce the timestamp by one week for each loop. This has the added
 		// benefit of preventing an infinite loop.
-		while($timestamp -= 604800)
+		while ($timestamp -= 604800)
 		{
 			if (date('m', $timestamp) !== $month)
 			{

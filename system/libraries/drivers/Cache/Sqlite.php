@@ -136,7 +136,7 @@ class Cache_Sqlite_Driver implements Cache_Driver {
 		if (empty($error) AND $query->numRows() > 0)
 		{
 			$array = array();
-			while($row = $query->fetchObject())
+			while ($row = $query->fetchObject())
 			{
 				// Add each id to the array
 				$array[] = $row->id;
