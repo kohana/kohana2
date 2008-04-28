@@ -1103,7 +1103,9 @@ class ORM_Iterator implements Iterator, ArrayAccess, Countable {
 	}
 
 	/**
-	 * Returns an array of all the
+	 * Returns an array of the results as ORM objects.
+	 *
+	 * @return  array
 	 */
 	public function as_array()
 	{
@@ -1114,6 +1116,23 @@ class ORM_Iterator implements Iterator, ArrayAccess, Countable {
 		foreach ($this->result->result_array(TRUE) as $obj)
 		{
 			$array[] = new $class($obj);
+		}
+		return $array;
+	}
+
+	/**
+	 * Create a key/value array from the results.
+	 *
+	 * @param   string  key column
+	 * @param   string  value column
+	 * @return  array
+	 */
+	public function select_list($key, $val)
+	{
+		$array = array();
+		foreach ($this->result->result_array(TRUE) as $row)
+		{
+			$array[$row->$key] = $row->$val;
 		}
 		return $array;
 	}
