@@ -625,4 +625,24 @@ class Validation_Core extends ArrayObject {
 		return TRUE;
 	}
 
+	/**
+	 * Rule: regex. Generates an error if the field does not match a specific regular
+	 * expression.
+	 *
+	 * @param   string  field value
+	 * @param   array   regular expression
+	 * @return  bool
+	 */
+	public function regex($value, array $patterns)
+	{
+		$patterns = preg_quote(implode(',', $patterns), '!');
+
+		if (preg_match('![^'.$patterns.']+!', $value))
+		{
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+
 } // End Validation
