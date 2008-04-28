@@ -160,7 +160,7 @@ class ORM_Core {
 		}
 		else
 		{
-			switch($key)
+			switch ($key)
 			{
 				case 'table_name':
 					return $this->table;
@@ -203,7 +203,7 @@ class ORM_Core {
 		}
 		else
 		{
-			switch($key)
+			switch ($key)
 			{
 				case 'auto_save':
 					$this->auto_save = (bool) $value;
@@ -279,7 +279,7 @@ class ORM_Core {
 			}
 
 			// Pass through to Database, manually calling up to 2 args, for speed.
-			switch(count($args))
+			switch (count($args))
 			{
 				case 1:
 					self::$db->$method(current($args));
@@ -496,7 +496,7 @@ class ORM_Core {
 			);
 		}
 
-		switch($action)
+		switch ($action)
 		{
 			case 'add':
 				if (isset($relationship))
