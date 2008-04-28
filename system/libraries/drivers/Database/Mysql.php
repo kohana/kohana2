@@ -290,6 +290,12 @@ class Database_Mysql_Driver extends Database_Driver {
 					// For sequenced (AUTO_INCREMENT) tables
 					$tables[$table][$row->Field]['sequenced'] = TRUE;
 				}
+
+				if ($row->Null === 'YES')
+				{
+					// Set NULL status
+					$tables[$table][$row->Field]['null'] = TRUE;
+				}
 			}
 		}
 
@@ -412,9 +418,9 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		// know the state of fetch_type when $object = NULL
 		// NOTE - The class set by $type must be defined before fetching the result,
 		// autoloading is disabled to save a lot of stupid overhead.
-		if ($this->fetch_type == 'mysql_fetch_object')
+		if ($this->fetch_type == 'mysql_fetch_object' AND $object === TRUE)
 		{
-			$this->return_type = class_exists($type, FALSE) ? $type : 'stdClass';
+			$this->return_type = (is_string($type) AND Kohana::auto_load($type)) ? $type : 'stdClass';
 		}
 		else
 		{
@@ -443,9 +449,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 			{
 				$fetch = 'mysql_fetch_object';
 
-				// NOTE - The class set by $type must be defined before fetching the result,
-				// autoloading is disabled to save a lot of stupid overhead.
-				$type = class_exists($type, FALSE) ? $type : 'stdClass';
+				$type = (is_string($type) AND Kohana::auto_load($type)) ? $type : 'stdClass';
 			}
 			else
 			{
@@ -459,7 +463,7 @@ class Mysql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 			if ($fetch == 'mysql_fetch_object')
 			{
-				$type = class_exists($type, FALSE) ? $type : 'stdClass';
+				$type = (is_string($this->return_type) AND Kohana::auto_load($this->return_type)) ? $this->return_type : 'stdClass';
 			}
 		}
 
