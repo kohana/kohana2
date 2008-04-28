@@ -163,7 +163,7 @@ class Calendar_Core extends Event_Subject {
 			$n = (int) date('t', mktime(1, 0, 0, $this->month - 1, 1, $this->year));
 
 			// i = number of day, t = number of days to pad
-			for($i = $n - $w + $this->week_start + 1, $t = $w - $this->week_start; $t > 0; $t--, $i++)
+			for ($i = $n - $w + $this->week_start + 1, $t = $w - $this->week_start; $t > 0; $t--, $i++)
 			{
 				// Notify the listeners
 				$this->notify(array($this->month - 1, $i, $this->year, $week_number, FALSE));

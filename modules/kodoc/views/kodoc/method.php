@@ -30,7 +30,7 @@ if ( ! empty($parameters)):
 <dl>
 <?php
 
-	foreach($parameters as $i => $param):
+	foreach ($parameters as $i => $param):
 
 	if ( ! empty($comment['param'][$i])):
 
@@ -79,12 +79,12 @@ if ( ! empty($parameters)):
 
 endif;
 if ( ! empty($comment)):
-	foreach($comment as $tag => $vals):
+	foreach ($comment as $tag => $vals):
 
-		switch($tag):
+		switch ($tag):
 			case 'throws':
 			case 'return':
-				foreach($vals as $i => $val):
+				foreach ($vals as $i => $val):
 					if (strpos($val, ' ') !== FALSE):
 
 						// Extract the type from the val

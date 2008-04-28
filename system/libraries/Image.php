@@ -324,7 +324,7 @@ class Image_Core {
 		if ( ! is_scalar($value))
 			return FALSE;
 
-		switch($type)
+		switch ($type)
 		{
 			case 'width':
 			case 'height':

@@ -101,7 +101,7 @@ class User_Guide_Controller extends Controller {
 		$type = $tag[2];
 		$tag  = $tag[1];
 
-		switch($tag)
+		switch ($tag)
 		{
 			case 'benchmark':
 				return isset($this->lang['benchmark'][$type]) ? '<abbr title="Benchmark: '.$this->lang['benchmark'][$type].'">'.$type.'</abbr>' : $type;

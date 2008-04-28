@@ -32,7 +32,7 @@ class Form_Checklist_Core extends Form_Input {
 		{
 			// Return the currently checked values
 			$array = array();
-			foreach($this->data['options'] as $id => $opt)
+			foreach ($this->data['options'] as $id => $opt)
 			{
 				// Return the options that are checked
 				($opt[1] === TRUE) and $array[] = $id;
@@ -55,7 +55,7 @@ class Form_Checklist_Core extends Form_Input {
 		$nl = "\n";
 
 		$checklist = '<ul class="'.arr::remove('class', $base_data).'">'.$nl;
-		foreach(arr::remove('options', $base_data) as $val => $opt)
+		foreach (arr::remove('options', $base_data) as $val => $opt)
 		{
 			// New set of input data
 			$data = $base_data;
@@ -76,7 +76,7 @@ class Form_Checklist_Core extends Form_Input {
 
 	protected function load_value()
 	{
-		foreach($this->data['options'] as $val => $checked)
+		foreach ($this->data['options'] as $val => $checked)
 		{
 			if ($input = $this->input_value($this->data['name']))
 			{

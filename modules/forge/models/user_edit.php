@@ -35,7 +35,7 @@ class User_Edit_Model extends User_Model {
 		// $roles = $roles->find(ALL);
 		// 
 		// $options = array();
-		// foreach($roles as $role)
+		// foreach ($roles as $role)
 		// {
 		// 	// Add each role to the options
 		// 	$options[$role->name] = isset($this->roles[$role->id]);
@@ -78,7 +78,7 @@ class User_Edit_Model extends User_Model {
 			// Remove the roles from data
 			isset($data['roles']) and $roles = arr::remove('roles', $data);
 
-			foreach($data as $field => $val)
+			foreach ($data as $field => $val)
 			{
 				// Set object data from the form
 				$this->$field = $val;
@@ -88,7 +88,7 @@ class User_Edit_Model extends User_Model {
 			{
 				// if ($new_user)
 				// {
-				// 	foreach($roles as $role)
+				// 	foreach ($roles as $role)
 				// 	{
 				// 		// Add the user roles
 				// 		$this->add_role($role);
@@ -96,13 +96,13 @@ class User_Edit_Model extends User_Model {
 				// }
 				// else
 				// {
-				// 	foreach(array_diff($this->roles, $roles) as $role)
+				// 	foreach (array_diff($this->roles, $roles) as $role)
 				// 	{
 				// 		// Remove roles that were deactivated
 				// 		$this->remove_role($role);
 				// 	}
 				// 
-				// 	foreach(array_diff($roles, $this->roles) as $role)
+				// 	foreach (array_diff($roles, $this->roles) as $role)
 				// 	{
 				// 		// Add new roles
 				// 		$this->add_role($role);

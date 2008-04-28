@@ -34,7 +34,7 @@ class Examples_Controller extends Controller {
 		echo "<strong>Examples:</strong>\n";
 		echo "<ul>\n";
 
-		foreach($examples as $method)
+		foreach ($examples as $method)
 		{
 			if ($method == __FUNCTION__)
 				continue;
@@ -201,7 +201,7 @@ class Examples_Controller extends Controller {
 			$query = $db->select('DISTINCT pages.*')->from($table)->get();
 			echo $db->last_query();
 			echo '<h3>Iterate through the result:</h3>';
-			foreach($query as $item)
+			foreach ($query as $item)
 			{
 				echo '<p>'.$item->title.'</p>';
 			}
@@ -213,7 +213,7 @@ class Examples_Controller extends Controller {
 			$query = $db->query($sql, array(1));
 			echo '<p>'.$db->last_query().'</p>';
 			$query->result(TRUE);
-			foreach($query as $item)
+			foreach ($query as $item)
 			{
 				echo '<pre>'.print_r($item, true).'</pre>';
 			}
@@ -223,7 +223,7 @@ class Examples_Controller extends Controller {
 			$query = $db->query($sql, array(1));
 			echo '<p>'.$db->last_query().'</p>';
 			$query->result(FALSE, MYSQL_BOTH);
-			foreach($query as $item)
+			foreach ($query as $item)
 			{
 				echo '<pre>'.print_r($item, true).'</pre>';
 			}
@@ -296,7 +296,7 @@ class Examples_Controller extends Controller {
 	 */
 	function user_agent()
 	{
-		foreach(array('agent', 'browser', 'version') as $key)
+		foreach (array('agent', 'browser', 'version') as $key)
 		{
 			echo $key.': '.Kohana::user_agent($key).'<br/>'."\n";
 		}

@@ -125,7 +125,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 
 	public function resize($prop)
 	{
-		switch($prop['master'])
+		switch ($prop['master'])
 		{
 			case Image::WIDTH:  // Wx
 				$dim = escapeshellarg($prop['width'].'x');

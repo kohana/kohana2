@@ -218,7 +218,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 
 		$this->test_mode = $config['test_mode'];
 
-		if($this->test_mode)
+		if ($this->test_mode)
 		{
 			$this->api_authroization_fields['USER']      = $config['SANDBOX_USER'];
 			$this->api_authroization_fields['PWD']       = $config['SANDBOX_PWD'];
@@ -241,10 +241,10 @@ class Payment_Paypal_Driver implements Payment_Driver {
 	public function set_fields($config)
 	{
 
-		foreach($config as $key => $val)
+		foreach ($config as $key => $val)
 		{
 			// Handle any necessary field name translation
-			switch($key)
+			switch ($key)
 			{
 				case 'amount':
 				$key = 'AMT';
@@ -252,14 +252,14 @@ class Payment_Paypal_Driver implements Payment_Driver {
 				default:
 			}
 
-			if(array_key_exists($key, $this->required_fields) AND !empty($val))
+			if (array_key_exists($key, $this->required_fields) AND !empty($val))
 			{
 				$this->required_fields[$key] = TRUE;
 			}
 
-			foreach($this->array_of_arrays as &$arr)
+			foreach ($this->array_of_arrays as &$arr)
 			{
-				if(array_key_exists($key, $arr))
+				if (array_key_exists($key, $arr))
 				{
 					$arr[$key] = $val;
 				}
@@ -310,13 +310,13 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		//             $this->payment = new Payment('Paypal');
 		//             $this->payment->PAYERID = $this->input->get('PayerID');
 		// --------------------------------------------------------------------------------
-		if($this->api_connection_fields['GETDETAILS'])
+		if ($this->api_connection_fields['GETDETAILS'])
 		{
 			$this->get_express_checkout();
 		}
 
 		// stage 3
-		if(empty($this->do_express_checkout_fields['PAYERID']))
+		if (empty($this->do_express_checkout_fields['PAYERID']))
 		{
 			throw new Kohana_Exception('payment.required', 'PAYERID');
 		}
@@ -346,7 +346,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 			$this->session->set('paypal_token', urldecode($paypal_token));
 
 			// We are off to paypal to login!
-			if($this->set_express_checkout_fields['USERACTION']=='commit')
+			if ($this->set_express_checkout_fields['USERACTION']=='commit')
 			{
 				url::redirect($this->api_connection_fields['PAYPALURL'].$paypal_token.'&useraction=commit');
 			}
@@ -463,10 +463,10 @@ class Payment_Paypal_Driver implements Payment_Driver {
 	*/
 	protected function remove_empty_optional_fields($arr)
 	{
-		foreach($arr as $key => $val)
+		foreach ($arr as $key => $val)
 		{
 			// don't include unset optional fields in the name-value pair request string
-			if($val==='') unset($arr[$key]);
+			if ($val==='') unset($arr[$key]);
 		}
 		return $arr;
 	}

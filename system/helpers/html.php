@@ -139,7 +139,7 @@ class html_Core {
 	}
 
 	/**
-	 * Creates a email anchor.
+	 * Creates an email anchor.
 	 *
 	 * @param   string  email address to send to
 	 * @param   string  link text
@@ -260,7 +260,7 @@ class html_Core {
 
 		if (is_array($href))
 		{
-			foreach($href as $_href)
+			foreach ($href as $_href)
 			{
 				$_rel   = is_array($rel) ? array_shift($rel) : $rel;
 				$_type  = is_array($type) ? array_shift($type) : $type;
@@ -293,7 +293,7 @@ class html_Core {
 
 		if (is_array($script))
 		{
-			foreach($script as $name)
+			foreach ($script as $name)
 			{
 				$compiled .= html::script($name, $index);
 			}
@@ -352,7 +352,7 @@ class html_Core {
 			return ' '.$attrs;
 
 		$compiled = '';
-		foreach($attrs as $key => $val)
+		foreach ($attrs as $key => $val)
 		{
 			$compiled .= ' '.$key.'="'.$val.'"';
 		}

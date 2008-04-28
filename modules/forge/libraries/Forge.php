@@ -87,7 +87,7 @@ class Forge_Core {
 		$input = 'Form_'.ucfirst($method);
 
 		// Create the input
-		switch(count($args))
+		switch (count($args))
 		{
 			case 1:
 				$input = new $input($args[0]);
@@ -154,7 +154,7 @@ class Forge_Core {
 	public function validate()
 	{
 		$status = TRUE;
-		foreach($this->inputs as $input)
+		foreach ($this->inputs as $input)
 		{
 			if ($input->validate() == FALSE)
 			{
@@ -173,7 +173,7 @@ class Forge_Core {
 	public function as_array()
 	{
 		$data = array();
-		foreach(array_merge($this->hidden, $this->inputs) as $input)
+		foreach (array_merge($this->hidden, $this->inputs) as $input)
 		{
 			if (is_object($input->name)) // It's a Forge_Group object (hopefully)
 			{
@@ -250,7 +250,7 @@ class Forge_Core {
 				$errors = $input->error_messages();
 				if (is_array($errors) AND ! empty($errors))
 				{
-					foreach($errors as $error)
+					foreach ($errors as $error)
 					{
 						// Replace the message with the error in the html error string
 						$messages .= str_replace('{message}', $error, $this->error_format).$this->newline_char;
@@ -270,7 +270,7 @@ class Forge_Core {
 			$hidden = array();
 			if ( ! empty($this->hidden))
 			{
-				foreach($this->hidden as $input)
+				foreach ($this->hidden as $input)
 				{
 					$hidden[$input->name] = $input->value;
 				}

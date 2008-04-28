@@ -117,7 +117,7 @@ class Payment_Paypalpro_Driver implements Payment_Driver
 	{
 		$this->test_mode = $config['test_mode'];
 
-		if($this->test_mode)
+		if ($this->test_mode)
 		{
 			$this->fields['USER']         = $config['SANDBOX_USER'];
 			$this->fields['PWD']          = $config['SANDBOX_PWD'];
@@ -188,10 +188,10 @@ class Payment_Paypalpro_Driver implements Payment_Driver
 		// Instantiate curl and pass the API post url
 		$ch = curl_init($this->fields['ENDPOINT']);
 
-		foreach($this->fields as $key => $val)
+		foreach ($this->fields as $key => $val)
 		{
 			// don't include unset optional fields in the name-value pair request string
-			if($val==='' OR $key=='ENDPOINT') unset($this->fields[$key]);
+			if ($val==='' OR $key=='ENDPOINT') unset($this->fields[$key]);
 		}
 
 

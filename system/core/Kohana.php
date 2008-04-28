@@ -151,7 +151,7 @@ class Kohana {
 			else
 			{
 				// Individual hooks need to be found
-				foreach($config as $name)
+				foreach ($config as $name)
 				{
 					if ($hook = Kohana::find_file('hooks', $name, FALSE))
 					{
@@ -169,7 +169,7 @@ class Kohana {
 			// To validate the filename extension
 			$ext = -(strlen(EXT));
 
-			foreach($hooks as $hook)
+			foreach ($hooks as $hook)
 			{
 				if (substr($hook, $ext) === EXT)
 				{
@@ -280,7 +280,7 @@ class Kohana {
 			else
 			{
 				// Manually call the controller for up to 4 arguments, to increase performance
-				switch(count($arguments))
+				switch (count($arguments))
 				{
 					case 1:
 						$controller->$method($arguments[0]);
@@ -411,7 +411,7 @@ class Kohana {
 
 		if (isset($compress) AND $level > 0)
 		{
-			switch($compress)
+			switch ($compress)
 			{
 				case 'gzip':
 					// Compress output using gzip
@@ -618,7 +618,7 @@ class Kohana {
 			$type = substr($class, $type + 1);
 		}
 
-		switch($type)
+		switch ($type)
 		{
 			case 'Core':
 				$type = 'libraries';
@@ -700,7 +700,7 @@ class Kohana {
 			$fnd = array();
 
 			// Search from SYSPATH up
-			foreach(array_reverse(Config::include_paths()) as $path)
+			foreach (array_reverse(Config::include_paths()) as $path)
 			{
 				if (is_file($path.$search.EXT)) $fnd[] = $path.$search.EXT;
 			}
@@ -745,7 +745,7 @@ class Kohana {
 
 		if ($path === FALSE)
 		{
-			foreach(Config::include_paths() as $path)
+			foreach (Config::include_paths() as $path)
 			{
 				// Recursively get and merge all files
 				$files = array_merge($files, self::list_files($directory, $recursive, $path.$directory));
@@ -757,7 +757,7 @@ class Kohana {
 
 			if (is_readable($path))
 			{
-				foreach(glob($path.'*') as $index => $item)
+				foreach (glob($path.'*') as $index => $item)
 				{
 					$files[] = $item = str_replace('\\', '/', $item);
 
@@ -802,14 +802,14 @@ class Kohana {
 
 			// Loop through the files and include each one, so SYSPATH files
 			// can be overloaded by more localized files
-			foreach(self::find_file('i18n', $filename) as $file)
+			foreach (self::find_file('i18n', $filename) as $file)
 			{
 				include $file;
 
 				// Merge in configuration
 				if ( ! empty($lang) AND is_array($lang))
 				{
-					foreach($lang as $k => $v)
+					foreach ($lang as $k => $v)
 					{
 						$messages[$k] = $v;
 					}
@@ -861,14 +861,14 @@ class Kohana {
 
 			// Loop through the files and include each one, so SYSPATH files
 			// can be overloaded by more localized files
-			foreach(self::find_file('l10n', Config::item('locale.language').'/'.$filename) as $file)
+			foreach (self::find_file('l10n', Config::item('locale.language').'/'.$filename) as $file)
 			{
 				include $file;
 
 				// Merge in configuration
 				if ( ! empty($locale) AND is_array($locale))
 				{
-					foreach($locale as $k => $v)
+					foreach ($locale as $k => $v)
 					{
 						$locale[$k] = $v;
 					}
@@ -961,9 +961,9 @@ class Kohana {
 		if ($info === NULL)
 		{
 			// Parse the user agent and extract basic information
-			foreach(Config::item('user_agents') as $type => $data)
+			foreach (Config::item('user_agents') as $type => $data)
 			{
-				foreach($data as $agent => $name)
+				foreach ($data as $agent => $name)
 				{
 					if (stripos(Kohana::$user_agent, $agent) !== FALSE)
 					{
@@ -1066,7 +1066,7 @@ class Kohana {
 		$params = func_get_args();
 		$output = array();
 
-		foreach($params as $var)
+		foreach ($params as $var)
 		{
 			$output[] = '<pre>('.gettype($var).') '.html::specialchars(print_r($var, TRUE)).'</pre>';
 		}
@@ -1089,7 +1089,7 @@ class Kohana {
 		// Final output
 		$output = array();
 
-		foreach($trace as $entry)
+		foreach ($trace as $entry)
 		{
 			$temp = '<li>';
 

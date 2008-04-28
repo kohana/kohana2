@@ -65,7 +65,7 @@ class Form_Dateselect_Core extends Form_Input {
 		unset($data['label']);
 
 		$input = '';
-		foreach($this->parts as $type => $val)
+		foreach ($this->parts as $type => $val)
 		{
 			if (is_int($type))
 			{

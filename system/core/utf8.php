@@ -105,7 +105,7 @@ final class utf8 {
 	{
 		if (is_array($str) OR is_object($str))
 		{
-			foreach($str as $key => $val)
+			foreach ($str as $key => $val)
 			{
 				// Recursion!
 				$str[self::clean($key)] = self::clean($val);

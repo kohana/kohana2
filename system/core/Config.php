@@ -108,7 +108,7 @@ final class Config {
 		$conf =& self::$conf;
 		$last = count($keys) - 1;
 
-		foreach($keys as $i => $k)
+		foreach ($keys as $i => $k)
 		{
 			if ($i === $last)
 			{
@@ -143,7 +143,7 @@ final class Config {
 			self::$include_paths = array(APPPATH);
 
 			// Normalize all paths to be absolute and have a trailing slash
-			foreach(self::item('core.modules') as $path)
+			foreach (self::item('core.modules') as $path)
 			{
 				if (($path = str_replace('\\', '/', realpath($path))) == '')
 					continue;
@@ -170,7 +170,7 @@ final class Config {
 		$configuration = array();
 
 		// Find all the configuartion files matching the name
-		foreach(Kohana::find_file('config', $name, $required) as $filename)
+		foreach (Kohana::find_file('config', $name, $required) as $filename)
 		{
 			// Import the config
 			include $filename;

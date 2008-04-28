@@ -51,7 +51,7 @@ class Form_Phonenumber_Core extends Form_Input {
 		$data = $this->data;
 
 		$input = '';
-		foreach($this->parts as $type => $val)
+		foreach ($this->parts as $type => $val)
 		{
 			isset($data['value']) OR $data['value'] = '';
 			$temp = $data;

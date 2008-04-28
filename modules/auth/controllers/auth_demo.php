@@ -45,7 +45,7 @@ class Auth_Demo_Controller extends Controller {
 
 			if ( ! $user->username_exists($this->input->post('username')))
 			{
-				foreach($form->as_array() as $key => $val)
+				foreach ($form->as_array() as $key => $val)
 				{
 					// Set user data
 					$user->$key = $val;

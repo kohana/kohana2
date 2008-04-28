@@ -4,7 +4,7 @@
 <caption><?php echo $title ?></caption>
 <?php endif ?>
 <?php
-foreach($inputs as $input):
+foreach ($inputs as $input):
 
 $sub_inputs = array();
 if ($input->type == 'group'):
@@ -30,7 +30,7 @@ else:
 	$sub_inputs = array($input);	
 endif;
 
-foreach($sub_inputs as $input):
+foreach ($sub_inputs as $input):
 
 ?>
 <tr>

@@ -52,7 +52,7 @@ class User_Model extends ORM {
 
 			if ($this->id > 0)
 			{
-				foreach($this->find_related_roles() as $r)
+				foreach ($this->find_related_roles() as $r)
 				{
 					// Load all the user roles
 					$this->roles[$r->id] = $r->name;

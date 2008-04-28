@@ -191,7 +191,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 		if ( ! $this->db_config['escape'])
 			return $str;
 
-		if(function_exists('sqlite_escape_string'))
+		if (function_exists('sqlite_escape_string'))
 		{
 			$res = sqlite_escape_string($str);
 		}
@@ -209,7 +209,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 		{
 			$result = $this->query($sql)->result(FALSE, PDO::FETCH_ASSOC);
 			$retval = array();
-			foreach($result as $row)
+			foreach ($result as $row)
 			{
 				$retval[] = current($row);
 			}
@@ -236,7 +236,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 			{
 				$tables[$table] = array();
 
-				foreach($query->result() as $row)
+				foreach ($query->result() as $row)
 				{
 					$tables[$table][] = $row->name;
 				}
@@ -248,7 +248,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 		{
 			$result = $this->link->query( 'PRAGMA table_info('.$this->escape_table($table).')' );
 
-			foreach($result as $row)
+			foreach ($result as $row)
 			{
 				$tables[$table][$row['name']] = $this->sql_type($row['type']);
 			}

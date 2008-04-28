@@ -64,7 +64,7 @@ class Payment_Authorize_Driver implements Payment_Driver
 		foreach ((array) $fields as $key => $value)
 		{
 			// Do variable translation
-			switch($key)
+			switch ($key)
 			{
 				case 'exp_date':
 					$key = 'expiration_date';
@@ -92,7 +92,7 @@ class Payment_Authorize_Driver implements Payment_Driver
 		}
 
 		$fields = '';
-		foreach( $this->authnet_values as $key => $value )
+		foreach ( $this->authnet_values as $key => $value )
 		{
 			$fields .= $key.'='.urlencode($value).'&';
 		}
@@ -119,7 +119,7 @@ class Payment_Authorize_Driver implements Payment_Driver
 		// Need testing to opimize probably
 		$h = substr_count($resp, '|');
 
-		for($j=1; $j <= $h; $j++)
+		for ($j=1; $j <= $h; $j++)
 		{
 			$p = strpos($resp, '|');
 
@@ -129,15 +129,15 @@ class Payment_Authorize_Driver implements Payment_Driver
 
 				$pstr_trimmed = substr($pstr, 0, -1); // removes "|" at the end
 
-				if($pstr_trimmed=='')
+				if ($pstr_trimmed=='')
 				{
 					throw new Kohana_Exception('payment.gateway_connection_error');
 				}
 
-				switch($j)
+				switch ($j)
 				{
 					case 1:
-						if($pstr_trimmed=='1') // Approved
+						if ($pstr_trimmed=='1') // Approved
 							return TRUE;
 						else
 							return FALSE;

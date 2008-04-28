@@ -51,7 +51,7 @@ abstract class Database_Driver {
 	 */
 	public function update($table, $values, $where)
 	{
-		foreach($values as $key => $val)
+		foreach ($values as $key => $val)
 		{
 			$valstr[] = $this->escape_column($key).' = '.$val;
 		}
@@ -131,7 +131,7 @@ abstract class Database_Driver {
 				else
 				{
 					preg_match('/^(.+?)([<>!=]+|\bIS(?:\s+NULL))\s*$/i', $key, $matches);
-					if(isset($matches[1]) AND isset($matches[2]))
+					if (isset($matches[1]) AND isset($matches[2]))
 					{
 						$key = $this->escape_column(trim($matches[1])).' '.trim($matches[2]);
 					}
@@ -403,7 +403,7 @@ abstract class Database_Driver {
 		// Fetch the field definition
 		$field = $sql_types[$type];
 
-		switch($field['type'])
+		switch ($field['type'])
 		{
 			case 'string':
 			case 'float':

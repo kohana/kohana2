@@ -51,7 +51,7 @@ class Cache_Xcache_Driver implements Cache_Driver {
 			$this->auth();
 
 			$result = TRUE;
-			for($i = 0, $max = xcache_count(XC_TYPE_VAR); $i < $max; $i++)
+			for ($i = 0, $max = xcache_count(XC_TYPE_VAR); $i < $max; $i++)
 			{
 				if ( ! xcache_clear_cache(XC_TYPE_VAR, $i))
 				{

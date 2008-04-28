@@ -120,7 +120,7 @@ class form_Core {
 		}
 
 		$input = '';
-		foreach($data as $name => $value)
+		foreach ($data as $name => $value)
 		{
 			$attr = array
 			(
@@ -476,7 +476,7 @@ class form_Core {
 		);
 
 		$sorted = array();
-		foreach($order as $key)
+		foreach ($order as $key)
 		{
 			if (isset($attr[$key]))
 			{

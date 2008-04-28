@@ -160,7 +160,7 @@ class ORM_Core {
 		}
 		else
 		{
-			switch($key)
+			switch ($key)
 			{
 				case 'table_name':
 					return $this->table;
@@ -186,9 +186,6 @@ class ORM_Core {
 	{
 		if ($key != 'id' AND isset(self::$fields[$this->table][$key]))
 		{
-			// Force the value to the correct type
-			$value = $this->set_value_type($key, $value);
-
 			if ($this->object->$key !== $value)
 			{
 				// Set new value
@@ -203,7 +200,7 @@ class ORM_Core {
 		}
 		else
 		{
-			switch($key)
+			switch ($key)
 			{
 				case 'auto_save':
 					$this->auto_save = (bool) $value;
@@ -279,7 +276,7 @@ class ORM_Core {
 			}
 
 			// Pass through to Database, manually calling up to 2 args, for speed.
-			switch(count($args))
+			switch (count($args))
 			{
 				case 1:
 					self::$db->$method(current($args));
@@ -330,7 +327,7 @@ class ORM_Core {
 				if (count($args) === 1)
 				{
 					$val = current($args);
-					foreach($keys as $key)
+					foreach ($keys as $key)
 					{
 						// Use OR WHERE, with a single value
 						self::$db->orwhere(array($key => $val));
@@ -464,7 +461,7 @@ class ORM_Core {
 		{
 			if ($action === 'add' AND is_array(current($args)))
 			{
-				foreach(current($args) as $key => $val)
+				foreach (current($args) as $key => $val)
 				{
 					// Fill object with data from array
 					$model->$key = $val;
@@ -496,7 +493,7 @@ class ORM_Core {
 			);
 		}
 
-		switch($action)
+		switch ($action)
 		{
 			case 'add':
 				if (isset($relationship))
@@ -684,10 +681,18 @@ class ORM_Core {
 	 * @param   string  value column
 	 * @return  array
 	 */
-	public function select_list($key, $val)
+	public function select_list($key_col, $val_col)
 	{
-		// Return a select list from the results
-		return $this->select($key, $val)->find_all()->select_list($key, $val);
+		// Select the key an val from all objects
+		$array = $this->select($key_col, $val_col)->find_all()->as_array();
+
+		$options = array();
+		foreach ($array as $row)
+		{
+			// Create a key/value pair array
+			$options[$row->$key_col] = $row->$val_col;
+		}
+		return $options;
 	}
 
 	/**
@@ -755,7 +760,7 @@ class ORM_Core {
 			return TRUE;
 
 		$data = array();
-		foreach($this->changed as $key)
+		foreach ($this->changed as $key)
 		{
 			// Get changed data
 			$data[$key] = $this->object->$key;
@@ -785,9 +790,11 @@ class ORM_Core {
 
 			// Reset SELECT, WHERE, and FROM
 			$this->select = $this->where = $this->from = FALSE;
+
+			return TRUE;
 		}
 
-		return TRUE;
+		return FALSE;
 	}
 
 	/**
@@ -815,7 +822,7 @@ class ORM_Core {
 				// Foreign WHERE for this object
 				$where = array($this->class.'_id' => $this->object->id);
 
-				foreach($this->has_and_belongs_to_many as $table)
+				foreach ($this->has_and_belongs_to_many as $table)
 				{
 					// Delete all many<>many relationships for this object
 					self::$db->delete($this->table_name.'_'.$table, $where);
@@ -973,50 +980,26 @@ class ORM_Core {
 		{
 			if (isset($this->object->$field))
 			{
-				// Set the value type
-				$this->object->$field = $this->set_value_type($field, $this->object->$field);
+				if ( ! empty($data['binary']) AND ! empty($data['exact']) AND $data['length'] == 1)
+				{
+					// Use boolean for binary(1) fields
+					$data['type'] = 'boolean';
+				}
+
+				switch ($data['type'])
+				{
+					case 'int':
+						$this->object->$field = (int) $this->object->$field;
+					break;
+					case 'float':
+						$this->object->$field = (float) $this->object->$field;
+					break;
+					case 'boolean':
+						$this->object->$field = (bool) $this->object->$field;
+					break;
+				}
 			}
 		}
-	}
-
-	/**
-	 * Converts a value for a specific field to the correct type.
-	 *
-	 * @param   string  field name
-	 * @param   mixed   value
-	 * @return  mixed
-	 */
-	protected function set_value_type($field, $value)
-	{
-		if ( ! isset(self::$fields[$this->table][$field]))
-			return $value;
-
-		// Get field data
-		$data = self::$fields[$this->table][$field];
-
-		if ( ! empty($data['binary']) AND ! empty($data['exact']) AND $data['length'] == 1)
-		{
-			// Use boolean for binary(1) fields
-			$data['type'] = 'boolean';
-		}
-
-		switch ($data['type'])
-		{
-			case 'int':
-				$value = (int) $value;
-			break;
-			case 'float':
-				$value = (float) $value;
-			break;
-			case 'boolean':
-				$value = (bool) $value;
-			break;
-			case 'string':
-				$value = (string) $value;
-			break;
-		}
-
-		return $value;
 	}
 
 	/**

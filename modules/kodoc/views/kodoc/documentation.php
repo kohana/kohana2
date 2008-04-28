@@ -17,7 +17,7 @@ endif;
 
 if ( ! empty($docs['comments'])):
 
-	foreach($docs['comments'] as $comment):
+	foreach ($docs['comments'] as $comment):
 		if ($docs['type'] === 'config'):
 
 			echo new View('kodoc/file_config', $comment);
@@ -31,7 +31,7 @@ if ( ! empty($docs['comments'])):
 endif;
 if ( ! empty($docs['classes'])):
 
-	foreach($docs['classes'] as $class):
+	foreach ($docs['classes'] as $class):
 
 		echo new View('kodoc/class', $class);
 

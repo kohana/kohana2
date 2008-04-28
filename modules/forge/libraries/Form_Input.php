@@ -220,7 +220,7 @@ class Form_Input_Core {
 			return;
 		}
 
-		foreach($rules as $rule)
+		foreach ($rules as $rule)
 		{
 			if ($action === '-')
 			{
@@ -305,7 +305,7 @@ class Form_Input_Core {
 			return array($this->error_messages);
 
 		$messages = array();
-		foreach($this->errors as $func => $args)
+		foreach ($this->errors as $func => $args)
 		{
 			if (is_string($args))
 			{
@@ -327,7 +327,7 @@ class Form_Input_Core {
 				else
 				{
 					// Get the proper i18n entry, very hacky but it works
-					switch($func)
+					switch ($func)
 					{
 						case 'valid_url':
 						case 'valid_email':
@@ -427,7 +427,7 @@ class Form_Input_Core {
 
 		if ( ! empty($this->rules))
 		{
-			foreach($this->rules as $rule)
+			foreach ($this->rules as $rule)
 			{
 				if (($offset = strpos($rule, '[')) !== FALSE)
 				{
@@ -455,7 +455,7 @@ class Form_Input_Core {
 					if (isset($args))
 					{
 						// Manually call up to 2 args for speed
-						switch(count($args))
+						switch (count($args))
 						{
 							case 1:
 								$this->$rule($args[0]);
@@ -490,7 +490,7 @@ class Form_Input_Core {
 
 		if ( ! empty($this->matches))
 		{
-			foreach($this->matches as $input)
+			foreach ($this->matches as $input)
 			{
 				if ($this->value != $input->value)
 				{
@@ -503,7 +503,7 @@ class Form_Input_Core {
 
 		if ( ! empty($this->callbacks))
 		{
-			foreach($this->callbacks as $callback)
+			foreach ($this->callbacks as $callback)
 			{
 				call_user_func($callback, $this);
 
@@ -550,7 +550,7 @@ class Form_Input_Core {
 			{
 				$this->errors['min_length'] = array($min);
 			}
-			elseif($length > $max)
+			elseif ($length > $max)
 			{
 				$this->errors['max_length'] = array($max);
 			}

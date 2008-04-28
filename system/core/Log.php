@@ -65,12 +65,12 @@ final class Log {
 
 		// Compile the messages
 		$messages = '';
-		foreach(self::$messages as $type => $data)
+		foreach (self::$messages as $type => $data)
 		{
 			if (array_search($type, self::$types) > $threshold)
 				continue;
 
-			foreach($data as $date => $text)
+			foreach ($data as $date => $text)
 			{
 				list($date, $message) = $text;
 				$messages .= $date.' -- '.$type.': '.$message."\r\n";

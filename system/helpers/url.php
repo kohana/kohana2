@@ -162,7 +162,7 @@ class url_Core {
 				header('Location: '.$uri[0]);
 
 				$choices = '';
-				foreach($uri as $href)
+				foreach ($uri as $href)
 				{
 					$choices .= '<li><a href="'.$href.'">'.$href.'</a></li>';
 				}

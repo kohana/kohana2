@@ -182,9 +182,9 @@ class Session_Core {
 		if ($_SESSION['total_hits'] > 1)
 		{
 			// Validate the session
-			foreach(self::$config['validate'] as $valid)
+			foreach (self::$config['validate'] as $valid)
 			{
-				switch($valid)
+				switch ($valid)
 				{
 					// Check user agent for consistency
 					case 'user_agent':
@@ -304,7 +304,7 @@ class Session_Core {
 			$keys = array($keys => $val);
 		}
 
-		foreach($keys as $key => $val)
+		foreach ($keys as $key => $val)
 		{
 			if (isset(self::$protect[$key]))
 				continue;
@@ -351,7 +351,7 @@ class Session_Core {
 	{
 		$keys = ($keys === NULL) ? array_keys(self::$flash) : func_get_args();
 
-		foreach($keys as $key)
+		foreach ($keys as $key)
 		{
 			if (isset(self::$flash[$key]))
 			{
@@ -375,7 +375,7 @@ class Session_Core {
 
 		if ( ! empty(self::$flash))
 		{
-			foreach(self::$flash as $key => $state)
+			foreach (self::$flash as $key => $state)
 			{
 				if ($state === 'old')
 				{
@@ -434,7 +434,7 @@ class Session_Core {
 	 */
 	public function delete($keys)
 	{
-		foreach(func_get_args() as $key)
+		foreach (func_get_args() as $key)
 		{
 			if (isset(self::$protect[$key]))
 				continue;

@@ -34,10 +34,10 @@ class Kodoc_Core {
 		$ext_len = -(strlen(EXT));
 
 		$files = array();
-		foreach(self::$types as $type)
+		foreach (self::$types as $type)
 		{
 			$files[$type] = array();
-			foreach(Kohana::list_files($type, TRUE) as $file)
+			foreach (Kohana::list_files($type, TRUE) as $file)
 			{
 				// Not a source file
 				if (substr($file, $ext_len) !== EXT)
@@ -168,7 +168,7 @@ class Kodoc_Core {
 		// Read the entire file into an array
 		$data = file($filename);
 
-		foreach($data as $line)
+		foreach ($data as $line)
 		{
 			if (strpos($line, 'class') !== FALSE AND preg_match('/(?:class|interface)\s+([a-z0-9_]+).+{$/i', $line, $matches))
 			{
@@ -185,9 +185,9 @@ class Kodoc_Core {
 			$block  = NULL;
 			$source = NULL;
 
-			foreach($data as $line)
+			foreach ($data as $line)
 			{
-				switch(substr(trim($line), 0, 2))
+				switch (substr(trim($line), 0, 2))
 				{
 					case '/*':
 						$block = '';
@@ -283,7 +283,7 @@ class Kodoc_Core {
 			$block = '';
 			$about = '';
 
-			foreach($comment['about'] as $line)
+			foreach ($comment['about'] as $line)
 			{
 				if (strpos($line, '`') !== FALSE)
 				{
@@ -376,7 +376,7 @@ class Kodoc_Core {
 
 		if ($implements = $reflection->getInterfaces())
 		{
-			foreach($implements as $interface)
+			foreach ($implements as $interface)
 			{
 				// Get implemented interfaces
 				$class['implements'][] = $interface->getName();
@@ -391,7 +391,7 @@ class Kodoc_Core {
 
 		if ($methods = $reflection->getMethods())
 		{
-			foreach($methods as $method)
+			foreach ($methods as $method)
 			{
 				// Don't try to document internal methods
 				if ($method->isInternal()) continue;
@@ -425,7 +425,7 @@ class Kodoc_Core {
 
 		if ($parameters = $method->getParameters())
 		{
-			foreach($parameters as $param)
+			foreach ($parameters as $param)
 			{
 				// Parameter data
 				$data = array
@@ -522,9 +522,9 @@ class Kodoc_xCore {
 			self::$php_visibility = array_flip(self::$php_visibility);
 		}
 
-		foreach($this->files as $type => $files)
+		foreach ($this->files as $type => $files)
 		{
-			foreach(Kohana::list_files($type) as $filepath)
+			foreach (Kohana::list_files($type) as $filepath)
 			{
 				// Get the filename with no extension
 				$file = pathinfo($filepath, PATHINFO_FILENAME);
@@ -546,7 +546,7 @@ class Kodoc_xCore {
 
 	public function get_docs($format = 'html')
 	{
-		switch($format)
+		switch ($format)
 		{
 			default:
 				// Generate HTML via a View
@@ -634,7 +634,7 @@ class Kodoc_xCore {
 				}
 				else
 				{
-					switch(substr(trim($line), 0, 2))
+					switch (substr(trim($line), 0, 2))
 					{
 						case '//':
 						case '* ': break;

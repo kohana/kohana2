@@ -228,7 +228,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 		$result = $this->query($sql)->result(FALSE, PGSQL_ASSOC);
 
 		$retval = array();
-		foreach($result as $row)
+		foreach ($result as $row)
 		{
 			$retval[] = current($row);
 		}
@@ -251,7 +251,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 			{
 				$tables[$table] = array();
 
-				foreach($query as $row)
+				foreach ($query as $row)
 				{
 					$tables[$table][] = $row->Field;
 				}

@@ -174,7 +174,7 @@ class Auth_Core {
 		// Used to calculate the length of splits
 		$last_offset = 0;
 
-		foreach($this->config['salt_pattern'] as $offset)
+		foreach ($this->config['salt_pattern'] as $offset)
 		{
 			// Split a new part of the hash off
 			$part = substr($hash, 0, $offset - $last_offset);
@@ -214,7 +214,7 @@ class Auth_Core {
 	{
 		$salt = '';
 
-		foreach($this->config['salt_pattern'] as $i => $offset)
+		foreach ($this->config['salt_pattern'] as $i => $offset)
 		{
 			// Find salt characters... take a good long look..
 			$salt .= substr($password, $offset + $i, 1);

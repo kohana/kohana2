@@ -273,7 +273,7 @@ class Database_Core {
 			$sql = (array) $sql;
 		}
 
-		foreach($sql as $val)
+		foreach ($sql as $val)
 		{
 			if (($val = trim($val)) === '') continue;
 
@@ -306,7 +306,7 @@ class Database_Core {
 	 */
 	public function from($sql)
 	{
-		foreach((array) $sql as $val)
+		foreach ((array) $sql as $val)
 		{
 			if (($val = trim($val)) === '') continue;
 

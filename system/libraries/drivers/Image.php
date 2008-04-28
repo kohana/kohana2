@@ -28,7 +28,7 @@ abstract class Image_Driver {
 	 */
 	public function execute($actions)
 	{
-		foreach($actions as $func => $args)
+		foreach ($actions as $func => $args)
 		{
 			if ( ! $this->$func($args))
 				return FALSE;
@@ -55,7 +55,7 @@ abstract class Image_Driver {
 		$geometry['width']  = min($geometry['width'], $width);
 		$geometry['height'] = min($geometry['height'], $height);
 
-		switch($geometry['top'])
+		switch ($geometry['top'])
 		{
 			case 'center':
 				$geometry['top'] = floor(($height / 2) - ($geometry['height'] / 2));
@@ -68,7 +68,7 @@ abstract class Image_Driver {
 			break;
 		}
 
-		switch($geometry['left'])
+		switch ($geometry['left'])
 		{
 			case 'center':
 				$geometry['left'] = floor(($width / 2) - ($geometry['width'] / 2));

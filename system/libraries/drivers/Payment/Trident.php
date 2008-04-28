@@ -59,7 +59,7 @@ class Payment_Trident_Driver implements Payment_Driver
 		foreach ((array) $fields as $key => $value)
 		{
 			// Do variable translation
-			switch($key)
+			switch ($key)
 			{
 				case 'card_num':
 					$key = 'card_number';
@@ -99,7 +99,7 @@ class Payment_Trident_Driver implements Payment_Driver
 		}
 
 		$fields = '';
-		foreach( $this->fields as $key => $value )
+		foreach ( $this->fields as $key => $value )
 		{
 			$fields .= $key.'='.urlencode($value).'&';
 		}

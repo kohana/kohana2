@@ -149,7 +149,7 @@ else:
 	else:
 		text::alternate();
 		$total_time = 0;
-		foreach($queries as $query):
+		foreach ($queries as $query):
 			$total_time += $query['time'];
 ?>
 		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
@@ -190,7 +190,7 @@ if (count($_POST) == 0):
 
 else:
 	text::alternate();
-	foreach($_POST as $name => $value):
+	foreach ($_POST as $name => $value):
 
 ?>
 		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
@@ -223,7 +223,7 @@ if ( ! isset($_SESSION)):
 
 else:
 	text::alternate();
-	foreach($_SESSION as $name => $value):
+	foreach ($_SESSION as $name => $value):
 
 ?>
 		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>
@@ -256,7 +256,7 @@ if (count($_COOKIE) == 0):
 
 else:
 	text::alternate();
-	foreach($_COOKIE as $name => $value):
+	foreach ($_COOKIE as $name => $value):
 
 ?>
 		<tr<?php echo text::alternate('', ' class="kp-altrow"') ?>>

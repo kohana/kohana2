@@ -133,7 +133,7 @@ class Cache_Core {
 		if ($ids = $this->driver->find($tag))
 		{
 			$data = array();
-			foreach($ids as $id)
+			foreach ($ids as $id)
 			{
 				// Load each cache item and add it to the array
 				if (($cache = $this->get($id)) !== NULL)

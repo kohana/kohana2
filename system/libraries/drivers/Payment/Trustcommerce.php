@@ -59,7 +59,7 @@ class Payment_Trustcommerce_Driver implements Payment_Driver
 		foreach ((array) $fields as $key => $value)
 		{
 			// Do variable translation
-			switch($key)
+			switch ($key)
 			{
 				case 'card_num':
 					$key = 'cc';

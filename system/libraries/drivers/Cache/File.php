@@ -50,7 +50,7 @@ class Cache_File_Driver implements Cache_Driver {
 			$files = glob($this->directory.'*~*'.$id.'*~*');
 
 			// Find all tags matching the given tag
-			foreach($files as $i => $file)
+			foreach ($files as $i => $file)
 			{
 				// Split the files
 				$tags = explode('~', $file);
@@ -120,7 +120,7 @@ class Cache_File_Driver implements Cache_Driver {
 
 			// Find all the files with the given tag
 			$array = array();
-			foreach($files as $file)
+			foreach ($files as $file)
 			{
 				// Get the id from the filename
 				$array[] = substr(current(explode('~', $file)), $offset);
@@ -194,7 +194,7 @@ class Cache_File_Driver implements Cache_Driver {
 		// Disable all error reporting while deleting
 		$ER = error_reporting(0);
 
-		foreach($files as $file)
+		foreach ($files as $file)
 		{
 			// Remove the cache file
 			if ( ! unlink($file))
@@ -216,7 +216,7 @@ class Cache_File_Driver implements Cache_Driver {
 	{
 		if ($files = $this->exists(TRUE))
 		{
-			foreach($files as $file)
+			foreach ($files as $file)
 			{
 				if ($this->expired($file))
 				{

@@ -31,7 +31,7 @@ if ( ! empty($methods)):
 <div class="methods">
 <?php
 
-	foreach($methods as $method):
+	foreach ($methods as $method):
 
 		echo new View('kodoc/method', $method);
 

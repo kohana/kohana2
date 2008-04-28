@@ -187,7 +187,7 @@ class date_Core {
 		$hour = (int) $hour;
 		$ampm = strtolower($ampm);
 
-		switch($ampm)
+		switch ($ampm)
 		{
 			case 'am':
 				if ($hour == 12)

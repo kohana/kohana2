@@ -41,7 +41,7 @@ echo html::script(array
 <ul>
 <?php
 
-foreach(Kohana::lang('user_guide_menu') as $cat => $menu):
+foreach (Kohana::lang('user_guide_menu') as $cat => $menu):
 
 	$active = (strtolower($cat) == $category) ? ' active' : '';
 
@@ -49,7 +49,7 @@ foreach(Kohana::lang('user_guide_menu') as $cat => $menu):
 <li class="first<?php echo $active ?>"><span><?php echo $cat ?></span><ul>
 <?php
 
-	foreach($menu as $sec):
+	foreach ($menu as $sec):
 
 		$active = (strtolower($sec) == $section) ? 'lite' : '';
 

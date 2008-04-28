@@ -247,7 +247,7 @@ class Database_Mssql_Driver extends Database_Driver
 		$result = $this->query($sql)->result(FALSE, MSSQL_ASSOC);
 
 		$retval = array();
-		foreach($result as $row)
+		foreach ($result as $row)
 		{
 			$retval[] = current($row);
 		}
@@ -266,7 +266,7 @@ class Database_Mssql_Driver extends Database_Driver
 
 		if (empty($tables[$table]))
 		{
-			foreach($this->field_data($table) as $row)
+			foreach ($this->field_data($table) as $row)
 			{
 				// Make an associative array
 				$tables[$table][$row->Field] = $this->sql_type($row->Type);

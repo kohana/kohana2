@@ -15,7 +15,7 @@ endif;
 <?php
 
 if ( ! empty($note)):
-	foreach($note as $n):
+	foreach ($note as $n):
 
 ?>
 <p class="note"><?php echo $n ?></p>

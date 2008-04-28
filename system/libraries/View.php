@@ -99,7 +99,7 @@ class View_Core {
 	{
 		if (func_num_args() === 1 AND is_array($name))
 		{
-			foreach($name as $key => $value)
+			foreach ($name as $key => $value)
 			{
 				$this->__set($key, $value);
 			}

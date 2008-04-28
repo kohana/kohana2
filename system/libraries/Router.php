@@ -100,18 +100,18 @@ class Router_Core {
 			$controller_path = '';
 			
 			// Use the rsegments to find the controller
-			foreach(self::$rsegments as $key => $segment)
+			foreach (self::$rsegments as $key => $segment)
 			{
-				foreach($include_paths as $path)
+				foreach ($include_paths as $path)
 				{
 					// The controller has been found, all arguments can be set
 					if (is_file($path.$search.'/'.$segment.EXT))
 					{
-						self::$directory       = $path.$search.'/';
+						self::$directory  = $path.$search.'/';
 						self::$controller_path = $controller_path;
-						self::$controller      = $segment;
-						self::$method          = isset(self::$rsegments[$key + 1]) ? self::$rsegments[$key + 1] : 'index';
-						self::$arguments       = isset(self::$rsegments[$key + 2]) ? array_slice(self::$rsegments, $key + 2) : array();
+						self::$controller = $segment;
+						self::$method     = isset(self::$rsegments[$key + 1]) ? self::$rsegments[$key + 1] : 'index';
+						self::$arguments  = isset(self::$rsegments[$key + 2]) ? array_slice(self::$rsegments, $key + 2) : array();
 
 						// Stop searching, two levels
 						break 2;
@@ -119,7 +119,7 @@ class Router_Core {
 				}
 
 				// Add the segment to the search
-				$search          .= '/'.$segment;
+				$search .= '/'.$segment;
 				$controller_path .= $segment.'/';
 			}
 		}

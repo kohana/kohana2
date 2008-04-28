@@ -188,7 +188,7 @@ final class Event {
 			// Loop through each of the event callbacks and compare it to the
 			// callback requested for removal. The callback is removed if it
 			// matches.
-			foreach(self::$events[$name] as $i => $event_callback)
+			foreach (self::$events[$name] as $i => $event_callback)
 			{
 				if ($callback === $event_callback)
 				{
@@ -212,7 +212,7 @@ final class Event {
 			// So callbacks can access Event::$data
 			self::$data =& $data;
 
-			foreach(self::get($name) as $callback)
+			foreach (self::get($name) as $callback)
 			{
 				call_user_func($callback);
 			}

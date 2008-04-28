@@ -18,7 +18,7 @@ function _to_unicode($str)
 
 	$len = strlen($str);
 
-	for($i = 0; $i < $len; $i++)
+	for ($i = 0; $i < $len; $i++)
 	{
 		$in = ord($str[$i]);
 
