@@ -238,7 +238,7 @@ class Router_Core {
 			// Loop through the routes and see if anything matches
 			foreach ($routes as $key => $val)
 			{
-				if ($key === '_default' OR $key === '_allowed') continue;
+				if ($key === '_default') continue;
 
 				// Trim slashes
 				$key = trim($key, '/');
