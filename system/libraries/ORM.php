@@ -988,7 +988,8 @@ class ORM_Core {
 	 */
 	protected function set_value_type($field, $value)
 	{
-		if ( ! isset(self::$fields[$this->table][$field]))
+		// Do nothing for columns with no data, or columns that are allowed to be NULL.
+		if ( ! isset(self::$fields[$this->table][$field]) OR ($value === NULL AND ! empty(self::$fields[$this->table][$field]['null'])))
 			return $value;
 
 		// Get field data
