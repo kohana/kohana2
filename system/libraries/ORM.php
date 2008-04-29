@@ -699,7 +699,7 @@ class ORM_Core {
 	 */
 	public function validate( & $array, $save = FALSE)
 	{
-		if ( ! ($array instanceof Validation))
+		if ( ! is_object($array) OR ($array instanceof Validation))
 			throw new Kohana_Exception('orm.array_not_validation_object', get_class($this));
 
 		if ( ! $array->submitted())
