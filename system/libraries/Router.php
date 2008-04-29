@@ -65,7 +65,7 @@ class Router_Core {
 		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, '/');
 
 		// Explode the segments by slashes
-		self::$segments = (self::$segments === '') ? array() : explode('/', self::$segments);
+		self::$segments = ($default_route === TRUE OR self::$segments === '') ? array() : explode('/', self::$segments);
 
 		if ($default_route === FALSE AND count(self::$routes) > 1)
 		{
