@@ -20,10 +20,10 @@ final class Config {
 	/**
 	 * Get a config item or group.
 	 *
-	 * @param   string                item name
-	 * @param   boolean               force a forward slash (/) at the end of the item
-	 * @param   boolean               is the item required?
-	 * @return  string|array|boolean
+	 * @param   string   item name
+	 * @param   boolean  force a forward slash (/) at the end of the item
+	 * @param   boolean  is the item required?
+	 * @return  mixed
 	 */
 	public static function item($key, $slash = FALSE, $required = TRUE)
 	{

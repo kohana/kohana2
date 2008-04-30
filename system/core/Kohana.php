@@ -681,7 +681,7 @@ class Kohana {
 	 * @param   boolean  is the file required?
 	 * @param   boolean  use custom file extension?
 	 * @param   boolean  use cache
-	 * @return  array    if the type is i18n or config
+	 * @return  array    if the type is config, i18n or l10n
 	 * @return  string   if the file is found
 	 * @return  FALSE    if the file is not found
 	 */
@@ -695,10 +695,8 @@ class Kohana {
 		if ($use_cache AND isset($found[$hash]))
 			return $found[$hash];
 
-		if ($directory == 'config' OR $directory == 'i18n' OR $directory === 'l10n')
+		if ($directory === 'config' OR $directory === 'i18n' OR $directory === 'l10n')
 		{
-			$fnd = array();
-
 			// Search from SYSPATH up
 			foreach (array_reverse(Config::include_paths()) as $path)
 			{
@@ -706,7 +704,7 @@ class Kohana {
 			}
 
 			// If required and nothing was found, throw an exception
-			if ($required == TRUE AND $fnd === array())
+			if ($required == TRUE AND ! isset($fnd))
 				throw new Kohana_Exception('core.resource_not_found', Kohana::lang('core.'.inflector::singular($directory)), $filename);
 
 			return $found[$hash] = $fnd;
