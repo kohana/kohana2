@@ -694,14 +694,11 @@ class ORM_Core {
 	 * Validates the current object. This method should generally be called
 	 * via the model, after the $_POST Validation object has been created.
 	 *
-	 * @param   object    Validat
+	 * @param   object    Validation array
 	 * @return  boolean
 	 */
-	public function validate( & $array, $save = FALSE)
+	public function validate(Validation $array, $save = FALSE)
 	{
-		if ( ! is_object($array) OR ($array instanceof Validation))
-			throw new Kohana_Exception('orm.array_not_validation_object', get_class($this));
-
 		if ( ! $array->submitted())
 		{
 			foreach ($array->safe_array() as $key => $val)
