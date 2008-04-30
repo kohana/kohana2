@@ -9,8 +9,8 @@ $lang = array
 	E_ERROR              => array( 1, 'Fataler Fehler',       ''),
 	E_USER_ERROR         => array( 1, 'Fataler Fehler',       ''),
 	E_PARSE              => array( 1, 'Syntax-Fehler',        ''),
-	E_WARNING            => array( 2, 'Warnung',              ''),
-	E_USER_WARNING       => array( 2, 'Warnung',              ''),
-	E_STRICT             => array( 3, 'Strict Mode Error',    ''),
-	E_NOTICE             => array( 3, 'Laufzeitfehler',       ''),
+	E_WARNING            => array( 1, 'Warnung',              ''),
+	E_USER_WARNING       => array( 1, 'Warnung',              ''),
+	E_STRICT             => array( 2, 'Strict Mode Error',    ''),
+	E_NOTICE             => array( 2, 'Laufzeitfehler',       ''),
 );
