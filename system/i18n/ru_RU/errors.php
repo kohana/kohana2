@@ -9,8 +9,8 @@ $lang = array
 	E_ERROR              => array( 1, 'Фатальная ошибка',       ''),
 	E_USER_ERROR         => array( 1, 'Фатальная ошибка',       ''),
 	E_PARSE              => array( 1, 'Синтаксическая ошибка',      ''),
-	E_WARNING            => array( 2, 'Предупреждение',   ''),
-	E_USER_WARNING       => array( 2, 'Предупреждение',   ''),
-	E_STRICT             => array( 3, 'Ошибка строгого режима', ''),
-	E_NOTICE             => array( 3, 'Уведомление',   ''),
+	E_WARNING            => array( 1, 'Предупреждение',   ''),
+	E_USER_WARNING       => array( 1, 'Предупреждение',   ''),
+	E_STRICT             => array( 2, 'Ошибка строгого режима', ''),
+	E_NOTICE             => array( 2, 'Уведомление',   ''),
 );

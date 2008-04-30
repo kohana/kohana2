@@ -9,8 +9,8 @@ $lang = array
 	E_ERROR              => array( 1, 'F474| 3rr0r',       ''),
 	E_USER_ERROR         => array( 1, 'F474| 3rr0r',       ''),
 	E_PARSE              => array( 1, '5yn74x 3rr0r',      ''),
-	E_WARNING            => array( 2, 'W4rn1n6 M355463',   ''),
-	E_USER_WARNING       => array( 2, 'W4rn1n6 M355463',   ''),
-	E_STRICT             => array( 3, '57r1c7 M0d3 3rr0r', ''),
-	E_NOTICE             => array( 3, 'Run71m3 M355463',   ''),
+	E_WARNING            => array( 1, 'W4rn1n6 M355463',   ''),
+	E_USER_WARNING       => array( 1, 'W4rn1n6 M355463',   ''),
+	E_STRICT             => array( 2, '57r1c7 M0d3 3rr0r', ''),
+	E_NOTICE             => array( 2, 'Run71m3 M355463',   ''),
 );
