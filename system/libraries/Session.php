@@ -114,7 +114,7 @@ class Session_Core {
 			// Always update session cookie to keep the session alive
 			else
 			{
-				cookie::set(self::$config['name'], $_SESSION['session_id'], self::$config['expiration'], self::$config['path'], self::$config['domain'], self::$config['secure'], self::$config['httponly']);
+				cookie::set(self::$config['name'], $_SESSION['session_id'], self::$config['expiration']);
 			}
 
 			// Close the session just before sending the headers, so that
