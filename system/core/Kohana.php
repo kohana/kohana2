@@ -697,6 +697,8 @@ class Kohana {
 
 		if ($directory === 'config' OR $directory === 'i18n' OR $directory === 'l10n')
 		{
+			$fnd = array();
+
 			// Search from SYSPATH up
 			foreach (array_reverse(Config::include_paths()) as $path)
 			{
@@ -704,7 +706,7 @@ class Kohana {
 			}
 
 			// If required and nothing was found, throw an exception
-			if ($required == TRUE AND ! isset($fnd))
+			if ($required == TRUE AND $fnd === array())
 				throw new Kohana_Exception('core.resource_not_found', Kohana::lang('core.'.inflector::singular($directory)), $filename);
 
 			return $found[$hash] = $fnd;
