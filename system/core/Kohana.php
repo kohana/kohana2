@@ -903,6 +903,12 @@ class Kohana {
 		if ((empty($keys) AND is_string($keys)) OR (empty($array) AND is_array($array)))
 			return;
 
+		if (substr($keys, -2) === '.*')
+		{
+			// Remove the wildcard from the keys
+			$keys = substr($keys, 0, -2);
+		}
+
 		// Prepare for loop
 		$keys = explode('.', $keys);
 
