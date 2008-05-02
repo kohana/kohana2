@@ -351,6 +351,12 @@ class form_Core {
 			$data = array('name' => $data);
 		}
 
+		if (empty($data['name']))
+		{
+			// Remove the name if it is empty
+			unset($data['name']);
+		}
+
 		$data['type'] = 'submit';
 
 		return form::input($data, $value, $extra);
@@ -369,6 +375,12 @@ class form_Core {
 		if ( ! is_array($data))
 		{
 			$data = array('name' => $data);
+		}
+
+		if (empty($data['name']))
+		{
+			// Remove the name if it is empty
+			unset($data['name']);
 		}
 
 		if (isset($data['value']) AND empty($value))
