@@ -14,6 +14,9 @@ class Validation_Core extends ArrayObject {
 	// Unique "any field" key
 	protected $any_field;
 
+	// Array fields
+	protected $array_fields = array();
+
 	// Filters
 	protected $pre_filters = array();
 	protected $post_filters = array();
@@ -163,6 +166,15 @@ class Validation_Core extends ArrayObject {
 
 		foreach ($fields as $field)
 		{
+			if (strpos($field, '.') > 0)
+			{
+				// Field keys
+				$keys = explode('.', $field);
+
+				// Add to array fields
+				$this->array_fields[$field] = $keys[0];
+			}
+
 			// Add the filter to specified field
 			$this->pre_filters[$field][] = $filter;
 		}
@@ -199,6 +211,15 @@ class Validation_Core extends ArrayObject {
 
 		foreach ($fields as $field)
 		{
+			if (strpos($field, '.') > 0)
+			{
+				// Field keys
+				$keys = explode('.', $field);
+
+				// Add to array fields
+				$this->array_fields[$field] = $keys[0];
+			}
+
 			// Add the filter to specified field
 			$this->post_filters[$field][] = $filter;
 		}
@@ -258,6 +279,15 @@ class Validation_Core extends ArrayObject {
 
 			$rule = (is_string($rule) AND strpos($rule, '::') !== FALSE) ? explode('::', $rule) : $rule;
 
+			if (strpos($field, '.') > 0)
+			{
+				// Field keys
+				$keys = explode('.', $field);
+
+				// Add to array fields
+				$this->array_fields[$field] = $keys[0];
+			}
+
 			// Add the rule to specified field
 			$this->rules[$field][] = array($rule, $args);
 		}
@@ -297,6 +327,15 @@ class Validation_Core extends ArrayObject {
 
 			$callback = (is_string($callback) AND strpos($callback, '::') !== FALSE) ? explode('::', $callback) : $callback;
 
+			if (strpos($field, '.') > 0)
+			{
+				// Field keys
+				$keys = explode('.', $field);
+
+				// Add to array fields
+				$this->array_fields[$field] = $keys[0];
+			}
+
 			// Add the callback to specified field
 			$this->callbacks[$field][] = $callback;
 		}
@@ -332,8 +371,19 @@ class Validation_Core extends ArrayObject {
 				continue;
 			}
 
-			// Make sure all fields are defined
-			isset($this[$field]) or $this[$field] = NULL;
+			if (isset($this->array_fields[$field]))
+			{
+				// Use the first key for the field
+				$field_key = $this->array_fields[$field];
+
+				// Load the field as an array
+				$this[$field_key] = (array) Kohana::key_string($field, $this);
+			}
+			else
+			{
+				// Make sure all fields are defined
+				isset($this[$field]) or $this[$field] = NULL;
+			}
 		}
 
 		// Reset all fields to ALL defined fields
@@ -373,35 +423,87 @@ class Validation_Core extends ArrayObject {
 				{
 					foreach ($all_fields as $f)
 					{
-						// Prevent other rules from running when this field already has errors
-						if ( ! empty($this->errors[$f])) break;
-
-						// Don't process rules on empty fields
-						if ( ! in_array($func[1], $this->empty_rules, TRUE) AND $this[$f] == NULL)
-							continue;
-
-						// Run each rule
-						if ( ! call_user_func($func, $this[$f], $args))
+						if (isset($this->array_fields[$f]))
 						{
-							$this->errors[$f] = is_array($func) ? $func[1] : $func;
+							// Use the field key
+							$f_key = $this->array_fields[$f];
+
+							// Prevent other rules from running when this field already has errors
+							if ( ! empty($this->errors[$f_key])) break;
+
+							// Don't process rules on empty fields
+							if ( ! in_array($func[1], $this->empty_rules, TRUE) AND $this[$f_key] == NULL)
+								continue;
+
+							foreach ($this[$f_key] as $k => $v)
+							{
+								if ( ! call_user_func($func, $this[$f_key][$k], $args))
+								{
+									// Run each rule
+									$this->errors[$f_key] = is_array($func) ? $func[1] : $func;
+								}
+							}
+						}
+						else
+						{
+							// Prevent other rules from running when this field already has errors
+							if ( ! empty($this->errors[$f])) break;
+
+							// Don't process rules on empty fields
+							if ( ! in_array($func[1], $this->empty_rules, TRUE) AND $this[$f] == NULL)
+								continue;
+
+							if ( ! call_user_func($func, $this[$f], $args))
+							{
+								// Run each rule
+								$this->errors[$f] = is_array($func) ? $func[1] : $func;
+							}
 						}
 					}
 				}
 				else
 				{
-					// Prevent other rules from running when this field already has errors
-					if ( ! empty($this->errors[$field])) break;
-
-					// Don't process rules on empty fields
-					if ( ! in_array($func[1], $this->empty_rules, TRUE) AND $this[$field] == NULL)
-						continue;
-
-					// Run each rule
-					if ( ! call_user_func($func, $this[$field], $args))
+					if (isset($this->array_fields[$field]))
 					{
-						$this->errors[$field] = is_array($func) ? $func[1] : $func;
-						// Stop after an error is found
-						break;
+						// Use the field key
+						$field_key = $this->array_fields[$field];
+
+						// Prevent other rules from running when this field already has errors
+						if ( ! empty($this->errors[$field_key])) break;
+
+						// Don't process rules on empty fields
+						if ( ! in_array($func[1], $this->empty_rules, TRUE) AND $this[$field_key] == NULL)
+							continue;
+
+						foreach ($this[$field_key] as $k => $val)
+						{
+							if ( ! call_user_func($func, $this[$field_key][$k], $args))
+							{
+								// Run each rule
+								$this->errors[$field_key] = is_array($func) ? $func[1] : $func;
+
+								// Stop after an error is found
+								break 2;
+							}
+						}
+					}
+					else
+					{
+						// Prevent other rules from running when this field already has errors
+						if ( ! empty($this->errors[$field])) break;
+
+						// Don't process rules on empty fields
+						if ( ! in_array($func[1], $this->empty_rules, TRUE) AND $this[$field] == NULL)
+							continue;
+
+						if ( ! call_user_func($func, $this[$field], $args))
+						{
+							// Run each rule
+							$this->errors[$field] = is_array($func) ? $func[1] : $func;
+
+							// Stop after an error is found
+							break;
+						}
 					}
 				}
 			}
@@ -441,12 +543,24 @@ class Validation_Core extends ArrayObject {
 				{
 					foreach ($all_fields as $f)
 					{
+						if (isset($this->array_fields[$f]))
+						{
+							// Use the field key
+							$f = $this->array_fields[$f];
+						}
+
 						// Process each filter
 						$this[$f] = is_array($this[$f]) ? array_map($func, $this[$f]) : call_user_func($func, $this[$f]);
 					}
 				}
 				else
 				{
+					if (isset($this->array_fields[$field]))
+					{
+						// Use the field key
+						$field = $this->array_fields[$field];
+					}
+
 					// Process each filter
 					$this[$field] = is_array($this[$field]) ? array_map($func, $this[$field]) : call_user_func($func, $this[$field]);
 				}
