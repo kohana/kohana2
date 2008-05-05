@@ -32,6 +32,10 @@ class ORM_Core {
 	protected $select = FALSE;
 	protected $where = FALSE;
 	protected $from = FALSE;
+	protected $order = FALSE;
+
+	// Default sorting
+	protected $sort = array('id', 'asc');
 
 	// Currently loaded object
 	protected $object;
@@ -276,6 +280,10 @@ class ORM_Core {
 			elseif ($method === 'from')
 			{
 				$this->from = TRUE;
+			}
+			elseif ($method === 'orderby')
+			{
+				$this->order = TRUE;
 			}
 
 			// Pass through to Database, manually calling up to 2 args, for speed.
@@ -896,6 +904,9 @@ class ORM_Core {
 
 		// Make sure there is a table to select from
 		$this->from or self::$db->from($this->table);
+
+		// Make sure there is ordering applied
+		$this->order or self::$db->orderby($this->sort[0], $this->sort[1]);
 
 		// Fetch the query result
 		$result = self::$db->get()->result(TRUE);
