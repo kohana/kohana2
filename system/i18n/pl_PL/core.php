@@ -18,6 +18,10 @@ $lang = array
 	'generic_error'         => 'Nie można zakończyć żądania',
 	'errors_disabled'       => 'Przejdź na <a href="%s">stronę główną</a> lub <a href="%s">spróbuj znowu</a>.',
 
+	// Drivers
+	'driver_implements'     => 'Sterownik %s dla biblioteki %s musi posiadać implementację interfejsu %s',
+	'driver_not_found'      => 'Nie znaleziono sterownika %s dla biblioteki %s',
+
 	// Resource names
 	'controller'            => 'kontroler',
 	'helper'                => 'pomocnik',
