@@ -18,6 +18,10 @@ $lang = array
 	'generic_error'         => 'Imposible completar la solicitud',
 	'errors_disabled'       => 'Puedes volver a la <a href="%s">página de inico</a> o <a href="%s">volver a intentarlo</a>.', 
 
+        // Drivers
+        'driver_implements'     => 'El driver %s para la libreria %s debe implementar el interface %s',
+        'driver_not_found'      => 'No se ha encontrado el driver %s para la libreria %s',
+
 	// Resource names
 	'controller'            => 'controlador',
 	'helper'                => 'helper',
