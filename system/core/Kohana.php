@@ -166,12 +166,10 @@ class Kohana {
 				}
 			}
 
-			// To validate the filename extension
-			$ext = -(strlen(EXT));
-
 			foreach ($hooks as $hook)
 			{
-				if (substr($hook, $ext) === EXT)
+				// Validate the filename extension
+				if (substr($hook, -(strlen(EXT))) === EXT)
 				{
 					// Hook was found, include it
 					include_once $hook;
@@ -964,7 +962,7 @@ class Kohana {
 		// Create keys
 		$keys = explode('.', $keys);
 
-		// Create reference the the array
+		// Create reference to the array
 		$row =& $array;
 
 		for ($i = 0, $end = count($keys) - 1; $i <= $end; $i++)
