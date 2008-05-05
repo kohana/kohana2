@@ -95,10 +95,10 @@ class Router_Core {
 
 			// Path to be added to as we search deeper
 			$search = 'controllers';
-			
+
 			// controller path to be added to as we search deeper
 			$controller_path = '';
-			
+
 			// Use the rsegments to find the controller
 			foreach (self::$rsegments as $key => $segment)
 			{
@@ -227,7 +227,7 @@ class Router_Core {
 	{
 		$routes = Config::item('routes');
 		$uri    = $routed_uri = trim($uri, '/');
-	
+
 		if (isset($routes[$uri]))
 		{
 			// Literal match, no need for regex
@@ -270,6 +270,6 @@ class Router_Core {
 		}
 
 		return $routed_uri;
-	}    
+	}
 
 } // End Router class
