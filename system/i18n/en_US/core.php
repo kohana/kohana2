@@ -18,6 +18,10 @@ $lang = array
 	'generic_error'         => 'Unable to Complete Request',
 	'errors_disabled'       => 'You can go to the <a href="%s">home page</a> or <a href="%s">try again</a>.',
 
+	// Drivers
+	'driver_implements'     => 'The %s driver for the %s library must implement the %s interface',
+	'driver_not_found'      => 'The %s driver for the %s library could not be found',
+
 	// Resource names
 	'controller'            => 'controller',
 	'helper'                => 'helper',
