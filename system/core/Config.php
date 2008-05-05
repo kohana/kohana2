@@ -56,7 +56,7 @@ final class Config {
 		}
 
 		// Get the value of the key string
-		$value = Kohana::key_string($key, self::$conf);
+		$value = Kohana::key_string(self::$conf, $key);
 
 		return
 		// If the value is not an array, and the value should end with /

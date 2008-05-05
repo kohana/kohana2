@@ -155,7 +155,6 @@ class Input_Core {
 		// Multiple inputs require us to return an array
 		$return_array = (count($args) > 1);
 
-		// Compose the data to return
 		$data = array();
 		while ($key = array_shift($args))
 		{

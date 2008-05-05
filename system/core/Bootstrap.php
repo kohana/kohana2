@@ -16,8 +16,8 @@ define('KOHANA_CODENAME', 'efímera');
 // Test of Kohana is running in Windows
 define('KOHANA_IS_WIN', PHP_SHLIB_SUFFIX === 'dll');
 
-// Kohana benchmarks are prefixed by a random string to prevent collisions
-define('SYSTEM_BENCHMARK', uniqid());
+// Kohana benchmarks are prefixed to prevent collisions
+define('SYSTEM_BENCHMARK', 'system_benchmark');
 
 // Load benchmarking support
 require SYSPATH.'core/Benchmark'.EXT;
@@ -44,11 +44,17 @@ Benchmark::stop(SYSTEM_BENCHMARK.'_kohana_loading');
 // Start system_initialization
 Benchmark::start(SYSTEM_BENCHMARK.'_system_initialization');
 
+// Prepare the system
 Event::run('system.ready');
+
+// Determine routing
 Event::run('system.routing');
 
 // End system_initialization
 Benchmark::stop(SYSTEM_BENCHMARK.'_system_initialization');
 
+// Make the magic happen!
 Event::run('system.execute');
+
+// Clean up and exit
 Event::run('system.shutdown');
