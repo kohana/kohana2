@@ -362,6 +362,9 @@ class Validation_Core extends ArrayObject {
 			array_keys($this->post_filters)
 		));
 
+		// Copy the array from the object, to optimize multiple sets
+		$object_array = $this->getArrayCopy();
+
 		foreach ($all_fields as $i => $field)
 		{
 			if ($field === $this->any_field)
@@ -371,20 +374,20 @@ class Validation_Core extends ArrayObject {
 				continue;
 			}
 
-			if (isset($this->array_fields[$field]))
+			if (substr($field, -2) === '.*')
 			{
-				// Use the first key for the field
-				$field_key = $this->array_fields[$field];
-
-				// Load the field as an array
-				$this[$field_key] = (array) Kohana::key_string($field, $this);
+				// Set the key to be an array
+				Kohana::key_string_set($object_array, substr($field, 0, -2), array());
 			}
 			else
 			{
-				// Make sure all fields are defined
-				isset($this[$field]) or $this[$field] = NULL;
+				// Set the key to be NULL
+				Kohana::key_string_set($object_array, $field, NULL);
 			}
 		}
+
+		// Swap the array back into the object
+		$this->exchangeArray($object_array);
 
 		// Reset all fields to ALL defined fields
 		$all_fields = array_keys($this->getArrayCopy());
@@ -398,13 +401,27 @@ class Validation_Core extends ArrayObject {
 					foreach ($all_fields as $f)
 					{
 						// Process each filter
-						$this[$f] = is_array($this[$f]) ? array_map($func, $this[$f]) : call_user_func($func, $this[$f]);
+						if (is_array($this[$f]))
+						{
+							array_walk_recursive($this[$f], $func);
+						}
+						else
+						{
+							$this[$f] = call_user_func($func, $this[$f]);
+						}
 					}
 				}
 				else
 				{
 					// Process each filter
-					$this[$field] = is_array($this[$field]) ? array_map($func, $this[$field]) : call_user_func($func, $this[$field]);
+					if (is_array($this[$field]))
+					{
+						array_walk_recursive($this[$field], $func);
+					}
+					else
+					{
+						$this[$field] = call_user_func($func, $this[$field]);
+					}
 				}
 			}
 		}
