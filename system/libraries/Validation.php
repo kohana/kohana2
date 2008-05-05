@@ -111,6 +111,12 @@ class Validation_Core extends ArrayObject {
 			// Ignore "any field" key
 			if ($field === $this->any_field) continue;
 
+			if (isset($this->array_fields[$field]))
+			{
+				// Use the key field
+				$field = $this->array_fields[$field];
+			}
+
 			// Make sure all fields are defined
 			$safe[$field] = isset($this[$field]) ? $this[$field] : NULL;
 		}
