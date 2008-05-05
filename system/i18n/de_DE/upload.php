@@ -2,7 +2,7 @@
 
 $lang = array
 (
-	'userfile_not_set'   => 'Konnte die POST-Variable %s nicht finden.',
+	'userfile_not_set'   => 'Die POST-Variable %s konnte nicht gefunden werden.',
 	'file_exceeds_limit' => 'Die hochgeladene Datei überschreitet die maximal erlaubte Größe, die in der PHP-Konfigurationsdatei eingetragen ist.',
 	'file_partial'       => 'Die Datei wurde nur zum Teil hochgeladen.',
 	'no_file_selected'   => 'Sie haben keine Datei zum Hochladen ausgewählt.',
@@ -18,6 +18,6 @@ $lang = array
 	// Error code responses
 	'set_allowed'        => 'Aus Sicherheitsgründen müssen Sie die Dateitypen, die hochgeladen werden dürfen, festlegen.',
 	'max_file_size'      => 'Benutzen Sie bitte aus Sicherheitsgründen nicht MAX_FILE_SIZE, um die maximale Größe der Hochgeladenen Bilder zu überprüfen.',
-	'no_tmp_dir'         => 'Konnte kein temproräres Verzeichnis zum Beschreiben finden.',
-	'tmp_unwritable'     => 'Konnte das Verzeichnis zum Hochladen, %s, nicht beschreiben.'
+	'no_tmp_dir'         => 'Es konnte kein temproräres Verzeichnis zum Beschreiben gefunden werden.',
+	'tmp_unwritable'     => 'Das Verzeichnis zum Hochladen, %s, konnte nicht beschreiben werden.'
 );

@@ -2,15 +2,15 @@
 
 $lang = array
 (
-	'no_connection'       => 'Konnte keine gültige Verbindungs-ID finden. Stellen Sie bitte sicher, dass Sie Verbunden sind, befor Sie Dateioperationen ausführen.',
-	'unable_to_connect'   => 'Konnte mit dem übergebenen Hostnamen nicht mit dem FTP-Server verbinden.',
-	'unable_to_login'     => 'Konnte nicht mit dem FTP-Server verbinden. Kontrollieren Sie bitte den Benutzernamen und das Passwort.',
+	'no_connection'       => 'Es konnte keine gültige Verbindungs-ID gefunden werden. Stellen Sie bitte sicher, dass Sie Verbunden sind, befor Sie Dateioperationen ausführen.',
+	'unable_to_connect'   => 'Es konnte keine Verbindung mit dem übergebenen Hostnamen zum FTP-Server hergestellt werden.',
+	'unable_to_login'     => 'Es konnte keine Verbindung zum FTP-Server hergestellt werden. Kontrollieren Sie bitte den Benutzernamen und das Passwort.',
 	'unable_to_makdir'    => 'Das von Ihnen gewünschte Verzeichnis konnte nicht erstellt werden.',
-	'unable_to_changedir' => 'Konnte das Verzeichnis nicht wechseln.',
-	'unable_to_chmod'     => 'Konnte Dateirechte nicht setzen. Überprüfen Sie bitte den Pfad. Hinweis: Diese Funktion ist nur in PHP5 oder höher verfügbar.',
-	'unable_to_upload'    => 'Konnte die Datei nicht hochladen. Überprüfen Sie bitte den Pfad.',
-	'no_source_file'      => 'Konnte die Quelldatei nicht finden. Überprüfen Sie bitte den Pfad.',
-	'unable_to_remame'    => 'Konnte Datei ncht umbenennen.',
-	'unable_to_delete'    => 'Konnte Datei nicht löschen.',
-	'unable_to_move'      => 'Konnte Datei nicht verschieben. Stellen Sie bitte sicher, dass das Zielverzeichnis existiert.'	
+	'unable_to_changedir' => 'Das Verzeichnis konnte nicht gewechselt.',
+	'unable_to_chmod'     => 'Dateirechte konnten nicht gesetzt werden. Überprüfen Sie bitte den Pfad. Hinweis: Diese Funktion ist nur in PHP5 oder höher verfügbar.',
+	'unable_to_upload'    => 'Die Datei konnten nicht hochgeladen werden. Überprüfen Sie bitte den Pfad.',
+	'no_source_file'      => 'Die Quelldatei konnte nicht gefunden werden. Überprüfen Sie bitte den Pfad.',
+	'unable_to_remame'    => 'Datei konnte nicht umbenannt werden.',
+	'unable_to_delete'    => 'Datei konnte nicht gelöscht werden.',
+	'unable_to_move'      => 'Datei konnte nicht verschoben werden. Stellen Sie bitte sicher, dass das Zielverzeichnis existiert.'	
 );
