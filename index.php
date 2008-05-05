@@ -12,7 +12,7 @@
  * module demonstration controllers will result in 404 errors. For more information
  * about this option, read the documentation about deploying Kohana.
  *
- * @see http://doc.kohanaphp.com/installation/deployment
+ * @see http://docs.kohanaphp.com/installation/deployment
  */
 define('IN_PRODUCTION', FALSE);
 

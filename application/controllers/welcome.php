@@ -11,7 +11,7 @@
 class Welcome_Controller extends Controller {
 
 	// Disable this controller when Kohana is set to production mode.
-	// See http://doc.kohanaphp.com/installation/deployment for more details.
+	// See http://docs.kohanaphp.com/installation/deployment for more details.
 	const ALLOW_PRODUCTION = FALSE;
 
 	public function index()
@@ -30,7 +30,7 @@ class Welcome_Controller extends Controller {
 		$welcome->links = array
 		(
 			'Home Page'     => 'http://kohanaphp.com/',
-			'Documentation' => 'http://doc.kohanaphp.com/',
+			'Documentation' => 'http://docs.kohanaphp.com/',
 			'Forum'         => 'http://forum.kohanaphp.com/',
 			'License'       => 'Kohana License.html',
 			'Donate'        => 'http://kohanaphp.com/donate.html',

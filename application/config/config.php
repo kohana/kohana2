@@ -56,7 +56,7 @@ $config['display_errors'] = TRUE;
  * Enable or display statistics in the final output. Stats are replaced via
  * specific strings, such as {execution_time}.
  *
- * @see http://doc.kohanaphp.com/general/configuration/config
+ * @see http://docs.kohanaphp.com/general/configuration
  */
 $config['render_stats'] = TRUE;
 

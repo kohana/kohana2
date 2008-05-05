@@ -10,7 +10,7 @@
  * @author     Kohana Team
  * @copyright  (c) 2007 Kohana Team
  * @license    http://kohanaphp.com/license.html
- * @link       http://doc.kohanaphp.com/core/event
+ * @link       http://docs.kohanaphp.com/general/events
  */
 final class Event {
 
