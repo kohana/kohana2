@@ -11,40 +11,28 @@
  */
 class request_Core {
 
-	/**
-	 * Possible http methods
-	 *
-	 * @access     protected
-	 * @staticvar  ARRAY
-	 */
+	// Possible HTTP methods
 	protected static $http_methods = array('get', 'head', 'options', 'post', 'put', 'delete');
 
-	/**
-	 * Content Types from client's HTTP Request Header, Accepts
-	 *
-	 * @access     protected
-	 * @staticvar  ARRAY
-	 */
+	// Content types from client's HTTP Accept request header (array)
 	protected static $accept_types;
 
 	/**
-	 * Returns the HTTP referrer, or the default, if the referrer is not set.
+	 * Returns the HTTP referrer, or the default if the referrer is not set.
 	 *
-	 * @param   mixed  default to return
+	 * @param   mixed   default to return
 	 * @return  string
 	 */
 	public static function referrer($default = FALSE)
 	{
-		return (isset($_SERVER['HTTP_REFERER']) AND ! empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : $default;
+		return ( ! empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : $default;
 	}
 
 	/**
 	 * Tests if the current request is an AJAX request by checking the X-Requested-With HTTP
-	 * Request Header that most popular JS frameworks now set for AJAX calls
+	 * request header that most popular JS frameworks now set for AJAX calls.
 	 *
-	 * @access  public
-	 * @static
-	 * @return  BOOLEAN
+	 * @return  boolean
 	 */
 	public static function is_ajax()
 	{
@@ -52,239 +40,165 @@ class request_Core {
 	}
 
 	/**
-	 * Returns boolean whether user agent accepts xhtml
+	 * Returns current request method.
 	 *
-	 * @access  public
-	 * @static
-	 * @param   BOOLEAN $explicit_checking set to TRUE to disable wildcard checking
-	 * @return  BOOLEAN
-	 */
-	public static function accepts_xhtml($explicit_checking = FALSE)
-	{
-		 return self::accepts('xhtml',$explicit_checking);
-	}
-
-	/**
-	 * Returns boolean whether user agent accepts xml
-	 *
-	 * @access  public
-	 * @static
-	 * @param   BOOLEAN $explicit_checking set to TRUE to disable wildcard checking
-	 * @return  BOOLEAN
-	 */
-	public static function accepts_xml($explicit_checking = FALSE)
-	{
-		 return self::accepts('xml',$explicit_checking);
-	}
-
-	/**
-	 * Returns boolean whether user agent accepts rss
-	 *
-	 * @access  public
-	 * @static
-	 * @param   BOOLEAN $explicit_checking set to TRUE to disable wildcard checking
-	 * @return  BOOLEAN
-	 */
-	public static function accepts_rss($explicit_checking = FALSE)
-	{
-		 return self::accepts('rss',$explicit_checking);
-	}
-
-	/**
-	 * Returns boolean whether user agent accepts atom
-	 *
-	 * @access  public
-	 * @static
-	 * @param   BOOLEAN $explicit_checking set to TRUE to disable wildcard checking
-	 * @return  BOOLEAN
-	 */
-	public static function accepts_atom($explicit_checking = FALSE)
-	{
-		 return self::accepts('atom',$explicit_checking);
-	}
-
-	/**
-	 * Returns current request method
-	 *
-	 * @access  public
-	 * @static
-	 * @throws  Kohana_Exception
-	 * @return  STRING
+	 * @throws  Kohana_Exception in case of an unknown request method
+	 * @return  string
 	 */
 	public static function method()
 	{
 		$method = strtolower($_SERVER['REQUEST_METHOD']);
 
 		if ( ! in_array($method, self::$http_methods))
-			throw new Kohana_Exception('request.unknown_method',$method);
+			throw new Kohana_Exception('request.unknown_method', $method);
 
 		return $method;
 	 }
 
 	/**
-	 * Returns boolean of whether client accepts content type
+	 * Returns boolean of whether client accepts content type.
 	 *
-	 * @access  public
-	 * @static
-	 * @param   STRING $type
-	 * @param   BOOLEAN $explicit_checking set to TRUE to disable wildcard checking
-	 * @return  BOOLEAN
+	 * @param   string   content type
+	 * @param   boolean  set to TRUE to disable wildcard checking
+	 * @return  boolean
 	 */
-	public static function accepts ($type = NULL, $explicit_checking = FALSE)
-	 {
-		self::parse_accept_header();
+	public static function accepts($type = NULL, $explicit_check = FALSE)
+	{
+		request::parse_accept_header();
 
 		if ($type === NULL)
 			return self::$accept_types;
 
-		return (self::accepts_at_quality($type, $explicit_checking) > 0);
+		return (request::accepts_at_quality($type, $explicit_check) > 0);
 	}
 
 	/**
-	 * Compare the q values for given array of content types and return the one with the highest value
-	 * If items are found to have the same q value, the first one encountered in the given array wins
-	 * If all items in the given array have a q value of 0, FALSE is returned
-	 * 
-	 * @access  public
-	 * @static
-	 * @param   ARRAY $types
-	 * @param   BOOLEAN $explicit_checking set to TRUE to disable wildcard checking
-	 * @return  MIXED - STRING mime type with highest q value, BOOLEAN FALSE if none of the given types are acceptable
+	 * Compare the q values for given array of content types and return the one with the highest value.
+	 * If items are found to have the same q value, the first one encountered in the given array wins.
+	 * If all items in the given array have a q value of 0, FALSE is returned.
+	 *
+	 * @param   array    content types
+	 * @param   boolean  set to TRUE to disable wildcard checking
+	 * @return  mixed    string mime type with highest q value, FALSE if none of the given types are accepted
 	 */
-	public static function preferred_accept($types, $explicit_checking = FALSE)
+	public static function preferred_accept($types, $explicit_check = FALSE)
 	{
-		$preferred = FALSE;
-		$max_q = 0;
+		// Initialize
 		$mime_types = array();
-		if (is_array($types))
-		{
-			foreach ($types as $type)
-			{
-				if (is_string($type) AND ! empty($type))
-				{
-					if ( ! isset($mime_types[$type]))
-					{
-						$mime_types[$type] = self::accepts_at_quality($type, $explicit_checking);
-					}
-				}
-			}
+		$max_q = 0;
+		$preferred = FALSE;
 
-			if (count($mime_types) > 0)
+		// Load q values for all given content types
+		foreach (array_unique($types) as $type)
+		{
+			$mime_types[$type] = request::accepts_at_quality($type, $explicit_check);
+		}
+
+		// Look for the highest q value
+		foreach ($mime_types as $type => $q)
+		{
+			if ($q > $max_q)
 			{
-				while (list($type, $q) = each($mime_types))
-				{
-					if ($q > $max_q)
-					{
-						$max_q = $q;
-						$preferred = $type;
-					}
-				}
+				$preferred = $type;
 			}
 		}
+
 		return $preferred;
 	}
-	
+
 	/**
-	 * Returns quality value at which client accepts content type
+	 * Returns quality factor at which the client accepts content type.
 	 *
-	 * @access  public
-	 * @static
-	 * @param   STRING $type
-	 * @param   BOOLEAN $explicit_checking set to TRUE to disable wildcard checking
-	 * @return  INTEGER
+	 * @param   string   content type (e.g. "image/jpg", "jpg")
+	 * @param   boolean  set to TRUE to disable wildcard checking
+	 * @return  integer|float
 	 */
-	public static function accepts_at_quality($type = NULL, $explicit_checking = FALSE)
+	public static function accepts_at_quality($type = NULL, $explicit_check = FALSE)
 	{
-		self::parse_accept_header();
-		
-		if (is_string($type))
+		request::parse_accept_header();
+
+		// Normalize type
+		$type = strtolower((string) $type);
+
+		// General content type (e.g. "jpg")
+		if (strpos($type, '/') === FALSE)
 		{
-			$type = strtolower($type);
-			if (strstr($type,'/') !== FALSE)
+			// Don't accept anything by default
+			$q = 0;
+
+			// Look up relevant mime types
+			foreach ((array) Config::item('mimes.'.$type) as $type)
 			{
-				list($mime_major,$mime_minor) = explode('/',$type);
-
-				if (isset(self::$accept_types[$mime_major][$mime_minor]))
-					return self::$accept_types[$mime_major][$mime_minor];
-
-				if ($explicit_checking === FALSE)
-				{
-					if (isset(self::$accept_types[$mime_major]['*']))
-						return self::$accept_types[$mime_major]['*'];
-				}
-			}
-			else
-			{	
-				$mapped_mime_types = Config::item('mimes.'.$type);
-				if (is_array($mapped_mime_types))
-				{
-					$q = 0;
-					foreach ($mapped_mime_types as $type)
-					{
-						$current_q = self::accepts_at_quality($type, $explicit_checking);
-						if ($current_q > $q)
-						{
-							$q = $current_q;
-						}
-					}
-					return $q;
-				}
+				$q2 = request::accepts_at_quality($type, $explicit_check);
+				$q = ($q2 > $q) ? $q2 : $q;
 			}
 
-			if ($explicit_checking === FALSE)
-			{
-				if (isset(self::$accept_types['*']))
-				{
-					if (isset(self::$accept_types['*']['*']))
-						return self::$accept_types['*']['*'];
-				}
-			}
+			return $q;
 		}
+
+		// Content type with subtype given (e.g. "image/jpg")
+		$type = explode('/', $type, 2);
+
+		// Exact match
+		if (isset(self::$accept_types[$type[0]][$type[1]]))
+			return self::$accept_types[$type[0]][$type[1]];
+        
+		// Wildcard match (if not checking explicitly)
+		if ($explicit_check === FALSE AND isset(self::$accept_types[$type[0]]['*']))
+			return self::$accept_types[$type[0]]['*'];
+
+		// Catch-all wildcard match (if not checking explicitly)
+		if ($explicit_check === FALSE AND isset(self::$accept_types['*']['*']))
+			return self::$accept_types['*']['*'];
+
+		// Content type not accepted
 		return 0;
 	}
-	
+
 	/**
-	 * Parses clients HTTP Request Header, Accept, and builds array structure representing it
-	 * 
-	 * @access  protected
-	 * @static
+	 * Parses client's HTTP Accept request header, and builds array structure representing it.
+	 *
 	 * @return  void
 	 */
 	protected static function parse_accept_header()
 	{
-		if (self::$accept_types === NULL)
-		 {
-			self::$accept_types = array();
-		 	if (isset($_SERVER['HTTP_ACCEPT']) AND ! empty($_SERVER['HTTP_ACCEPT']))
-			{
-				$accept_entries = explode(',',$_SERVER['HTTP_ACCEPT']);
-				foreach ($accept_entries as $accept_entry)
-				{
-					$parameters_separated = explode(';', $accept_entry);
-					list($mime_major, $mime_minor) = explode('/',$parameters_separated[0],2);
-					$q = 1;
-					if (isset($parameters_separated[1]) AND ! empty($parameters_separated[1]) AND substr($parameters_separated[1],0,1)==='q')
-					{
-						list(,$q) = explode('=',$parameters_separated[1],2);
-						$q = (round($q * 1000))/1000;
-					}
+		// Run this function just once
+		if (self::$accept_types !== NULL)
+			return;
 
-					if ( ! isset(self::$accept_types[$mime_major]))
-					{
-						self::$accept_types[$mime_major] = array();
-					}
+		// Initialize accept_types array
+		self::$accept_types = array();
 
-					if ( ! isset(self::$accept_types[$mime_major][$mime_minor]) OR $q > self::$accept_types[$mime_major][$mime_minor])
-					{
-						self::$accept_types[$mime_major][$mime_minor] = $q;
-					}
-				}
-			}
-			else
+		// No HTTP Accept header found
+		if (empty($_SERVER['HTTP_ACCEPT']))
+		{
+			// Accept everything
+			self::$accept_types['*']['*'] = 1;
+			return;
+		}
+
+		// Remove linebreaks and parse the HTTP Accept header
+		foreach (explode(',', str_replace(array("\r", "\n"), '', $_SERVER['HTTP_ACCEPT'])) as $accept_entry)
+		{
+			// Explode each entry in content type and possible quality factor
+			$accept_entry = explode(';', trim($accept_entry), 2);
+
+			// Explode each content type (e.g. "text/html")
+			$type = explode('/', $accept_entry[0], 2);
+
+			// Skip invalid content types
+			if ( ! isset($type[1]))
+				continue;
+
+			// Assume a default quality factor of 1 if no custom q value found
+			$q = (isset($accept_entry[1]) AND preg_match('~\bq\s*+=\s*+([.0-9]+)~', $accept_entry[1], $match)) ? (float) $match[1] : 1;
+
+			// Populate accept_types array
+			if ( ! isset(self::$accept_types[$type[0]][$type[1]]) OR $q > self::$accept_types[$type[0]][$type[1]])
 			{
-				self::$accept_types['*'] = array('*' => 1);
+				self::$accept_types[$type[0]][$type[1]] = $q;
 			}
 		}
 	}
-	
+
 } // End request
