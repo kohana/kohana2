@@ -401,27 +401,13 @@ class Validation_Core extends ArrayObject {
 					foreach ($all_fields as $f)
 					{
 						// Process each filter
-						if (is_array($this[$f]))
-						{
-							array_walk_recursive($this[$f], $func);
-						}
-						else
-						{
-							$this[$f] = call_user_func($func, $this[$f]);
-						}
+						$this[$f] = is_array($this[$f]) ? arr::map_recursive($func, $this[$f]) : call_user_func($func, $this[$f]);
 					}
 				}
 				else
 				{
 					// Process each filter
-					if (is_array($this[$field]))
-					{
-						array_walk_recursive($this[$field], $func);
-					}
-					else
-					{
-						$this[$field] = call_user_func($func, $this[$field]);
-					}
+					$this[$field] = is_array($this[$field]) ? arr::map_recursive($func, $this[$field]) : call_user_func($func, $this[$field]);
 				}
 			}
 		}
