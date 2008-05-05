@@ -133,6 +133,25 @@ class arr_Core {
 	}
 
 	/**
+	 * Because PHP does not have this function, and array_walk_recursive creates
+	 * references in arrays and is not truly recursive.
+	 *
+	 * @param   mixed  callback to apply to each member of the array
+	 * @param   array  array to map to
+	 * @return  array
+	 */
+	public function map_recursive($callback, array $array)
+	{
+		foreach ($array as $key => $val)
+		{
+			// Map the callback to the key
+			$array[$key] = is_array($val) ? arr::map_recursive($callback, $val) : call_user_func($callback, $val);
+		}
+
+		return $array;
+	}
+
+	/**
 	 * Binary search algorithm.
 	 *
 	 * @param   mixed    the value to search for
