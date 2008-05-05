@@ -18,6 +18,10 @@ $lang = array
 	'generic_error'         => 'Die Abfrage konnte nicht abgeschlossen werden',
 	'errors_disabled'       => 'Sie können zur <a href="%s">Startseite</a> zurück kehren oder es <a href="%s">erneut versuchen</a>.',
 
+	// Drivers
+	'driver_implements'     => 'Der Treiber %s für die Bibliothek %s muss das Interface %s implementieren',
+	'driver_not_found'      => 'Der Treiber %s für die Bibliothek %s konnte nicht gefunden werden',
+
 	// Resource names
 	'controller'            => 'Der Controller',
 	'helper'                => 'Der Helfer',
