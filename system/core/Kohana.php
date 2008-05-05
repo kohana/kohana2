@@ -819,7 +819,7 @@ class Kohana {
 		}
 
 		// Get the line from the language
-		$line = self::key_string($key, $language);
+		$line = self::key_string($language, $key);
 
 		// Return the key string as fallback
 		if ($line === NULL)
@@ -875,7 +875,7 @@ class Kohana {
 		}
 
 		// Get the line from the language
-		$line = self::key_string($key, $locale);
+		$line = self::key_string($locale, $key);
 
 		// Return the key string as fallback
 		if ($line === NULL)
@@ -895,7 +895,7 @@ class Kohana {
 	 * @return  string  if the key is found
 	 * @return  void    if the key is not found
 	 */
-	public static function key_string($keys, $array)
+	public static function key_string($array, $keys)
 	{
 		// No array to search
 		if ((empty($keys) AND is_string($keys)) OR (empty($array) AND is_array($array)))
@@ -953,8 +953,25 @@ class Kohana {
 	 */
 	public static function key_string_set( & $array, $keys, $fill = NULL)
 	{
-		// This must always be an array
-		$array = (array) $array;
+		if (is_object($array) AND ($array instanceof ArrayObject))
+		{
+			// Copy the array
+			$array_copy = $array->getArrayCopy();
+
+			// Is an object
+			$array_object = TRUE;
+		}
+		else
+		{
+			if ( ! is_array($array))
+			{
+				// Must always be an array
+				$array = (array) $array;
+			}
+
+			// Copy is a reference to the array
+			$array_copy =& $array;
+		}
 
 		if (empty($keys))
 			return $array;
@@ -963,14 +980,14 @@ class Kohana {
 		$keys = explode('.', $keys);
 
 		// Create reference to the array
-		$row =& $array;
+		$row =& $array_copy;
 
 		for ($i = 0, $end = count($keys) - 1; $i <= $end; $i++)
 		{
 			// Get the current key
 			$key = $keys[$i];
 
-			if ( ! isset($array[$key]))
+			if ( ! isset($row[$key]))
 			{
 				if (isset($keys[$i + 1]))
 				{
@@ -991,6 +1008,12 @@ class Kohana {
 
 			// Go down a level, creating a new row reference
 			$row =& $row[$key];
+		}
+
+		if (isset($array_object))
+		{
+			// Swap the array back in
+			$array->exchangeArray($array_copy);
 		}
 	}
 
