@@ -946,6 +946,57 @@ class Kohana {
 	}
 
 	/**
+	 * Sets values in an array by using a 'dot-noted' string.
+	 *
+	 * @param   array   array to set keys in (reference)
+	 * @param   string  dot-noted string: foo.bar.baz
+	 * @return  mixed   fill value for the key
+	 * @return  void
+	 */
+	public static function key_string_set( & $array, $keys, $fill = NULL)
+	{
+		// This must always be an array
+		$array = (array) $array;
+
+		if (empty($keys))
+			return $array;
+
+		// Create keys
+		$keys = explode('.', $keys);
+
+		// Create reference the the array
+		$row =& $array;
+
+		for ($i = 0, $end = count($keys) - 1; $i <= $end; $i++)
+		{
+			// Get the current key
+			$key = $keys[$i];
+
+			if ( ! isset($array[$key]))
+			{
+				if (isset($keys[$i + 1]))
+				{
+					// Make the value an array
+					$row[$key] = array();
+				}
+				else
+				{
+					// Add the fill key
+					$row[$key] = $fill;
+				}
+			}
+			elseif (isset($keys[$i + 1]))
+			{
+				// Make the value an array
+				$row[$key] = (array) $row[$key];
+			}
+
+			// Go down a level, creating a new row reference
+			$row =& $row[$key];
+		}
+	}
+
+	/**
 	 * Retrieves current user agent information:
 	 * keys:  browser, version, platform, mobile, robot, referrer, languages, charsets
 	 * tests: is_browser, is_mobile, is_robot, accept_lang, accept_charset
