@@ -23,46 +23,50 @@ class url_Core {
 	 */
 	public static function base($index = FALSE, $protocol = FALSE)
 	{
-		$protocol = ($protocol == FALSE) ? Config::item('core.site_protocol') : strtolower($protocol);
-
-		$site_domain = Config::item('core.site_domain', TRUE);
-
-		if (empty($protocol))
+		if ($protocol == FALSE)
 		{
-			if (strlen($site_domain) > 0 AND $site_domain[0] != '/')
+			// Use the default configured protocol
+			$protocol = Config::item('core.site_protocol');
+		}
+
+		// Load the site domain
+		$site_domain = (string) Config::item('core.site_domain', TRUE);
+
+		if ($protocol == FALSE)
+		{
+			if ($site_domain === '' OR $site_domain[0] === '/')
 			{
-				// try to guess protocol, provide full http://domain/path...
-				$base_url = ((empty($_SERVER['HTTPS']) OR $_SERVER['HTTPS'] === 'off') ? 'http' : 'https').'://'.$site_domain;
+				// Use the configured site domain
+				$base_url = $site_domain;
 			}
 			else
 			{
-				// provide only path, eg /path...
-				$base_url = empty($site_domain) ? '' : $site_domain;
+				// Guess the protocol to provide full http://domain/path URL
+				$base_url = ((empty($_SERVER['HTTPS']) OR $_SERVER['HTTPS'] === 'off') ? 'http' : 'https').'://'.$site_domain;
 			}
 		}
 		else
 		{
-			// Add current servername if site_domain starts with a /
-			if (empty($site_domain) OR $site_domain[0] == '/')
+			if ($site_domain === '' OR $site_domain[0] === '/')
 			{
-				$base_url = $protocol.'://'.$_SERVER['HTTP_HOST'].(empty($site_domain) ? '' : $site_domain);
+				// Guess the server name if the domain starts with slash
+				$base_url = $protocol.'://'.$_SERVER['HTTP_HOST'].$site_domain;
 			}
 			else
 			{
-				$base_url = $protocol.'://'.(empty($site_domain) ? '' : $site_domain);
+				// Use the configured site domain
+				$base_url = $protocol.'://'.$site_domain;
 			}
 		}
 
-		// make sure base_url ends in a slash
-		$base_url = rtrim($base_url, '/').'/';
-
-		// add index.php if needed
 		if ($index === TRUE AND $index = Config::item('core.index_page'))
 		{
-			$base_url = $base_url.$index.'/';
+			// Append the index page
+			$base_url = $base_url.$index;
 		}
 
-		return $base_url;
+		// Force a slash on the end of the URL
+		return rtrim($base_url, '/').'/';
 	}
 
 	/**
