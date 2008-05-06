@@ -63,7 +63,7 @@ class upload_Core {
 	 * @param   array  $_FILES item
 	 * @return  bool
 	 */
-	public static function required()
+	public static function required($file)
 	{
 		return (is_array($file)
 			AND isset($file['error'])
