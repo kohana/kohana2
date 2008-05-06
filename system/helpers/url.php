@@ -78,20 +78,26 @@ class url_Core {
 	 */
 	public static function site($uri = '', $protocol = FALSE)
 	{
-		// uri/path
-		$path = trim(parse_url($uri, PHP_URL_PATH), '/');
+		if ($path = trim(parse_url($uri, PHP_URL_PATH), '/'))
+		{
+			// Add path suffix
+			$path .= Config::item('core.url_suffix');
+		}
 
-		// ?query=string
-		$query = parse_url($uri, PHP_URL_QUERY);
+		if ($query = (string) parse_url($uri, PHP_URL_QUERY))
+		{
+			// ?query=string
+			$query = '?'.$query;
+		}
 
-		// #fragment
-		$fragment = parse_url($uri, PHP_URL_FRAGMENT);
-
-		// Set the URL suffix
-		$suffix = ($path !== '') ? Config::item('core.url_suffix') : '';
+		if ($fragment = (string) parse_url($uri, PHP_URL_FRAGMENT))
+		{
+			// #fragment
+			$fragment =  '#'.$fragment;
+		}
 
 		// Concat the URL
-		return url::base(TRUE, $protocol).$path.$suffix.$query.$fragment;
+		return url::base(TRUE, $protocol).$path.$query.$fragment;
 	}
 
 	/**
