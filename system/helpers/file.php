@@ -12,6 +12,18 @@
 class file_Core {
 
 	/**
+	 * Get the extension of a filename.
+	 *
+	 * @param   string   filename
+	 * @return  string
+	 */
+	public static function extension($filename)
+	{
+		// Return the extension of the filename
+		return preg_replace('/^.+\.(.+?)$/', '$1', $filename);
+	}
+
+	/**
 	 * Attempt to get the mime type from a file. This method is horribly
 	 * unreliable, due to PHP being horribly unreliable when it comes to
 	 * determining the mime-type of a file.
