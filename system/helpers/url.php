@@ -66,7 +66,7 @@ class url_Core {
 	}
 
 	/**
-	 * Fetches a site URL based on a URI segment.
+	 * Fetches an absolute site URL based on a URI segment.
 	 *
 	 * @param   string  site URI to convert
 	 * @param   string  non-default protocol
@@ -74,27 +74,20 @@ class url_Core {
 	 */
 	public static function site($uri = '', $protocol = FALSE)
 	{
-		$uri = trim($uri, '/');
+		// uri/path
+		$path = trim(parse_url($uri, PHP_URL_PATH), '/');
 
-		$qs = ''; // anchor?query=string
-		$id = ''; // anchor#id
+		// ?query=string
+		$query = parse_url($uri, PHP_URL_QUERY);
 
-		if (strpos($uri, '?') !== FALSE)
-		{
-			list ($uri, $qs) = explode('?', $uri, 2);
-			$qs = '?'.$qs;
-		}
+		// #fragment
+		$fragment = parse_url($uri, PHP_URL_FRAGMENT);
 
-		if (strpos($uri, '#') !== FALSE)
-		{
-			list ($uri, $id) = explode('#', $uri, 2);
-			$id = '#'.$id;
-		}
+		// Set the URL suffix
+		$suffix = ($path !== '') ? Config::item('core.url_suffix') : '';
 
-		$index_page = Config::item('core.index_page', TRUE);
-		$url_suffix = ($uri !== '') ? Config::item('core.url_suffix') : '';
-
-		return url::base(FALSE, $protocol).$index_page.$uri.$url_suffix.$qs.$id;
+		// Concat the URL
+		return url::base(TRUE, $protocol).$path.$suffix.$query.$fragment;
 	}
 
 	/**
