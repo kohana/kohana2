@@ -39,11 +39,9 @@ class upload_Core {
 			// Use the pre-configured upload directory
 			$directory = Config::item('upload.directory', TRUE);
 		}
-		else
-		{
-			// Make sure the directory ends with a slash
-			$directory = rtrim($directory, '/').'/';
-		}
+
+		// Make sure the directory ends with a slash
+		$directory = rtrim($directory, '/').'/';
 
 		if ( ! is_writable($directory))
 			throw new Kohana_Exception('upload.not_writable', $directory);
@@ -60,19 +58,31 @@ class upload_Core {
 	/* Validation Rules */
 
 	/**
-	 * Tests if a $_FILES item is valid.
+	 * Tests if a $_FILES item exists.
 	 *
-	 * @param   array    $_FILES item
-	 * @return  boolean
+	 * @param   array  $_FILES item
+	 * @return  bool
 	 */
-	public static function valid($file)
+	public static function required()
 	{
 		return (is_array($file)
 			AND isset($file['error'])
 			AND isset($file['name'])
 			AND isset($file['type'])
 			AND isset($file['tmp_name'])
-			AND isset($file['size'])
+			AND isset($file['size']));
+	}
+
+	/**
+	 * Tests if a $_FILES item is valid.
+	 *
+	 * @param   array    $_FILES item
+	 * @return  bool
+	 */
+	public static function valid($file)
+	{
+		return (isset($file['tmp_name'])
+			AND isset($file['error'])
 			AND is_uploaded_file($file['tmp_name'])
 			AND $file['error'] === UPLOAD_ERR_OK);
 	}
@@ -82,12 +92,12 @@ class upload_Core {
 	 *
 	 * @param   array    $_FILES item
 	 * @param   array    allowed file extensions
-	 * @return  boolean
+	 * @return  bool
 	 */
 	public static function type(array $file, array $allowed_types)
 	{
 		// Get the default extension of the file
-		$extension = strtolower(preg_replace('/^.+\.(.+?)$/', '$1', $file['name']));
+		$extension = strtolower(file::extension($file['name']));
 
 		// Get the mime types for the extension
 		$mime_types = Config::item('mimes.'.$extension);
@@ -104,7 +114,7 @@ class upload_Core {
 	 *
 	 * @param   array    $_FILES item
 	 * @param   array    maximum file size
-	 * @return  boolean
+	 * @return  bool
 	 */
 	public function size(array $file, array $size)
 	{
