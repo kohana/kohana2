@@ -84,13 +84,13 @@ class url_Core {
 			$path .= Config::item('core.url_suffix');
 		}
 
-		if ($query = (string) parse_url($uri, PHP_URL_QUERY))
+		if ($query = parse_url($uri, PHP_URL_QUERY))
 		{
 			// ?query=string
 			$query = '?'.$query;
 		}
 
-		if ($fragment = (string) parse_url($uri, PHP_URL_FRAGMENT))
+		if ($fragment = parse_url($uri, PHP_URL_FRAGMENT))
 		{
 			// #fragment
 			$fragment =  '#'.$fragment;
