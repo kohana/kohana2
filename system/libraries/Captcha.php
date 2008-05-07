@@ -234,6 +234,65 @@ class Captcha_Core {
 	}
 
 	/**
+	 * Draws the alphasoup Captcha image:
+	 * Requires GD with freetype and available truetype compatible font files.
+	 *
+	 * @param   none
+	 * @return  void
+	 */
+	protected function alphasoup_captcha()
+	{
+		$this->img_create();
+		$font = $this->font_path.$this->font_name;
+		$text_color = imagecolorallocate($this->image, mt_rand(0, 100), mt_rand(0, 100), mt_rand(0, 100));
+		$color_limit = mt_rand(96, 160);
+		$fill_color = imageColorAllocate($this->image, mt_rand($color_limit, 255), mt_rand($color_limit, 255), mt_rand($color_limit, 255));
+		imageFilledRectangle($this->image, 0, 0, $this->width, $this->height, $fill_color);
+		$font_width = imageFontWidth(10);
+		$chars = 'ABCDEFGHIJKLMNO';
+
+		for($loop = 0; $loop < 20; $loop++)
+		{
+			$text_color = imageColorAllocate($this->image, mt_rand($color_limit + 8, 255), mt_rand($color_limit + 8, 255), mt_rand($color_limit + 8, 255));
+			$char = substr($chars, mt_rand(0,15), 1);
+			imageTTFtext($this->image, mt_rand(23, 27), mt_rand(160, 200), mt_rand(-10, $this->width+10), mt_rand(-10, 60), $text_color, $font, $char);
+		}
+
+		$this->calculate_spacing();
+		// Draw each Captcha character with varying attributes
+		for ($i = 0, $strlen = strlen($this->captcha_code); $i < $strlen; $i++)
+		{
+			// Allocate random color, size and rotation attributes to text
+			$text_color = imagecolorallocate($this->image, mt_rand(0, 100), mt_rand(0, 100), mt_rand(0, 100));
+			$angle = mt_rand(-40, 40);
+
+			// Make first char angle inward
+			if ($i === 0)
+			{
+				$angle = -abs($angle);
+			}
+			// Make last char angle inward
+			if ($i === ($this->num_chars - 1))
+			{
+				$angle = abs($angle);
+			}
+
+			// Scale the character size on image height
+			$font_size = mt_rand($this->height - 20, $this->height - 12);
+			$char_details = imageftbbox($font_size, $angle, $font, $this->captcha_code[$i], array());
+
+			// Calculate character starting coordinates
+			$iX = $this->spacing / 4 + $i * $this->spacing;
+			$char_height = $char_details[2] - $char_details[5];
+			$iY = $this->height / 2 + $char_height / 4;
+
+			// Write text character to image
+			imagefttext($this->image, $font_size, $angle, $iX, $iY, $text_color, $font, $this->captcha_code[$i], array());
+		}
+
+	}
+
+	/**
 	 * Draws the math riddle Captcha image.
 	 * Requires GD with freetype and available truetype compatible font files.
 	 *
