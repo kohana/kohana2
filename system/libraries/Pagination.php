@@ -92,6 +92,9 @@ class Pagination_Core {
 
 			// Create full URL
 			$this->url = url::site(Router::$current_uri).'?'.str_replace('%7Bpage%7D', '{page}', http_build_query($_GET));
+
+			// Reset page number
+			$_GET[$this->query_string] = $this->current_page;
 		}
 
 		// Build generic URL with page as URI segment
