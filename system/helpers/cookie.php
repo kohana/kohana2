@@ -64,7 +64,7 @@ class cookie_Core {
 			$prefix = (string) Config::item('cookie.prefix');
 		}
 
-		return Input::instance()->cookie($prefix.$name, $xss_clean);
+		return Input::instance()->cookie($prefix.$name, NULL, $xss_clean);
 	}
 
 	/**
