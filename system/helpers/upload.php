@@ -15,17 +15,20 @@ class upload_Core {
 	/**
 	 * Save an uploaded file to a new location.
 	 *
-	 * @param   string   name of $_FILE input
+	 * @param   mixed    name of $_FILE input or array of upload data
 	 * @param   string   new filename
 	 * @param   string   new directory
 	 * @return  string   full path to new file
 	 */
-	public function save($name, $filename = NULL, $directory = NULL)
+	public function save($file, $filename = NULL, $directory = NULL)
 	{
+		// Load file data from FILES if not passed as array
+		$file = is_array($file) ? $file : $_FILES[$file];
+
 		if ($filename === NULL)
 		{
 			// Use the default filename, with a timestamp pre-pended
-			$filename = time().$_FILES[$name]['name'];
+			$filename = time().$file['name'];
 		}
 
 		if (Config::item('upload.remove_spaces'))
@@ -46,7 +49,7 @@ class upload_Core {
 		if ( ! is_writable($directory))
 			throw new Kohana_Exception('upload.not_writable', $directory);
 
-		if (is_uploaded_file($_FILES[$name]['tmp_name']) AND move_uploaded_file($_FILES[$name]['tmp_name'], $filename = $directory.$filename))
+		if (is_uploaded_file($file['tmp_name']) AND move_uploaded_file($file['tmp_name'], $filename = $directory.$filename))
 		{
 			// Move the file to the upload directory
 			return $filename;
@@ -79,12 +82,12 @@ class upload_Core {
 	 * @param   array    $_FILES item
 	 * @return  bool
 	 */
-	public static function valid($file)
+	public static function valid(array $file)
 	{
 		return (isset($file['tmp_name'])
 			AND isset($file['error'])
 			AND is_uploaded_file($file['tmp_name'])
-			AND $file['error'] === UPLOAD_ERR_OK);
+			AND (int) $file['error'] === UPLOAD_ERR_OK);
 	}
 
 	/**
