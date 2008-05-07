@@ -390,7 +390,7 @@ class date_Core {
 		elseif (is_int($difference))
 		{
 			// Single-value return
-			$difference = $difference.($difference === 1 ? inflector::singular($output) : $output);
+			$difference = $difference.' '.($difference === 1 ? inflector::singular($output) : $output);
 		}
 
 		return $difference;
