@@ -157,7 +157,7 @@ class Input_Core {
 		// Get the value from the array
 		$value = isset($array[$key]) ? $array[$key] : $default;
 
-		if ($xss_clean === TRUE AND $this->use_xss_clean === FALSE)
+		if ($this->use_xss_clean === FALSE AND $xss_clean === TRUE)
 		{
 			// XSS clean the value
 			$value = $this->xss_clean($value);
