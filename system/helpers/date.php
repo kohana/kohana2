@@ -354,4 +354,31 @@ class date_Core {
 		return $difference;
 	}
 
+	public static function timespan_string($time1, $time2 = NULL, $output = 'years,months,weeks,days,hours,minutes,seconds')
+	{
+		if ($difference = date::timespan($time1, $time2, $output) AND is_array($difference))
+		{
+			$key = end($difference);
+			$key = key($difference);
+
+			echo Kohana::debug($key, $difference);exit;
+
+			$span = array();
+			foreach ($difference as $name => $amount)
+			{
+				if ($amount === 1)
+				{
+					// Make the name singualr
+					$name = inflector::singular($name);
+				}
+
+				$span[] = $amount.' '.$name;
+			}
+
+			$span = array_splice()
+
+			$span = trim($span).' ago';
+		}
+	}
+
 } // End date
