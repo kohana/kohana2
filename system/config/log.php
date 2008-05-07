@@ -12,12 +12,13 @@
 
 /**
  * Cascading message threshold.
- * 
+ *
  * Log Thresholds:
  *  0 - Disables logging completely
  *  1 - Error Messages (including PHP errors)
- *  2 - Debug Messages
- *  3 - Informational Messages
+ *  2 - Application Alert Messages
+ *  3 - Application Informational Messages
+ *  4 - Debug Messages
  */
 $config['threshold'] = 1;
 

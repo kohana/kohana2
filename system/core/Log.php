@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Message file logging class.
- * 
+ *
  * $Id$
  *
  * @package    Core
@@ -13,7 +13,7 @@ final class Log {
 
 	private static $log_directory;
 
-	private static $types = array(1 => 'error', 2 => 'debug', 3 => 'info');
+	private static $types = array(1 => 'error', 2 => 'alert', 3 => 'info', 4 => 'debug');
 	private static $messages = array();
 
 	/**
