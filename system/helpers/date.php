@@ -385,7 +385,7 @@ class date_Core {
 			}
 
 			// Replace difference by making the span into a string
-			$difference = trim(implode('', $span), ',').' ago';
+			$difference = trim(implode('', $span), ',');
 		}
 
 		return $difference;
