@@ -379,23 +379,13 @@ class date_Core {
 					// Skip empty amounts
 					continue;
 				}
-				elseif ($amount === 1)
-				{
-					// Make the name singualr
-					$name = inflector::singular($name);
-				}
-
-				if ($name === $last)
-				{
-					// Add "and"
-					$amount = 'and '.$amount;
-				}
 
 				// Add the amount to the span
-				$span[] = $amount.' '.$name;
+				$span[] = ($name === $last ? ' and ' : ', ').$amount.' '.($amount === 1 ? inflector::singular($name) : $name);
 			}
 
-			$difference = implode(', ', $span).' ago';
+			// Replace difference by making the span into a string
+			$difference = trim(implode('', $span), ',').' ago';
 		}
 
 		return $difference;
