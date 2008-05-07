@@ -132,7 +132,6 @@ class Input_Core {
 	public function __call($global, $args = array())
 	{
 		// Array to be searched, assigned by reference
-		$array = array();
 		switch (strtolower($global))
 		{
 			case 'get':    $array =& $_GET;    break;
@@ -143,34 +142,28 @@ class Input_Core {
 				throw new Kohana_Exception('core.invalid_method', $global, get_class($this));
 		}
 
-		if (count($args) === 0)
+		if ($args === array())
 			return $array;
 
-		// If the last argument is a boolean, it's the XSS clean flag
-		$xss_clean = (is_bool(end($args))) ? array_pop($args) : FALSE;
-
-		// Reset the array pointer
-		reset($args);
-
-		// Multiple inputs require us to return an array
-		$return_array = (count($args) > 1);
-
-		$data = array();
-		while ($key = array_shift($args))
+		if (count($args) < 3)
 		{
-			if (isset($array[$key]))
-			{
-				// XSS clean if the data has not already been cleaned
-				$data[$key] = ($this->use_xss_clean == FALSE AND $xss_clean == TRUE) ? $this->xss_clean($array[$key]) : $array[$key];
-			}
-			else
-			{
-				$data[$key] = NULL;
-			}
+			// Add $default and $xss_clean params
+			$args += array(1 => NULL, 2 => FALSE);
 		}
 
-		// Return the global value
-		return ($return_array) ? $data : current($data);
+		// Extract the arguments
+		list ($key, $default, $xss_clean) = $args;
+
+		// Get the value from the array
+		$value = isset($array[$key]) ? $array[$key] : $default;
+
+		if ($xss_clean === TRUE AND $this->use_xss_clean === FALSE)
+		{
+			// XSS clean the value
+			$value = $this->xss_clean($value);
+		}
+
+		return $value;
 	}
 
 	/**
