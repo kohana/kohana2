@@ -124,6 +124,10 @@ class Session_Database_Driver implements Session_Driver {
 
 	public function destroy($id)
 	{
+		$config = Config::item('session');
+
+    	($config['regenerate'] > 0 AND ($_SESSION['total_hits'] % $config['regenerate']) === 0) AND $id = $this->old_id;
+	
 		return (bool) $this->db->delete($this->db_group, array('session_id' => $id))->count();
 	}
 

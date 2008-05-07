@@ -249,14 +249,14 @@ class Session_Core {
 	{
 		if (isset($_SESSION))
 		{
+			// Destroy the session
+			session_destroy();
+
 			// Remove all session data
 			session_unset();
 
 			// Delete the session cookie
 			cookie::delete(self::$config['name']);
-
-			// Destroy the session
-			session_destroy();
 
 			// Re-initialize the array
 			$_SESSION = array();
