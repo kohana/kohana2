@@ -354,31 +354,51 @@ class date_Core {
 		return $difference;
 	}
 
+	/**
+	 * Returns time difference between two timestamps, in the format:
+	 * N year, N months, N weeks, N days, N hours, N minutes, and N seconds ago
+	 *
+	 * @param   integer       timestamp
+	 * @param   integer       timestamp, defaults to the current time
+	 * @param   string        formatting string
+	 * @return  string
+	 */
 	public static function timespan_string($time1, $time2 = NULL, $output = 'years,months,weeks,days,hours,minutes,seconds')
 	{
 		if ($difference = date::timespan($time1, $time2, $output) AND is_array($difference))
 		{
-			$key = end($difference);
-			$key = key($difference);
-
-			echo Kohana::debug($key, $difference);exit;
+			// Determine the key of the last item in the array
+			$last = end($difference);
+			$last = key($difference);
 
 			$span = array();
 			foreach ($difference as $name => $amount)
 			{
-				if ($amount === 1)
+				if ($name !== $last AND $amount === 0)
+				{
+					// Skip empty amounts
+					continue;
+				}
+				elseif ($amount === 1)
 				{
 					// Make the name singualr
 					$name = inflector::singular($name);
 				}
 
+				if ($name === $last)
+				{
+					// Add "and"
+					$amount = 'and '.$amount;
+				}
+
+				// Add the amount to the span
 				$span[] = $amount.' '.$name;
 			}
 
-			$span = array_splice()
-
-			$span = trim($span).' ago';
+			$difference = implode(', ', $span).' ago';
 		}
+
+		return $difference;
 	}
 
 } // End date
