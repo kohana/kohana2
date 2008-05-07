@@ -12,6 +12,17 @@
 class url_Core {
 
 	/**
+	 * Fetches the current URI.
+	 *
+	 * @param   boolean  include the query string
+	 * @return  string
+	 */
+	public static function current($qs = FALSE)
+	{
+		return Router::$current_uri.($qs === TRUE ? Router::$query_string : '');
+	}
+
+	/**
 	 * Base URL, with or without the index page.
 	 *
 	 * If protocol (and core.site_protocol) and core.site_domain are both empty,
@@ -101,14 +112,25 @@ class url_Core {
 	}
 
 	/**
-	 * Fetches the current URI.
+	 * Merges an array of arguments with the current URI and query string to
+	 * overload, instead of replace, the current query string.
 	 *
-	 * @param   boolean  include the query string
+	 * @param   array   associative array of arguments
 	 * @return  string
 	 */
-	public static function current($qs = FALSE)
+	public static function merge(array $arguments)
 	{
-		return Router::$current_uri.($qs === TRUE ? Router::$query_string : '');
+		if ($_GET === $arguments)
+		{
+			$query = Router::$query_string;
+		}
+		elseif ($query = http_build_query(array_merge($_GET, $arguments)))
+		{
+			$query = '?'.$query;
+		}
+
+		// Return the current URI with the arguments merged into the query string
+		return Router::$current_uri.$query;
 	}
 
 	/**
