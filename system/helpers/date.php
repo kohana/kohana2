@@ -387,6 +387,11 @@ class date_Core {
 			// Replace difference by making the span into a string
 			$difference = trim(implode('', $span), ',');
 		}
+		elseif (is_int($difference))
+		{
+			// Single-value return
+			$difference = $difference.($difference === 1 ? inflector::singular($output) : $output);
+		}
 
 		return $difference;
 	}
