@@ -114,6 +114,23 @@ class html_Core {
 	}
 
 	/**
+	 * Create an array of anchors from an array of link/title pairs.
+	 *
+	 * @param   array  link/title pairs
+	 * @return  array
+	 */
+	public static function anchor_array(array $array)
+	{
+		$anchors = array();
+		foreach ($array as $link => $title)
+		{
+			// Create list of anchors
+			$anchors[] = html::anchor($link, $title);
+		}
+		return $anchors;
+	}
+
+	/**
 	 * Generates an obfuscated version of an email address.
 	 *
 	 * @param   string  email address
