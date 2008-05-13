@@ -18,6 +18,10 @@ $lang = array
 	'generic_error'         => 'Барањето Не Може Да Биде Извршено',
 	'errors_disabled'       => 'Можете да отидете на <a href="%s">почетната страница</a> или да <a href="%s">пробате повторно</a>.',
 
+	// Drivers
+	'driver_implements'     => 'Драјверот %s за библиотеката %s мора да го имплементира интерфејсот %s',
+	'driver_not_found'      => 'Драјверот %s за библиотеката %s не е пронајден',
+
 	// Resource names
 	'controller'            => 'controller',
 	'helper'                => 'helper',
