@@ -178,14 +178,14 @@ class Database_Core {
 
 		// Load the driver
 		if ( ! Kohana::auto_load($driver))
-			throw new Kohana_Database_Exception('database.driver_not_supported', $this->config['connection']['type']);
+			throw new Kohana_Database_Exception('core.driver_not_found', $this->config['connection']['type'], get_class($this));
 
 		// Initialize the driver
 		$this->driver = new $driver($this->config);
 
 		// Validate the driver
 		if ( ! ($this->driver instanceof Database_Driver))
-			throw new Kohana_Database_Exception('database.driver_not_supported', 'Database drivers must use the Database_Driver interface.');
+			throw new Kohana_Database_Exception('core.driver_implements', $this->config['connection']['type'], get_class($this), 'Database_Driver');
 
 		Log::add('debug', 'Database Library initialized');
 	}

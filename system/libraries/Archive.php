@@ -33,14 +33,14 @@ class Archive_Core {
 
 		// Load the driver
 		if ( ! Kohana::auto_load($driver))
-			throw new Kohana_Exception('archive.driver_not_supported', $type);
+			throw new Kohana_Exception('core.driver_not_found', $type, get_class($this));
 
 		// Initialize the driver
 		$this->driver = new $driver();
 
 		// Validate the driver
 		if ( ! ($this->driver instanceof Archive_Driver))
-			throw new Kohana_Exception('archive.driver_implements', $type);
+			throw new Kohana_Exception('core.driver_implements', $type, get_class($this), 'Archive_Driver');
 
 		Log::add('debug', 'Archive Library initialized');
 	}

@@ -8,6 +8,7 @@ $lang = array
 	'cannot_write_log'      => 'Je log.directory instelling in <tt>config/config.php</tt> verwijst niet naar een schrijfbare directory.',
 	'resource_not_found'    => 'De opgevraagde %s, <tt>%s</tt>, kon niet gevonden worden.',
 	'invalid_filetype'      => 'Het opgevraagde bestandstype, <tt>.%s</tt>, wordt niet toegestaan door het view configuratiebestand.',
+	'view_set_filename'     => 'Je moet de view bestandsnaam opgeven voordat je render aanroept.',
 	'no_default_route'      => 'Zet een default route in <tt>config/routes.php</tt>.',
 	'no_controller'         => 'Kohana kon geen controller aanduiden om deze pagina te verwerken: %s',
 	'page_not_found'        => 'De opgevraagde pagina, <tt>%s</tt>, kon niet gevonden worden.',
@@ -16,6 +17,10 @@ $lang = array
 	'stack_trace'           => 'Stack Trace',
 	'generic_error'         => 'Oproep kon niet afgewerkt worden',
 	'errors_disabled'       => 'Ga naar de <a href="%s">homepage</a> of <a href="%s">probeer opnieuw</a>.',
+
+	// Drivers
+	'driver_implements'     => 'De %s driver voor de %s library moet de %s interface implementeren.',
+	'driver_not_found'      => 'De %s driver voor de %s library werd niet gevonden.',
 
 	// Resource names
 	'controller'            => 'controller',

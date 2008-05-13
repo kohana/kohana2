@@ -110,13 +110,14 @@ class Image_Core {
 
 		// Load the driver
 		if ( ! Kohana::auto_load($driver))
-			throw new Kohana_Exception('image.driver_not_supported', $this->config['driver']);
+			throw new Kohana_Exception('core.driver_not_found', $this->config['driver'], get_class($this));
 
 		// Initialize the driver
 		$this->driver = new $driver($this->config['params']);
 
+		// Validate the driver
 		if ( ! ($this->driver instanceof Image_Driver))
-			throw new Kohana_Exception('image.invalid_driver', $driver);
+			throw new Kohana_Exception('core.driver_implements', $this->config['driver'], get_class($this), 'Image_Driver');
 	}
 
 	/**

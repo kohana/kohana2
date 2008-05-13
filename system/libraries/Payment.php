@@ -74,7 +74,7 @@ class Payment_Core {
 
 		// Load the driver
 		if ( ! Kohana::auto_load($driver))
-			throw new Kohana_Exception('payment.driver_not_supported', $this->config['driver']);
+			throw new Kohana_Exception('core.driver_not_found', $this->config['driver'], get_class($this));
 
 		// Get the driver specific settings
 		$this->config = array_merge($this->config, Config::item('payment.'.$this->config['driver']));
@@ -84,7 +84,7 @@ class Payment_Core {
 
 		// Validate the driver
 		if ( ! ($this->driver instanceof Payment_Driver))
-			throw new Kohana_Exception('payment.driver_implements', $this->config['driver']);
+			throw new Kohana_Exception('core.driver_implements', $this->config['driver'], get_class($this), 'Payment_Driver');
 	}
 
 	/**

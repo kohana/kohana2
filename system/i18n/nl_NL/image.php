@@ -3,7 +3,6 @@
 $lang = array
 (
 	'getimagesize_missing'    => 'De Image library vereist de <tt>getimagesize</tt> PHP functie en die is niet beschikbaar op dit systeem.',
-	'driver_not_supported'    => 'De %s Image driver werd niet gevonden.',
 	'unsupported_method'      => 'De huidige Image driver ondersteunt volgende transformatie niet: %s.',
 	'file_not_found'          => 'De opgegeven afbeelding, %s, werd niet gevonden. Controleer a.u.b. eerst of afbeeldingen bestaan via de <tt>file_exists</tt> functie voordat je ze begint te bewerken.',
 	'type_not_allowed'        => 'De opgegeven afbeelding, %s, is geen toegestaan afbeeldingstype.',
