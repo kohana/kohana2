@@ -99,6 +99,9 @@ class upload_Core {
 	 */
 	public static function type(array $file, array $allowed_types)
 	{
+		if ((int) $file['error'] !== UPLOAD_ERR_OK)
+			return TRUE;
+
 		// Get the default extension of the file
 		$extension = strtolower(file::extension($file['name']));
 
@@ -121,6 +124,9 @@ class upload_Core {
 	 */
 	public function size(array $file, array $size)
 	{
+		if ((int) $file['error'] !== UPLOAD_ERR_OK)
+			return TRUE;
+
 		// Only one size is allowed
 		$size = strtoupper($size[0]);
 
