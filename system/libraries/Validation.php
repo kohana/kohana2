@@ -25,7 +25,7 @@ class Validation_Core extends ArrayObject {
 	protected $rules = array();
 	protected $callbacks = array();
 
-	// Rules that are allowed to run on empty files
+	// Rules that are allowed to run on empty fields
 	protected $empty_rules = array('required', 'matches');
 
 	// Errors
