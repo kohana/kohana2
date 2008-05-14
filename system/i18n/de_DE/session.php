@@ -2,7 +2,5 @@
 
 $lang = array
 (
-	'driver_not_supported' => 'Der Sessiontreiber %s konnte nicht gefunden werden.',
-	'driver_implements'    => 'Sessiontreiber müssen das Interface Session_Driver implementieren.',
 	'invalid_session_name' => 'Der Sessionname %s ist ungültig. Dieser sollte nur aus alphanumerischen Zeichen und mindestens einem Buchstaben bestehen.',
 );
