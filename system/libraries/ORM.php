@@ -168,6 +168,9 @@ class ORM_Core {
 		{
 			if (empty($this->object_related[$key]['cur']))
 			{
+				// Create an array
+				$this->object_related[$key]['cur'] = array();
+
 				// Foreign key
 				$fk = inflector::singular($key).'_id';
 
