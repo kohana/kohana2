@@ -39,11 +39,13 @@ class ORM_Core {
 
 	// Currently loaded object
 	protected $object;
+	protected $object_related;
 	protected $loaded = FALSE;
 	protected $saved = FALSE;
 
 	// Changed object keys
 	protected $changed = array();
+	protected $changed_related = array();
 
 	// Object Relationships
 	protected $has_one = array();
@@ -162,6 +164,30 @@ class ORM_Core {
 			// Return the model
 			return $this->object->$key;
 		}
+		elseif (in_array($key, $this->has_and_belongs_to_many))
+		{
+			if (empty($this->object_related[$key]['cur']))
+			{
+				// Foreign key
+				$fk = inflector::singular($key).'_id';
+
+				// Query to find relationships
+				$query = self::$db
+					->select($fk)
+					->from($this->related_table($key))
+					->where($this->class.'_id', $this->id)
+					->get();
+
+				foreach ($query as $row)
+				{
+					// Set relationships
+					$this->object_related[$key]['cur'][] = $row->$fk;
+				}
+			}
+
+			// Return the current relationships
+			return $this->object_related[$key]['cur'];
+		}
 		else
 		{
 			switch ($key)
@@ -204,6 +230,20 @@ class ORM_Core {
 				// Data has been changed
 				$this->saved = FALSE;
 			}
+		}
+		elseif (in_array($key, $this->has_and_belongs_to_many) AND is_array($value))
+		{
+			if (empty($this->object_related[$key]))
+			{
+				// Force a load of the relationship
+				$this->$key;
+			}
+
+			// Set the new relationships
+			$this->object_related[$key]['new'] = $value;
+
+			// Relationships changed
+			$this->changed_related[$key] = $key;
 		}
 		else
 		{
@@ -750,40 +790,79 @@ class ORM_Core {
 	public function save()
 	{
 		// No data was changed
-		if (empty($this->changed))
+		if (empty($this->changed) AND empty($this->changed_related))
 			return TRUE;
 
-		$data = array();
-		foreach ($this->changed as $key)
+		if ( ! empty($this->changed))
 		{
-			// Get changed data
-			$data[$key] = $this->object->$key;
-		}
+			$data = array();
+			foreach ($this->changed as $key)
+			{
+				// Get changed data
+				$data[$key] = $this->object->$key;
+			}
 
-		if (empty($this->object->id))
-		{
-			// Perform an insert
-			$query = self::$db->insert($this->table, $data);
+			if (empty($this->object->id))
+			{
+				// Perform an insert
+				$query = self::$db->insert($this->table, $data);
+
+				if ($query->count())
+				{
+					// Set current object id by the insert id
+					$this->object->id = $query->insert_id();
+				}
+			}
+			else
+			{
+				// Perform an update
+				$query = self::$db->update($this->table, $data, array('id' => $this->object->id));
+			}
 
 			if ($query->count())
 			{
-				// Set current object id by the insert id
-				$this->object->id = $query->insert_id();
+				// Reset changed data
+				$this->changed = array();
+
+				// Reset SELECT, WHERE, and FROM
+				$this->select = $this->where = $this->from = FALSE;
+
+				// Object has been loaded and saved
+				$this->loaded = $this->saved = TRUE;
 			}
 		}
-		else
-		{
-			// Perform an update
-			$query = self::$db->update($this->table, $data, array('id' => $this->object->id));
-		}
 
-		if ($query->count())
+		if ( ! empty($this->changed_related) AND ($this->saved OR $this->loaded))
 		{
-			// Reset changed data
-			$this->changed = array();
+			foreach ($this->changed_related as $table)
+			{
+				// Skip empty rows
+				if (empty($this->object_related[$table]))
+					continue;
 
-			// Reset SELECT, WHERE, and FROM
-			$this->select = $this->where = $this->from = FALSE;
+				// Current and new relationships
+				$cur = $this->object_related[$table]['cur'];
+				$new = $this->object_related[$table]['new'];
+
+				// Foreign and primary keys
+				$fk = inflector::singular($table).'_id';
+				$pk = $this->class.'_id';
+
+				// Relationship table
+				$table = $this->related_table($table);
+
+				if ($delete = array_diff($cur, $new))
+				{
+					// Delete relationships
+					self::$db->in($fk, $delete)->where($pk, $this->id)->delete($table);
+				}
+
+				foreach (array_diff($new, $cur) as $key)
+				{
+					// Create new relationships
+					self::$db->insert($table, array($pk => $this->id, $fk => $key));
+				}
+			}
 		}
 
 		return TRUE;
