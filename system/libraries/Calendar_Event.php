@@ -11,6 +11,17 @@
  */
 class Calendar_Event_Core extends Event_Observer {
 
+	// Boolean conditions
+	protected $booleans = array
+	(
+		'current',
+		'weekend',
+		'first_day',
+		'last_day',
+		'last_occurrence',
+		'easter',
+	);
+
 	// Rendering conditions
 	protected $conditions = array();
 
@@ -53,6 +64,21 @@ class Calendar_Event_Core extends Event_Observer {
 		}
 		else
 		{
+			if ($key === 'callback')
+			{
+				// Do nothing
+			}
+			elseif (in_array($key, $this->booleans))
+			{
+				// Make the value boolean
+				$value = (bool) $value;
+			}
+			else
+			{
+				// Make the value an int
+				$value = (int) $value;
+			}
+
 			$this->conditions[$key] = $value;
 		}
 
