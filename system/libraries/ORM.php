@@ -309,7 +309,7 @@ class ORM_Core {
 		if (method_exists(self::$db, $method))
 		{
 			// Do not allow query methods
-			if (preg_match('/query|get|insert|update|list_fields|field_data/', $method))
+			if (preg_match('/^(?:query|get|insert|update|list_fields|field_data)$/', $method))
 				return $this;
 
 			if ($method === 'select')
@@ -332,6 +332,9 @@ class ORM_Core {
 			// Pass through to Database, manually calling up to 2 args, for speed.
 			switch (count($args))
 			{
+				case 0:
+					return self::$db->$method();
+				break;
 				case 1:
 					self::$db->$method(current($args));
 				break;
@@ -1079,7 +1082,7 @@ class ORM_Core {
 		// Get field data
 		$data = self::$fields[$this->table][$field];
 
-		if ( ! empty($data['binary']) AND ! empty($data['exact']) AND $data['length'] == 1)
+		if ( ! empty($data['binary']) AND ! empty($data['exact']) AND (int) $data['length'] === 1)
 		{
 			// Use boolean for binary(1) fields
 			$data['type'] = 'boolean';
@@ -1088,9 +1091,9 @@ class ORM_Core {
 		switch ($data['type'])
 		{
 			case 'int':
-				// // If the value is an empty string, set the value back to NULL
-				// if ($value === '' AND ! empty($data['null']))
-				// 	return NULL;
+				// If the value is an empty string, set the value back to NULL
+				if ($value === '' AND ! empty($data['null']))
+					return NULL;
 
 				$value = (int) $value;
 			break;
