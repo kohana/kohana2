@@ -306,7 +306,20 @@ class Database_Core {
 	 */
 	public function from($sql)
 	{
-		foreach ((array) $sql as $val)
+		if (func_num_args() > 1)
+		{
+			$sql = func_get_args();
+		}
+		elseif (is_string($sql))
+		{
+			$sql = explode(',', $sql);
+		}
+		else
+		{
+			$sql = (array) $sql;
+		}
+
+		foreach ($sql as $val)
 		{
 			if (($val = trim($val)) === '') continue;
 
