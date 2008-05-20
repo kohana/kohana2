@@ -833,8 +833,8 @@ class ORM_Core {
 				// Reset SELECT, WHERE, and FROM
 				$this->select = $this->where = $this->from = FALSE;
 
-				// Object has been loaded and saved
-				$this->loaded = $this->saved = TRUE;
+				// Object has been saved
+				$this->saved = TRUE;
 			}
 		}
 
