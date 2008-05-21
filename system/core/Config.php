@@ -32,6 +32,9 @@ final class Config {
 		{
 			// Load core configuration
 			self::$conf['core'] = self::load('core');
+
+			// Re-parse the include paths
+			self::include_paths(TRUE);
 		}
 
 		// Requested group
@@ -178,9 +181,6 @@ final class Config {
 				// Invalid config file
 				die('Your Kohana application configuration file is not valid.');
 			}
-
-			// Re-parse the include paths
-			self::include_paths(TRUE);
 
 			return $config;
 		}
