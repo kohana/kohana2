@@ -37,12 +37,26 @@ class email_Core {
 		switch ($config['driver'])
 		{
 			case 'smtp':
+				// Set port
+				$port = empty($config['options']['port']) ? 25 : (int) $config['options']['port'];
+
+				if (empty($config['options']['encryption']))
+				{
+					// No encryption
+					$encryption = Swift_Connection_SMTP::ENC_OFF;
+				}
+				else
+				{
+					// Set encryption
+					switch (strtolower($config['options']['encryption']))
+					{
+						case 'tls': $encryption = Swift_Connection_SMTP::ENC_TLS; break;
+						case 'ssl': $encryption = Swift_Connection_SMTP::ENC_SSL; break;
+					}
+				}
+
 				// Create a SMTP connection
-				$connection = new Swift_Connection_SMTP
-				(
-					$config['options']['hostname'],
-					empty($config['options']['port']) ? 25 : (int) $config['options']['port']
-				);
+				$connection = new Swift_Connection_SMTP($config['options']['hostname'], $port, $encryption);
 
 				// Do authentication, if part of the DSN
 				empty($config['options']['username']) or $connection->setUsername($config['options']['username']);
