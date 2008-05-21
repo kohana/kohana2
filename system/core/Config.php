@@ -30,17 +30,8 @@ final class Config {
 		// Configuration autoloading
 		if (self::$conf === NULL)
 		{
-			// Load the application configuration file
-			require APPPATH.'config/config'.EXT;
-
-			// Invalid config file
-			(isset($config) AND is_array($config)) or die
-			(
-				'Your Kohana application configuration file is not valid.'
-			);
-
-			// Load config into self
-			self::$conf['core'] = $config;
+			// Load core configuration
+			self::$conf['core'] = self::load('core');
 
 			// Re-parse the include paths
 			self::include_paths(TRUE);
@@ -79,7 +70,7 @@ final class Config {
 		// Config setting must be enabled
 		if (Config::item('core.allow_config_set') == FALSE)
 		{
-			Log::add('debug', 'Config::set was called, but your configuration file does not allow setting.');
+			Log::add('error', 'Config::set was called, but your configuration file does not allow setting.');
 			return FALSE;
 		}
 
@@ -130,6 +121,19 @@ final class Config {
 	}
 
 	/**
+	 * Clears a config group from the cached configuration.
+	 *
+	 * @param   string  config group
+	 * @return  TRUE
+	 */
+	public function clear($key)
+	{
+		unset(self::$conf[$key]);
+
+		return TRUE;
+	}
+
+	/**
 	 * Get all include paths.
 	 *
 	 * @param   boolean  re-process the include paths
@@ -167,6 +171,20 @@ final class Config {
 	 */
 	public static function load($name, $required = TRUE)
 	{
+		if ($name === 'core')
+		{
+			// Load the application configuration file
+			include APPPATH.'config/config'.EXT;
+
+			if (empty($config['site_domain']))
+			{
+				// Invalid config file
+				die('Your Kohana application configuration file is not valid.');
+			}
+
+			return $config;
+		}
+
 		$configuration = array();
 
 		// Find all the configuartion files matching the name
