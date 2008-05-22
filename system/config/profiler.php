@@ -2,26 +2,7 @@
 /**
  * @package  Profiler
  *
- * Show benchmarks.
+ * Array of section names to display in the Profiler, TRUE to display all of them.
+ * Built in sections are benchmarks, database, session, post and cookies, custom sections can be used too.
  */
-$config['benchmarks'] = TRUE;
-
-/**
- * Show database queries.
- */
-$config['database'] = TRUE;
-
-/**
- * Show POST data.
- */
-$config['post'] = TRUE;
-
-/**
- * Show session data.
- */
-$config['session'] = TRUE;
-
-/**
- * Show cookie data.
- */
-$config['cookie'] = TRUE;
+$config['show'] = TRUE;
