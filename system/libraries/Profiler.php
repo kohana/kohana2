@@ -22,6 +22,13 @@ class Profiler_Core {
 
 	public function __construct()
 	{
+		// Add all built in profiles to event
+		Event::add('profiler.run', array($this, 'benchmarks'));
+		Event::add('profiler.run', array($this, 'database'));
+		Event::add('profiler.run', array($this, 'session'));
+		Event::add('profiler.run', array($this, 'post'));
+		Event::add('profiler.run', array($this, 'cookies'));
+
 		// Add profiler to page output automatically
 		Event::add('system.display', array($this, 'render'));
 
@@ -76,12 +83,6 @@ class Profiler_Core {
 		$this->show = empty($get) ? Config::item('profiler.show') : $get;
 
 		Event::run('profiler.run');
-
-		$this->benchmarks();
-		$this->database();
-		$this->session();
-		$this->post();
-		$this->cookies();
 
 		$styles = '';
 		foreach ($this->profiles as $profile)
