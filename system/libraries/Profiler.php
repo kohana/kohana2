@@ -82,7 +82,7 @@ class Profiler_Core {
 		$get = isset($_GET['profiler']) ? explode(',', $_GET['profiler']) : array();
 		$this->show = empty($get) ? Config::item('profiler.show') : $get;
 
-		Event::run('profiler.run');
+		Event::run('profiler.run', $this);
 
 		$styles = '';
 		foreach ($this->profiles as $profile)
