@@ -25,6 +25,7 @@ class Session_Database_Driver implements Session_Driver {
 	protected $encrypt;
 
 	protected $db_group;
+	protected $db_table;
 	protected $new_session = TRUE;
 	protected $old_id;
 
@@ -34,6 +35,7 @@ class Session_Database_Driver implements Session_Driver {
 	public function __construct()
 	{
 		$this->db_group = Config::item('session.storage');
+		$this->db_table = Config::item('session.name');
 
 		// Load Encrypt library
 		if (Config::item('session.encryption'))
@@ -50,16 +52,18 @@ class Session_Database_Driver implements Session_Driver {
 
 	public function open($path, $name)
 	{
+
 		if (Config::item('database.'.$this->db_group) === NULL)
 		{
 			// There's no defined group, use the default database
-			$this->db = new Database;
+			Log::add('debug', 'Warning: Session Storage database group not found, using default');
+			$this->db = Database::instance();
 		}
 		else
 		{
 			// Connect to the database using a database group, defined
 			// by the 'session.storage' config item.
-			$this->db = new Database($this->db_group);
+			$this->db = Database::instance($this->db_group);
 		}
 
 		return is_object($this->db);
@@ -72,7 +76,7 @@ class Session_Database_Driver implements Session_Driver {
 
 	public function read($id)
 	{
-		$query = $this->db->from($this->db_group)->where('session_id', $id)->get()->result(TRUE);
+		$query = $this->db->from($this->db_table)->where('session_id', $id)->get()->result(TRUE);
 
 		if ($query->count() > 0)
 		{
@@ -101,12 +105,12 @@ class Session_Database_Driver implements Session_Driver {
 		// Existing session, with regenerated session id
 		if ( ! empty($this->old_id))
 		{
-			$query = $this->db->update($this->db_group, $session, array('session_id' => $this->old_id));
+			$query = $this->db->update($this->db_table, $session, array('session_id' => $this->old_id));
 		}
 		// New session
 		elseif ($this->new_session)
 		{
-			$query = $this->db->insert($this->db_group, $session);
+			$query = $this->db->insert($this->db_table, $session);
 		}
 		// Existing session, without regenerated session id
 		else
@@ -114,7 +118,7 @@ class Session_Database_Driver implements Session_Driver {
 			// No need to update session_id
 			unset($session['session_id']);
 
-			$query = $this->db->update($this->db_group, $session, array('session_id' => $id));
+			$query = $this->db->update($this->db_table, $session, array('session_id' => $id));
 
 			$this->written = TRUE;
 		}
@@ -127,8 +131,8 @@ class Session_Database_Driver implements Session_Driver {
 		$config = Config::item('session');
 
     	($config['regenerate'] > 0 AND ($_SESSION['total_hits'] % $config['regenerate']) === 0) AND $id = $this->old_id;
-	
-		return (bool) $this->db->delete($this->db_group, array('session_id' => $id))->count();
+
+		return (bool) $this->db->delete($this->db_table, array('session_id' => $id))->count();
 	}
 
 	public function regenerate()
@@ -145,7 +149,7 @@ class Session_Database_Driver implements Session_Driver {
 
 	public function gc($maxlifetime)
 	{
-		$query = $this->db->delete($this->db_group, array('last_activity <' => time() - $maxlifetime));
+		$query = $this->db->delete($this->db_table, array('last_activity <' => time() - $maxlifetime));
 
 		Log::add('debug', 'Session garbage collected: '.$query->count().' row(s) deleted.');
 
