@@ -175,7 +175,7 @@ class Kohana {
 				if (substr($hook, $ext) === EXT)
 				{
 					// Hook was found, include it
-					include_once $hook;
+					include $hook;
 				}
 				else
 				{
