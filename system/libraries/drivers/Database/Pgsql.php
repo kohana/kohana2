@@ -395,7 +395,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 		// autoloading is disabled to save a lot of stupid overhead.
 		if ($this->fetch_type == 'pg_fetch_object')
 		{
-			$this->return_type = class_exists($type, FALSE) ? $type : 'stdClass';
+			$this->return_type = (is_string($type) AND Kohana::auto_load($type)) ? $type : 'stdClass';
 		}
 		else
 		{
@@ -426,7 +426,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 				// NOTE - The class set by $type must be defined before fetching the result,
 				// autoloading is disabled to save a lot of stupid overhead.
-				$type = class_exists($type, FALSE) ? $type : 'stdClass';
+				$type = (is_string($type) AND Kohana::auto_load($type)) ? $type : 'stdClass';
 			}
 			else
 			{
@@ -440,7 +440,7 @@ class Pgsql_Result implements Database_Result, ArrayAccess, Iterator, Countable 
 
 			if ($fetch == 'pg_fetch_object')
 			{
-				$type = class_exists($type, FALSE) ? $type : 'stdClass';
+				$type = (is_string($type) AND Kohana::auto_load($type)) ? $type : 'stdClass';
 			}
 		}
 
