@@ -47,7 +47,7 @@ class Image_GD_Driver extends Image_Driver {
 		}
 
 		// Set the "save" function
-		switch (substr($file, strrpos($file, '.') + 1))
+		switch (strtolower(file::extension($file)))
 		{
 			case 'jpg':
 			case 'jpeg':
