@@ -522,7 +522,7 @@ class Form_Input_Core {
 	 */
 	protected function rule_required()
 	{
-		if ($this->value == FALSE)
+		if ($this->value === '' OR $this->value === NULL)
 		{
 			$this->errors['required'] = TRUE;
 		}
