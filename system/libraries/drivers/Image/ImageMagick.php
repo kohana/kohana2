@@ -31,7 +31,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 	{
 		if (empty($config['directory']))
 		{
-			// Attempt to locate IM by using "which"
+			// Attempt to locate IM by using "which" (only works for *nix!)
 			if ( ! is_file($path = exec('which convert')))
 				throw new Kohana_Exception('image.imagemagick.not_found');
 
