@@ -223,7 +223,7 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 		// autoloading is disabled to save a lot of stupid overhead.
 		if ($this->fetch_type == 'fetch_object')
 		{
-			$this->return_type = class_exists($type, FALSE) ? $type : 'stdClass';
+			$this->return_type = (is_string($type) AND Kohana::auto_load($type)) ? $type : 'stdClass';
 		}
 		else
 		{
@@ -249,7 +249,7 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 
 				// NOTE - The class set by $type must be defined before fetching the result,
 				// autoloading is disabled to save a lot of stupid overhead.
-				$type = class_exists($type, FALSE) ? $type : 'stdClass';
+				$type = (is_string($type) AND Kohana::auto_load($type)) ? $type : 'stdClass';
 			}
 			else
 			{
@@ -263,7 +263,7 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 
 			if ($fetch == 'fetch_object')
 			{
-				$type = class_exists($type, FALSE) ? $type : 'stdClass';
+				$type = (is_string($type) AND Kohana::auto_load($type)) ? $type : 'stdClass';
 			}
 		}
 
