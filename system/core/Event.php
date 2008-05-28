@@ -40,12 +40,14 @@ final class Event {
 			// Create an empty event if it is not yet defined
 			self::$events[$name] = array();
 		}
-
-		if ( ! in_array($callback, self::$events[$name], TRUE))
+		elseif (in_array($callback, self::$events[$name], TRUE))
 		{
-			// Add the event if it does not already exist in the queue
-			self::$events[$name][] = $callback;
+			// The event already exists
+			return FALSE;
 		}
+
+		// Add the event
+		self::$events[$name][] = $callback;
 
 		return TRUE;
 	}
@@ -66,15 +68,13 @@ final class Event {
 		if (empty(self::$events[$name]) OR ($key = array_search($existing, self::$events[$name])) === FALSE)
 		{
 			// Just add the event if there are no events
-			self::add($name, $callback);
+			return self::add($name, $callback);
 		}
 		else
 		{
 			// Insert the event immediately before the existing event
-			self::insert_event($name, $key, $callback);
+			return self::insert_event($name, $key, $callback);
 		}
-
-		return TRUE;
 	}
 
 	/**
@@ -93,15 +93,13 @@ final class Event {
 		if (empty(self::$events[$name]) OR ($key = array_search($existing, self::$events[$name])) === FALSE)
 		{
 			// Just add the event if there are no events
-			self::add($name, $callback);
+			return self::add($name, $callback);
 		}
 		else
 		{
 			// Insert the event immediately after the existing event
-			self::insert_event($name, $key + 1, $callback);
+			return self::insert_event($name, $key + 1, $callback);
 		}
-
-		return TRUE;
 	}
 
 	/**
@@ -114,6 +112,9 @@ final class Event {
 	 */
 	private static function insert_event($name, $key, $callback)
 	{
+		if (in_array($callback, self::$events[$name], TRUE))
+			return FALSE;
+
 		// Add the new event at the given key location
 		self::$events[$name] = array_merge
 		(
@@ -124,6 +125,8 @@ final class Event {
 			// Events after the key
 			array_slice(self::$events[$name], $key)
 		);
+
+		return TRUE;
 	}
 
 	/**
