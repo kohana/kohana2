@@ -18,7 +18,6 @@ $locale['states'] = array
 	'DC' => 'District of Columbia',
 	'FL' => 'Florida',
 	'GA' => 'Georgia',
-	'GU' => 'Guam',
 	'HI' => 'Hawaii',
 	'ID' => 'Idaho',
 	'IL' => 'Illinois',
@@ -66,6 +65,7 @@ $locale['all_states'] = array_merge($locale['states'], array
 (
 	'AS' => 'American Samoa',
 	'FM' => 'Federated States of Micronesia',
+	'GU' => 'Guam',
 	'MH' => 'Marshall Islands',
 	'MP' => 'Northern Mariana Islands',
 	'PW' => 'Palau',
