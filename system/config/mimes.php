@@ -143,6 +143,7 @@ $config = array
 	'pl'    => array('text/x-perl'),
 	'pm'    => array('text/x-perl'),
 	'png'   => array('image/png', 'image/x-png'),
+	'po'    => array('text/x-gettext-translation'),
 	'pot'   => array('application/vnd.ms-powerpoint'),
 	'pps'   => array('application/vnd.ms-powerpoint'),
 	'ppt'   => array('application/powerpoint'),
