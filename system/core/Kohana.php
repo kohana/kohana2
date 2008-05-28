@@ -166,10 +166,13 @@ class Kohana {
 				}
 			}
 
+			// Length of extension, for offset
+			$ext = -(strlen(EXT));
+
 			foreach ($hooks as $hook)
 			{
 				// Validate the filename extension
-				if (substr($hook, -(strlen(EXT))) === EXT)
+				if (substr($hook, $ext) === EXT)
 				{
 					// Hook was found, include it
 					include_once $hook;
@@ -899,7 +902,7 @@ class Kohana {
 	{
 		// No array to search
 		if ((empty($keys) AND is_string($keys)) OR (empty($array) AND is_array($array)))
-			return;
+			return NULL;
 
 		if (substr($keys, -2) === '.*')
 		{
