@@ -34,6 +34,8 @@ class Form_Dropdown_Core extends Form_Input {
 		// Import base data
 		$base_data = $this->data;
 
+		unset($base_data['label']);
+
 		// Get the options and default selection
 		$options = arr::remove('options', $base_data);
 		$selected = arr::remove('selected', $base_data);
