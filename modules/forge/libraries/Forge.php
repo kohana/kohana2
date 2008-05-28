@@ -89,19 +89,18 @@ class Forge_Core {
 		// Create the input
 		switch(count($args))
 		{
-			case 0:
-				throw new Kohana_Exception('forge.invalid_input', $input);
-			break;
 			case 1:
 				$input = new $input($args[0]);
 			break;
 			case 2:
 				$input = new $input($args[0], $args[1]);
 			break;
+			default:
+				throw new Kohana_Exception('forge.invalid_input', $input);
 		}
 
 		if ( ! ($input instanceof Form_Input) AND ! ($input instanceof Forge))
-			throw new Kohana_Exception('forge.invalid_input', get_class($input));
+			throw new Kohana_Exception('forge.unknown_input', get_class($input));
 
 		$input->method = $this->attr['method'];
 
