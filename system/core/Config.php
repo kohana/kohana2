@@ -200,9 +200,6 @@ final class Config {
 		{
 			// Load the config caches
 			self::$cache = (array) Kohana::load_cache('configuration');
-
-			// Write the caches on shutdown
-			Event::add('system.shutdown', array('Config', 'save_cache'));
 		}
 
 		if (isset(self::$cache[$name]))
@@ -220,6 +217,12 @@ final class Config {
 				// Merge in configuration
 				$configuration = array_merge($configuration, $config);
 			}
+		}
+
+		if (self::$cache_changed === FALSE AND (bool) Config::item('core.internal_cache'))
+		{
+			// Write the caches on shutdown
+			Event::add('system.shutdown', array('Config', 'save_cache'));
 		}
 
 		// Cache has been changed

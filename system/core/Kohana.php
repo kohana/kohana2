@@ -146,9 +146,6 @@ class Kohana {
 		// Enable Kohana output handling
 		Event::add('system.shutdown', array('Kohana', 'shutdown'));
 
-		// Enable Kohana file path caching
-		Event::add('system.shutdown', array('Kohana', 'save_paths'));
-
 		if ($config = Config::item('hooks.enable'))
 		{
 			$hooks = array();
@@ -811,6 +808,12 @@ class Kohana {
 				// Nothing was found
 				$found = FALSE;
 			}
+		}
+
+		if (self::$paths_changed === FALSE AND (bool) Config::item('core.internal_cache'))
+		{
+			// Write the caches on shutdown
+			Event::add('system.shutdown', array('Kohana', 'save_paths'));
 		}
 
 		// Paths have been changed
