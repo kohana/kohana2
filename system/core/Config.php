@@ -16,6 +16,7 @@ final class Config {
 
 	// Cached configuration
 	private static $cache;
+	private static $cache_changed = FALSE;
 
 	// Include paths
 	private static $include_paths;
@@ -58,7 +59,6 @@ final class Config {
 			$value = rtrim((string) $value, '/').'/';
 		}
 
-		// Return 
 		return $value;
 	}
 
@@ -134,8 +134,14 @@ final class Config {
 	{
 		unset(self::$conf[$key], self::$cache[$key]);
 
-		// Save updated cache
-		Kohana::save_cache('configuration', self::$cache);
+		if (self::$cache_changed === FALSE)
+		{
+			// Cache has changed
+			self::$cache_changed = TRUE;
+
+			// Save cache at shutdown
+			Event::add('system.shutdown', array(__CLASS__, 'write_config_cache'));
+		}
 
 		return TRUE;
 	}
@@ -148,7 +154,7 @@ final class Config {
 	 */
 	public static function include_paths($process = FALSE)
 	{
-		if ($process == TRUE)
+		if ($process === TRUE)
 		{
 			// Start setting include paths, APPPATH first
 			self::$include_paths = array(APPPATH);
@@ -215,13 +221,27 @@ final class Config {
 			}
 		}
 
-		// Add config to cache
-		self::$cache[$name] = $configuration;
+		if (self::$cache_changed === FALSE)
+		{
+			// Cache has changed
+			self::$cache_changed = TRUE;
 
+			// Save cache at shutdown
+			Event::add('system.shutdown', array(__CLASS__, 'write_config_cache'));
+		}
+
+		return self::$cache[$name] = $configuration;
+	}
+
+	/**
+	 * Writes the configuration cache.
+	 *
+	 * @return  boolean
+	 */
+	public static function write_config_cache()
+	{
 		// Save updated cache
-		Kohana::save_cache('configuration', self::$cache);
-
-		return $configuration;
+		return Kohana::save_cache('configuration', self::$cache);
 	}
 
 } // End Config

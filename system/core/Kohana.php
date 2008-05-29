@@ -28,6 +28,7 @@ class Kohana {
 
 	// File path cache
 	private static $paths;
+	private static $paths_changed = FALSE;
 
 	/**
 	 * Sets up the PHP environment. Adds error/exception handling, output
@@ -612,20 +613,35 @@ class Kohana {
 	 */
 	public static function save_cache($name, $data = NULL)
 	{
-		if (Config::item('core.internal_cache') == 0)
-			return FALSE;
+		static $cache_time;
 
-		$path = APPPATH.'cache/kohana_'.$name;
-
-		if ($data === NULL)
+		if ($cache_time === NULL)
 		{
-			// Delete cache
-			return unlink($path);
+			// Load cache time from config
+			$cache_time = Config::item('core.internal_cache');
+		}
+
+		if ($cache_time > 0)
+		{
+			$path = APPPATH.'cache/kohana_'.$name;
+
+			if ($data === NULL)
+			{
+				// Delete cache
+				return unlink($path);
+			}
+			else
+			{
+				echo Kohana::debug('wrote cache: '.$name);
+				
+				// Write data to cache file
+				return (bool) file_put_contents($path, serialize($data));
+			}
 		}
 		else
 		{
-			// Write data to cache file
-			return (bool) file_put_contents($path, serialize($data));
+			// No caching enabled
+			return FALSE;
 		}
 	}
 
@@ -638,14 +654,22 @@ class Kohana {
 	 */
 	public static function load_cache($name)
 	{
-		if ($cache_time = Config::item('core.internal_cache'))
+		static $cache_time;
+
+		if ($cache_time === NULL)
+		{
+			// Load cache time from config
+			$cache_time = Config::item('core.internal_cache');
+		}
+
+		if ($cache_time > 0)
 		{
 			$path = APPPATH.'cache/kohana_'.$name;
 
 			if (file_exists($path))
 			{
 				// Check the file modification time
-				if ((time() - filemtime($path)) > $cache_time)
+				if ((time() - filemtime($path)) < $cache_time)
 				{
 					// Cache is valid
 					return unserialize(file_get_contents($path));
@@ -745,9 +769,8 @@ class Kohana {
 	 * @throws  Kohana_Exception  if file is required and not found
 	 * @param   string   directory to search in
 	 * @param   string   filename to look for (including extension only if 4th parameter is TRUE)
-	 * @param   boolean  is the file required?
-	 * @param   boolean  use custom file extension?
-	 * @param   boolean  use cache
+	 * @param   boolean  file required
+	 * @param   boolean  file extension
 	 * @return  array    if the type is config, i18n or l10n
 	 * @return  string   if the file is found
 	 * @return  FALSE    if the file is not found
@@ -812,10 +835,27 @@ class Kohana {
 		// Add paths to cache
 		self::$paths[$search] = $found;
 
-		// Save updated cache
-		Kohana::save_cache('file_paths', self::$paths);
+		if (self::$paths_changed === FALSE)
+		{
+			// Cache has changed
+			self::$paths_changed = TRUE;
+
+			// Save cache at shutdown
+			Event::add('system.shutdown', array(__CLASS__, 'write_path_cache'));
+		}
 
 		return $found;
+	}
+
+	/**
+	 * Writes the file path cache.
+	 *
+	 * @return  boolean
+	 */
+	public static function write_path_cache()
+	{
+		// Save updated cache
+		return Kohana::save_cache('file_paths', self::$paths);
 	}
 
 	/**
