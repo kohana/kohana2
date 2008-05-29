@@ -215,11 +215,13 @@ final class Config {
 			}
 		}
 
+		// Add config to cache
+		self::$cache[$name] = $configuration;
+
 		// Save updated cache
 		Kohana::save_cache('configuration', self::$cache);
 
-		// Cache the configuration
-		return self::$cache[$name] = $configuration;
+		return $configuration;
 	}
 
 } // End Config

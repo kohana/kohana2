@@ -809,10 +809,13 @@ class Kohana {
 			}
 		}
 
+		// Add paths to cache
+		self::$paths[$search] = $found;
+
 		// Save updated cache
 		Kohana::save_cache('file_paths', self::$paths);
 
-		return self::$paths[$search] = $found;
+		return $found;
 	}
 
 	/**
