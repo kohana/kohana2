@@ -2,26 +2,23 @@
 /**
  * @package  Pagination
  *
- * Views folder in which your pagination style templates reside.
+ * Pagination configuration is defined in groups which allows you to easily switch
+ * between different pagination settings for different website sections.
+ *
+ * Group Options:
+ *  directory      - Views folder in which your pagination style templates reside
+ *  style          - Pagination style template (matches view filename)
+ *  uri_segment    - URI segment (int or 'label') in which the current page number can be found
+ *  query_string   - Alternative to uri_segment: query string key that contains the page number
+ *  items_per_page - Number of items to display per page
+ *  auto_hide      - Automatically hides pagination for single pages
  */
-$config['directory'] = 'pagination';
-
-/**
- * Pagination style template (matches view filename).
- */
-$config['style'] = 'classic';
-
-/**
- * URI segment (or 'label') in which the current page number can be found.
- */
-$config['uri_segment'] = 3;
-
-/**
- * Number of items to display per page.
- */
-$config['items_per_page'] = 20;
-
-/**
- * Automatically hide pagination completely for single pages.
- */
-$config['auto_hide'] = FALSE;
+$config['default'] = array
+(
+	'directory'      => 'pagination',
+	'style'          => 'classic',
+	'uri_segment'    => 3,
+	'query_string'   => '',
+	'items_per_page' => 20,
+	'auto_hide'      => FALSE,
+);
