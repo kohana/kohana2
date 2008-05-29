@@ -632,8 +632,6 @@ class Kohana {
 			}
 			else
 			{
-				echo Kohana::debug('wrote cache: '.$name);
-				
 				// Write data to cache file
 				return (bool) file_put_contents($path, serialize($data));
 			}
