@@ -16,7 +16,6 @@ final class Config {
 
 	// Cached configuration
 	private static $cache;
-	private static $cache_changed = FALSE;
 
 	// Include paths
 	private static $include_paths;
@@ -133,13 +132,10 @@ final class Config {
 	 */
 	public static function clear($key)
 	{
-		if (isset($cache[$key]))
-		{
-			// Cache has been changed
-			self::$cache_changed = TRUE;
-		}
-
 		unset(self::$conf[$key], self::$cache[$key]);
+
+		// Save updated cache
+		Kohana::save_cache('configuration', self::$cache);
 
 		return TRUE;
 	}
@@ -219,31 +215,11 @@ final class Config {
 			}
 		}
 
-		if (self::$cache_changed === FALSE AND (bool) Config::item('core.internal_cache'))
-		{
-			// Write the caches on shutdown
-			Event::add('system.shutdown', array('Config', 'save_cache'));
-		}
-
-		// Cache has been changed
-		self::$cache_changed = TRUE;
+		// Save updated cache
+		Kohana::save_cache('configuration', self::$cache);
 
 		// Cache the configuration
 		return self::$cache[$name] = $configuration;
-	}
-
-	/**
-	 * Writes configuration caches, typically called during shutdown.
-	 *
-	 * @return  bool
-	 */
-	public static function save_cache()
-	{
-		if (self::$cache_changed === TRUE)
-		{
-			// Write caches
-			return Kohana::save_cache('configuration', self::$cache);
-		}
 	}
 
 } // End Config

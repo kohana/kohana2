@@ -28,7 +28,6 @@ class Kohana {
 
 	// File path cache
 	private static $paths;
-	private static $paths_changed = FALSE;
 
 	/**
 	 * Sets up the PHP environment. Adds error/exception handling, output
@@ -810,30 +809,10 @@ class Kohana {
 			}
 		}
 
-		if (self::$paths_changed === FALSE AND (bool) Config::item('core.internal_cache'))
-		{
-			// Write the caches on shutdown
-			Event::add('system.shutdown', array('Kohana', 'save_paths'));
-		}
-
-		// Paths have been changed
-		self::$paths_changed = TRUE;
+		// Save updated cache
+		Kohana::save_cache('file_paths', self::$paths);
 
 		return self::$paths[$search] = $found;
-	}
-
-	/**
-	 * Writes file path caches, typically called during shutdown.
-	 *
-	 * @return  bool
-	 */
-	public static function save_paths()
-	{
-		if (self::$paths_changed === TRUE)
-		{
-			// Write caches
-			return Kohana::save_cache('file_paths', self::$paths);
-		}
 	}
 
 	/**
