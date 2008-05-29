@@ -26,6 +26,9 @@ class Kohana {
 	// The current user agent
 	public static $user_agent = '';
 
+	// File path cache
+	private static $paths;
+
 	/**
 	 * Sets up the PHP environment. Adds error/exception handling, output
 	 * buffering, and adds an auto-loading method for loading classes.
@@ -84,6 +87,9 @@ class Kohana {
 		// Save buffering level
 		self::$buffer_level = ob_get_level();
 
+		// Load path cache
+		self::$paths = Kohana::load_cache('file_paths');
+
 		// Set autoloader
 		spl_autoload_register(array('Kohana', 'auto_load'));
 
@@ -138,6 +144,9 @@ class Kohana {
 
 		// Enable Kohana output handling
 		Event::add('system.shutdown', array('Kohana', 'shutdown'));
+
+		// Enable Kohana file path caching
+		Event::add('system.shutdown', array('Kohana', 'save_paths'));
 
 		if ($config = Config::item('hooks.enable'))
 		{
@@ -597,6 +606,66 @@ class Kohana {
 	}
 
 	/**
+	 * Save data to a simple cache file. This should only be used internally, and
+	 * is NOT a replacement for the Cache library.
+	 *
+	 * @param   string  cache name
+	 * @param   mixed   data to cache
+	 * @return  boolean
+	 */
+	public static function save_cache($name, $data = NULL)
+	{
+		if (Config::item('core.internal_cache') == 0)
+			return FALSE;
+
+		$path = APPPATH.'cache/kohana_'.$name;
+
+		if ($data === NULL)
+		{
+			// Delete cache
+			return unlink($path);
+		}
+		else
+		{
+			// Write data to cache file
+			return (bool) file_put_contents($path, serialize($data));
+		}
+	}
+
+	/**
+	 * Load data from a simple cache file. This should only be used internally,
+	 * and is NOT a replacement for the Cache library.
+	 *
+	 * @param   string  cache name
+	 * @return  mixed
+	 */
+	public static function load_cache($name)
+	{
+		if ($cache_time = Config::item('core.internal_cache'))
+		{
+			$path = APPPATH.'cache/kohana_'.$name;
+
+			if (file_exists($path))
+			{
+				// Check the file modification time
+				if ((time() - filemtime($path)) > $cache_time)
+				{
+					// Cache is valid
+					return unserialize(file_get_contents($path));
+				}
+				else
+				{
+					// Cache is invalid, delete it
+					unlink($path);
+				}
+			}
+		}
+
+		// No cache found
+		return NULL;
+	}
+
+	/**
 	 * Provides class auto-loading.
 	 *
 	 * @throws  Kohana_Exception
@@ -686,50 +755,69 @@ class Kohana {
 	 * @return  string   if the file is found
 	 * @return  FALSE    if the file is not found
 	 */
-	public static function find_file($directory, $filename, $required = FALSE, $ext = FALSE, $use_cache = TRUE)
+	public static function find_file($directory, $filename, $required = FALSE, $ext = FALSE)
 	{
-		static $found = array();
+		// Users can define their own extensions, css, xml, html, etc
+		$ext = ($ext === FALSE) ? EXT : '.'.ltrim($ext, '.');
 
-		$search = $directory.'/'.$filename;
-		$hash   = sha1($search.$ext);
+		// Search path
+		$search = $directory.'/'.$filename.$ext;
 
-		if ($use_cache AND isset($found[$hash]))
-			return $found[$hash];
+		if (isset(self::$paths[$search]))
+		{
+			// Return the cached path
+			return self::$paths[$search];
+		}
 
 		if ($directory === 'config' OR $directory === 'i18n' OR $directory === 'l10n')
 		{
-			$fnd = array();
+			$found = array();
 
 			// Search from SYSPATH up
 			foreach (array_reverse(Config::include_paths()) as $path)
 			{
-				if (is_file($path.$search.EXT)) $fnd[] = $path.$search.EXT;
+				if (is_file($path.$search))
+				{
+					// A file has been found
+					$found[] = $path.$search;
+				}
 			}
 
 			// If required and nothing was found, throw an exception
-			if ($required == TRUE AND $fnd === array())
+			if ($required === TRUE AND $found === array())
 				throw new Kohana_Exception('core.resource_not_found', Kohana::lang('core.'.inflector::singular($directory)), $filename);
 
-			return $found[$hash] = $fnd;
+			return self::$paths[$search] = $found;
 		}
 		else
 		{
-			// Users can define their own extensions, css, xml, html, etc
-			$ext = ($ext == FALSE) ? EXT : '.'.ltrim($ext, '.');
-
 			// Find the file and return its filename
 			foreach (Config::include_paths() as $path)
 			{
-				if (is_file($path.$search.$ext))
-					return $found[$hash] = $path.$search.$ext;
+				if (is_file($path.$search))
+				{
+					// A file has been found
+					return self::$paths[$search] = $path.$search;
+				}
 			}
 
 			// If the file is required, throw an exception
-			if ($required == TRUE)
+			if ($required === TRUE)
 				throw new Kohana_Exception('core.resource_not_found', Kohana::lang('core.'.inflector::singular($directory)), $filename);
 
-			return $found[$hash] = FALSE;
+			return self::$paths[$search] = FALSE;
 		}
+	}
+
+	/**
+	 * Writes file path caches, typically called during shutdown.
+	 *
+	 * @return  bool
+	 */
+	public static function save_paths()
+	{
+		// Write caches
+		return Kohana::save_cache('file_paths', self::$paths);
 	}
 
 	/**

@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Loads configuration files and retrieves keys. This class is declared as final.
- * 
+ *
  * $Id$
  *
  * @package    Core
@@ -13,6 +13,9 @@ final class Config {
 
 	// Entire configuration
 	private static $conf;
+
+	// Cached configuration
+	private static $cache;
 
 	// Include paths
 	private static $include_paths;
@@ -40,9 +43,9 @@ final class Config {
 		// Requested group
 		$group = current(explode('.', $key));
 
-		// Load the group if not already loaded
 		if ( ! isset(self::$conf[$group]))
 		{
+			// Load the group
 			self::$conf[$group] = self::load($group, $required);
 		}
 
@@ -67,15 +70,15 @@ final class Config {
 	 */
 	public static function set($key, $value)
 	{
-		// Config setting must be enabled
-		if (Config::item('core.allow_config_set') == FALSE)
+		if (Config::item('core.allow_config_set') !== TRUE)
 		{
+			// Config setting is not allowed
 			Log::add('error', 'Config::set was called, but your configuration file does not allow setting.');
 			return FALSE;
 		}
 
 		// Empty keys and core.allow_set cannot be set
-		if (empty($key) OR $key == 'core.allow_config_set')
+		if (empty($key) OR $key === 'core.allow_config_set')
 			return FALSE;
 
 		// Do this to make sure that the config array is already loaded
@@ -128,7 +131,7 @@ final class Config {
 	 */
 	public static function clear($key)
 	{
-		unset(self::$conf[$key]);
+		unset(self::$conf[$key], self::$cache[$key]);
 
 		return TRUE;
 	}
@@ -149,7 +152,7 @@ final class Config {
 			// Normalize all paths to be absolute and have a trailing slash
 			foreach (self::item('core.modules') as $path)
 			{
-				if (($path = str_replace('\\', '/', realpath($path))) == '')
+				if (($path = str_replace('\\', '/', realpath($path))) === '')
 					continue;
 
 				self::$include_paths[] = $path.'/';
@@ -185,9 +188,20 @@ final class Config {
 			return $config;
 		}
 
-		$configuration = array();
+		if (self::$cache === NULL)
+		{
+			// Load the config caches
+			self::$cache = (array) Kohana::load_cache('configuration');
 
-		// Find all the configuartion files matching the name
+			// Write the caches on shutdown
+			Event::add('system.shutdown', array('Config', 'save_cache'));
+		}
+
+		if (isset(self::$cache[$name]))
+			return self::$cache[$name];
+
+		// Load matching configs
+		$configuration = array();
 		foreach (Kohana::find_file('config', $name, $required) as $filename)
 		{
 			// Import the config
@@ -200,7 +214,19 @@ final class Config {
 			}
 		}
 
-		return $configuration;
+		// Cache the configuration
+		return self::$cache[$name] = $configuration;
+	}
+
+	/**
+	 * Writes configuration caches, typically called during shutdown.
+	 *
+	 * @return  bool
+	 */
+	public static function save_cache()
+	{
+		// Write caches
+		return Kohana::save_cache('configuration', self::$cache);
 	}
 
 } // End Config
