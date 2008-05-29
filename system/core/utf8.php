@@ -179,7 +179,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -199,7 +199,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -224,7 +224,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -249,7 +249,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -273,7 +273,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -297,7 +297,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -319,7 +319,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -341,7 +341,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -363,7 +363,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -385,7 +385,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -410,7 +410,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -438,7 +438,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -463,7 +463,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -488,7 +488,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -513,7 +513,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -538,7 +538,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -561,7 +561,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -583,7 +583,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -607,7 +607,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -630,7 +630,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -653,7 +653,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -675,7 +675,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -703,7 +703,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
@@ -731,7 +731,7 @@ final class utf8 {
 	{
 		if ( ! isset(self::$called[__FUNCTION__]))
 		{
-			require_once SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
+			require SYSPATH.'core/utf8/'.__FUNCTION__.EXT;
 
 			// Function has been called
 			self::$called[__FUNCTION__] = TRUE;
