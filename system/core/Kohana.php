@@ -28,6 +28,7 @@ class Kohana {
 
 	// File path cache
 	private static $paths;
+	private static $paths_changed = FALSE;
 
 	/**
 	 * Sets up the PHP environment. Adds error/exception handling, output
@@ -769,10 +770,11 @@ class Kohana {
 			return self::$paths[$search];
 		}
 
+		// Nothing found, yet
+		$found = NULL;
+
 		if ($directory === 'config' OR $directory === 'i18n' OR $directory === 'l10n')
 		{
-			$found = array();
-
 			// Search from SYSPATH up
 			foreach (array_reverse(Config::include_paths()) as $path)
 			{
@@ -782,12 +784,6 @@ class Kohana {
 					$found[] = $path.$search;
 				}
 			}
-
-			// If required and nothing was found, throw an exception
-			if ($required === TRUE AND $found === array())
-				throw new Kohana_Exception('core.resource_not_found', Kohana::lang('core.'.inflector::singular($directory)), $filename);
-
-			return self::$paths[$search] = $found;
 		}
 		else
 		{
@@ -797,16 +793,30 @@ class Kohana {
 				if (is_file($path.$search))
 				{
 					// A file has been found
-					return self::$paths[$search] = $path.$search;
+					$found = $path.$search;
+					break;
 				}
 			}
-
-			// If the file is required, throw an exception
-			if ($required === TRUE)
-				throw new Kohana_Exception('core.resource_not_found', Kohana::lang('core.'.inflector::singular($directory)), $filename);
-
-			return self::$paths[$search] = FALSE;
 		}
+
+		if ($found === NULL)
+		{
+			if ($required === TRUE)
+			{
+				// If the file is required, throw an exception
+				throw new Kohana_Exception('core.resource_not_found', Kohana::lang('core.'.inflector::singular($directory)), $filename);
+			}
+			else
+			{
+				// Nothing was found
+				$found = FALSE;
+			}
+		}
+
+		// Paths have been changed
+		self::$paths_changed = TRUE;
+
+		return self::$paths[$search] = $found;
 	}
 
 	/**
@@ -816,8 +826,11 @@ class Kohana {
 	 */
 	public static function save_paths()
 	{
-		// Write caches
-		return Kohana::save_cache('file_paths', self::$paths);
+		if (self::$paths_changed === TRUE)
+		{
+			// Write caches
+			return Kohana::save_cache('file_paths', self::$paths);
+		}
 	}
 
 	/**

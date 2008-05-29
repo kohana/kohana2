@@ -16,6 +16,7 @@ final class Config {
 
 	// Cached configuration
 	private static $cache;
+	private static $cache_changed = FALSE;
 
 	// Include paths
 	private static $include_paths;
@@ -52,13 +53,14 @@ final class Config {
 		// Get the value of the key string
 		$value = Kohana::key_string(self::$conf, $key);
 
-		return
-		// If the value is not an array, and the value should end with /
-		( ! is_array($value) AND $slash == TRUE AND $value != '')
-		// Trim the string and force a slash on the end
-		? rtrim((string) $value, '/').'/'
-		// Otherwise, just return the value
-		: $value;
+		if ($slash === TRUE AND ! empty($value) AND ! is_array($value))
+		{
+			// Force the value to end with "/"
+			$value = rtrim((string) $value, '/').'/';
+		}
+
+		// Return 
+		return $value;
 	}
 
 	/**
@@ -131,6 +133,12 @@ final class Config {
 	 */
 	public static function clear($key)
 	{
+		if (isset($cache[$key]))
+		{
+			// Cache has been changed
+			self::$cache_changed = TRUE;
+		}
+
 		unset(self::$conf[$key], self::$cache[$key]);
 
 		return TRUE;
@@ -214,6 +222,9 @@ final class Config {
 			}
 		}
 
+		// Cache has been changed
+		self::$cache_changed = TRUE;
+
 		// Cache the configuration
 		return self::$cache[$name] = $configuration;
 	}
@@ -225,8 +236,11 @@ final class Config {
 	 */
 	public static function save_cache()
 	{
-		// Write caches
-		return Kohana::save_cache('configuration', self::$cache);
+		if (self::$cache_changed === TRUE)
+		{
+			// Write caches
+			return Kohana::save_cache('configuration', self::$cache);
+		}
 	}
 
 } // End Config
