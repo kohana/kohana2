@@ -4,6 +4,7 @@
  *
  * Pagination configuration is defined in groups which allows you to easily switch
  * between different pagination settings for different website sections.
+ * Note: all groups inherit and overwrite the default group.
  *
  * Group Options:
  *  directory      - Views folder in which your pagination style templates reside
