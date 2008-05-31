@@ -2,7 +2,6 @@
 
 $lang = array
 (
-	'driver_not_supported'     => 'Le pilote de Paiement %s demandé n\'a pas été trouvé',
 	'required'                 => 'Des champs obligatoires n\'ont pas été remplis: %s',
 	'gateway_connection_error' => 'Une erreur de connexion à la plateforme de paiement est survenue. Veuillez contacter le Webmaster si le problème persiste.',
 	'invalid_certificate'      => 'Le fichier de certificats suivant est invalide: %s',
