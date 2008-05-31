@@ -17,7 +17,7 @@ class Pagination_Core {
 	protected $style          = 'classic';
 	protected $uri_segment    = 3;
 	protected $query_string   = '';
-	protected $items_per_page = 10;
+	protected $items_per_page = 20;
 	protected $total_items    = 0;
 	protected $auto_hide      = FALSE;
 
@@ -55,7 +55,7 @@ class Pagination_Core {
 	 */
 	public function __construct($group = NULL, $config = array())
 	{
-		// No group name given, only array with custom config
+		// No group name given, only array with custom config items
 		// Allows for backward compatibility as well
 		if (is_array($group))
 		{
@@ -72,7 +72,18 @@ class Pagination_Core {
 		if ( ! is_array($group_config = Config::item('pagination.'.$group)))
 			throw new Kohana_Exception('pagination.undefined_group', $group);
 
-		// Merge custom config items with group defaults
+		// All pagination config groups inherit default config group
+		if ($group !== 'default')
+		{
+			// Load and validate default config group
+			if ( ! is_array($default_config = Config::item('pagination.default')))
+				throw new Kohana_Exception('pagination.undefined_group', 'default');
+
+			// Merge config group with default config group
+			$group_config += $default_config;
+		}
+
+		// Merge custom config items with config group
 		$config += $group_config;
 
 		// Pagination setup
