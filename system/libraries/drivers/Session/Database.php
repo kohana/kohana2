@@ -40,7 +40,7 @@ class Session_Database_Driver implements Session_Driver {
 		// Load Encrypt library
 		if (Config::item('session.encryption'))
 		{
-			$this->encrypt = new Encrypt;
+			$this->encrypt = Encrypt::instance();
 		}
 
 		// Write the session when PHP shuts down, this stops the database
@@ -82,7 +82,7 @@ class Session_Database_Driver implements Session_Driver {
 		{
 			// No new session, this is used when writing the data
 			$this->new_session = FALSE;
-			return (Config::item('session.encryption')) ? $this->encrypt->decode($query->current()->data) : $query->current()->data;
+			return empty($this->encrypt) ? base64_decode($query->current()->data) : $this->encrypt->decode($query->current()->data);
 		}
 
 		// Return value must be string, NOT a boolean
@@ -99,7 +99,7 @@ class Session_Database_Driver implements Session_Driver {
 		(
 			'session_id' => $id,
 			'last_activity' => time(),
-			'data' => (Config::item('session.encryption')) ? $this->encrypt->encode($data) : $data
+			'data' => empty($this->encrypt) ? base64_encode($data) : $this->encrypt->encode($data)
 		);
 
 		// Existing session, with regenerated session id
