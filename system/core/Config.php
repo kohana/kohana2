@@ -209,15 +209,20 @@ final class Config {
 
 		// Load matching configs
 		$configuration = array();
-		foreach (Kohana::find_file('config', $name, $required) as $filename)
-		{
-			// Import the config
-			include $filename;
+		$filenames     = Kohana::find_file('config', $name, $required);
 
-			if (isset($config) AND is_array($config))
+		if ( ! empty($filenames)) 
+		{
+			foreach ($filenames as $filename)
 			{
-				// Merge in configuration
-				$configuration = array_merge($configuration, $config);
+				// Import the config
+				include $filename;
+
+				if (isset($config) AND is_array($config))
+				{
+					// Merge in configuration
+					$configuration = array_merge($configuration, $config);
+				}
 			}
 		}
 
