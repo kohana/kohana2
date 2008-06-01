@@ -88,7 +88,7 @@ class Session_Core {
 			ini_set('session.gc_maxlifetime', (self::$config['expiration'] == 0) ? 86400 : self::$config['expiration']);
 
 			// Set the session name after having checked it
-			if ( ! ctype_alnum(self::$config['name']) OR ctype_digit(self::$config['name']))
+			if ( ! valid::id(self::$config['name']))
 				throw new Kohana_Exception('session.invalid_session_name', self::$config['name']);
 
 			session_name(self::$config['name']);
