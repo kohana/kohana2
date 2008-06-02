@@ -339,7 +339,7 @@ class html_Core {
 	 * @param   boolean       include the index_page in the link
 	 * @return  string
 	 */
-	public static function image($src = NULL, $attr = NULL $index = FALSE)
+	public static function image($src = NULL, $attr = NULL, $index = FALSE)
 	{
 		if ( ! is_array($attr))
 		{
