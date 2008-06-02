@@ -13,12 +13,13 @@ class Router_Core {
 
 	protected static $routes = array();
 
-	public static $current_uri = '';
+	public static $current_uri  = '';
+	public static $query_string = '';
+	public static $complete_uri = '';
+	public static $url_suffix   = '';
+
 	public static $segments    = array();
 	public static $rsegments   = array();
-
-	public static $query_string = '';
-	public static $url_suffix   = '';
 
 	public static $directory       = FALSE;
 	public static $controller      = FALSE;
@@ -63,6 +64,9 @@ class Router_Core {
 
 		// At this point segments, rsegments, and current URI are all the same
 		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, '/');
+
+		// Set the complete URI
+		self::$complete_uri = self::$query_string.self::$current_uri;
 
 		// Explode the segments by slashes
 		self::$segments = ($default_route === TRUE OR self::$segments === '') ? array() : explode('/', self::$segments);
