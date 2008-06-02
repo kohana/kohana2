@@ -27,16 +27,13 @@ class request_Core {
 	{
 		if ( ! empty($_SERVER['HTTP_REFERER']))
 		{
-			// Get base url
-			$base = url::base((bool) Config::item('core.index_page'));
-
 			// Set referrer
 			$ref = $_SERVER['HTTP_REFERER'];
 
-			if (strpos($ref, $base) === 0)
+			if (strpos($ref, url::base(FALSE)) === 0)
 			{
 				// Remove the base URL from the referrer
-				$ref = substr($ref, strlen($base));
+				$ref = substr($ref, strlen(url::base(TRUE)));
 			}
 		}
 
