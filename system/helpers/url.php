@@ -19,7 +19,7 @@ class url_Core {
 	 */
 	public static function current($qs = FALSE)
 	{
-		return Router::$current_uri.($qs === TRUE ? Router::$query_string : '');
+		return ($qs === TRUE) ? Router::$complete_uri : Router::$current_uri;
 	}
 
 	/**
