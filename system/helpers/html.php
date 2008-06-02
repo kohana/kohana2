@@ -334,16 +334,20 @@ class html_Core {
 	/**
 	 * Creates a image link.
 	 *
-	 * @param   string|array  array of html attributes, or an image name
+	 * @param   string        image source
+	 * @param   string|array  image alt attribute, or an array of attributes
 	 * @param   boolean       include the index_page in the link
 	 * @return  string
 	 */
-	public static function image($attr = NULL, $index = FALSE)
+	public static function image($src = NULL, $attr = NULL $index = FALSE)
 	{
 		if ( ! is_array($attr))
 		{
-			$attr = array('src' => $attr);
+			$attr = array('alt' => $attr);
 		}
+
+		// Add source to attributes
+		$attr['src'] = $src;
 
 		if (strpos($attr['src'], '://') === FALSE)
 		{
