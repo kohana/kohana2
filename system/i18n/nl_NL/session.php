@@ -2,5 +2,5 @@
 
 $lang = array
 (
-	'invalid_session_name' => 'De sessie naam, %s, is ongeldig. Hij mag alleen maar bestaan uit alfanumerieke karakters en moet minstens één letter bevatten.',
+	'invalid_session_name' => 'De sessienaam, %s, is ongeldig. Hij mag alleen maar bestaan uit alfanumerieke tekens en underscores. Hij moet ook minstens één letter bevatten.',
 );

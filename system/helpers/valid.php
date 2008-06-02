@@ -288,15 +288,4 @@ class valid_Core {
 		return (bool) preg_match($pattern, (string) $str);
 	}
 
-	/**
-	 * Checks if a string is a valid identifier.
-	 *
-	 * @param   string   input string
-	 * @return  boolean
-	 */
-	public static function id($str)
-	{
-		return (bool) preg_match('/^[a-z][a-z0-9_]++$/iD', (string) $str);
-	}    
-
 } // End valid

@@ -12,8 +12,8 @@ $config['driver'] = 'cookie';
 $config['storage'] = '';
 
 /**
- * Default session name.
- * It should contain only alphanumeric characters and at least one letter should be present.
+ * Session name.
+ * It must contain only alphanumeric characters and underscores. At least one letter must be present.
  */
 $config['name'] = 'kohanasession';
 
