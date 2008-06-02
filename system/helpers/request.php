@@ -25,7 +25,22 @@ class request_Core {
 	 */
 	public static function referrer($default = FALSE)
 	{
-		return ( ! empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : $default;
+		if ( ! empty($_SERVER['HTTP_REFERER']))
+		{
+			// Get base url
+			$base = url::base((bool) Config::item('core.index_page'));
+
+			// Set referrer
+			$ref = $_SERVER['HTTP_REFERER'];
+
+			if (strpos($ref, $base) === 0)
+			{
+				// Remove the base URL from the referrer
+				$ref = substr($ref, strlen($base));
+			}
+		}
+
+		return isset($ref) ? $ref : $default;
 	}
 
 	/**
