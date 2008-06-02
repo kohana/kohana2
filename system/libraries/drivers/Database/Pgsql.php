@@ -220,7 +220,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 
 	public function list_tables()
 	{
-		$sql    = 'SELECT table_name FROM information_schema.tables WHERE table_schema = \'public\'';
+		$sql    = 'SELECT table_schema || \'.\' || table_name FROM information_schema.tables WHERE table_schema NOT IN (\'pg_catalog\', \'information_schema\')';
 		$result = $this->query($sql)->result(FALSE, PGSQL_ASSOC);
 
 		$retval = array();
