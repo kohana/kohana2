@@ -97,6 +97,9 @@ final class Log {
 			'The log file could not be written to. Please correct the permissions and refresh the page.',
 			E_USER_ERROR
 		);
+
+		// Reset the messages after writing
+		self::$messages = array();
 	}
 
 } // End Log
