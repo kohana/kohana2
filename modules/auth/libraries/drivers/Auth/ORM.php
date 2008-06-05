@@ -36,7 +36,7 @@ class Auth_ORM_Driver implements Auth_Driver {
 
 		// Checks if a user is logged in and valid
 		if ( ! empty($_SESSION['auth_user']) AND is_object($_SESSION['auth_user'])
-			AND ($_SESSION['auth_user'] instanceof User_Model) AND $_SESSION['auth_user']->loaded())
+			AND ($_SESSION['auth_user'] instanceof User_Model) AND $_SESSION['auth_user']->id > 0)
 		{
 			// Everything is okay so far
 			$status = TRUE;
