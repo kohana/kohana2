@@ -274,7 +274,7 @@ class Database_Pgsql_Driver extends Database_Driver {
     ELSE pg_type.typname
   END AS "Type",
   -- Null
-  CASE WHEN pg_attribute.attnotnull THEN \'\'
+  CASE WHEN pg_attribute.attnotnull THEN \'NO\'
     ELSE \'YES\'
   END AS "Null",
   -- Default
