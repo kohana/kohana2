@@ -100,7 +100,7 @@ class email_Core {
 		}
 
 		// Create the SwiftMailer instance
-		return self::$mail = new Swift($connection);
+		return email::$mail = new Swift($connection);
 	}
 
 	/**
@@ -116,7 +116,7 @@ class email_Core {
 	public static function send($to, $from, $subject, $message, $html = FALSE)
 	{
 		// Connect to SwiftMailer
-		(self::$mail === NULL) and email::connect();
+		(email::$mail === NULL) and email::connect();
 
 		// Determine the message type
 		$html = ($html === TRUE) ? 'text/html' : 'text/plain';
@@ -130,7 +130,7 @@ class email_Core {
 		// Make a personalized From: address
 		is_object($from) or $from = is_array($from) ? new Swift_Address($from[0], $from[1]) : new Swift_Address($from);
 
-		return self::$mail->send($message, $to, $from);
+		return email::$mail->send($message, $to, $from);
 	}
 
 } // End email
