@@ -13,18 +13,12 @@ class Form_Hidden_Core extends Form_Input {
 
 	protected $data = array
 	(
-		'type'  => 'hidden',
-		'class' => 'hidden',
 		'value' => '',
 	);
 
-	protected $protect = array('type', 'label');
-
 	public function html()
 	{
-		$data = $this->data;
-
-		return form::hidden($data);
+		return form::hidden($this->data['name'], $this->data['value']);
 	}
 
 } // End Form Hidden
