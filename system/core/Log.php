@@ -43,7 +43,7 @@ final class Log {
 		else
 		{
 			// Log directory is invalid
-			throw new Kohana_Exception('core.cannot_write_log', $log_dir);
+			throw new Kohana_Exception('core.log_dir_unwritable', $log_dir);
 		}
 	}
 

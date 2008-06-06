@@ -2,9 +2,9 @@
 
 $lang = array
 (
-	'getimagesize_missing'    => 'The Image library requires the <tt>getimagesize</tt> PHP function, which is not available in your installation.',
+	'getimagesize_missing'    => 'The Image library requires the getimagesize() PHP function, which is not available in your installation.',
 	'unsupported_method'      => 'Your configured driver does not support the %s image transformation.',
-	'file_not_found'          => 'The specified image, %s, was not found. Please verify that images exist by using <tt>file_exists</tt> before manipulating them.',
+	'file_not_found'          => 'The specified image, %s, was not found. Please verify that images exist by using file_exists() before manipulating them.',
 	'type_not_allowed'        => 'The specified image, %s, is not an allowed image type.',
 	'invalid_width'           => 'The width you specified, %s, is not valid.',
 	'invalid_height'          => 'The height you specified, %s, is not valid.',
