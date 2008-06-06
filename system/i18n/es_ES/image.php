@@ -2,9 +2,9 @@
 
 $lang = array
 (
-	'getimagesize_missing'    => 'La librería &8220;Image&8221; requiere la función PHP <tt>getimagesize</tt>, que no parece estar disponible en tu instalación.',
+	'getimagesize_missing'    => 'La librería &8220;Image&8221; requiere la función PHP getimagesize, que no parece estar disponible en tu instalación.',
 	'unsupported_method'      => 'El driver que has elegido en la configuración no soporta el tipo de transformación %s.',
-	'file_not_found'          => 'La imagen especificada, %s no se ha encontrado. Por favor, verifica que existe utilizando <tt>file_exists</tt> antes de manipularla.',
+	'file_not_found'          => 'La imagen especificada, %s no se ha encontrado. Por favor, verifica que existe utilizando file_exists() antes de manipularla.',
 	'type_not_allowed'        => 'El tipo de imagen especificado, %s, no es un tipo de imagen permitido.', 
         'invalid_width'           => 'El ancho que has especificado, %s, no es valido.',
         'invalid_height'          => 'El alto que has especificado, %s, no es valido.',
@@ -21,6 +21,6 @@ $lang = array
 	// GD specific messages
 	'gd' => array
 	(
-    	    'requires_v2' => 'La linrería &8220;Image&8221; requiere GD2. Por favor, lee http://php.net/gd_info para más información.',
+    	    'requires_v2' => 'La librería &8220;Image&8221; requiere GD2. Por favor, lee http://php.net/gd_info para más información.',
 	),
 );
