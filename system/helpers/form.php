@@ -236,18 +236,32 @@ class form_Core {
 	 * @param   string        a string to be attached to the end of the attributes
 	 * @return  string
 	 */
-	public static function dropdown($data, $options = array(), $selected = '', $extra = '')
+	public static function dropdown($data, $options = NULL, $selected = NULL, $extra = '')
 	{
 		if ( ! is_array($data))
 		{
 			$data = array('name' => $data);
+		}
+		else
+		{
+			if (isset($data['options']))
+			{
+				// Use data options
+				$options = $data['options'];
+			}
+
+			if (isset($data['selected']))
+			{
+				// Use data selected
+				$selected = $data['selected'];
+			}
 		}
 
 		// Selected value should always be a string
 		$selected = (string) $selected;
 
 		$input = '<select'.form::attributes($data, 'select').' '.$extra.'>'."\n";
-		foreach ($options as $key => $val)
+		foreach ((array) $options as $key => $val)
 		{
 			// Key should always be a string
 			$key = (string) $key;
