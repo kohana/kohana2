@@ -50,7 +50,7 @@ final class Log {
 	/**
 	 * Add a log message.
 	 *
-	 * @param   string  info, debug, or error
+	 * @param   string  type of message
 	 * @param   string  message to be logged
 	 * @return  void
 	 */
@@ -73,42 +73,42 @@ final class Log {
 		// Set the log threshold
 		$threshold = Config::item('log.threshold');
 
-		// Don't log if there is nothing to log to
-		if ($threshold < 1 OR count(self::$messages) === 0) return;
+		// Do nothing if logging is disabled or no messages exist
+		if (empty(self::$log_directory) OR $threshold < 1 OR count(self::$messages) === 0)
+			return;
 
 		// Set the log filename
 		$filename = self::$log_directory.Config::item('log.prefix').date('Y-m-d').'.log'.EXT;
 
-		// Compile the messages
-		$messages = '';
+		$messages = array();
 		foreach (self::$messages as $type => $data)
 		{
+			// Skip all messages below the threshold
 			if (array_search($type, self::$types) > $threshold)
 				continue;
 
-			foreach ($data as $date => $text)
+			for ($i = 0, $max = count($data); $i < $max; $i++)
 			{
-				list($date, $message) = $text;
-				$messages .= $date.' -- '.$type.': '.$message."\r\n";
+				// Compile messages: 0 = time, 1 = message text
+				$messages[] = "{$data[$i][0]} -- {$type}: {$data[$i][1]}";
 			}
 		}
 
-		// No point in logging nothing
-		if ($messages == '')
+		// Prevent empty logs
+		if (empty($messages))
 			return;
 
-		// Create the log file if it doesn't exist yet
 		if ( ! file_exists($filename))
 		{
-			touch($filename);
-			chmod($filename, 0644);
+			// Create the log file, adding the Kohana header to prevent URL access
+			file_put_contents($filename, '<?php defined(\'SYSPATH\') or die(\'No direct script access.\'); ?>'.PHP_EOL.PHP_EOL);
 
-			// Add our PHP header to the log file to prevent URL access
-			$messages = "<?php defined('SYSPATH') or die('No direct script access.'); ?>\r\n\r\n".$messages;
+			// Chmod the file to prevent external writes
+			chmod($filename, 0644);
 		}
 
 		// Append the messages to the log
-		file_put_contents($filename, $messages, FILE_APPEND) or trigger_error
+		file_put_contents($filename, implode(PHP_EOL, $messages), FILE_APPEND) or trigger_error
 		(
 			'The log file could not be written to. Please correct the permissions and refresh the page.',
 			E_USER_ERROR
