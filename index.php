@@ -63,7 +63,7 @@ ini_set('display_errors', TRUE);
 
 /**
  * If you rename all of your .php files to a different extension, set the new
- * extension here. This option can left to .php, even if this file is has a
+ * extension here. This option can left to .php, even if this file has a
  * different extension.
  */
 define('EXT', '.php');
