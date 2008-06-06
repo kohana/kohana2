@@ -115,16 +115,11 @@ class Kohana {
 			// Get the configured log directory
 			$log_dir = Config::item('log.directory');
 
-			// Two possible locations
-			$app_log = APPPATH.$log_dir;
-			$log_dir = realpath($log_dir);
-
-			// If the log directory does not exist, log inside of application/
-			is_dir($log_dir) or $log_dir = $app_log;
-
-			// Log directory must be writable
-			if ( ! is_dir($log_dir) OR ! is_writable($log_dir))
-				throw new Kohana_Exception('core.cannot_write_log');
+			if ( ! is_dir($log_dir))
+			{
+				// Application log directory
+				$log_dir = APPPATH.$log_dir;
+			}
 
 			// Set the log directory
 			Log::directory($log_dir);

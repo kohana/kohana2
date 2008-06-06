@@ -17,17 +17,33 @@ final class Log {
 	private static $messages = array();
 
 	/**
-	 * Set the the log directory. The log directory is determined by Kohana::setup.
+	 * Set the the log directory. The log directory is determined by Kohana::setup,
+	 * but can be changed during execution
 	 *
-	 * @param   string   full log directory path
-	 * @return  void
+	 * @throws  Kohana_Exception
+	 * @param   string       directory path
+	 * @return  string|void
 	 */
-	public static function directory($directory)
+	public static function directory($directory = NULL)
 	{
-		if (self::$log_directory === NULL)
+		if ($directory === NULL)
 		{
-			// Set the log directory if it has not already been set
-			self::$log_directory = rtrim($directory, '/').'/';
+			// Return the directory
+			return self::$log_directory;
+		}
+
+		// Get the full path to the directory
+		$directory = realpath($directory);
+
+		if (file_exists($directory) AND is_dir($directory) AND is_writable($directory))
+		{
+			// Set the log directory
+			self::$log_directory = $directory.'/';
+		}
+		else
+		{
+			// Log directory is invalid
+			throw new Kohana_Exception('core.cannot_write_log', $log_dir);
 		}
 	}
 
