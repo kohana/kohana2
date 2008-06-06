@@ -108,11 +108,7 @@ final class Log {
 		}
 
 		// Append the messages to the log
-		file_put_contents($filename, implode(PHP_EOL, $messages), FILE_APPEND) or trigger_error
-		(
-			'The log file could not be written to. Please correct the permissions and refresh the page.',
-			E_USER_ERROR
-		);
+		file_put_contents($filename, implode(PHP_EOL, $messages), FILE_APPEND);
 
 		// Reset the messages after writing
 		self::$messages = array();
