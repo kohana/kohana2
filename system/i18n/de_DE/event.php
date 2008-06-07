@@ -2,6 +2,6 @@
 
 $lang = array
 (
-	'invalid_subject' => 'Der Versuch das ungültige Subjekt <tt>%s</tt> an <tt>%s</tt> anzuhängen ist fehlgeschlagen. Subjekte müssen die Klasse <tt>Event_Subject</tt> erweitern.',
-	'invalid_observer' => 'Der Versuch den ungültigen Beobachter <tt>%s</tt> an <tt>%s</tt> anzuhängen ist fehlgeschlagen. Beobachter müssen die Klasse <tt>Event_Observer</tt> erweitern.',
+	'invalid_subject' => 'Der Versuch das ungültige Subjekt %s an %s anzuhängen ist fehlgeschlagen. Subjekte müssen die Klasse Event_Subject erweitern',
+	'invalid_observer' => 'Der Versuch den ungültigen Beobachter %s an %s anzuhängen ist fehlgeschlagen. Beobachter müssen die Klasse Event_Observer erweitern',
 );

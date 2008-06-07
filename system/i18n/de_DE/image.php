@@ -2,9 +2,9 @@
 
 $lang = array
 (
-	'getimagesize_missing'    => 'Die Bildbibliothek versucht die PHP-Funktion <tt>getimagesize</tt> zu benutzen, die aber nicht Bestandteil ihrer PHP-Installation ist',
+	'getimagesize_missing'    => 'Die Bildbibliothek versucht die PHP-Funktion getimagesize() zu benutzen, die aber nicht Bestandteil ihrer PHP-Installation ist.',
 	'unsupported_method'      => 'Der Bildtreiber, den Sie benutzen, unterstützt nicht die %s-Bildtransformation.',
-	'file_not_found'          => 'Das angegebene Bild %s konnte nicht gefunden werden. Stellen Sie bitte sicher, dass das Bild existiert. Benutzen Sie hierzu die Funktion <tt>file_exists</tt>.',
+	'file_not_found'          => 'Das angegebene Bild %s konnte nicht gefunden werden. Stellen Sie bitte sicher, dass das Bild existiert. Benutzen Sie hierzu die Funktion file_exists().',
 	'type_not_allowed'        => 'Das angegebene Bild %s ist kein erlaubter Bildtyp.',
 	'invalid_width'           => 'Die von Ihnen festgelegte Bildbreite, %s, ist ungültig.',
 	'invalid_height'          => 'Die von Ihnen festgelegte Bildhöhe, %s, ist ungültig.',

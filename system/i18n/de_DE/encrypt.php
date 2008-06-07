@@ -2,6 +2,6 @@
 
 $lang = array
 (
-	'requires_mcrypt'   => 'Um die Bibliothek Encrypt zu benutzen, muss mcrypt aktiviert werden.',
-	'no_encryption_key' => 'Um die Bibliothek Encrypt zu benutzen, müssen Sie einen Schlüssel in Ihrer Konfiguration eintragen.'
+	'requires_mcrypt'   => 'Um die Bibliothek Encrypt zu benutzen, muss mcrypt in Ihrer PHP-Installation aktiviert werden',
+	'no_encryption_key' => 'Um die Bibliothek Encrypt zu benutzen, müssen Sie einen Schlüssel in Ihrer Konfiguration eintragen'
 );
