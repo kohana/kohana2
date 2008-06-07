@@ -2,6 +2,6 @@
 
 $lang = array
 (
-	'invalid_subject'  => 'Poging om ongeldig subject <tt>%s</tt> te binden aan <tt>%s</tt> mislukt. Subjects moeten de <tt>Event_Subject</tt> class extenden.',
-	'invalid_observer' => 'Poging om ongeldige observer <tt>%s</tt> te binden aan <tt>%s</tt> mislukt. Observers moeten de <tt>Event_Subject</tt> class extenden.',
+	'invalid_subject'  => 'Poging om ongeldig subject %s te binden aan %s mislukt. Subjects moeten de Event_Subject class extenden.',
+	'invalid_observer' => 'Poging om ongeldige observer %s te binden aan %s mislukt. Observers moeten de Event_Subject class extenden.',
 );
