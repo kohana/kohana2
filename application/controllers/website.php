@@ -54,10 +54,11 @@ class Website_Controller extends Template_Controller {
 			(
 				'home'       => 'Home',
 				'download'   => 'Download',
-				'tutorials'  => 'Tutorials',
+				// 'tutorials'  => 'Tutorials',
 				// External links
+				'http://docs.kohanaphp.com/' => 'Documentation',
+				'http://learn.kohanaphp.com/' => 'Tutorials',
 				'http://forum.kohanaphp.com/' => 'Forum',
-				'http://doc.kohanaphp.com/' => 'User Guide',
 				// 'http://api.kohanaphp.com/'   => 'API Manual',
 			);
 
