@@ -1,15 +1,16 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Donate_Controller extends Controller {
+class Donate_Controller extends Website_Controller {
 
 	protected $auth_required = 'developer';
-
-	protected $auto_render = TRUE;
 
 	protected $payment;
 
 	public function __construct()
 	{
+		// Enable auto-rendering
+		$this->auto_render = TRUE;
+
 		parent::__construct();
 
 		// Load Payment

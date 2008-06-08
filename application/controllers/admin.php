@@ -1,8 +1,8 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Admin_Controller extends Controller {
+class Admin_Controller extends Website_Controller {
 
-	protected $auto_render = TRUE;
+	public $auto_render = TRUE;
 
 	protected $user;
 

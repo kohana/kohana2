@@ -2,8 +2,6 @@
 
 $config = array
 (
-	'user_table'   => 'users',
-	'role_table'   => 'roles',
 	'hash_method'  => 'sha1',
-	'salt_pattern' => '1, 2, 3, 5, 7, 10, 24, 25, 26, 35'
+	'salt_pattern' => '3, 5, 6, 10, 24, 26, 35, 36, 37, 40',
 );

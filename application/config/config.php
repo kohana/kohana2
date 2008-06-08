@@ -1,39 +1,71 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
- * File: Config
- *  This configuration file is unique to every application.
- *
- * Options:
- *  site_domain          - domain and installation directory
- *  site_protocol        - protocol used to access the site, usually HTTP
- *  index_page           - name of the front controller, can be removed with URL rewriting
- *  url_suffix           - an extension that will be added to all generated URLs
- *  output_compression   - enable or disable gzip output compression
- *  allow_config_set     - enable or disable setting of Config items
- *  global_xss_filtering - enable or disable XSS attack filtering on all user input
- *  extension_prefix     - filename prefix for library extensions
- *  include_paths        - extra Kohana resource paths, see <Kohana.find_file>
- *  preload              - libraries and models to be loaded with the controller
+/**
+ * Domain name, with the installation directory. Default: localhost/kohana/
  */
-$config = array
+$config['site_domain'] = IN_PRODUCTION ? 'kohanaphp.com' : 'localhost/kohanaphp.com/';
+
+/**
+ * Default protocol used to access the website. Default: http
+ */
+$config['site_protocol'] = 'http';
+
+/**
+ * Name of the front controller for this application. Default: index.php
+ *
+ * This can be removed by using URL rewriting.
+ */
+$config['index_page'] = '';
+
+/**
+ * Fake file extension that will be added to all generated URLs. Example: .html
+ */
+$config['url_suffix'] = '.html';
+
+/**
+ * Enable or disable gzip output compression. This can dramatically decrease
+ * server bandwidth usage, at the cost of slightly higher CPU usage. Set to
+ * the compression level (1-9) that you want to use, or FALSE to disable.
+ *
+ * Do not enable this option if you are using output compression in php.ini!
+ */
+$config['output_compression'] = IN_PRODUCTION;
+
+/**
+ * Enable or disable global XSS filtering of GET, POST, and SERVER data. This
+ * option also accepts a string to specify a specific XSS filtering tool.
+ */
+$config['global_xss_filtering'] = TRUE;
+
+/**
+ * Enable or disable dynamic setting of configuration options. By default, all
+ * configuration options are read-only.
+ */
+$config['allow_config_set'] = FALSE;
+
+/**
+ * Enable or display displaying of Kohana error pages. This will not affect
+ * logging. Turning this off will disable ALL error pages.
+ */
+$config['display_errors'] = ! IN_PRODUCTION;
+
+/**
+ * Filename prefixed used to determine extensions. For example, an
+ * extension to the Controller class would be named MY_Controller.php.
+ */
+$config['extension_prefix'] = 'MY_';
+
+/**
+ * Additional resource paths, or "modules". Each path can either be absolute
+ * or relative to the docroot. Modules can include any resource that can exist
+ * in your application directory, configuration files, controllers, views, etc.
+ */
+$config['modules'] = array
 (
-	'site_domain'          => 'localhost/kohanaphp.com/',
-	'site_protocol'        => 'http',
-	'index_page'           => 'index.php',
-	'url_suffix'           => '.html',
-	'output_compression'   => TRUE,
-	'display_errors'       => TRUE,
-	'allow_config_set'     => FALSE,
-	'global_xss_filtering' => FALSE,
-	'extension_prefix'     => 'MY_',
-	'include_paths'        => array
-	(
-		'modules/kodoc',
-		'modules/auth',
-	),
-	'preload'              => array
-	(
-		'libraries' => '',
-		'models'    => ''
-	)
+	MODPATH.'auth',      // Authentication
+	MODPATH.'forge',     // Form generation
+	// MODPATH.'gmaps',     // Google Maps Javascript generator
+	// MODPATH.'kobot',     // Kohana IRC bot
+	// MODPATH.'kodoc',     // Self-generating documentation
+	// MODPATH.'media',     // Media caching and compression
+	// MODPATH.'shoutbox',  // Shoutbox demo module
 );

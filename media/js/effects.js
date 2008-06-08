@@ -41,4 +41,18 @@ $(document).ready(function()
 			$(this).stop().animate(normal, 250);
 		});
 	});
+	// Download builder
+	$('#queryViewButton').click(function()
+	{
+		var queryString = '?';
+
+		$(this).html('Refresh URL');
+		$.each($('#downloadBuilder input'), function(i, value)
+		{
+			if($(value).attr('checked'))
+			queryString += encodeURI($(value).attr('name'))+'='+encodeURI($(value).attr('value'));
+		});
+
+		$('#downloadUrlDisplay').val($('#downloadBuilder').attr('action') + queryString).show();
+	});
 });

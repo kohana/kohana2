@@ -3,11 +3,11 @@
 $config['website'] = array
 (
 	'show_errors'   => TRUE,
-	'benchmark'     => FALSE,
+	'benchmark'     => ! IN_PRODUCTION,
 	'persistent'    => FALSE,
-	'connection'    => 'mysql://wgilk:YDqFsgqB@db117a.pair.com/wgilk_kohanaphp',
+	'connection'    => 'mysql://root:r00tdb@localhost/kohana',
 	'character_set' => 'utf8',
-	'table_prefix'  => 'kohana_',
+	'table_prefix'  => '',
 	'object'        => TRUE,
-	'cache'         => FALSE
+	'cache'         => IN_PRODUCTION,
 );

@@ -1,8 +1,8 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Download_Controller extends Controller {
+class Download_Controller extends Website_Controller {
 
-	protected $auto_render = TRUE;
+	public $auto_render = TRUE;
 
 	public function index()
 	{
@@ -13,12 +13,18 @@ class Download_Controller extends Controller {
 		}
 
 		// Load content
-		$content = new View('pages/download');
+		$this->template
+			->set('title', 'Download')
+			->bind('content', $content);
+
+		$content = View::factory('pages/download')
+			->bind('download', $download)
+			->bind('errors', $errors);
 
 		// Release version, codename, and date
 		$content->release_version = '2.1.2';
 		$content->release_codename = 'Schneefeier';
-		$content->release_date = strtotime('2008/02/21');
+		$content->release_date = strtotime('2008/06/08');
 
 		// Counter
 		$content->counter = file_get_contents(APPPATH.'cache/counter.txt');
@@ -73,36 +79,26 @@ class Download_Controller extends Controller {
 			'zip' => 'Zip Archive'
 		);
 
-		if (empty($_GET))
-		{
-			// Fake validation data, so that we can pre-fill the form
-			$validate = array
-			(
-				'format' => 'zip',
-				'languages' => array
-				(
-					'en_US' => '1'
-				)
-			);
-		}
-		else
-		{
-			// Validate GET data
-			$validate = $_GET;
-		}
-
 		// Load validation
-		$this->load->library('validation', $validate);
+		$download = Validation::factory($_GET)
+			->pre_filter('trim')
+			->add_rules('modules.*', 'in_array['.implode(',', array_keys($content->modules)).']')
+			->add_rules('format', 'required', 'length[2,3]', 'in_array['.implode(',', array_keys($content->formats)).']')
+			->add_rules('vendors.*', 'length[1,64]', 'in_array['.implode(',', array_keys($content->vendors)).']')
+			->add_rules('languages.*', 'required', 'length[5]', 'in_array['.implode(',', array_keys($content->languages)).']');
 
-		// Set rules
-		$this->validation->set_rules(array
-		(
-			'modules'   => 'in_array['.implode(',', array_keys($content->modules)).']',
-			'format'    => 'required[2,3]|in_array['.implode(',', array_keys($content->formats)).']',
-			'languages' => 'required[5]|in_array['.implode(',', array_keys($content->languages)).']'
-		));
+		if ( ! $download->submitted())
+		{
+			// Pre-filled data
+			$download['format'] = 'zip';
+			$download['languages'] = array('en_US' => 'en_US');
+		}
 
-		if ( ! empty($_GET) AND $this->validation->run())
+		// These should always be arrays
+		$download['modules'] = isset($download['modules']) ? (array) $download['modules'] : array();
+		$download['vendors'] = isset($download['vendors']) ? (array) $download['vendors'] : array();
+
+		if ($download->validate())
 		{
 			// Set the cache id
 			$cache_id = 'dl--'.sha1(serialize($_GET));
@@ -112,14 +108,14 @@ class Download_Controller extends Controller {
 			{
 				// Kohana release directory
 				$source = IN_PRODUCTION
-					? '/usr/home/wgilk/svn_checkout/kohana/releases/'.$content->release_version.'/'
+					? '/home/kohana/checkout/kohana_releases/'.$content->release_version.'/'
 					: '/Volumes/Media/Sites/Kohana/releases/'.$content->release_version.'/';
 
 				// Directory prefix that will be added to the archive as the base directory
 				$prefix = 'Kohana_v'.$content->release_version.'/';
 
 				// Initialize a new archive
-				$archive = new Archive($this->validation->format);
+				$archive = new Archive($download['format']);
 
 				// Add the prefix directory, index.php, license, and logo
 				$archive->add($source, $prefix, FALSE);
@@ -142,13 +138,13 @@ class Download_Controller extends Controller {
 					$this->add_files($source, $prefix, 'system/'.$dir.'/', $archive);
 				}
 
-				foreach($this->validation->languages as $lang)
+				foreach($download['languages'] as $lang)
 				{
 					// Add language files
 					$this->add_files($source, $prefix, 'system/i18n/'.$lang.'/', $archive);
 				}
 
-				if ($module_files = $this->validation->modules)
+				if ($module_files = $download['modules'])
 				{
 					// Add the modules directory
 					$archive->add($source.'modules', $prefix.'modules');
@@ -160,7 +156,7 @@ class Download_Controller extends Controller {
 					}
 				}
 
-				if ($vendor_files = $this->validation->vendor)
+				if ($vendor_files = $download['vendors'])
 				{
 					// Add vendor directory
 					$archive->add($source.'system/vendor', $prefix.'system/vendor');
@@ -195,12 +191,8 @@ class Download_Controller extends Controller {
 			return download::force('Kohana_v'.$content->release_version.'.zip', $cache);
 		}
 
-		// Set page title and content
-		$this->template->set(array
-		(
-			'title'   => 'Download',
-			'content' => $content
-		));
+		// Load errors
+		$errors = $download->errors('form_errors');
 	}
 
 	protected function add_files($source, $prefix, $directory, Archive $archive)

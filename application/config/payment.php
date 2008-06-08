@@ -9,7 +9,10 @@
 $config['default'] = array
 (
 	'driver'        => 'Paypal',
-	'test_mode'     => TRUE
+	'test_mode'     => FALSE,
+	'curl_config'   => array(CURLOPT_HEADER         => FALSE,
+	                         CURLOPT_RETURNTRANSFER => TRUE,
+	                         CURLOPT_SSL_VERIFYPEER => FALSE)
 );
 
 /*
@@ -26,7 +29,7 @@ $config['Paypal'] = array
 	'API_UserName' => '',
 	'API_Password' => '',
 	'API_Signature' => '',
-	'ReturnUrl' => 'http://www.kohanaphp.com/donate/paypal.html',
-	'CANCELURL' => 'http://www.kohanaphp.com/donate/index.html',
-	'CURRENCYCODE' => 'USD'
+	'ReturnUrl' => 'http://kohanaphp.com/donate/paypal.html',
+	'CANCELURL' => 'http://kohanaphp.com/donate/index.html',
+	'CURRENCYCODE' => 'USD',
 );

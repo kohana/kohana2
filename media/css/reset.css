@@ -34,12 +34,6 @@ input, select, textarea {
 	font:inherit;
 }
 
-/* http://24ways.org/2006/knockout-type */
-body {
-	-moz-opacity:.9999;
-	-webkit-text-shadow:0 0 0 #000;;
-}
-
 /* http://www.positioniseverything.net/easyclearing.html */
 .clearfix:after {
 	content:'.';

@@ -1,18 +1,18 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Controller extends Controller_Core {
-
-	// Enable auth
-	protected $auth_required = FALSE;
+class Website_Controller extends Template_Controller {
 
 	// Use auto-rendering, defaults to false
-	protected $auto_render = FALSE;
+	public $auto_render = FALSE;
 
 	// Main template
-	protected $template = 'layout';
+	public $template = 'layout';
 
 	// Cache instance
 	protected $cache;
+
+	// Enable auth
+	protected $auth_required = FALSE;
 
 	// RSS feeds
 	protected $feeds = array
@@ -35,13 +35,10 @@ class Controller extends Controller_Core {
 	{
 		parent::__construct();
 
-		if ($this->uri->segment(1) == FALSE)
-		{
-			// Need the first segment so that the main menu has an active tab
-			url::redirect('home');
-		}
+		// Need the first segment so that the main menu has an active tab
+		$this->uri->segment(1) or url::redirect('home');
 
-		if ($this->auto_render == TRUE)
+		if ($this->auto_render === TRUE)
 		{
 			// Load cache
 			$this->cache = new Cache;
@@ -51,9 +48,6 @@ class Controller extends Controller_Core {
 
 			// Load database
 			$this->db = new Database('website');
-
-			// Load the template
-			$this->template = new View($this->template);
 
 			// Menu items
 			$this->template->menu = array
@@ -87,19 +81,8 @@ class Controller extends Controller_Core {
 			// Add the feeds to the sidebar
 			$this->template->sidebar->feeds = $this->feeds;
 
-			// Auto-rendering
-			Event::add('system.post_controller', array($this, '_display'));
-
 			// Load feeds after display
 			Event::add('system.shutdown', array($this, '_load_feed'));
-		}
-	}
-
-	public function _display()
-	{
-		if ($this->auto_render == TRUE)
-		{
-			$this->template->render(TRUE);
 		}
 	}
 
@@ -158,4 +141,4 @@ class Controller extends Controller_Core {
 		}
 	}
 
-} // End Controller
+} // End Website Controller

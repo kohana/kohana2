@@ -1,16 +1,14 @@
 <?php
 /**
  * This file acts as the "front controller" to your application. You can
- * configure your application and system directories here, as well as error
- * reporting and error display.
+ * configure your application, modules, and system directories here.
+ * PHP error_reporting level may also be changed.
  *
  * @package    Core
  * @author     Kohana Team
- * @copyright  (c) 2007 Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-
-error_reporting(0);
 
 /**
  * Toggle for production status.
@@ -18,20 +16,30 @@ error_reporting(0);
 define('IN_PRODUCTION', stripos($_SERVER['SERVER_NAME'], 'kohanaphp.com') !== FALSE);
 
 /**
- * Kohana website application directory. This directory should contain your
- * application configuration, controllers, models, views, and other resources.
+ * Website application directory. This directory should contain your application
+ * configuration, controllers, models, views, and other resources.
  *
  * This path can be absolute or relative to this file.
  */
-$kohana_application = 'application';
+$kohana_application = IN_PRODUCTION ? '/home/kohana/checkout/kohana_website/application': 'application';
 
 /**
- * Kohana package files. This directory should contain the core/ directory, and
- * the resources you included in your download of Kohana.
+ * Kohana modules directory. This directory should contain all the modules used
+ * by your application. Modules are enabled and disabled by the application
+ * configuration file.
  *
  * This path can be absolute or relative to this file.
  */
-$kohana_system = 'system';
+$kohana_modules = IN_PRODUCTION ? '/home/kohana/checkout/kohana_website/modules' : 'modules';
+
+/**
+ * Kohana system directory. This directory should contain the core/ directory,
+ * and the resources you included in your download of Kohana.
+ *
+ * This path can be absolute or relative to this file.
+ */
+$kohana_system = IN_PRODUCTION ? '/home/kohana/checkout/kohana_website/system' : 'system';
+
 
 /**
  * Set the error reporting level. Unless you have a special need, E_ALL is a
@@ -55,7 +63,7 @@ define('EXT', '.php');
 //
 // DO NOT EDIT BELOW THIS LINE, UNLESS YOU FULLY UNDERSTAND THE IMPLICATIONS.
 // ----------------------------------------------------------------------------
-// $Id: index.php 1631 2007-12-28 00:11:38Z Shadowhand $
+// $Id: index.php 2005 2008-02-09 06:07:53Z PugFish $
 //
 
 // Define the front controller name and docroot
@@ -64,10 +72,11 @@ define('KOHANA',  substr(__FILE__, strlen(DOCROOT)));
 
 // Define application and system paths
 define('APPPATH', str_replace('\\', '/', realpath($kohana_application)).'/');
+define('MODPATH', str_replace('\\', '/', realpath($kohana_modules)).'/');
 define('SYSPATH', str_replace('\\', '/', realpath($kohana_system)).'/');
 
 // Clean up
-unset($kohana_application, $kohana_system);
+unset($kohana_application, $kohana_modules, $kohana_system);
 
 (is_dir(APPPATH) AND is_dir(APPPATH.'/config')) or die
 (

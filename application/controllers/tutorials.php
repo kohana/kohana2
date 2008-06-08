@@ -1,13 +1,16 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Tutorials_Controller extends Controller {
+class Tutorials_Controller extends Website_Controller {
 
-	protected $auto_render = TRUE;
+	public $auto_render = TRUE;
 
 	public function _default()
 	{
 		$videos = new Video_Tutorial_Model;
-		foreach($videos->select('video', 'title')->find(ALL) as $video)
+		
+		echo Kohana::debug($videos->select('video', 'title')->find());exit;
+		
+		foreach($videos->select('video', 'title')->find_all() as $video)
 		{
 			// Add each video the the list
 			$titles['Video Tutorials']['video/'.$video->video] = $video->title;

@@ -21,7 +21,20 @@ echo html::stylesheet(array
 	'all',
 	'screen',
 	'print'
-))
+));
+
+/* Browser-specific stylesheets */
+switch (Kohana::user_agent('browser'))
+{
+	case 'Safari':
+		echo html::stylesheet('media/css/webkit');
+	break;
+	case 'Firefox':
+	case 'Shiira':
+	case 'Camino':
+		echo html::stylesheet('media/css/mozilla');
+	break;
+}
 
 ?>
 
@@ -35,7 +48,6 @@ echo html::script(array
 ))
 
 ?>
-
 </head>
 <body>
 <!-- Start Developer Menu -->
@@ -103,6 +115,17 @@ echo html::script(array
 <!-- End Body -->
 
 <div id="footer"><strong>&copy;2007 Kohana Team. All rights reserved.</strong> <span class="stats">Powered by Kohana v{kohana_version}. Rendered in {execution_time} seconds, using {memory_usage} of memory.</span></div>
+
+<!-- Stats -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-4300382-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
 
 </body>
 </html>
