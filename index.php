@@ -13,7 +13,7 @@
 /**
  * Toggle for production status.
  */
-define('IN_PRODUCTION', stripos($_SERVER['SERVER_NAME'], 'kohanaphp.com') !== FALSE);
+define('IN_PRODUCTION', (bool) preg_match('/(?:kohanaphp|kohana\.webfactional)\.com/', $_SERVER['SERVER_NAME']));
 
 /**
  * Website application directory. This directory should contain your application
