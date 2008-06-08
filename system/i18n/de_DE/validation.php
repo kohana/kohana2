@@ -33,6 +33,7 @@ $lang = array
 
 	// Field types
 	'alpha'         => 'alphabetische Zeichen',
+	'alpha_numeric' => 'alphabetische und numerische Zeichen',
 	'alpha_dash'    => 'alphabetische Zeichen, Trennstriche und Unterstriche',
 	'digit'         => 'Zahlen',
 	'numeric'       => 'Nummern',
