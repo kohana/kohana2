@@ -20,7 +20,7 @@ class Website_Controller extends Template_Controller {
 		'forums' => array
 		(
 			'title' => 'Latest Forum Activity',
-			'url'   => 'http://forum.kohanaphp.com/index.php?action=.xml;limit=20;type=rss2',
+			'url'   => 'http://forum.kohanaphp.com/search.php?PostBackAction=Search&Type=Comments&Feed=RSS2',
 			'items' => array()
 		),
 		'trac' => array
