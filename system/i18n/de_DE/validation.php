@@ -3,11 +3,10 @@
 $lang = array
 (
 	// Class errors
-	'error_format'  => 'Ihre Nachricht muss {message} enthalten.',
-	'invalid_rule'  => 'Ungültige Gültigkeitsprüfung benutzt: %s',
+	'invalid_rule'  => 'Ungültige Validierungsregel benutzt: %s',
 
 	// General errors
-	'unknown_error' => 'Unbekannter Fehler bei der Gültigkeitsprüfung von dem Feld %s aufgetreten.',
+	'unknown_error' => 'Unbekannter Fehler bei der Validierungsregel von dem Feld %s aufgetreten.',
 	'required'      => 'Das Feld %s ist erforderlich.',
 	'min_length'    => 'Das Feld %s muss mindestens %d Zeichen lang sein.',
 	'max_length'    => 'Das Feld %s darf höchstens %d Zeichen lang sein.',
