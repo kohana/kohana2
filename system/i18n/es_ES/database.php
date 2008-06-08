@@ -11,4 +11,5 @@ $lang = array
 	'must_use_where'        => 'Necesitas una clausula WHERE para tu consulta.',
 	'must_use_table'        => 'Necesitas especificar la tabla para tu consulta.',
 	'not_implemented'       => 'El método requerido, %s, no esta soportado por este driver.',
+	'result_read_only'      => 'El resultado de la consulta es de solo lectura.',
 );

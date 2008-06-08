@@ -14,7 +14,7 @@ $lang = array
 	'no_file_types'      => 'El tipo de fichero especificado no esta permitido.',
 	'bad_filename'       => 'Un fichero con el mismo nombre del que has enviado ya existe en el servidor.',
 	'not_writable'       => 'La carpeta seleccionada como destino, %s, no tiene permisos de escritura.',
-	'error_on_file'      => 'Error enciando %s:',
+	'error_on_file'      => 'Error enviando %s:',
 	// Error code responses
 	'set_allowed'        => 'Por seguridad, deberias definir los tipos de fichero que esta permitido enviar.',
 	'max_file_size'      => 'Por seguridad, por favor no utilice MAX_FILE_SIZE para controlar el tamaño maximo permitido.',
