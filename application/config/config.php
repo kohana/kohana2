@@ -49,6 +49,14 @@ $config['allow_config_set'] = FALSE;
 $config['display_errors'] = ! IN_PRODUCTION;
 
 /**
+ * Enable or display statistics in the final output. Stats are replaced via
+ * specific strings, such as {execution_time}.
+ *
+ * @see http://doc.kohanaphp.com/general/configuration/config
+ */
+$config['render_stats'] = TRUE;
+
+/**
  * Filename prefixed used to determine extensions. For example, an
  * extension to the Controller class would be named MY_Controller.php.
  */
