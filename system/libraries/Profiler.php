@@ -174,16 +174,17 @@ class Profiler_Core {
 		$queries = Database::$benchmarks;
 
 		text::alternate();
-		$total_time = 0;
+		$total_time = $total_rows = 0;
 		foreach ($queries as $query)
 		{
 			$data = array($query['query'], number_format($query['time'], 3), $query['rows']);
 			$class = text::alternate('', 'kp-altrow');
 			$table->add_row($data, $class);
 			$total_time += $query['time'];
+			$total_rows += $query['rows'];
 		}
 
-		$data = array('Total: ' . count($queries), number_format($total_time, 3), '');
+		$data = array('Total: ' . count($queries), number_format($total_time, 3), $total_rows);
 		$table->add_row($data, 'kp-totalrow');
 	}
 
