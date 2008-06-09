@@ -2,7 +2,7 @@
 
 $lang = array
 (
-	'undefined_group'       => 'Die Gruppe % ist in Ihrer Konfiguration nicht definiert worden.',
+	'undefined_group'       => 'Die Gruppe %s ist in Ihrer Konfiguration nicht definiert worden.',
 	'error'                 => 'Es gab einen SQL-Fehler: %s',
 	'connection'            => 'Es Gab einen Fehler bei der Verbindung mit der Datenbank: %s',
 	'driver_not_supported'  => 'Der Datenbanktreiber %s wurde nicht gefunden.',
