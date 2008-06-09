@@ -165,6 +165,9 @@ class html_Core {
 	 */
 	public static function mailto($email, $title = NULL, $attributes = NULL)
 	{
+		if (empty($email))
+			return $title;
+
 		// Remove the subject or other parameters that do not need to be encoded
 		if (strpos($email, '?') !== FALSE)
 		{
