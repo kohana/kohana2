@@ -4,7 +4,7 @@
 $lang = substr(Config::item('locale.language'), 0, 2);
 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//<?php echo strtoupper($lang) ?>" 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//<?php echo strtoupper($lang) ?>"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $lang ?>" lang="<?php echo $lang ?>">
 <head>
@@ -105,7 +105,7 @@ echo html::script(array
 </div>
 <!-- End Body -->
 <div id="footer">
-<strong><?php echo Kohana::lang('layout.copyright');?></strong> 
+<strong>&copy;2007-2008 <?php echo Kohana::lang('layout.copyright');?></strong>
 <span class="stats"><?php echo Kohana::lang('layout.stats');?></span>
 </div>
 <!-- Stats -->

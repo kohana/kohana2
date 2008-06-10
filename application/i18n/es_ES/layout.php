@@ -20,7 +20,7 @@ $lang = array
 	'forums_title'		=> 'Ultima Actividad en los Foros',
 	'trac_title'		=> 'Ultimos Cambios',
 	'download_link'		=> '<strong>Descargar</strong> la Version mas Reciente',
-	'copyright'		=> '&copy;2007 Kohana Team. Todos los derechos reservados.',
+	'copyright'		=> 'Kohana Team. Todos los derechos reservados.',
 	'stats'			=> 'Vitaminado po Kohana v{kohana_version}. Ejecutado en {execution_time} segundos, utilizando {memory_usage} de memoria.',
 	
 );

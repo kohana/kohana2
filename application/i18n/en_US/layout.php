@@ -20,6 +20,6 @@ $lang = array
 	'forums_title'		=> 'Latest Forum Activity',
 	'trac_title'		=> 'Latest Changes',
 	'download_link'		=> '<strong>Download</strong> Latest Version',
-	'copyright'		=> '&copy;2007 Kohana Team. All rights reserved.',
+	'copyright'		=> 'Kohana Team. All rights reserved.',
 	'stats'			=> 'Powered by Kohana v{kohana_version}. Rendered in {execution_time} seconds, using {memory_usage} of memory.',
 );

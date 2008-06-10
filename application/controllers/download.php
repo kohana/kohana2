@@ -66,11 +66,11 @@ class Download_Controller extends Website_Controller {
 		(
 			'en_US' => Kohana::lang('download.lang_en_US'),
 			'en_GB' => Kohana::lang('download.lang_en_GB'),
-			'nl_NL' => Kohana::lang('download.lang_nl_NL'),
-			'fr_FR' => Kohana::lang('download.lang_fr_FR'),
 			'de_DE' => Kohana::lang('download.lang_de_DE'),
-			'mk_MK' => Kohana::lang('download.lang_mk_MK'),
 			'es_ES' => Kohana::lang('download.lang_es_ES'),
+			// 'fr_FR' => Kohana::lang('download.lang_fr_FR'),
+			'nl_NL' => Kohana::lang('download.lang_nl_NL'),
+			// 'mk_MK' => Kohana::lang('download.lang_mk_MK'),
 		);
 
 		// Download formats
