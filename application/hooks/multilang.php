@@ -16,7 +16,7 @@ $langs = array
 if (isset($langs[$tld]))
 {
 	// Set the language
-	Config::set('local.language', $langs[$tld]);
+	Config::set('locale.language', $langs[$tld]);
 }
 
 // Clean up
