@@ -11,11 +11,8 @@ class News_Controller extends Website_Controller {
 
 	public function gophp5()
 	{
-		$this->template->set(array
-		(
-			'title'   => 'GoPHP5',
-			'content' => new View('pages/gophp5')
-		));
+		$this->template->title = 'GoPHP5';
+		$this->template->content = View::factory('pages/news/gophp5_'.Config::get('locale.language'));
 	}
 
 }
