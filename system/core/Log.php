@@ -108,7 +108,7 @@ final class Log {
 		}
 
 		// Append the messages to the log
-		file_put_contents($filename, implode(PHP_EOL, $messages), FILE_APPEND);
+		file_put_contents($filename, implode(PHP_EOL, $messages).PHP_EOL, FILE_APPEND);
 
 		// Reset the messages after writing
 		self::$messages = array();
