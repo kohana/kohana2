@@ -3,6 +3,9 @@
 // Find TLD extension
 preg_match('/kohanaphp\.(.+)$/', $_SERVER['SERVER_NAME'], $tld);
 
+// Get TLD from match
+$tld = empty($tld[1]) ? NULL : $tld[1];
+
 // TLD => lang
 $langs = array
 (
