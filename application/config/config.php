@@ -2,7 +2,7 @@
 /**
  * Domain name, with the installation directory. Default: localhost/kohana/
  */
-$config['site_domain'] = IN_PRODUCTION ? 'kohanaphp.com' : 'localhost/kohanaphp.com/';
+$config['site_domain'] = IN_PRODUCTION ? $_SERVER['SERVER_NAME'] : 'localhost/kohanaphp.com/';
 
 /**
  * Default protocol used to access the website. Default: http
