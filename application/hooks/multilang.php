@@ -13,7 +13,7 @@ $langs = array
 	// 'pl' => 'pl_PL',
 );
 
-if (isset($langs[$tld]))
+if ( ! empty($tld) AND isset($langs[$tld]))
 {
 	// Set the language
 	Config::set('locale.language', $langs[$tld]);
