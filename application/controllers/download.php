@@ -24,7 +24,7 @@ class Download_Controller extends Website_Controller {
 		// Release version, codename, and date
 		$content->release_version = '2.1.2';
 		$content->release_codename = 'Schneefeier';
-		$content->release_date = strtotime('2008/06/08');
+		$content->release_date = strtotime('2008/06/10');
 
 		// Counter
 		$content->counter = file_get_contents(APPPATH.'cache/counter.txt');
@@ -71,6 +71,7 @@ class Download_Controller extends Website_Controller {
 			// 'fr_FR' => Kohana::lang('download.lang_fr_FR'),
 			'nl_NL' => Kohana::lang('download.lang_nl_NL'),
 			// 'mk_MK' => Kohana::lang('download.lang_mk_MK'),
+			'pl_PL' => Kohana::lang('download.lang_pl_PL'),
 		);
 
 		// Download formats
