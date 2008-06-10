@@ -19,13 +19,13 @@ class Website_Controller extends Template_Controller {
 	(
 		'forums' => array
 		(
-			'title' => 'Latest Forum Activity',
+			'title' => 'layout.forums_title',
 			'url'   => 'http://forum.kohanaphp.com/search.php?PostBackAction=Search&Type=Comments&Feed=RSS2',
 			'items' => array()
 		),
 		'trac' => array
 		(
-			'title' => 'Latest Changes',
+			'title' => 'layout.trac_title',
 			'url'   => 'http://trac.kohanaphp.com/timeline?milestone=on&ticket=on&changeset=on&max=20&daysback=90&format=rss',
 			'items' => array()
 		)
@@ -52,14 +52,14 @@ class Website_Controller extends Template_Controller {
 			// Menu items
 			$this->template->menu = array
 			(
-				'home'       => 'Home',
-				'download'   => 'Download',
-				// 'tutorials'  => 'Tutorials',
+				'home'       => Kohana::lang('layout.menu_home'),
+				'download'   => Kohana::lang('layout.menu_download'),
+				// 'tutorials'  => Kohana::lang('layout.menu_tutorials'),
 				// External links
-				'http://docs.kohanaphp.com/' => 'Documentation',
-				'http://learn.kohanaphp.com/' => 'Tutorials',
-				'http://forum.kohanaphp.com/' => 'Forum',
-				// 'http://api.kohanaphp.com/'   => 'API Manual',
+				'http://docs.kohanaphp.com/' => Kohana::lang('layout.menu_documentation'),
+				'http://learn.kohanaphp.com/' => Kohana::lang('layout.menu_tutorials'),
+				'http://forum.kohanaphp.com/' => Kohana::lang('layout.menu_forum'),
+				// 'http://api.kohanaphp.com/'   => Kohana::lang('layout.menu_api'),
 			);
 
 			// Sidebar

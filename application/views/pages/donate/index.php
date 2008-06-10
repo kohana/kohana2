@@ -1,12 +1,12 @@
-<h2>Donating</h2>
+<h2><?php echo Kohana::lang('donate.subtitle');?></h2>
 <?php echo $this->session->get('donate_status')?>
-<p>To donate any amount to the Kohana project, enter the amount in the box below and click Submit. You will be sent to PayPal to login, then back to our site to complete the donation.</p>
+<p><?php echo Kohana::lang('donate.help');?></p>
 <?php echo form::open('donate/paypal') ?>
-<h4>Name</h4>
+<h4><?php echo Kohana::lang('donate.name');?></h4>
 <p><?php echo form::input('name')?></p>
-<h4>Email</h4>
+<h4><?php echo Kohana::lang('donate.email');?></h4>
 <p><?php echo form::input('email')?></p>
-<h4>Amount</h4>
+<h4><?php echo Kohana::lang('donate.amount');?></h4>
 <p>$<?php echo form::input('amount') ?> </p>
-<p><?php echo form::submit('submit', 'Donate') ?></p>
+<p><?php echo form::submit('submit', Kohana::lang('donate.title')) ?></p>
 <?php echo form::close()?>

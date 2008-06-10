@@ -1,3 +1,3 @@
-<p class="warning message">This action cannot be undone!</p>
+<p class="warning message"><?php echo Kohana::lang('admin.action_undone');?></p>
 
-<p class="confirm"><?php echo html::anchor($action.'?confirm=yes', 'Continue') ?> or <?php echo html::anchor($action.'?confirm=no', 'Abort') ?></p>
+<p class="confirm"><?php echo Kohana::lang('admin.confirm', array(html::anchor($action.'?confirm=yes', Kohana::lang('admin.continue')), html::anchor($action.'?confirm=no', Kohana::lang('admin.abort')))) ?></p>

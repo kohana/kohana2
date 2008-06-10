@@ -21,7 +21,7 @@ class Donate_Controller extends Website_Controller {
 	{
 		$this->template->set(array
 		(
-			'title'   => 'Donate',
+			'title'   => Kohana::lang('donate.title'),
 			'content' => new View('pages/donate/index')
 		));
 	}
@@ -40,7 +40,7 @@ class Donate_Controller extends Website_Controller {
 			$status = $this->payment->process();
 			
 			// Something went wrong, so delete the session data and make em start over again.
-			$this->session->set_flash('donate_status', '<p style="color: red;">There was a problem processing your donation. Please try again.</p>');
+			$this->session->set_flash('donate_status', '<p style="color: red;">'.Kohana::lang('donate.error').'</p>');
 			$this->session->del('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token');
 			url::redirect('donate');
 		}
@@ -49,7 +49,7 @@ class Donate_Controller extends Website_Controller {
 			// Display the final 'order' page
 			$this->template->set(array
 			(
-				'title'   => 'Donate',
+				'title'   => Kohana::lang('donate.title'),
 				'content' => new View('pages/donate/paypal', array('payerid' => $payerid, 'donate_amount' => $amount))
 			));
 		}
@@ -83,17 +83,17 @@ class Donate_Controller extends Website_Controller {
 
 			$this->template->set(array
 			(
-				'title'   => 'Donate',
+				'title'   => Kohana::lang('donate.title'),
 				'content' => new View('pages/donate/paypal_success')
 			));
 		}
 		else
 		{
-			$this->session->set_flash('donate_status', '<p style="color: red;">There was a problem processing your donation. Please try again.</p>');
+			$this->session->set_flash('donate_status', '<p style="color: red;">'.Kohana::lang('donate.error').'</p>');
 			$this->session->del('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token');
 			$this->template->set(array
 			(
-				'title'   => 'Donate',
+				'title'   => Kohana::lang('donate.title'),
 				'content' => new View('pages/donate/paypal_error')
 			));
 		}
@@ -110,7 +110,7 @@ class Donate_Controller extends Website_Controller {
 
 		$this->template->set(array
 		(
-			'title'   => 'Donation List',
+			'title'   => Kohana::lang('donate.list'),
 			'content' => new View('pages/donate/list', array('donation_list' => $donation->find_all()))
 		));
 	}

@@ -8,7 +8,7 @@ class Home_Controller extends Website_Controller {
 	{
 		$this->template->set(array
 		(
-			'title'   => 'Home',
+			'title'   => Kohana::lang('home.title'),
 			'content' => new View('pages/home')
 		));
 	}

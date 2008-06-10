@@ -49,10 +49,10 @@ class Admin_Controller extends Website_Controller {
 	public function login()
 	{
 		// Create the login form
-		$form = new Forge(NULL, $this->template->title = 'Developer Login');
+		$form = new Forge(NULL, $this->template->title = Kohana::lang('admin.login_title'));
 		$form->input('username')->label(TRUE)->rules('required|length[2,32]');
 		$form->password('password')->label(TRUE)->rules('required|length[2,64]');
-		$form->submit('Login');
+		$form->submit(Kohana::lang('admin.login_button'));
 
 		if ($form->validate() AND $data = $form->as_array())
 		{
@@ -69,7 +69,7 @@ class Admin_Controller extends Website_Controller {
 		}
 
 		// Load content
-		$this->template->content = $form->html();
+		$this->template->content = $form->render();
 	}
 
 	public function log_out()
@@ -99,7 +99,7 @@ class Admin_Controller extends Website_Controller {
 	{
 		if ($id === FALSE)
 		{
-			$this->template->title = 'Manage Users';
+			$this->template->title = Kohana::lang('admin.users_title');
 
 			$this->template->content = View::factory('admin/edit_list')
 				->set('edit_action', 'admin/manage_users')
@@ -108,7 +108,7 @@ class Admin_Controller extends Website_Controller {
 
 			if ($this->user->has_role('admin'))
 			{
-				$this->template->content->set('new', 'Add a new user');
+				$this->template->content->set('new', Kohana::lang('admin.add_user'));
 
 				foreach (ORM::factory('user')->find(ALL) as $user)
 				{
@@ -138,13 +138,13 @@ class Admin_Controller extends Website_Controller {
 			}
 
 			// Create user editing form
-			$form = new Forge(NULL, $this->template->title = ($user->username ? 'Edit '.$user->username : 'New User'));
+			$form = new Forge(NULL, $this->template->title = ($user->username ? Kohana::lang('admin.edit_user', $user->username) : Kohana::lang('admin.new_user')));
 			$form->input('username')->label(TRUE)->rules('required|length[2,32]')->value($user->username);
 			$form->input('email')->label(TRUE)->rules('required|length[4,127]|valid_email')->value($user->email);
 			$form->password('password')->label(TRUE)->rules('length[4,64]');
 			$form->password('passconf')->label('Confirm')->matches($form->password);
 			$form->checklist('roles')->label(TRUE)->options($roles);
-			$form->submit('Save');
+			$form->submit(Kohana::lang('admin.save_button'));
 
 			if ($id === FALSE)
 			{
@@ -176,7 +176,7 @@ class Admin_Controller extends Website_Controller {
 				}
 
 				// Save the user and set the message
-				$user->save() and $this->session->set_flash('message', '<p><strong>Success!</strong> User saved successfully.</p>');
+				$user->save() and $this->session->set_flash('message', Kohana::lang('admin.user_added'));
 
 				// Only admins are allowed to change user roles
 				if ($this->user->has_role('admin'))
@@ -217,7 +217,7 @@ class Admin_Controller extends Website_Controller {
 		}
 
 		// Set the template title
-		$this->template->title = 'Delete '.$user->username.'?';
+		$this->template->title = Kohana::lang('admin.delete_user', $user->username);
 
 		if ($user->id AND $confirm === 'yes')
 		{
@@ -235,10 +235,10 @@ class Admin_Controller extends Website_Controller {
 	{
 		if ($id === FALSE)
 		{
-			$this->template->title = 'Manage Users';
+			$this->template->title = Kohana::lang('admin.manage_videos');
 
 			$list = View::factory('admin/edit_list')
-				->set('new', 'Add a new video')
+				->set('new', Kohana::lang('admin.add_video'))
 				->set('edit_action', 'admin/manage_video_tutorials')
 				->set('delete_action', 'admin/delete_video_tutorial')
 				->bind('items', $items);
@@ -258,14 +258,14 @@ class Admin_Controller extends Website_Controller {
 			// Load tutorial
 			$tutorial = new Video_Tutorial_Model($id);
 
-			$form = new Forge(NULL, $this->template->title = ($tutorial->id ? 'Update Tutorial' : 'New Tutorial'));
+			$form = new Forge(NULL, $this->template->title = ($tutorial->id ? Kohana::lang('admin.update_video') : Kohana::lang('admin.new_video')));
 			$form->input('title')->label(TRUE)->rules('required|length[4,64]')->value($tutorial->title);
 			$form->input('author')->label(TRUE)->rules('required|length[4,64]')->value($tutorial->author);
 			$form->input('copyright')->label(TRUE)->rules('required|length[4]|valid_digit')->value($tutorial->copyright);
 			$form->input('video')->label('File')->rules('required|length[2,127]')->value($tutorial->video);
 			$form->input('width')->label(TRUE)->rules('required|length[2,3]|valid_digit')->value($tutorial->width);
 			$form->input('height')->label(TRUE)->rules('required|length[2,3]|valid_digit')->value($tutorial->height);
-			$form->submit('Save');
+			$form->submit(Kohana::lang('admin.save_button'));
 
 			if ($form->validate())
 			{
@@ -278,7 +278,7 @@ class Admin_Controller extends Website_Controller {
 				if ($tutorial->save())
 				{
 					// Set the message
-					$this->session->set_flash('message', '<p><strong>Success!</strong> Tutorial was saved successfully.</p>');
+					$this->session->set_flash('message', '<p>'.Kohana::lang('admin.video_saved').'</p>');
 				}
 
 				// Go back to dashboard

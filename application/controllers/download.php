@@ -14,7 +14,7 @@ class Download_Controller extends Website_Controller {
 
 		// Load content
 		$this->template
-			->set('title', 'Download')
+			->set('title', Kohana::lang('download.title'))
 			->bind('content', $content);
 
 		$content = View::factory('pages/download')
@@ -32,10 +32,10 @@ class Download_Controller extends Website_Controller {
 		// Modules
 		$content->modules = array
 		(
-			'Auth' => 'Simple authentication and user management. Uses <a href="http://doc.kohanaphp.com/libraries/orm">ORM</a> for models.',
-			'Forge' => 'Object-oriented form generation and templating.',
-			'Media' => 'Media caching, compression, and aggregation for CSS and Javascript files.',
-			'Kodoc' => 'Dynamic self-generated documentation. (Beta!)',
+			'Auth' => Kohana::lang('download.auth_description'),
+			'Forge' => Kohana::lang('download.forge_description'),
+			'Media' => Kohana::lang('download.media_description'),
+			'Kodoc' => Kohana::lang('download.kodoc_description'),
 		);
 
 		// Vendor resources
@@ -44,19 +44,19 @@ class Download_Controller extends Website_Controller {
 			'Markdown' => array
 			(
 				'link' => 'http://michelf.com/projects/php-markdown/',
-				'description' => 'Text formatting tool that offers text to HTML markup with a natural syntax.',
+				'description' => Kohana::lang('download.markdown_description'),
 				'file' => 'Markdown.php'
 			),
 			'SwiftMailer' => array
 			(
 				'link' => 'http://www.swiftmailer.org/',
-				'description' => 'Feature-rich emailing library that supports HTML email, STMP connections, and many other features.',
+				'description' => Kohana::lang('download.swift_description'),
 				'file' => 'swift'
 			),
 			'HTMLPurifier' => array
 			(
 				'link' => 'http://htmlpurifier.org/',
-				'description' => 'Standards-compliant HTML filtering library that offers XSS (Cross Site Scripting) prevention and XHTML normalization.',
+				'description' => Kohana::lang('download.purifier_description'),
 				'file' => 'htmlpurifier'
 			)
 		);
@@ -64,19 +64,19 @@ class Download_Controller extends Website_Controller {
 		// Supported languages
 		$content->languages = array
 		(
-			'en_US' => 'English (US)',
-			'en_GB' => 'English (UK)',
-			'nl_NL' => 'Dutch',
-			'fr_FR' => 'French',
-			'de_DE' => 'German',
-			'mk_MK' => 'Macedonian',
-			'es_ES' => 'Spanish',
+			'en_US' => Kohana::lang('download.lang_en_US'),
+			'en_GB' => Kohana::lang('download.lang_en_GB'),
+			'nl_NL' => Kohana::lang('download.lang_nl_NL'),
+			'fr_FR' => Kohana::lang('download.lang_fr_FR'),
+			'de_DE' => Kohana::lang('download.lang_de_DE'),
+			'mk_MK' => Kohana::lang('download.lang_mk_MK'),
+			'es_ES' => Kohana::lang('download.lang_es_ES'),
 		);
 
 		// Download formats
 		$content->formats = array
 		(
-			'zip' => 'Zip Archive'
+			'zip' => Kohana::lang('download.zip_archive')
 		);
 
 		// Load validation

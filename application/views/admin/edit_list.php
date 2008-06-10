@@ -21,6 +21,6 @@ error_reporting($ER);
 <li class="new"><?php echo html::anchor($edit_action.'new', $new) ?></li>
 <?php endif ?>
 <?php foreach ($items as $id => $name): ?>
-<li><?php echo html::anchor($edit_action.$id, $name) ?> <span>[<?php echo html::anchor($delete_action.$id, 'Delete') ?>]</span></li>
+<li><?php echo html::anchor($edit_action.$id, $name) ?> <span>[<?php echo html::anchor($delete_action.$id, Kohana::lang('admin.delete')) ?>]</span></li>
 <?php endforeach ?>
 </ul>
