@@ -2,6 +2,6 @@
 
 $lang = array
 (
-	'invalid_subject'  => 'Nieudana próba podłączenia niewłaściwego podmiotu <tt>%s</tt> do <tt>%s</tt>. Podmiot musi dziedziczyć po klasie <tt>Event_Subject</tt>.',
-	'invalid_observer' => 'Nieudana próba podłączenia niewłaściwego obserwatora <tt>%s</tt> do <tt>%s</tt>. Obserwator musi dziedziczyć po klasie <tt>Event_Observer</tt>.',
+	'invalid_subject'  => 'Nieudana próba podłączenia niewłaściwego podmiotu %s do %s. Podmiot musi dziedziczyć po klasie Event_Subject.',
+	'invalid_observer' => 'Nieudana próba podłączenia niewłaściwego obserwatora %s do %s. Obserwator musi dziedziczyć po klasie Event_Observer.',
 );
