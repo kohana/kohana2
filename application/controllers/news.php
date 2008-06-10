@@ -15,4 +15,4 @@ class News_Controller extends Website_Controller {
 		$this->template->content = View::factory('pages/news/gophp5_'.Config::get('locale.language'));
 	}
 
-}
+} // End News Controller
