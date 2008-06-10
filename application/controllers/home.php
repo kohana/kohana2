@@ -7,7 +7,7 @@ class Home_Controller extends Website_Controller {
 	public function _remap()
 	{
 		$this->template->title = Kohana::lang('home.title');
-		$this->template->content = View::factory('pages/home/home_'.Config::get('locale.language'));
+		$this->template->content = View::factory('pages/home/home_'.Config::item('locale.language'));
 	}
 
 } // End Kohana Website Controller
