@@ -2,6 +2,6 @@
 
 $lang = array
 (
-	'invalid_subject'  => 'Le sujet <tt>%s</tt> n\'a pas pu peut être attaché à <tt>%s</tt>. Les sujets doivent étendre la classe <tt>Event_Subject</tt>.',
-	'invalid_observer' => 'L\'observeur <tt>%s</tt> n\'a pas pu peut être attaché à <tt>%s</tt>. Les observeurs doivent étendre la classe <tt>Event_Observer</tt>.',
+	'invalid_subject'  => 'Le sujet %s n\'a pas pu peut être attaché à %s. Les sujets doivent étendre la classe Event_Subject.',
+	'invalid_observer' => 'L\'observeur %s n\'a pas pu peut être attaché à %s. Les observeurs doivent étendre la classe Event_Observer.',
 );

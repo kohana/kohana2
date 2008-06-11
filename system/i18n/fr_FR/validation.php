@@ -32,6 +32,7 @@ $lang = array
 
 	// Field types
 	'alpha'         => 'alphabétiques',
+	'alpha_numeric' => 'alphabétiques et numériques',
 	'alpha_dash'    => 'alphabétiques, tirets haut ou tirets bas (underscore)',
 	'digit'         => 'digitaux',
 	'numeric'       => 'numériques',
