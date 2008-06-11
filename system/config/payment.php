@@ -83,12 +83,22 @@ $config['Trident'] = array
  */
 $config['Paypal'] = array
 (
-	'API_UserName' => '',
-	'API_Password' => '',
-	'API_Signature' => '',
-	'ReturnUrl' => '',
-	'CANCELURL' => '',
-	'CURRENCYCODE' => 'USD'
+	'USER'         => '-your-paypal-api-username',
+	'PWD'          => '-your-paypal-api-password',
+	'SIGNATURE'    => '-your-paypal-api-security-signiature',
+	'ENDPOINT'     => 'https://api-3t.paypal.com/nvp',
+
+	'RETURNURL'     => 'http://yoursite.com',
+	'CANCELURL'     => 'http://yoursite.com/canceled',
+
+	// -- sandbox authorization details are generic
+	'SANDBOX_USER'      => 'sdk-three_api1.sdk.com',
+	'SANDBOX_PWD'       => 'QFZCWN5HZM8VBG7Q',
+	'SANDBOX_SIGNATURE' => 'A.d9eRKfd1yVkRrtmMfCFLTqa6M9AyodL0SJkhYztxUi8W9pCXF6.4NI',
+	'SANDBOX_ENDPOINT'  => 'https://api-3t.sandbox.paypal.com/nvp',
+
+	'VERSION'      => '3.2',
+	'CURRENCYCODE' => 'USD',
 );
 
 /**

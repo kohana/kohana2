@@ -30,9 +30,6 @@ class Payment_Paypal_Driver implements Payment_Driver {
 
 		'RETURNURL'     => FALSE,
 		'CANCELURL'     => FALSE,
-		'PAYPALURL'     => FALSE,
-
-		'PAYMENTACTION' => FALSE,
 
 		'CURRENCYCODE'  => FALSE, // default is USD - only required if other currency needed
 		'AMT'           => FALSE, // payment amount
@@ -56,8 +53,6 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		//-- OPTIONAL --//
 		'CURRENCYCODE'  => '', // default is USD - only required if other currency needed
 		'MAXAMT'        => '',
-
-		'PAYMENTACTION' => '', // 'Sale', 'Authorization' or 'Order' see: https://www.paypal.com/en_US/ebook/PP_NVPAPI_DeveloperGuide/Appx_fieldreference.html#2557853
 
 		// USERACTION defaults to 'continue'
 		// if set to 'commit' the submit button on the paypal site transaction page is labelled 'Pay'
@@ -131,7 +126,6 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		//-- REQUIRED --
 		'METHOD'        => 'DoExpressCheckoutPayment',
 		'TOKEN'         => '', // this token is retrieved from the response to the setExpressCheckout call
-		'PAYMENTACTION' => '', // 'Sale', 'Authorization' or 'Order' see: https://www.paypal.com/en_US/ebook/PP_NVPAPI_DeveloperGuide/Appx_fieldreference.html#2557853
 		'PAYERID'       => '',
 		'AMT'           => '', // payment amount - MUST include decimal point followed by two further digits
 
@@ -217,6 +211,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		$this->set_fields($config);
 
 		$this->test_mode = $config['test_mode'];
+		$this->api_connection_fields['PAYPALURL'] = 'https://www.paypal.com/webscr&cmd=_express-checkout&token=';
 
 		if ($this->test_mode)
 		{
@@ -225,7 +220,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 			$this->api_authroization_fields['SIGNATURE'] = $config['SANDBOX_SIGNATURE'];
 
 			$this->api_connection_fields['ENDPOINT']     = $config['SANDBOX_ENDPOINT'];
-			$this->api_connection_fields['PAYPALURL']    = $config['SANDBOX_PAYPALURL'];
+			$this->api_connection_fields['PAYPALURL']    = 'https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=';
 		}
 
 		$this->curl_config = $config['curl_config'];
@@ -247,8 +242,8 @@ class Payment_Paypal_Driver implements Payment_Driver {
 			switch ($key)
 			{
 				case 'amount':
-				$key = 'AMT';
-				break;
+					$key = 'AMT';
+					break;
 				default:
 			}
 
