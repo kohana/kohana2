@@ -6,6 +6,8 @@ class Tutorials_Controller extends Website_Controller {
 
 	public function _default()
 	{
+		$titles = array();
+
 		// foreach(ORM::factory('video_tutorial')->select('video', 'title')->find_all() as $video)
 		// {
 		// 	// Add each video the the list
