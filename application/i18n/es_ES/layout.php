@@ -17,9 +17,9 @@ $lang = array
 	'menu_documentation'	=> 'Documentación',
 	'menu_forum'		=> 'Foros',
 	'menu_api'		=> 'Manual del API',
-	'forums_title'		=> 'Ultima Actividad en los Foros',
+	'forums_title'		=> 'Actividad de los Foros',
 	'trac_title'		=> 'Ultimos Cambios',
-	'download_link'		=> '<strong>Descargar</strong> la Versión mas Reciente',
+	'download_link'		=> '<strong>Descargar</strong> Versión mas Reciente',
 	'copyright'		=> 'Kohana Team. Todos los derechos reservados.',
 	'stats'			=> 'Vitaminado por Kohana v{kohana_version}. Ejecutado en {execution_time} segundos, utilizando {memory_usage} de memoria.',
 	
