@@ -27,6 +27,21 @@ class Calendar_Core extends Event_Subject {
 	 *
 	 * @param   integer  month number
 	 * @param   integer  year number
+	 * @param   boolean  start weeks on monday
+	 * @return  object
+	 */
+	public static function factory($month = NULL, $year = NULL, $start_monday = NULL)
+	{
+		return new Calendar($month, $year, $start_monday);
+	}
+
+	/**
+	 * Create a new Calendar instance. A month and year can be specified.
+	 * By default, the current month and year are used.
+	 *
+	 * @param   integer  month number
+	 * @param   integer  year number
+	 * @param   boolean  start weeks on monday
 	 * @return  void
 	 */
 	public function __construct($month = NULL, $year = NULL, $start_monday = NULL)
@@ -38,8 +53,11 @@ class Calendar_Core extends Event_Subject {
 		$this->month = (int) $month;
 		$this->year  = (int) $year;
 
-		// Some locales start the week on Monday, not Sunday.
-		($start_monday === TRUE) and $this->week_start = 1;
+		if ($start_monday === TRUE)
+		{
+			// Some locales start the week on Monday, not Sunday.
+			$this->week_start = 1
+		}
 	}
 
 	/**
