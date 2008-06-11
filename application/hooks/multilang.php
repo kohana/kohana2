@@ -10,7 +10,7 @@ $tld = empty($tld[1]) ? NULL : $tld[1];
 $langs = array
 (
 	'es' => 'es_ES',
-	// 'nl' => 'nl_NL',
+	'nl' => 'nl_NL',
 	// 'de' => 'de_DE',
 	// 'fr' => 'fr_FR',
 	// 'pl' => 'pl_PL',
