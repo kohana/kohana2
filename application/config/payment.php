@@ -29,6 +29,6 @@ $config['Paypal'] = array
 	'USER' => '',
 	'PWD' => '',
 	'SIGNATURE' => '',
-	'RETURNURL' => 'http://kohanaphp.com/donate/paypal.html',
-	'CANCELURL' => 'http://kohanaphp.com/donate/index.html',
+	'RETURNURL' => 'http://'.$_SERVER['SERVER_NAME'].'/donate/paypal.html',
+	'CANCELURL' => 'http://'.$_SERVER['SERVER_NAME'].'/donate/index.html',
 );
