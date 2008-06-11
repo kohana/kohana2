@@ -23,7 +23,7 @@ class Download_Controller extends Website_Controller {
 
 		// Release version, codename, and date
 		$content->release_version = '2.1.2';
-		$content->release_codename = 'Schneefeier';
+		$content->release_codename = 'Diuturnal';
 		$content->release_date = strtotime('2008/06/10');
 
 		// Counter
