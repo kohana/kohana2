@@ -7,9 +7,7 @@ class Tutorials_Controller extends Website_Controller {
 	public function _default()
 	{
 		$videos = new Video_Tutorial_Model;
-		
-		echo Kohana::debug($videos->select('video', 'title')->find());exit;
-		
+
 		foreach($videos->select('video', 'title')->find_all() as $video)
 		{
 			// Add each video the the list
@@ -22,10 +20,10 @@ class Tutorials_Controller extends Website_Controller {
 			(
 				'xss' => 'XSS Attack Filtering',
 			),
-			'Static Content' => array
-			(
-				'page' => 'Creating a Page Controller',
-			),
+			// 'Static Content' => array
+			// (
+			// 	'page' => 'Creating a Page Controller',
+			// ),
 			// 'Forms and Validation' => array
 			// (
 			// 	'quick_forms' => 'Quick Form Generation'
