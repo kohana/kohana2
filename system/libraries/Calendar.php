@@ -77,14 +77,21 @@ class Calendar_Core extends Event_Subject {
 	/**
 	 * Calendar_Event factory method.
 	 *
-	 * @param   string  standard event type
+	 * @param   string  unique name for the event
 	 * @return  object  Calendar_Event
 	 */
-	public function event($type = NULL)
+	public function event($name = NULL)
 	{
 		return new Calendar_Event($this);
 	}
 
+	/**
+	 * Calendar_Event factory method.
+	 *
+	 * @chainable
+	 * @param   string  standard event type
+	 * @return  object
+	 */
 	public function standard($name)
 	{
 		switch ($name)
