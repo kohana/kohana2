@@ -21,17 +21,13 @@ class Payment_Paypal_Driver implements Payment_Driver {
 	// fields wihtin api_connection and api_authorization
 	private $required_fields = array
 	(
-		'ENDPOINT'      => FALSE,
-
 		'USER'          => FALSE,
 		'PWD'           => FALSE,
 		'SIGNATURE'     => FALSE,
-		'VERSION'       => FALSE,
 
 		'RETURNURL'     => FALSE,
 		'CANCELURL'     => FALSE,
 
-		'CURRENCYCODE'  => FALSE, // default is USD - only required if other currency needed
 		'AMT'           => FALSE, // payment amount
 	);
 
@@ -158,14 +154,14 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		'USER'          => '',
 		'PWD'           => '',
 		'SIGNATURE'     => '',
-		'VERSION'       => '',
+		'VERSION'       => '3.2',
 	);
 
 
 	private $api_connection_fields = array
 	(
-		'ENDPOINT'      => '',
-		'PAYPALURL'     => '',
+		'ENDPOINT'      => 'https://api-3t.paypal.com/nvp',
+		'PAYPALURL'     => 'https://www.paypal.com/webscr&cmd=_express-checkout&token=',
 		'ERRORURL'      => '',
 		'GETDETAILS'    => TRUE
 	);
@@ -211,7 +207,6 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		$this->set_fields($config);
 
 		$this->test_mode = $config['test_mode'];
-		$this->api_connection_fields['PAYPALURL'] = 'https://www.paypal.com/webscr&cmd=_express-checkout&token=';
 
 		if ($this->test_mode)
 		{
@@ -221,6 +216,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 
 			$this->api_connection_fields['ENDPOINT']     = $config['SANDBOX_ENDPOINT'];
 			$this->api_connection_fields['PAYPALURL']    = 'https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=';
+			$this->api_connection_fields['ENDPOINT']     = 'https://api-3t.sandbox.paypal.com/nvp';
 		}
 
 		$this->curl_config = $config['curl_config'];
