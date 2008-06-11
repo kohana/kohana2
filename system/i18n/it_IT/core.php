@@ -18,6 +18,10 @@ $lang = array
 	'generic_error'         => 'Impossibile completare la richiesta',
 	'errors_disabled'       => 'Puoi andare alla <a href="%s">pagina iniziale</a> o <a href="%s">ritentare</a>.', 
 
+	// Drivers
+	'driver_implements'     => 'Il driver %s per la libreria %s non implementa l\'interfaccia %s',
+	'driver_not_found'      => 'Il driver %s per la libreria %s non è stato trovato',
+	
 	// Resource names
 	'controller'            => 'controller',
 	'helper'                => 'helper',
