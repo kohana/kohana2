@@ -2,7 +2,7 @@
 
 $lang = array
 (
-	'action_undone'	=> 'Esta accion no se puede deshacer!',
+	'action_undone'	=> 'Esta acción no se puede deshacer!',
 	'continue'	=> 'Continuar',
 	'abort'		=> 'Abortar',
 	'delete'	=> 'Borrar',
