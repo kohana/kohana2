@@ -56,7 +56,7 @@ class Calendar_Core extends Event_Subject {
 		if ($start_monday === TRUE)
 		{
 			// Some locales start the week on Monday, not Sunday.
-			$this->week_start = 1
+			$this->week_start = 1;
 		}
 	}
 
