@@ -10,8 +10,8 @@
  * @license    http://kohanaphp.com/license.html
  */
 
-define('KOHANA_VERSION',  '2.1.1');
-define('KOHANA_CODENAME', 'Schneefeier');
+define('KOHANA_VERSION',  '2.1.2');
+define('KOHANA_CODENAME', 'Diuturnal');
 
 // Test of Kohana is running in Windows
 define('KOHANA_IS_WIN', PHP_SHLIB_SUFFIX === 'dll');
