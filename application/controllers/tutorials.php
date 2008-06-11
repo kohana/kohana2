@@ -6,13 +6,11 @@ class Tutorials_Controller extends Website_Controller {
 
 	public function _default()
 	{
-		$videos = new Video_Tutorial_Model;
-
-		foreach($videos->select('video', 'title')->find_all() as $video)
-		{
-			// Add each video the the list
-			$titles['Video Tutorials']['video/'.$video->video] = $video->title;
-		}
+		// foreach(ORM::factory('video_tutorial')->select('video', 'title')->find_all() as $video)
+		// {
+		// 	// Add each video the the list
+		// 	$titles['Video Tutorials']['video/'.$video->video] = $video->title;
+		// }
 
 		$titles = array_merge($titles, array
 		(
