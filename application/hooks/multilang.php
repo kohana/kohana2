@@ -12,7 +12,7 @@ $langs = array
 	'es' => 'es_ES',
 	'nl' => 'nl_NL',
 	'de' => 'de_DE',
-	// 'fr' => 'fr_FR',
+	'fr' => 'fr_FR',
 	// 'pl' => 'pl_PL',
 );
 
