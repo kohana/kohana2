@@ -10,4 +10,6 @@ $lang = array
 	'queries'      => 'Consultas ao Banco de Dados',
 	'no_queries'   => 'Não existem consultas',
 	'no_database'  => 'Banco de dados não foi carregado',
+    'cookie_data'  => 'Dados de cookie',
+    'no_cookie'    => 'Sem dados de cookie',
 );

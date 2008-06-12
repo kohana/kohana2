@@ -3,7 +3,6 @@
 $lang = array
 (
 	// Class errors
-	'error_format'  => 'Sua mensagem de erro deve conter a string {message} .',
 	'invalid_rule'  => 'Regra de validação inválida usada: %s',
 
 	// General errors
@@ -33,6 +32,7 @@ $lang = array
 
 	// Field types
 	'alpha'         => 'alfabético',
+    'alpha_numeric' => 'alfabético e numérico',
 	'alpha_dash'    => 'alfabético, hífen e sublinhado',
 	'digit'         => 'digito',
 	'numeric'       => 'numérico',
