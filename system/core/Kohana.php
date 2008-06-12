@@ -263,11 +263,11 @@ class Kohana {
 			// Initialize the controller
 			$controller = new $controller;
 
-			// Controller method name, used for calling
-			$method = Router::$method;
-
 			// Run system.post_controller_constructor
 			Event::run('system.post_controller_constructor');
+			
+			// Controller method name, used for calling
+			$method = Router::$method;
 
 			// Stop the controller setup benchmark
 			Benchmark::stop(SYSTEM_BENCHMARK.'_controller_setup');
