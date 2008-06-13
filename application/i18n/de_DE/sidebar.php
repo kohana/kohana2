@@ -2,7 +2,7 @@
 
 $lang = array
 (
-	'title'			=> 'Kohana unterstŸtzen',
+	'title'			=> 'Kohana unterstÃ¼tzen',
 	'content'		=> 'Wenn Sie Kohana einsetzen und zufrieden damit sind, denken Sie nach zu <strong>%s</strong>. %s wird benutzt, um die Kosten zu decken, die zur Erhaltung von Kohana anfallen.',
 	'donating'		=> 'spenden',
 	'your_donations'	=> 'Ihre Spende',

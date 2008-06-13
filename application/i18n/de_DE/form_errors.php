@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-$lang['languages']['default'] = 'Sie m웧sen mindestens eine Sprache ausw둯len.';
+$lang['languages']['default'] = 'Sie m체ssen mindestens eine Sprache ausw채hlen.';
 
-$lang['modules']['default'] = 'Ung웞tige Module ausgew둯lt.';
+$lang['modules']['default'] = 'Ung체ltige Module ausgew채hlt.';
 
-$lang['vendors']['default'] = 'Ung웞tige Tools ausgew둯lt.';
+$lang['vendors']['default'] = 'Ung체ltige Tools ausgew채hlt.';
 
-$lang['format']['default'] = 'W둯len Sie bitte ein g웞tiges Format aus.';
+$lang['format']['default'] = 'W채hlen Sie bitte ein g체ltiges Format aus.';
