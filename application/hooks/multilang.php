@@ -13,7 +13,8 @@ $langs = array
 	'nl' => 'nl_NL',
 	'de' => 'de_DE',
 	'fr' => 'fr_FR',
-	// 'pl' => 'pl_PL',
+	'pl' => 'pl_PL',
+	'ru' => 'ru_RU',
 );
 
 if ( ! empty($tld) AND isset($langs[$tld]))
