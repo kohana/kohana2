@@ -19,7 +19,7 @@ $lang = array
 	'menu_api'		=> 'API-Handbuch',
 	'forums_title'		=> 'Aktuelle Foren-Aktivität',
 	'trac_title'		=> 'Aktuelle Änderungen',
-	'download_link'		=> 'Aktuelle Version <strong>herunterladen</strong>',
+	'download_link'		=> 'Aktuelle Version <strong>downloaden</strong>',
 	'copyright'		=> 'Kohana Team. Alle Rechte vorbehalten.',
 	'stats'			=> 'Generiert von Kohana v{kohana_version}. Seite geladen in {execution_time} Sekunden bei {memory_usage} Speichernutzung.',
 );
