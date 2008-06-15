@@ -59,7 +59,7 @@ echo html::script(array
 <!-- Start Language Picker -->
 <ul id="languages">
 <?php foreach (Config::item('locale.tlds') as $tld => $i18n): ?>
-<li><a class="<?php if ($tld === TLD) echo 'active' ?>" href="<?php echo preg_replace('/(?<=kohanaphp\.)[a-z.]+/', $tld, $base_url, 1).$suffix.Router::$complete_uri ?>"><img alt="<?php echo $i18n ?>" src="<?php echo $base_url, 
+<li><a class="<?php if ($tld === TLD) echo 'active' ?>" href="<?php echo preg_replace('/(?<=kohanaphp\.)[a-z.]+/', $tld, $base_url, 1), Router::$current_uri, $suffix, Router::$query_string ?>"><img alt="<?php echo $i18n ?>" src="<?php echo $base_url, 
 'media/img/flags/', $i18n, '.png' ?>" width="16" height="11" /></a></li>
 <?php endforeach ?>
 </ul>
