@@ -50,6 +50,17 @@ echo html::script(array
 ?>
 </head>
 <body>
+<!-- Start Language Picker -->
+<ul id="languages">
+<?php foreach (Config::item('locale.tlds') as $tld => $i18n) { ?>
+	<li>
+		<a class="<?php if ($tld === TLD) echo 'active' ?>" href="<?php echo preg_replace('~(?<=kohanaphp\.)[a-z.]+~', $tld, url::current(TRUE), 1) ?>">
+			<img alt="<?php echo $i18n ?>" src="<?php echo url::base() ?>media/img/flags/<?php echo $i18n ?>.png" width="16" height="11" />
+		</a>
+	</li>
+<?php } ?>
+</ul>
+<!-- End Language Picker -->
 <!-- Start Developer Menu -->
 <div id="developer">
 <span><?php echo Kohana::lang('layout.developers');?></span>
@@ -105,7 +116,7 @@ echo html::script(array
 </div>
 <!-- End Body -->
 <div id="footer">
-<strong>&copy;2007-2008 <?php echo Kohana::lang('layout.copyright');?></strong>
+<strong>&copy;2007–<?php echo date('Y') ?> <?php echo Kohana::lang('layout.copyright');?></strong>
 <span class="stats"><?php echo Kohana::lang('layout.stats');?></span>
 </div>
 <!-- Stats -->

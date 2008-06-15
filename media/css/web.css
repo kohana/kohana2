@@ -20,6 +20,13 @@ p.message { font-weight: bold; text-align: center; font-size: 1.2em; }
 p.confirm { text-align: center; }
 p.confirm a { font-size: 1.2em; padding: 0 0.3em; }
 
+/* Language picker */
+#languages { margin-right: 4em; }
+	#languages a { float: right; margin: 0.7em 0.3em; border: 2px solid #21364d; }
+	#languages a:hover { border-color: #345072; }
+	#languages a.active { border-color: #6593cc; }
+		#languages a img { display: block; }
+
 /* Developer Menu */
 #developer { padding: 1em 4em; background: #1e2e42; text-transform: uppercase; font-size: 0.9em; color: #2d4565; text-align: left; }
 	#developer span { font-weight: bold; }
