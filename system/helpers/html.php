@@ -337,28 +337,33 @@ class html_Core {
 	/**
 	 * Creates a image link.
 	 *
-	 * @param   string        image source
+	 * @param   string        image source, or an array of attributes
 	 * @param   string|array  image alt attribute, or an array of attributes
 	 * @param   boolean       include the index_page in the link
 	 * @return  string
 	 */
-	public static function image($src = NULL, $attr = NULL, $index = FALSE)
+	public static function image($src = NULL, $alt = NULL, $index = FALSE)
 	{
-		if ( ! is_array($attr))
+		// Create attribute list
+		$attributes = is_array($src) ? $src : array('src' => $src);
+
+		if (is_array($alt))
 		{
-			$attr = array('alt' => $attr);
+			$attributes += $alt;
+		}
+		elseif ( ! empty($alt))
+		{
+			// Add alt to attributes
+			$attributes['alt'] = $alt;
 		}
 
-		// Add source to attributes
-		$attr['src'] = $src;
-
-		if (strpos($attr['src'], '://') === FALSE)
+		if (strpos($attributes['src'], '://') === FALSE)
 		{
 			// Make the src attribute into an absolute URL
-			$attr['src'] = url::base($index).$attr['src'];
+			$attributes['src'] = url::base($index).$attributes['src'];
 		}
 
-		return '<img'.html::attributes($attr).' />';
+		return '<img'.html::attributes($attributes).' />';
 	}
 
 	/**
