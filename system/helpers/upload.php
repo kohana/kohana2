@@ -18,9 +18,10 @@ class upload_Core {
 	 * @param   mixed    name of $_FILE input or array of upload data
 	 * @param   string   new filename
 	 * @param   string   new directory
+	 * @param   integer  chmod mask
 	 * @return  string   full path to new file
 	 */
-	public function save($file, $filename = NULL, $directory = NULL)
+	public function save($file, $filename = NULL, $directory = NULL, $chmod = 0644)
 	{
 		// Load file data from FILES if not passed as array
 		$file = is_array($file) ? $file : $_FILES[$file];
@@ -51,7 +52,13 @@ class upload_Core {
 
 		if (is_uploaded_file($file['tmp_name']) AND move_uploaded_file($file['tmp_name'], $filename = $directory.$filename))
 		{
-			// Move the file to the upload directory
+			if ($chmod !== FALSE)
+			{
+				// Set permissions on filename
+				chmod($filename, $chmod);
+			}
+
+			// Return new file path
 			return $filename;
 		}
 
