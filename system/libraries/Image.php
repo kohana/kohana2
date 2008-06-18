@@ -283,10 +283,11 @@ class Image_Core {
 	 * Save the image to a new image or overwrite this image.
 	 *
 	 * @throws  Kohana_Exception
-	 * @param   string  new image filename
+	 * @param   string   new image filename
+	 * @param   integer  permissions for new image
 	 * @return  object
 	 */
-	public function save($new_image = FALSE)
+	public function save($new_image = FALSE, $chmod = 0644)
 	{
 		// If no new image is defined, use the current image
 		empty($new_image) and $new_image = $this->image['file'];
@@ -301,8 +302,14 @@ class Image_Core {
 		if ( ! is_writable($dir))
 			throw new Kohana_Exception('image.directory_unwritable', $dir);
 
-		// Process the image with the driver
-		$status = $this->driver->process($this->image, $this->actions, $dir, $file);
+		if ($status = $this->driver->process($this->image, $this->actions, $dir, $file))
+		{
+			if ($chmod !== FALSE)
+			{
+				// Set permissions
+				chmod($new_image, $chmod);
+			}
+		}
 
 		// Reset the actions
 		$this->actions = array();
