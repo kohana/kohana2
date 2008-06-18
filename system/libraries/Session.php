@@ -54,79 +54,22 @@ class Session_Core {
 			// Makes a mirrored array, eg: foo=foo
 			self::$protect = array_combine(self::$protect, self::$protect);
 
-			if (self::$config['driver'] != 'native')
-			{
-				// Set driver name
-				$driver = 'Session_'.ucfirst(self::$config['driver']).'_Driver';
-
-				// Load the driver
-				if ( ! Kohana::auto_load($driver))
-					throw new Kohana_Exception('session.driver_not_supported', self::$config['driver']);
-
-				// Initialize the driver
-				self::$driver = new $driver();
-
-				// Validate the driver
-				if ( ! (self::$driver instanceof Session_Driver))
-					throw new Kohana_Exception('session.driver_implements', self::$config['driver']);
-
-				// Register non-native driver as the session handler
-				session_set_save_handler
-				(
-					array(self::$driver, 'open'),
-					array(self::$driver, 'close'),
-					array(self::$driver, 'read'),
-					array(self::$driver, 'write'),
-					array(self::$driver, 'destroy'),
-					array(self::$driver, 'gc')
-				);
-			}
-
 			// Configure garbage collection
 			ini_set('session.gc_probability', (int) self::$config['gc_probability']);
 			ini_set('session.gc_divisor', 100);
 			ini_set('session.gc_maxlifetime', (self::$config['expiration'] == 0) ? 86400 : self::$config['expiration']);
 
-			// Set the session name after having checked it
-			if ( ! ctype_alnum(self::$config['name']) OR ctype_digit(self::$config['name']))
-				throw new Kohana_Exception('session.invalid_session_name', self::$config['name']);
-
-			session_name(self::$config['name']);
-
-			// Set the session cookie parameters
-			if (version_compare(PHP_VERSION, '5.2', '>='))
-			{
-				session_set_cookie_params
-				(
-					self::$config['expiration'],
-					Config::item('cookie.path'),
-					Config::item('cookie.domain'),
-					Config::item('cookie.secure'),
-					Config::item('cookie.httponly')
-				);
-			}
-			else
-			{
-				session_set_cookie_params
-				(
-					self::$config['expiration'],
-					Config::item('cookie.path'),
-					Config::item('cookie.domain'),
-					Config::item('cookie.secure')
-				);
-			}
-
 			// Create a new session
 			$this->create();
 
-			// Regenerate session id and update session cookie
 			if (self::$config['regenerate'] > 0 AND ($_SESSION['total_hits'] % self::$config['regenerate']) === 0)
 			{
+				// Regenerate session id and update session cookie
 				$this->regenerate();
 			}
-			// Always update session cookie to keep the session alive
 			else
 			{
+				// Always update session cookie to keep the session alive
 				cookie::set(self::$config['name'], $_SESSION['session_id'], self::$config['expiration']);
 			}
 
@@ -159,8 +102,66 @@ class Session_Core {
 	 */
 	public function create($vars = NULL)
 	{
-		// Destroy the session
+		// Destroy any currently running session
 		$this->destroy();
+
+		if (self::$config['driver'] !== 'native')
+		{
+			// Set driver name
+			$driver = 'Session_'.ucfirst(self::$config['driver']).'_Driver';
+
+			// Load the driver
+			if ( ! Kohana::auto_load($driver))
+				throw new Kohana_Exception('session.driver_not_supported', self::$config['driver']);
+
+			// Initialize the driver
+			self::$driver = new $driver();
+
+			// Validate the driver
+			if ( ! (self::$driver instanceof Session_Driver))
+				throw new Kohana_Exception('session.driver_implements', self::$config['driver']);
+
+			// Register non-native driver as the session handler
+			session_set_save_handler
+			(
+				array(self::$driver, 'open'),
+				array(self::$driver, 'close'),
+				array(self::$driver, 'read'),
+				array(self::$driver, 'write'),
+				array(self::$driver, 'destroy'),
+				array(self::$driver, 'gc')
+			);
+		}
+
+		// Validate the session name
+		if ( ! preg_match('~^(?=.*[a-z])[a-z0-9_]++$~iD', self::$config['name']))
+			throw new Kohana_Exception('session.invalid_session_name', self::$config['name']);
+
+		// Name the session, this will also be the name of the cookie
+		session_name(self::$config['name']);
+
+		// Set the session cookie parameters
+		if (version_compare(PHP_VERSION, '5.2', '>='))
+		{
+			session_set_cookie_params
+			(
+				self::$config['expiration'],
+				Config::item('cookie.path'),
+				Config::item('cookie.domain'),
+				Config::item('cookie.secure'),
+				Config::item('cookie.httponly')
+			);
+		}
+		else
+		{
+			session_set_cookie_params
+			(
+				self::$config['expiration'],
+				Config::item('cookie.path'),
+				Config::item('cookie.domain'),
+				Config::item('cookie.secure')
+			);
+		}
 
 		// Start the session!
 		session_start();
