@@ -191,7 +191,7 @@ class Database_Mssql_Driver extends Database_Driver
 
 		if (count($database['join']) > 0)
 		{
-			$sql .= ' '.implode("\n", $database['join']);
+			$sql .= ' '.$database['join']['type'].'JOIN ('.implode(', ', $database['join']['tables']).') ON '.implode(' AND ', $database['join']['conditions']);
 		}
 
 		if (count($database['where']) > 0)

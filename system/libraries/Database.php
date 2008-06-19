@@ -361,8 +361,20 @@ class Database_Core {
 			$key    = (strpos($key, '.') !== FALSE) ? $this->config['table_prefix'].$key : $key;
 			$cond[] = $this->driver->where($key, $this->driver->escape_column($this->config['table_prefix'].$value), 'AND ', count($cond), FALSE);
 		}
-
-		$this->join[] = $type.'JOIN '.$this->driver->escape_column($this->config['table_prefix'].$table).' ON '.implode(' ', $cond);
+		
+		if(!isset($this->join['tables']) || !isset($this->join['conditions']))
+		{
+			$this->join['tables'] = array();
+			$this->join['conditions'] = array();
+		}
+		
+		foreach((array)$table as $t)
+		{
+			$this->join['tables'][] = $this->driver->escape_column($this->config['table_prefix'].$t);
+		}
+		
+		$this->join['conditions'][] = '('.trim(implode(' ', $cond)).')';
+		$this->join['type'] = $type;
 
 		return $this;
 	}
