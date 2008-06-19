@@ -1,4 +1,4 @@
-<p class="intro">Kohana è un <strong>framework PHP 5</strong> che usa la struttura <strong>Model View Controller</strong>. Questo framework mira essenzialmente ad essere <strong>sicuro</strong>, <strong>leggero</strong> e <strong>easy</strong> facile da usare.</p>
+<p class="intro">Kohana è un <strong>framework PHP 5</strong> che usa la struttura <strong>Model View Controller</strong>. Questo framework mira essenzialmente ad essere <strong>sicuro</strong>, <strong>leggero</strong> e <strong>facile</strong> da usare.</p>
 <div style="float:left; padding-right: 4em;">
 	<h2>Caratteristiche</h2>
 	<ul>
@@ -17,9 +17,9 @@
 		<li>PHP 5 <abbr title="Object Oriented Programming (Programmazione Orientata agli Oggetti)">OOP</abbr> rigorosa</li>
 		<li>Semplice astrazione dei database attraverso helper SQL</li>
 		<li>Driver di sessione multipli (nativo, database, cookie)</li>
-		<!-- <li>Advanced cache system with drivers (file, database, memcache, shmop)</li> -->
+		<!-- <li>Sistema di caching avanzato attraverso l'uso di drivers (file, database, memcache, shmop)</li> -->
 		<li>Potente gestione degli eventi per che permette minime modifiche dinamicamente</li>
-		<li>Originariamente basati su <?php echo html::anchor('http://www.codeigniter.com', 'CodeIgniter') ?></li>
+		<li>Originariamente basato su <?php echo html::anchor('http://www.codeigniter.com', 'CodeIgniter') ?></li>
 	</ul>
 </div>
 <h3 style="clear:both;padding-top:1em;">How is Kohana Different?</h3>
