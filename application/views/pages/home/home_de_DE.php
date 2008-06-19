@@ -2,12 +2,12 @@
 <div style="float:left; padding-right: 4em;">
 	<h2>Eigenschaften</h2>
 	<ul>
-		<li>Hochsicher</li>
-		<li>Besonders Schlank</li>
-		<li>Short learning curve</li>
+		<li>Sehr sicher</li>
+		<li>Besonders schlank</li>
+		<li>Einfach zu erlernen</li>
 		<li>Setzt das <abbr title="Model View Controller">MVC</abbr>-Muster ein</li>
 		<li>100% kompatibel zu UTF-8</li>
-		<li>Loosely coupled architecture</li>
+		<li>Architektur der losen Kopplung</li>
 		<li>Besonders einfach zu erweitern</li>
 	</ul>
 </div>
@@ -16,13 +16,13 @@
 	<ul>
 		<li>Striktes PHP-5-<abbr title="Objektorientierte Programmierung">OOP</abbr></li>
 		<li>Einfache Datenbankabstraktion mittels SQL-Helfern</li>
-		<li>Multiple Session-Treiber (Nativ, Datenbank, und Cookies)</li>
+		<li>Multiple Session-Treiber (Nativ, Datenbank und Cookies)</li>
 		<!-- <li>Advanced cache system with drivers (file, database, memcache, shmop)</li> -->
 		<li>Mächtige Ereignisbehandlung erlaubt dynamische kleine Modifizierungen</li>
 		<li>Basierte ursprünglich auf <?php echo html::anchor('http://www.codeigniter.com', 'CodeIgniter') ?></li>
 	</ul>
 </div>
-<h3 style="clear:both;padding-top:1em;">How is Kohana Different?</h3>
+<h3 style="clear:both;padding-top:1em;">Was macht Kohana so besonders?</h3>
 <p>Auch wenn Kohana viele bekannte Konzepte und Entwurfsmuster einsetzt, gibt es einige Dinge, die Kohana hervorheben:</p>
 <ol>
 	<li><strong>Betrieben von einer Comunity und nicht einem Unternehmen.</strong> Kohana entwickelt ein Team mit ausgewählten Leuten, die ein Framework für schnelle und leistungsstarke Lösungen brauchen.</li>
