@@ -12,6 +12,8 @@ $lang = array
 	'invalid_master'          => 'The master dimension specified is not valid.',
 	'invalid_flip'            => 'The flip direction specified is not valid.',
 
+	'directory_unwritable'    => 'The specified directory, %s, is not writable.',
+
 	// ImageMagick specific messages
 	'imagemagick' => array
 	(
