@@ -6,8 +6,8 @@
 		<li>Eccezionalmente leggero</li>
 		<li>Breve curva di apprendimento</li>
 		<li>Usa la struttura <abbr title="Model View Controller">MVC</abbr></li>
-		<li>100% UTF-8 compatibile</li>
-		<li>Architetture <em>Loosely coupled</em></li>
+		<li>UTF-8 compatibile al 100%</li>
+		<li>Architettura <em>Loosely coupled</em></li>
 		<li>Estremamente semplice da estendere</li>
 	</ul>
 </div>
@@ -18,11 +18,11 @@
 		<li>Semplice astrazione dei database attraverso helper SQL</li>
 		<li>Driver di sessione multipli (nativo, database, cookie)</li>
 		<!-- <li>Sistema di caching avanzato attraverso l'uso di drivers (file, database, memcache, shmop)</li> -->
-		<li>Potente gestione degli eventi per che permette minime modifiche dinamicamente</li>
+		<li>Potente gestione degli eventi che permette modifiche dinamiche</li>
 		<li>Originariamente basato su <?php echo html::anchor('http://www.codeigniter.com', 'CodeIgniter') ?></li>
 	</ul>
 </div>
-<h3 style="clear:both;padding-top:1em;">How is Kohana Different?</h3>
+<h3 style="clear:both;padding-top:1em;">Cosa ha di diverso Kohana?</h3>
 <p>Sebbene Kohana utilizzi strutture e concetti ormai comuni, ci sono alcuni aspetti per cui Kohana riesce a distinguersi:</p>
 <ol>
 	<li><strong>È gestito da una comunità, non da un'azienda.</strong> Lo sviluppo di Kohana è gestito da un team di persone che necessitano di un framework per questioni di velocità e potenza delle soluzioni.</li>
