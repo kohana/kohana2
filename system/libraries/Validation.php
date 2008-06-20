@@ -91,6 +91,7 @@ class Validation_Core extends ArrayObject {
 
 	/**
 	 * Returns the ArrayObject values, removing all inputs without rules.
+	 * To choose specific inputs, list the field name as arguments.
 	 *
 	 * @return  array
 	 */
@@ -105,6 +106,10 @@ class Validation_Core extends ArrayObject {
 			array_keys($this->post_filters)
 		));
 
+		// Load choices
+		$choices = func_get_args();
+		$choices = empty($choices) ? NULL : array_combine($choices, $choices);
+
 		$safe = array();
 		foreach ($all_fields as $i => $field)
 		{
@@ -117,8 +122,11 @@ class Validation_Core extends ArrayObject {
 				$field = $this->array_fields[$field];
 			}
 
-			// Make sure all fields are defined
-			$safe[$field] = isset($this[$field]) ? $this[$field] : NULL;
+			if ($choices === NULL OR isset($choices[$field]))
+			{
+				// Make sure all fields are defined
+				$safe[$field] = isset($this[$field]) ? $this[$field] : NULL;
+			}
 		}
 
 		return $safe;
