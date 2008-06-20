@@ -12,7 +12,7 @@ $lang = array
 	'invalid_master'          => 'Die festgelegte Master-Dimension ist ungültig.',
 	'invalid_flip'            => 'Die festgelegte Richtung der Spiegelung ist ungültig.',
 
-	'directory_unwritable'    => 'Das Verzeichnis %s konnte nicht beschreiben werden.',
+	'directory_unwritable'    => 'Das Verzeichnis %s ist nicht beschreibbar.',
 
 	// ImageMagick specific messages
 	'imagemagick' => array

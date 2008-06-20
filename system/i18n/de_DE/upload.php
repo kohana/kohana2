@@ -19,5 +19,5 @@ $lang = array
 	'set_allowed'        => 'Aus Sicherheitsgründen müssen Sie die Dateitypen, die hochgeladen werden dürfen, festlegen.',
 	'max_file_size'      => 'Benutzen Sie bitte aus Sicherheitsgründen nicht MAX_FILE_SIZE, um die maximale Größe der Hochgeladenen Bilder zu überprüfen.',
 	'no_tmp_dir'         => 'Es konnte kein temproräres Verzeichnis zum Beschreiben gefunden werden.',
-	'tmp_unwritable'     => 'Das Verzeichnis zum Hochladen, %s, konnte nicht beschreiben werden.'
+	'tmp_unwritable'     => 'Das Verzeichnis %s ist nicht beschreibbar.'
 );
