@@ -189,7 +189,7 @@ final class Config {
 			// Load the application configuration file
 			include APPPATH.'config/config'.EXT;
 
-			if (empty($config['site_domain']))
+			if (! isset($config['site_domain']))
 			{
 				// Invalid config file
 				die('Your Kohana application configuration file is not valid.');
