@@ -788,7 +788,9 @@ class Kohana {
 		if ($directory === 'config' OR $directory === 'i18n' OR $directory === 'l10n')
 		{
 			// Search from SYSPATH up
-			foreach (array_reverse(Config::include_paths()) as $path)
+			$paths = array_reverse(Config::include_paths());
+
+			foreach ($paths as $path)
 			{
 				if (is_file($path.$search))
 				{
@@ -800,7 +802,9 @@ class Kohana {
 		else
 		{
 			// Find the file and return its filename
-			foreach (Config::include_paths() as $path)
+			$paths = Config::include_paths();
+			
+			foreach ($paths as $path)
 			{
 				if (is_file($path.$search))
 				{
@@ -865,7 +869,9 @@ class Kohana {
 
 		if ($path === FALSE)
 		{
-			foreach (Config::include_paths() as $path)
+			$paths = array_reverse(Config::include_paths());
+
+			foreach ($paths as $path)
 			{
 				// Recursively get and merge all files
 				$files = array_merge($files, self::list_files($directory, $recursive, $path.$directory));
@@ -877,7 +883,9 @@ class Kohana {
 
 			if (is_readable($path))
 			{
-				foreach (glob($path.'*') as $index => $item)
+				$items = glob($path.'*');
+
+				foreach ($items as $index => $item)
 				{
 					$files[] = $item = str_replace('\\', '/', $item);
 
@@ -922,16 +930,21 @@ class Kohana {
 
 			// Loop through the files and include each one, so SYSPATH files
 			// can be overloaded by more localized files
-			foreach (self::find_file('i18n', $filename) as $file)
-			{
-				include $file;
+			$files = self::find_file('i18n', $filename);
 
-				// Merge in configuration
-				if ( ! empty($lang) AND is_array($lang))
+			if ( ! empty($files)) 
+			{
+				foreach ($files as $file)
 				{
-					foreach ($lang as $k => $v)
+					include $file;
+
+					// Merge in configuration
+					if ( ! empty($lang) AND is_array($lang))
 					{
-						$messages[$k] = $v;
+						foreach ($lang as $k => $v)
+						{
+							$messages[$k] = $v;
+						}
 					}
 				}
 			}
@@ -981,16 +994,21 @@ class Kohana {
 
 			// Loop through the files and include each one, so SYSPATH files
 			// can be overloaded by more localized files
-			foreach (self::find_file('l10n', Config::item('locale.language').'/'.$filename) as $file)
-			{
-				include $file;
+			$files = self::find_file('l10n', Config::item('locale.language').'/'.$filename);
 
-				// Merge in configuration
-				if ( ! empty($locale) AND is_array($locale))
+			if ( ! empty($files)) 
+			{
+				foreach ($files as $file)
 				{
-					foreach ($locale as $k => $v)
+					include $file;
+
+					// Merge in configuration
+					if ( ! empty($locale) AND is_array($locale))
 					{
-						$locale[$k] = $v;
+						foreach ($locale as $k => $v)
+						{
+							$locale[$k] = $v;
+						}
 					}
 				}
 			}
@@ -1161,7 +1179,9 @@ class Kohana {
 		if ($info === NULL)
 		{
 			// Parse the user agent and extract basic information
-			foreach (Config::item('user_agents') as $type => $data)
+			$agents = Config::item('user_agents');
+
+			foreach ($agents as $type => $data)
 			{
 				foreach ($data as $agent => $name)
 				{
