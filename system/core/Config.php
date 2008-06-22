@@ -187,7 +187,7 @@ final class Config {
 		if ($name === 'core')
 		{
 			// Load the application configuration file
-			include APPPATH.'config/config'.EXT;
+			require APPPATH.'config/config'.EXT;
 
 			if (! isset($config['site_domain']))
 			{
