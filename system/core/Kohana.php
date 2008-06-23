@@ -265,7 +265,7 @@ class Kohana {
 
 			// Run system.post_controller_constructor
 			Event::run('system.post_controller_constructor');
-			
+
 			// Controller method name, used for calling
 			$method = Router::$method;
 
@@ -803,7 +803,7 @@ class Kohana {
 		{
 			// Find the file and return its filename
 			$paths = Config::include_paths();
-			
+
 			foreach ($paths as $path)
 			{
 				if (is_file($path.$search))
@@ -932,7 +932,7 @@ class Kohana {
 			// can be overloaded by more localized files
 			$files = self::find_file('i18n', $filename);
 
-			if ( ! empty($files)) 
+			if ( ! empty($files))
 			{
 				foreach ($files as $file)
 				{
@@ -996,7 +996,7 @@ class Kohana {
 			// can be overloaded by more localized files
 			$files = self::find_file('l10n', Config::item('locale.language').'/'.$filename);
 
-			if ( ! empty($files)) 
+			if ( ! empty($files))
 			{
 				foreach ($files as $file)
 				{
@@ -1063,7 +1063,7 @@ class Kohana {
 				// for the next loop by re-referencing to the next child
 				if (is_array($array[$key]) AND ! empty($keys))
 				{
-					$array =& $array[$key];
+					$array = $array[$key];
 				}
 				else
 				{
