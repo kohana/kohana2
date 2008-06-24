@@ -129,7 +129,7 @@ class Router_Core {
 			$controller_path .= '/';
 		}
 
-		if (isset(self::$rsegments[$method_segment]))
+		if ($method_segment !== NULL AND isset(self::$rsegments[$method_segment]))
 		{
 			// Set method
 			self::$method = self::$rsegments[$method_segment];
