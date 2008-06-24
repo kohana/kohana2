@@ -91,17 +91,34 @@ class Router_Core {
 			// Add the segment to the search path
 			$controller_path .= $segment;
 
-			if ($path = Kohana::find_file('controllers', $controller_path, FALSE))
+			$found = FALSE;
+			foreach (Config::include_paths() as $dir)
 			{
-				// Set controller name
-				self::$controller = $segment;
+				// Search within controllers only
+				$dir .= 'controllers/';
 
-				// Change controller path
-				self::$controller_path = $path;
+				if (file_exists($dir.$controller_path) OR file_exists($dir.$controller_path.EXT))
+				{
+					// Valid path
+					$found = TRUE;
+
+					if (is_file($dir.$controller_path.EXT))
+					{
+						// Set controller name
+						self::$controller = $segment;
+
+						// Change controller path
+						self::$controller_path = $dir.$controller_path.EXT;
+					}
+
+					// Skip remaining controller paths
+					continue;
+				}
 			}
-			else
+
+			if ($found === FALSE)
 			{
-				// Stop searching
+				// Stop searching, nothing was found
 				break;
 			}
 
@@ -109,11 +126,10 @@ class Router_Core {
 			$controller_path .= '/';
 		}
 
-		
 		if (self::$controller !== NULL AND isset(self::$rsegments[$key]))
 		{
 			// Set method
-			self::$method = isset(self::$rsegments[1]) ? self::$rsegments[1] : 'index'; 
+			self::$method = self::$rsegments[$key];
 
 			if (isset(self::$rsegments[$key + 1]))
 			{
@@ -121,7 +137,7 @@ class Router_Core {
 				self::$arguments = array_slice(self::$rsegments, $key + 1);
 			}
 		}
-		
+
 		// Last chance to set routing before a 404 is triggered
 		Event::run('system.post_routing');
 
