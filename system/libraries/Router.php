@@ -110,15 +110,12 @@ class Router_Core {
 						// Change controller path
 						self::$controller_path = $dir.$controller_path.EXT;
 					}
-
-					// Skip remaining controller paths
-					continue;
 				}
 			}
 
 			if ($found === FALSE)
 			{
-				// Stop searching, nothing was found
+				// Maximum depth has been reached, stop searching
 				break;
 			}
 
