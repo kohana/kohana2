@@ -210,7 +210,7 @@ class Kohana {
 			Benchmark::start(SYSTEM_BENCHMARK.'_controller_setup');
 
 			// Include the Controller file
-			require Router::$directory.Router::$controller.EXT;
+			require Router::$controller_path;
 
 			// Set controller class name
 			$controller = ucfirst(Router::$controller).'_Controller';
