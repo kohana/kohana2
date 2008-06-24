@@ -6,7 +6,7 @@
 $config['tlds'] = array
 (
 	'com'    => 'en_US',
-	'com.br' => 'pt_BR'
+	'com.br' => 'pt_BR',
 	'de'     => 'de_DE',
 	'es'     => 'es_ES',
 	'fr'     => 'fr_FR',
