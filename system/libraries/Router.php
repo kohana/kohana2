@@ -73,7 +73,7 @@ class Router_Core {
 
 		// Explode the segments by slashes
 		self::$segments = ($default_route === TRUE OR self::$segments === '') ? array() : explode('/', self::$segments);
-		
+
 		if ($default_route === FALSE AND count(self::$routes) > 1)
 		{
 			// Custom routing
@@ -86,8 +86,6 @@ class Router_Core {
 		// Prepare to find the controller
 		$controller_path = '';
 		$method_segment  = NULL;
-
-		echo Kohana::debug(self::$rsegments);
 
 		foreach (self::$rsegments as $key => $segment)
 		{
