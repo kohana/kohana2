@@ -85,6 +85,9 @@ class Router_Core {
 
 		// Prepare to find the controller
 		$controller_path = '';
+		$method_segment  = NULL;
+
+		echo Kohana::debug(self::$rsegments);
 
 		foreach (self::$rsegments as $key => $segment)
 		{
@@ -109,6 +112,9 @@ class Router_Core {
 
 						// Change controller path
 						self::$controller_path = $dir.$controller_path.EXT;
+
+						// Set the method segment
+						$method_segment = $key + 1;
 					}
 				}
 			}
@@ -123,15 +129,15 @@ class Router_Core {
 			$controller_path .= '/';
 		}
 
-		if (self::$controller !== NULL AND isset(self::$rsegments[$key]))
+		if (isset(self::$rsegments[$method_segment]))
 		{
 			// Set method
-			self::$method = self::$rsegments[$key];
+			self::$method = self::$rsegments[$method_segment];
 
-			if (isset(self::$rsegments[$key + 1]))
+			if (isset(self::$rsegments[$method_segment + 1]))
 			{
 				// Set arguments
-				self::$arguments = array_slice(self::$rsegments, $key + 1);
+				self::$arguments = array_slice(self::$rsegments, $method_segment + 1);
 			}
 		}
 
