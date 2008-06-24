@@ -11,6 +11,13 @@
  */
 class inflector_Core {
 
+	// Cached inflections
+	protected static $cache = array();
+
+	// Uncountable and irregular words
+	protected static $uncountable;
+	protected static $irregular;
+
 	/**
 	 * Checks if a word is defined as uncountable.
 	 *
@@ -19,12 +26,13 @@ class inflector_Core {
 	 */
 	public static function uncountable($str)
 	{
-		static $uncountables = NULL;
-
-		if ($uncountables === NULL)
+		if (self::$uncountable === NULL)
 		{
-			// Makes a mirrored array, eg: foo => foo
-			$uncountables = array_flip(Kohana::lang('inflector'));
+			// Cache uncountables
+			self::$uncountable = Config::item('inflector.uncountable');
+
+			// Make uncountables mirroed
+			self::$uncountable = array_combine(self::$uncountable, self::$uncountable);
 		}
 
 		return isset($uncountables[$str]);
@@ -33,45 +41,45 @@ class inflector_Core {
 	/**
 	 * Makes a plural word singular.
 	 *
-	 * @param   string  word to singularize
+	 * @param   string   word to singularize
+	 * @param   integer  number of things
 	 * @return  string
 	 */
 	public static function singular($str, $count = NULL)
 	{
-		static $cache;
-
+		// Remove garbage
 		$str = trim($str);
 
-		// Cache key name
-		$key = $str.$count;
-
-		// We can just return uncountable words
-		if (inflector::uncountable($str))
-			return $str;
-
-		if (is_string($count) AND ctype_digit($count))
+		if (is_string($count))
 		{
 			// Convert to integer when using a digit string
 			$count = (int) $count;
 		}
 
-		if ($cache === NULL)
-		{
-			// Initialize the cache
-			$cache = array();
-		}
-		else
-		{
-			// Already pluralized
-			if (isset($cache[$key]))
-				return $cache[$key];
-		}
-
 		// Do nothing with a single count
-		if (is_int($count) AND $count === 0 OR $count > 1)
+		if ($count === 0 OR $count > 1)
 			return $str;
 
-		if (substr($str, -3) === 'ies')
+		// Cache key name
+		$key = $str.$count;
+
+		if (isset(self::$cache[$key]))
+			return self::$cache[$key];
+
+		if (inflector::uncountable($str))
+			return self::$cache[$key] = $str;
+
+		if (empty(self::$irregular))
+		{
+			// Cache irregular words
+			self::$irregular = Config::item('inflector.irregular');
+		}
+
+		if ($irregular = array_search($str, self::$irregular))
+		{
+			$str = $irregular;
+		}
+		elseif (substr($str, -3) === 'ies')
 		{
 			$str = substr($str, 0, strlen($str) - 3).'y';
 		}
@@ -84,7 +92,7 @@ class inflector_Core {
 			$str = substr($str, 0, strlen($str) - 1);
 		}
 
-		return $cache[$key] = $str;
+		return self::$cache[$key] = $str;
 	}
 
 	/**
@@ -95,43 +103,48 @@ class inflector_Core {
 	 */
 	public static function plural($str, $count = NULL)
 	{
-		static $cache;
-
+		// Remove garbage
 		$str = trim($str);
 
-		// Cache key name
-		$key = $str.$count;
-
-		// We can just return uncountable words
-		if (inflector::uncountable($str))
-			return $str;
-
-		if (is_string($count) AND ctype_digit($count))
+		if (is_string($count))
 		{
 			// Convert to integer when using a digit string
 			$count = (int) $count;
 		}
 
-		if ($cache === NULL)
-		{
-			// Initialize the cache
-			$cache = array();
-		}
-		else
-		{
-			// Already pluralized
-			if (isset($cache[$key]))
-				return $cache[$key];
-		}
-
-		// If the count is one, do not pluralize
+		// Do nothing with singular
 		if ($count === 1)
 			return $str;
+
+		// Cache key name
+		$key = $str.$count;
+
+		if (isset(self::$cache[$key]))
+			return self::$cache[$key];
+
+		if (inflector::uncountable($str))
+			return self::$cache[$key] = $str;
 
 		$end = substr($str, -1);
 		$low = (strcmp($end, strtolower($end)) === 0) ? TRUE : FALSE;
 
-		if (preg_match('/[sxz]$/i', $str) OR preg_match('/[^aeioudgkprt]h$/i', $str))
+		if (empty(self::$irregular))
+		{
+			// Cache irregular words
+			self::$irregular = Config::item('inflector.irregular');
+		}
+
+		if (isset(self::$irregular[strtolower($str)]))
+		{
+			$str = self::$irregular[$str];
+
+			if ($low === FALSE)
+			{
+				// Make uppercase
+				$str = strtoupper($str);
+			}
+		}
+		elseif (preg_match('/[sxz]$/i', $str) OR preg_match('/[^aeioudgkprt]h$/i', $str))
 		{
 			$end = 'es';
 			$str .= ($low == FALSE) ? strtoupper($end) : $end;
