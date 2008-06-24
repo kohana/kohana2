@@ -19,7 +19,7 @@ class form_Core {
 	 * @param   array   hidden fields to be created immediately after the form tag
 	 * @return  string
 	 */
-	public static function open($action = '', $attr = array(), $hidden = NULL)
+	public static function open($action = NULL, $attr = array(), $hidden = NULL)
 	{
 		// Make sure that the method is always set
 		empty($attr['method']) and $attr['method'] = 'post';
@@ -30,10 +30,10 @@ class form_Core {
 			$attr['method'] = 'post';
 		}
 
-		if (empty($action) OR ! is_string($action))
+		if ($action === NULL)
 		{
 			// Use the current URL as the default action
-			$action = url::site(Router::$current_uri);
+			$action = url::site(Router::$complete_uri);
 		}
 		elseif (strpos($action, '://') === FALSE)
 		{
