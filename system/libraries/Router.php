@@ -11,21 +11,21 @@
  */
 class Router_Core {
 
-	protected static $routes = array();
+	protected static $routes;
 
 	public static $current_uri  = '';
 	public static $query_string = '';
 	public static $complete_uri = '';
 	public static $url_suffix   = '';
 
-	public static $segments    = array();
-	public static $rsegments   = array();
+	public static $segments;
+	public static $rsegments;
 
-	public static $directory       = FALSE;
-	public static $controller      = FALSE;
-	public static $controller_path = FALSE;
-	public static $method          = FALSE;
-	public static $arguments       = FALSE;
+	public static $controller;
+	public static $controller_path;
+
+	public static $method    = 'index';
+	public static $arguments = array();
 
 	/**
 	 * Router setup routine. Automatically called during Kohana setup process.
@@ -40,8 +40,11 @@ class Router_Core {
 			self::$query_string = '?'.trim($_SERVER['QUERY_STRING'], '&');
 		}
 
-		// Load routing configuration
-		self::$routes = Config::item('routes');
+		if (self::$routes === NULL)
+		{
+			// Load routes
+			self::$routes = Config::item('routes');
+		}
 
 		// Default route status
 		$default_route = FALSE;
@@ -80,58 +83,48 @@ class Router_Core {
 		// Routed segments will never be empty
 		self::$rsegments = explode('/', self::$rsegments);
 
-		// Prepare for Controller search
-		self::$directory  = '';
-		self::$controller = '';
+		// Prepare to find the controller
+		$controller_path = '';
 
-		// Optimize the check for the most common controller location
-		if (is_file(APPPATH.'controllers/'.self::$rsegments[0].EXT))
+		foreach (self::$rsegments as $key => $segment)
 		{
-			self::$directory  = APPPATH.'controllers/';
-			self::$controller = self::$rsegments[0];
-			self::$method     = isset(self::$rsegments[1]) ? self::$rsegments[1] : 'index';
-			self::$arguments  = isset(self::$rsegments[2]) ? array_slice(self::$rsegments, 2) : array();
-		}
-		else
-		{
-			// Fetch the include paths
-			$include_paths = Config::include_paths();
+			// Add the segment to the search path
+			$controller_path .= $segment;
 
-			// Path to be added to as we search deeper
-			$search = 'controllers';
-
-			// controller path to be added to as we search deeper
-			$controller_path = '';
-
-			// Use the rsegments to find the controller
-			foreach (self::$rsegments as $key => $segment)
+			if ($path = Kohana::find_file('controllers', $controller_path, FALSE))
 			{
-				foreach ($include_paths as $path)
-				{
-					// The controller has been found, all arguments can be set
-					if (is_file($path.$search.'/'.$segment.EXT))
-					{
-						self::$directory       = $path.$search.'/';
-						self::$controller_path = $controller_path;
-						self::$controller      = $segment;
-						self::$method          = isset(self::$rsegments[$key + 1]) ? self::$rsegments[$key + 1] : 'index';
-						self::$arguments       = isset(self::$rsegments[$key + 2]) ? array_slice(self::$rsegments, $key + 2) : array();
+				// Set controller name
+				self::$controller = $segment;
 
-						// Stop searching, two levels
-						break 2;
-					}
-				}
+				// Change controller path
+				self::$controller_path = $path;
+			}
+			else
+			{
+				// Stop searching
+				break;
+			}
 
-				// Add the segment to the search
-				$search .= '/'.$segment;
-				$controller_path .= $segment.'/';
+			// Add another slash
+			$controller_path .= '/';
+		}
+
+		if (self::$controller !== NULL AND isset(self::$rsegments[$key]))
+		{
+			// Set method
+			self::$method = self::$rsegments[$key];
+
+			if (isset(self::$rsegments[$key + 1]))
+			{
+				// Set arguments
+				self::$arguments = array_slice(self::$rsegments, $key + 1);
 			}
 		}
 
 		// Last chance to set routing before a 404 is triggered
 		Event::run('system.post_routing');
 
-		if (empty(self::$controller))
+		if (self::$controller === NULL)
 		{
 			// No controller was found, so no page can be rendered
 			Event::run('system.404');
@@ -210,14 +203,14 @@ class Router_Core {
 			if ($suffix = Config::item('core.url_suffix') AND strpos(self::$current_uri, $suffix) !== FALSE)
 			{
 				// Remove the URL suffix
-				self::$current_uri = preg_replace('!'.preg_quote($suffix).'$!u', '', self::$current_uri);
+				self::$current_uri = preg_replace('#'.preg_quote($suffix).'$#u', '', self::$current_uri);
 
 				// Set the URL suffix
 				self::$url_suffix = $suffix;
 			}
 
 			// Reduce multiple slashes into single slashes
-			self::$current_uri = preg_replace('!//+!', '/', self::$current_uri);
+			self::$current_uri = preg_replace('#//+#', '/', self::$current_uri);
 		}
 	}
 
@@ -229,18 +222,24 @@ class Router_Core {
 	 */
 	public static function routed_uri($uri)
 	{
-		$routes = Config::item('routes');
-		$uri    = $routed_uri = trim($uri, '/');
+		if (self::$routes === NULL)
+		{
+			// Load routes
+			self::$routes = Config::item('routes');
+		}
 
-		if (isset($routes[$uri]))
+		// Prepare variables
+		$routed_uri = $uri = trim($uri, '/');
+
+		if (isset(self::$routes[$uri]))
 		{
 			// Literal match, no need for regex
-			$routed_uri = $routes[$uri];
+			$routed_uri = self::$routes[$uri];
 		}
 		else
 		{
 			// Loop through the routes and see if anything matches
-			foreach ($routes as $key => $val)
+			foreach (self::$routes as $key => $val)
 			{
 				if ($key === '_default') continue;
 
@@ -248,32 +247,32 @@ class Router_Core {
 				$key = trim($key, '/');
 				$val = trim($val, '/');
 
-				// Does this route match the current URI?
 				if (preg_match('#^'.$key.'$#u', $uri))
 				{
-					// If the regex contains a valid callback, we'll use it
 					if (strpos($val, '$') !== FALSE AND strpos($key, '(') !== FALSE)
 					{
+						// Use regex routing
 						$routed_uri = preg_replace('#^'.$key.'$#u', $val, $uri);
 					}
 					else
 					{
+						// Standard routing
 						$routed_uri = $val;
 					}
 
-					// A valid route was found, stop parsing other routes
+					// A valid route has been found
 					break;
 				}
 			}
 		}
 
-		// Check router one more time to do some magic
-		if (isset($routes[$routed_uri]))
+		if (isset(self::$routes[$routed_uri]))
 		{
-			$routed_uri = $routes[$routed_uri];
+			// Check for double routing (without regex)
+			$routed_uri = self::$routes[$routed_uri];
 		}
 
-		return $routed_uri;
+		return trim($routed_uri, '/');
 	}
 
 } // End Router class
