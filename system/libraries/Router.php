@@ -73,7 +73,7 @@ class Router_Core {
 
 		// Explode the segments by slashes
 		self::$segments = ($default_route === TRUE OR self::$segments === '') ? array() : explode('/', self::$segments);
-
+		
 		if ($default_route === FALSE AND count(self::$routes) > 1)
 		{
 			// Custom routing
@@ -109,10 +109,11 @@ class Router_Core {
 			$controller_path .= '/';
 		}
 
+		
 		if (self::$controller !== NULL AND isset(self::$rsegments[$key]))
 		{
 			// Set method
-			self::$method = self::$rsegments[$key];
+			self::$method = isset(self::$rsegments[1]) ? self::$rsegments[1] : 'index'; 
 
 			if (isset(self::$rsegments[$key + 1]))
 			{
@@ -120,7 +121,7 @@ class Router_Core {
 				self::$arguments = array_slice(self::$rsegments, $key + 1);
 			}
 		}
-
+		
 		// Last chance to set routing before a 404 is triggered
 		Event::run('system.post_routing');
 
