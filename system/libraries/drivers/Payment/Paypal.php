@@ -348,7 +348,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		}
 		else // Something went terribly wrong...
 		{
-			throw new Kohana_User_Exception('SetExpressCheckout ERROR', KOHANA::debug($response_array));
+			throw new Kohana_User_Exception('SetExpressCheckout ERROR', Kohana::debug($response_array));
 
 			Log::add('error', Kohana::debug('SetExpressCheckout response:'.$response_array));
 			//url::redirect($this->api_connection_fields['ERRORURL']);
@@ -374,7 +374,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		}
 		else // Something went terribly wrong...
 		{
-			throw new Kohana_User_Exception('GetExpressCheckout ERROR', KOHANA::debug($this->get_express_checkout_response));
+			throw new Kohana_User_Exception('GetExpressCheckout ERROR', Kohana::debug($this->get_express_checkout_response));
 
 			Log::add('error', Kohana::debug('GetExpressCheckout response:'.$response));
 			url::redirect($this->api_connection_fields['ERRORURL']);
@@ -396,7 +396,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 
 		if (strtoupper($this->nvp_response_array['ACK']) != 'SUCCESS')
 		{
-			throw new Kohana_User_Exception('DoExpressCheckoutPayment ERROR', KOHANA::debug($this->nvp_response_array));
+			throw new Kohana_User_Exception('DoExpressCheckoutPayment ERROR', Kohana::debug($this->nvp_response_array));
 
 			Log::add('error', Kohana::debug('GetExpressCheckout response:'.$response));
 			url::redirect($this->api_connection_fields['ERRORURL']);
@@ -415,7 +415,6 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		$postdata = http_build_query($this->api_authroization_fields).'&'.$nvp_str;
 
 		parse_str(urldecode($postdata),$nvpstr);
-		echo KOHANA::debug($nvpstr);
 
 		Log::add('debug', 'Connecting to '.$this->api_connection_fields['ENDPOINT']);
 
@@ -432,7 +431,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 
 		if (curl_errno($ch))
 		{
-			throw new Kohana_User_Exception('CURL ERROR', KOHANA::debug(array('curl_error_no' => curl_errno($ch), 'curl_error_msg' => curl_error($ch))));
+			throw new Kohana_User_Exception('CURL ERROR', Kohana::debug(array('curl_error_no' => curl_errno($ch), 'curl_error_msg' => curl_error($ch))));
 
 			// Moving to error page to display curl errors
 			$this->session->set_flash(array('curl_error_no' => curl_errno($ch), 'curl_error_msg' => curl_error($ch)));
