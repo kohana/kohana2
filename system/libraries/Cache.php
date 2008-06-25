@@ -26,7 +26,7 @@ class Cache_Core {
 	 * Returns a singleton instance of Cache.
 	 *
 	 * @param   array   configuration
-	 * @return  object  Cache
+	 * @return  Cache_Core
 	 */
 	public static function instance($config = array())
 	{

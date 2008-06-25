@@ -50,7 +50,7 @@ class Database_Core {
 	 * Returns a singleton instance of Database.
 	 *
 	 * @param   mixed   configuration array or DSN
-	 * @return  object
+	 * @return  Database_Core
 	 */
 	public static function instance($config = array())
 	{
@@ -213,7 +213,7 @@ class Database_Core {
 	 * Runs a query into the driver and returns the result.
 	 *
 	 * @param   string  SQL query to execute
-	 * @return  object  Database_Result
+	 * @return  Database_Result
 	 */
 	public function query($sql = '')
 	{
@@ -256,7 +256,7 @@ class Database_Core {
 	 * Selects the column names for a database query.
 	 *
 	 * @param   string  string or array of column names to select
-	 * @return  object  This Database object.
+	 * @return  Database_Core  This Database object.
 	 */
 	public function select($sql = '*')
 	{
@@ -302,7 +302,7 @@ class Database_Core {
 	 * Selects the from table(s) for a database query.
 	 *
 	 * @param   string  string or array of tables to select
-	 * @return  object  This Database object.
+	 * @return  Database_Core  This Database object.
 	 */
 	public function from($sql)
 	{
@@ -336,7 +336,7 @@ class Database_Core {
 	 * @param   string|array  where key or array of key => value pairs
 	 * @param   string        where value
 	 * @param   string        type of join
-	 * @return  object        This Database object.
+	 * @return  Database_Core        This Database object.
 	 */
 	public function join($table, $key, $value = NULL, $type = '')
 	{
@@ -385,7 +385,7 @@ class Database_Core {
 	 * @param   string|array  key name or array of key => value pairs
 	 * @param   string        value to match with key
 	 * @param   boolean       disable quoting of WHERE clause
-	 * @return  object        This Database object.
+	 * @return  Database_Core        This Database object.
 	 */
 	public function where($key, $value = NULL, $quote = TRUE)
 	{
@@ -407,7 +407,7 @@ class Database_Core {
 	 * @param   string|array  key name or array of key => value pairs
 	 * @param   string        value to match with key
 	 * @param   boolean       disable quoting of WHERE clause
-	 * @return  object        This Database object.
+	 * @return  Database_Core        This Database object.
 	 */
 	public function orwhere($key, $value = NULL, $quote = TRUE)
 	{
@@ -429,7 +429,7 @@ class Database_Core {
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
 	 * @param   boolean       automatically add starting and ending wildcards
-	 * @return  object        This Database object.
+	 * @return  Database_Core        This Database object.
 	 */
 	public function like($field, $match = '', $auto = TRUE)
 	{
@@ -450,7 +450,7 @@ class Database_Core {
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
 	 * @param   boolean       automatically add starting and ending wildcards
-	 * @return  object        This Database object.
+	 * @return  Database_Core        This Database object.
 	 */
 	public function orlike($field, $match = '', $auto = TRUE)
 	{
@@ -471,7 +471,7 @@ class Database_Core {
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
 	 * @param   boolean       automatically add starting and ending wildcards
-	 * @return  object        This Database object.
+	 * @return  Database_Core        This Database object.
 	 */
 	public function notlike($field, $match = '', $auto = TRUE)
 	{
@@ -491,7 +491,7 @@ class Database_Core {
 	 *
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
-	 * @return  object        This Database object.
+	 * @return  Database_Core        This Database object.
 	 */
 	public function ornotlike($field, $match = '', $auto = TRUE)
 	{
@@ -511,7 +511,7 @@ class Database_Core {
 	 *
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
-	 * @return  object        This Database object.
+	 * @return  Database_Core        This Database object.
 	 */
 	public function regex($field, $match = '')
 	{
@@ -531,7 +531,7 @@ class Database_Core {
 	 *
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        like value to match with field
-	 * @return  object        This Database object.
+	 * @return  Database_Core        This Database object.
 	 */
 	public function orregex($field, $match = '')
 	{
@@ -551,7 +551,7 @@ class Database_Core {
 	 *
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        regex value to match with field
-	 * @return  object        This Database object.
+	 * @return  Database_Core        This Database object.
 	 */
 	public function notregex($field, $match = '')
 	{
@@ -571,7 +571,7 @@ class Database_Core {
 	 *
 	 * @param   string|array  field name or array of field => match pairs
 	 * @param   string        regex value to match with field
-	 * @return  object        This Database object.
+	 * @return  Database_Core        This Database object.
 	 */
 	public function ornotregex($field, $match = '')
 	{
@@ -590,7 +590,7 @@ class Database_Core {
 	 * Chooses the column to group by in a select query.
 	 *
 	 * @param   string  column name to group by
-	 * @return  object  This Database object.
+	 * @return  Database_Core  This Database object.
 	 */
 	public function groupby($by)
 	{
@@ -618,7 +618,7 @@ class Database_Core {
 	 * @param   string|array  key name or array of key => value pairs
 	 * @param   string        value to match with key
 	 * @param   boolean       disable quoting of WHERE clause
-	 * @return  object        This Database object.
+	 * @return  Database_Core        This Database object.
 	 */
 	public function having($key, $value = '', $quote = TRUE)
 	{
@@ -632,7 +632,7 @@ class Database_Core {
 	 * @param   string|array  key name or array of key => value pairs
 	 * @param   string        value to match with key
 	 * @param   boolean       disable quoting of WHERE clause
-	 * @return  object        This Database object.
+	 * @return  Database_Core        This Database object.
 	 */
 	public function orhaving($key, $value = '', $quote = TRUE)
 	{
@@ -645,7 +645,7 @@ class Database_Core {
 	 *
 	 * @param   string|array  column(s) to order on, can be an array, single column, or comma seperated list of columns
 	 * @param   string        direction of the order
-	 * @return  object        This Database object.
+	 * @return  Database_Core        This Database object.
 	 */
 	public function orderby($orderby, $direction = '')
 	{
@@ -686,7 +686,7 @@ class Database_Core {
 	 *
 	 * @param   integer  number of rows to limit result to
 	 * @param   integer  offset in result to start returning rows from
-	 * @return  object   This Database object.
+	 * @return  Database_Core   This Database object.
 	 */
 	public function limit($limit, $offset = FALSE)
 	{
@@ -700,7 +700,7 @@ class Database_Core {
 	 * Sets the offset portion of a query.
 	 *
 	 * @param   integer  offset value
-	 * @return  object   This Database object.
+	 * @return  Database_Core   This Database object.
 	 */
 	public function offset($value)
 	{
@@ -714,7 +714,7 @@ class Database_Core {
 	 *
 	 * @param   string|array  key name or array of key => value pairs
 	 * @param   string        value to match with key
-	 * @return  object        This Database object.
+	 * @return  Database_Core        This Database object.
 	 */
 	public function set($key, $value = '')
 	{
@@ -737,7 +737,7 @@ class Database_Core {
 	 * @param   string  table name
 	 * @param   string  limit clause
 	 * @param   string  offset clause
-	 * @return  object  Database_Result
+	 * @return  Database_Result
 	 */
 	public function get($table = '', $limit = NULL, $offset = NULL)
 	{
@@ -768,7 +768,7 @@ class Database_Core {
 	 * @param   array   where clause
 	 * @param   string  limit clause
 	 * @param   string  offset clause
-	 * @return  object  This Database object.
+	 * @return  Database_Core  This Database object.
 	 */
 	public function getwhere($table = '', $where = NULL, $limit = NULL, $offset = NULL)
 	{
@@ -826,7 +826,7 @@ class Database_Core {
 	 *
 	 * @param   string  table name
 	 * @param   array   array of key/value pairs to insert
-	 * @return  object  This Database object.
+	 * @return  Database_Result  Query result
 	 */
 	public function insert($table = '', $set = NULL)
 	{
@@ -861,7 +861,7 @@ class Database_Core {
 	 * @param   string  Name of the column being examined
 	 * @param   mixed   An array or string to match against
 	 * @param   bool    Generate a NOT IN clause instead
-	 * @return  object  This Database object.
+	 * @return  Database_Core  This Database object.
 	 */
 	public function in($field, $values, $not = FALSE) 
 	{
@@ -891,7 +891,7 @@ class Database_Core {
 	 * 
 	 * @param   string  Name of the column being examined
 	 * @param   mixed   An array or string to match against
-	 * @return  object  This Database object.
+	 * @return  Database_Core  This Database object.
 	 */
 	public function notin($field, $values) 
 	{
@@ -903,7 +903,7 @@ class Database_Core {
 	 *
 	 * @param   string  table name
 	 * @param   array   array of key/value pairs to merge
-	 * @return  object  This Database object.
+	 * @return  Database_Result  Query result
 	 */
 	public function merge($table = '', $set = NULL)
 	{
@@ -935,7 +935,7 @@ class Database_Core {
 	 * @param   string  table name
 	 * @param   array   associative array of update values
 	 * @param   array   where clause
-	 * @return  object  This Database object.
+	 * @return  Database_Result  Query result
 	 */
 	public function update($table = '', $set = NULL, $where = NULL)
 	{
@@ -971,7 +971,7 @@ class Database_Core {
 	 *
 	 * @param   string  table name
 	 * @param   array   where clause
-	 * @return  object  This Database object.
+	 * @return  Database_Result  Query result
 	 */
 	public function delete($table = '', $where = NULL)
 	{
@@ -1000,7 +1000,7 @@ class Database_Core {
 	/**
 	 * Returns the last query run.
 	 *
-	 * @return  string
+	 * @return  string SQL
 	 */
 	public function last_query()
 	{
@@ -1203,7 +1203,7 @@ class Database_Core {
 	 * Clears the query cache.
 	 *
 	 * @param   string|TRUE  clear cache by SQL statement or TRUE for last query
-	 * @return  object       This Database object.
+	 * @return  Database_Core       This Database object.
 	 */
 	public function clear_cache($sql = NULL)
 	{
