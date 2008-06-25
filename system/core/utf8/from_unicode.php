@@ -12,7 +12,9 @@ function _from_unicode($arr)
 {
 	ob_start();
 
-	foreach (array_keys($arr) as $k)
+	$keys = array_keys($arr);
+
+	foreach ($keys as $k)
 	{
 		// ASCII range (including control chars)
 		if (($arr[$k] >= 0) AND ($arr[$k] <= 0x007f))

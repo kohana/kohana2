@@ -24,7 +24,9 @@ function _str_ireplace($search, $replace, $str, & $count = NULL)
 
 	if (is_array($search))
 	{
-		foreach (array_keys($search) as $k)
+		$keys = array_keys($search);
+
+		foreach ($keys as $k)
 		{
 			if (is_array($replace))
 			{

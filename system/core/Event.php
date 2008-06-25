@@ -214,8 +214,9 @@ final class Event {
 		{
 			// So callbacks can access Event::$data
 			self::$data =& $data;
+			$callbacks  =  self::get($name);
 
-			foreach (self::get($name) as $callback)
+			foreach ($callbacks as $callback)
 			{
 				call_user_func($callback);
 			}

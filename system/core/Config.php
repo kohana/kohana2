@@ -160,7 +160,9 @@ final class Config {
 			self::$include_paths = array(APPPATH);
 
 			// Normalize all paths to be absolute and have a trailing slash
-			foreach (self::item('core.modules') as $path)
+			$paths = self::item('core.modules');
+
+			foreach ($paths as $path)
 			{
 				if (($path = str_replace('\\', '/', realpath($path))) === '')
 					continue;

@@ -61,8 +61,9 @@ final class Benchmark {
 		if ($name === TRUE)
 		{
 			$times = array();
+			$names = array_keys(self::$marks);
 
-			foreach (array_keys(self::$marks) as $name)
+			foreach ($names as $name)
 			{
 				// Get each mark recursively
 				$times[$name] = self::get($name, $decimals);
