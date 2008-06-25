@@ -58,7 +58,7 @@ class form_Core {
 	 * @param   array   hidden fields to be created immediately after the form tag
 	 * @return  string
 	 */
-	public static function open_multipart($action = '', $attr = array(), $hidden = array())
+	public static function open_multipart($action = NULL, $attr = array(), $hidden = array())
 	{
 		// Set multi-part form type
 		$attr['enctype'] = 'multipart/form-data';
