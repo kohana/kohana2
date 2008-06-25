@@ -24,7 +24,7 @@ class form_Core {
 		// Make sure that the method is always set
 		empty($attr['method']) and $attr['method'] = 'post';
 
-		if ($attr['method'] != 'post' AND $attr['method'] != 'get')
+		if ($attr['method'] !== 'post' AND $attr['method'] !== 'get')
 		{
 			// If the method is invalid, use post
 			$attr['method'] = 'post';
@@ -308,7 +308,7 @@ class form_Core {
 
 		$data['type'] = 'checkbox';
 
-		if ((bool) $checked === TRUE OR (isset($data['checked']) AND $data['checked'] === TRUE))
+		if ($checked == TRUE OR (isset($data['checked']) AND $data['checked'] == TRUE))
 		{
 			$data['checked'] = 'checked';
 		}
@@ -338,7 +338,7 @@ class form_Core {
 
 		$data['type'] = 'radio';
 
-		if ($checked === TRUE OR (isset($data['checked']) AND $data['checked'] === TRUE))
+		if ($checked == TRUE OR (isset($data['checked']) AND $data['checked'] == TRUE))
 		{
 			$data['checked'] = 'checked';
 		}
