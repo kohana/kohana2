@@ -61,7 +61,7 @@ class inflector_Core {
 			return $str;
 
 		// Cache key name
-		$key = $str.$count;
+		$key = 'singular_'.$str.$count;
 
 		if (isset(self::$cache[$key]))
 			return self::$cache[$key];
@@ -117,7 +117,7 @@ class inflector_Core {
 			return $str;
 
 		// Cache key name
-		$key = $str.$count;
+		$key = 'plural_'.$str.$count;
 
 		if (isset(self::$cache[$key]))
 			return self::$cache[$key];
