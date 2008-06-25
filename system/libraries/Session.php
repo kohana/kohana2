@@ -435,7 +435,9 @@ class Session_Core {
 	 */
 	public function delete($keys)
 	{
-		foreach (func_get_args() as $key)
+		$args = func_get_args();
+
+		foreach ($args as $key)
 		{
 			if (isset(self::$protect[$key]))
 				continue;

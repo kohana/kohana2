@@ -150,7 +150,9 @@ class URI_Core extends Router {
 			return $array;
 
 		$associative = array();
-		foreach (array_chunk($array, 2) as $pair)
+		$pairs       = array_chunk($array, 2);
+
+		foreach ($pairs as $pair)
 		{
 			// Add the key/value pair to the associative array
 			$associative[$pair[0]] = isset($pair[1]) ? $pair[1] : '';

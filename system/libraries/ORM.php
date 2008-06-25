@@ -518,7 +518,9 @@ class ORM_Core {
 		{
 			if ($action === 'add' AND is_array(current($args)))
 			{
-				foreach (current($args) as $key => $val)
+				$arg = current($args);
+
+				foreach ($arg as $key => $val)
 				{
 					// Fill object with data from array
 					$model->$key = $val;
@@ -755,7 +757,9 @@ class ORM_Core {
 	{
 		if ( ! $array->submitted())
 		{
-			foreach ($array->safe_array() as $key => $val)
+			$safe_array = $array->safe_array();
+			
+			foreach ($safe_array as $key => $val)
 			{
 				// Pre-fill data
 				$array[$key] = $this->$key;
@@ -765,7 +769,9 @@ class ORM_Core {
 		// Validate the array
 		if ($status = $array->validate())
 		{
-			foreach ($array->safe_array() as $key => $val)
+			$safe_array = $array->safe_array();
+
+			foreach ($safe_array as $key => $val)
 			{
 				// Set new data
 				$this->$key = $val;
@@ -863,7 +869,9 @@ class ORM_Core {
 					self::$db->in($fk, $delete)->where($pk, $this->id)->delete($table);
 				}
 
-				foreach (array_diff($new, $cur) as $key)
+				$keys = array_diff($new, $cur);
+
+				foreach ($keys as $key)
 				{
 					// Create new relationships
 					self::$db->insert($table, array($pk => $this->id, $fk => $key));

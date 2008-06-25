@@ -93,7 +93,9 @@ class Router_Core {
 			$controller_path .= $segment;
 
 			$found = FALSE;
-			foreach (Config::include_paths() as $dir)
+			$paths = Config::include_paths();
+
+			foreach ($paths as $dir)
 			{
 				// Search within controllers only
 				$dir .= 'controllers/';

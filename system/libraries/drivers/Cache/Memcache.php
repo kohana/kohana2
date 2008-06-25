@@ -23,7 +23,9 @@ class Cache_Memcache_Driver implements Cache_Driver {
 		$this->backend = new Memcache;
 		$this->flags = Config::item('cache_memcache.compression') ? MEMCACHE_COMPRESSED : 0;
 
-		foreach (Config::item('cache_memcache.servers') as $server)
+		$servers = Config::item('cache_memcache.servers');
+
+		foreach ($servers as $server)
 		{
 			// Make sure all required keys are set
 			$server += array('host' => '127.0.0.1', 'port' => 11211, 'persistent' => FALSE);

@@ -621,7 +621,9 @@ class Validation_Core extends ArrayObject {
 			if ($input === NULL)
 			{
 				$messages = array();
-				foreach (array_keys($this->messages) as $input)
+				$keys     = array_keys($this->messages);
+
+				foreach ($keys as $input)
 				{
 					$messages[] = $this->message($input);
 				}

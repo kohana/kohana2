@@ -368,7 +368,7 @@ class Database_Core {
 			$this->join['conditions'] = array();
 		}
 
-		foreach( (array) $table as $t)
+		foreach ((array) $table as $t)
 		{
 			$this->join['tables'][] = $this->driver->escape_column($this->config['table_prefix'].$t);
 		}

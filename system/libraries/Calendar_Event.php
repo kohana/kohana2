@@ -239,7 +239,9 @@ class Calendar_Event_Core extends Event_Observer {
 			$condition['callback'] = call_user_func($this->conditions['callback'], $condition, $this);
 		}
 
-		foreach (array_diff_key($this->conditions, $tested) as $key => $value)
+		$conditions = array_diff_key($this->conditions, $tested);
+
+		foreach ($conditions as $key => $value)
 		{
 			if ($key === 'callback')
 			{
