@@ -162,7 +162,7 @@ class inflector_Core {
 		}
 
 		// Set the cache and return
-		return $cache[$key] = $str;
+		return self::$cache[$key] = $str;
 	}
 
 	/**
