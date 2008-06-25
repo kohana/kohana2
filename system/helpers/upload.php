@@ -68,12 +68,12 @@ class upload_Core {
 	/* Validation Rules */
 
 	/**
-	 * Tests if a $_FILES item exists.
+	 * Tests if input data is valid file type, even if no upload is present.
 	 *
 	 * @param   array  $_FILES item
 	 * @return  bool
 	 */
-	public static function required($file)
+	public static function valid($file)
 	{
 		return (is_array($file)
 			AND isset($file['error'])
@@ -84,12 +84,12 @@ class upload_Core {
 	}
 
 	/**
-	 * Tests if a $_FILES item is valid.
+	 * Tests if input data has valid upload data.
 	 *
 	 * @param   array    $_FILES item
 	 * @return  bool
 	 */
-	public static function valid(array $file)
+	public static function required(array $file)
 	{
 		return (isset($file['tmp_name'])
 			AND isset($file['error'])
