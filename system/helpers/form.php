@@ -41,8 +41,11 @@ class form_Core {
 			$action = url::site($action);
 		}
 
+		// Set action
+		$attr['action'] = $action;
+
 		// Form opening tag
-		$form = '<form action="'.$action.'"'.form::attributes($attr).'>'."\n";
+		$form = '<form'.form::attributes($attr).'>'."\n";
 
 		// Add hidden fields immediate after opening tag
 		empty($hidden) or $form .= form::hidden($hidden);
@@ -451,14 +454,14 @@ class form_Core {
 		if (empty($attr))
 			return '';
 
-		if ($type === NULL AND ! empty($attr['type']))
-		{
-			// Set the type by the attributes
-			$type = $attr['type'];
-		}
-
 		if (isset($attr['name']) AND empty($attr['id']) AND strpos($attr['name'], '[') === FALSE)
 		{
+			if ($type === NULL AND ! empty($attr['type']))
+			{
+				// Set the type by the attributes
+				$type = $attr['type'];
+			}
+
 			switch ($type)
 			{
 				case 'text':
@@ -478,6 +481,8 @@ class form_Core {
 
 		$order = array
 		(
+			'action',
+			'method',
 			'type',
 			'id',
 			'name',
