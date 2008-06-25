@@ -291,10 +291,10 @@ class ORM_Core {
 		if (substr($method, 0, 13) === 'find_related_')
 		{
 			// Make a find_related call
-			return $this->call_find_related($method, $args);
+			return $this->call_find_related(substr($method, 13), $args);
 		}
 
-		if (preg_match('/^(has|add|remove)_(.+)/', $method, $matches))
+		if (preg_match('/^(has|add|remove)_(.+)$/', $method, $matches))
 		{
 			if (empty($this->object->id))
 			{
@@ -422,11 +422,8 @@ class ORM_Core {
 	 * @param   array    arguments
 	 * @return  object
 	 */
-	protected function call_find_related($method, $args)
+	protected function call_find_related($table, $args)
 	{
-		// Extract table name
-		$table = substr($method, 13);
-
 		// Construct a new model
 		$model = $this->load_model($table);
 
@@ -484,7 +481,7 @@ class ORM_Core {
 	protected function call_has_add_remove($method, $args, $matches)
 	{
 		$action = $matches[1];
-		$model  = is_object(current($args)) ? current($args) : $this->load_model($matches[2]);
+		$model  = (count($args) > 0 AND is_object($args[0])) ? $args[0] : $this->load_model($matches[2]);
 
 		// Real foreign table name
 		$table = $model->table_name;
