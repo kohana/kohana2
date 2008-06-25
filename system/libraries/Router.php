@@ -137,6 +137,11 @@ class Router_Core {
 				// Set arguments
 				self::$arguments = array_slice(self::$rsegments, $method_segment + 1);
 			}
+		} 
+		else 
+		{
+			// Append default method
+			self::$rsegments[] = self::$method;
 		}
 
 		// Last chance to set routing before a 404 is triggered
