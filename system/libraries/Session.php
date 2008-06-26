@@ -239,6 +239,15 @@ class Session_Core {
 			// Pass the regenerating off to the driver in case it wants to do anything special
 			$_SESSION['session_id'] = self::$driver->regenerate();
 		}
+
+		// Get the session name
+		$name = session_name();
+
+		if (isset($_COOKIE[$name]))
+		{
+			// Change the cookie value to match the new session id to remove the "lag time"
+			$_COOKIE[$name] = $_SESSION['session_id'];
+		}
 	}
 
 	/**
