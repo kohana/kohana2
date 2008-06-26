@@ -35,7 +35,7 @@ class inflector_Core {
 			self::$uncountable = array_combine(self::$uncountable, self::$uncountable);
 		}
 
-		return isset(self::$uncountables[$str]);
+		return isset(self::$uncountable[$str]);
 	}
 
 	/**
