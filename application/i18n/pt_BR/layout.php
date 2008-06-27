@@ -2,7 +2,7 @@
 
 $lang = array
 (
-	'subtitle'		=> 'Kohana: Swift, Secure, and Small PHP 5 Framework',
+	'subtitle'		=> 'Kohana: Veloz, Seguro e Pequeno',
 	'description'		=> 'Kohana is a PHP 5 framework that uses the Model View Controller architectural pattern. It aims to be secure, lightweight, and easy to use.',
 	'developers'		=> 'Desenvolvedores:',
 	'menu_trac'		=> 'Trac',
