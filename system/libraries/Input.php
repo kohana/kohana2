@@ -130,7 +130,7 @@ class Input_Core {
 	 * @param   boolean  XSS clean the value
 	 * @return  mixed
 	 */
-	public function get($key, $default = NULL, $xss_clean = FALSE)
+	public function get($key = array(), $default = NULL, $xss_clean = FALSE)
 	{
 		return $this->search_array($_GET, $key, $default, $xss_clean);
 	}
@@ -143,7 +143,7 @@ class Input_Core {
 	 * @param   boolean  XSS clean the value
 	 * @return  mixed
 	 */
-	public function post($key, $default = NULL, $xss_clean = FALSE)
+	public function post($key = array(), $default = NULL, $xss_clean = FALSE)
 	{
 		return $this->search_array($_POST, $key, $default, $xss_clean);
 	}
@@ -156,7 +156,7 @@ class Input_Core {
 	 * @param   boolean  XSS clean the value
 	 * @return  mixed
 	 */
-	public function cookie($key, $default = NULL, $xss_clean = FALSE)
+	public function cookie($key = array(), $default = NULL, $xss_clean = FALSE)
 	{
 		return $this->search_array($_COOKIE, $key, $default, $xss_clean);
 	}
@@ -169,7 +169,7 @@ class Input_Core {
 	 * @param   boolean  XSS clean the value
 	 * @return  mixed
 	 */
-	public function server($key, $default = NULl, $xss_clean = FALSE)
+	public function server($key = array(), $default = NULL, $xss_clean = FALSE)
 	{
 		return $this->search_array($_SERVER, $key, $default, $xss_clean);
 	}
@@ -185,6 +185,9 @@ class Input_Core {
 	 */
 	protected function search_array(array $array, $key, $default = NULL, $xss_clean = FALSE)
 	{
+		if ($key === array())
+			return $array;
+
 		// Get the value from the array
 		$value = isset($array[$key]) ? $array[$key] : $default;
 
