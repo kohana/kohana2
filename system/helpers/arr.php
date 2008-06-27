@@ -18,7 +18,7 @@ class arr_Core {
 	 * @param   string  callback string
 	 * @return  array
 	 */
-	public function callback_string($str)
+	public static function callback_string($str)
 	{
 		// command[param,param]
 		if (preg_match('/([^\[]*+)\[(.+)\]/', (string) $str, $match))
@@ -51,7 +51,7 @@ class arr_Core {
 	 *                   if your subkeys might not match, you need to pass FALSE here!
 	 * @return  array
 	 */
-	public function rotate($source_array, $keep_keys = TRUE)
+	public static function rotate($source_array, $keep_keys = TRUE)
 	{
 		$new_array = array();
 		foreach ($source_array as $key => $value)
@@ -73,7 +73,7 @@ class arr_Core {
 	 * @param   array   array to work on
 	 * @return  mixed   value of the requested array key
 	 */
-	public function remove($key, & $array)
+	public static function remove($key, & $array)
 	{
 		if ( ! array_key_exists($key, $array))
 			return NULL;
@@ -94,7 +94,7 @@ class arr_Core {
 	 * @param   string  key name
 	 * @return  array
 	 */
-	public function extract(array $search, $keys)
+	public static function extract(array $search, $keys)
 	{
 		// Get the keys, removing the $search array
 		$keys = array_slice(func_get_args(), 1);
@@ -123,7 +123,7 @@ class arr_Core {
 	 * @param   mixed   value to unshift
 	 * @return  array
 	 */
-	public function unshift_assoc( array & $array, $key, $val)
+	public static function unshift_assoc( array & $array, $key, $val)
 	{
 		$array = array_reverse($array, TRUE);
 		$array[$key] = $val;
@@ -140,7 +140,7 @@ class arr_Core {
 	 * @param   array  array to map to
 	 * @return  array
 	 */
-	public function map_recursive($callback, array $array)
+	public static function map_recursive($callback, array $array)
 	{
 		foreach ($array as $key => $val)
 		{
@@ -160,7 +160,7 @@ class arr_Core {
 	 * @param   mixed    sort the array before searching it
 	 * @return  integer
 	 */
-	public function binary_search($needle, $haystack, $nearest = FALSE, $sort = FALSE)
+	public static function binary_search($needle, $haystack, $nearest = FALSE, $sort = FALSE)
 	{
 		if ($sort === TRUE)
 		{
