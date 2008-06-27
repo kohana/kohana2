@@ -2,5 +2,5 @@
 
 $lang = array
 (
-	'title'	=> 'Home',
+	'title'	=> 'Página Inicial',
 );
