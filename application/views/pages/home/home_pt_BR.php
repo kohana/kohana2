@@ -12,18 +12,18 @@
 	</ul>
 </div>
 <div style="float:left;">
-	<h2>Technology</h2>
+	<h2>Tecnologia</h2>
 	<ul>
 		<li>Strict PHP 5 <abbr title="Object Oriented Programming">OOP</abbr></li>
-		<li>Simple database abstraction using SQL helpers</li>
-		<li>Multiple session drivers (native, database, and cookie)</li>
+		<li>Abstracão de acesso ao banco de dados simples utilizando SQL helpers</li>
+		<li>Múltiplos Drivers de Sessão (nativo, banco de dados e cookie)</li>
 		<!-- <li>Advanced cache system with drivers (file, database, memcache, shmop)</li> -->
 		<li>Powerful event handler allows small modifications dynamically</li>
 		<li>Originally based on <?php echo html::anchor('http://www.codeigniter.com', 'CodeIgniter') ?></li>
 	</ul>
 </div>
-<h3 style="clear:both;padding-top:1em;">How is Kohana Different?</h3>
-<p>Although Kohana reuses many common design patterns and concepts, there are some things that make Kohana stand out:</p>
+<h3 style="clear:both;padding-top:1em;">Por quê o Kohana é diferente?</h3>
+<p>Apesar do Kohana reutilizar vários padrões de design bastante comuns, existem algumas coisas que faz o Kohana se destacar:</p>
 <ol>
 	<li><strong>Community, not company, driven.</strong> Kohana development is driven by a team of dedicated people that need a framework for fast, powerful solutions.</li>
 	<li><strong>Strict PHP 5 <abbr title="Object Oriented Programming">OOP</abbr>.</strong> Offers many benefits: visibility protection, automatic class loading, overloading, interfaces, abstracts, and singletons.</li>
