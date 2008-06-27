@@ -35,7 +35,7 @@ class inflector_Core {
 			self::$uncountable = array_combine(self::$uncountable, self::$uncountable);
 		}
 
-		return isset(self::$uncountable[$str]);
+		return isset(self::$uncountable[strtolower($str)]);
 	}
 
 	/**
@@ -136,13 +136,7 @@ class inflector_Core {
 
 		if (isset(self::$irregular[strtolower($str)]))
 		{
-			$str = self::$irregular[$str];
-
-			if ($low === FALSE)
-			{
-				// Make uppercase
-				$str = strtoupper($str);
-			}
+			$str = self::$irregular[strtolower($str)];
 		}
 		elseif (preg_match('/[sxz]$/i', $str) OR preg_match('/[^aeioudgkprt]h$/i', $str))
 		{
