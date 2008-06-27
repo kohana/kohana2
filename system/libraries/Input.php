@@ -123,37 +123,68 @@ class Input_Core {
 	}
 
 	/**
-	 * Fetch an item from a global array.
+	 * Fetch an item from the $_GET array.
 	 *
-	 * @param   string  array to access (get, post, cookie or server)
-	 * @param   array   arguments (array key, xss_clean)
+	 * @param   string   key to find
+	 * @param   mixed    default value
+	 * @param   boolean  XSS clean the value
 	 * @return  mixed
 	 */
-	public function __call($global, $args = array())
+	public function get($key, $default = NULL, $xss_clean = FALSE)
 	{
-		// Array to be searched, assigned by reference
-		switch (strtolower($global))
-		{
-			case 'get':    $array =& $_GET;    break;
-			case 'post':   $array =& $_POST;   break;
-			case 'cookie': $array =& $_COOKIE; break;
-			case 'server': $array =& $_SERVER; break;
-			default:
-				throw new Kohana_Exception('core.invalid_method', $global, get_class($this));
-		}
+		return $this->search_array($_GET, $key, $defult, $xss_clean);
+	}
 
-		if ($args === array())
-			return $array;
+	/**
+	 * Fetch an item from the $_POST array.
+	 *
+	 * @param   string   key to find
+	 * @param   mixed    default value
+	 * @param   boolean  XSS clean the value
+	 * @return  mixed
+	 */
+	public function post($key, $default = NULL, $xss_clean = FALSE)
+	{
+		return $this->search_array($_POST, $key, $defult, $xss_clean);
+	}
 
-		if (count($args) < 3)
-		{
-			// Add $default and $xss_clean params
-			$args += array(1 => NULL, 2 => FALSE);
-		}
+	/**
+	 * Fetch an item from the $_COOKIE array.
+	 *
+	 * @param   string   key to find
+	 * @param   mixed    default value
+	 * @param   boolean  XSS clean the value
+	 * @return  mixed
+	 */
+	public function cookie($key, $default = NULL, $xss_clean = FALSE)
+	{
+		return $this->search_array($_COOKIE, $key, $defult, $xss_clean);
+	}
 
-		// Extract the arguments
-		list ($key, $default, $xss_clean) = $args;
+	/**
+	 * Fetch an item from the $_SERVER array.
+	 *
+	 * @param   string   key to find
+	 * @param   mixed    default value
+	 * @param   boolean  XSS clean the value
+	 * @return  mixed
+	 */
+	public function server($key, $default = NULl, $xss_clean = FALSE)
+	{
+		return $this->search_array($_SERVER, $key, $defult, $xss_clean);
+	}
 
+	/**
+	 * Fetch an item from a global array.
+	 *
+	 * @param   array    array to search
+	 * @param   string   key to find
+	 * @param   mixed    default value
+	 * @param   boolean  XSS clean the value
+	 * @return  mixed
+	 */
+	protected function search_array(array $array, $key, $default = NULL, $xss_clean = FALSE)
+	{
 		// Get the value from the array
 		$value = isset($array[$key]) ? $array[$key] : $default;
 
