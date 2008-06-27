@@ -1,4 +1,4 @@
-<p class="intro">Kohana is a <strong>PHP 5 framework</strong> that uses the <strong>Model View Controller</strong> architectural pattern. It aims to be <strong>secure</strong>, <strong>lightweight</strong>, and <strong>easy</strong> to use.</p>
+<p class="intro">Kohana é um framework para o <strong>PHP 5</strong> que utiliza o padrão arquitetural <strong>Modelo Visão Controlador  (Model View Controller)</strong>. Tem como objetivo ser <strong>seguro</strong>, <strong>leve</strong> e <strong>fácil</strong> de usar.</p>
 <div style="float:left; padding-right: 4em;">
 	<h2>Recursos</h2>
 	<ul>
