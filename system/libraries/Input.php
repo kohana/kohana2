@@ -132,7 +132,7 @@ class Input_Core {
 	 */
 	public function get($key, $default = NULL, $xss_clean = FALSE)
 	{
-		return $this->search_array($_GET, $key, $defult, $xss_clean);
+		return $this->search_array($_GET, $key, $default, $xss_clean);
 	}
 
 	/**
@@ -145,7 +145,7 @@ class Input_Core {
 	 */
 	public function post($key, $default = NULL, $xss_clean = FALSE)
 	{
-		return $this->search_array($_POST, $key, $defult, $xss_clean);
+		return $this->search_array($_POST, $key, $default, $xss_clean);
 	}
 
 	/**
@@ -158,7 +158,7 @@ class Input_Core {
 	 */
 	public function cookie($key, $default = NULL, $xss_clean = FALSE)
 	{
-		return $this->search_array($_COOKIE, $key, $defult, $xss_clean);
+		return $this->search_array($_COOKIE, $key, $default, $xss_clean);
 	}
 
 	/**
@@ -171,7 +171,7 @@ class Input_Core {
 	 */
 	public function server($key, $default = NULl, $xss_clean = FALSE)
 	{
-		return $this->search_array($_SERVER, $key, $defult, $xss_clean);
+		return $this->search_array($_SERVER, $key, $default, $xss_clean);
 	}
 
 	/**
