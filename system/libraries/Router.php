@@ -69,7 +69,7 @@ class Router_Core {
 		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, '/');
 
 		// Set the complete URI
-		self::$complete_uri = self::$query_string.self::$current_uri;
+		self::$complete_uri = self::$current_uri.self::$query_string;
 
 		// Explode the segments by slashes
 		self::$segments = ($default_route === TRUE OR self::$segments === '') ? array() : explode('/', self::$segments);
