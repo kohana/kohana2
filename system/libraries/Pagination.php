@@ -37,54 +37,27 @@ class Pagination_Core {
 	/**
 	 * Constructs and returns a new Pagination object.
 	 *
-	 * @param   string  configuration group name
-	 * @param   array   configuration items that overwrite group defaults
+	 * @param   array   configuration settings
 	 * @return  object
 	 */
-	public function factory($group = NULL, $config = array())
+	public function factory($config = array())
 	{
-		return new Pagination($group, $config);
+		return new Pagination($config);
 	}
 
 	/**
 	 * Constructs the Pagination object.
 	 *
-	 * @param   string  configuration group name
-	 * @param   array   configuration items that overwrite group defaults
+	 * @param   array  configuration settings
 	 * @return  void
 	 */
-	public function __construct($group = NULL, $config = array())
+	public function __construct($config = array())
 	{
-		// No group name given, only array with custom config items
-		// Allows for backward compatibility as well
-		if (is_array($group))
+		// No custom group name given
+		if ( ! isset($config['group']))
 		{
-			$config = $group;
-			$group = 'default';
+			$config['group'] = 'default';
 		}
-		// Use default group
-		elseif ($group === NULL)
-		{
-			$group = 'default';
-		}
-
-		// Load and validate config group
-		if ( ! is_array($group_config = Config::item('pagination.'.$group)))
-			throw new Kohana_Exception('pagination.undefined_group', $group);
-
-		// All pagination config groups inherit default config group
-		if ($group !== 'default')
-		{
-			// Load and validate default config group
-			if ( ! is_array($default_config = Config::item('pagination.default')))
-				throw new Kohana_Exception('pagination.undefined_group', 'default');
-
-			// Merge config group with default config group
-			$group_config += $default_config;
-		}
-
-		// Merge custom config items with config group
-		$config += $group_config;
 
 		// Pagination setup
 		$this->initialize($config);
@@ -93,13 +66,35 @@ class Pagination_Core {
 	}
 
 	/**
-	 * Sets or overwrites (some) config values.
+	 * Sets config values.
 	 *
-	 * @param   array  configuration
+	 * @param   array  configuration settings
 	 * @return  void
 	 */
 	public function initialize($config = array())
 	{
+		// Load config group
+		if (isset($config['group']))
+		{
+			// Load and validate config group
+			if ( ! is_array($group_config = Config::item('pagination.'.$config['group'])))
+				throw new Kohana_Exception('pagination.undefined_group', $config['group']);
+
+			// All pagination config groups inherit default config group
+			if ($config['group'] !== 'default')
+			{
+				// Load and validate default config group
+				if ( ! is_array($default_config = Config::item('pagination.default')))
+					throw new Kohana_Exception('pagination.undefined_group', 'default');
+
+				// Merge config group with default config group
+				$group_config += $default_config;
+			}
+
+			// Merge custom config items with config group
+			$config += $group_config;
+		}
+
 		// Assign config values to the object
 		foreach ($config as $key => $value)
 		{
