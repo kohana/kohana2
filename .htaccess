@@ -10,7 +10,7 @@ RewriteRule ^forums(/?.*) http://forum.kohanaphp.com$1 [R=301,L]
 RewriteRule ^user_guide(/?.*) http://doc.kohanaphp.com$1 [R=301,L]
 
 # Installation directory
-RewriteBase /
+RewriteBase /kohanaphp.com/
 
 # Allow these directories and files to be displayed directly:
 # - index.php (DO NOT FORGET THIS!)
