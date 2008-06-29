@@ -86,4 +86,5 @@ $config['modules'] = array
 	// MODPATH.'media',     // Media caching and compression
 	// MODPATH.'gmaps',     // Google Maps integration
 	// MODPATH.'unit_test', // Unit testing
+	// MODPATH.'object_db', // New OOP Database library (testing only!)
 );
