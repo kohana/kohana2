@@ -115,6 +115,9 @@ class Router_Core {
 
 						// Set the method segment
 						$method_segment = $key + 1;
+
+						// Stop searching
+						break;
 					}
 				}
 			}
