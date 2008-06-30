@@ -4,30 +4,30 @@
 	<ul>
 		<li>Extremamente seguro</li>
 		<li>Demasiadamente leve</li>
-		<li>Curta Curva de Aprendizagem</li>
+		<li>Curva de Aprendizagem Curta</li>
 		<li>Utiliza o modelo <abbr title="Model View Controller">MVC</abbr></li>
 		<li>100% compativel UTF-8</li>
-		<li>Loosely coupled architecture</li>
+		<li>Arquitetura fracamente acoplada</li>
 		<li>Extremamente facil para estender</li>
 	</ul>
 </div>
 <div style="float:left;">
 	<h2>Tecnologia</h2>
 	<ul>
-		<li>Strict PHP 5 <abbr title="Object Oriented Programming">OOP</abbr></li>
+		<li>Estritamente escrito em PHP 5 <abbr title="Object Oriented Programming">OOP</abbr></li>
 		<li>Abstracão de acesso ao banco de dados simples utilizando SQL helpers</li>
 		<li>Múltiplos Drivers de Sessão (nativo, banco de dados e cookie)</li>
 		<!-- <li>Advanced cache system with drivers (file, database, memcache, shmop)</li> -->
-		<li>Powerful event handler allows small modifications dynamically</li>
-		<li>Originally based on <?php echo html::anchor('http://www.codeigniter.com', 'CodeIgniter') ?></li>
+		<li>Poderoso manipulador de eventos que permite pequenas modificacões dinamicamente</li>
+		<li>Baseado originalmente no <?php echo html::anchor('http://www.codeigniter.com', 'CodeIgniter') ?></li>
 	</ul>
 </div>
 <h3 style="clear:both;padding-top:1em;">Por quê o Kohana é diferente?</h3>
 <p>Apesar do Kohana reutilizar vários padrões de design bastante comuns, existem algumas coisas que faz o Kohana se destacar:</p>
 <ol>
-	<li><strong>Community, not company, driven.</strong> Kohana development is driven by a team of dedicated people that need a framework for fast, powerful solutions.</li>
-	<li><strong>Strict PHP 5 <abbr title="Object Oriented Programming">OOP</abbr>.</strong> Offers many benefits: visibility protection, automatic class loading, overloading, interfaces, abstracts, and singletons.</li>
-	<li><strong>Extremely lightweight.</strong> Kohana has no dependencies on PECL extensions or PEAR libraries. Large, monolithic libraries are avoided in favor of optimized solutions.</li>
+	<li><strong>Community, not company, driven.</strong> O desenvolvimento do Kohana é dirigido por um time de pessoas dedicadas que necessitam de um framework para solucões rápidas e poderosas.</li>
+	<li><strong>Strict PHP 5 <abbr title="Object Oriented Programming">OOP</abbr>.</strong> Oferece muitos benefícios: visibility protection, carregamento automático de classes, sobrecarregamento, interfaces, classes abstratas e singletons.</li>
+	<li><strong>Extremamente leve.</strong> Kohana não possui dependências de extensões PECL ou bibliotecas da PEAR. Large, monolithic libraries are avoided in favor of optimized solutions.</li>
 	<li><strong>GET, POST, COOKIE, <em>and</em> SESSION arrays all work as expected.</strong> Kohana does not limit your access to global data, but offers	filtering and <abbr title="Cross Site Scripting">XSS</abbr> protection.</li>
 	<li><strong>True auto-loading of classes.</strong> True on-demand loading of classes, as they are requested in your application.</li>
 	<li><strong>No namespace conflicts.</strong> All classes are suffixed to allow similar names between components, for a more coherent API.</li>
