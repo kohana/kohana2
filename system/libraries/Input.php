@@ -183,7 +183,7 @@ class Input_Core {
 	 * @param   boolean  XSS clean the value
 	 * @return  mixed
 	 */
-	protected function search_array(array $array, $key, $default = NULL, $xss_clean = FALSE)
+	protected function search_array($array, $key, $default = NULL, $xss_clean = FALSE)
 	{
 		if ($key === array())
 			return $array;
