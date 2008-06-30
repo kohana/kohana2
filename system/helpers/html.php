@@ -61,7 +61,7 @@ class html_Core {
 		{
 			$site_url = url::base(FALSE);
 		}
-		elseif (strpos($uri, '://') === FALSE AND substr($uri, 0, 1) !== '#')
+		elseif (strpos($uri, '://') === FALSE AND strpos($uri, '#') !== 0)
 		{
 			$site_url = url::site($uri, $protocol);
 		}
