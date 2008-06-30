@@ -7,7 +7,7 @@
 		<li>Curva de Aprendizagem Curta</li>
 		<li>Utiliza o modelo <abbr title="Model View Controller">MVC</abbr></li>
 		<li>100% compativel UTF-8</li>
-		<li>Arquitetura fracamente acoplada</li>
+		<li>Arquitetura facilmente acoplável</li>
 		<li>Extremamente facil para estender</li>
 	</ul>
 </div>
