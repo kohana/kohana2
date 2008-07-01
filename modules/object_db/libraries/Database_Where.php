@@ -14,6 +14,11 @@ class Database_Where_Core {
 	protected $where = array();
 	protected $drivers = array();
 
+	public function __construct(array $args, $op, $type, Database $db)
+	{
+		
+	}
+
 	public function where()
 	{
 		$this->add(func_get_args(), 'AND');

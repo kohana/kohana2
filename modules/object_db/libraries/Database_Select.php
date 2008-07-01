@@ -11,122 +11,144 @@
  */
 class Database_Select_Core {
 
-	protected $where      = array();
+	protected $db;
+
 	protected $from       = array();
 	protected $join       = array();
 	protected $where      = array();
-	protected $orderby    = array();
-	protected $order      = array();
-	protected $groupby    = array();
+	protected $order_by   = array();
+	protected $group_by   = array();
 	protected $having     = array();
 	protected $distinct   = FALSE;
 	protected $limit      = FALSE;
 	protected $offset     = FALSE;
-	protected $drivers    = array();
 
-	public function __construct($sql = '*')
+	public function __construct(array $columns, Database $db)
 	{
-		if (func_num_args() > 1)
-		{
-			$sql = func_get_args();
-		}
-		elseif (is_string($sql))
-		{
-			$sql = explode(',', $sql);
-		}
-		else
-		{
-			$sql = (array) $sql;
-		}
+		$this->db = $db;
 
-		foreach($sql as $val)
+		foreach($columns as $column)
 		{
-			if (($val = trim($val)) === '') continue;
-
-			if (strpos($val, '(') === FALSE AND $val !== '*')
+			if (is_string($column))
 			{
-				if (preg_match('/^DISTINCT\s++(.+)$/i', $val, $matches))
+				$column = trim($column);
+
+				if ($column === '') continue;
+
+				if (preg_match('/^DISTINCT\s++(.+)$/i', $column, $matches))
 				{
-					$val            = $matches[1];
+					// Find distinct columns
 					$this->distinct = TRUE;
+
+					// Use only the column name
+					$column = $matches[1];
 				}
 			}
 
-			$this->select[] = $val;
+			$this->select[] = $column;
 		}
 	}
 
-	public function from($sql)
+	public function from($tables)
 	{
-		foreach((array) $sql as $val)
+		$tables = func_get_args();
+		
+		foreach ($tables as $table)
 		{
-			if (($val = trim($val)) === '') continue;
-
-			$this->from[] = $val;
-		}
-
-		return $this;
-	}
-
-	public function where($key, $value = NULL)
-	{
-		$keys  = is_array($key) ? $key : array($key => $value);
-
-		$where = new Database_Where();
-		$this->where[] = $where->where($keys);
-
-		return $this;
-	}
-
-	public function orwhere($key, $value = NULL)
-	{
-		$keys  = is_array($key) ? $key : array($key => $value);
-
-		$where = new Database_Where();
-		$this->where[] = $where->orwhere($keys);
-
-		return $this;
-	}
-
-	public function orderby($orderby, $direction = '')
-	{
-		$direction = strtoupper(trim($direction));
-
-		if ($direction != '')
-		{
-			$direction = (in_array($direction, array('ASC', 'DESC', 'RAND()', 'NULL'))) ? ' '.$direction : ' ASC';
-		}
-
-		if (empty($orderby))
-		{
-			$this->orderby[] = $direction;
-			return $this;
-		}
-
-		if ( ! is_array($orderby))
-		{
-			$orderby = explode(',', (string) $orderby);
-		}
-
-		$order = array();
-		foreach ($orderby as $field)
-		{
-			$field = trim($field);
-
-			if ($field != '')
+			if (is_string($table))
 			{
-				$order[] = $field;
+				$table = trim($table);
+
+				if ($table === '') continue;
 			}
+
+			$this->from[] = $table;
 		}
-		$this->orderby[] = implode(',', $order).$direction;
+
 		return $this;
 	}
 
-	public function limit($limit, $offset = FALSE)
+	public function where($keys, $op = '=', $value = NULL)
 	{
-		$this->limit  = (int) $limit;
+		if ( ! is_array($keys))
+		{
+			// Make keys into key/value pairs
+			$keys = array($keys => $value);
+		}
 
-		if ($offset)
+		$this->where[] = new Database_Where($keys, $op, 'AND', $this->db);
+
+		return $this;
+	}
+
+	public function or_where($keys, $op = '=', $value = NULL)
+	{
+		if ( ! is_array($keys))
+		{
+			// Make keys into key/value pair
+			$keys = array($keys => $value);
+		}
+
+		$this->where[] = new Database_Where($keys, $op, 'OR', $this->db);
+
+		return $this;
+	}
+
+	public function order_by($columns, $direction = NULL)
+	{
+		if ( ! is_array($columns))
+		{
+			// Make columns into key/value pair
+			$columns = array($columns => $direction);
+		}
+
+		foreach ($columns as $column => $direction)
+		{
+			if (is_string($column))
+			{
+				$column = trim($column);
+
+				if ($column === '') continue;
+			}
+
+			if ( ! empty($direction) AND preg_match('/^(?:ASC|DESC|NULL|RAND\(\))$/i', $direction))
+			{
+				$direction = strtoupper($direction);
+			}
+
+			$this->order_by[] = array($column, $direction);
+		}
+
+		return $this;
+	}
+
+	public function group_by($columns)
+	{
+		if ( ! is_array($columns))
+		{
+			$columns = array($columns);
+		}
+
+		foreach ($columns as $column)
+		{
+			if (is_string($column))
+			{
+				$column = trim($column);
+
+				if ($column === '') continue;
+			}
+
+			$this->group_by[] = $column;
+		}
+
+		return $this;
+	}
+
+	public function limit($limit, $offset = NULL)
+	{
+		$this->limit = (int) $limit;
+
+		if ( ! empty($offset))
 		{
 			$this->offset($offset);
 		}
