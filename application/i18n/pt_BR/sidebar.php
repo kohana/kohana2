@@ -3,8 +3,8 @@
 $lang = array
 (
 	'title'			=> 'Mantenha o Kohana vivo',
-	'content'		=> 'If you use Kohana and find it worth something, please consider <strong>%s</strong>. %s will be directly used to cover the costs of maintaining Kohana.',
-	'donating'		=> 'donating',
-	'your_donations'	=> 'Suas doacoes',
+	'content'		=> 'Se você usa Kohana e o acha digno de alguma coisa, por favor considere <strong>doar</strong>. %s serão usadas diretamente na cobertura dos custos de manutenção do Kohana.',
+	'donating'		=> 'doando',
+	'your_donations'	=> 'Suas doações',
 	'read_more'		=> 'Leia mais',
 );
