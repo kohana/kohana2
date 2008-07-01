@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-$lang['languages']['default'] = 'You must select at least one language.';
+$lang['languages']['default'] = 'Você precisa selecionar pelo menos um idioma.';
 
-$lang['modules']['default'] = 'Invalid module selected.';
+$lang['modules']['default'] = 'Módulo selecionado inválido.';
 
 $lang['vendors']['default'] = 'Invalid vendor selected.';
 
-$lang['format']['default'] = 'Please select a valid format.';
+$lang['format']['default'] = 'Por favor selecione um formato válido.';
