@@ -32,7 +32,7 @@
 	<li><strong>Carregamento automático de classes.</strong>Estas são carregadas sob demanda, de acordo com o requerido.</li>
 	<li><strong>Não existe conflitos de namespace.</strong> Todas as classes estão adequadas para permitir componentes com nomes similares, a favor de uma API mais coerente.</li>
 	<li><strong>Cascading resources offer unparalleled extensibility.</strong> Almost every part of Kohana can be overloaded or extended without editing core system files. Modules allow multi-file plugins to be added to your application, transparently.</li>
-	<li><strong>Biblioteca baseada em "Drivers" e API consistente.</strong> Bibliotecas podem ter diferentes "drivers" para manipular  to handle different external <abbr title="Application Programming Interface">API</abbr>s transparently. For example, multiple session storage options are available (database, cookie, and native), but the same interface is used for all of them. This allows new drivers to be developed for existing libraries, which keeps the API consistent and transparent.</li>
-	<li><strong>Powerful event handler.</strong> Observer-style event handlers allow for extreme levels of customization potential.</li>
-	<li><strong>Ciclo de Desenvolvimento Ágil.</strong> Rapid development results in faster response to user bugs and requests.</li>
+	<li><strong>Biblioteca baseada em "Drivers" e API consistente.</strong> Bibliotecas podem ter diferentes "drivers" para manipular diferentes <abbr title="Application Programming Interface">API</abbr>s transparentemente. Por exemplo, múltiplas opcões de armazenamento dos dados de sessão estão disponíveis (banco de dados, cookie e nativo), visto que a interface é uniforme. Isso permite que novos "drivers" sejam desenvolvidos para bibliotecas de terceiros já existentes, mantendo a API consistente e transparente.</li>
+	<li><strong>Poderosa Manipulacão de Eventos.</strong> Handlers de Eventos baseados no padrão Observador permitem uma maior customizacão.</li>
+	<li><strong>Alta Produtividade no Desenvolvimento.</strong> O desenvolvimento rápido permite respostas rápidas por parte dos clientes e na correcão de bugs.</li>
 </ol>
