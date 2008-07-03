@@ -1,13 +1,13 @@
 # Enable rewriting
 RewriteEngine on
 # Redirect to Trac
-RewriteRule ^trac(/?.*) http://trac.kohanaphp.com$1 [R=301,L]
+RewriteRule ^trac(/.*)?$ http://trac.kohanaphp.com$1 [R=301,L]
 # Redirect to SVN
-RewriteRule ^svn(/?.*) http://svn.kohanaphp.com$1 [R=301,L]
+RewriteRule ^svn(/.*)?$ http://svn.kohanaphp.com$1 [R=301,L]
 # Redirect to forum
-RewriteRule ^forums(/?.*) http://forum.kohanaphp.com$1 [R=301,L]
+RewriteRule ^forums?(/.*)?$ http://forum.kohanaphp.com$1 [R=301,L]
 # Redirect to doc
-RewriteRule ^user_guide(/?.*) http://doc.kohanaphp.com$1 [R=301,L]
+RewriteRule ^user_guide(/.*)?$ http://doc.kohanaphp.com$1 [R=301,L]
 
 # Installation directory
 RewriteBase /
@@ -24,4 +24,4 @@ RewriteRule ^(index\.php|robots\.txt|favicon\.ico|media) - [PT,L]
 RewriteRule ^(application|modules|system) - [F,L]
 
 # Rewrite all other URLs to index.php/URL
-RewriteRule ^(.*)$ index.php/$1 [PT,L]
+RewriteRule .* index.php/$0 [PT,L]
