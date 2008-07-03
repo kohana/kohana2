@@ -95,7 +95,7 @@ abstract class Database_Statement_Core {
 			// Get the expression
 			$str = $str->build();
 		}
-		elseif (stripos($str, ' AS ') AND preg_match('/(.+) AS (.+)/i', $str, $matches))
+		elseif (preg_match('/(.+)\s++AS\s++(\S++)/i', trim($str), $matches))
 		{
 			if (strpos($matches[1], '(') === 0)
 			{
