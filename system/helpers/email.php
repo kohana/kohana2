@@ -38,7 +38,7 @@ class email_Core {
 		{
 			case 'smtp':
 				// Set port
-				$port = empty($config['options']['port']) ? 25 : (int) $config['options']['port'];
+				$port = empty($config['options']['port']) ? NULL : (int) $config['options']['port'];
 
 				if (empty($config['options']['encryption']))
 				{
