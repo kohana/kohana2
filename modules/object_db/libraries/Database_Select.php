@@ -9,13 +9,12 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Database_Select_Core {
+class Database_Select_Core extends Database_Statement {
 
 	protected $db;
 
-	protected $from       = array();
-	protected $join       = array();
-	protected $where      = array();
+	protected $alias = 'tbl';
+
 	protected $order_by   = array();
 	protected $group_by   = array();
 	protected $having     = array();
@@ -23,7 +22,7 @@ class Database_Select_Core {
 	protected $limit      = FALSE;
 	protected $offset     = FALSE;
 
-	public function __construct(array $columns, Database $db)
+	public function __construct(array $columns, Database_Driver $db)
 	{
 		$this->db = $db;
 
@@ -49,47 +48,13 @@ class Database_Select_Core {
 		}
 	}
 
-	public function from($tables)
+	public function alias($name = NULL)
 	{
-		$tables = func_get_args();
-		
-		foreach ($tables as $table)
-		{
-			if (is_string($table))
-			{
-				$table = trim($table);
+		if ($name === NULL)
+			return $this->alias;
 
-				if ($table === '') continue;
-			}
-
-			$this->from[] = $table;
-		}
-
-		return $this;
-	}
-
-	public function where($keys, $op = '=', $value = NULL)
-	{
-		if ( ! is_array($keys))
-		{
-			// Make keys into key/value pairs
-			$keys = array($keys => $value);
-		}
-
-		$this->where[] = new Database_Where($keys, $op, 'AND', $this->db);
-
-		return $this;
-	}
-
-	public function or_where($keys, $op = '=', $value = NULL)
-	{
-		if ( ! is_array($keys))
-		{
-			// Make keys into key/value pair
-			$keys = array($keys => $value);
-		}
-
-		$this->where[] = new Database_Where($keys, $op, 'OR', $this->db);
+		// Set the alias
+		$this->alias = (string) $name;
 
 		return $this;
 	}
@@ -116,7 +81,7 @@ class Database_Select_Core {
 				$direction = strtoupper($direction);
 			}
 
-			$this->order_by[] = array($column, $direction);
+			$this->order_by[$column] = $direction;
 		}
 
 		return $this;
@@ -129,17 +94,20 @@ class Database_Select_Core {
 			$columns = array($columns);
 		}
 
-		foreach ($columns as $column)
+		$this->group_by[] = $columns;
+
+		return $this;
+	}
+
+	public function having($keys, $op = '=', $value = NULL, $type = 'AND')
+	{
+		if ( ! is_array($keys))
 		{
-			if (is_string($column))
-			{
-				$column = trim($column);
-
-				if ($column === '') continue;
-			}
-
-			$this->group_by[] = $column;
+			// Make keys into key/value pair
+			$keys = array($keys => $value);
 		}
+
+		$this->having[] = new Database_Having($keys, $op, $type, $this->db);
 
 		return $this;
 	}
@@ -163,8 +131,134 @@ class Database_Select_Core {
 		return $this;
 	}
 
-	public function build($group = 'default')
+	public function build()
 	{
+		// SELECT c FROM t JOIN j WHERE w GROUP BY g HAVING h ORDER BY s LIMIT l OFFSET o
+		$sql = array();
+
+		// Add SELECT
+		$sql['select'] = 'SELECT ';
+		if ($this->distinct === TRUE)
+		{
+			$sql['select'] .= 'DISTINCT ';
+		}
+
+		// Add columns
+		$data = array();
+		foreach ($this->select as $val)
+		{
+			$data[] = $this->escape('column', $val);
+		}
+		$sql['select'] .= implode(', ', $data);
+
+		// Add FROM
+		$data = array();
+		foreach ($this->from as $val)
+		{
+			$data[] = $this->escape('table', $val);
+		}
+		$sql['from'] = 'FROM '.implode(', ', $data);
+
+		if ( ! empty($this->join))
+		{
+			// Add JOIN
+			$data = array();
+			foreach ($this->join as $val)
+			{
+				list ($table, $columns, $type) = $val;
+
+				if ($type !== NULL)
+				{
+					// Add a space after the type
+					$type .= ' ';
+				}
+
+				$join = array();
+				foreach ($columns as $c1 => $c2)
+				{
+					$join[] = $this->escape('column', $c1).' = '.$this->escape('column', $c2);
+				}
+
+				$data[] = $type.'JOIN '.$this->escape('table', $table).' ON ('.implode(', ', $join).')';
+			}
+			$sql['join'] = implode("\n", $data);
+		}
+
+		if ( ! empty($this->where))
+		{
+			// Add WHERE
+			$sql['where'] = 'WHERE ';
+
+			foreach ($this->where as $i => $val)
+			{
+				if ($i > 0)
+				{
+					// Add operators after the first WHERE statement
+					$sql['where'] .= $val->op();
+				}
+
+				$sql['where'] .= $val->build()."\n";
+			}
+			$sql['where'] = rtrim($sql['where']);
+		}
+
+		if ( ! empty($this->group_by))
+		{
+			// Add GROUP BY
+			$sql['group_by'] ='GROUP BY ';
+
+			$data = array();
+			foreach ($this->group_by as $columns)
+			{
+				foreach ($columns as $i => $col)
+				{
+					$columns[$i] = $this->escape('column', $col);
+				}
+
+				$data[] = '('.implode(', ', $columns).')';
+			}
+			$sql['group_by'] .= implode(', ', $data);
+		}
+
+		if ( ! empty($this->having))
+		{
+			// Add HAVING
+			$sql['having'] = 'HAVING ';
+
+			foreach ($this->having as $i => $having)
+			{
+				if ($i > 0)
+				{
+					// Add operators after the first HAVING statement
+					$sql['having'] .= $having->op();
+				}
+
+				$sql['having'] .= $having->build();
+			}
+		}
+
+		if ( ! empty($this->order_by))
+		{
+			// Add ORDER BY
+			$sql['order_by'] = 'ORDER BY ';
+
+			$data = array();
+			foreach ($this->order_by as $column => $direction)
+			{
+				$data[] = $this->escape('column', $column).' '.$direction;
+			}
+			$sql['order_by'] .= implode(', ', $data);
+		}
+
+		if ($this->limit > 0 OR $this->offset > 0)
+		{
+			// Add LIMIT and OFFSET
+			$sql['limit'] = $this->db->limit($this->limit, $this->offset);
+		}
+
+		return implode("\n", $sql);
+
+
 		if (is_string($group)) // group name was passed
 		{
 			$config = Config::item('database.'.$group);
@@ -200,8 +294,4 @@ class Database_Select_Core {
 
 	}
 
-	public function __toString()
-	{
-		return $this->build();
-	}
-}
+} // End Database Select

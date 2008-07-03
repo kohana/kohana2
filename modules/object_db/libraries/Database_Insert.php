@@ -9,36 +9,59 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Database_Insert_Core extends Database_Query_Builder {
+class Database_Insert_Core {
 
-	/**
-	 * Compiles an insert string and runs the query.
-	 *
-	 * @param   string  table name
-	 * @param   array   array of key/value pairs to insert
-	 * @return  object  Database_Result
-	 */
-	public function insert($table = '', $set = NULL)
+	protected $db;
+
+	protected $table   = '';
+	protected $columns = array();
+	protected $values  = array();
+	protected $select  = NULL;
+
+	public function __construct($table, $columns = NULL, Database_Driver $db)
 	{
-		if ( ! is_null($set))
+		$this->db = $db;
+
+		$this->table = $table;
+
+		if (is_array($columns))
 		{
-			$this->set($set);
+			// Set the columns to insert into
+			$this->columns($columns);
 		}
-
-		if ($this->set === NULL)
-			throw new Kohana_Database_Exception('database.must_use_set');
-
-		if ($table == '')
-		{
-			if ( ! isset($this->from[0]))
-				throw new Kohana_Database_Exception('database.must_use_table');
-
-			$table = $this->from[0];
-		}
-
-		$sql = $this->driver->insert($this->config['table_prefix'].$table, array_keys($this->set), array_values($this->set));
-
-		$this->reset_write();
-		return $this->query($sql);
 	}
-}
+
+	public function __toString()
+	{
+		return $this->build();
+	}
+
+	public function columns(array $columns)
+	{
+		$this->columns = $columns;
+
+		return $this;
+	}
+
+	public function values($values)
+	{
+		if (is_object($values) AND $values instanceof Database_Select)
+		{
+			// Use a SELECT for values
+			$this->select = $values;
+		}
+		else
+		{
+			// Add a new set of values
+			$this->values[] = (array) $values;
+		}
+
+		return $this;
+	}
+
+	public function build()
+	{
+		// Compile
+	}
+
+} // End Database Insert

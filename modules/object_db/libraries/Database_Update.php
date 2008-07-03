@@ -11,8 +11,9 @@
  */
 class Database_Update_Core extends Database_Query_Builder {
 
-	// Un-compiled parts of the insert query
-	protected $set        = array();
+	protected $table = array();
+	protected $set   = array();
+	protected $where = array();
 	
 	/**
 	 * Compiles an update string and runs the query.

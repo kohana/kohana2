@@ -9,57 +9,73 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Database_Where_Core {
+class Database_Where_Core extends Database_Escape {
 
-	protected $where = array();
-	protected $drivers = array();
+	protected $comparisons = array
+	(
+		'=',
+		'!=',
+		'<',
+		'<=',
+		'>',
+		'>=',
+		'LIKE',
+		'NOT LIKE',
+		'REGEX',
+		'NOT REGEX',
+		'IN',
+		'NOT IN',
+	);
+	
+	protected $operators = array
+	(
+		'AND',
+		'OR',
+	);
 
-	public function __construct(array $args, $op, $type, Database $db)
+	protected $db;
+
+	protected $columns;
+	protected $comparison;
+	protected $operator;
+
+	public function __construct(array $columns, $comparison, $operator, Database_Driver $db)
 	{
-		
-	}
+		$this->db = $db;
 
-	public function where()
-	{
-		$this->add(func_get_args(), 'AND');
-		return $this;
-	}
-
-	public function orwhere()
-	{
-		$this->add(func_get_args(), 'OR');
-		return $this;
-	}
-
-	private function add($args, $type)
-	{
-		// Count the arguments: one, two or three?
-		$num_args = count($args);
-
-		// A where object was passed
-		if ($num_args === 1 AND is_object($args[0]))
+		if ( ! in_array(strtoupper($comparison), $this->comparisons, TRUE))
 		{
-			$this->where[] = array($args[0], $type);
+			// Default to equals
+			$comparison = '=';
 		}
-		// An array for the conditions
-		elseif ($num_args === 2 OR ($num_args === 1 AND is_array($args[0])))
-		{
-			$operator = $num_args === 2 ? $args[1] : '=';
 
-			foreach ($args[0] as $key => $value)
-			{
-				$this->where[] = array(array('key' => $key, 'value' => $value, 'op' => $operator), $type);
-			}
-		}
-		// Separate conditions
-		elseif ($num_args === 3)
+		if ( ! in_array(strtoupper($operator), $this->operators))
 		{
-			$this->where[] = array(array('key' => $args[0], 'value' => $args[1], 'op' => $args[2]), $type);
+			// Default to AND
+			$operator = 'AND';
 		}
+
+		$this->columns    = $columns;
+		$this->comparison = ' '.strtoupper($comparison).' ';
+		$this->operator   = ' '.strtoupper($operator).' ';
 	}
 
-	public function build($group = 'default')
+	public function op()
 	{
+		return $this->operator;
+	}
+
+	public function build()
+	{
+		$sql = array();
+		foreach ($this->columns as $col => $value)
+		{
+			$sql[] = $this->escape('column', $col).$this->comparison.$this->escape('value', $value);
+		}
+
+		return '('.implode($this->operator, $sql).')';
+
+
 		if (is_string($group)) // group name was passed
 		{
 			$config = Config::item('database.'.$group);
@@ -116,4 +132,5 @@ class Database_Where_Core {
 	{
 		return $this->build();
 	}
-}
+
+} // End Database Where

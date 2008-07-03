@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-abstract class Database_Statement_Core {
+abstract class Database_Statement_Core extends Database_Escape {
 
 	protected $db;
 
@@ -39,7 +39,7 @@ abstract class Database_Statement_Core {
 			$keys = array($keys => $value);
 		}
 
-		if ( ! empty($type))
+		if ($type !== NULL)
 		{
 			$type = strtoupper(trim($type));
 
@@ -78,48 +78,6 @@ abstract class Database_Statement_Core {
 		$this->where[] = new Database_Where($keys, $op, 'OR', $this->db);
 
 		return $this;
-	}
-
-	protected function escape($escape, $str)
-	{
-		// Compile method name
-		$escape = 'escape_'.$escape;
-
-		if (is_object($str) AND $str instanceof Database_Select)
-		{
-			// Compile the sub-query
-			$str = '('.$str->build().')';
-		}
-		elseif (is_object($str) AND $str instanceof Database_Expression)
-		{
-			// Get the expression
-			$str = $str->build();
-		}
-		elseif (preg_match('/(.+)\s++AS\s++(\S++)/i', trim($str), $matches))
-		{
-			if (strpos($matches[1], '(') === 0)
-			{
-				// Ignore sub-queries
-			}
-			else
-			{
-				// Escape the string
-				$matches[1] = $this->db->$escape($matches[1]);
-			}
-
-			// Escape the alias
-			$matches[2] = $this->db->$escape($matches[2]);
-
-			// Recompile the string
-			$str = $matches[1].' AS '.$matches[2];
-		}
-		else
-		{
-			// Escape the string
-			$str = $this->db->$escape($str);
-		}
-
-		return $str;
 	}
 
 } // End Database Statement

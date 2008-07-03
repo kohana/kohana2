@@ -17,6 +17,9 @@ class Database_Core {
 	// Driver instance
 	protected $driver;
 
+	// Query cache
+	protected $cache = array();
+
 	public static function instance($name = 'default', $config = NULL)
 	{
 		if (empty(Database::$instances[$name]))
@@ -36,29 +39,78 @@ class Database_Core {
 			$config = Config::item('database.default');
 		}
 
-		if ( ! (is_array($config) AND isset($config['hostname']) AND isset($config['database'])))
+		if ( ! is_array($config) OR empty($config['driver']) OR empty($config['database']))
 			throw new Kohana_Exception('database.invalid_configuation');
+
+		// Driver class name
+		$driver = 'Database_'.ucfirst($config['driver']).'_Driver';
+
+		if ( ! Kohana::auto_load($driver))
+			throw new Kohana_Exception('core.driver_not_found', $config['driver'], get_class($this));
+
+		$this->driver = new $driver($config);
 	}
 
-	public function select($col = '*')
+	public function __destruct()
 	{
-		$args = func_get_args();
+		// Manually unset the driver to force a disconnect
+		unset($this->driver);
+	}
 
-		if (empty($args))
+	public function select($columns = '*')
+	{
+		// Create an array of the columns to select
+		$columns = func_num_args() ? func_get_args() : array('*');
+
+		// Return a new SELECT statement
+		return new Database_Select($columns, $this->driver);
+	}
+
+	public function insert($table, $columns = NULL)
+	{
+		// Return a new INSERT statement
+		return new Database_Update($table, $columns, $this->driver);
+	}
+
+	public function update($table, $columns = NULL)
+	{
+		// Return a new UPDATE statement
+		return new Database_Update($table, $columns, $this->driver);
+	}
+
+	public function delete($table)
+	{
+		// Return a new DELETE statement
+		return new Database_Delete($table, $this->driver);
+	}
+
+	public function expression($sql)
+	{
+		// Return a new unescaped SQL expression
+		return new Database_Expression($sql);
+	}
+
+	public function query($sql = NULL, $class = 'StdClass')
+	{
+		if (is_object($sql))
 		{
-			// Default to "SELECT *"
-			$args = array('*');
+			// Make the SQL object into a string
+			$sql = (string) $sql;
 		}
 
-		return new Database_Select($args, $this);
-	}
-
-	public function query($sql = NULL)
-	{
 		if ( ! is_string($sql))
-		{
-			echo 'not an SQL string';
-		}
+			throw new Kohana_Exception('database.invalid_query');
+
+		return $this->driver->query($sql, $class);
 	}
 
 } // End Database
+
+/**
+ * Sets the code for a Database exception.
+ */
+class Kohana_Database_Exception extends Kohana_Exception {
+
+	protected $code = E_DATABASE_ERROR;
+
+} // End Kohana Database Exception

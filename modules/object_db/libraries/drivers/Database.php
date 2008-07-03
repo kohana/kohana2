@@ -11,7 +11,7 @@
  */
 abstract class Database_Driver {
 
-	static $query_cache;
+	protected $cache = array();
 
 	/**
 	 * Connect to our database.
@@ -19,7 +19,7 @@ abstract class Database_Driver {
 	 *
 	 * @return mixed
 	 */
-	abstract public function connect();
+	abstract protected function connect();
 
 	/**
 	 * Perform a query based on a manually written query.
@@ -256,7 +256,7 @@ abstract class Database_Driver {
 	 * @param   integer  offset
 	 * @return  string
 	 */
-	abstract public function limit($limit, $offset = 0);
+	// abstract public function limit($limit, $offset = 0);
 
 	/**
 	 * Creates a prepared statement.
@@ -270,39 +270,25 @@ abstract class Database_Driver {
 	}
 
 	/**
-	 *  Compiles the SELECT statement.
-	 *  Generates a query string based on which functions were used.
-	 *  Should not be called directly, the get() function calls it.
-	 *
-	 * @param   array   select query values
-	 * @return  string
-	 */
-	abstract public function compile_select($database);
-
-	/**
-	 * Determines if the string has an arithmetic operator in it.
-	 *
-	 * @param   string   string to check
-	 * @return  boolean
-	 */
-	public function has_operator($str)
-	{
-		return (bool) preg_match('/[<>!=]|\sIS(?:\s+NOT\s+)?\b/i', trim($str));
-	}
-
-	/**
 	 * Escapes any input value.
 	 *
 	 * @param   mixed   value to escape
 	 * @return  string
 	 */
-	public function escape($value)
+	public function escape_value($value)
 	{
-		if (!$this->db_config['escape'])
+		if ($this->config['escaping'] === FALSE)
 			return $value;
 
 		switch (gettype($value))
 		{
+			case 'array':
+				foreach ($value as $i => $val)
+				{
+					$value[$i] = $this->escape_value($val);
+				}
+				$value = implode(', ', $value);
+			break;
 			case 'string':
 				$value = '\''.$this->escape_str($value).'\'';
 			break;
@@ -342,14 +328,14 @@ abstract class Database_Driver {
 	 * @param   string  table name
 	 * @return  array
 	 */
-	abstract function list_fields($table);
+	// abstract function list_fields($table);
 
 	/**
 	 * Returns the last database error.
 	 *
 	 * @return  string
 	 */
-	abstract public function show_error();
+	// abstract public function show_error();
 
 	/**
 	 * Returns field data about a table.
@@ -357,7 +343,7 @@ abstract class Database_Driver {
 	 * @param   string  table name
 	 * @return  array
 	 */
-	abstract public function field_data($table);
+	// abstract public function field_data($table);
 
 	/**
 	 * Fetches SQL type information about a field, in a generic format.
@@ -419,23 +405,22 @@ abstract class Database_Driver {
 		return $field;
 	}
 
-	/**
-	 * Clears the internal query cache.
-	 *
-	 * @param  string  SQL query
-	 */
 	public function clear_cache($sql = NULL)
 	{
-		if (empty($sql))
+		if ( ! empty($sql))
 		{
-			self::$query_cache = array();
+			// Delete a single query
+			unset($this->cache[$this->query_hash($sql)]);
 		}
 		else
 		{
-			unset(self::$query_cache[$this->query_hash($sql)]);
+			// Delete the entire cache
+			$this->cache = array();
 		}
 
 		Log::add('debug', 'Database cache cleared: '.get_class($this));
+
+		return $this;
 	}
 
 	/**
@@ -459,22 +444,13 @@ abstract class Database_Driver {
 interface Database_Result {
 
 	/**
-	 * Prepares the query result.
-	 *
-	 * @param   boolean   return rows as objects
-	 * @param   mixed     type
-	 * @return  Database_Result
-	 */
-	public function result($object = TRUE, $type = FALSE);
-
-	/**
 	 * Builds an array of query results.
 	 *
 	 * @param   boolean   return rows as objects
 	 * @param   mixed     type
 	 * @return  array
 	 */
-	public function result_array($object = NULL, $type = FALSE);
+	public function result_array();
 
 	/**
 	 * Gets the ID of the last insert statement.
