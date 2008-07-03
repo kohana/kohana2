@@ -55,7 +55,7 @@ abstract class Database_Driver {
 		{
 			$valstr[] = $this->escape_column($key).' = '.$val;
 		}
-		return 'UPDATE '.$this->escape_table($table).' SET '.implode(', ', $valstr).' WHERE '.implode(' ',$where);
+		return 'UPDATE '.$this->escape_table($table).' SET '.implode(', ', $valstr).' WHERE '.implode(' ', $where);
 	}
 
 	/**
@@ -102,43 +102,40 @@ abstract class Database_Driver {
 		{
 			$value = '';
 		}
+		elseif ($value === NULL)
+		{
+			if ( ! $this->has_operator($key))
+			{
+				$key .= ' IS';
+			}
+
+			$value = ' NULL';
+		}
+		elseif (is_bool($value))
+		{
+			if ( ! $this->has_operator($key))
+			{
+				$key .= ' =';
+			}
+
+			$value = ($value == TRUE) ? ' 1' : ' 0';
+		}
 		else
 		{
-			if ($value === NULL)
+			if ( ! $this->has_operator($key))
 			{
-				if ( ! $this->has_operator($key))
-				{
-					$key .= ' IS';
-				}
-
-				$value = ' NULL';
-			}
-			elseif (is_bool($value))
-			{
-				if ( ! $this->has_operator($key))
-				{
-					$key .= ' =';
-				}
-
-				$value = ($value == TRUE) ? ' 1' : ' 0';
+				$key = $this->escape_column($key).' =';
 			}
 			else
 			{
-				if ( ! $this->has_operator($key))
+				preg_match('/^(.+?)([<>!=]+|\bIS(?:\s+NULL))\s*$/i', $key, $matches);
+				if (isset($matches[1]) AND isset($matches[2]))
 				{
-					$key = $this->escape_column($key).' =';
+					$key = $this->escape_column(trim($matches[1])).' '.trim($matches[2]);
 				}
-				else
-				{
-					preg_match('/^(.+?)([<>!=]+|\bIS(?:\s+NULL))\s*$/i', $key, $matches);
-					if(isset($matches[1]) AND isset($matches[2]))
-					{
-						$key = $this->escape_column(trim($matches[1])).' '.trim($matches[2]);
-					}
-				}
-
-				$value = ' '.(($quote == TRUE) ? $this->escape($value) : $value);
 			}
+
+			$value = ' '.(($quote == TRUE) ? $this->escape($value) : $value);
 		}
 
 		return $prefix.$key.$value;
@@ -380,7 +377,7 @@ abstract class Database_Driver {
 
 		$str = strtolower(trim($str));
 
-		if (($open  = strpos($str, '(')) !== FALSE)
+		if (($open = strpos($str, '(')) !== FALSE)
 		{
 			// Find closing bracket
 			$close = strpos($str, ')', $open) - 1;
