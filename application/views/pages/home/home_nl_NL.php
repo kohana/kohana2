@@ -1,4 +1,8 @@
-<p class="intro">Kohana is a <strong>PHP 5 framework</strong> that uses the <strong>Model View Controller</strong> architectural pattern. It aims to be <strong>secure</strong>, <strong>lightweight</strong>, and <strong>easy</strong> to use.</p>
+<p class="intro">Kohana is een <strong>PHP 5 framework</strong> gebaseerd op het <strong>Model View Controller</strong> patroon. Kohana legt de focus op <strong>veiligheid</strong>, <strong>slanke code</strong> en <strong>gebruiksgemak</strong>.</p>
+
+<p>{Dutch translation under construction}</p>
+
+<!--
 <div style="float:left; padding-right: 4em;">
 	<h2>Features</h2>
 	<ul>
@@ -17,7 +21,6 @@
 		<li>Strict PHP 5 <abbr title="Object Oriented Programming">OOP</abbr></li>
 		<li>Simple database abstraction using SQL helpers</li>
 		<li>Multiple session drivers (native, database, and cookie)</li>
-		<!-- <li>Advanced cache system with drivers (file, database, memcache, shmop)</li> -->
 		<li>Powerful event handler allows small modifications dynamically</li>
 		<li>Originally based on <?php echo html::anchor('http://www.codeigniter.com', 'CodeIgniter') ?></li>
 	</ul>
@@ -36,3 +39,4 @@
 	<li><strong>Powerful event handler.</strong> Observer-style event handlers allow for extreme levels of customization potential.</li>
 	<li><strong>Rapid development cycle.</strong> Rapid development results in faster response to user bugs and requests.</li>
 </ol>
+-->
