@@ -129,21 +129,7 @@ class Form_Upload_Core extends Form_Input {
 		if (empty($this->upload['tmp_name']) OR count($types = func_get_args()) == 0)
 			return;
 
-		if (defined('FILEINFO_MIME'))
-		{
-			$info = new finfo(FILEINFO_MIME);
-
-			// Get the mime type using Fileinfo
-			$mime = $info->file($this->upload['tmp_name']);
-
-			$info->close();
-		}
-		elseif (ini_get('magic.mime') AND function_exists('mime_content_type'))
-		{
-			// Get the mime type using magic.mime
-			$mime = mime_content_type($this->upload['tmp_name']);
-		}
-		else
+		if (($mime = file::mime($this->upload['tmp_name'])) === FALSE)
 		{
 			// Trust the browser
 			$mime = $this->upload['type'];
