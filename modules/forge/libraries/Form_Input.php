@@ -364,20 +364,15 @@ class Form_Input_Core {
 	 *
 	 * @return  string|bool
 	 */
-	protected function input_value()
+	protected function input_value($name === array())
 	{
-		static $input, $method;
-
-		if ($input === NULL)
-		{
-			// Load the Input library
-			$input = new Input;
-		}
+		// Get the Input instance
+		$input = Input::instance();
 
 		// Fetch the method for this object
 		$method = $this->method;
 
-		return (func_num_args() > 0) ? $input->$method(func_get_arg(0)) : $input->$method();
+		return $input->$method($name, NULL);
 	}
 
 	/**
