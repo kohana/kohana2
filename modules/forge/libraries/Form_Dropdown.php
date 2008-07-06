@@ -58,7 +58,7 @@ class Form_Dropdown_Core extends Form_Input {
 			return $this->is_valid;
 
 		// No data to validate
-		if ($this->input_value() === NULL)
+		if ($this->input_value() == FALSE)
 			return $this->is_valid = FALSE;
 
 		// Load the submitted value
