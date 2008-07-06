@@ -35,7 +35,7 @@ class inflector_Core {
 			self::$uncountable = array_combine(self::$uncountable, self::$uncountable);
 		}
 
-		return isset($uncountables[$str]);
+		return isset(self::$uncountable[strtolower($str)]);
 	}
 
 	/**
@@ -61,7 +61,7 @@ class inflector_Core {
 			return $str;
 
 		// Cache key name
-		$key = $str.$count;
+		$key = 'singular_'.$str.$count;
 
 		if (isset(self::$cache[$key]))
 			return self::$cache[$key];
@@ -79,16 +79,19 @@ class inflector_Core {
 		{
 			$str = $irregular;
 		}
-		elseif (substr($str, -3) === 'ies')
+		elseif (preg_match('/[sxz]es$/i', $str) OR preg_match('/[^aeioudgkprt]hes$/i', $str))
 		{
-			$str = substr($str, 0, strlen($str) - 3).'y';
+			// Remove "es"
+			$str = substr($str, 0, -2);
 		}
-		elseif (substr($str, -4) === 'sses' OR substr($str, -3) === 'xes')
+		elseif (preg_match('/[^aeiou]ies$/i', $str))
 		{
-			$str = substr($str, 0, strlen($str) - 2);
+			// Remove "ies"
+			$str = substr($str, 0, -3).'y';
 		}
 		elseif (substr($str, -1) === 's')
 		{
+			// Remove "s"
 			$str = substr($str, 0, strlen($str) - 1);
 		}
 
@@ -117,7 +120,7 @@ class inflector_Core {
 			return $str;
 
 		// Cache key name
-		$key = $str.$count;
+		$key = 'plural_'.$str.$count;
 
 		if (isset(self::$cache[$key]))
 			return self::$cache[$key];
@@ -136,13 +139,7 @@ class inflector_Core {
 
 		if (isset(self::$irregular[strtolower($str)]))
 		{
-			$str = self::$irregular[$str];
-
-			if ($low === FALSE)
-			{
-				// Make uppercase
-				$str = strtoupper($str);
-			}
+			$str = self::$irregular[strtolower($str)];
 		}
 		elseif (preg_match('/[sxz]$/i', $str) OR preg_match('/[^aeioudgkprt]h$/i', $str))
 		{
@@ -162,7 +159,7 @@ class inflector_Core {
 		}
 
 		// Set the cache and return
-		return $cache[$key] = $str;
+		return self::$cache[$key] = $str;
 	}
 
 	/**
