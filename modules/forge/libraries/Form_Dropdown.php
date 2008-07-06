@@ -51,4 +51,21 @@ class Form_Dropdown_Core extends Form_Input {
 		$this->data['selected'] = $this->input_value($this->name);
 	}
 
+	public function validate()
+	{
+		// Validation has already run
+		if (is_bool($this->is_valid))
+			return $this->is_valid;
+
+		// No data to validate
+		if ($this->input_value() === NULL)
+			return $this->is_valid = FALSE;
+
+		// Load the submitted value
+		$this->load_value();
+
+		// Use array_key_exists because it properly tests NULL
+		return array_key_exists($this->value, $this->data['options']);
+	}
+
 } // End Form Dropdown
