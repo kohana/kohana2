@@ -116,8 +116,17 @@ class ORM_Core {
 	{
 		if ($this->auto_save == TRUE)
 		{
-			// Automatically save the model
-			$this->save();
+			try
+			{
+				// Automatically save the model
+				$this->save();
+			}
+			catch (Exception $e)
+			{
+				/// Log the error, rather than trying to display it, to avoid
+				// "stack frame" errors. http://bugs.php.net/bug.php?id=33598
+				Log::add('error', $e->getMessage());
+			}
 		}
 	}
 
