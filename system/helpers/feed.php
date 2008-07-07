@@ -26,8 +26,11 @@ class feed_Core {
 		// Disable error reporting while opening the feed
 		$ER = error_reporting(0);
 
-		// Allow loading by filename or raw XML string.
-		$feed = (is_file($feed) OR valid::url($feed)) ? simplexml_load_file($feed) : simplexml_load_string($feed);
+		// Allow loading by filename or raw XML string
+		$load = (is_file($feed) OR valid::url($feed)) ? 'simplexml_load_file' : 'simplexml_load_string';
+
+		// Load the feed
+		$feed = $load($feed, 'SimpleXMLElement', LIBXML_NOCDATA);
 
 		// Restore error reporting
 		error_reporting($ER);
