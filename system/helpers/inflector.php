@@ -48,7 +48,7 @@ class inflector_Core {
 	public static function singular($str, $count = NULL)
 	{
 		// Remove garbage
-		$str = trim($str);
+		$str = strtolower(trim($str));
 
 		if (is_string($count))
 		{
@@ -79,20 +79,18 @@ class inflector_Core {
 		{
 			$str = $irregular;
 		}
-		elseif (preg_match('/[sxz]es$/i', $str) OR preg_match('/[^aeioudgkprt]hes$/i', $str))
+		elseif (preg_match('/[sxz]es$/', $str) OR preg_match('/[^aeioudgkprt]hes$/', $str))
 		{
 			// Remove "es"
 			$str = substr($str, 0, -2);
 		}
-		elseif (preg_match('/[^aeiou]ies$/i', $str))
+		elseif (preg_match('/[^aeiou]ies$/', $str))
 		{
-			// Remove "ies"
 			$str = substr($str, 0, -3).'y';
 		}
 		elseif (substr($str, -1) === 's')
 		{
-			// Remove "s"
-			$str = substr($str, 0, strlen($str) - 1);
+			$str = substr($str, 0, -1);
 		}
 
 		return self::$cache[$key] = $str;
@@ -107,7 +105,7 @@ class inflector_Core {
 	public static function plural($str, $count = NULL)
 	{
 		// Remove garbage
-		$str = trim($str);
+		$str = strtolower(trim($str));
 
 		if (is_string($count))
 		{
@@ -128,34 +126,28 @@ class inflector_Core {
 		if (inflector::uncountable($str))
 			return self::$cache[$key] = $str;
 
-		$end = substr($str, -1);
-		$low = (strcmp($end, strtolower($end)) === 0) ? TRUE : FALSE;
-
 		if (empty(self::$irregular))
 		{
 			// Cache irregular words
 			self::$irregular = Config::item('inflector.irregular');
 		}
 
-		if (isset(self::$irregular[strtolower($str)]))
+		if (isset(self::$irregular[$str]))
 		{
-			$str = self::$irregular[strtolower($str)];
+			$str = self::$irregular[$str];
 		}
-		elseif (preg_match('/[sxz]$/i', $str) OR preg_match('/[^aeioudgkprt]h$/i', $str))
+		elseif (preg_match('/[sxz]$/', $str) OR preg_match('/[^aeioudgkprt]h$/', $str))
 		{
-			$end = 'es';
-			$str .= ($low == FALSE) ? strtoupper($end) : $end;
+			$str .= 'es';
 		}
-		elseif (preg_match('/[^aeiou]y$/i', $str))
+		elseif (preg_match('/[^aeiou]y$/', $str))
 		{
-			$end = 'ies';
-			$end = ($low == FALSE) ? strtoupper($end) : $end;
-			$str = substr_replace($str, $end, -1);
+			// Change "y" to "ies"
+			$str = substr_replace($str, 'ies', -1);
 		}
 		else
 		{
-			$end = 's';
-			$str .= ($low == FALSE) ? strtoupper($end) : $end;
+			$str .= 's';
 		}
 
 		// Set the cache and return
