@@ -364,7 +364,7 @@ class Form_Input_Core {
 	 *
 	 * @return  string|bool
 	 */
-	protected function input_value($name === array())
+	protected function input_value($name = array())
 	{
 		// Get the Input instance
 		$input = Input::instance();
