@@ -44,7 +44,7 @@ class View_Core {
 	 */
 	public function __construct($name = NULL, $data = NULL, $type = NULL)
 	{
-		if ( ! empty($name))
+		if (is_string($name) AND $name !== '')
 		{
 			// Set the filename
 			$this->set_filename($name, $type);

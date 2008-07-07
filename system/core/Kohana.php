@@ -763,7 +763,7 @@ class Kohana {
 	 * @param   string   directory to search in
 	 * @param   string   filename to look for (including extension only if 4th parameter is TRUE)
 	 * @param   boolean  file required
-	 * @param   boolean  file extension
+	 * @param   string   file extension
 	 * @return  array    if the type is config, i18n or l10n
 	 * @return  string   if the file is found
 	 * @return  FALSE    if the file is not found
