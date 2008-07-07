@@ -740,8 +740,8 @@ class Validation_Core extends ArrayObject {
 	}
 
 	/**
-	 * Rule: matches. Generates an error if the field does not depend on one or more
-	 * other fields.
+	 * Rule: depends_one. Generates an error if the field does not depend on one
+	 * or more other fields.
 	 *
 	 * @param   mixed   field name
 	 * @param   array   field names to check dependency
