@@ -97,7 +97,7 @@ class View_Core {
 	 */
 	public function set($name, $value = NULL)
 	{
-		if (func_num_args() === 1 AND is_array($name))
+		if (is_array($name))
 		{
 			foreach ($name as $key => $value)
 			{
@@ -108,6 +108,7 @@ class View_Core {
 		{
 			$this->__set($name, $value);
 		}
+
 		return $this;
 	}
 
@@ -134,14 +135,16 @@ class View_Core {
 	 */
 	public function set_global($name, $value = NULL)
 	{
-		if ( ! is_array($name))
+		if (is_array($name))
 		{
-			$name = array($name => $value);
+			foreach ($name as $key => $value)
+			{
+				self::$global_data[$key] = $value;
+			}
 		}
-
-		foreach ($name as $key => $value)
+		else
 		{
-			self::$global_data[$key] = $value;
+			self::$global_data[$name] = $value;
 		}
 
 		return $this;
@@ -209,7 +212,7 @@ class View_Core {
 			// Load the view in the controller for access to $this
 			$output = Kohana::$instance->_kohana_load_view($this->kohana_filename, $data);
 
-			if ($renderer == TRUE AND is_callable($renderer, TRUE))
+			if ($renderer !== FALSE AND is_callable($renderer, TRUE))
 			{
 				// Pass the output through the user defined renderer
 				$output = call_user_func($renderer, $output);
