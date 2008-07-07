@@ -21,9 +21,7 @@ class download_Core {
 	 */
 	public static function force($filename = '', $data = '')
 	{
-		static $user_agent;
-
-		if ($filename == '')
+		if (empty($filename))
 			return FALSE;
 
 		if (is_file($filename))
@@ -31,56 +29,60 @@ class download_Core {
 			// Get the real path
 			$filepath = str_replace('\\', '/', realpath($filename));
 
-			// Get extension
-			$extension = pathinfo($filepath, PATHINFO_EXTENSION);
-
-			// Remove directory path from the filename
-			$filename = end(explode('/', $filepath));
-
 			// Set filesize
 			$filesize = filesize($filepath);
+
+			// Get filename
+			// Note: Do not use pathinfo for this, it may not be utf8 compatible
+			$filename = end(explode('/', $filepath));
+
+			// Get extension
+			$extension = pathinfo($filepath, PATHINFO_EXTENSION);
 		}
 		else
 		{
-			// Grab the file extension
-			$extension = end(explode('.', $filename));
-
-			// Try to determine if the filename includes a file extension.
-			// We need it in order to set the MIME type
-			if (empty($data) OR $extension === $filename)
-				return FALSE;
-
-			// Set filesize
+			// Get filesize
 			$filesize = strlen($data);
+
+			// Make sure the filename does not have directory info
+			$filename = end(explode('/', $filename));
+
+			// Get extension
+			$extension = end(explode('.', $filename));
 		}
 
-		// Set a default mime if we can't find it
-		if (($mime = Config::item('mimes.'.$extension)) === NULL)
+		// Get the mime type of the file
+		$mime = Config::item('mimes.'.$extension);
+
+		if (empty($mime))
 		{
-			$mime = 'application/octet-stream';
-		}
-		else
-		{
-			$mime = current((array) $mime);
+			// Set a default mime if none was found
+			$mime = array('application/octet-stream');
 		}
 
 		// Generate the server headers
-		header('Content-Type: '.$mime);
+		header('Content-Type: '.$mime[0]);
 		header('Content-Disposition: attachment; filename="'.$filename.'"');
 		header('Content-Transfer-Encoding: binary');
-		header('Expires: 0');
-		header('Content-Length: '.$filesize);
+		header('Content-Length: '.sprintf('%d', $filesize));
 
-		// IE headers
+		// More caching prevention
+		header('Expires: 0');
+
 		if (Kohana::user_agent('browser') === 'Internet Explorer')
 		{
+			// Send IE headers
 			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 			header('Pragma: public');
 		}
 		else
 		{
+			// Send normal headers
 			header('Pragma: no-cache');
 		}
+
+		// Flush the output buffer
+		Kohana::close_buffers(FALSE);
 
 		if (isset($filepath))
 		{
