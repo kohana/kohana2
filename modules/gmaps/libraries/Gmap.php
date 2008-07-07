@@ -175,7 +175,7 @@ class Gmap_Core {
 		list ($lat, $lon, $zoom) = $this->center;
 
 		// Map
-		$map = 'map = new GMap2(document.getElementById("'.$this->id.'"));';
+		$map = 'var map = new GMap2(document.getElementById("'.$this->id.'"));';
 
 		// Map controls
 		$controls = empty($this->controls) ? '' : 'map.addControl(new G'.$this->controls.'MapControl());';

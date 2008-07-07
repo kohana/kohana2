@@ -11,8 +11,8 @@ $(document).ready(function()
 {
 	if (GBrowserIsCompatible())
 	{
-		// Initialize the map.
-		map = new GMap(document.getElementById('map'));
+		// Initialize the map
+		var map = new GMap(document.getElementById('map'));
 		map.addControl(new GLargeMapControl());
 		map.centerAndZoom(new GPoint(0,35), 16);
 		map.enableScrollWheelZoom();
