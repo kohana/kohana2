@@ -333,20 +333,39 @@ class Kohana {
 	}
 
 	/**
+	 * Closes all open output buffers, either by flushing or cleaning all
+	 * open buffers, including the Kohana output buffer.
+	 *
+	 * @param   boolean  disable to clear buffers, rather than flushing
+	 * @return  void
+	 */
+	public static function close_buffers($flush = TRUE)
+	{
+		if (ob_get_level() >= self::$buffer_level)
+		{
+			// Set the close function
+			$close = ($flush === TRUE) ? 'ob_end_flush' : 'ob_end_clean';
+
+			while (ob_get_level() > self::$buffer_level)
+			{
+				// Flush or clean the buffer
+				$close();
+			}
+
+			// This will flush the Kohana buffer, which sets self::$output
+			ob_end_clean();
+		}
+	}
+
+	/**
 	 * Triggers the shutdown of Kohana by closing the output buffer, runs the system.display event.
 	 *
 	 * @return  void
 	 */
 	public static function shutdown()
 	{
-		while (ob_get_level() > self::$buffer_level)
-		{
-			// Flush all open output buffers above the internal buffer
-			ob_end_flush();
-		}
-
-		// This will flush the Kohana buffer, which sets self::$output
-		(ob_get_level() === self::$buffer_level) and ob_end_clean();
+		// Close output buffers
+		self::close_buffers(TRUE);
 
 		// Run the output event
 		Event::run('system.display', self::$output);
