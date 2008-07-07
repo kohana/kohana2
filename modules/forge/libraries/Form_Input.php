@@ -495,7 +495,7 @@ class Form_Input_Core {
 				if ($this->value != $input->value)
 				{
 					// Field does not match
-					$this->errors['matches'] = array($input->name);
+					$this->errors['matches'] = array($input->label ? utf8::strtolower($input->label) : $input->name);
 					break;
 				}
 			}
