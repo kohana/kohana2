@@ -31,6 +31,11 @@ class valid_Core {
 	 */
 	public static function email_domain($email)
 	{
+		// If we can't prove the domain is invalid, consider it valid
+		// Note: checkdnsrr() is not implemented on Windows platforms
+		if ( ! function_exists('checkdnsrr'))
+			return TRUE;
+
 		// Check if the email domain has a valid MX record
 		return (bool) checkdnsrr(preg_replace('/^[^@]+@/', '', $email), 'MX');
 	}
