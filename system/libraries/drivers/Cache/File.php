@@ -173,8 +173,8 @@ class Cache_File_Driver implements Cache_Driver {
 			}
 		}
 
-		// Return NULL if there is no data
-		return isset($data) ? $data : NULL;
+		// Return FALSE if there is no data
+		return isset($data) ? $data : FALSE;
 	}
 
 	/**

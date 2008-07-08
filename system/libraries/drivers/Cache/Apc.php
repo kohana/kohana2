@@ -17,9 +17,9 @@ class Cache_Apc_Driver implements Cache_Driver {
 			throw new Kohana_Exception('cache.extension_not_loaded', 'apc');
 	}
 
-	public function get($key)
+	public function get($id)
 	{
-		return apc_fetch($key);
+		return apc_fetch($id);
 	}
 
 	public function set($id, $data, $tags, $lifetime)

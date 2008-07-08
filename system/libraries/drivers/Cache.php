@@ -23,6 +23,7 @@ interface Cache_Driver {
 
 	/**
 	 * Get a cache item.
+	 * Return FALSE if the cache item is not found.
 	 */
 	public function get($id);
 
