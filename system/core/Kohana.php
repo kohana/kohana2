@@ -1206,7 +1206,7 @@ class Kohana {
 				{
 					if (stripos(Kohana::$user_agent, $agent) !== FALSE)
 					{
-						if ($type === 'browser' AND preg_match('|'.preg_quote($agent).'[^0-9.]*+([0-9.]+)|i', Kohana::$user_agent, $match))
+						if ($type === 'browser' AND preg_match('|'.preg_quote($agent).'[^0-9.]*+([0-9.][0-9.a-z]*)|i', Kohana::$user_agent, $match))
 						{
 							// Set the browser version
 							$info['version'] = $match[1];

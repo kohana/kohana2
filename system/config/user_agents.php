@@ -46,7 +46,7 @@ $config['platform'] = array
 	'osf'            => 'DEC OSF',
 	'hp-ux'          => 'HP-UX',
 	'hurd'           => 'GNU/Hurd',
-	'unix'           => 'Unknown Unix OS'
+	'unix'           => 'Unknown Unix OS',
 );
 
 // The order of this array should NOT be changed. Many browsers return
@@ -66,13 +66,15 @@ $config['browser'] = array
 	'OmniWeb'           => 'OmniWeb',
 	'Safari'            => 'Safari',
 	'Konqueror'         => 'Konqueror',
+	'Epiphany'          => 'Epiphany',
+	'Galeon'            => 'Galeon',
 	'Mozilla'           => 'Mozilla',
 	'icab'              => 'iCab',
 	'lynx'              => 'Lynx',
 	'links'             => 'Links',
 	'hotjava'           => 'HotJava',
 	'amaya'             => 'Amaya',
-	'IBrowse'           => 'IBrowse'
+	'IBrowse'           => 'IBrowse',
 );
 
 $config['mobile'] = array
@@ -90,7 +92,7 @@ $config['mobile'] = array
 	'nokia'          => 'Nokia',
 	'ericsson'       => 'Ericsson',
 	'blackBerry'     => 'BlackBerry',
-	'motorola'       => 'Motorola'
+	'motorola'       => 'Motorola',
 );
 
 // There are hundreds of bots but these are the most common.
@@ -103,5 +105,5 @@ $config['robot'] = array
 	'askjeeves'   => 'AskJeeves',
 	'fastcrawler' => 'FastCrawler',
 	'infoseek'    => 'InfoSeek Robot 1.0',
-	'lycos'       => 'Lycos'
+	'lycos'       => 'Lycos',
 );
