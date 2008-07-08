@@ -40,20 +40,26 @@ class Cache_Xcache_Driver implements Cache_Driver {
 
 	public function delete($id, $tag = FALSE)
 	{
-		if ($id === TRUE)
+		if ($tag !== FALSE)
 		{
 			Log::add('error', 'Cache: tags are unsupported by the Xcache driver');
 			return TRUE;
 		}
-		elseif ($tag == FALSE)
+		elseif($id !== TRUE)
+		{
+			if (xcache_isset($id))
+				return xcache_unset($id);
+
+			return FALSE;
+		}
+		else
 		{
 			// Do the login
 			$this->auth();
-
 			$result = TRUE;
 			for($i = 0, $max = xcache_count(XC_TYPE_VAR); $i < $max; $i++)
 			{
-				if ( ! xcache_clear_cache(XC_TYPE_VAR, $i))
+				if (xcache_clear_cache(XC_TYPE_VAR, $i) !== NULL)
 				{
 					$result = FALSE;
 					break;
@@ -64,10 +70,13 @@ class Cache_Xcache_Driver implements Cache_Driver {
 			$this->auth(TRUE);
 			return $result;
 		}
-		else
-		{
-			return TRUE;
-		}
+		
+		return TRUE;
+	}
+
+	public function delete_all()
+	{
+		return TRUE;
 	}
 
 	public function delete_expired()
@@ -104,7 +113,7 @@ class Cache_Xcache_Driver implements Cache_Driver {
 					$backup[$key] = $value;
 				}
 
-				$_SERVER[$key] = Config::item('cache_xcache.__'.$key);
+				$_SERVER[$key] = Config::item('cache_xcache.'.$key);
 			}
 		}
 	}
