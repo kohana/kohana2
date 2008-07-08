@@ -74,11 +74,6 @@ class Cache_Xcache_Driver implements Cache_Driver {
 		return TRUE;
 	}
 
-	public function delete_all()
-	{
-		return TRUE;
-	}
-
 	public function delete_expired()
 	{
 		return TRUE;
