@@ -77,6 +77,9 @@ class Session_Core {
 			// the session cookie(s) can be written.
 			Event::add('system.send_headers', array($this, 'write_close'));
 
+			// Make sure that sessions are closed before exiting
+			register_shutdown_function(array($this, 'write_close'));
+
 			// Singleton instance
 			self::$instance = $this;
 		}
@@ -102,7 +105,7 @@ class Session_Core {
 	 */
 	public function create($vars = NULL)
 	{
-		// Destroy any currently running session
+		// Destroy any current sessions
 		$this->destroy();
 
 		if (self::$config['driver'] !== 'native')
@@ -245,7 +248,7 @@ class Session_Core {
 
 		if (isset($_COOKIE[$name]))
 		{
-			// Change the cookie value to match the new session id to remove the "lag time"
+			// Change the cookie value to match the new session id to prevent "lag"
 			$_COOKIE[$name] = $_SESSION['session_id'];
 		}
 	}
@@ -257,19 +260,19 @@ class Session_Core {
 	 */
 	public function destroy()
 	{
-		if (isset($_SESSION))
+		if (session_id() !== '')
 		{
+			// Get the session name
+			$name = session_name();
+
 			// Destroy the session
 			session_destroy();
 
-			// Remove all session data
-			session_unset();
-
-			// Delete the session cookie
-			cookie::delete(self::$config['name']);
-
 			// Re-initialize the array
 			$_SESSION = array();
+
+			// Delete the session cookie
+			cookie::delete($name);
 		}
 	}
 
