@@ -83,7 +83,7 @@ class User_Model extends ORM {
 	 */
 	public function username_exists($name)
 	{
-		return (bool) self::$db->where('username', $name)->count_records('users');
+		return (bool) self::$db->where($this->where_key($name), $name)->count_records('users');
 	}
 
 	/**
