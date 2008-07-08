@@ -14,13 +14,13 @@ class file_Core {
 	/**
 	 * Get the extension of a filename.
 	 *
-	 * @param   string   filename
+	 * @param   string  filename
 	 * @return  string
 	 */
 	public static function extension($filename)
 	{
 		// Return the extension of the filename
-		return preg_replace('/^.+\.(.+?)$/', '$1', $filename);
+		return ltrim(substr($filename, strrpos($filename, '.')), '.');
 	}
 
 	/**
