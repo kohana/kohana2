@@ -11,6 +11,9 @@
  */
 class Database_Core {
 
+	// Database instances
+	public static $instances = array();
+
 	// Global benchmark
 	public static $benchmarks = array();
 
@@ -52,14 +55,15 @@ class Database_Core {
 	 * @param   mixed   configuration array or DSN
 	 * @return  Database_Core
 	 */
-	public static function instance($config = array())
+	public static function instance($name = 'default', $config = NULL)
 	{
-		static $instance;
+		if ( ! isset(Database::$instances[$name]))
+		{
+			// Create a new instance
+			Database::$instances[$name] = new Database($config === NULL ? $name : $config);
+		}
 
-		// Create the instance if it does not exist
-		($instance === NULL) and $instance = new Database($config);
-
-		return $instance;
+		return Database::$instances[$name];
 	}
 
 	/**
