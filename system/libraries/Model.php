@@ -14,27 +14,16 @@ class Model_Core {
 	protected $db;
 
 	/**
-	 * Loads or sets the database instance.
+	 * Loads the database instance, if the database is not already loaded.
 	 *
-	 * @param   object   Database instance
 	 * @return  void
 	 */
-	public function __construct($database = NULL)
+	public function __construct()
 	{
-		static $db;
-
-		if (is_object($database) AND ($database instanceof Database))
+		if ( ! is_object($this->db))
 		{
-			// Use the passed database instance
-			$this->db = $db = $database;
-		}
-		else
-		{
-			// Load the default database if necessary
-			($db === NULL) and $db = new Database('default');
-
-			// Use the static database
-			$this->db = $db;
+			// Load the default database
+			$this->db = Database::instance('default');
 		}
 	}
 
