@@ -78,8 +78,14 @@ class cookie_Core {
 	 */
 	public static function delete($name, $path = NULL, $domain = NULL, $prefix = NULL)
 	{
+		if ( ! isset($_COOKIE[$name]))
+			return FALSE;
+
+		// Delete the cookie from globals
+		unset($_COOKIE[$name]);
+
 		// Sets the cookie value to an empty string, and the expiration to 24 hours ago
-		return cookie::set($name, '', -86400, $path, $domain, FALSE, FALSE, $prefix);
+		return cookie::set($name, '', -(60 * 60 * 24), $path, $domain, FALSE, FALSE);
 	}
 
 } // End cookie
