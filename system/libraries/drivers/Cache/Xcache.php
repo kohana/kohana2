@@ -45,7 +45,7 @@ class Cache_Xcache_Driver implements Cache_Driver {
 			Log::add('error', 'Cache: tags are unsupported by the Xcache driver');
 			return TRUE;
 		}
-		elseif($id !== TRUE)
+		elseif ($id !== TRUE)
 		{
 			if (xcache_isset($id))
 				return xcache_unset($id);
@@ -70,7 +70,7 @@ class Cache_Xcache_Driver implements Cache_Driver {
 			$this->auth(TRUE);
 			return $result;
 		}
-		
+
 		return TRUE;
 	}
 
