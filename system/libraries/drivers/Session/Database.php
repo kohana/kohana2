@@ -12,61 +12,61 @@
 class Session_Database_Driver implements Session_Driver {
 
 	/*
-	CREATE TABLE kohana_session
+	CREATE TABLE sessions
 	(
-		session_id VARCHAR(40) NOT NULL,
-		last_activity INT(11) NOT NULL,
+		session_id VARCHAR(127) NOT NULL,
+		last_activity INT(10) UNSIGNED NOT NULL,
 		data TEXT NOT NULL,
 		PRIMARY KEY (session_id)
 	);
 	*/
 
-	protected $db;
+	// Database settings
+	protected $db = 'default';
+	protected $table = 'sessions';
+
+	// Encryption
 	protected $encrypt;
 
-	protected $db_group;
-	protected $db_table;
-	protected $new_session = TRUE;
-	protected $old_id;
-
-	// Session has been written?
+	// Session settings
+	protected $session_id;
 	protected $written = FALSE;
 
 	public function __construct()
 	{
-		$this->db_group = Config::item('session.storage');
-		$this->db_table = Config::item('session.name');
+		// Load configuration
+		$config = Config::item('session');
 
-		// Load Encrypt library
-		if (Config::item('session.encryption'))
+		if ( ! empty($config['encryption']))
 		{
+			// Load encryption
 			$this->encrypt = Encrypt::instance();
 		}
 
-		// Write the session when PHP shuts down, this stops the database
-		// being connected to twice when exit is called manually
-		register_shutdown_function('session_write_close');
+		if (is_array($config['storage']))
+		{
+			if ( ! empty($config['storage']['group']))
+			{
+				// Set the group name
+				$this->db = $config['storage']['group'];
+			}
+
+			if ( ! empty($config['storage']['table']))
+			{
+				// Set the table name
+				$this->table = $config['storage']['table'];
+			}
+		}
+
+		// Load database
+		$this->db = Database::instance($this->db);
 
 		Log::add('debug', 'Session Database Driver Initialized');
 	}
 
 	public function open($path, $name)
 	{
-
-		if (Config::item('database.'.$this->db_group) === NULL)
-		{
-			// There's no defined group, use the default database
-			Log::add('debug', 'Warning: Session Storage database group not found, using default');
-			$this->db = Database::instance();
-		}
-		else
-		{
-			// Connect to the database using a database group, defined
-			// by the 'session.storage' config item.
-			$this->db = Database::instance($this->db_group);
-		}
-
-		return is_object($this->db);
+		return TRUE;
 	}
 
 	public function close()
@@ -76,51 +76,55 @@ class Session_Database_Driver implements Session_Driver {
 
 	public function read($id)
 	{
-		$query = $this->db->from($this->db_table)->where('session_id', $id)->get()->result(TRUE);
+		// Load the session
+		$query = $this->db->from($this->table)->where('session_id', $id)->limit(1)->get()->result(TRUE);
 
-		if ($query->count() > 0)
+		if ($query->count() === 0)
 		{
-			// No new session, this is used when writing the data
-			$this->new_session = FALSE;
-			return empty($this->encrypt) ? base64_decode($query->current()->data) : $this->encrypt->decode($query->current()->data);
+			// No current session
+			$this->session_id = NULL;
+
+			return '';
 		}
 
-		// Return value must be string, NOT a boolean
-		return '';
+		// Set the current session id
+		$this->session_id = $id;
+
+		// Load the data
+		$data = $query->current()->data;
+
+		return ($this->encrypt === NULL) ? base64_decode($data) : $this->encrypt->decode($data);
 	}
 
 	public function write($id, $data)
 	{
-		// Has the session already been written?
-		if ($this->written)
-			return TRUE;
-
-		$session = array
+		$data = array
 		(
 			'session_id' => $id,
 			'last_activity' => time(),
-			'data' => empty($this->encrypt) ? base64_encode($data) : $this->encrypt->encode($data)
+			'data' => ($this->encrypt === NULL) ? base64_encode($data) : $this->encrypt->encode($data)
 		);
 
-		// Existing session, with regenerated session id
-		if ( ! empty($this->old_id))
+		if ($this->session_id === NULL)
 		{
-			$query = $this->db->update($this->db_table, $session, array('session_id' => $this->old_id));
+			// Insert a new session
+			$query = $this->db->insert($this->table, $data);
 		}
-		// New session
-		elseif ($this->new_session)
+		elseif ($id === $this->session_id)
 		{
-			$query = $this->db->insert($this->db_table, $session);
+			// Do not update the session_id
+			unset($data['session_id']);
+
+			// Update the existing session
+			$query = $this->db->update($this->table, $data, array('session_id' => $id));
 		}
-		// Existing session, without regenerated session id
 		else
 		{
-			// No need to update session_id
-			unset($session['session_id']);
+			// Update the session and id
+			$query = $this->db->update($this->table, $data, array('session_id' => $this->session_id));
 
-			$query = $this->db->update($this->db_table, $session, array('session_id' => $id));
-
-			$this->written = TRUE;
+			// Set the new session id
+			$this->session_id = $id;
 		}
 
 		return (bool) $query->count();
@@ -128,19 +132,21 @@ class Session_Database_Driver implements Session_Driver {
 
 	public function destroy($id)
 	{
-		$config = Config::item('session');
+		// Delete the requested session
+		$this->db->delete($this->table, array('session_id' => $id));
 
-    	($config['regenerate'] > 0 AND ($_SESSION['total_hits'] % $config['regenerate']) === 0) AND $id = $this->old_id;
+		// Session id is no longer valid
+		$this->session_id = NULL;
 
-		return (bool) $this->db->delete($this->db_table, array('session_id' => $id))->count();
+		return TRUE;
 	}
 
 	public function regenerate()
 	{
-		// It's wasteful to delete the old session and insert a whole new one so
-		// we cache the old id to simply update the db with the new one
-		$this->old_id = session_id();
+		// Cache the session id
+		$this->session_id = session_id();
 
+		// Generate a new session id
 		session_regenerate_id();
 
 		// Return new session id
@@ -149,7 +155,8 @@ class Session_Database_Driver implements Session_Driver {
 
 	public function gc($maxlifetime)
 	{
-		$query = $this->db->delete($this->db_table, array('last_activity <' => time() - $maxlifetime));
+		// Delete all expired sessions
+		$query = $this->db->delete($this->table, array('last_activity <' => time() - $maxlifetime));
 
 		Log::add('debug', 'Session garbage collected: '.$query->count().' row(s) deleted.');
 
