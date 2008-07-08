@@ -154,7 +154,10 @@ class Form_Upload_Core extends Form_Input {
 
 		foreach ($types as $type)
 		{
-			if (in_array($mime, Config::item('mimes.'.$type)))
+			// Load the mime types
+			$type = Config::item('mimes.'.$type);
+
+			if (is_array($type) AND in_array($mime, $type))
 			{
 				// Type is valid
 				$allow = TRUE;
