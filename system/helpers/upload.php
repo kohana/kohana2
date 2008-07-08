@@ -32,7 +32,7 @@ class upload_Core {
 			$filename = time().$file['name'];
 		}
 
-		if (Config::item('upload.remove_spaces'))
+		if (Config::item('upload.remove_spaces') === TRUE)
 		{
 			// Remove spaces from the filename
 			$filename = preg_replace('/\s+/', '_', $filename);
@@ -46,6 +46,12 @@ class upload_Core {
 
 		// Make sure the directory ends with a slash
 		$directory = rtrim($directory, '/').'/';
+
+		if ( ! file_exists($directory) AND Config::item('upload.create_directories') === TRUE)
+		{
+			// Create the upload directory
+			mkdir($directory, 0777, TRUE);
+		}
 
 		if ( ! is_writable($directory))
 			throw new Kohana_Exception('upload.not_writable', $directory);
