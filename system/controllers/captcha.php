@@ -15,47 +15,38 @@
  * @license    http://kohanaphp.com/license.html
  */
 class Captcha_Controller extends Controller {
-	public $captcha;
+
 	public $session;
+	public $captcha;
 
 	protected $captcha_code;
 
 	public function index()
 	{
 		$this->session = Session::instance();
-
 		$this->captcha = new Captcha;
 
-		// Create a random text string for captcha code.
+		// Create and store a random captcha string
 		$this->captcha_code = $this->create_code();
-		$this->captcha->set_code($this->captcha_code) ;
-
-		// Set the session to store the security code
+		$this->captcha->set_code($this->captcha_code);
 		$this->session->set('captcha_code', $this->captcha_code);
-		// Call the library to output the image
+
+		// Output the image
 		$this->captcha->render();
 	}
 
 	private function create_code()
 	{
-		$num_chars = Config::item('captcha.num_chars');
-
-		if (Config::item('captcha.style') == 'math')
+		if (Config::item('captcha.style') === 'math')
 		{
 			$code = (string) mt_rand(101, 991);
 		}
 		else
 		{
-			// Character set to use, similar characters removed.
-			$charset = '@2345#6BCDF$GH789KMNPQRT%VWXYZ';
-			$code = '';
-			for ($i = 0; $i < $num_chars; $i++)
-			{
-			$code .= substr($charset, mt_rand(0, strlen($charset)-1), 1);
-			}
+			$code = text::random('distinct', Config::item('captcha.num_chars'));
 		}
 
 		return $code;
 	}
 
-}
+} // End Captcha_Controller

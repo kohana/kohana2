@@ -254,8 +254,8 @@ class Captcha_Core {
 		for($loop = 0; $loop < 20; $loop++)
 		{
 			$text_color = imageColorAllocate($this->image, mt_rand($color_limit + 8, 255), mt_rand($color_limit + 8, 255), mt_rand($color_limit + 8, 255));
-			$char = substr($chars, mt_rand(0,15), 1);
-			imageTTFtext($this->image, mt_rand(23, 27), mt_rand(160, 200), mt_rand(-10, $this->width+10), mt_rand(-10, 60), $text_color, $font, $char);
+			$char = substr($chars, mt_rand(0, 15), 1);
+			imageTTFtext($this->image, mt_rand(23, 27), mt_rand(160, 200), mt_rand(-10, $this->width + 10), mt_rand(-10, 60), $text_color, $font, $char);
 		}
 
 		$this->calculate_spacing();
@@ -352,9 +352,9 @@ class Captcha_Core {
 
 		for ($i = 0; $i <= $width; $i++)
 		{
-			$red   = $left_color[0] -floor($i*$color0);
-			$green = $left_color[1] -floor($i*$color1);
-			$blue  = $left_color[2] -floor($i*$color2);
+			$red   = $left_color[0] - floor($i * $color0);
+			$green = $left_color[1] - floor($i * $color1);
+			$blue  = $left_color[2] - floor($i * $color2);
 			$col   = imagecolorallocate($this->image, $red, $green, $blue);
 
 			imageline($this->image, $x1 + $i, $y1, $x1 + $i, $y1 + $height, $col);
