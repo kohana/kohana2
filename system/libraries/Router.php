@@ -23,7 +23,8 @@ class Router_Core {
 
 	public static $controller;
 	public static $controller_path;
-
+	public static $controller_dir;
+	
 	public static $method    = 'index';
 	public static $arguments = array();
 
@@ -107,6 +108,9 @@ class Router_Core {
 
 					if (is_file($dir.$controller_path.EXT))
 					{
+						//Set controller subdirectory if any
+						self::$controller_dir=substr($controller_path,0,strrpos($controller_path,'/'));	
+												
 						// Set controller name
 						self::$controller = $segment;
 
