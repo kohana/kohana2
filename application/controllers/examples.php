@@ -170,6 +170,28 @@ class Examples_Controller extends Controller {
 	}
 
 	/**
+	 * Demontrates how to use the Captcha library.
+	 */
+	public function captcha()
+	{
+		// Form submitted
+		if (isset($_POST['captcha_answer']))
+		{
+			// Note: Captcha::valid() can be used in conjunction with the Validation library too
+			echo (Captcha::valid($_POST['captcha_answer'])) ? 'Good answer!' : 'Wrong answer!';
+		}
+
+		// Show form
+		echo form::open();
+		echo '<p>';
+		echo Captcha::factory()->render(); // <-- shows the Captcha challenge (image/riddle/etc)
+		echo '</p>';
+		echo form::input('captcha_answer');
+		echo form::submit(array('value' => 'Check'));
+		echo form::close();
+	}
+
+	/**
 	 * Demonstrates the features of the Database library.
 	 *
 	 * Table Structure:
