@@ -7,7 +7,7 @@
  * Note: all groups inherit and overwrite the default group.
  *
  * Group Options:
- *  style           - Style driver
+ *  style           - Captcha type, e.g. basic, riddle
  *  width           - Width of the Captcha image
  *  height          - Height of the Captcha image
  *  complexity      - Difficulty of the Captcha, concrete usage depends on chosen style
@@ -18,7 +18,7 @@
  */
 $config['default'] = array
 (
-	'style'           => 'riddle',
+	'style'           => 'basic',
 	'width'           => 150,
 	'height'          => 50,
 	'complexity'      => 4,

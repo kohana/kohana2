@@ -4,7 +4,7 @@
  *
  * $Id$
  *
- * @package    Core
+ * @package    Captcha
  * @author     Kohana Team
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
@@ -29,10 +29,21 @@ class Captcha_Core {
 	public static $answer;
 
 	/**
+	 * Constructs and returns a new Captcha object.
+	 *
+	 * @param   array   configuration settings
+	 * @return  object
+	 */
+	public function factory($config = array())
+	{
+		return new Captcha($config);
+	}
+
+	/**
 	 * Constructs a new Captcha object.
 	 *
 	 * @throws  Kohana_Exception
-	 * @param   string  configuration settings
+	 * @param   array  configuration settings
 	 * @return  void
 	 */
 	public function __construct($config = array())
