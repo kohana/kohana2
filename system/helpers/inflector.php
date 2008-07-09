@@ -88,7 +88,7 @@ class inflector_Core {
 		{
 			$str = substr($str, 0, -3).'y';
 		}
-		elseif (substr($str, -1) === 's')
+		elseif (substr($str, -1) === 's' AND substr($str, -2) !== 'ss')
 		{
 			$str = substr($str, 0, -1);
 		}
