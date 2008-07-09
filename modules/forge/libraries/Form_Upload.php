@@ -66,13 +66,13 @@ class Form_Upload_Core extends Form_Input {
 		empty($dir) and $dir = Config::item('upload.directory');
 
 		// Make the path asbolute and normalize it
-		$dir = str_replace('\\', '/', realpath($dir)).'/';
+		$directory = str_replace('\\', '/', realpath($dir)).'/';
 
 		// Make sure the upload director is valid and writable
-		if ($dir === '/' OR ! is_dir($dir) OR ! is_writable($dir))
+		if ($directory === '/' OR ! is_dir($directory) OR ! is_writable($directory))
 			throw new Kohana_Exception('upload.not_writable', $dir);
 
-		$this->directory = $dir;
+		$this->directory = $directory;
 	}
 
 	public function validate()
