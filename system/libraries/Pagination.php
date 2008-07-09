@@ -46,7 +46,7 @@ class Pagination_Core {
 	}
 
 	/**
-	 * Constructs the Pagination object.
+	 * Constructs a new Pagination object.
 	 *
 	 * @param   array  configuration settings
 	 * @return  void
@@ -68,6 +68,7 @@ class Pagination_Core {
 	/**
 	 * Sets config values.
 	 *
+	 * @throws  Kohana_Exception
 	 * @param   array  configuration settings
 	 * @return  void
 	 */
@@ -197,7 +198,7 @@ class Pagination_Core {
 	}
 
 	/**
-	 * Magically converts pagination object to string.
+	 * Magically converts Pagination object to string.
 	 *
 	 * @return  string  pagination html
 	 */
