@@ -123,7 +123,7 @@ class Captcha_Core {
 		self::$response = (string) $this->driver->generate_challenge();
 
 		// Store the answer in a session
-		Session::instance()->set('captcha_response', self::$response);
+		Session::instance()->set('captcha_response', sha1(strtoupper(self::$response)));
 
 		Log::add('debug', 'Captcha Library initialized');
 	}
@@ -136,7 +136,7 @@ class Captcha_Core {
 	 */
 	public static function valid($response)
 	{
-		return (strtoupper($response) === strtoupper(Session::instance()->get('captcha_response')));
+		return (sha1(strtoupper($response)) === Session::instance()->get('captcha_response'));
 	}
 
 	/**
