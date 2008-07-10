@@ -5,6 +5,7 @@ $lang = array
 	'there_can_be_only_one' => 'Pro Seitenaufruf kann es nur eine Instanz von Kohana geben',
 	'uncaught_exception'    => 'Unerwarteter Fehler vom Typ %s: %s in %s in Zeile %s',
 	'invalid_method'        => 'Ungültige Methode %s aufgerufen in %s',
+	'invalid_property'      => '%s ist keine Eigenschaft der Klasse %s.',
 	'log_dir_unwritable'    => 'Das Log-Verzeichnis ist nicht beschreibbar: %s',
 	'resource_not_found'    => '%s %s konnte nicht gefunden werden',
 	'invalid_filetype'      => 'Die Dateiendung .%s ist in Ihrer View-Konfiguration nicht vorhanden',
