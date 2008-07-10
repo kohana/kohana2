@@ -30,23 +30,15 @@ class Captcha_Basic_Driver extends Captcha_Driver {
 	 */
 	public function render($html)
 	{
-		// Create image resource
-		$this->image = imagecreatetruecolor(Captcha::$config['width'], Captcha::$config['height']);
+		// Creates $this->image
+		$this->image_create(Captcha::$config['background']);
 
 		// TODO: everything, font-size, spacing, colors, background, etc.
 		$color = imagecolorexact($this->image, 255, 255, 255);
 		imagefttext($this->image, 20, 5, 10, 40, $color, Captcha::$config['font'], Captcha::$answer);
 
-		// Output html
-		if ($html)
-			return $this->image_html();
-
-		// Output the image
-		header('Content-Type: image/png');
-		imagepng($this->image);
-
-		// Free up resources
-		imagedestroy($this->image);
+		// Output
+		return ($html) ? $this->image_html() : $this->image_output();
 	}
 
 } // End Captcha Basic Driver Class
