@@ -7,10 +7,10 @@
  * Note: all groups inherit and overwrite the default group.
  *
  * Group Options:
- *  style           - Captcha type, e.g. basic, math, riddle
+ *  style           - Captcha type, e.g. basic, word, math, riddle
  *  width           - Width of the Captcha image
  *  height          - Height of the Captcha image
- *  complexity      - Difficulty of the Captcha, concrete usage depends on chosen style
+ *  complexity      - Difficulty level (0-10), usage depends on chosen style
  *  background_path - Path to folder in which background image reside
  *  background_file - Image file name
  *  font_path       - Path to folder in which fonts reside

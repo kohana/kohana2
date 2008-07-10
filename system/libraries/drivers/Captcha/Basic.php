@@ -46,7 +46,7 @@ class Captcha_Basic_Driver extends Captcha_Driver {
 		}
 
 		// Calculate character font-size and spacing
-		$default_size = min(Captcha::$config['width'], Captcha::$config['height'] * 2) / strlen(Captcha::$answer);
+		$default_size = min(Captcha::$config['width'], Captcha::$config['height'] * 2) / (strlen(Captcha::$answer) + 1);
 		$spacing = (int) (Captcha::$config['width'] * 0.9 / strlen(Captcha::$answer));
 
 		// Draw each Captcha character with varying attributes
