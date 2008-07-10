@@ -67,6 +67,17 @@ class Database_Core {
 	}
 
 	/**
+	 * Returns the name of a given database instance.
+	 *
+	 * @param   Database  instance of Database
+	 * @return  string
+	 */
+	public static function instance_name(Database $db)
+	{
+		return array_search($db, Database::$instances, TRUE);
+	}
+
+	/**
 	 * Sets up the database configuration, loads the Database_Driver.
 	 *
 	 * @throws  Kohana_Database_Exception
@@ -78,7 +89,7 @@ class Database_Core {
 			// Load the default group
 			$config = Config::item('database.default');
 		}
-		elseif (is_array($config) && count($config) > 0)
+		elseif (is_array($config) AND count($config) > 0)
 		{
 			if ( ! array_key_exists('connection', $config))
 			{
