@@ -51,13 +51,24 @@ class Form_Checkbox_Core extends Form_Input {
 		// Import the data
 		$data = $this->data;
 
+		if (empty($data['checked']))
+		{
+			// Not checked
+			unset($data['checked']);
+		}
+		else
+		{
+			// Is checked
+			$data['checked'] = 'checked';
+		}
+
 		if ($label = arr::remove('label', $data))
 		{
 			// There must be one space before the text
 			$label = ' '.ltrim($label);
 		}
 
-		return '<label>'.form::checkbox($data).$label.'</label>';
+		return '<label>'.form::input($data).$label.'</label>';
 	}
 
 	protected function load_value()
