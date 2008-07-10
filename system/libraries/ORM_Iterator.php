@@ -23,7 +23,7 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 		$this->class = $class;
 
 		// Database result
-		$this->result = $result;
+		$this->result = $result->result(TRUE);
 	}
 
 	/**

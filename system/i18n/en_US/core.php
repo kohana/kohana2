@@ -5,6 +5,7 @@ $lang = array
 	'there_can_be_only_one' => 'There can be only one instance of Kohana per page request',
 	'uncaught_exception'    => 'Uncaught %s: %s in file %s on line %s',
 	'invalid_method'        => 'Invalid method %s called in %s',
+	'invalid_property'      => 'The %s property does not exist in the %s class.',
 	'log_dir_unwritable'    => 'The log directory is not writable: %s',
 	'resource_not_found'    => 'The requested %s, %s, could not be found',
 	'invalid_filetype'      => 'The requested filetype, .%s, is not allowed in your view configuration file',
