@@ -459,7 +459,40 @@ abstract class Database_Driver {
  * Database_Result
  *
  */
-interface Database_Result {
+abstract class Database_Result implements ArrayAccess, Iterator, Countable {
+
+	// Result resource, insert id, and SQL
+	protected $result;
+	protected $insert_id;
+	protected $sql;
+
+	// Current and total rows
+	protected $current_row = 0;
+	protected $total_rows  = 0;
+
+	// Fetch function and return type
+	protected $fetch_type;
+	protected $return_type;
+
+	/**
+	 * Returns the SQL used to fetch the result.
+	 *
+	 * @return  string
+	 */
+	public function sql()
+	{
+		return $this->sql;
+	}
+
+	/**
+	 * Returns the insert id from the result.
+	 *
+	 * @return  mixed
+	 */
+	public function insert_id()
+	{
+		return $this->insert_id;
+	}
 
 	/**
 	 * Prepares the query result.
@@ -468,7 +501,7 @@ interface Database_Result {
 	 * @param   mixed     type
 	 * @return  Database_Result
 	 */
-	public function result($object = TRUE, $type = FALSE);
+	abstract function result($object = TRUE, $type = FALSE);
 
 	/**
 	 * Builds an array of query results.
@@ -477,20 +510,124 @@ interface Database_Result {
 	 * @param   mixed     type
 	 * @return  array
 	 */
-	public function result_array($object = NULL, $type = FALSE);
-
-	/**
-	 * Gets the ID of the last insert statement.
-	 *
-	 * @return  integer
-	 */
-	public function insert_id();
+	abstract function result_array($object = NULL, $type = FALSE);
 
 	/**
 	 * Gets the fields of an already run query.
 	 *
 	 * @return  array
 	 */
-	public function list_fields();
+	abstract public function list_fields();
+
+	/**
+	 * Seek to an offset in the results.
+	 *
+	 * @return  boolean
+	 */
+	abstract public function seek($offset);
+
+	/**
+	 * Countable: count
+	 */
+	public function count()
+	{
+		return $this->total_rows;
+	}
+
+	/**
+	 * ArrayAccess: offsetExists
+	 */
+	public function offsetExists($offset)
+	{
+		if ($this->total_rows > 0)
+		{
+			$min = 0;
+			$max = $this->total_rows - 1;
+
+			return ! ($offset < $min OR $offset > $max);
+		}
+
+		return FALSE;
+	}
+
+	/**
+	 * ArrayAccess: offsetGet
+	 */
+	public function offsetGet($offset)
+	{
+		if ( ! $this->seek($offset))
+			return FALSE;
+
+		// Return the row by calling the defined fetching callback
+		return call_user_func($this->fetch_type, $this->result, $this->return_type);
+	}
+
+	/**
+	 * ArrayAccess: offsetSet
+	 *
+	 * @throws  Kohana_Database_Exception
+	 */
+	final public function offsetSet($offset, $value)
+	{
+		throw new Kohana_Database_Exception('database.result_read_only');
+	}
+
+	/**
+	 * ArrayAccess: offsetUnset
+	 *
+	 * @throws  Kohana_Database_Exception
+	 */
+	final public function offsetUnset($offset)
+	{
+		throw new Kohana_Database_Exception('database.result_read_only');
+	}
+
+	/**
+	 * Iterator: current
+	 */
+	public function current()
+	{
+		return $this->offsetGet($this->current_row);
+	}
+
+	/**
+	 * Iterator: key
+	 */
+	public function key()
+	{
+		return $this->current_row;
+	}
+
+	/**
+	 * Iterator: next
+	 */
+	public function next()
+	{
+		return ++$this->current_row;
+	}
+
+	/**
+	 * Iterator: prev
+	 */
+	public function prev()
+	{
+		return --$this->current_row;
+	}
+
+	/**
+	 * Iterator: rewind
+	 */
+	public function rewind()
+	{
+		return $this->current_row = 0;
+	}
+
+	/**
+	 * Iterator: valid
+	 */
+	public function valid()
+	{
+		return $this->offsetExists($this->current_row);
+	}
 
 } // End Database Result Interface

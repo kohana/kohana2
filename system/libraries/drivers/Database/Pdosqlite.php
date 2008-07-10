@@ -275,40 +275,21 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 } // End Database_PdoSqlite_Driver Class
 
 /*
- * Class: PdoSqlite_Result
- *  The result class for Sqlite queries.
- *
- * Version 1.0 alpha
- *  author    - Doutu, updated by gregmac
- *  copyright - (c) BSD
- *  license   - <no>
+ * PDO-sqlite Result
  */
-class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Countable {
-
-	// Result resource
-	protected $result = NULL;
-
-	// Total rows and current row
-	protected $total_rows  = FALSE;
-	protected $current_row = FALSE;
-
-	// Insert id
-	protected $insert_id = FALSE;
+class Pdosqlite_Result extends Database_Result {
 
 	// Data fetching types
 	protected $fetch_type  = PDO::FETCH_OBJ;
 	protected $return_type = PDO::FETCH_ASSOC;
 
-	/*
-	 * Constructor: __construct
-	 *  Sets up the class.
+	/**
+	 * Sets up the result variables.
 	 *
-	 * Parameters:
-	 *  result - result resource
-	 *  link   - database resource link
-	 *  object - return objects or arrays
-	 *  sql    - sql query that was run
-	 *
+	 * @param  resource  query result
+	 * @param  resource  database link
+	 * @param  boolean   return objects or arrays
+	 * @param  string    SQL query that was run
 	 */
 	public function __construct($result, $link, $object = TRUE, $sql)
 	{
@@ -326,7 +307,6 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 
 			if (preg_match('/^SELECT|PRAGMA|EXPLAIN/i', $sql))
 			{
-				//Log::add('debug','it was a SELECT, SHOW, DESCRIBE, EXPLAIN query');
 				$this->result = $result;
 				$this->current_row = 0;
 
@@ -336,7 +316,6 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 			}
 			elseif (preg_match('/^DELETE|INSERT|UPDATE/i', $sql))
 			{
-				//Log::add('debug','Its an DELETE, INSERT, REPLACE, or UPDATE query');
 				$this->insert_id  = $link->lastInsertId();
 			}
 		}
@@ -345,20 +324,23 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 			// SQL error
 			throw new Kohana_Database_Exception('database.error', $link->errorInfo().' - '.$sql);
 		}
+
 		// Set result type
 		$this->result($object);
+
+		// Store the SQL
+		$this->sql = $sql;
 	}
 
 	private function sqlite_row_count()
 	{
-		// workaround for PDO not supporting RowCount with SQLite - we manually count
-		//TODO : can this be fixed?
 		$count = 0;
-		while ($this->result->fetch()) {
+		while ($this->result->fetch())
+		{
 			$count++;
 		}
 
-		// now the really dumb part: need to re-execute the query
+		// The query must be re-fetched now.
 		$this->result->execute();
 
 		return $count;
@@ -379,8 +361,6 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 
 	public function result($object = TRUE, $type = PDO::FETCH_BOTH)
 	{
-		$rows = array();
-
 		$this->fetch_type = (bool) $object ? PDO::FETCH_OBJ : PDO::FETCH_BOTH;
 
 		if ($this->fetch_type == PDO::FETCH_OBJ)
@@ -391,6 +371,7 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 		{
 			$this->return_type = $type;
 		}
+
 		return $this;
 	}
 
@@ -447,219 +428,43 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 		return $rows;
 	}
 
-	public function insert_id()
-	{
-		return $this->insert_id;
-	}
-
 	public function list_fields()
 	{
-		//~ This function only work correctly after you execute a query,
-		//~ AND BEFORE you fetch the query result!!
-		//~ You should really use Database_PdoSqlite::list_fields instead of PdoSqlite_Result::list_fields()
-		Log::add('debug','If Sqlite_Result::list_fields() do NOT work as what you expect,read the method\'s comment plz');
-
 		$field_names = array();
-		for ($i = 0; $i<$this->result->columnCount(); $i++)
+		for ($i = 0, $max = $this->result->columnCount(); $i < $max; $i++)
 		{
-			$colInfo = $this->result->getColumnMeta($i);
-			$field_names[] = $colInfo['name'];
+			$info = $this->result->getColumnMeta($i);
+			$field_names[] = $info['name'];
 		}
 		return $field_names;
 	}
-	// End Interface
 
-	// Interface: Countable
-	/*
-	 * Method: count
-	 *  Counts the number of rows in the result set.
-	 *
-	 * Returns:
-	 *  The number of rows in the result set
-	 *
-	 */
-	public function count()
+	public function seek($offset)
 	{
-		//~ Now only work after calling result() or result_array();
-		Log::add('debug', 'Now only work after calling result() or result_array()');
-		return $this->total_rows;
-	}
-
-	public function num_rows()
-	{
-		Log::add('error', 'You should really be using "count($result)" instead of "$result->num_rows()". Fix your code!');
-
-		return $this->total_rows;
-	}
-	// End Interface
-
-	// Interface: ArrayAccess
-	/*
-	 * Method: offsetExists
-	 *  Determines if the requested offset of the result set exists.
-	 *
-	 * Parameters:
-	 *  offset - offset id
-	 *
-	 * Returns:
-	 *  TRUE if the offset exists, FALSE otherwise
-	 *
-	 */
-	public function offsetExists($offset)
-	{
-		if ($this->total_rows > 0)
-		{
-			$min = 0;
-			$max = $this->total_rows - 1;
-
-			return ($offset < $min OR $offset > $max) ? FALSE : TRUE;
-		}
+		// To request a scrollable cursor for your PDOStatement object, you must
+		// set the PDO::ATTR_CURSOR attribute to PDO::CURSOR_SCROLL when you
+		// prepare the statement.
+		Log::add('error', get_class($this).' does not support scrollable cursors, '.__FUNCTION__.' call ignored');
 
 		return FALSE;
 	}
 
-	/*
-	 * Method: offsetGet
-	 *  Retreives the requested query result offset.
-	 *
-	 * Parameters:
-	 *  offset - offset id
-	 *
-	 * Returns:
-	 *  The query row
-	 *
-	 */
 	public function offsetGet($offset)
 	{
-		$row = array();
 		try
 		{
-			$row = $this->result->fetch($this->fetch_type, PDO::FETCH_ORI_ABS, $offset);
+			return $this->result->fetch($this->fetch_type, PDO::FETCH_ORI_ABS, $offset);
 		}
 		catch(PDOException $e)
 		{
 			throw new Kohana_Database_Exception('database.error', $e->getMessage());
-			return FALSE;
 		}
-		return $row;
 	}
 
-	/*
-	 * Method: offsetSet
-	 *  Sets the offset with the provided value. Since you can't modify query result sets, this function just throws an exception.
-	 *
-	 * Parameters:
-	 *  offset - offset id
-	 *  value  - value to set
-	 *
-	 * Returns:
-	 *  <Kohana_Database_Exception> object
-	 *
-	 */
-	public function offsetSet($offset, $value)
-	{
-		throw new Kohana_Database_Exception('database.result_read_only');
-	}
-
-	/*
-	 * Method: offsetUnset
-	 *  Unsets the offset. Since you can't modify query result sets, this function just throws an exception.
-	 *
-	 * Parameters:
-	 *  offset - offset id
-	 *
-	 * Returns:
-	 *  <Kohana_Database_Exception> object
-	 *
-	 */
-	public function offsetUnset($offset)
-	{
-		throw new Kohana_Database_Exception('database.result_read_only');
-	}
-	// End Interface
-
-	// Interface: Iterator
-	/*
-	 * Method: current
-	 *  Retreives the current result set row.
-	 *
-	 * Returns:
-	 *  The current result row (type based on <PdoSqlite_result.result>)
-	 *
-	 */
-	public function current()
-	{
-		return $this->offsetGet($this->current_row);
-	}
-
-	/*
-	 * Method: key
-	 *  Retreives the current row id.
-	 *
-	 * Returns:
-	 *  The current result row id
-	 *
-	 */
-	public function key()
-	{
-		return $this->current_row;
-	}
-
-	/*
-	 * Method: next
-	 *  Moves the result pointer ahead one.
-	 *
-	 * Returns:
-	 *  The next row id
-	 *
-	 */
-	public function next()
-	{
-		return ++$this->current_row;
-	}
-
-	/*
-	 * Method: next
-	 *  Moves the result pointer back one.
-	 *
-	 * Returns:
-	 *  The previous row id
-	 *
-	 */
-	public function prev()
-	{
-		return --$this->current_row;
-	}
-
-	/*
-	 * Method: rewind
-	 *  Moves the result pointer to the beginning of the result set.
-	 *
-	 * Returns:
-	 *  0
-	 *
-	 */
 	public function rewind()
 	{
-		//~ To request a scrollable cursor for your PDOStatement object,
-		//~ you must set the PDO::ATTR_CURSOR attribute to PDO::CURSOR_SCROLL
-		//~ when you prepare the SQL statement with PDO->prepare().
-		Log::add('error','this method do not work now,please read the comment of that.');
-		//return $this->current_row = 0;
+		// Same problem that seek() has, see above.
+		return $this->seek(0);
 	}
-
-	/*
-	 * Method: valid
-	 *  Determines if the current result pointer is valid.
-	 *
-	 * Returns:
-	 *  TRUE if the pointer is valid, FALSE otherwise
-	 *
-	 */
-	public function valid()
-	{
-		return $this->offsetExists($this->current_row);
-	}
-	// End Interface
 
 } // End PdoSqlite_Result Class

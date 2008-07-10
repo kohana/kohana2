@@ -128,20 +128,12 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 } // End Database_Mysqli_Driver Class
 
 /**
- * MySQLi result.
+ * MySQLi Result
  */
-class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Countable {
+class Kohana_Mysqli_Result extends Database_Result {
 
-	// Result resource
-	protected $result = NULL;
-	protected $link = NULL;
-
-	// Total rows and current row
-	protected $total_rows  = FALSE;
-	protected $current_row = FALSE;
-
-	// Insert id
-	protected $insert_id = FALSE;
+	// Database connection
+	protected $link;
 
 	// Data fetching types
 	protected $fetch_type  = 'mysqli_fetch_object';
@@ -189,6 +181,9 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 
 		// Set result type
 		$this->result($object);
+
+		// Store the SQL
+		$this->sql = $sql;
 	}
 
 	/**
@@ -289,11 +284,6 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 		return isset($rows) ? $rows : array();
 	}
 
-	public function insert_id()
-	{
-		return $this->insert_id;
-	}
-
 	public function list_fields()
 	{
 		$field_names = array();
@@ -304,145 +294,26 @@ class Kohana_Mysqli_Result implements Database_Result, ArrayAccess, Iterator, Co
 
 		return $field_names;
 	}
-	// End Interface
 
-	// Interface: Countable
-	/**
-	 * Counts the number of rows in the result set.
-	 *
-	 * @return  integer
-	 */
-	public function count()
+	public function seek($offset)
 	{
-		return $this->total_rows;
-	}
-	// End Interface
-
-	// Interface: ArrayAccess
-	/**
-	 * Determines if the requested offset of the result set exists.
-	 *
-	 * @param   integer  offset id
-	 * @return  boolean
-	 */
-	public function offsetExists($offset)
-	{
-		if ($this->total_rows > 0)
-		{
-			$min = 0;
-			$max = $this->total_rows - 1;
-
-			return ($offset < $min OR $offset > $max) ? FALSE : TRUE;
-		}
-
-		return FALSE;
-	}
-
-	/**
-	 * Retreives the requested query result offset.
-	 *
-	 * @param   integer  offset id
-	 * @return  mixed
-	 */
-	public function offsetGet($offset)
-	{
-		// Check to see if the requested offset exists.
 		if ( ! $this->offsetExists($offset))
 			return FALSE;
 
-		// Go to the offset
 		$this->result->data_seek($offset);
+
+		return TRUE;
+	}
+
+	public function offsetGet($offset)
+	{
+		if ( ! $this->seek($offset))
+			return FALSE;
 
 		// Return the row
 		$fetch = $this->fetch_type;
 		return $this->result->$fetch($this->return_type);
 	}
-
-	/**
-	 * Sets the offset with the provided value. Since you can't modify query result sets, this function just throws an exception.
-	 *
-	 * @param   integer  offset id
-	 * @param   integer  value to set
-	 * @throws  Kohana_Database_Exception
-	 */
-	public function offsetSet($offset, $value)
-	{
-		throw new Kohana_Database_Exception('database.result_read_only');
-	}
-
-	/**
-	 * Unsets the offset. Since you can't modify query result sets, this function just throws an exception.
-	 *
-	 * @param   integer  offset id
-	 * @throws  Kohana_Database_Exception
-	 */
-	public function offsetUnset($offset)
-	{
-		throw new Kohana_Database_Exception('database.result_read_only');
-	}
-	// End Interface
-
-	// Interface: Iterator
-	/**
-	 * Retrieves the current result set row.
-	 *
-	 * @return  mixed
-	 */
-	public function current()
-	{
-		return $this->offsetGet($this->current_row);
-	}
-
-	/**
-	 * Retreives the current row id.
-	 *
-	 * @return  integer
-	 */
-	public function key()
-	{
-		return $this->current_row;
-	}
-
-	/**
-	 * Moves the result pointer ahead one step.
-	 *
-	 * @return  integer
-	 */
-	public function next()
-	{
-		return ++$this->current_row;
-	}
-
-	/**
-	 * Moves the result pointer back one step.
-	 *
-	 * @return  integer
-	 */
-	public function prev()
-	{
-		return --$this->current_row;
-	}
-
-	/**
-	 * Moves the result pointer to the beginning of the result set.
-	 *
-	 * @return  integer
-	 */
-	public function rewind()
-	{
-		return $this->current_row = 0;
-	}
-
-	/**
-	 * Determines if the current result pointer is valid.
-	 *
-	 * @return  boolean
-	 */
-	public function valid()
-	{
-		return $this->offsetExists($this->current_row);
-	}
-	// End Interface
 
 } // End Mysqli_Result Class
 
