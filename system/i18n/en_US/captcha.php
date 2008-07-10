@@ -18,4 +18,16 @@ $lang = array
 		'aircraft', 'computer', 'laughter', 'alphabet', 'kangaroo', 'spelling',
 		'architect', 'president', 'cockroach', 'encounter', 'terrorism', 'cylinders',
 	),
+
+	// Riddles for the Captcha_Riddle_Driver to pick from
+	// Note: use only alphanumeric characters
+	'riddles' => array
+	(
+		array('Do you hate spam? (yes or no)', 'yes'),
+		array('Are you a robot? (yes or no)', 'no'),
+		array('Fire is... (hot or cold)', 'hot'),
+		array('The season after fall is...', 'winter'),
+		array('Which day of the week is it today?', strftime('%A')),
+		array('Which month of the year are we in?', strftime('%B')),
+	),
 );

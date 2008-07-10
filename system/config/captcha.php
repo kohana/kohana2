@@ -18,7 +18,7 @@
  */
 $config['default'] = array
 (
-	'style'           => 'alpha',
+	'style'           => 'basic',
 	'width'           => 150,
 	'height'          => 50,
 	'complexity'      => 4,

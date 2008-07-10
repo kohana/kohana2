@@ -11,7 +11,7 @@
  */
 class Captcha_Riddle_Driver extends Captcha_Driver {
 
-	private $question;
+	private $riddle;
 
 	/**
 	 * Generates a new Captcha challenge.
@@ -20,32 +20,14 @@ class Captcha_Riddle_Driver extends Captcha_Driver {
 	 */
 	public function generate_challenge()
 	{
-		// TODO: pull random riddle from i18n file
-		//       make a selection based on complexity setting?
-		$riddles = array
-		(
-			array
-			(
-				'Do you hate spam? (yes or no)',
-				'yes'
-			),
-			array
-			(
-				'Fire is... (hot or cold)',
-				'hot'
-			),
-			array
-			(
-				'Which day of the week is it today?',
-				strftime('%A')
-			),
-		);
+		// Load riddles from the current language
+		$riddles = Kohana::lang('captcha.riddles');
 
-		// Pick a riddle
+		// Pick a random riddle
 		$riddle = $riddles[array_rand($riddles)];
 
 		// Store the question for output
-		$this->question = $riddle[0];
+		$this->riddle = $riddle[0];
 
 		// Return the answer
 		return $riddle[1];
@@ -59,7 +41,7 @@ class Captcha_Riddle_Driver extends Captcha_Driver {
 	 */
 	public function render($html)
 	{
-		return $this->question;
+		return $this->riddle;
 	}
 
 } // End Captcha Riddle Driver Class

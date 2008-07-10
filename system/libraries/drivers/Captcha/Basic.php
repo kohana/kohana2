@@ -34,15 +34,15 @@ class Captcha_Basic_Driver extends Captcha_Driver {
 		$this->image_create(Captcha::$config['background']);
 
 		// Add a random gradient
-		$color1 = imagecolorallocate($this->image, mt_rand(0, 100), mt_rand(0, 100), mt_rand(0, 100));
-		$color2 = imagecolorallocate($this->image, mt_rand(0, 100), mt_rand(0, 100), mt_rand(0, 100));
+		$color1 = imagecolorallocate($this->image, mt_rand(200, 255), mt_rand(200, 255), mt_rand(200, 255));
+		$color2 = imagecolorallocate($this->image, mt_rand(200, 255), mt_rand(200, 255), mt_rand(200, 255));
 		$this->image_gradient($color1, $color2);
 
 		// Add a few random lines
 		for ($i = 0, $count = mt_rand(5, Captcha::$config['complexity'] * 3); $i < $count; $i++)
 		{
-			$color = imagecolorallocatealpha($this->image, mt_rand(100, 255), mt_rand(100, 255), mt_rand(100, 255), mt_rand(50, 120));
-			imageline($this->image, mt_rand(0, Captcha::$config['width']), mt_rand(0, Captcha::$config['height']), mt_rand(0, Captcha::$config['width']), mt_rand(0, Captcha::$config['height']), $color);
+			$color = imagecolorallocatealpha($this->image, mt_rand(0, 255), mt_rand(0, 255), mt_rand(100, 255), mt_rand(50, 120));
+			imageline($this->image, mt_rand(0, Captcha::$config['width']), 0, mt_rand(0, Captcha::$config['width']), Captcha::$config['height'], $color);
 		}
 
 		// Calculate character font-size and spacing
@@ -53,7 +53,7 @@ class Captcha_Basic_Driver extends Captcha_Driver {
 		for ($i = 0, $strlen = strlen(Captcha::$response); $i < $strlen; $i++)
 		{
 			// Allocate random color, size and rotation attributes to text
-			$color = imagecolorallocate($this->image, mt_rand(150, 255), mt_rand(200, 255), mt_rand(0, 255));
+			$color = imagecolorallocate($this->image, mt_rand(0, 150), mt_rand(0, 150), mt_rand(0, 150));
 			$angle = mt_rand(-40, 20);
 
 			// Scale the character size on image height
