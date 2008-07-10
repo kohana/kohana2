@@ -14,7 +14,7 @@
 	margin: 0;
 	font: inherit;
 }
-#kohana-profiler .kp-meta
+#kohana-profiler p
 {
 	margin: 0 0 10px;
 	padding: 4px;
@@ -32,5 +32,5 @@ foreach ($profiles as $profile)
 	echo $profile->render();
 }
 ?>
-<p class="kp-meta">Profiler executed in <?php echo number_format($execution_time, 3) ?>s</p>
+<p>Profiler executed in <?php echo number_format($execution_time, 3) ?>s</p>
 </div>

@@ -1,4 +1,4 @@
-<table class="kp-table">
+<table>
 <?php
 foreach ($rows as $row):
 
