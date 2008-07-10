@@ -58,17 +58,18 @@ class Captcha_Alpha_Driver extends Captcha_Driver {
 			$x = $spacing / 4 + $i * $spacing;
 			$y = Captcha::$config['height'] / 2 + ($box[2] - $box[5]) / 4;
 
-			// Draw "ghost" alphabetic character
-			$text_color = imagecolorallocatealpha($this->image, mt_rand($color_limit + 8, 255), mt_rand($color_limit + 8, 255), mt_rand($color_limit + 8, 255), mt_rand(60, 120));
-			$char = substr($chars, mt_rand(0,14), 1);
-			imagettftext($this->image, $size, ($angle + (mt_rand(5,10))), ($x - (mt_rand(5,10))), ($y + (mt_rand(5,10))), $text_color, Captcha::$config['font'], $char);
-
 			// Draw captcha text character
 			// Allocate random color, size and rotation attributes to text
 			$color = imagecolorallocate($this->image, mt_rand(150, 255), mt_rand(200, 255), mt_rand(0, 255));
 
 			// Write text character to image
 			imagefttext($this->image, $size, $angle, $x, $y, $color, Captcha::$config['font'], Captcha::$answer[$i]);
+
+			// Draw "ghost" alphabetic character
+			$text_color = imagecolorallocatealpha($this->image, mt_rand($color_limit + 8, 255), mt_rand($color_limit + 8, 255), mt_rand($color_limit + 8, 255), mt_rand(60, 120));
+			$char = substr($chars, mt_rand(0,14), 1);
+			imagettftext($this->image, $size, ($angle + (mt_rand(5,10))), ($x - (mt_rand(5,10))), ($y + (mt_rand(5,10))), $text_color, Captcha::$config['font'], $char);
+
 		}
 
 		// Output
