@@ -5,6 +5,7 @@ $lang = array
 	'there_can_be_only_one' => 'Solo puede haber una instancia de Kohana por cada página.',
 	'uncaught_exception'    => '%s no capturada: %s en el archivo %s, linea %s',
 	'invalid_method'        => 'Método inválido %s llamado en %s.',
+	'invalid_property'      => 'La propiedad %s no existe en la clase %s.',
 	'log_dir_unwritable'    => 'Tu configuración del &8220;log.directory&8221; no apunta a un directorio con permiso de escritura.',
 	'resource_not_found'    => 'El fichero de %s con nombre %s, no pudo ser encontrado.',
 	'invalid_filetype'      => 'El tipo de fichero solicitado, .%s, no esta permitido en la configuración de tus vistas.',
