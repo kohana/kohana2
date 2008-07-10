@@ -5,6 +5,7 @@ $lang = array
 	'there_can_be_only_one' => 'Er kan maar één instantie van Kohana zijn per pagina oproep.',
 	'uncaught_exception'    => 'Uncaught %s: %s in bestand %s op lijn %s',
 	'invalid_method'        => 'Ongeldige method %s opgeroepen in %s.',
+	'invalid_property'      => 'De %s property bestaat niet in de %s class.',
 	'log_dir_unwritable'    => 'De log directory is niet schrijfbaar: %s',
 	'resource_not_found'    => 'De opgevraagde %s, %s, kon niet gevonden worden.',
 	'invalid_filetype'      => 'Het opgevraagde bestandstype, .%s, wordt niet toegestaan door het view configuratiebestand.',
