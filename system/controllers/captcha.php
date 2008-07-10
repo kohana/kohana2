@@ -16,8 +16,7 @@ class Captcha_Controller extends Controller {
 	public function index()
 	{
 		// Output the Captcha challenge resource (no html)
-		$captcha = new Captcha;
-		$captcha->render(FALSE);
+		Captcha::factory()->render(FALSE);
 	}
 
 } // End Captcha_Controller

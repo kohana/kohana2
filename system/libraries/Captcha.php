@@ -143,7 +143,7 @@ class Captcha_Core {
 	 * Output the Captcha challenge.
 	 *
 	 * @param   boolean  TRUE to output html, e.g. <img src="#" />
-	 * @return  mixed
+	 * @return  mixed    html string or void
 	 */
 	public function render($html = TRUE)
 	{

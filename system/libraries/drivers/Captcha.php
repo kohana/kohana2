@@ -12,7 +12,7 @@
 abstract class Captcha_Driver {
 
 	protected $image;              // Image resource identifier
-	protected $image_type = 'png'; // 'png', 'gif', or 'jpeg'
+	protected $image_type = 'png'; // 'png', 'gif' or 'jpeg'
 
 	/**
 	 * Generate a new Captcha challenge.
@@ -70,9 +70,8 @@ abstract class Captcha_Driver {
 	 * Creates an image resource with the specified dimensions.
 	 * If a background image is supplied, the image dimensions are used.
 	 *
-	 * @chainable
 	 * @param   string  path to the background image file
-	 * @return  object
+	 * @return  void
 	 */
 	public function image_create($background = NULL)
 	{
@@ -90,29 +89,84 @@ abstract class Captcha_Driver {
 		{
 			$this->image = imagecreatetruecolor(Captcha::$config['width'], Captcha::$config['height']);
 		}
-
-		return $this;
 	}
 
 	/**
 	 * Fills the background with a gradient.
 	 *
-	 * @chainable
-	 * @return  object
+	 * @param   resource  gd image color identifier for start color
+	 * @param   resource  gd image color identifier for end color
+	 * @param   string    direction: 'horizontal' or 'vertical', 'random' by default
+	 * @return  void
 	 */
-	public function image_gradient()
+	public function image_gradient($color1, $color2, $direction = NULL)
 	{
-		// TODO: build
-		return $this;
+		$directions = array('horizontal', 'vertical');
+
+		// Pick a random direction if needed
+		if ( ! in_array($direction, $directions))
+		{
+			$direction = $directions[array_rand($directions)];
+
+			// Switch colors
+			if (mt_rand(0, 1) === 1)
+			{
+				$temp = $color1;
+				$color1 = $color2;
+				$color2 = $temp;
+			}
+		}
+
+		// Extract RGB values
+		$color1 = imagecolorsforindex($this->image, $color1);
+		$color2 = imagecolorsforindex($this->image, $color2);
+
+		// Preparations for the gradient loop
+		$steps = ($direction === 'horizontal') ? Captcha::$config['width'] : Captcha::$config['height'];
+
+		$r1 = ($color1['red'] - $color2['red']) / $steps;
+		$g1 = ($color1['green'] - $color2['green']) / $steps;
+		$b1 = ($color1['blue'] - $color2['blue']) / $steps;
+
+		if ($direction === 'horizontal')
+		{
+			$x1 =& $i;
+			$y1 = 0;
+			$x2 =& $i;
+			$y2 = Captcha::$config['height'];
+		}
+		else
+		{
+			$x1 = 0;
+			$y1 =& $i;
+			$x2 = Captcha::$config['width'];
+			$y2 =& $i;
+		}
+
+		// Execute the gradient loop
+		for ($i = 0; $i <= $steps; $i++)
+		{
+			$r2 = $color1['red'] - floor($i * $r1);
+			$g2 = $color1['green'] - floor($i * $g1);
+			$b2 = $color1['blue'] - floor($i * $b1);
+			$color = imagecolorallocate($this->image, $r2, $g2, $b2);
+
+			imageline($this->image, $x1, $y1, $x2, $y2, $color);
+		}
 	}
 
 	/**
 	 * Outputs the image to the browser.
 	 *
-	 * @return  void
+	 * @param   boolean  html output
+	 * @return  mixed    html string or void
 	 */
-	public function image_output()
+	public function image_render($html)
 	{
+		// Output html element
+		if ($html)
+			return '<img alt="Captcha" src="'.url::site('captcha').'" width="'.Captcha::$config['width'].'" height="'.Captcha::$config['height'].'" />';
+
 		// Send the correct HTTP header
 		header('Content-Type: image/'.$this->image_type);
 
@@ -122,16 +176,6 @@ abstract class Captcha_Driver {
 
 		// Free up resources
 		imagedestroy($this->image);
-	}
-
-	/**
-	 * Generates html img element.
-	 *
-	 * @return  string
-	 */
-	public function image_html()
-	{
-		return '<img alt="Captcha" src="'.url::site('captcha').'" width="'.Captcha::$config['width'].'" height="'.Captcha::$config['height'].'" />';
 	}
 
 } // End Captcha Driver
