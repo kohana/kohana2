@@ -129,7 +129,7 @@ class Captcha_Core {
 	}
 
 	/**
-	 * Validates a Captcha response and updates valid response counter.
+	 * Validates a Captcha response and updates response counter.
 	 *
 	 * @param   string   captcha response
 	 * @return  boolean
