@@ -33,14 +33,19 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 	 */
 	public function as_array()
 	{
-		// Import class name
-		$class = $this->class;
-
 		$array = array();
-		foreach ($this->result->result_array(TRUE) as $obj)
+
+		if ($results = $this->result->result_array())
 		{
-			$array[] = new $class($obj);
+			// Import class name
+			$class = $this->class;
+
+			foreach ($results as $obj)
+			{
+				$array[] = new $class($obj);
+			}
 		}
+
 		return $array;
 	}
 
@@ -54,7 +59,7 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 	public function select_list($key, $val)
 	{
 		$array = array();
-		foreach ($this->result->result_array(TRUE) as $row)
+		foreach ($this->result->result_array() as $row)
 		{
 			$array[$row->$key] = $row->$val;
 		}
@@ -104,10 +109,15 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 	 */
 	public function current()
 	{
-		// Import class name
-		$class = $this->class;
+		if ($row = $this->result->current())
+		{
+			// Import class name
+			$class = $this->class;
 
-		return ($row = $this->result->current()) ? new $class($row) : FALSE;
+			$row = new $class($row);
+		}
+
+		return $row;
 	}
 
 	/**
@@ -155,11 +165,11 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 	 */
 	public function offsetGet($offset)
 	{
-		// Import class name
-		$class = $this->class;
-
 		if ($this->result->offsetExists($offset))
 		{
+			// Import class name
+			$class = $this->class;
+
 			return new $class($this->result->offsetGet($offset));
 		}
 	}
