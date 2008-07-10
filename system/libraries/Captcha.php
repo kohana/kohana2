@@ -129,14 +129,84 @@ class Captcha_Core {
 	}
 
 	/**
-	 * Validates a Captcha response.
+	 * Validates a Captcha response and updates valid response counter.
 	 *
 	 * @param   string   captcha response
 	 * @return  boolean
 	 */
-	public static function valid($response)
+	public static function valid_response($response)
 	{
-		return (sha1(strtoupper($response)) === Session::instance()->get('captcha_response'));
+		// Maximum one count per page load
+		static $counted;
+
+		// Challenge result
+		$result = (sha1(strtoupper($response)) === Session::instance()->get('captcha_response'));
+
+		// Increment response counter
+		if ($counted === NULL)
+		{
+			$counted = TRUE;
+
+			// Valid response
+			if ($result === TRUE)
+			{
+				self::valid_response_count(Session::instance()->get('captcha_valid_response_count') + 1);
+			}
+			// Invalid response
+			else
+			{
+				self::invalid_response_count(Session::instance()->get('captcha_invalid_response_count') + 1);
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Gets or sets the number of valid Captcha responses for this session.
+	 *
+	 * @param   integer  new counter value
+	 * @param   boolean  trigger invalid counter (for internal use only)
+	 * @return  integer  counter value
+	 */
+	public static function valid_response_count($new_count = NULL, $invalid = FALSE)
+	{
+		// Pick the right session to use
+		$session = ($invalid === TRUE) ? 'captcha_invalid_response_count' : 'captcha_valid_response_count';
+
+		// Update counter
+		if ($new_count !== NULL)
+		{
+			$new_count = (int) $new_count;
+
+			// Reset counter
+			if ($new_count < 1)
+			{
+				Session::instance()->delete($session);
+			}
+			// Set counter to new value
+			else
+			{
+				Session::instance()->set($session, (int) $new_count);
+			}
+
+			// Return new count
+			return (int) $new_count;
+		}
+
+		// Return current count
+		return (int) Session::instance()->get($session);
+	}
+
+	/**
+	 * Gets or sets the number of invalid Captcha responses for this session.
+	 *
+	 * @param   integer  new counter value
+	 * @return  integer  counter value
+	 */
+	public static function invalid_response_count($new_count = NULL)
+	{
+		return self::valid_response_count($new_count, TRUE);
 	}
 
 	/**
