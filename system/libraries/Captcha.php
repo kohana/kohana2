@@ -26,7 +26,7 @@ class Captcha_Core {
 	);
 
 	// The Captcha challenge answer, the text the user is supposed to enter
-	public static $answer;
+	public static $response;
 
 	/**
 	 * Constructs and returns a new Captcha object.
@@ -120,23 +120,23 @@ class Captcha_Core {
 			throw new Kohana_Exception('core.driver_implements', $type, get_class($this), 'Captcha_Driver');
 
 		// Generate a new Captcha challenge
-		self::$answer = (string) $this->driver->generate_challenge();
+		self::$response = (string) $this->driver->generate_challenge();
 
 		// Store the answer in a session
-		Session::instance()->set('captcha_answer', self::$answer);
+		Session::instance()->set('captcha_response', self::$response);
 
 		Log::add('debug', 'Captcha Library initialized');
 	}
 
 	/**
-	 * Validates a Captcha answer.
+	 * Validates a Captcha response.
 	 *
-	 * @param   string   captcha answer
+	 * @param   string   captcha response
 	 * @return  boolean
 	 */
-	public static function valid($answer)
+	public static function valid($response)
 	{
-		return (strtoupper($answer) === strtoupper(Session::instance()->get('captcha_answer')));
+		return (strtoupper($response) === strtoupper(Session::instance()->get('captcha_response')));
 	}
 
 	/**

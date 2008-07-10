@@ -175,10 +175,10 @@ class Examples_Controller extends Controller {
 	public function captcha()
 	{
 		// Form submitted
-		if (isset($_POST['captcha_answer']))
+		if (isset($_POST['captcha_response']))
 		{
 			// Note: Captcha::valid() can be used in conjunction with the Validation library too
-			echo (Captcha::valid($_POST['captcha_answer'])) ? 'Good answer!' : 'Wrong answer!';
+			echo (Captcha::valid($_POST['captcha_response'])) ? 'Good answer!' : 'Wrong answer!';
 		}
 
 		// Show form
@@ -186,7 +186,7 @@ class Examples_Controller extends Controller {
 		echo '<p>';
 		echo Captcha::factory()->render(); // <-- shows the Captcha challenge (image/riddle/etc)
 		echo '</p>';
-		echo form::input('captcha_answer');
+		echo form::input('captcha_response');
 		echo form::submit(array('value' => 'Check'));
 		echo form::close();
 	}
