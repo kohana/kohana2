@@ -44,7 +44,7 @@ class Captcha_Riddle_Driver extends Captcha_Driver {
 		// Pick a riddle
 		$riddle = $riddles[array_rand($riddles)];
 
-		// Store the question for render output
+		// Store the question for output
 		$this->question = $riddle[0];
 
 		// Return the answer
