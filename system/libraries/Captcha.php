@@ -68,12 +68,6 @@ class Captcha_Core {
 	 */
 	public function __construct($group = NULL)
 	{
-		static $gd2_check;
-
-		// Check once for GD2 support
-		if ($gd2_check === NULL AND ($gd2_check = function_exists('imagegd2')) === FALSE)
-			throw new Kohana_Exception('captcha.requires_GD2');
-
 		// No config group name given
 		if ( ! is_string($group))
 		{

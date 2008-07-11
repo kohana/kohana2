@@ -12,6 +12,17 @@
 class Captcha_Alpha_Driver extends Captcha_Driver {
 
 	/**
+	 * Constructor checks for GD2 support.
+	 *
+	 * @return  void
+	 */
+	public function __construct()
+	{
+		if ( ! function_exists('imagegd2'))
+			throw new Kohana_Exception('captcha.requires_GD2');
+	}
+
+	/**
 	 * Generates a new Captcha challenge.
 	 *
 	 * @return  string  the challenge answer
