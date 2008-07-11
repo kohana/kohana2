@@ -93,18 +93,18 @@ class Captcha_Core {
 		}
 
 		// If using a background image, check if it exists
-		if ( ! empty($config['background_file']))
+		if ( ! empty($config['background']))
 		{
-			self::$config['background'] = str_replace('\\', '/', realpath($config['background_path'])).'/'.$config['background_file'];
+			self::$config['background'] = str_replace('\\', '/', realpath($config['background']));
 
 			if ( ! file_exists(self::$config['background']))
 				throw new Kohana_Exception('captcha.file_not_found', self::$config['background']);
 		}
 
 		// If using a font, check if it exists
-		if ( ! empty($config['font_file']))
+		if ( ! empty($config['font']))
 		{
-			self::$config['font'] = str_replace('\\', '/', realpath($config['font_path'])).'/'.$config['font_file'];
+			self::$config['font'] = str_replace('\\', '/', realpath($config['font']));
 
 			if ( ! file_exists(self::$config['font']))
 				throw new Kohana_Exception('captcha.file_not_found', self::$config['font']);
