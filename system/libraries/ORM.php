@@ -714,7 +714,7 @@ class ORM_Core {
 	 * @param   mixed    primary key
 	 * @return  boolean
 	 */
-	public function remove($object, $id)
+	public function remove($object, $id = NULL)
 	{
 		if ( ! $this->has($object, $id))
 			return FALSE;
@@ -728,10 +728,15 @@ class ORM_Core {
 		// Load JOIN table
 		$join_table = $model->join_table($this->table_name);
 
+		if ($id !== NULL)
+		{
+			// Delete only a specific record
+			$this->db->where($model->foreign_key(NULL, $join_table), $id)
+		}
+
 		// Return the number of rows deleted
 		return $this->db
 			->where($this->foreign_key(NULL, $join_table), $this->object[$this->primary_key])
-			->where($model->foreign_key(NULL, $join_table), $id)
 			->delete($join_table)
 			->count();
 	}
