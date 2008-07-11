@@ -3,25 +3,8 @@
 class User_Model extends ORM {
 
 	// Relationships
-	protected $has_many = array('tokens');
+	protected $has_many = array('user_tokens');
 	protected $has_and_belongs_to_many = array('roles');
-
-	// User roles
-	protected $roles = NULL;
-
-	public function __get($key)
-	{
-		// Allow roles to be fetched as a simple array
-		if ($key === 'roles')
-		{
-			// Force the roles to load if they are empty
-			($this->roles === NULL) and $this->has_role('login');
-
-			return $this->roles;
-		}
-
-		return parent::__get($key);
-	}
 
 	public function __set($key, $value)
 	{
@@ -34,69 +17,52 @@ class User_Model extends ORM {
 		parent::__set($key, $value);
 	}
 
-	/**
-	 * Overloading the has_role method, for optimization.
-	 */
-	public function has_role($role)
+	public function has($object, $id = NULL)
 	{
-		// Don't mess with these calls, they are too complex
-		if (is_object($role))
-			return parent::has_role($role);
-
-		if ($this->roles === NULL)
+		if ($object === 'role')
 		{
-			// Make the roles into an array. This serves a dual purpose
-			// of preventing the roles from being re-queried unnecessarily
-			// as well as optimizing has_role() calls.
-			$this->roles = array();
+			// Load a role model
+			$role = ORM::factory('role');
 
-			if ($this->id > 0)
-			{
-				foreach ($this->find_related_roles() as $r)
-				{
-					// Load all the user roles
-					$this->roles[$r->id] = $r->name;
-				}
-			}
+			// Load JOIN info
+			$join_table = $role->join_table($this->table_name);
+			$join_col1  = $role->foreign_key(NULL, $join_table);
+			$join_col2  = $role->foreign_key(TRUE);
+
+			return (bool) $this->db
+				->join($role->table_name, $join_col1, $join_col2)
+				->where($role->unique_key($id), $id)
+				->where($this->foreign_key(NULL, $join_table), $this->object[$this->primary_key])
+				->count_records($join_table);
 		}
 
-		// Make sure the role name is a string
-		$role = (string) $role;
-
-		if (ctype_digit($role))
-		{
-			// Find by id
-			return isset($this->roles[$role]);
-		}
-		else
-		{
-			// Find by name
-			return in_array($role, $this->roles);
-		}
+		return parent::has($object, $id);
 	}
 
 	/**
 	 * Tests if a username exists in the database.
 	 *
-	 * @param   string   username to check
-	 * @return  bool
+	 * @param   mixed    id to check
+	 * @return  boolean
 	 */
-	public function username_exists($name)
+	public function username_exists($id)
 	{
-		return (bool) self::$db->where($this->where_key($name), $name)->count_records('users');
+		return (bool) $this->db
+			->where($this->unique_key($id), $id)
+			->count_records($this->table_name);
 	}
 
 	/**
 	 * Allows a model to be loaded by username or email address.
 	 */
-	protected function where_key($id = NULL)
+	public function unique_key($id)
 	{
 		if ( ! empty($id) AND is_string($id) AND ! ctype_digit($id))
 		{
 			return valid::email($id) ? 'email' : 'username';
 		}
 
-		return parent::where_key($id);
+		return parent::unique_key($id);
 	}
 
 } // End User_Model

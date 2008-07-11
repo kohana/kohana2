@@ -36,7 +36,7 @@ class Auth_ORM_Driver implements Auth_Driver {
 
 		// Checks if a user is logged in and valid
 		if ( ! empty($_SESSION['auth_user']) AND is_object($_SESSION['auth_user'])
-			AND ($_SESSION['auth_user'] instanceof User_Model) AND $_SESSION['auth_user']->id > 0)
+			AND ($_SESSION['auth_user'] instanceof User_Model) AND $_SESSION['auth_user']->primary_key_value > 0)
 		{
 			// Everything is okay so far
 			$status = TRUE;
@@ -44,7 +44,7 @@ class Auth_ORM_Driver implements Auth_Driver {
 			if ( ! empty($role))
 			{
 				// Check that the user has the given role
-				$status = $_SESSION['auth_user']->has_role($role);
+				$status = $_SESSION['auth_user']->has('role', $role);
 			}
 		}
 
@@ -59,7 +59,7 @@ class Auth_ORM_Driver implements Auth_Driver {
 		}
 
 		// If the passwords match, perform a login
-		if ($user->has_role('login') AND $user->password === $password)
+		if ($user->has('role', 'login') AND $user->password === $password)
 		{
 			if ($remember === TRUE)
 			{
@@ -185,7 +185,7 @@ class Auth_ORM_Driver implements Auth_Driver {
 		$user->save();
 
 		// Regenerate session_id
-		$this->session->regenerate();
+		// $this->session->regenerate();
 
 		// Store session data
 		$_SESSION['auth_user'] = $user;

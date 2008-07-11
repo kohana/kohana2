@@ -11,7 +11,7 @@ class User_Token_Model extends ORM {
 	/**
 	 * Handles garbage collection and deleting of expired objects.
 	 */
-	public function __construct($id = FALSE)
+	public function __construct($id = NULL)
 	{
 		parent::__construct($id);
 
@@ -24,7 +24,7 @@ class User_Token_Model extends ORM {
 			$this->delete_expired();
 		}
 
-		if ($this->object->id != 0 AND $this->object->expires < $this->now)
+		if ($this->expires < $this->now)
 		{
 			// This object has expired
 			$this->delete();
@@ -37,7 +37,7 @@ class User_Token_Model extends ORM {
 	 */
 	public function save()
 	{
-		if ($this->object->id == 0)
+		if ($this->loaded === FALSE)
 		{
 			// Set the created time, token, and hash of the user agent
 			$this->created = $this->now;
@@ -58,20 +58,9 @@ class User_Token_Model extends ORM {
 	public function delete_expired()
 	{
 		// Delete all expired tokens
-		self::$db->where('expires <', $this->now)->delete($this->table);
-	}
+		$this->db->where('expires <', $this->now)->delete($this->table_name);
 
-	/**
-	 * Allows loading by token string.
-	 */
-	protected function where_key($id)
-	{
-		if ( ! empty($id) AND is_string($id) AND ! ctype_digit($id))
-		{
-			return 'token';
-		}
-
-		return parent::where_key($id);
+		return $this;
 	}
 
 	/**
@@ -89,12 +78,25 @@ class User_Token_Model extends ORM {
 			$token = text::random('alnum', 32);
 
 			// Make sure the token does not already exist
-			if (count(self::$db->select('id')->where('token', $token)->get($this->table)) === 0)
+			if ($this->db->select('id')->where('token', $token)->get($this->table)->count() === 0)
 			{
 				// A unique token has been found
 				return $token;
 			}
 		}
+	}
+
+	/**
+	 * Allows loading by token string.
+	 */
+	public function unique_key($id)
+	{
+		if ( ! empty($id) AND is_string($id) AND ! ctype_digit($id))
+		{
+			return 'token';
+		}
+
+		return parent::unique_key($id);
 	}
 
 } // End User Token
