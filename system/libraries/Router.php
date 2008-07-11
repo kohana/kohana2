@@ -66,7 +66,7 @@ class Router_Core {
 		self::$current_uri = html::specialchars(self::$current_uri, FALSE);
 
 		// Remove all dot-paths from the URI, they are not valid
-		self::$current_uri = preg_replace('#\.++\s*/++#', '', self::$current_uri);
+		self::$current_uri = preg_replace('#\.[\s./]+/#', '', self::$current_uri);
 
 		// At this point segments, rsegments, and current URI are all the same
 		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, '/');
