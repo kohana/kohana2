@@ -730,8 +730,8 @@ class ORM_Core {
 
 		if ($id !== NULL)
 		{
-			// Delete only a specific record
-			$this->db->where($model->foreign_key(NULL, $join_table), $id)
+			// Delete only a specific object
+			$this->db->where($model->foreign_key(NULL, $join_table), $id);
 		}
 
 		// Return the number of rows deleted
