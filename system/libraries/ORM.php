@@ -448,6 +448,20 @@ class ORM_Core {
 	}
 
 	/**
+	 * Creates a key/value array from all of the objects available. Uses find_all
+	 * to find the objects.
+	 *
+	 * @param   string  key column
+	 * @param   string  value column
+	 * @return  array
+	 */
+	public function select_list($key, $val)
+	{
+		// Return a select list from the results
+		return $this->select($key, $val)->find_all()->select_list($key, $val);
+	}
+
+	/**
 	 * Validates the current object. This method should generally be called
 	 * via the model, after the $_POST Validation object has been created.
 	 *
