@@ -71,8 +71,6 @@ class Router_Core {
 		// using ../../ URIs.
 		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, './ ');
 
-		echo Kohana::debug(self::$segments);exit;
-
 		// Set the complete URI
 		self::$complete_uri = self::$current_uri.self::$query_string;
 
