@@ -11,6 +11,9 @@
  */
 class Captcha_Core {
 
+	// Captcha singleton
+	protected static $instance;
+
 	// Style-dependent Captcha driver
 	protected $driver;
 
@@ -27,6 +30,22 @@ class Captcha_Core {
 
 	// The Captcha challenge answer, the text the user is supposed to enter
 	public static $response;
+
+	/**
+	 * Singleton instance of Captcha.
+	 *
+	 * @return  object
+	 */
+	public static function instance()
+	{
+		// Create the instance if it does not exist
+		if (empty(self::$instance))
+		{
+			self::$instance = new Captcha;
+		}
+
+		return self::$instance;
+	}
 
 	/**
 	 * Constructs and returns a new Captcha object.
@@ -50,7 +69,7 @@ class Captcha_Core {
 	{
 		static $gd2_check;
 
-		// We need GD2 exclusively
+		// Check once for GD2 support
 		if ($gd2_check === NULL AND ($gd2_check = function_exists('imagegd2')) === FALSE)
 			throw new Kohana_Exception('captcha.requires_GD2');
 
@@ -127,10 +146,22 @@ class Captcha_Core {
 		// Generate a new Captcha challenge
 		self::$response = (string) $this->driver->generate_challenge();
 
-		// Store the answer in a session
-		Session::instance()->set('captcha_response', sha1(strtoupper(self::$response)));
+		// Store the Captcha response in a session
+		Event::add('system.post_controller', array($this, 'update_response_session'));
 
 		Log::add('debug', 'Captcha Library initialized');
+	}
+
+	/**
+	 * Stores the response for the current Captcha challenge in a session so it is available
+	 * on the next page load for Captcha::valid(). This method is called after controller
+	 * execution (system.post_controller event) in order not to overwrite itself too soon.
+	 *
+	 * @return  void
+	 */
+	public function update_response_session()
+	{
+		Session::instance()->set('captcha_response', sha1(strtoupper(self::$response)));
 	}
 
 	/**
@@ -139,7 +170,7 @@ class Captcha_Core {
 	 * @param   string   captcha response
 	 * @return  boolean
 	 */
-	public static function valid_response($response)
+	public static function valid($response)
 	{
 		// Maximum one count per page load
 		static $counted;
@@ -148,19 +179,19 @@ class Captcha_Core {
 		$result = (sha1(strtoupper($response)) === Session::instance()->get('captcha_response'));
 
 		// Increment response counter
-		if ($counted === NULL)
+		if ($counted !== TRUE)
 		{
 			$counted = TRUE;
 
 			// Valid response
 			if ($result === TRUE)
 			{
-				self::valid_response_count(Session::instance()->get('captcha_valid_response_count') + 1);
+				self::instance()->valid_count(Session::instance()->get('captcha_valid_count') + 1);
 			}
 			// Invalid response
 			else
 			{
-				self::invalid_response_count(Session::instance()->get('captcha_invalid_response_count') + 1);
+				self::instance()->invalid_count(Session::instance()->get('captcha_invalid_count') + 1);
 			}
 		}
 
@@ -174,17 +205,17 @@ class Captcha_Core {
 	 * @param   boolean  trigger invalid counter (for internal use only)
 	 * @return  integer  counter value
 	 */
-	public static function valid_response_count($new_count = NULL, $invalid = FALSE)
+	public function valid_count($new_count = NULL, $invalid = FALSE)
 	{
 		// Pick the right session to use
-		$session = ($invalid === TRUE) ? 'captcha_invalid_response_count' : 'captcha_valid_response_count';
+		$session = ($invalid === TRUE) ? 'captcha_invalid_count' : 'captcha_valid_count';
 
 		// Update counter
 		if ($new_count !== NULL)
 		{
 			$new_count = (int) $new_count;
 
-			// Reset counter
+			// Reset counter = delete session
 			if ($new_count < 1)
 			{
 				Session::instance()->delete($session);
@@ -209,9 +240,20 @@ class Captcha_Core {
 	 * @param   integer  new counter value
 	 * @return  integer  counter value
 	 */
-	public static function invalid_response_count($new_count = NULL)
+	public function invalid_count($new_count = NULL)
 	{
-		return self::valid_response_count($new_count, TRUE);
+		return $this->valid_count($new_count, TRUE);
+	}
+
+	/**
+	 * Resets the Captcha response counters and removes the count sessions.
+	 *
+	 * @return  void
+	 */
+	public function reset_count()
+	{
+		$this->valid_count(0);
+		$this->valid_count(0, TRUE);
 	}
 
 	/**

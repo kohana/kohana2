@@ -177,19 +177,22 @@ class Examples_Controller extends Controller {
 		// Look at the counters in the Session Profiler
 		new Profiler;
 
-		// Ban bots after 10 invalid responses
+		// Load Captcha library
+		$captcha = new Captcha;
+
+		// Ban bots (that accept session cookies) after 50 invalid responses
 		// Be careful not to ban real people though! Set the threshold high enough.
-		if (Captcha::invalid_response_count() > 9)
+		if ($captcha->invalid_count() > 49)
 			exit('Bye! Stupid bot.');
 
 		// Form submitted
 		if ($_POST)
 		{
 			// User has not given three valid responses yet
-			if (Captcha::valid_response_count() < 3)
+			if ($captcha->valid_count() < 3)
 			{
-				// Valid response has been submitted
-				if (Captcha::valid_response($this->input->post('captcha_response')))
+				// Captcha::valid() is a static method that can be used as a Validation rule also
+				if (Captcha::valid($this->input->post('captcha_response')))
 				{
 					echo '<p style="color:green">Good answer!</p>';
 				}
@@ -207,10 +210,10 @@ class Examples_Controller extends Controller {
 		echo '<p>Other form fields here...</p>';
 
 		// Don't show Captcha anymore after three or more valid responses
-		if (Captcha::valid_response_count() < 3)
+		if ($captcha->valid_count() < 3)
 		{
 			echo '<p>';
-			echo Captcha::factory()->render(); // Shows the Captcha challenge (image/riddle/etc)
+			echo $captcha->render(); // Shows the Captcha challenge (image/riddle/etc)
 			echo '</p>';
 			echo form::input('captcha_response');
 		}
