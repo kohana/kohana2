@@ -67,7 +67,11 @@ class Router_Core {
 		self::$current_uri = html::specialchars(self::$current_uri, FALSE);
 
 		// At this point segments, rsegments, and current URI are all the same
-		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, '/');
+		// We trim off periods, slashes, and spaces to prevent malicious attacks
+		// using ../../ URIs.
+		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, './ ');
+
+		echo Kohana::debug(self::$segments);exit;
 
 		// Set the complete URI
 		self::$complete_uri = self::$current_uri.self::$query_string;
@@ -88,14 +92,17 @@ class Router_Core {
 		$controller_path = '';
 		$method_segment  = NULL;
 
+		// Paths to search
+		$paths = Config::include_paths();
+
 		foreach (self::$rsegments as $key => $segment)
 		{
 			// Add the segment to the search path
 			$controller_path .= $segment;
 
-			$found = FALSE;
-			$paths = Config::include_paths();
+			echo Kohana::debug($segment);
 
+			$found = FALSE;
 			foreach ($paths as $dir)
 			{
 				// Search within controllers only
@@ -148,6 +155,7 @@ class Router_Core {
 			}
 		}
 
+		exit;
 		// Last chance to set routing before a 404 is triggered
 		Event::run('system.post_routing');
 
