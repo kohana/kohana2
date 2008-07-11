@@ -13,10 +13,11 @@
  */
 class Captcha_Controller extends Controller {
 
-	public function index()
+	public function _default()
 	{
 		// Output the Captcha challenge resource (no html)
-		Captcha::factory()->render(FALSE);
+		// Pull the config group name from the URL
+		Captcha::factory($this->uri->segment(2))->render(FALSE);
 	}
 
 } // End Captcha_Controller

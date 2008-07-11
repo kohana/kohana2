@@ -50,22 +50,22 @@ class Captcha_Core {
 	/**
 	 * Constructs and returns a new Captcha object.
 	 *
-	 * @param   string|array  config group or settings
+	 * @param   string  config group name
 	 * @return  object
 	 */
-	public function factory($config = array())
+	public function factory($group = NULL)
 	{
-		return new Captcha($config);
+		return new Captcha($group);
 	}
 
 	/**
 	 * Constructs a new Captcha object.
 	 *
 	 * @throws  Kohana_Exception
-	 * @param   string|array  config group or settings
+	 * @param   string  config group name
 	 * @return  void
 	 */
-	public function __construct($config = array())
+	public function __construct($group = NULL)
 	{
 		static $gd2_check;
 
@@ -73,34 +73,26 @@ class Captcha_Core {
 		if ($gd2_check === NULL AND ($gd2_check = function_exists('imagegd2')) === FALSE)
 			throw new Kohana_Exception('captcha.requires_GD2');
 
-		// Only config group name given
-		if (is_string($config))
+		// No config group name given
+		if ( ! is_string($group))
 		{
-			$config = array('group' => $config);
-		}
-		// No custom config group name given
-		elseif ( ! isset($config['group']))
-		{
-			$config['group'] = 'default';
+			$group = 'default';
 		}
 
 		// Load and validate config group
-		if ( ! is_array($group_config = Config::item('captcha.'.$config['group'])))
-			throw new Kohana_Exception('captcha.undefined_group', $config['group']);
+		if ( ! is_array($config = Config::item('captcha.'.$group)))
+			throw new Kohana_Exception('captcha.undefined_group', $group);
 
 		// All captcha config groups inherit default config group
-		if ($config['group'] !== 'default')
+		if ($group !== 'default')
 		{
 			// Load and validate default config group
-			if ( ! is_array($default_config = Config::item('captcha.default')))
+			if ( ! is_array($default = Config::item('captcha.default')))
 				throw new Kohana_Exception('captcha.undefined_group', 'default');
 
 			// Merge config group with default config group
-			$group_config += $default_config;
+			$config += $default;
 		}
-
-		// Merge custom config items with config group
-		$config += $group_config;
 
 		// Assign config values to the object
 		foreach ($config as $key => $value)
@@ -110,6 +102,9 @@ class Captcha_Core {
 				self::$config[$key] = $value;
 			}
 		}
+
+		// Store the config group name as well, so the drivers can access it
+		self::$config['group'] = $group;
 
 		// If using a background image, check if it exists
 		if ( ! empty($config['background']))
@@ -144,7 +139,7 @@ class Captcha_Core {
 			throw new Kohana_Exception('core.driver_implements', $type, get_class($this), 'Captcha_Driver');
 
 		// Generate a new Captcha challenge
-		self::$response = (string) $this->driver->generate_challenge();
+		self::$response = (string) $this->driver->generate_challenge($group);
 
 		// Store the Captcha response in a session
 		Event::add('system.post_controller', array($this, 'update_response_session'));

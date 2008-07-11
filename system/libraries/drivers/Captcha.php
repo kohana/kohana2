@@ -165,7 +165,7 @@ abstract class Captcha_Driver {
 	{
 		// Output html element
 		if ($html)
-			return '<img alt="Captcha" src="'.url::site('captcha').'" width="'.Captcha::$config['width'].'" height="'.Captcha::$config['height'].'" />';
+			return '<img alt="Captcha" src="'.url::site('captcha/'.Captcha::$config['group']).'" width="'.Captcha::$config['width'].'" height="'.Captcha::$config['height'].'" />';
 
 		// Send the correct HTTP header
 		header('Content-Type: image/'.$this->image_type);
