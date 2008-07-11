@@ -447,9 +447,52 @@ class ORM_Core {
 		return $this->load_result(TRUE);
 	}
 
-	public function validate(Validation $array)
+	/**
+	 * Validates the current object. This method should generally be called
+	 * via the model, after the $_POST Validation object has been created.
+	 *
+	 * @param   object   Validation array
+	 * @return  boolean
+	 */
+	public function validate(Validation $array, $save = FALSE)
 	{
-		# code...
+		if ( ! $array->submitted())
+		{
+			$safe_array = $array->safe_array();
+
+			foreach ($safe_array as $key => $val)
+			{
+				// Pre-fill data
+				$array[$key] = $this->$key;
+			}
+		}
+
+		// Validate the array
+		if ($status = $array->validate())
+		{
+			$safe_array = $array->safe_array();
+
+			foreach ($safe_array as $key => $val)
+			{
+				// Set new data
+				$this->$key = $val;
+			}
+
+			if ($save === TRUE OR is_string($save))
+			{
+				// Save this object
+				$this->save();
+
+				if (is_string($save))
+				{
+					// Redirect to the saved page
+					url::redirect($save);
+				}
+			}
+		}
+
+		// Return validation status
+		return $status;
 	}
 
 	/**
