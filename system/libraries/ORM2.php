@@ -101,14 +101,8 @@ class ORM2_Core {
 			}
 		}
 
-		if ( ! is_array($this->table_columns))
-		{
-			// Load table columns
-			$this->table_columns = $this->db->list_fields($this->table_name);
-
-			if (empty($this->table_columns))
-				throw new Kohana_Exception('database.table_not_found', $this->table);
-		}
+		// Load column information
+		$this->reload_columns();
 	}
 
 	/**
@@ -481,8 +475,11 @@ class ORM2_Core {
 	 */
 	public function delete()
 	{
-		// Delete this object
-		$this->db->where($this->primary_key, $this->object[$this->primary_key])->delete($this->table_name);
+		if ($this->loaded === TRUE)
+		{
+			// Delete this object
+			$this->db->where($this->primary_key, $this->object[$this->primary_key])->delete($this->table_name);
+		}
 
 		return $this->clear();
 	}
@@ -531,6 +528,27 @@ class ORM2_Core {
 	public function reload()
 	{
 		return $this->find($this->object[$this->primary_key]);
+	}
+
+	/**
+	 * Reload column definitions.
+	 *
+	 * @chainable
+	 * @param   boolean  force reloading
+	 * @return  ORM
+	 */
+	public function reload_columns($force = FALSE)
+	{
+		if ($force === TRUE OR empty($this->table_columns))
+		{
+			// Load table columns
+			$this->table_columns = $this->db->list_fields($this->table_name);
+
+			if (empty($this->table_columns))
+				throw new Kohana_Exception('database.table_not_found', $this->table);
+		}
+
+		return $this;
 	}
 
 	/**
