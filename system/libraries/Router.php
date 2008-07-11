@@ -98,7 +98,6 @@ class Router_Core {
 			// Add the segment to the search path
 			$controller_path .= $segment;
 
-
 			$found = FALSE;
 			foreach ($paths as $dir)
 			{
@@ -110,13 +109,15 @@ class Router_Core {
 					// Valid path
 					$found = TRUE;
 
-					if (is_file($dir.$controller_path.EXT))
+					// The controller must be a file that exists with the search path
+					if ($c = str_replace('\\', '/', realpath($dir.$controller_path.EXT)) 
+					    AND is_file($c) AND strpos($c, $dir) === 0)
 					{
 						// Set controller name
 						self::$controller = $segment;
 
 						// Change controller path
-						self::$controller_path = $dir.$controller_path.EXT;
+						self::$controller_path = $c;
 
 						// Set the method segment
 						$method_segment = $key + 1;
