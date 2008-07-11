@@ -66,10 +66,11 @@ class Router_Core {
 		// Make sure the URL is not tainted with HTML characters
 		self::$current_uri = html::specialchars(self::$current_uri, FALSE);
 
+		// Remove all dot-paths from the URI, they are not valid
+		self::$current_uri = str_replace(array('../', './'), '', self::$current_uri);
+
 		// At this point segments, rsegments, and current URI are all the same
-		// We trim off periods, slashes, and spaces to prevent malicious attacks
-		// using ../../ URIs.
-		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, './ ');
+		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, '/');
 
 		// Set the complete URI
 		self::$complete_uri = self::$current_uri.self::$query_string;
@@ -111,9 +112,6 @@ class Router_Core {
 
 					if (is_file($dir.$controller_path.EXT))
 					{
-						// Set controller subdirectory if any
-						self::$controller_dir = substr($controller_path, 0, strrpos($controller_path, '/'));
-
 						// Set controller name
 						self::$controller = $segment;
 
