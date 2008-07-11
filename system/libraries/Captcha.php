@@ -139,7 +139,7 @@ class Captcha_Core {
 			throw new Kohana_Exception('core.driver_implements', $type, get_class($this), 'Captcha_Driver');
 
 		// Generate a new Captcha challenge
-		self::$response = (string) $this->driver->generate_challenge($group);
+		self::$response = (string) $this->driver->generate_challenge();
 
 		// Store the Captcha response in a session
 		Event::add('system.post_controller', array($this, 'update_response_session'));
