@@ -78,7 +78,7 @@ class User_Token_Model extends ORM {
 			$token = text::random('alnum', 32);
 
 			// Make sure the token does not already exist
-			if ($this->db->select('id')->where('token', $token)->get($this->table)->count() === 0)
+			if ($this->db->select('id')->where('token', $token)->get($this->table_name)->count() === 0)
 			{
 				// A unique token has been found
 				return $token;
