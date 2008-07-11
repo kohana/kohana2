@@ -34,9 +34,12 @@ class Captcha_Alpha_Driver extends Captcha_Driver {
 		$this->image_create(Captcha::$config['background']);
 
 		// Add a random gradient
-		$color1 = imagecolorallocate($this->image, mt_rand(0, 100), mt_rand(0, 100), mt_rand(0, 100));
-		$color2 = imagecolorallocate($this->image, mt_rand(0, 100), mt_rand(0, 100), mt_rand(0, 100));
-		$this->image_gradient($color1, $color2);
+		if (empty(Captcha::$config['background']))
+		{
+			$color1 = imagecolorallocate($this->image, mt_rand(0, 100), mt_rand(0, 100), mt_rand(0, 100));
+			$color2 = imagecolorallocate($this->image, mt_rand(0, 100), mt_rand(0, 100), mt_rand(0, 100));
+			$this->image_gradient($color1, $color2);
+		}
 
 		// Add a few random circles
 		for ($i = 0, $count = mt_rand(10, Captcha::$config['complexity'] * 3); $i < $count; $i++)

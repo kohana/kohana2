@@ -34,9 +34,12 @@ class Captcha_Basic_Driver extends Captcha_Driver {
 		$this->image_create(Captcha::$config['background']);
 
 		// Add a random gradient
-		$color1 = imagecolorallocate($this->image, mt_rand(200, 255), mt_rand(200, 255), mt_rand(200, 255));
-		$color2 = imagecolorallocate($this->image, mt_rand(200, 255), mt_rand(200, 255), mt_rand(200, 255));
-		$this->image_gradient($color1, $color2);
+		if (empty(Captcha::$config['background']))
+		{
+			$color1 = imagecolorallocate($this->image, mt_rand(200, 255), mt_rand(200, 255), mt_rand(150, 255));
+			$color2 = imagecolorallocate($this->image, mt_rand(200, 255), mt_rand(200, 255), mt_rand(150, 255));
+			$this->image_gradient($color1, $color2);
+		}
 
 		// Add a few random lines
 		for ($i = 0, $count = mt_rand(5, Captcha::$config['complexity'] * 3); $i < $count; $i++)

@@ -75,19 +75,28 @@ abstract class Captcha_Driver {
 	 */
 	public function image_create($background = NULL)
 	{
-		// Use background image
+		// Create a new image (black)
+		$this->image = imagecreatetruecolor(Captcha::$config['width'], Captcha::$config['height']);
+
+		// Use a background image
 		if ( ! empty($background))
 		{
-			$this->image = $this->image_create_from($background);
+			$this->background_image = $this->image_create_from($background);
 
-			// Overwrite the dimensions
-			Captcha::$config['width']  = imagesx($this->image);
-			Captcha::$config['height'] = imagesy($this->image);
-		}
-		// Default background (black)
-		else
-		{
-			$this->image = imagecreatetruecolor(Captcha::$config['width'], Captcha::$config['height']);
+			// Resize the image if needed
+			if (imagesx($this->background_image) !== Captcha::$config['width']
+			    OR imagesy($this->background_image) !== Captcha::$config['height'])
+			{
+				imagecopyresampled
+				(
+					$this->image, $this->background_image, 0, 0, 0, 0,
+					Captcha::$config['width'], Captcha::$config['height'],
+					imagesx($this->background_image), imagesy($this->background_image)
+				);
+			}
+
+			// Free up resources
+			imagedestroy($this->background_image);
 		}
 	}
 
