@@ -61,8 +61,6 @@ class Session_Cookie_Driver implements Session_Driver {
 
 	public function destroy($id)
 	{
-		unset($_COOKIE[$this->cookie_name]);
-
 		return cookie::delete($this->cookie_name);
 	}
 
