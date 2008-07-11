@@ -185,7 +185,7 @@ class Auth_ORM_Driver implements Auth_Driver {
 		$user->save();
 
 		// Regenerate session_id
-		// $this->session->regenerate();
+		$this->session->regenerate();
 
 		// Store session data
 		$_SESSION['auth_user'] = $user;
