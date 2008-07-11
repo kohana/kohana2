@@ -174,13 +174,15 @@ class Examples_Controller extends Controller {
 	 */
 	public function captcha()
 	{
-		// Look at the counters in the Session Profiler
+		// Look at the counters for valid and invalid
+		// responses in the Session Profiler.
 		new Profiler;
 
-		// Load Captcha library
+		// Load Captcha library, you can supply the name
+		// of the config group you would like to use.
 		$captcha = new Captcha;
 
-		// Ban bots (that accept session cookies) after 50 invalid responses
+		// Ban bots (that accept session cookies) after 50 invalid responses.
 		// Be careful not to ban real people though! Set the threshold high enough.
 		if ($captcha->invalid_count() > 49)
 			exit('Bye! Stupid bot.');
@@ -188,34 +190,35 @@ class Examples_Controller extends Controller {
 		// Form submitted
 		if ($_POST)
 		{
-			// User has not given three valid responses yet
-			if ($captcha->valid_count() < 3)
+			// Captcha::valid() is a static method that can be used as a Validation rule also.
+			if (Captcha::valid($this->input->post('captcha_response')))
 			{
-				// Captcha::valid() is a static method that can be used as a Validation rule also
-				if (Captcha::valid($this->input->post('captcha_response')))
-				{
-					echo '<p style="color:green">Good answer!</p>';
-				}
-				else
-				{
-					echo '<p style="color:red">Wrong answer!</p>';
-				}
+				echo '<p style="color:green">Good answer!</p>';
+			}
+			else
+			{
+				echo '<p style="color:red">Wrong answer!</p>';
 			}
 
 			// Validate other fields here
 		}
 
-		// Open form
+		// Show form
 		echo form::open();
 		echo '<p>Other form fields here...</p>';
 
-		// Don't show Captcha anymore after three or more valid responses
-		if ($captcha->valid_count() < 3)
+		// Don't show Captcha anymore after the user has given enough valid
+		// responses. The "enough" count is set in the captcha config.
+		if ( ! $captcha->promoted())
 		{
 			echo '<p>';
 			echo $captcha->render(); // Shows the Captcha challenge (image/riddle/etc)
 			echo '</p>';
 			echo form::input('captcha_response');
+		}
+		else
+		{
+			echo '<p>You have been promoted to human.</p>';
 		}
 
 		// Close form

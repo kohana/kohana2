@@ -13,6 +13,7 @@
  *  complexity - Difficulty level (0-10), usage depends on chosen style
  *  background - Path to background image file
  *  font       - Path to font file
+ *  promote    - Valid response count threshold to promote user (FALSE to disable)
  */
 $config['default'] = array
 (
@@ -22,4 +23,5 @@ $config['default'] = array
 	'complexity' => 4,
 	'background' => '',
 	'font'       => SYSPATH.'fonts/DejaVuSerif.ttf',
+	'promote'    => FALSE,
 );

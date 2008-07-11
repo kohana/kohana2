@@ -26,6 +26,7 @@ class Captcha_Core {
 		'complexity' => 4,
 		'background' => '',
 		'font'       => '',
+		'promote'    => FALSE,
 	);
 
 	// The Captcha challenge answer, the text the user is supposed to enter
@@ -170,6 +171,10 @@ class Captcha_Core {
 		// Maximum one count per page load
 		static $counted;
 
+		// User has been promoted, always TRUE and don't count anymore
+		if (self::instance()->promoted())
+			return TRUE;
+
 		// Challenge result
 		$result = (sha1(strtoupper($response)) === Session::instance()->get('captcha_response'));
 
@@ -249,6 +254,21 @@ class Captcha_Core {
 	{
 		$this->valid_count(0);
 		$this->valid_count(0, TRUE);
+	}
+
+	/**
+	 * Checks whether user has been promoted after having given enough valid responses.
+	 *
+	 * @return  boolean
+	 */
+	public function promoted()
+	{
+		// Promotion has been disabled
+		if (self::$config['promote'] === FALSE)
+			return FALSE;
+
+		// Compare the valid response count to the threshold
+		return ($this->valid_count() >= self::$config['promote']);
 	}
 
 	/**
