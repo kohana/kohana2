@@ -27,6 +27,9 @@ class ORM_Core {
 	protected $loaded  = FALSE;
 	protected $saved   = FALSE;
 
+	// Related objects
+	protected $related = array();
+
 	// Model table name
 	protected $table_name;
 	protected $table_columns;
@@ -223,6 +226,10 @@ class ORM_Core {
 		{
 			return $this->object[$column];
 		}
+		elseif (isset($this->related[$column]))
+		{
+			return $this->related[$column];
+		}
 		elseif ($column === 'primary_key_value')
 		{
 			return $this->object[$this->primary_key];
@@ -247,7 +254,7 @@ class ORM_Core {
 			}
 
 			// one<>alias:one relationship
-			return $this->object[$column] = $model->find($where);
+			return $this->related[$column] = $model->find($where);
 		}
 		elseif (in_array($column, $this->has_one) OR in_array($column, $this->belongs_to))
 		{
@@ -265,7 +272,7 @@ class ORM_Core {
 			}
 
 			// one<>one relationship
-			return $this->object[$column] = ORM::factory($column, $where);
+			return $this->related[$column] = ORM::factory($column, $where);
 		}
 		elseif (isset($this->has_many[$column]))
 		{
@@ -281,7 +288,7 @@ class ORM_Core {
 			$join_col2  = $model->foreign_key(TRUE);
 
 			// one<>alias:many relationship
-			return $this->object[$column] = $model
+			return $this->related[$column] = $model
 				->join($join_table, $join_col1, $join_col2)
 				->where($this->foreign_key(NULL, $join_table), $this->object[$this->primary_key])
 				->find_all();
@@ -289,7 +296,7 @@ class ORM_Core {
 		elseif (in_array($column, $this->has_many))
 		{
 			// one<>many relationship
-			return $this->object[$column] = ORM::factory(inflector::singular($column))
+			return $this->related[$column] = ORM::factory(inflector::singular($column))
 				->where($this->foreign_key($column), $this->object[$this->primary_key])
 				->find_all();
 		}
@@ -304,14 +311,14 @@ class ORM_Core {
 			$join_col2  = $model->foreign_key(TRUE);
 
 			// many<>many relationship
-			return $this->object[$column] = $model
+			return $this->related[$column] = $model
 				->join($join_table, $join_col1, $join_col2)
 				->where($this->foreign_key(NULL, $join_table), $this->object[$this->primary_key])
 				->find_all();
 		}
 		elseif (in_array($column, array
 			(
-				'primary_key', 'table_name', // Table
+				'primary_key', 'table_name', 'table_columns', // Table
 				'loaded', 'saved', // Status
 				'has_one', 'belongs_to', 'has_many', 'has_many_and_belongs_to', // Relationships
 			)))
@@ -383,6 +390,16 @@ class ORM_Core {
 	public function __toString()
 	{
 		return (string) $this->object[$this->primary_key];
+	}
+
+	/**
+	 * Returns the values of this object as an array.
+	 *
+	 * @return  array
+	 */
+	public function as_array()
+	{
+		return $this->object;
 	}
 
 	/**
