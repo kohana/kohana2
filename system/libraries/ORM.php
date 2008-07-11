@@ -430,6 +430,11 @@ class ORM_Core {
 		return $this->load_result(TRUE);
 	}
 
+	public function validate(Validation $array)
+	{
+		# code...
+	}
+
 	/**
 	 * Saves the current object. If the object is new, it will be reloaded
 	 * after being saved.
