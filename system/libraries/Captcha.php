@@ -31,7 +31,7 @@ class Captcha_Core {
 	/**
 	 * Constructs and returns a new Captcha object.
 	 *
-	 * @param   array   configuration settings
+	 * @param   string|array  config group or settings
 	 * @return  object
 	 */
 	public function factory($config = array())
@@ -43,7 +43,7 @@ class Captcha_Core {
 	 * Constructs a new Captcha object.
 	 *
 	 * @throws  Kohana_Exception
-	 * @param   array  configuration settings
+	 * @param   string|array  config group or settings
 	 * @return  void
 	 */
 	public function __construct($config = array())
@@ -54,8 +54,13 @@ class Captcha_Core {
 		if ($gd2_check === NULL AND ($gd2_check = function_exists('imagegd2')) === FALSE)
 			throw new Kohana_Exception('captcha.requires_GD2');
 
+		// Only config group name given
+		if (is_string($config))
+		{
+			$config = array('group' => $config);
+		}
 		// No custom config group name given
-		if ( ! isset($config['group']))
+		elseif ( ! isset($config['group']))
 		{
 			$config['group'] = 'default';
 		}
