@@ -100,8 +100,6 @@ class Router_Core {
 			// Add the segment to the search path
 			$controller_path .= $segment;
 
-			echo Kohana::debug($segment);
-
 			$found = FALSE;
 			foreach ($paths as $dir)
 			{
@@ -155,7 +153,6 @@ class Router_Core {
 			}
 		}
 
-		exit;
 		// Last chance to set routing before a 404 is triggered
 		Event::run('system.post_routing');
 
