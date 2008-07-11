@@ -6,7 +6,7 @@
  * @see http://en.wikipedia.org/wiki/Active_record
  * @see http://en.wikipedia.org/wiki/Object-relational_mapping
  *
- * $Id: ORM.php 2975 2008-07-07 00:20:45Z Shadowhand $
+ * $Id$
  *
  * @package    Core
  * @author     Kohana Team
