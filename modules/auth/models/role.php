@@ -14,7 +14,7 @@ class Role_Model extends ORM {
 			return 'name';
 		}
 
-		return parent::where_key($id);
+		return parent::unique_key($id);
 	}
 
 } // End Role_Model
