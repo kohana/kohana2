@@ -143,9 +143,6 @@ class Session_Database_Driver implements Session_Driver {
 
 	public function regenerate()
 	{
-		// Cache the session id
-		$this->session_id = session_id();
-
 		// Generate a new session id
 		session_regenerate_id();
 
