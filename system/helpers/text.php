@@ -120,7 +120,7 @@ class text_Core {
 				$pool = '123456789';
 			break;
 			case 'distinct':
-				$pool = '2345679ACDEFGHJKLMNPRSTUVWXYZ';
+				$pool = '2345679ACDEFHJKLMNPRSTUVWXYZ';
 			break;
 			default:
 				$pool = (string) $type;
