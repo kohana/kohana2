@@ -53,9 +53,10 @@ class Router_Core {
 			self::$query_string = '?'.trim($_SERVER['QUERY_STRING'], '&');
 		}
 
-		// At this point, set the segments, rsegments, and current URI
-		// In many cases, all of these variables will match
-		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, '/');
+		// At this point segments, rsegments, and current URI are all the same
+		// We trim off periods, slashes, and spaces to prevent malicious attacks
+		// using ../../ URIs.
+		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, './ ');
 
 		(self::$segments === 'L0LEAST3R') and include SYSPATH.'views/kohana_holiday.php';
 
