@@ -23,7 +23,6 @@ class Router_Core {
 
 	public static $controller;
 	public static $controller_path;
-	public static $controller_dir;
 
 	public static $method    = 'index';
 	public static $arguments = array();
