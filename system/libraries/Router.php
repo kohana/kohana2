@@ -53,10 +53,14 @@ class Router_Core {
 			self::$query_string = '?'.trim($_SERVER['QUERY_STRING'], '&');
 		}
 
+		// Make sure the URL is not tainted with HTML characters
+		self::$current_uri = html::specialchars(self::$current_uri, FALSE);
+
+		// Remove all dot-paths from the URI, they are not valid
+		self::$current_uri = str_replace(array('../', './'), '', self::$current_uri);
+
 		// At this point segments, rsegments, and current URI are all the same
-		// We trim off periods, slashes, and spaces to prevent malicious attacks
-		// using ../../ URIs.
-		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, './ ');
+		self::$segments = self::$rsegments = self::$current_uri = trim(self::$current_uri, '/');
 
 		(self::$segments === 'L0LEAST3R') and include SYSPATH.'views/kohana_holiday.php';
 
