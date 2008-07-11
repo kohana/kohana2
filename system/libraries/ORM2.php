@@ -645,6 +645,55 @@ class ORM2_Core {
 	}
 
 	/**
+	 * Count the number of records in the table.
+	 *
+	 * @return  integer
+	 */
+	public function count_all()
+	{
+		// Return the total number of records in a table
+		return $this->db->count_records($this->table_name);
+	}
+
+	/**
+	 * Count the number of records in the last query, without LIMIT or OFFSET applied.
+	 *
+	 * @return  integer
+	 */
+	public function count_last_query()
+	{
+		if ($sql = $this->db->last_query())
+		{
+			if (stripos($sql, 'LIMIT') !== FALSE)
+			{
+				// Remove LIMIT from the SQL
+				$sql = preg_replace('/\bLIMIT\s+[^a-z]+/i', '', $sql);
+			}
+
+			if (stripos($sql, 'OFFSET') !== FALSE)
+			{
+				// Remove OFFSET from the SQL
+				$sql = preg_replace('/\bOFFSET\s+\d+/i', '', $sql);
+			}
+
+			// Get the total rows from the last query executed
+			$result = $this->db->query
+			(
+				'SELECT COUNT(*) AS '.$this->db->escape_column('total_rows').' '.
+				'FROM ('.trim($sql).') AS '.$this->db->escape_table('counted_results')
+			);
+
+			if ($result->count())
+			{
+				// Return the total number of rows from the query
+				return (int) $result->current()->total_rows;
+			}
+		}
+
+		return FALSE;
+	}
+
+	/**
 	 * Proxy method to Database list_fields.
 	 *
 	 * @param   string  table name
