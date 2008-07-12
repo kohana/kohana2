@@ -6,6 +6,9 @@ class User_Model extends ORM {
 	protected $has_many = array('user_tokens');
 	protected $has_and_belongs_to_many = array('roles');
 
+	// User roles
+	protected $has_roles;
+
 	public function __set($key, $value)
 	{
 		if ($key === 'password')
@@ -21,19 +24,25 @@ class User_Model extends ORM {
 	{
 		if ($object === 'role')
 		{
-			// Load a role model
-			$role = ORM::factory('role');
+			if ( ! $this->loaded)
+				return FALSE;
 
-			// Load JOIN info
-			$join_table = $role->join_table($this->table_name);
-			$join_col1  = $role->foreign_key(NULL, $join_table);
-			$join_col2  = $role->foreign_key(TRUE);
+			if ($this->has_roles === NULL)
+			{
+				$this->db->select('id', 'name');
 
-			return (bool) $this->db
-				->join($role->table_name, $join_col1, $join_col2)
-				->where($role->unique_key($id), $id)
-				->where($this->foreign_key(NULL, $join_table), $this->object[$this->primary_key])
-				->count_records($join_table);
+				// Load the roles
+				$this->has_roles = $this->roles->select_list('id', 'name');
+			}
+
+			if (is_string($id) AND ! ctype_digit($id))
+			{
+				return in_array($id, $this->has_roles);
+			}
+			else
+			{
+				return isset($this->has_roles[$id]);
+			}
 		}
 
 		return parent::has($object, $id);
@@ -63,6 +72,22 @@ class User_Model extends ORM {
 		}
 
 		return parent::unique_key($id);
+	}
+
+	/**
+	 * Resets roles when results are loaded.
+	 */
+	protected function load_result($array = FALSE)
+	{
+		parent::load_result($array);
+
+		if ($array === FALSE)
+		{
+			// Reset roles
+			$this->has_roles = NULL;
+		}
+
+		return $this;
 	}
 
 } // End User_Model
