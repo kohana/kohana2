@@ -253,20 +253,27 @@ class Captcha_Core {
 	/**
 	 * Checks whether user has been promoted after having given enough valid responses.
 	 *
+	 * @param   integer  valid response count threshold
 	 * @return  boolean
 	 */
-	public function promoted()
+	public function promoted($threshold = NULL)
 	{
 		// Promotion has been disabled
 		if (self::$config['promote'] === FALSE)
 			return FALSE;
 
+		// Use the config threshold
+		if ($threshold === NULL)
+		{
+			$threshold = self::$config['promote'];
+		}
+
 		// Compare the valid response count to the threshold
-		return ($this->valid_count() >= self::$config['promote']);
+		return ($this->valid_count() >= $threshold);
 	}
 
 	/**
-	 * Output the Captcha challenge.
+	 * Returns or outputs the Captcha challenge.
 	 *
 	 * @param   boolean  TRUE to output html, e.g. <img src="#" />
 	 * @return  mixed    html string or void
