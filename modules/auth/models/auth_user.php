@@ -79,7 +79,7 @@ class Auth_User_Model extends ORM {
 	 */
 	protected function load_result($array = FALSE)
 	{
-		parent::load_result($array);
+		$result = parent::load_result($array);
 
 		if ($array === FALSE)
 		{
@@ -87,7 +87,7 @@ class Auth_User_Model extends ORM {
 			$this->has_roles = NULL;
 		}
 
-		return $this;
+		return $result;
 	}
 
 } // End Auth User Model
