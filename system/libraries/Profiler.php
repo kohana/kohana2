@@ -207,6 +207,11 @@ class Profiler_Core {
 		text::alternate();
 		foreach($_SESSION as $name => $value)
 		{
+			if (is_object($value))
+			{
+				$value = get_class($value).' [object]';
+			}
+
 			$data = array($name, $value);
 			$class = text::alternate('', 'kp-altrow');
 			$table->add_row($data, $class);
