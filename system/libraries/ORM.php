@@ -30,16 +30,17 @@ class ORM_Core {
 	// Related objects
 	protected $related = array();
 
-	// Model table name
+	// Model table information
 	protected $table_name;
 	protected $table_columns;
+	protected $ignored_columns;
+
+	// Table primary key
+	protected $primary_key = 'id';
 
 	// Model configuration
 	protected $table_names_plural = TRUE;
 	protected $reload_on_wakeup   = TRUE;
-
-	// Table primary key
-	protected $primary_key = 'id';
 
 	// Database instance name
 	protected $db = 'default';
@@ -115,6 +116,12 @@ class ORM_Core {
 				// Make the table name plural
 				$this->table_name = inflector::plural($this->table_name);
 			}
+		}
+
+		if (is_array($this->ignored_columns))
+		{
+			// Make the ignored columns mirrored = mirrored
+			$this->ignored_columns = array_combine($this->ignored_columns, $this->ignored_columns);
 		}
 
 		// Load column information
@@ -222,7 +229,11 @@ class ORM_Core {
 	 */
 	public function __get($column)
 	{
-		if (isset($this->object[$column]) OR array_key_exists($column, $this->object))
+		if (isset($this->ignored_columns[$column]))
+		{
+			return NULL;
+		}
+		elseif (isset($this->object[$column]) OR array_key_exists($column, $this->object))
 		{
 			return $this->object[$column];
 		}
@@ -341,7 +352,11 @@ class ORM_Core {
 	 */
 	public function __set($column, $value)
 	{
-		if (isset($this->object[$column]) OR array_key_exists($column, $this->object))
+		if (isset($this->ignored_columns[$column]))
+		{
+			return NULL;
+		}
+		elseif (isset($this->object[$column]) OR array_key_exists($column, $this->object))
 		{
 			if (isset($this->table_columns[$column]))
 			{
@@ -565,7 +580,7 @@ class ORM_Core {
 	 * @chainable
 	 * @return  ORM
 	 */
-	public function delete()
+	public function delete($id = NULL)
 	{
 		if ($this->loaded === TRUE)
 		{
@@ -1018,8 +1033,8 @@ class ORM_Core {
 			// Model is loaded and saved
 			$this->loaded = $this->saved = TRUE;
 
-			// Nothing has been changed
-			$this->changed = array();
+			// Clear relationships and changed values
+			$this->related = $this->changed = array();
 		}
 		else
 		{
