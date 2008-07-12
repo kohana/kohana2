@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Role_Model extends ORM {
+class Auth_Role_Model extends ORM {
 
 	protected $belongs_to_many = array('users');
 
@@ -17,4 +17,4 @@ class Role_Model extends ORM {
 		return parent::unique_key($id);
 	}
 
-} // End Role_Model
+} // End Auth Role Model

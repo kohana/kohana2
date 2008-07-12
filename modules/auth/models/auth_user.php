@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class User_Model extends ORM {
+class Auth_User_Model extends ORM {
 
 	// Relationships
 	protected $has_many = array('user_tokens');
@@ -90,4 +90,4 @@ class User_Model extends ORM {
 		return $this;
 	}
 
-} // End User_Model
+} // End Auth User Model

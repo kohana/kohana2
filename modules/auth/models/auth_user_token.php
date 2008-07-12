@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class User_Token_Model extends ORM {
+class Auth_User_Token_Model extends ORM {
 
 	// Relationships
 	protected $belongs_to = array('user');
@@ -99,4 +99,4 @@ class User_Token_Model extends ORM {
 		return parent::unique_key($id);
 	}
 
-} // End User Token
+} // End Auth User Token Model
