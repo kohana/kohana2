@@ -29,9 +29,6 @@ class Captcha_Core {
 		'promote'    => FALSE,
 	);
 
-	// The Captcha challenge answer, the text the user is supposed to enter
-	public static $response;
-
 	/**
 	 * Singleton instance of Captcha.
 	 *
@@ -127,31 +124,13 @@ class Captcha_Core {
 			throw new Kohana_Exception('core.driver_not_found', $config['style'], get_class($this));
 
 		// Initialize the driver
-		$this->driver = new $driver();
+		$this->driver = new $driver;
 
 		// Validate the driver
 		if ( ! ($this->driver instanceof Captcha_Driver))
-			throw new Kohana_Exception('core.driver_implements', $type, get_class($this), 'Captcha_Driver');
-
-		// Generate a new Captcha challenge
-		self::$response = (string) $this->driver->generate_challenge();
-
-		// Store the Captcha response in a session
-		Event::add('system.post_controller', array($this, 'update_response_session'));
+			throw new Kohana_Exception('core.driver_implements', $config['style'], get_class($this), 'Captcha_Driver');
 
 		Log::add('debug', 'Captcha Library initialized');
-	}
-
-	/**
-	 * Stores the response for the current Captcha challenge in a session so it is available
-	 * on the next page load for Captcha::valid(). This method is called after controller
-	 * execution (system.post_controller event) in order not to overwrite itself too soon.
-	 *
-	 * @return  void
-	 */
-	public function update_response_session()
-	{
-		Session::instance()->set('captcha_response', sha1(strtoupper(self::$response)));
 	}
 
 	/**
@@ -170,7 +149,7 @@ class Captcha_Core {
 			return TRUE;
 
 		// Challenge result
-		$result = (sha1(strtoupper($response)) === Session::instance()->get('captcha_response'));
+		$result = (bool) self::instance()->driver->valid($response);
 
 		// Increment response counter
 		if ($counted !== TRUE)

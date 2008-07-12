@@ -11,8 +11,26 @@
  */
 abstract class Captcha_Driver {
 
-	protected $image;              // Image resource identifier
-	protected $image_type = 'png'; // 'png', 'gif' or 'jpeg'
+	// The correct Captcha challenge answer
+	protected $response;
+
+	// Image resource identifier and type ("png", "gif" or "jpeg")
+	protected $image;
+	protected $image_type = 'png';
+
+	/**
+	 * Constructs a new challenge.
+	 *
+	 * @return  void
+	 */
+	public function __construct()
+	{
+		// Generate a new challenge
+		$this->response = $this->generate_challenge();
+
+		// Store the correct Captcha response in a session
+		Event::add('system.post_controller', array($this, 'update_response_session'));
+	}
 
 	/**
 	 * Generate a new Captcha challenge.
@@ -30,58 +48,77 @@ abstract class Captcha_Driver {
 	abstract public function render($html);
 
 	/**
-	 * Sets and returns the image type.
+	 * Stores the response for the current Captcha challenge in a session so it is available
+	 * on the next page load for Captcha::valid(). This method is called after controller
+	 * execution (in the system.post_controller event) in order not to overwrite itself too soon.
 	 *
-	 * @param   string  filename
-	 * @return  string  image type
+	 * @return  void
+	 */
+	public function update_response_session()
+	{
+		Session::instance()->set('captcha_response', sha1(strtoupper($this->response)));
+	}
+
+	/**
+	 * Validates a Captcha response from a user.
+	 *
+	 * @param   string   captcha response
+	 * @return  boolean
+	 */
+	public function valid($response)
+	{
+		return (sha1(strtoupper($response)) === Session::instance()->get('captcha_response'));
+	}
+
+	/**
+	 * Returns the image type.
+	 *
+	 * @param   string        filename
+	 * @return  string|FALSE  image type ("png", "gif" or "jpeg")
 	 */
 	public function image_type($filename)
 	{
 		switch (strtolower(file::extension($filename)))
 		{
-			case 'gif':
-				$this->image_type = 'gif';
-			break;
 			case 'png':
-				$this->image_type = 'png';
-			break;
+				return 'png';
+
+			case 'gif':
+				return 'gif';
+
 			case 'jpg':
 			case 'jpeg':
-				$this->image_type = 'jpeg';
-			break;
+				// Return "jpeg" and not "jpg" because of the GD2 function names
+				return 'jpeg';
+
+			default:
+				return FALSE;
 		}
-
-		return $this->image_type;
 	}
 
 	/**
-	 * Wrapper for imagecreatefromXXX().
-	 *
-	 * @param   string    filename
-	 * @return  resource  image identifier
-	 */
-	public function image_create_from($filename)
-	{
-		$function = 'imagecreatefrom'.$this->image_type($filename);
-		return $function($filename);
-	}
-
-	/**
-	 * Creates an image resource with the specified dimensions.
+	 * Creates an image resource with the dimensions specified in config.
 	 * If a background image is supplied, the image dimensions are used.
 	 *
+	 * @throws  Kohana_Exception  if no GD2 support
 	 * @param   string  path to the background image file
 	 * @return  void
 	 */
 	public function image_create($background = NULL)
 	{
+		// Check for GD2 support
+		if ( ! function_exists('imagegd2'))
+			throw new Kohana_Exception('captcha.requires_GD2');
+
 		// Create a new image (black)
 		$this->image = imagecreatetruecolor(Captcha::$config['width'], Captcha::$config['height']);
 
 		// Use a background image
 		if ( ! empty($background))
 		{
-			$this->background_image = $this->image_create_from($background);
+			// Create the image using the right function for the filetype
+			$function = 'imagecreatefrom'.$this->image_type($filename);
+			$this->background_image = $function($background);
 
 			// Resize the image if needed
 			if (imagesx($this->background_image) !== Captcha::$config['width']
@@ -165,7 +202,7 @@ abstract class Captcha_Driver {
 	}
 
 	/**
-	 * Outputs the image to the browser.
+	 * Returns the img html element or outputs the image to the browser.
 	 *
 	 * @param   boolean  html output
 	 * @return  mixed    html string or void

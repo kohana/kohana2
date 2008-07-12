@@ -12,17 +12,6 @@
 class Captcha_Alpha_Driver extends Captcha_Driver {
 
 	/**
-	 * Constructor checks for GD2 support.
-	 *
-	 * @return  void
-	 */
-	public function __construct()
-	{
-		if ( ! function_exists('imagegd2'))
-			throw new Kohana_Exception('captcha.requires_GD2');
-	}
-
-	/**
 	 * Generates a new Captcha challenge.
 	 *
 	 * @return  string  the challenge answer
@@ -61,20 +50,20 @@ class Captcha_Alpha_Driver extends Captcha_Driver {
 		}
 
 		// Calculate character font-size and spacing
-		$default_size = min(Captcha::$config['width'], Captcha::$config['height'] * 2) / strlen(Captcha::$response);
-		$spacing = (int) (Captcha::$config['width'] * 0.9 / strlen(Captcha::$response));
+		$default_size = min(Captcha::$config['width'], Captcha::$config['height'] * 2) / strlen($this->response);
+		$spacing = (int) (Captcha::$config['width'] * 0.9 / strlen($this->response));
 
 		// Background alphabetic character attributes
 		$color_limit = mt_rand(96, 160);
 		$chars = 'ABEFGJKLPQRTVY';
 
 		// Draw each Captcha character with varying attributes
-		for ($i = 0, $strlen = strlen(Captcha::$response); $i < $strlen; $i++)
+		for ($i = 0, $strlen = strlen($this->response); $i < $strlen; $i++)
 		{
 			$angle = mt_rand(-40, 20);
 			// Scale the character size on image height
 			$size = $default_size / 10 * mt_rand(8, 12);
-			$box = imageftbbox($size, $angle, Captcha::$config['font'], Captcha::$response[$i]);
+			$box = imageftbbox($size, $angle, Captcha::$config['font'], $this->response[$i]);
 
 			// Calculate character starting coordinates
 			$x = $spacing / 4 + $i * $spacing;
@@ -85,7 +74,7 @@ class Captcha_Alpha_Driver extends Captcha_Driver {
 			$color = imagecolorallocate($this->image, mt_rand(150, 255), mt_rand(200, 255), mt_rand(0, 255));
 
 			// Write text character to image
-			imagefttext($this->image, $size, $angle, $x, $y, $color, Captcha::$config['font'], Captcha::$response[$i]);
+			imagefttext($this->image, $size, $angle, $x, $y, $color, Captcha::$config['font'], $this->response[$i]);
 
 			// Draw "ghost" alphabetic character
 			$text_color = imagecolorallocatealpha($this->image, mt_rand($color_limit + 8, 255), mt_rand($color_limit + 8, 255), mt_rand($color_limit + 8, 255), mt_rand(70, 120));

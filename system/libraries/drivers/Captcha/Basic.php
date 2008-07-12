@@ -12,17 +12,6 @@
 class Captcha_Basic_Driver extends Captcha_Driver {
 
 	/**
-	 * Constructor checks for GD2 support.
-	 *
-	 * @return  void
-	 */
-	public function __construct()
-	{
-		if ( ! function_exists('imagegd2'))
-			throw new Kohana_Exception('captcha.requires_GD2');
-	}
-
-	/**
 	 * Generates a new Captcha challenge.
 	 *
 	 * @return  string  the challenge answer
@@ -60,11 +49,11 @@ class Captcha_Basic_Driver extends Captcha_Driver {
 		}
 
 		// Calculate character font-size and spacing
-		$default_size = min(Captcha::$config['width'], Captcha::$config['height'] * 2) / (strlen(Captcha::$response) + 1);
-		$spacing = (int) (Captcha::$config['width'] * 0.9 / strlen(Captcha::$response));
+		$default_size = min(Captcha::$config['width'], Captcha::$config['height'] * 2) / (strlen($this->response) + 1);
+		$spacing = (int) (Captcha::$config['width'] * 0.9 / strlen($this->response));
 
 		// Draw each Captcha character with varying attributes
-		for ($i = 0, $strlen = strlen(Captcha::$response); $i < $strlen; $i++)
+		for ($i = 0, $strlen = strlen($this->response); $i < $strlen; $i++)
 		{
 			// Allocate random color, size and rotation attributes to text
 			$color = imagecolorallocate($this->image, mt_rand(0, 150), mt_rand(0, 150), mt_rand(0, 150));
@@ -72,14 +61,14 @@ class Captcha_Basic_Driver extends Captcha_Driver {
 
 			// Scale the character size on image height
 			$size = $default_size / 10 * mt_rand(8, 12);
-			$box = imageftbbox($size, $angle, Captcha::$config['font'], Captcha::$response[$i]);
+			$box = imageftbbox($size, $angle, Captcha::$config['font'], $this->response[$i]);
 
 			// Calculate character starting coordinates
 			$x = $spacing / 4 + $i * $spacing;
 			$y = Captcha::$config['height'] / 2 + ($box[2] - $box[5]) / 4;
 
 			// Write text character to image
-			imagefttext($this->image, $size, $angle, $x, $y, $color, Captcha::$config['font'], Captcha::$response[$i]);
+			imagefttext($this->image, $size, $angle, $x, $y, $color, Captcha::$config['font'], $this->response[$i]);
 		}
 
 		// Output
