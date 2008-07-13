@@ -35,8 +35,9 @@ class ORM_Core {
 	protected $table_columns;
 	protected $ignored_columns;
 
-	// Table primary key
+	// Table primary key and value
 	protected $primary_key = 'id';
+	protected $primary_val = 'name';
 
 	// Model configuration
 	protected $table_names_plural = TRUE;
@@ -329,7 +330,7 @@ class ORM_Core {
 		}
 		elseif (in_array($column, array
 			(
-				'primary_key', 'table_name', 'table_columns', // Table
+				'primary_key', 'primary_val', 'table_name', 'table_columns', // Table
 				'loaded', 'saved', // Status
 				'has_one', 'belongs_to', 'has_many', 'has_many_and_belongs_to', // Relationships
 			)))
@@ -383,7 +384,7 @@ class ORM_Core {
 	 */
 	public function __isset($column)
 	{
-		return isset($this->object[$column]);
+		return (isset($this->object[$column]) OR isset($this->related[$column]));
 	}
 
 	/**
@@ -394,7 +395,7 @@ class ORM_Core {
 	 */
 	public function __unset($column)
 	{
-		unset($this->object[$column], $this->changed[$column]);
+		unset($this->object[$column], $this->changed[$column], $this->related[$column]);
 	}
 
 	/**
@@ -426,7 +427,7 @@ class ORM_Core {
 	 */
 	public function find($id = NULL)
 	{
-		if (func_num_args() > 0)
+		if ($id !== NULL)
 		{
 			if (is_array($id))
 			{
@@ -453,7 +454,7 @@ class ORM_Core {
 	 */
 	public function find_all($limit = NULL, $offset = 0)
 	{
-		if (func_num_args() > 0)
+		if ($limit !== NULL)
 		{
 			// Set limit and offset
 			$this->db->limit($limit, $offset);
@@ -1022,7 +1023,7 @@ class ORM_Core {
 		if ($array === TRUE)
 		{
 			// Return an iterated result
-			return new ORM_Iterator(get_class($this), $result);
+			return new ORM_Iterator($this, $result);
 		}
 
 		if ($result->count() === 1)
