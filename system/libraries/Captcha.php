@@ -112,18 +112,12 @@ class Captcha_Core {
 		// If using any fonts, check if they exist
 		if ( ! empty($config['fonts']))
 		{
-			if (count($config['fonts']) === 1)
+			self::$config['fontpath'] = str_replace('\\', '/', realpath($config['fontpath'])).'/';
+
+			foreach ($config['fonts'] as $font)
 			{
-				if ( ! file_exists(self::$config['fontpath'].self::$config['fonts'][0]))
-					throw new Kohana_Exception('captcha.file_not_found', self::$config['fontpath'].self::$config['fonts'][0]);
-			}
-			else
-			{
-				for ($i = 0; $i < count($config['fonts']); $i++)
-				{
-					if ( ! file_exists(self::$config['fontpath'].self::$config['fonts'][$i]))
-						throw new Kohana_Exception('captcha.file_not_found', self::$config['fontpath'].self::$config['fonts'][$i]);
-				}
+				if ( ! file_exists(self::$config['fontpath'].$font))
+					throw new Kohana_Exception('captcha.file_not_found', self::$config['fontpath'].$font);
 			}
 		}
 

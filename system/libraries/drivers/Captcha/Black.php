@@ -44,7 +44,7 @@ class Captcha_Black_Driver extends Captcha_Driver {
 		}
 
 		// Use different fonts if available
-		$font = Captcha::$config['fontpath'].Captcha::$config['fonts'][(mt_rand(0, (count(Captcha::$config['fonts']) - 1)))];
+		$font = Captcha::$config['fontpath'].Captcha::$config['fonts'][array_rand(Captcha::$config['fonts'])];
 
 		// Draw the character's white shadows
 		$size = (int) min(Captcha::$config['height'] / 2, Captcha::$config['width'] * 0.8 / strlen($this->response));

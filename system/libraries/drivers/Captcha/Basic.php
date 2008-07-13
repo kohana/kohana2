@@ -56,8 +56,8 @@ class Captcha_Basic_Driver extends Captcha_Driver {
 		for ($i = 0, $strlen = strlen($this->response); $i < $strlen; $i++)
 		{
 			// Use different fonts if available
-			$font = Captcha::$config['fontpath'].Captcha::$config['fonts'][(mt_rand(0, (count(Captcha::$config['fonts']) - 1)))];
-			
+			$font = Captcha::$config['fontpath'].Captcha::$config['fonts'][array_rand(Captcha::$config['fonts'])];
+
 			// Allocate random color, size and rotation attributes to text
 			$color = imagecolorallocate($this->image, mt_rand(0, 150), mt_rand(0, 150), mt_rand(0, 150));
 			$angle = mt_rand(-40, 20);

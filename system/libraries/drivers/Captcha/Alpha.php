@@ -61,8 +61,8 @@ class Captcha_Alpha_Driver extends Captcha_Driver {
 		for ($i = 0, $strlen = strlen($this->response); $i < $strlen; $i++)
 		{
 			// Use different fonts if available
-			$font = Captcha::$config['fontpath'].Captcha::$config['fonts'][(mt_rand(0, (count(Captcha::$config['fonts']) - 1)))];
-			
+			$font = Captcha::$config['fontpath'].Captcha::$config['fonts'][array_rand(Captcha::$config['fonts'])];
+
 			$angle = mt_rand(-40, 20);
 			// Scale the character size on image height
 			$size = $default_size / 10 * mt_rand(8, 12);
