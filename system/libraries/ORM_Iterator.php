@@ -11,16 +11,20 @@
 */
 class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 
-	// ORM class name
-	protected $class;
+	// Class attributes
+	protected $class_name;
+	protected $primary_key;
+	protected $primary_val;
 
 	// Database result object
 	protected $result;
 
-	public function __construct($class, $result)
+	public function __construct(ORM $model, $result)
 	{
-		// Class name
-		$this->class = $class;
+		// Class attributes
+		$this->class_name  = get_class($model);
+		$this->primary_key = $model->primary_key;
+		$this->primary_val = $model->primary_val;
 
 		// Database result
 		$this->result = $result->result(TRUE);
@@ -38,7 +42,7 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 		if ($results = $this->result->result_array())
 		{
 			// Import class name
-			$class = $this->class;
+			$class = $this->class_name;
 
 			foreach ($results as $obj)
 			{
@@ -56,8 +60,20 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 	 * @param   string  value column
 	 * @return  array
 	 */
-	public function select_list($key, $val)
+	public function select_list($key = NULL, $val = NULL)
 	{
+		if ($key === NULL)
+		{
+			// Use the default key
+			$key = $this->primary_key;
+		}
+
+		if ($val === NULL)
+		{
+			// Use the default value
+			$val = $this->primary_val;
+		}
+
 		$array = array();
 		foreach ($this->result->result_array() as $row)
 		{
@@ -81,7 +97,7 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 		if ($this->result->offsetExists($start))
 		{
 			// Import the class name
-			$class = $this->class;
+			$class = $this->class_name;
 
 			// Set the end offset
 			$end = $this->result->offsetExists($end) ? $end : $this->count();
@@ -112,7 +128,7 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 		if ($row = $this->result->current())
 		{
 			// Import class name
-			$class = $this->class;
+			$class = $this->class_name;
 
 			$row = new $class($row);
 		}
@@ -168,7 +184,7 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 		if ($this->result->offsetExists($offset))
 		{
 			// Import class name
-			$class = $this->class;
+			$class = $this->class_name;
 
 			return new $class($this->result->offsetGet($offset));
 		}
