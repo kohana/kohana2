@@ -25,7 +25,8 @@ class Captcha_Core {
 		'height'     => 50,
 		'complexity' => 4,
 		'background' => '',
-		'font'       => '',
+		'fontpath'   => '',
+		'fonts'      => array(),
 		'promote'    => FALSE,
 	);
 
@@ -108,13 +109,22 @@ class Captcha_Core {
 				throw new Kohana_Exception('captcha.file_not_found', self::$config['background']);
 		}
 
-		// If using a font, check if it exists
-		if ( ! empty($config['font']))
+		// If using any fonts, check if they exist
+		if ( ! empty($config['fonts']))
 		{
-			self::$config['font'] = str_replace('\\', '/', realpath($config['font']));
-
-			if ( ! file_exists(self::$config['font']))
-				throw new Kohana_Exception('captcha.file_not_found', self::$config['font']);
+			if (count($config['fonts']) === 1)
+			{
+				if ( ! file_exists(self::$config['fontpath'].self::$config['fonts'][0]))
+					throw new Kohana_Exception('captcha.file_not_found', self::$config['fontpath'].self::$config['fonts'][0]);
+			}
+			else
+			{
+				for ($i = 0; $i < count($config['fonts']); $i++)
+				{
+					if ( ! file_exists(self::$config['fontpath'].self::$config['fonts'][$i]))
+						throw new Kohana_Exception('captcha.file_not_found', self::$config['fontpath'].self::$config['fonts'][$i]);
+				}
+			}
 		}
 
 		// Set driver name

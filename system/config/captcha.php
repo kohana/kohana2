@@ -12,7 +12,8 @@
  *  height     - Height of the Captcha image
  *  complexity - Difficulty level (0-10), usage depends on chosen style
  *  background - Path to background image file
- *  font       - Path to font file
+ *  fontpath   - Path to font folder
+ *  fonts      - Font files
  *  promote    - Valid response count threshold to promote user (FALSE to disable)
  */
 $config['default'] = array
@@ -22,6 +23,7 @@ $config['default'] = array
 	'height'     => 50,
 	'complexity' => 4,
 	'background' => '',
-	'font'       => SYSPATH.'fonts/DejaVuSerif.ttf',
+	'fontpath'   => SYSPATH.'fonts/',
+	'fonts'      => array('DejaVuSerif.ttf'),
 	'promote'    => FALSE,
 );
