@@ -42,7 +42,7 @@ class Captcha_Basic_Driver extends Captcha_Driver {
 		}
 
 		// Add a few random lines
-		for ($i = 0, $count = mt_rand(5, Captcha::$config['complexity'] * 3); $i < $count; $i++)
+		for ($i = 0, $count = mt_rand(5, Captcha::$config['complexity'] * 4); $i < $count; $i++)
 		{
 			$color = imagecolorallocatealpha($this->image, mt_rand(0, 255), mt_rand(0, 255), mt_rand(100, 255), mt_rand(50, 120));
 			imageline($this->image, mt_rand(0, Captcha::$config['width']), 0, mt_rand(0, Captcha::$config['width']), Captcha::$config['height'], $color);
