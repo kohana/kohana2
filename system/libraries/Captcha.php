@@ -32,14 +32,15 @@ class Captcha_Core {
 	/**
 	 * Singleton instance of Captcha.
 	 *
+	 * @param   string  config group name
 	 * @return  object
 	 */
-	public static function instance()
+	public static function instance($group = NULL)
 	{
 		// Create the instance if it does not exist
 		if (empty(self::$instance))
 		{
-			self::$instance = new Captcha;
+			self::$instance = new Captcha($group);
 		}
 
 		return self::$instance;

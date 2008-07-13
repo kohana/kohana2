@@ -48,7 +48,8 @@ class Auth_ORM_Driver implements Auth_Driver {
 			}
 		}
 
-		return $status;	}
+		return $status;
+	}
 
 	public function login($user, $password, $remember)
 	{
