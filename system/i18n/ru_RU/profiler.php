@@ -3,8 +3,8 @@
 $lang = array
 (
 	'benchmarks'   => 'Производительность',
-	'post_data'    => 'Данные post',
-	'no_post'      => 'Нет данных post',
+	'post_data'    => 'Данные POST',
+	'no_post'      => 'Нет данных POST',
 	'session_data' => 'Данные сессии',
 	'no_session'   => 'Нет данных сессии',
 	'queries'      => 'Запросов к БД',

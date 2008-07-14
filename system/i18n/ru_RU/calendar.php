@@ -3,31 +3,31 @@
 $lang = array
 (
 	// Two letter days
-	'su'        => 'Вс',
 	'mo'        => 'Пн',
 	'tu'        => 'Вт',
 	'we'        => 'Ср',
 	'th'        => 'Чт',
 	'fr'        => 'Пт',
 	'sa'        => 'Сб',
+	'su'        => 'Вс',
 
 	// Short day names
-	'sun'       => 'Вск',
 	'mon'       => 'Пнд',
 	'tue'       => 'Втр',
 	'wed'       => 'Срд',
 	'thu'       => 'Чтв',
 	'fri'       => 'Птн',
-	'sat'       => 'Суб',
+	'sat'       => 'Сбт',
+	'sun'       => 'Вск',
 
 	// Long day names
-	'sunday'    => 'Воскресенье',
 	'monday'    => 'Понедельник',
 	'tuesday'   => 'Вторник',
 	'wednesday' => 'Среда',
 	'thursday'  => 'Четверг',
 	'friday'    => 'Пятница',
 	'saturday'  => 'Суббота',
+	'sunday'    => 'Воскресенье',
 
 	// Short month names
 	'jan'       => 'Янв',
