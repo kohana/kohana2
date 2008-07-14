@@ -481,6 +481,19 @@ class Pgsql_Result extends Database_Result {
 		return $field_names;
 	}
 
+	/**
+	 * ArrayAccess: offsetGet
+	 */
+	public function offsetGet($offset)
+	{
+		if ( ! $this->seek($offset))
+			return FALSE;
+
+		// Return the row by calling the defined fetching callback
+		$fetch = $this->fetch_type;
+		return $fetch($this->result, NULL, $this->return_type);
+	}
+
 } // End Pgsql_Result Class
 
 /**
