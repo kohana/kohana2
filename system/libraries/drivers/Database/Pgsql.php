@@ -439,7 +439,7 @@ class Pgsql_Result extends Database_Result {
 			}
 		}
 
-		while ($row = $fetch($this->result, $type))
+		while ($row = $fetch($this->result, NULL, $type))
 		{
 			$rows[] = $row;
 		}
@@ -460,6 +460,25 @@ class Pgsql_Result extends Database_Result {
 		}
 
 		return $this->insert_id;
+	}
+
+	public function seek($offset)
+	{
+		if ( ! $this->offsetExists($offset))
+			return FALSE;
+
+		return pg_result_seek($this->result, $offset);
+	}
+
+	public function list_fields()
+	{
+		$field_names = array();
+		while ($field = pg_field_name($this->result))
+		{
+			$field_names[] = $field->name;
+		}
+
+		return $field_names;
 	}
 
 } // End Pgsql_Result Class
