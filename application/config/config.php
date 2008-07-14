@@ -30,7 +30,7 @@ $config['url_suffix'] = '';
  * The internal cache stores file paths and config entries across requests and
  * can give significant speed improvements at the expense of delayed updating.
  */
-$config['internal_cache'] = 120;
+$config['internal_cache'] = FALSE;
 
 /**
  * Enable or disable gzip output compression. This can dramatically decrease
@@ -85,6 +85,7 @@ $config['modules'] = array
 	// MODPATH.'kodoc',     // Self-generating documentation
 	// MODPATH.'media',     // Media caching and compression
 	// MODPATH.'gmaps',     // Google Maps integration
+	// MODPATH.'payment',   // Online payments
 	// MODPATH.'unit_test', // Unit testing
 	// MODPATH.'object_db', // New OOP Database library (testing only!)
 );
