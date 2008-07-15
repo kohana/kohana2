@@ -33,3 +33,11 @@ $config['salt_pattern'] = '1, 3, 5, 9, 14, 15, 20, 21, 28, 30';
  * lifetime is two weeks.
  */
 $config['lifetime'] = 1209600;
+
+/**
+ * Usernames (keys) and hashed passwords (values) used by the File driver.
+ */
+$config['users'] = array
+(
+	// 'admin' => '4ccd0e25c2a7ffefd4b92ecbbd4781752920145f826a881073',
+);

@@ -39,7 +39,7 @@ interface Auth_Driver {
 	/**
 	 * Log a user out.
 	 *
-	 * @param   boolean   complete destroy the session
+	 * @param   boolean  completely destroy the session
 	 * @return  boolean
 	 */
 	public function logout($destroy);
@@ -47,7 +47,7 @@ interface Auth_Driver {
 	/**
 	 * Checks if a session is active.
 	 *
-	 * @param   string    role name
+	 * @param   string   role name
 	 * @return  boolean
 	 */
 	public function logged_in($role);

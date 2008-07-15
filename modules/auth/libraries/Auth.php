@@ -148,15 +148,12 @@ class Auth_Core {
 	 * Creates a hashed password from a plaintext password, inserting salt
 	 * based on the configured salt pattern.
 	 *
-	 * Parameters:
-	 *  password - plaintext password
-	 *
-	 * Returns:
-	 *  Hashed password string
+	 * @param   string  plaintext password
+	 * @return  string  hashed password string
 	 */
 	public function hash_password($password, $salt = FALSE)
 	{
-		if ($salt == FALSE)
+		if ($salt === FALSE)
 		{
 			// Create a salt seed, same length as the number of offsets in the pattern
 			$salt = substr($this->hash(uniqid(NULL, TRUE)), 0, count($this->config['salt_pattern']));

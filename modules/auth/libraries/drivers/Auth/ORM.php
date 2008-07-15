@@ -192,4 +192,4 @@ class Auth_ORM_Driver implements Auth_Driver {
 		$_SESSION['auth_user'] = $user;
 	}
 
-} // End Auth_Orm_Driver Class
+} // End Auth_ORM_Driver Class
