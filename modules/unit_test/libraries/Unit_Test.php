@@ -197,7 +197,7 @@ class Unit_Test_Core {
 	 *@TODO
 	 *
 	 */
-	private collect_code_coverage_information() 
+	private function collect_code_coverage_information() 
 	{
 		
 
