@@ -415,13 +415,13 @@ class Validation_Core extends ArrayObject {
 					foreach ($all_fields as $f)
 					{
 						// Process each filter
-						Kohana::key_string_set($this, $f, is_array($this[$f]) ? arr::map_recursive($func, $this[$f]) : call_user_func($func, $this[$f]));
+						$this[$f] = is_array($this[$f]) ? arr::map_recursive($func, $this[$f]) : call_user_func($func, $this[$f]);
 					}
 				}
 				else
 				{
 					// Process each filter
-					Kohana::key_string_set($this, $field, is_array(Kohana::key_string($this, $field)) ? arr::map_recursive($func, Kohana::key_string($this, $field)) : call_user_func($func, Kohana::key_string($this, $field)));
+					$this[$field] = is_array($this[$field]) ? arr::map_recursive($func, $this[$field]) : call_user_func($func, $this[$field]);
 				}
 			}
 		}
@@ -449,15 +449,15 @@ class Validation_Core extends ArrayObject {
 							if ( ! empty($this->errors[$f_key])) break;
 
 							// Don't process rules on empty fields
-							if ( ! in_array($func[1], $this->empty_rules, TRUE) AND Kohana::key_string($this, $f_key) == NULL)
+							if ( ! in_array($func[1], $this->empty_rules, TRUE) AND $this[$f_key] == NULL)
 								continue;
 
-							foreach (Kohana::key_string($f_key, $this) as $k => $v)
+							foreach ($this[$f_key] as $k => $v)
 							{
-								if ( ! call_user_func($func, Kohana::key_string($this, $f_key.'.'.$k), $args))
+								if ( ! call_user_func($func, $this[$f_key][$k], $args))
 								{
 									// Run each rule
-									$this->errors[$f_key.'.'.$k] = is_array($func) ? $func[1] : $func;
+									$this->errors[$f_key] = is_array($func) ? $func[1] : $func;
 								}
 							}
 						}
@@ -467,10 +467,10 @@ class Validation_Core extends ArrayObject {
 							if ( ! empty($this->errors[$f])) break;
 
 							// Don't process rules on empty fields
-							if ( ! in_array($func[1], $this->empty_rules, TRUE) AND Kohana::key_string($this, $f) == NULL)
+							if ( ! in_array($func[1], $this->empty_rules, TRUE) AND $this[$f] == NULL)
 								continue;
 
-							if ( ! call_user_func($func, Kohana::key_string($this, $f), $args))
+							if ( ! call_user_func($func, $this[$f], $args))
 							{
 								// Run each rule
 								$this->errors[$f] = is_array($func) ? $func[1] : $func;
@@ -489,15 +489,15 @@ class Validation_Core extends ArrayObject {
 						if ( ! empty($this->errors[$field_key])) break;
 
 						// Don't process rules on empty fields
-						if ( ! in_array($func[1], $this->empty_rules, TRUE) AND Kohana::key_string($this, $field_key) == NULL)
+						if ( ! in_array($func[1], $this->empty_rules, TRUE) AND $this[$field_key] == NULL)
 							continue;
 
-						foreach (Kohana::key_string($this, $field_key) as $k => $val)
+						foreach ($this[$field_key] as $k => $val)
 						{
-							if ( ! call_user_func($func, Kohana::key_string($this, $field_key.'.'.$k), $args))
+							if ( ! call_user_func($func, $this[$field_key][$k], $args))
 							{
 								// Run each rule
-								$this->errors[$field_key.'.'.$k] = is_array($func) ? $func[1] : $func;
+								$this->errors[$field_key] = is_array($func) ? $func[1] : $func;
 
 								// Stop after an error is found
 								break 2;
@@ -510,10 +510,10 @@ class Validation_Core extends ArrayObject {
 						if ( ! empty($this->errors[$field])) break;
 
 						// Don't process rules on empty fields
-						if ( ! in_array($func[1], $this->empty_rules, TRUE) AND Kohana::key_string($this, $field) == NULL)
+						if ( ! in_array($func[1], $this->empty_rules, TRUE) AND $this[$field] == NULL)
 							continue;
 
-						if ( ! call_user_func($func, Kohana::key_string($this, $field), $args))
+						if ( ! call_user_func($func, $this[$field], $args))
 						{
 							// Run each rule
 							$this->errors[$field] = is_array($func) ? $func[1] : $func;
@@ -567,7 +567,7 @@ class Validation_Core extends ArrayObject {
 						}
 
 						// Process each filter
-						Kohana::key_string_set($this, $f, is_array(Kohana::key_string($this, $f)) ? arr::map_recursive($func, Kohana::key_string($this, $f)) : call_user_func($func, Kohana::key_string($this, $f)));
+						$this[$f] = is_array($this[$f]) ? array_map($func, $this[$f]) : call_user_func($func, $this[$f]);
 					}
 				}
 				else
@@ -579,7 +579,7 @@ class Validation_Core extends ArrayObject {
 					}
 
 					// Process each filter
-					Kohana::key_string_set($this, $field, is_array(Kohana::key_string($this, $field)) ? arr::map_recursive($func, Kohana::key_string($this, $field)) : call_user_func($func, Kohana::key_string($this, $field)));
+					$this[$field] = is_array($this[$field]) ? array_map($func, $this[$field]) : call_user_func($func, $this[$field]);
 				}
 			}
 		}
@@ -598,7 +598,7 @@ class Validation_Core extends ArrayObject {
 	 */
 	public function add_error($field, $name)
 	{
-		if (Kohana::key_string($this, $field) != NULL)
+		if (isset($this[$field]))
 		{
 			$this->errors[$field] = $name;
 		}
