@@ -109,8 +109,9 @@ class Unit_Test_Core {
 
 				// Initialize test class results and stats
 				$this->results[$class] = array();
-				$this->stats[$class] = array('passed' => 0, 'failed' => 0, 'errors' => 0, 'total' => 0);
-
+				$this->stats[$class] = array('passed' => 0, 'failed' => 0, 'errors' => 0, 'total' => 0,
+							     'score'  => 0);
+							
 
 				// Loop through all the class methods
 				foreach ($reflector->getMethods() as $method)
@@ -118,7 +119,7 @@ class Unit_Test_Core {
 					// Skip invalid test methods
 					if ( ! $method->isPublic() OR $method->isStatic() OR $method->getNumberOfRequiredParameters() !== 0)
 						continue;
-
+					
 					// Test methods should be suffixed with "_test"
 					if (substr($method_name = $method->getName(), -5) !== '_test')
 						continue;
@@ -166,6 +167,9 @@ class Unit_Test_Core {
 						$this->stats[$class]['errors']++;
 					}
 
+					
+					$this->stats[$class]['score'] = $this->stats[$class]['passed'] * 100 / 
+									$this->stats[$class]['total'];
 					// Cleanup
 					unset($object);
 				}
