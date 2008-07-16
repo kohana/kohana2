@@ -16,6 +16,7 @@ class Router_Core {
 	public static $current_uri  = '';
 	public static $query_string = '';
 	public static $complete_uri = '';
+	public static $routed_uri   = '';
 	public static $url_suffix   = '';
 
 	public static $segments;
@@ -82,6 +83,9 @@ class Router_Core {
 			// Custom routing
 			self::$rsegments = self::routed_uri(self::$current_uri);
 		}
+
+		// The routed URI is now complete
+		self::$routed_uri = self::$rsegments;
 
 		// Routed segments will never be empty
 		self::$rsegments = explode('/', self::$rsegments);
