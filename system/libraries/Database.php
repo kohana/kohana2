@@ -662,37 +662,25 @@ class Database_Core {
 	 * @param   string        direction of the order
 	 * @return  Database_Core        This Database object.
 	 */
-	public function orderby($orderby, $direction = '')
+	public function orderby($orderby, $direction = NULL)
 	{
-		$direction = strtoupper(trim($direction));
-
-		if ($direction != '')
-		{
-			$direction = (in_array($direction, array('ASC', 'DESC', 'RAND()', 'RANDOM()', 'NULL'))) ? ' '.$direction : ' ASC';
-		}
-
-		if (empty($orderby))
-		{
-			$this->orderby[] = $direction;
-			return $this;
-		}
-
 		if ( ! is_array($orderby))
 		{
-			$orderby = explode(',', (string) $orderby);
+			$orderby = array($orderby => $direction);
 		}
 
-		$order = array();
-		foreach ($orderby as $field)
+		foreach ($orderby as $column => $direction)
 		{
-			$field = trim($field);
+			$direction = strtoupper(trim($direction));
 
-			if ($field != '')
+			if ( ! in_array($direction, array('ASC', 'DESC', 'RAND()', 'RANDOM()', 'NULL')))
 			{
-				$order[] = $this->driver->escape_column($field);
+				$direction = 'ASC';
 			}
+
+			$this->orderby[] = $this->driver->escape_column($column).' '.$direction;
 		}
-		$this->orderby[] = implode(',', $order).$direction;
+
 		return $this;
 	}
 
