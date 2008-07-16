@@ -102,6 +102,7 @@ text::alternate();
 		<tr>
 			<th><?php echo $class ?></th>
 			<th class="k-stats">
+				<?php echo Kohana::lang('unit_test.total'),  ': ', $stats[$class]['total'] ?>
 				<?php echo Kohana::lang('unit_test.passed'), ': ', $stats[$class]['passed'] ?>,
 				<?php echo Kohana::lang('unit_test.failed'), ': ', $stats[$class]['failed'] ?>,
 				<?php echo Kohana::lang('unit_test.errors'), ': ', $stats[$class]['errors'] ?>

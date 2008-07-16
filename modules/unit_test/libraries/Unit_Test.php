@@ -109,7 +109,7 @@ class Unit_Test_Core {
 
 				// Initialize test class results and stats
 				$this->results[$class] = array();
-				$this->stats[$class] = array('passed' => 0, 'failed' => 0, 'errors' => 0);
+				$this->stats[$class] = array('passed' => 0, 'failed' => 0, 'errors' => 0, 'total' => 0);
 
 
 				// Loop through all the class methods
@@ -143,19 +143,24 @@ class Unit_Test_Core {
 							$object->teardown();
 						}
 
+						$this->stats[$class]['total']++;
+
 						// Test passed
 						$this->results[$class][$method_name] = TRUE;
 						$this->stats[$class]['passed']++;
 
 					}
 					catch (Kohana_Unit_Test_Exception $e)
-					{
+					{	
+						$this->stats[$class]['total']++;
 						// Test failed
 						$this->results[$class][$method_name] = $e;
 						$this->stats[$class]['failed']++;
 					}
 					catch (Exception $e)
 					{
+						$this->stats[$class]['total']++;
+
 						// Test error
 						$this->results[$class][$method_name] = $e;
 						$this->stats[$class]['errors']++;
@@ -182,7 +187,7 @@ class Unit_Test_Core {
 
 		// Hide passed tests from the report?
 		$hide_passed = (bool) (($hide_passed !== NULL) ? $hide_passed : Config::item('unit_test.hide_passed', FALSE, FALSE));
-	
+
 		// Render unit_test report
 		return View::factory('kohana_unit_test')
 			->set('results', $this->results)
