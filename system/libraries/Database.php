@@ -703,10 +703,14 @@ class Database_Core {
 	 * @param   integer  offset in result to start returning rows from
 	 * @return  Database_Core   This Database object.
 	 */
-	public function limit($limit, $offset = FALSE)
+	public function limit($limit, $offset = NULL)
 	{
 		$this->limit  = (int) $limit;
-		$this->offset(($offset === FALSE)? 0 : $offset);
+
+		if ($offset !== NULL)
+		{
+			$this->offset($offset);
+		}
 
 		return $this;
 	}
