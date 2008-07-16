@@ -11,6 +11,9 @@
  */
 class html_Core {
 
+	// Enable or disable automatic setting of target="_blank"
+	public static $windowed_urls = FALSE;
+
 	/**
 	 * Convert special characters to HTML entities
 	 *
@@ -55,7 +58,7 @@ class html_Core {
 	 * @param   string  non-default protocol, eg: https
 	 * @return  string
 	 */
-	public static function anchor($uri, $title = FALSE, $attributes = FALSE, $protocol = FALSE)
+	public static function anchor($uri, $title = NULL, $attributes = NULL, $protocol = NULL)
 	{
 		if ($uri === '')
 		{
@@ -67,6 +70,11 @@ class html_Core {
 		}
 		else
 		{
+			if (html::$windowed_urls === TRUE AND empty($attributes['target']))
+			{
+				$attributes['target'] = '_blank';
+			}
+
 			$site_url = $uri;
 		}
 
@@ -74,9 +82,9 @@ class html_Core {
 		// Parsed URL
 		'<a href="'.html::specialchars($site_url, FALSE).'"'
 		// Attributes empty? Use an empty string
-		.(empty($attributes) ? '' : html::attributes($attributes)).'>'
+		.(is_array($attributes) ? html::attributes($attributes) : '').'>'
 		// Title empty? Use the parsed URL
-		.(empty($title) ? $site_url : $title).'</a>';
+		.(($title === NULL) ? $site_url : $title).'</a>';
 	}
 
 	/**
@@ -88,15 +96,15 @@ class html_Core {
 	 * @param   string  non-default protocol, eg: ftp
 	 * @return  string
 	 */
-	public static function file_anchor($file, $title = FALSE, $attributes = FALSE, $protocol = FALSE)
+	public static function file_anchor($file, $title = NULL, $attributes = NULL, $protocol = NULL)
 	{
 		return
 		// Base URL + URI = full URL
 		'<a href="'.html::specialchars(url::base(FALSE, $protocol).$file, FALSE).'"'
 		// Attributes empty? Use an empty string
-		.(empty($attributes) ? '' : html::attributes($attributes)).'>'
+		.(is_array($attributes) ? html::attributes($attributes) : '').'>'
 		// Title empty? Use the filename part of the URI
-		.(empty($title) ? end(explode('/', $file)) : $title) .'</a>';
+		.(($title === NULL) ? end(explode('/', $file)) : $title) .'</a>';
 	}
 
 	/**
