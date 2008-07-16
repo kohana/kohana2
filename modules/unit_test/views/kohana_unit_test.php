@@ -100,7 +100,7 @@ text::alternate();
 
 	<table>
 		<tr>
-			<th>Foo Bar</th>
+			<th>% of Passed Tests</th>
 			<th class="k-stats"><?php printf("%s: %.2f%%", Kohana::lang('unit_test.score'), $stats[$class]['score']) ?></th>
 		</tr>
 
