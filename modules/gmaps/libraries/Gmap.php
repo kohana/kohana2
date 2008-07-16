@@ -63,13 +63,14 @@ class Gmap_Core {
 			$addresss = rawurlencode($address);
 
 			// Disable error reporting while fetching the feed
-			$ER = error_reporting(0);
+			$ER = error_reporting(~E_NOTICE);
 
 			// Load the XML
 			$xml = simplexml_load_file
 			(
 				'http://maps.google.com/maps/geo?'.
 				'&output=xml'.
+				'&oe=utf-8'.
 				'&key='.$api_key.
 				'&q='.rawurlencode($address)
 			);
