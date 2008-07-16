@@ -135,7 +135,7 @@ class URI_Core extends Router {
 	 *
 	 * @param   array    array to rebuild
 	 * @param   integer  offset to start from
-	 * @param   bool     create an associative array
+	 * @param   boolean  create an associative array
 	 * @return  array
 	 */
 	public function build_array($array, $offset = 0, $associative = FALSE)

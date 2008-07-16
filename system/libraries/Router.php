@@ -278,7 +278,7 @@ class Router_Core {
 
 				if (preg_match('#^'.$key.'$#u', $uri))
 				{
-					if (strpos($val, '$') !== FALSE AND strpos($key, '(') !== FALSE)
+					if (strpos($val, '$') !== FALSE)
 					{
 						// Use regex routing
 						$routed_uri = preg_replace('#^'.$key.'$#u', $val, $uri);
