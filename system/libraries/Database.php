@@ -707,7 +707,7 @@ class Database_Core {
 	{
 		$this->limit  = (int) $limit;
 
-		if ($offset !== NULL)
+		if ($offset !== NULL OR ! is_int($this->offset))
 		{
 			$this->offset($offset);
 		}
