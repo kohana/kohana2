@@ -26,6 +26,7 @@ class ORM_Core {
 	protected $changed = array();
 	protected $loaded  = FALSE;
 	protected $saved   = FALSE;
+	protected $sorting = array('id' => 'asc');
 
 	// Related objects
 	protected $related = array();
@@ -43,8 +44,9 @@ class ORM_Core {
 	protected $table_names_plural = TRUE;
 	protected $reload_on_wakeup   = TRUE;
 
-	// Database instance name
+	// Database configuration
 	protected $db = 'default';
+	protected $db_applied = array();
 
 	/**
 	 * Creates and returns a new model.
@@ -73,7 +75,7 @@ class ORM_Core {
 		// Initialize database
 		$this->__initialize();
 
-		if ($id === NULL)
+		if ($id === NULL OR $id === '')
 		{
 			// Clear the object
 			$this->clear();
@@ -138,7 +140,7 @@ class ORM_Core {
 	public function __sleep()
 	{
 		// Store only information about the object
-		return array('object', 'changed', 'loaded', 'saved');
+		return array('object', 'changed', 'loaded', 'saved', 'sorting');
 	}
 
 	/**
@@ -173,6 +175,9 @@ class ORM_Core {
 		{
 			if (in_array($method, array('query', 'get', 'insert', 'update', 'delete')))
 				throw new Kohana_Exception('orm.query_methods_not_allowed');
+
+			// Method has been applied to the database
+			$this->db_applied[$method] = $method;
 
 			// Number of arguments passed
 			$num_args = count($args);
@@ -456,8 +461,20 @@ class ORM_Core {
 	{
 		if ($limit !== NULL)
 		{
-			// Set limit and offset
-			$this->db->limit($limit, $offset);
+			// Set limit
+			$this->db->limit($limit);
+		}
+
+		if ($offset !== NULL)
+		{
+			// Set offset
+			$this->db->offset($offset);
+		}
+
+		if ( ! isset($this->db_applied['orderby']))
+		{
+			// Apply sorting
+			$this->db->orderby($this->sorting);
 		}
 
 		return $this->load_result(TRUE);
@@ -1015,6 +1032,12 @@ class ORM_Core {
 		{
 			// Only fetch 1 record
 			$this->db->limit(1);
+		}
+
+		if ( ! isset($this->db_applied['select']))
+		{
+			// Selete all columns by default
+			$this->db->select($this->table_name.'.*');
 		}
 
 		// Load the result
