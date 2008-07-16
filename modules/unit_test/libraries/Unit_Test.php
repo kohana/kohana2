@@ -111,6 +111,7 @@ class Unit_Test_Core {
 				$this->results[$class] = array();
 				$this->stats[$class] = array('passed' => 0, 'failed' => 0, 'errors' => 0);
 
+
 				// Loop through all the class methods
 				foreach ($reflector->getMethods() as $method)
 				{
@@ -145,6 +146,7 @@ class Unit_Test_Core {
 						// Test passed
 						$this->results[$class][$method_name] = TRUE;
 						$this->stats[$class]['passed']++;
+
 					}
 					catch (Kohana_Unit_Test_Exception $e)
 					{
@@ -180,7 +182,7 @@ class Unit_Test_Core {
 
 		// Hide passed tests from the report?
 		$hide_passed = (bool) (($hide_passed !== NULL) ? $hide_passed : Config::item('unit_test.hide_passed', FALSE, FALSE));
-
+	
 		// Render unit_test report
 		return View::factory('kohana_unit_test')
 			->set('results', $this->results)
@@ -188,6 +190,20 @@ class Unit_Test_Core {
 			->set('hide_passed', $hide_passed)
 			->render();
 	}
+
+
+	/**
+	 *
+	 *@TODO
+	 *
+	 */
+	private collect_code_coverage_information() 
+	{
+		
+
+
+	}
+	
 
 	/**
 	 * Magically convert this object to a string.
@@ -219,6 +235,7 @@ abstract class Unit_Test_Case {
 
 	public function assert_true($value, $debug = NULL)
 	{
+
 		if ($value != TRUE)
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_true', gettype($value), var_export($value, TRUE)), $debug);
 
@@ -410,6 +427,14 @@ abstract class Unit_Test_Case {
 	}
 
 } // End Unit_Test_Case
+
+
+abstract class Database_Unit_Test_Case {
+	
+
+
+} // End Database_Unit_Test_Case
+
 
 
 class Kohana_Unit_Test_Exception extends Exception {
