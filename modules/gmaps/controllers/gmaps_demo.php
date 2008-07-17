@@ -17,10 +17,11 @@ class Gmaps_Demo_Controller extends Controller {
 
 	public function index()
 	{
-		$this->db = Database::instance('mysql://root:r00tdb@localhost/azmap');
-
 		// Create a new Gmap
-		$map = new Gmap('map');
+		$map = new Gmap('map', array
+		(
+			'ScrollWheelZoom' => TRUE,
+		));
 
 		// Set the map center point
 		$map->center(0, 0, 1)->controls('large');
@@ -28,13 +29,11 @@ class Gmaps_Demo_Controller extends Controller {
 		// Add a new marker
 		$map->add_marker(44.9801, -93.2519, '<strong>Minneapolis, MN</strong><p>Hello world!</p>');
 
-		View::factory('gmaps/api_demo')->set('map', $map->render())->render(TRUE);
+		View::factory('gmaps/api_demo')->set(array('api_url' => $map->api_uri(), 'map' => $map->render()))->render(TRUE);
 	}
 
 	public function azmap()
 	{
-		$this->db = Database::instance('mysql://root:r00tdb@localhost/azmap');
-
 		// Create a new Gmap
 		$map = new Gmap('map', array
 		(
@@ -118,13 +117,15 @@ class Gmaps_Demo_Controller extends Controller {
 
 	public function jquery()
 	{
-		View::factory('gmaps/jquery')->render(TRUE);
+		$map = new Gmap('map');
+		
+		$map->center(0, 35, 16)->controls('large');
+
+		View::factory('gmaps/jquery')->set(array('api_url' => $map->api_uri(), 'map' => $map->render('gmaps/jquery_javascript')))->render(TRUE);
 	}
 
 	public function xml()
 	{
-		$this->db = Database::instance('mysql://root:r00tdb@localhost/azmap');
-
 		// Get all locations
 		$locations = ORM::factory('location')->find_all();
 
@@ -136,9 +137,9 @@ class Gmaps_Demo_Controller extends Controller {
 			// Create a new mark
 			$node = $xml->addChild('marker');
 
-			// Set the latitutde and longitude
-			$node->addAttribute('lon', $location->lon);
-			$node->addAttribute('lat', $location->lat);
+			// Set the latitude and longitude
+			$node->addAttribute('lon', sprintf('%F', $location->lon));
+			$node->addAttribute('lat', sprintf('%F', $location->lat));
 
 			$node->html = View::factory('gmaps/xml')->bind('location', $location)->render();
 

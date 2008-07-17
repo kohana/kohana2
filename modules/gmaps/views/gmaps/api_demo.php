@@ -3,13 +3,13 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 <title>Google Maps JavaScript API Example</title>
-<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=<?php echo Config::item('gmaps.api_key') ?>&amp;hl=<?php echo substr(Config::item('locale.language'), 0, 2) ?>" type="text/javascript"></script>
+<script src="<?php echo $api_url ?>" type="text/javascript"></script>
+<script type="text/javascript">
+<?php echo $map ?>
+</script>
 </head>
 <body>
 <p>You can use your scroll wheel to zoom in and out of the map.</p>
 <div id="map" style="width: 600px; height: 400px"></div>
-<script type="text/javascript">
-<?php echo $map ?>
-</script>
 </body>
 </html>

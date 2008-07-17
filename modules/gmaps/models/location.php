@@ -8,8 +8,8 @@ CREATE TABLE `locations` (
   `title` varchar(32) NOT NULL,
   `description` varchar(127) NOT NULL,
   `link` varchar(127) NOT NULL,
-  `lon` float NOT NULL,
-  `lat` float NOT NULL,
+  `lon` float(10,6) NOT NULL,
+  `lat` float(10,6) NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `uniq_ll` (`lon`,`lat`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;

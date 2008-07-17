@@ -100,7 +100,7 @@ class Gmap_Core {
 	protected $control;
 
 	// Map markers
-	protected $markers;
+	protected $markers = array();
 
 	/**
 	 * Set the GMap center point.
@@ -115,6 +115,17 @@ class Gmap_Core {
 		$this->id = $id;
 		$this->options = new Gmap_Options((array) $options);
 	}
+	
+	/**
+	 * Return GMap javascript url
+	 * 
+	 *
+	 * @return string
+	 */
+	 public function api_uri()
+	 {
+	    return 'http://www.google.com/jsapi?key='.Config::item('gmaps.api_key');
+	 }
 
 	/**
 	 * Set the GMap center point.
@@ -143,7 +154,7 @@ class Gmap_Core {
 	public function controls($size = NULL)
 	{
 		// Set the control type
-		$this->controls = (strtolower($size) === 'small') ? 'Small' : 'Large';
+		$this->control = (strtolower($size) === 'small') ? 'Small' : 'Large';
 
 		return $this;
 	}
@@ -152,9 +163,9 @@ class Gmap_Core {
 	 * Set the GMap marker point.
 	 *
 	 * @chainable
-	 * @param   float   latitude
-	 * @param   float   longitude
-	 * @param   string  HTML for info window
+	 * @param   float   $lat latitude
+	 * @param   float   $lon longitude
+	 * @param   string  $html HTML for info window
 	 * @return  object
 	 */
 	public function add_marker($lat, $lon, $html = '')
@@ -168,33 +179,30 @@ class Gmap_Core {
 	/**
 	 * Render the map into GMap Javascript.
 	 *
+	 * @param string $template template name
 	 * @return  string
 	 */
-	public function render()
+	public function render($template = 'gmaps/javascript')
 	{
 		// Latitude, longitude, and zoom
 		list ($lat, $lon, $zoom) = $this->center;
 
 		// Map
-		$map = 'var map = new GMap2(document.getElementById("'.$this->id.'"));';
+		$map = 'var map = new google.maps.Map2(document.getElementById("'.$this->id.'"));';
 
 		// Map controls
-		$controls = empty($this->controls) ? '' : 'map.addControl(new G'.$this->controls.'MapControl());';
+		$controls = empty($this->control) ? '' : 'map.addControl(new google.maps.'.$this->control.'MapControl());';
 
 		// Map centering
-		$center = 'map.setCenter(new GLatLng('.$lat.', '.$lon.'));';
-
-		// Map zoom
-		$zoom = 'map.setZoom('.$zoom.');';
+		$center = 'map.setCenter(new google.maps.LatLng('.$lat.', '.$lon.'), '.$zoom.');';
 
 		// Render the Javascript
-		return View::factory('gmaps/javascript', array
+		return View::factory($template, array
 			(
 				'map' => $map,
 				'options' => $this->options,
 				'controls' => $controls,
 				'center' => $center,
-				'zoom' => $zoom,
 				'markers' => $this->markers,
 			))
 			->render();

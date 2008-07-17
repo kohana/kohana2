@@ -36,10 +36,10 @@ class Gmap_Marker_Core {
 		$tabs = empty($tabs) ? '' : str_repeat("\t", $tabs);
 
 		$output = array();
-		$output[] = 'var m = new GMarker(new GLatLng('.$this->latitude.', '.$this->longitude.'));';
+		$output[] = 'var m = new google.maps.Marker(new google.maps.LatLng('.$this->latitude.', '.$this->longitude.'));';
 		if ($html = $this->html)
 		{
-			$output[] = 'GEvent.addListener(m, "click", function()';
+			$output[] = 'google.maps.Event.addListener(m, "click", function()';
 			$output[] = '{';
 			$output[] = "\t".'m.openInfoWindowHtml(';
 			$output[] = "\t\t'".implode("'+\n\t\t$tabs'", explode("\n", $html))."'";
