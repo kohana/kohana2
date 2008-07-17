@@ -165,15 +165,8 @@ class Session_Core {
 			$_SESSION['total_hits'] = 0;
 			$_SESSION['_kf_flash_'] = array();
 
-			if (in_array('user_agent', self::$config['validate']))
-			{
-				$_SESSION['user_agent'] = Kohana::$user_agent;
-			}
-
-			if (in_array('ip_address', self::$config['validate']))
-			{
-				$_SESSION['ip_address'] = $this->input->ip_address();
-			}
+			$_SESSION['user_agent'] = Kohana::$user_agent;
+			$_SESSION['ip_address'] = $this->input->ip_address();
 		}
 
 		// Set up flash variables
