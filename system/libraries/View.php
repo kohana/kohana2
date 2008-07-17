@@ -16,9 +16,9 @@ class View_Core {
 	protected $kohana_filename = FALSE;
 	protected $kohana_filetype = FALSE;
 
-	// Set variables
-	protected $data = array();
-	protected static $global_data = array();
+	// View variable storage
+	protected $kohana_local_data = array();
+	protected static $kohana_global_data = array();
 
 	/**
 	 * Creates a new View using the given parameters.
@@ -53,7 +53,7 @@ class View_Core {
 		if (is_array($data) AND ! empty($data))
 		{
 			// Preload data using array_merge, to allow user extensions
-			$this->data = array_merge($this->data, $data);
+			$this->kohana_local_data = array_merge($this->kohana_local_data, $data);
 		}
 	}
 
@@ -121,7 +121,7 @@ class View_Core {
 	 */
 	public function bind($name, & $var)
 	{
-		$this->data[$name] =& $var;
+		$this->kohana_local_data[$name] =& $var;
 
 		return $this;
 	}
@@ -139,12 +139,12 @@ class View_Core {
 		{
 			foreach ($name as $key => $value)
 			{
-				self::$global_data[$key] = $value;
+				self::$kohana_global_data[$key] = $value;
 			}
 		}
 		else
 		{
-			self::$global_data[$name] = $value;
+			self::$kohana_global_data[$name] = $value;
 		}
 
 		return $this;
@@ -161,7 +161,7 @@ class View_Core {
 	{
 		if ( ! isset($this->$key))
 		{
-			$this->data[$key] = $value;
+			$this->kohana_local_data[$key] = $value;
 		}
 	}
 
@@ -174,8 +174,11 @@ class View_Core {
 	 */
 	public function __get($key)
 	{
-		if (isset($this->data[$key]))
-			return $this->data[$key];
+		if (isset($this->kohana_local_data[$key]))
+			return $this->kohana_local_data[$key];
+
+		if (isset(self::$kohana_global_data[$key]))
+			return self::$kohana_global_data[$key];
 
 		if (isset($this->$key))
 			return $this->$key;
@@ -207,7 +210,7 @@ class View_Core {
 		if (is_string($this->kohana_filetype))
 		{
 			// Merge global and local data, local overrides global with the same name
-			$data = array_merge(self::$global_data, $this->data);
+			$data = array_merge(self::$kohana_global_data, $this->kohana_local_data);
 
 			// Load the view in the controller for access to $this
 			$output = Kohana::$instance->_kohana_load_view($this->kohana_filename, $data);
