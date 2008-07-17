@@ -363,12 +363,21 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
-	public function assert_array_key($key, $array)
+	public function assert_array_key($key, $array, $debug = NULL)
 	{
 		if ( ! array_key_exists($key, $array)) {
-			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_array_key', gettype($value), var_export($value, TRUE)), $debug);
+			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_array_key', gettype($key), var_export($key, TRUE)), $debug);
 		}
 
+		return $this;
+	}
+
+	public function assert_in_array($value, $array, $debug = NULL) 
+	{
+		if ( ! in_array($value, $array)) {
+			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_in_array', gettype($value), var_export($value, TRUE)), $debug);
+		}		
+		
 		return $this;
 	}
 
@@ -444,20 +453,27 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
-	public function assert_class_attribute() 
+	public function assert_class_attribute($attribute, $class)
 	{
 		
 
 
 	}
 
-	public function assert_class_static_attribute() 
+	public function assert_class_static_attribute($attribute, $class) 
 	{
 		
 
 
 	}
 	
+	public function assert_file_exists($file) 
+	{
+		
+
+
+	}
+
 } // End Unit_Test_Case
 
 

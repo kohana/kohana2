@@ -77,7 +77,12 @@ class Example_Test extends Unit_Test_Case {
 		$array = array("a" => "A", "b" => "B");		
 		$this->assert_array_key("a", $array);
 	}
-
+	
+	public function in_array_test() 
+	{
+		$array = array("X", "Y", "Z");
+		$this->assert_in_array("X", $array);
+	}	
 
 	public function debug_example_test()
 	{
