@@ -25,7 +25,7 @@ class Cache_Core {
 	/**
 	 * Returns a singleton instance of Cache.
 	 *
-	 * @param   array   configuration
+	 * @param   array  configuration
 	 * @return  Cache_Core
 	 */
 	public static function instance($config = array())
@@ -41,8 +41,8 @@ class Cache_Core {
 	/**
 	 * Loads the configured driver and validates it.
 	 *
-	 * @param  array  custom configuration
-	 * @return void
+	 * @param   array  custom configuration
+	 * @return  void
 	 */
 	public function __construct($config = array())
 	{
@@ -98,11 +98,11 @@ class Cache_Core {
 
 	/**
 	 * Fetches a cache by id. Non-string cache items are automatically
-	 * unserialized before the cache is returned. NULL is returned when
+	 * unserialized before the cache is returned. FALSE is returned when
 	 * a cache item is not found.
 	 *
-	 * @param  string  cache id
-	 * @return mixed   cached data or NULL
+	 * @param   string  cache id
+	 * @return  mixed   cached data or FALSE
 	 */
 	public function get($id)
 	{
@@ -125,8 +125,8 @@ class Cache_Core {
 	 * Fetches all of the caches for a given tag. An empty array will be
 	 * returned when no matching caches are found.
 	 *
-	 * @param  string  cache tag
-	 * @return array   all cache items matching the tag
+	 * @param   string  cache tag
+	 * @return  array   all cache items matching the tag
 	 */
 	public function find($tag)
 	{
@@ -136,11 +136,12 @@ class Cache_Core {
 			foreach ($ids as $id)
 			{
 				// Load each cache item and add it to the array
-				if (($cache = $this->get($id)) !== NULL)
+				if (($cache = $this->get($id)) !== FALSE)
 				{
 					$data[$id] = $cache;
 				}
 			}
+
 			return $data;
 		}
 
@@ -151,11 +152,11 @@ class Cache_Core {
 	 * Set a cache item by id. Tags may also be added and a custom lifetime
 	 * can be set. Non-string data is automatically serialized.
 	 *
-	 * @param  string  unique cache id
-	 * @param  mixed   data to cache
-	 * @param  array   tags for this item
-	 * @param  integer number of seconds until the cache expires
-	 * @return bool
+	 * @param   string   unique cache id
+	 * @param   mixed    data to cache
+	 * @param   array    tags for this item
+	 * @param   integer  number of seconds until the cache expires
+	 * @return  boolean
 	 */
 	function set($id, $data, $tags = NULL, $lifetime = NULL)
 	{
@@ -171,15 +172,8 @@ class Cache_Core {
 			$data = '<{serialized}>'.serialize($data);
 		}
 
-		if (empty($tags))
-		{
-			$tags = array();
-		}
-		else
-		{
-			// Make sure that tags is an array
-			$tags = (array) $tags;
-		}
+		// Make sure that tags is an array
+		$tags = empty($tags) ? array() : (array) $tags;
 
 		if ($lifetime === NULL)
 		{
@@ -187,14 +181,14 @@ class Cache_Core {
 			$lifetime = $this->config['lifetime'];
 		}
 
-		return $this->driver->set($id, $data, $tags, $lifetime);
+		return $this->driver->set($id, $data, (array) $tags, $lifetime);
 	}
 
 	/**
 	 * Delete a cache item by id.
 	 *
-	 * @param  string  cache id
-	 * @return bool
+	 * @param   string   cache id
+	 * @return  boolean
 	 */
 	public function delete($id)
 	{
@@ -207,8 +201,8 @@ class Cache_Core {
 	/**
 	 * Delete all cache items with a given tag.
 	 *
-	 * @param  string  cache tag name
-	 * @return bool
+	 * @param   string   cache tag name
+	 * @return  boolean
 	 */
 	public function delete_tag($tag)
 	{
@@ -218,7 +212,7 @@ class Cache_Core {
 	/**
 	 * Delete ALL cache items items.
 	 *
-	 * @return bool
+	 * @return  boolean
 	 */
 	public function delete_all()
 	{
