@@ -100,14 +100,10 @@ text::alternate();
 
 	<table>
 		<tr>
-			<th>% of Passed Tests</th>
-			<th class="k-stats"><?php printf("%s: %.2f%%", Kohana::lang('unit_test.score'), $stats[$class]['score']) ?></th>
-		</tr>
-
-		<tr>
 			<th><?php echo $class ?></th>
 			<th class="k-stats">
-				<?php echo Kohana::lang('unit_test.total'),  ': ', $stats[$class]['total'] ?>
+				<?php printf('%s: %.2f%%', Kohana::lang('unit_test.score'), $stats[$class]['score']) ?> |
+				<?php echo Kohana::lang('unit_test.total'),  ': ', $stats[$class]['total'] ?>,
 				<?php echo Kohana::lang('unit_test.passed'), ': ', $stats[$class]['passed'] ?>,
 				<?php echo Kohana::lang('unit_test.failed'), ': ', $stats[$class]['failed'] ?>,
 				<?php echo Kohana::lang('unit_test.errors'), ': ', $stats[$class]['errors'] ?>

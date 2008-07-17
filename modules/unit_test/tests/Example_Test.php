@@ -72,17 +72,17 @@ class Example_Test extends Unit_Test_Case {
 			->assert_not_pattern($var, '/^Kohana$/D');
 	}
 
-	public function array_key_test() 
+	public function array_key_test()
 	{
-		$array = array("a" => "A", "b" => "B");		
-		$this->assert_array_key("a", $array);
+		$array = array('a' => 'A', 'b' => 'B');
+		$this->assert_array_key('a', $array);
 	}
-	
-	public function in_array_test() 
+
+	public function in_array_test()
 	{
-		$array = array("X", "Y", "Z");
-		$this->assert_in_array("X", $array);
-	}	
+		$array = array('X', 'Y', 'Z');
+		$this->assert_in_array('X', $array);
+	}
 
 	public function debug_example_test()
 	{

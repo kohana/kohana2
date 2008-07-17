@@ -109,9 +109,14 @@ class Unit_Test_Core {
 
 				// Initialize test class results and stats
 				$this->results[$class] = array();
-				$this->stats[$class] = array('passed' => 0, 'failed' => 0, 'errors' => 0, 'total' => 0,
-							     'score'  => 0);
-							
+				$this->stats[$class] = array
+				(
+					'passed' => 0,
+					'failed' => 0,
+					'errors' => 0,
+					'total' => 0,
+					'score'  => 0,
+				);
 
 				// Loop through all the class methods
 				foreach ($reflector->getMethods() as $method)
@@ -119,7 +124,7 @@ class Unit_Test_Core {
 					// Skip invalid test methods
 					if ( ! $method->isPublic() OR $method->isStatic() OR $method->getNumberOfRequiredParameters() !== 0)
 						continue;
-					
+
 					// Test methods should be suffixed with "_test"
 					if (substr($method_name = $method->getName(), -5) !== '_test')
 						continue;
@@ -152,7 +157,7 @@ class Unit_Test_Core {
 
 					}
 					catch (Kohana_Unit_Test_Exception $e)
-					{	
+					{
 						$this->stats[$class]['total']++;
 						// Test failed
 						$this->results[$class][$method_name] = $e;
@@ -167,9 +172,9 @@ class Unit_Test_Core {
 						$this->stats[$class]['errors']++;
 					}
 
-					
-					$this->stats[$class]['score'] = $this->stats[$class]['passed'] * 100 / 
-									$this->stats[$class]['total'];
+					// Calculate score
+					$this->stats[$class]['score'] = $this->stats[$class]['passed'] * 100 / $this->stats[$class]['total'];
+
 					// Cleanup
 					unset($object);
 				}
@@ -206,13 +211,13 @@ class Unit_Test_Core {
 	 *@TODO
 	 *
 	 */
-	private function collect_code_coverage_information() 
+	private function collect_code_coverage_information()
 	{
-		
+
 
 
 	}
-	
+
 
 	/**
 	 * Magically convert this object to a string.
@@ -372,12 +377,12 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
-	public function assert_in_array($value, $array, $debug = NULL) 
+	public function assert_in_array($value, $array, $debug = NULL)
 	{
 		if ( ! in_array($value, $array)) {
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_in_array', gettype($value), var_export($value, TRUE)), $debug);
-		}		
-		
+		}
+
 		return $this;
 	}
 
@@ -455,21 +460,21 @@ abstract class Unit_Test_Case {
 
 	public function assert_class_attribute($attribute, $class)
 	{
-		
+
+
+
+	}
+
+	public function assert_class_static_attribute($attribute, $class)
+	{
+
 
 
 	}
 
-	public function assert_class_static_attribute($attribute, $class) 
+	public function assert_file_exists($file)
 	{
-		
 
-
-	}
-	
-	public function assert_file_exists($file) 
-	{
-		
 
 
 	}
@@ -478,7 +483,7 @@ abstract class Unit_Test_Case {
 
 
 abstract class Database_Unit_Test_Case {
-	
+
 
 
 } // End Database_Unit_Test_Case
