@@ -106,7 +106,7 @@ class email_Core {
 	/**
 	 * Send an email message.
 	 *
-	 * @param   string|array  recipient email (and name)
+	 * @param   string|array  recipient email (and name), or an array of To, Cc, Bcc names
 	 * @param   string|array  sender email (and name)
 	 * @param   string        message subject
 	 * @param   string        message body
@@ -124,13 +124,58 @@ class email_Core {
 		// Create the message
 		$message = new Swift_Message($subject, $message, $html, '8bit', 'utf-8');
 
-		// Make a personalized To: address
-		is_object($to) or $to = is_array($to) ? new Swift_Address($to[0], $to[1]) : new Swift_Address($to);
+		if (is_string($to))
+		{
+			// Single recipient
+			$recipients = new Swift_Address($to);
+		}
+		elseif (is_array($to))
+		{
+			if (isset($to[0]) AND isset($to[1]))
+			{
+				// Create To: address set
+				$to = array('to' => $to);
+			}
 
-		// Make a personalized From: address
-		is_object($from) or $from = is_array($from) ? new Swift_Address($from[0], $from[1]) : new Swift_Address($from);
+			// Create a list of recipients
+			$recipients = new Swift_RecipientList;
 
-		return email::$mail->send($message, $to, $from);
+			foreach ($to as $method => $set)
+			{
+				if ( ! in_array($method, array('to', 'cc', 'bcc')))
+				{
+					// Use To: by default
+					$method = 'to';
+				}
+
+				// Create method name
+				$method = 'add'.ucfirst($method);
+
+				if (is_array($set))
+				{
+					// Add a recipient with name
+					$recipients->$method($set[0], $set[1]);
+				}
+				else
+				{
+					// Add a recipient without name
+					$recipients->$method($set);
+				}
+			}
+		}
+
+		if (is_string($from))
+		{
+			// From without a name
+			$from = new Swift_Address($from);
+		}
+		elseif (is_array($from))
+		{
+			// From with a name
+			$from = new Swift_Address($from[0], $from[1]);
+		}
+
+		return email::$mail->send($message, $recipients, $from);
 	}
 
 } // End email
