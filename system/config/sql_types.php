@@ -29,7 +29,7 @@ $config = array
 );
 
 // DOUBLE
-$config['double'] = $config['decimal'] = $config['real'] = $config['float'];
+$config['double'] = $config['decimal'] = $config['real'] = $config['numeric'] = $config['float'];
 
 // BIT
 $config['bit'] = $config['boolean'];
