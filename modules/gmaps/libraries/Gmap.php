@@ -124,7 +124,7 @@ class Gmap_Core {
 	 */
 	 public function api_uri()
 	 {
-	    return 'http://www.google.com/jsapi?key='.Config::item('gmaps.api_key');
+	    return 'http://www.google.com/jsapi?key='.Config::item('gmaps.api_key').'&amp;oe=utf-8';
 	 }
 
 	/**
