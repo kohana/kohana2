@@ -181,7 +181,7 @@ class Cache_Core {
 			$lifetime = $this->config['lifetime'];
 		}
 
-		return $this->driver->set($id, $data, (array) $tags, $lifetime);
+		return $this->driver->set($id, $data, $tags, $lifetime);
 	}
 
 	/**
