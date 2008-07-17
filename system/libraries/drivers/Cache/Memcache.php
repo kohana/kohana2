@@ -43,7 +43,7 @@ class Cache_Memcache_Driver implements Cache_Driver {
 
 	public function get($id)
 	{
-		return $this->backend->get($id);
+		return (($return = $this->backend->get($id)) === FALSE) ? NULL : $return;
 	}
 
 	public function set($id, $data, $tags, $lifetime)

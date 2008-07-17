@@ -176,8 +176,8 @@ class Cache_Sqlite_Driver implements Cache_Driver {
 			}
 		}
 
-		// No valid cache foud
-		return FALSE;
+		// No valid cache found
+		return NULL;
 	}
 
 	/**

@@ -22,7 +22,7 @@ class Cache_Xcache_Driver implements Cache_Driver {
 		if (xcache_isset($id))
 			return xcache_get($id);
 
-		return FALSE;
+		return NULL;
 	}
 
 	public function set($id, $data, $tags, $lifetime)

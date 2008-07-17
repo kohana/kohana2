@@ -19,7 +19,7 @@ class Cache_Apc_Driver implements Cache_Driver {
 
 	public function get($id)
 	{
-		return apc_fetch($id);
+		return (($return = apc_fetch($id)) === FALSE) ? NULL : $return;
 	}
 
 	public function set($id, $data, $tags, $lifetime)

@@ -98,11 +98,11 @@ class Cache_Core {
 
 	/**
 	 * Fetches a cache by id. Non-string cache items are automatically
-	 * unserialized before the cache is returned. FALSE is returned when
+	 * unserialized before the cache is returned. NULL is returned when
 	 * a cache item is not found.
 	 *
 	 * @param   string  cache id
-	 * @return  mixed   cached data or FALSE
+	 * @return  mixed   cached data or NULL
 	 */
 	public function get($id)
 	{
@@ -136,7 +136,7 @@ class Cache_Core {
 			foreach ($ids as $id)
 			{
 				// Load each cache item and add it to the array
-				if (($cache = $this->get($id)) !== FALSE)
+				if (($cache = $this->get($id)) !== NULL)
 				{
 					$data[$id] = $cache;
 				}

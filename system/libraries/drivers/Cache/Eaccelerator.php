@@ -19,7 +19,7 @@ class Cache_Eaccelerator_Driver implements Cache_Driver {
 
 	public function get($id)
 	{
-		return (($return = eaccelerator_get($id)) === NULL) ? FALSE : $return;
+		return eaccelerator_get($id);
 	}
 
 	public function find($tag)

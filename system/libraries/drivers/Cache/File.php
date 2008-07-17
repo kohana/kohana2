@@ -136,8 +136,8 @@ class Cache_File_Driver implements Cache_Driver {
 	 * Fetches a cache item. This will delete the item if it is expired or if
 	 * the hash does not match the stored hash.
 	 *
-	 * @param  string  cache id
-	 * @return mixed|NULL
+	 * @param   string  cache id
+	 * @return  mixed|NULL
 	 */
 	public function get($id)
 	{
@@ -173,16 +173,16 @@ class Cache_File_Driver implements Cache_Driver {
 			}
 		}
 
-		// Return FALSE if there is no data
-		return isset($data) ? $data : FALSE;
+		// Return NULL if there is no data
+		return isset($data) ? $data : NULL;
 	}
 
 	/**
 	 * Deletes a cache item by id or tag
 	 *
-	 * @param  string  cache id or tag, or TRUE for "all items"
-	 * @param  bool    use tags
-	 * @return bool
+	 * @param   string   cache id or tag, or TRUE for "all items"
+	 * @param   boolean  use tags
+	 * @return  boolean
 	 */
 	public function delete($id, $tag = FALSE)
 	{
