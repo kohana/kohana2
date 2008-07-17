@@ -72,6 +72,13 @@ class Example_Test extends Unit_Test_Case {
 			->assert_not_pattern($var, '/^Kohana$/D');
 	}
 
+	public function array_key_test() 
+	{
+		$array = array("a" => "A", "b" => "B");		
+		$this->assert_array_key("a", $array);
+	}
+
+
 	public function debug_example_test()
 	{
 		foreach (array(1, 5, 6, 12, 65, 128, 9562) as $var)

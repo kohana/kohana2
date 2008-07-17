@@ -363,6 +363,15 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	public function assert_array_key($key, $array)
+	{
+		if ( ! array_key_exists($key, $array)) {
+			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_array_key', gettype($value), var_export($value, TRUE)), $debug);
+		}
+
+		return $this;
+	}
+
 	public function assert_not_array($value, $debug = NULL)
 	{
 		if (is_array($value))
@@ -435,6 +444,20 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
+	public function assert_class_attribute() 
+	{
+		
+
+
+	}
+
+	public function assert_class_static_attribute() 
+	{
+		
+
+
+	}
+	
 } // End Unit_Test_Case
 
 
