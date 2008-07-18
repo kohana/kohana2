@@ -92,6 +92,49 @@ class Gmap_Core {
 
 		return $xml;
 	}
+	
+	/**
+	 * Returns an image map
+	 *
+	 * @param   mixed  $lat latitude or an array of marker points
+	 * @param 	float  $lon longitude
+	 * @param	integer $zoom zoom level (1-16)
+	 * @param 	string $type map type (roadmap or mobile)
+	 * @param 	integer $width map width
+	 * @param	integer $height map height
+	 * @return  string
+	 */
+	public static function static_map($lat = 0, $lon = 0, $zoom = 6, $type = 'roadmap', $width = 300, $height = 300)
+	{
+		$api_url = 'http://maps.google.com/staticmap?key='.Config::item('gmaps.api_key');
+
+		$types = array('roadmap', 'mobile');
+
+		$width = min(640, (int) $width);
+        $height = min(640, (int) $height);
+
+		if ($width <= 0 OR $height <= 0)
+			throw new Kohana_Exception('gmaps.invalid_dimensions', $width, $height);
+
+		$api_url = $api_url.'&amp;size='.$width.'x'.$height;
+		
+		if (in_array($type, $types))
+            $api_url = $api_url.'&amp;maptype='.$type;
+ 		
+		if (is_array($lat))
+		{
+			foreach ($lat as $key => $value)
+				$markers[] = $key.','.$value;
+
+			$api_url = $api_url.'&amp;markers='.implode('|', $markers);
+		}
+		else
+		{
+			$api_url = $api_url.'&amp;center='.$lat.','.$lon.'&amp;zoom='.$zoom;
+		}
+
+        return $api_url;
+	}
 
 	// Map settings
 	protected $id;

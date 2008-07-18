@@ -31,6 +31,13 @@ class Gmaps_Demo_Controller extends Controller {
 
 		View::factory('gmaps/api_demo')->set(array('api_url' => $map->api_uri(), 'map' => $map->render()))->render(TRUE);
 	}
+	
+	public function image_map()
+	{
+		$points = array('-37.814251' => '144.963169', '-33.867139' => '151.207114', '-27.467580' => '153.027892');
+		
+		View::factory('gmaps/static_demo')->set(array('simple' => Gmap::static_map(44.9801, -93.2519),'multi' => Gmap::static_map($points)))->render(TRUE);
+	}
 
 	public function azmap()
 	{
