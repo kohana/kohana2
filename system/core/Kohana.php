@@ -26,6 +26,9 @@ class Kohana {
 	// The current user agent
 	public static $user_agent = '';
 
+	// The current locale
+	public static $locale = '';
+
 	// File path cache
 	private static $paths;
 	private static $paths_changed = FALSE;
@@ -56,16 +59,16 @@ class Kohana {
 		Benchmark::start(SYSTEM_BENCHMARK.'_environment_setup');
 
 		// Define Kohana error constant
-		defined('E_KOHANA') or define('E_KOHANA', 42);
+		define('E_KOHANA', 42);
 
 		// Define 404 error constant
-		defined('E_PAGE_NOT_FOUND') or define('E_PAGE_NOT_FOUND', 43);
+		define('E_PAGE_NOT_FOUND', 43);
 
 		// Define database error constant
-		defined('E_DATABASE_ERROR') or define('E_DATABASE_ERROR', 44);
+		define('E_DATABASE_ERROR', 44);
 
 		// Disable error reporting
-		$ER = error_reporting(0);
+		$ER = error_reporting(~E_NOTICE);
 
 		// Set the user agent
 		self::$user_agent = trim($_SERVER['HTTP_USER_AGENT']);
@@ -107,10 +110,14 @@ class Kohana {
 		// Send default text/html UTF-8 header
 		header('Content-type: text/html; charset=UTF-8');
 
-		// Set locale information
+		// Load locales
 		$locales = Config::item('locale.language');
+
+		// Make first locale UTF-8
 		$locales[0] .= '.UTF-8';
-		setlocale(LC_ALL, $locales);
+
+		// Set locale information
+		self::$locale = setlocale(LC_ALL, $locales);
 
 		if (Config::item('log.threshold') > 0)
 		{
@@ -947,8 +954,8 @@ class Kohana {
 			$messages = array();
 
 			// The name of the file to search for
-			$locales = Config::item('locale.language');
-			$filename = $locales[0].'/'.$group;
+			$locale   = Config::item('locale.language.0');
+			$filename = $locale.'/'.$group;
 
 			// Loop through the files and include each one, so SYSPATH files
 			// can be overloaded by more localized files
@@ -978,11 +985,11 @@ class Kohana {
 		// Get the line from the language
 		$line = self::key_string($language, $key);
 
-		// Return the key string as fallback
 		if ($line === NULL)
 		{
-			$locales = Config::item('locale.language');
-			Log::add('error', 'Missing i18n entry '.$key.' for language '.$locales[0]);
+			Log::add('error', 'Missing i18n entry '.$key.' for language '.$locale);
+
+			// Return the key string as fallback
 			return $key;
 		}
 
