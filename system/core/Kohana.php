@@ -67,8 +67,8 @@ class Kohana {
 		// Define database error constant
 		define('E_DATABASE_ERROR', 44);
 
-		// Disable error reporting
-		$ER = error_reporting(~E_NOTICE);
+		// Disable notices and "strict" errors
+		$ER = error_reporting(~E_NOTICE & ~E_STRICT);
 
 		// Set the user agent
 		self::$user_agent = trim($_SERVER['HTTP_USER_AGENT']);
