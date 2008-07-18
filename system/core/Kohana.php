@@ -944,6 +944,9 @@ class Kohana {
 	{
 		static $language = array();
 
+		// Get locale name
+		$locale = Config::item('locale.language.0');
+
 		// Extract the main group from the key
 		$group = explode('.', $key, 2);
 		$group = $group[0];
@@ -954,7 +957,6 @@ class Kohana {
 			$messages = array();
 
 			// The name of the file to search for
-			$locale   = Config::item('locale.language.0');
 			$filename = $locale.'/'.$group;
 
 			// Loop through the files and include each one, so SYSPATH files
