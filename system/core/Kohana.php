@@ -108,7 +108,9 @@ class Kohana {
 		header('Content-type: text/html; charset=UTF-8');
 
 		// Set locale information
-		setlocale(LC_ALL, Config::item('locale.language').'.UTF-8');
+		$locales = Config::item('locale.language');
+		$locales[0] .= '.UTF-8';
+		setlocale(LC_ALL, $locales);
 
 		if (Config::item('log.threshold') > 0)
 		{
@@ -945,7 +947,8 @@ class Kohana {
 			$messages = array();
 
 			// The name of the file to search for
-			$filename = Config::item('locale.language').'/'.$group;
+			$locales = Config::item('locale.language');
+			$filename = $locales[0].'/'.$group;
 
 			// Loop through the files and include each one, so SYSPATH files
 			// can be overloaded by more localized files
@@ -978,7 +981,8 @@ class Kohana {
 		// Return the key string as fallback
 		if ($line === NULL)
 		{
-			Log::add('error', 'Missing i18n entry '.$key.' for language '.Config::item('locale.language'));
+			$locales = Config::item('locale.language');
+			Log::add('error', 'Missing i18n entry '.$key.' for language '.$locales[0]);
 			return $key;
 		}
 

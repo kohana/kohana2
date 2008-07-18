@@ -2,10 +2,12 @@
 /**
  * @package  Core
  *
- * Default language locale name.
- * @see http://php.net/locales
+ * Default language locale name(s).
+ * First item must be a valid i18n directory name, subsequent items are alternative locales
+ * for OS's that don't support the first (e.g. Windows). The first valid locale in the array will be used.
+ * @see http://php.net/setlocale
  */
-$config['language'] = 'en_US';
+$config['language'] = array('en_US', 'English_United States');
 
 /**
  * Default country locale.
