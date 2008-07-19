@@ -25,7 +25,7 @@ class email_Core {
 		if ( ! class_exists('Swift', FALSE))
 		{
 			// Load SwiftMailer
-			require_once Kohana::find_file('vendor', 'swift/Swift');
+			require Kohana::find_file('vendor', 'swift/Swift');
 
 			// Register the Swift ClassLoader as an autoload
 			spl_autoload_register(array('Swift_ClassLoader', 'load'));
@@ -70,7 +70,7 @@ class email_Core {
 					if ($class === 'PopB4Smtp')
 					{
 						// Load the PopB4Smtp class manually, due to it's odd filename
-						require_once Kohana::find_file('vendor', 'swift/Swift/Authenticator/$PopB4Smtp$');
+						require Kohana::find_file('vendor', 'swift/Swift/Authenticator/$PopB4Smtp$');
 					}
 
 					// Prepare the class name for auto-loading
