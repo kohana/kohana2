@@ -2,7 +2,7 @@
 
 class Auth_Role_Model extends ORM {
 
-	protected $belongs_to_many = array('users');
+	protected $has_and_belongs_to_many = array('users');
 
 	/**
 	 * Allows finding roles by name.
