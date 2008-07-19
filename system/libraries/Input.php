@@ -286,8 +286,12 @@ class Input_Core {
 				/**
 				 * @todo License should go here, http://htmlpurifier.org/
 				 */
-				require_once Kohana::find_file('vendor', 'htmlpurifier/HTMLPurifier.auto');
-				require_once 'HTMLPurifier.func.php';
+				if ( ! class_exists('HTMLPurifier_Config', FALSE))
+				{
+					// Load HTMLPurifier
+					require Kohana::find_file('vendor', 'htmlpurifier/HTMLPurifier.auto');
+					require 'HTMLPurifier.func.php';
+				}
 
 				// Set configuration
 				$config = HTMLPurifier_Config::createDefault();
