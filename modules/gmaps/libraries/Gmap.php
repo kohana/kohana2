@@ -14,8 +14,8 @@ class Gmap_Core {
 	/**
 	 * Retrieves the latitude and longitude of an address.
 	 *
-	 * @param   string  address
-	 * @return  array   longitude, latitude
+	 * @param string $address address
+	 * @return array longitude, latitude
 	 */
 	public static function address_to_ll($address)
 	{
@@ -36,8 +36,8 @@ class Gmap_Core {
 	 * Retrieves the XML geocode address lookup.
 	 * ! Results of this method are cached for 1 day.
 	 *
-	 * @param   string  adress
-	 * @return  object  SimpleXML
+	 * @param string $address adress
+	 * @return object SimpleXML
 	 */
 	public static function address_to_xml($address)
 	{
@@ -56,12 +56,6 @@ class Gmap_Core {
 		}
 		else
 		{
-			// Get the API key
-			$api_key = Config::item('gmaps.api_key');
-
-			// Send the address URL encoded
-			$addresss = rawurlencode($address);
-
 			// Disable error reporting while fetching the feed
 			$ER = error_reporting(~E_NOTICE);
 
@@ -71,8 +65,8 @@ class Gmap_Core {
 				'http://maps.google.com/maps/geo?'.
 				'&output=xml'.
 				'&oe=utf-8'.
-				'&key='.$api_key.
-				'&q='.rawurlencode($address)
+				'&key='.Config::item('gmaps.api_key'). // Get the API key
+				'&q='.rawurlencode($address) // Send the address URL encoded
 			);
 
 			if (is_object($xml) AND ($xml instanceof SimpleXMLElement) AND (int) $xml->Response->Status->code === 200)
@@ -96,13 +90,13 @@ class Gmap_Core {
 	/**
 	 * Returns an image map
 	 *
-	 * @param   mixed  $lat latitude or an array of marker points
-	 * @param 	float  $lon longitude
-	 * @param	integer $zoom zoom level (1-16)
-	 * @param 	string $type map type (roadmap or mobile)
-	 * @param 	integer $width map width
-	 * @param	integer $height map height
-	 * @return  string
+	 * @param mixed $lat latitude or an array of marker points
+	 * @param float $lon longitude
+	 * @param integer $zoom zoom level (1-16)
+	 * @param string $type map type (roadmap or mobile)
+	 * @param integer $width map width
+	 * @param integer $height map height
+	 * @return string
 	 */
 	public static function static_map($lat = 0, $lon = 0, $zoom = 6, $type = 'roadmap', $width = 300, $height = 300)
 	{
@@ -141,6 +135,10 @@ class Gmap_Core {
 	protected $options;
 	protected $center;
 	protected $control;
+	protected $type_control = FALSE;
+	
+	// Map types
+	protected $types = array();
 
 	// Map markers
 	protected $markers = array();
@@ -148,9 +146,9 @@ class Gmap_Core {
 	/**
 	 * Set the GMap center point.
 	 *
-	 * @param   string  HTML map id attribute
-	 * @param   array   array of GMap constructor options
-	 * @return  void
+	 * @param string $id HTML map id attribute
+	 * @param array $options array of GMap constructor options
+	 * @return void
 	 */
 	public function __construct($id = 'map', $options = NULL)
 	{
@@ -162,7 +160,6 @@ class Gmap_Core {
 	/**
 	 * Return GMap javascript url
 	 * 
-	 *
 	 * @return string
 	 */
 	 public function api_uri()
@@ -174,10 +171,10 @@ class Gmap_Core {
 	 * Set the GMap center point.
 	 *
 	 * @chainable
-	 * @param   float    latitude
-	 * @param   float    longitude
-	 * @param   integer  zoom level (1-16)
-	 * @return  object
+	 * @param float $lat latitude
+	 * @param float $lon longitude
+	 * @param integer $zoom zoom level (1-16)
+	 * @return object
 	 */
 	public function center($lat, $lon, $zoom = 6)
 	{
@@ -191,8 +188,8 @@ class Gmap_Core {
 	 * Set the GMap controls size.
 	 *
 	 * @chainable
-	 * @param   string   small or large
-	 * @return  object
+	 * @param string $size small or large
+	 * @return object
 	 */
 	public function controls($size = NULL)
 	{
@@ -201,15 +198,42 @@ class Gmap_Core {
 
 		return $this;
 	}
+	
+	/**
+	 * Set the GMap type controls.
+	 * by default renders G_NORMAL_MAP, G_SATELLITE_MAP, and G_HYBRID_MAP
+	 *
+	 * @chainable
+	 * @param string $type map type
+	 * @param string $action add or remove map type
+	 * @return object
+	 */
+	public function types($type = NULL, $action = 'remove')
+	{
+		$this->type_control = TRUE;
+		
+		$types = array
+		(
+			'G_NORMAL_MAP','G_SATELLITE_MAP','G_HYBRID_MAP','G_PHYSICAL_MAP'
+		);
+		
+		if ($type !== NULL and in_array($type, $types, true))
+		{
+			// Set the map type and action
+			$this->types[$type] = (strtolower($action) === 'remove') ? 'remove' : 'add';
+		}
+		
+		return $this;
+	}
 
 	/**
 	 * Set the GMap marker point.
 	 *
 	 * @chainable
-	 * @param   float   $lat latitude
-	 * @param   float   $lon longitude
-	 * @param   string  $html HTML for info window
-	 * @return  object
+	 * @param float $lat latitude
+	 * @param float $lon longitude
+	 * @param string $html HTML for info window
+	 * @return object
 	 */
 	public function add_marker($lat, $lon, $html = '')
 	{
@@ -223,7 +247,7 @@ class Gmap_Core {
 	 * Render the map into GMap Javascript.
 	 *
 	 * @param string $template template name
-	 * @return  string
+	 * @return string
 	 */
 	public function render($template = 'gmaps/javascript')
 	{
@@ -232,9 +256,21 @@ class Gmap_Core {
 
 		// Map
 		$map = 'var map = new google.maps.Map2(document.getElementById("'.$this->id.'"));';
-
+		
 		// Map controls
 		$controls = empty($this->control) ? '' : 'map.addControl(new google.maps.'.$this->control.'MapControl());';
+
+		// Map Types
+		if ($this->type_control === TRUE)
+		{
+			if (count($this->types) > 0) 
+			{
+				foreach($this->types as $type => $action)
+					$controls .= 'map.'.$action.'MapType('.$type.');';
+			}
+			
+			$controls .= 'map.addControl(new google.maps.MapTypeControl());';
+		}
 
 		// Map centering
 		$center = 'map.setCenter(new google.maps.LatLng('.$lat.', '.$lon.'), '.$zoom.');';
