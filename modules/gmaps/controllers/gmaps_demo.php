@@ -24,7 +24,7 @@ class Gmaps_Demo_Controller extends Controller {
 		));
 
 		// Set the map center point
-		$map->center(0, 0, 1)->controls('large');
+		$map->center(0, 0, 1)->controls('large')->types('G_PHYSICAL_MAP', 'add');
 
 		// Add a new marker
 		$map->add_marker(44.9801, -93.2519, '<strong>Minneapolis, MN</strong><p>Hello world!</p>');
