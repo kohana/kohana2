@@ -600,11 +600,14 @@ class ORM_Core {
 	 */
 	public function delete($id = NULL)
 	{
-		if ($this->loaded === TRUE)
+		if ($id === NULL AND $this->loaded)
 		{
-			// Delete this object
-			$this->db->where($this->primary_key, $this->object[$this->primary_key])->delete($this->table_name);
+			// Use the the primary key value
+			$id = $this->object[$this->primary_key];
 		}
+
+		// Delete this object
+		$this->db->where($this->primary_key, $id)->delete($this->table_name);
 
 		return $this->clear();
 	}
