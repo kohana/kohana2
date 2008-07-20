@@ -121,6 +121,24 @@ class Image_Core {
 	}
 
 	/**
+	 * Handles retrieval of pre-save image properties
+	 *
+	 * @param   string  property name
+	 * @return  mixed
+	 */
+	public function __get($property)
+	{
+		if (isset($this->image[$property]))
+		{
+			return $this->image[$property];	
+		}		
+		else
+		{
+			throw new Kohana_Exception('core.invalid_property', $column, get_class($this));
+		}			
+	}
+	
+	/**
 	 * Resize an image to a specific width and height. By default, Kohana will
 	 * maintain the aspect ratio using the width as the master dimension. If you
 	 * wish to use height as master dim, set $image->master_dim = Image::HEIGHT
