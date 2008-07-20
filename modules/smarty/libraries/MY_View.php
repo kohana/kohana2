@@ -6,9 +6,9 @@ class View extends View_Core {
 	{
 		$type = NULL;
 
-		if (Config::item('smarty.integration') == TRUE AND Kohana::find_file('views', $name, FALSE, $type))
+		if (Kohana::config('smarty.integration') == TRUE AND Kohana::find_file('views', $name, FALSE, $type))
 		{
-			$type = empty($type) ? Config::item('smarty.templates_ext') : $type;
+			$type = empty($type) ? Kohana::config('smarty.templates_ext') : $type;
 		}
 	
 		parent::__construct($name, $data, $type);

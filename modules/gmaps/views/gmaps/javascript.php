@@ -1,4 +1,4 @@
-google.load("maps", "2.x", {"language" : "<?php echo substr(Config::item('locale.language.0'), 0, 2);?>"});
+google.load("maps", "2.x", {"language" : "<?php echo substr(Kohana::config('locale.language.0'), 0, 2);?>"});
 function initialize() {
     if (GBrowserIsCompatible()) {
 		// Initialize the GMap

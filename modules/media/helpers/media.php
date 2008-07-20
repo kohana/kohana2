@@ -21,7 +21,7 @@ class media_Core {
 	 */
 	public static function stylesheet($style, $media = FALSE, $index = TRUE)
 	{
-		$separator = Config::item('media.separator') or $separator = ',';
+		$separator = Kohana::config('media.separator') or $separator = ',';
 
 		if (is_array($style))
 		{
@@ -33,7 +33,7 @@ class media_Core {
 
 	public static function script($script, $index = TRUE)
 	{
-		$separator = Config::item('media.separator') or $separator = ',';
+		$separator = Kohana::config('media.separator') or $separator = ',';
 
 		if (is_array($script))
 		{

@@ -51,7 +51,7 @@ class Payment_Trident_Driver implements Payment_Driver
 		$this->curl_config = $config['curl_config'];
 		$this->test_mode = $config['test_mode'];
 
-		Log::add('debug', 'Trident Payment Driver Initialized');
+		Kohana::log('debug', 'Trident Payment Driver Initialized');
 	}
 
 	public function set_fields($fields)

@@ -59,7 +59,7 @@ class Payment_Core {
 		if (empty($config))
 		{
 			// Load the default group
-			$config = Config::item('payment.default');
+			$config = Kohana::config('payment.default');
 		}
 		elseif (is_string($config))
 		{
@@ -77,7 +77,7 @@ class Payment_Core {
 			throw new Kohana_Exception('core.driver_not_found', $this->config['driver'], get_class($this));
 
 		// Get the driver specific settings
-		$this->config = array_merge($this->config, Config::item('payment.'.$this->config['driver']));
+		$this->config = array_merge($this->config, Kohana::config('payment.'.$this->config['driver']));
 
 		// Initialize the driver
 		$this->driver = new $driver($this->config);

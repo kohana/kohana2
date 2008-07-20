@@ -29,7 +29,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 	{
 		$this->db_config = $config;
 
-		Log::add('debug', 'PDO:Sqlite Database Driver Initialized');
+		Kohana::log('debug', 'PDO:Sqlite Database Driver Initialized');
 	}
 
 	public function connect()
@@ -259,7 +259,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 
 	public function field_data($table)
 	{
-		Log::add('error', 'This method is under developing');
+		Kohana::log('error', 'This method is under developing');
 	}
 	/**
 	 * Version number query string
@@ -326,7 +326,7 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 
 			if (preg_match('/^SELECT|PRAGMA|EXPLAIN/i', $sql))
 			{
-				//Log::add('debug','it was a SELECT, SHOW, DESCRIBE, EXPLAIN query');
+				//Kohana::log('debug','it was a SELECT, SHOW, DESCRIBE, EXPLAIN query');
 				$this->result = $result;
 				$this->current_row = 0;
 
@@ -336,7 +336,7 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 			}
 			elseif (preg_match('/^DELETE|INSERT|UPDATE/i', $sql))
 			{
-				//Log::add('debug','Its an DELETE, INSERT, REPLACE, or UPDATE query');
+				//Kohana::log('debug','Its an DELETE, INSERT, REPLACE, or UPDATE query');
 				$this->insert_id  = $link->lastInsertId();
 			}
 		}
@@ -457,7 +457,7 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 		//~ This function only work correctly after you execute a query,
 		//~ AND BEFORE you fetch the query result!!
 		//~ You should really use Database_PdoSqlite::list_fields instead of PdoSqlite_Result::list_fields()
-		Log::add('debug','If Sqlite_Result::list_fields() do NOT work as what you expect,read the method\'s comment plz');
+		Kohana::log('debug','If Sqlite_Result::list_fields() do NOT work as what you expect,read the method\'s comment plz');
 
 		$field_names = array();
 		for ($i = 0; $i<$this->result->columnCount(); $i++)
@@ -481,13 +481,13 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 	public function count()
 	{
 		//~ Now only work after calling result() or result_array();
-		Log::add('debug', 'Now only work after calling result() or result_array()');
+		Kohana::log('debug', 'Now only work after calling result() or result_array()');
 		return $this->total_rows;
 	}
 
 	public function num_rows()
 	{
-		Log::add('error', 'You should really be using "count($result)" instead of "$result->num_rows()". Fix your code!');
+		Kohana::log('error', 'You should really be using "count($result)" instead of "$result->num_rows()". Fix your code!');
 
 		return $this->total_rows;
 	}
@@ -644,7 +644,7 @@ class Pdosqlite_Result implements Database_Result, ArrayAccess, Iterator, Counta
 		//~ To request a scrollable cursor for your PDOStatement object,
 		//~ you must set the PDO::ATTR_CURSOR attribute to PDO::CURSOR_SCROLL
 		//~ when you prepare the SQL statement with PDO->prepare().
-		Log::add('error','this method do not work now,please read the comment of that.');
+		Kohana::log('error','this method do not work now,please read the comment of that.');
 		//return $this->current_row = 0;
 	}
 

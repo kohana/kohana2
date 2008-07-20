@@ -76,7 +76,7 @@ class Kodoc_Controller extends Template_Controller {
 				}
 				else
 				{
-					foreach (array_reverse(Config::include_paths()) as $path)
+					foreach (array_reverse(Kohana::include_paths()) as $path)
 					{
 						if (is_file($path.$type.'/'.$file.EXT))
 						{

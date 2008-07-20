@@ -49,10 +49,10 @@ class Auth_Core {
 	public function __construct($config = array())
 	{
 		// Append default auth configuration
-		$config += Config::item('auth');
+		$config += Kohana::config('auth');
 
 		// Clean up the salt pattern and split it into an array
-		$config['salt_pattern'] = preg_split('/,\s*/', Config::item('auth.salt_pattern'));
+		$config['salt_pattern'] = preg_split('/,\s*/', Kohana::config('auth.salt_pattern'));
 
 		// Save the config in the object
 		$this->config = $config;
@@ -72,7 +72,7 @@ class Auth_Core {
 		// Load the driver for access
 		$this->driver = $driver;
 
-		Log::add('debug', 'Auth Library loaded');
+		Kohana::log('debug', 'Auth Library loaded');
 	}
 
 	/**

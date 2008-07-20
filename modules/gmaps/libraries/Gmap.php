@@ -65,7 +65,7 @@ class Gmap_Core {
 				'http://maps.google.com/maps/geo?'.
 				'&output=xml'.
 				'&oe=utf-8'.
-				'&key='.Config::item('gmaps.api_key'). // Get the API key
+				'&key='.Kohana::config('gmaps.api_key'). // Get the API key
 				'&q='.rawurlencode($address) // Send the address URL encoded
 			);
 
@@ -100,7 +100,7 @@ class Gmap_Core {
 	 */
 	public static function static_map($lat = 0, $lon = 0, $zoom = 6, $type = 'roadmap', $width = 300, $height = 300)
 	{
-		$api_url = 'http://maps.google.com/staticmap?key='.Config::item('gmaps.api_key');
+		$api_url = 'http://maps.google.com/staticmap?key='.Kohana::config('gmaps.api_key');
 
 		$types = array('roadmap', 'mobile');
 
@@ -165,7 +165,7 @@ class Gmap_Core {
 	 */
 	 public function api_uri()
 	 {
-	    return 'http://www.google.com/jsapi?key='.Config::item('gmaps.api_key').'&amp;oe=utf-8';
+	    return 'http://www.google.com/jsapi?key='.Kohana::config('gmaps.api_key').'&amp;oe=utf-8';
 	 }
 
 	/**

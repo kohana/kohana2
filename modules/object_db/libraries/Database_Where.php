@@ -78,7 +78,7 @@ class Database_Where_Core extends Database_Escape {
 
 		if (is_string($group)) // group name was passed
 		{
-			$config = Config::item('database.'.$group);
+			$config = Kohana::config('database.'.$group);
 			$conn = Database::parse_con_string($config['connection']);
 			$driver = $conn['type'];
 		}

@@ -28,9 +28,9 @@ class Media_Controller extends Controller {
 	{
 		parent::__construct();
 
-		$this->separator = Config::item('media.separator') OR $this->separator = ',';
+		$this->separator = Kohana::config('media.separator') OR $this->separator = ',';
 
-		$cache = Config::item('media.cache');
+		$cache = Kohana::config('media.cache');
 		$this->use_cache = ($cache > 0);
 
 		if (is_int($cache))
@@ -39,7 +39,7 @@ class Media_Controller extends Controller {
 		}
 		else
 		{
-			$this->cache_lifetime = Config::item('cache.lifetime') OR $this->cache_lifetime = 1800;
+			$this->cache_lifetime = Kohana::config('cache.lifetime') OR $this->cache_lifetime = 1800;
 		}
 
 		if ($this->use_cache AND ! isset($this->cache))
@@ -47,8 +47,8 @@ class Media_Controller extends Controller {
 			$this->cache = new Cache;
 		}
 
-		$this->pack_css = (bool) Config::item('media.pack_css');
-		$this->pack_js = Config::item('media.pack_js');
+		$this->pack_css = (bool) Kohana::config('media.pack_css');
+		$this->pack_js = Kohana::config('media.pack_js');
 		($this->pack_js === TRUE) AND $this->pack_js = 'Normal';
 	}
 
@@ -59,7 +59,7 @@ class Media_Controller extends Controller {
 		// Find all the individual files
 		$files = explode($this->separator, $querystr);
 
-		$mimetype = Config::item('mimes.css');
+		$mimetype = Kohana::config('mimes.css');
 		$mimetype = (isset($mimetype[0])) ? $mimetype[0] : 'text/css';
 
 		$this->use_cache AND $output = $this->cache->get('media.css.'.$querystr);
@@ -92,7 +92,7 @@ class Media_Controller extends Controller {
 		// Find all the individual files
 		$files = explode($this->separator, $querystr);
 
-		$mimetype = Config::item('mimes.js');
+		$mimetype = Kohana::config('mimes.js');
 		$mimetype = (isset($mimetype[0])) ? $mimetype[0] : 'application/x-javascript';
 
 		$this->use_cache AND $output = $this->cache->get('media.js.'.$querystr);

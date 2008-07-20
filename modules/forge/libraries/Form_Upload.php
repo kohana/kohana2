@@ -63,7 +63,7 @@ class Form_Upload_Core extends Form_Input {
 	public function directory($dir = NULL)
 	{
 		// Use the global upload directory by default
-		empty($dir) and $dir = Config::item('upload.directory');
+		empty($dir) and $dir = Kohana::config('upload.directory');
 
 		// Make the path asbolute and normalize it
 		$directory = str_replace('\\', '/', realpath($dir)).'/';
@@ -88,7 +88,7 @@ class Form_Upload_Core extends Form_Input {
 			// Set the filename to the original name
 			$filename = $this->upload['name'];
 
-			if (Config::item('upload.remove_spaces'))
+			if (Kohana::config('upload.remove_spaces'))
 			{
 				// Remove spaces, due to global upload configuration
 				$filename = preg_replace('/\s+/', '_', $this->data['value']);
@@ -141,7 +141,7 @@ class Form_Upload_Core extends Form_Input {
 		foreach ($types as $type)
 		{
 			// Load the mime types
-			$type = Config::item('mimes.'.$type);
+			$type = Kohana::config('mimes.'.$type);
 
 			if (is_array($type) AND in_array($mime, $type))
 			{

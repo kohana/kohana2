@@ -29,7 +29,7 @@ class Unit_Test_Core {
 	public function __construct()
 	{
 		// Merge possible default test path(s) from config with the rest
-		$paths = array_merge(func_get_args(), Config::item('unit_test.paths', FALSE, FALSE));
+		$paths = array_merge(func_get_args(), Kohana::config('unit_test.paths', FALSE, FALSE));
 
 		// Normalize all test paths
 		foreach ($paths as $path)
@@ -195,7 +195,7 @@ class Unit_Test_Core {
 			return Kohana::lang('unit_test.no_tests_found');
 
 		// Hide passed tests from the report?
-		$hide_passed = (bool) (($hide_passed !== NULL) ? $hide_passed : Config::item('unit_test.hide_passed', FALSE, FALSE));
+		$hide_passed = (bool) (($hide_passed !== NULL) ? $hide_passed : Kohana::config('unit_test.hide_passed', FALSE, FALSE));
 
 		// Render unit_test report
 		return View::factory('kohana_unit_test')

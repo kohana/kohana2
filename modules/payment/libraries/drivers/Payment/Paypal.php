@@ -223,7 +223,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 
 		$this->session = Session::instance();
 
-		Log::add('debug', 'PayPal Payment Driver Initialized');
+		Kohana::log('debug', 'PayPal Payment Driver Initialized');
 	}
 
 	/**
@@ -350,7 +350,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		{
 			throw new Kohana_User_Exception('SetExpressCheckout ERROR', Kohana::debug($response_array));
 
-			Log::add('error', Kohana::debug('SetExpressCheckout response:'.$response_array));
+			Kohana::log('error', Kohana::debug('SetExpressCheckout response:'.$response_array));
 			//url::redirect($this->api_connection_fields['ERRORURL']);
 		}
 	}
@@ -376,7 +376,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		{
 			throw new Kohana_User_Exception('GetExpressCheckout ERROR', Kohana::debug($this->get_express_checkout_response));
 
-			Log::add('error', Kohana::debug('GetExpressCheckout response:'.$response));
+			Kohana::log('error', Kohana::debug('GetExpressCheckout response:'.$response));
 			url::redirect($this->api_connection_fields['ERRORURL']);
 		}
 	}
@@ -398,7 +398,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		{
 			throw new Kohana_User_Exception('DoExpressCheckoutPayment ERROR', Kohana::debug($this->nvp_response_array));
 
-			Log::add('error', Kohana::debug('GetExpressCheckout response:'.$response));
+			Kohana::log('error', Kohana::debug('GetExpressCheckout response:'.$response));
 			url::redirect($this->api_connection_fields['ERRORURL']);
 		}
 	}
@@ -416,7 +416,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 
 		parse_str(urldecode($postdata),$nvpstr);
 
-		Log::add('debug', 'Connecting to '.$this->api_connection_fields['ENDPOINT']);
+		Kohana::log('debug', 'Connecting to '.$this->api_connection_fields['ENDPOINT']);
 
 		$ch = curl_init($this->api_connection_fields['ENDPOINT']);
 

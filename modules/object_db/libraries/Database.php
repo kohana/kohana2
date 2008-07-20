@@ -36,7 +36,7 @@ class Database_Core {
 		if (empty($config))
 		{
 			// Load default configuration
-			$config = Config::item('database.default');
+			$config = Kohana::config('database.default');
 		}
 
 		if ( ! is_array($config) OR empty($config['driver']) OR empty($config['database']))
