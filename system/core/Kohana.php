@@ -9,13 +9,13 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Kohana {
+final class Kohana {
 
 	// The singleton instance of the controller
 	public static $instance;
 
 	// Output buffering level
-	private static $buffer_level = 0;
+	private static $buffer_level;
 
 	// Will be set to TRUE when an exception is caught
 	public static $has_error = FALSE;
@@ -24,14 +24,32 @@ class Kohana {
 	public static $output = '';
 
 	// The current user agent
-	public static $user_agent = '';
+	public static $user_agent;
 
 	// The current locale
-	public static $locale = '';
+	public static $locale;
 
-	// File path cache
-	private static $paths;
-	private static $paths_changed = FALSE;
+	// Configuration
+	private static $configuration;
+
+	// Include paths
+	private static $include_paths;
+
+	// Logged messages
+	private static $log;
+
+	// Log levels
+	private static $log_levels = array
+	(
+		'error' => 1,
+		'alert' => 2,
+		'info'  => 3,
+		'debug' => 4,
+	);
+
+	// Internal caches and write status
+	private static $internal_cache = array();
+	private static $write_cache;
 
 	/**
 	 * Sets up the PHP environment. Adds error/exception handling, output
@@ -47,7 +65,7 @@ class Kohana {
 	 *
 	 * @return  void
 	 */
-	final public static function setup()
+	public static function setup()
 	{
 		static $run;
 
@@ -75,7 +93,7 @@ class Kohana {
 
 		if (function_exists('date_default_timezone_set'))
 		{
-			$timezone = Config::item('locale.timezone');
+			$timezone = Kohana::config('locale.timezone');
 
 			// Set default timezone, due to increased validation of date settings
 			// which cause massive amounts of E_NOTICEs to be generated in PHP 5.2+
@@ -86,13 +104,20 @@ class Kohana {
 		error_reporting($ER);
 
 		// Start output buffering
-		ob_start(array('Kohana', 'output_buffer'));
+		ob_start(array(__CLASS__, 'output_buffer'));
 
 		// Save buffering level
 		self::$buffer_level = ob_get_level();
 
-		// Load path cache
-		self::$paths = Kohana::load_cache('file_paths');
+		if ($lifetime = self::config('core.internal_cache'))
+		{
+			// Load cached configuration and include paths
+			self::$internal_cache['configuration'] = self::cache('configuration', $lifetime);
+			self::$internal_cache['include_paths'] = self::cache('include_paths', $lifetime);
+
+			// Enable cache saving
+			Event::add('system.shutdown', array(__CLASS__, 'internal_cache_save'));
+		}
 
 		// Set autoloader
 		spl_autoload_register(array('Kohana', 'auto_load'));
@@ -111,7 +136,7 @@ class Kohana {
 		header('Content-type: text/html; charset=UTF-8');
 
 		// Load locales
-		$locales = Config::item('locale.language');
+		$locales = self::config('locale.language');
 
 		// Make first locale UTF-8
 		$locales[0] .= '.UTF-8';
@@ -119,22 +144,13 @@ class Kohana {
 		// Set locale information
 		self::$locale = setlocale(LC_ALL, $locales);
 
-		if (Config::item('log.threshold') > 0)
+		if (self::$configuration['core']['log_threshold'] > 0)
 		{
-			// Get the configured log directory
-			$log_dir = Config::item('log.directory');
-
-			if ( ! is_dir($log_dir))
-			{
-				// Application log directory
-				$log_dir = APPPATH.$log_dir;
-			}
-
 			// Set the log directory
-			Log::directory($log_dir);
+			self::log_directory(self::$configuration['core']['log_directory']);
 
-			// Enable log writing if the log threshold is above 0
-			register_shutdown_function(array('Log', 'write'));
+			// Enable log writing at shutdown
+			register_shutdown_function(array(__CLASS__, 'log_save'));
 		}
 
 		// Enable Kohana routing
@@ -150,7 +166,7 @@ class Kohana {
 		// Enable Kohana output handling
 		Event::add('system.shutdown', array('Kohana', 'shutdown'));
 
-		if ($config = Config::item('hooks.enable'))
+		if ($config = Kohana::config('hooks.enable'))
 		{
 			$hooks = array();
 
@@ -172,7 +188,7 @@ class Kohana {
 					else
 					{
 						// This should never happen
-						Log::add('error', 'Hook not found: '.$name);
+						Kohana::log('error', 'Hook not found: '.$name);
 					}
 				}
 			}
@@ -191,7 +207,7 @@ class Kohana {
 				else
 				{
 					// This should never happen
-					Log::add('error', 'Hook not found: '.$hook);
+					Kohana::log('error', 'Hook not found: '.$hook);
 				}
 			}
 		}
@@ -212,7 +228,7 @@ class Kohana {
 	 *
 	 * @return  object  instance of controller
 	 */
-	final public static function & instance()
+	public static function & instance()
 	{
 		if (self::$instance === NULL)
 		{
@@ -324,15 +340,309 @@ class Kohana {
 	}
 
 	/**
+	 * Get all include paths. APPPATH is the first path, followed by module
+	 * paths in the order they are configured, follow by the SYSPATH.
+	 *
+	 * @param   boolean  re-process the include paths
+	 * @return  array
+	 */
+	public static function include_paths($process = FALSE)
+	{
+		if ($process === TRUE)
+		{
+			// Add APPPATH as the first path
+			self::$include_paths = array(APPPATH);
+
+			foreach (self::$configuration['core']['modules'] as $path)
+			{
+				if ($path = str_replace('\\', '/', realpath($path)))
+				{
+					// Add a valid path
+					self::$include_paths[] = $path.'/';
+				}
+			}
+
+			// Add SYSPATH as the last path
+			self::$include_paths[] = SYSPATH;
+		}
+
+		return self::$include_paths;
+	}
+
+	/**
+	 * Get a config item or group.
+	 *
+	 * @param   string   item name
+	 * @param   boolean  force a forward slash (/) at the end of the item
+	 * @param   boolean  is the item required?
+	 * @return  mixed
+	 */
+	public static function config($key, $slash = FALSE)
+	{
+		if (self::$configuration === NULL)
+		{
+			// Load core configuration
+			self::$configuration['core'] = self::config_load('core');
+
+			// Re-parse the include paths
+			self::include_paths(TRUE);
+		}
+
+		// Get the group name from the key
+		$group = explode('.', $key, 2);
+		$group = $group[0];
+
+		if ( ! isset(self::$configuration[$group]))
+		{
+			// Load the configuration group
+			self::$configuration[$group] = self::config_load($group);
+		}
+
+		// Get the value of the key string
+		$value = self::key_string(self::$configuration, $key);
+
+		if ($slash === TRUE AND is_string($value) AND $value !== '')
+		{
+			// Force the value to end with "/"
+			$value = rtrim($value, '/').'/';
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Load a config file.
+	 *
+	 * @param   string   config filename, without extension
+	 * @return  array
+	 */
+	public static function config_load($name)
+	{
+		if ($name === 'core')
+		{
+			// Load the application configuration file
+			require APPPATH.'config/config'.EXT;
+
+			if ( ! isset($config['site_domain']))
+			{
+				// Invalid config file
+				die('Your Kohana application configuration file is not valid.');
+			}
+
+			return $config;
+		}
+
+		if (isset(self::$internal_cache['configuration'][$name]))
+			return self::$internal_cache['configuration'][$name];
+
+		// Load matching configs
+		$configuration = array();
+
+		if ($files = self::find_file('config', $name, TRUE))
+		{
+			foreach ($files as $file)
+			{
+				require $file;
+
+				if (isset($config) AND is_array($config))
+				{
+					// Merge in configuration
+					$configuration = array_merge($configuration, $config);
+				}
+			}
+		}
+
+		if ( ! isset(self::$write_cache['configuration']))
+		{
+			// Cache has changed
+			self::$write_cache['configuration'] = TRUE;
+		}
+
+		return self::$internal_cache['configuration'][$name] = $configuration;
+	}
+
+	/**
+	 * Clears a config group from the cached configuration.
+	 *
+	 * @param   string  config group
+	 * @return  void
+	 */
+	public static function config_clear($group)
+	{
+		// Remove the group from config
+		unset(self::$configuration[$group], self::$internal_cache['configuration'][$group]);
+
+		if ( ! isset(self::$write_cache['configuration']))
+		{
+			// Cache has changed
+			self::$write_cache['configuration'] = TRUE;
+		}
+	}
+
+	/**
+	 * Add a new message to the log.
+	 *
+	 * @param   string  type of message
+	 * @param   string  message text
+	 * @return  void
+	 */
+	public static function log($type, $message)
+	{
+		if (self::$log_levels[$type] <= self::$configuration['core']['log_threshold'])
+		{
+			self::$log[] = array(date('Y-m-d H:i:s P'), $type, $message);
+		}
+	}
+
+	/**
+	 * Save all currently logged messages.
+	 *
+	 * @return  void
+	 */
+	public static function log_save()
+	{
+		if (empty(self::$log))
+			return;
+
+		// Filename of the log
+		$filename = self::log_directory().date('Y-m-d').'.log'.EXT;
+
+		if ( ! file_exists($filename))
+		{
+			// Write the SYSPATH checking header
+			file_put_contents($filename,
+				'<?php defined(\'SYSPATH\') or die(\'No direct script access.\'); ?>'.PHP_EOL.PHP_EOL);
+
+			// Prevent external writes
+			chmod($filename, 0644);
+		}
+
+		// Messages to write
+		$messages = array();
+
+		do
+		{
+			// Load the next mess
+			list ($date, $type, $text) = array_shift(self::$log);
+
+			// Add a new message line
+			$messages[] = $date.' --- '.$type.': '.$text;
+		}
+		while ( ! empty(self::$log));
+
+		// Write messages to log file
+		file_put_contents($filename, implode(PHP_EOL, $messages).PHP_EOL, FILE_APPEND);
+	}
+
+	/**
+	 * Get or set the logging directory.
+	 *
+	 * @param   string  new log directory
+	 * @return  string
+	 */
+	public static function log_directory($dir = NULL)
+	{
+		static $directory;
+
+		if ( ! empty($dir))
+		{
+			// Get the directory path
+			$dir = realpath($dir);
+
+			if (file_exists($dir) AND is_dir($dir) AND is_writable($dir))
+			{
+				// Change the log directory
+				$directory = str_replace('\\', '/', $dir).'/';
+			}
+			else
+			{
+				// Log directory is invalid
+				throw new Kohana_Exception('core.log_dir_unwritable', $dir);
+			}
+		}
+
+		return $directory;
+	}
+
+	/**
+	 * Load data from a simple cache file. This should only be used internally,
+	 * and is NOT a replacement for the Cache library.
+	 *
+	 * @param   string   unique name of cache
+	 * @param   integer  lifetime of cache
+	 * @return  mixed
+	 */
+	public static function cache($name, $lifetime)
+	{
+		if ($lifetime > 0)
+		{
+			$path = APPPATH.'cache/kohana_'.$name;
+
+			if (file_exists($path))
+			{
+				// Check the file modification time
+				if ((time() - filemtime($path)) < $lifetime)
+				{
+					// Cache is valid
+					return unserialize(file_get_contents($path));
+				}
+				else
+				{
+					// Cache is invalid, delete it
+					unlink($path);
+				}
+			}
+		}
+
+		// No cache found
+		return NULL;
+	}
+
+	/**
+	 * Save data to a simple cache file. This should only be used internally, and
+	 * is NOT a replacement for the Cache library.
+	 *
+	 * @param   string  cache name
+	 * @param   mixed   data to cache
+	 * @return  boolean
+	 */
+	public static function cache_save($name, $data, $lifetime)
+	{
+		if ($lifetime > 0)
+		{
+			$path = APPPATH.'cache/kohana_'.$name;
+
+			if ($data === NULL)
+			{
+				// Delete cache
+				return (file_exists($path) and unlink($path));
+			}
+			else
+			{
+				// Write data to cache file
+				return (bool) file_put_contents($path, serialize($data));
+			}
+		}
+		else
+		{
+			// No caching enabled
+			return FALSE;
+		}
+	}
+
+	/**
 	 * Kohana output handler.
 	 *
 	 * @param   string  current output buffer
 	 * @return  string
 	 */
-	final public static function output_buffer($output)
+	public static function output_buffer($output)
 	{
-		// Run the send_headers event, specifically for cookies being set
-		Event::has_run('system.send_headers') or Event::run('system.send_headers');
+		if ( ! Event::has_run('system.send_headers'))
+		{
+			// Run the send_headers event, specifically for cookies being set
+			Event::run('system.send_headers');
+		}
 
 		// Set final output
 		self::$output = $output;
@@ -363,6 +673,9 @@ class Kohana {
 
 			// This will flush the Kohana buffer, which sets self::$output
 			ob_end_clean();
+
+			// Reset the buffer level
+			self::$buffer_level = ob_get_level();
 		}
 	}
 
@@ -397,7 +710,7 @@ class Kohana {
 		// Fetch benchmark for page execution time
 		$benchmark = Benchmark::get(SYSTEM_BENCHMARK.'_total_execution');
 
-		if (Config::item('core.render_stats') === TRUE)
+		if (Kohana::config('core.render_stats') === TRUE)
 		{
 			// Replace the global template variables
 			$output = str_replace(
@@ -421,7 +734,7 @@ class Kohana {
 			);
 		}
 
-		if ($level = Config::item('core.output_compression') AND ini_get('output_handler') !== 'ob_gzhandler' AND (int) ini_get('zlib.output_compression') === 0)
+		if ($level = Kohana::config('core.output_compression') AND ini_get('output_handler') !== 'ob_gzhandler' AND (int) ini_get('zlib.output_compression') === 0)
 		{
 			if ($level < 1 OR $level > 9)
 			{
@@ -472,6 +785,19 @@ class Kohana {
 	}
 
 	/**
+	 * Displays a 404 page.
+	 *
+	 * @throws  Kohana_404_Exception
+	 * @param   string  URI of page
+	 * @param   string  custom template
+	 * @return  void
+	 */
+	public static function show_404($page = FALSE, $template = FALSE)
+	{
+		throw new Kohana_404_Exception($page, $template);
+	}
+
+	/**
 	 * Dual-purpose PHP error and exception handler. Uses the kohana_error_page
 	 * view to display the message.
 	 *
@@ -512,7 +838,7 @@ class Kohana {
 
 		if (is_numeric($code))
 		{
-			$codes = Kohana::lang('errors');
+			$codes = self::lang('errors');
 
 			if ( ! empty($codes[$code]))
 			{
@@ -537,37 +863,34 @@ class Kohana {
 		$file = str_replace('\\', '/', realpath($file));
 		$file = preg_replace('|^'.preg_quote(DOCROOT).'|', '', $file);
 
-		if (Config::item('log.threshold') >= $level)
+		if ($level >= self::$configuration['core']['log_threshold'])
 		{
 			// Log the error
-			Log::add('error', Kohana::lang('core.uncaught_exception', $type, $message, $file, $line));
+			self::log('error', self::lang('core.uncaught_exception', $type, $message, $file, $line));
 		}
 
 		if ($PHP_ERROR)
 		{
-			$description = Kohana::lang('errors.'.E_RECOVERABLE_ERROR);
+			$description = self::lang('errors.'.E_RECOVERABLE_ERROR);
 			$description = is_array($description) ? $description[2] : '';
 		}
 		else
 		{
-			if (method_exists($exception, 'sendHeaders'))
+			if (method_exists($exception, 'sendHeaders') AND ! headers_sent())
 			{
 				// Send the headers if they have not already been sent
-				headers_sent() or $exception->sendHeaders();
+				$exception->sendHeaders();
 			}
 		}
 
 		while (ob_get_level() > self::$buffer_level)
 		{
-			// Clean all active output buffers
+			// Close open buffers
 			ob_end_clean();
 		}
 
-		// Clear the current buffer
-		(ob_get_level() === self::$buffer_level) and ob_clean();
-
 		// Test if display_errors is on
-		if (Config::item('core.display_errors'))
+		if (self::$configuration['core']['display_errors'] === TRUE)
 		{
 			if ( ! IN_PRODUCTION AND $line != FALSE)
 			{
@@ -579,132 +902,27 @@ class Kohana {
 			}
 
 			// Load the error
-			include self::find_file('views', empty($template) ? 'kohana_error_page' : $template);
+			require self::find_file('views', empty($template) ? 'kohana_error_page' : $template);
 		}
 		else
 		{
 			// Get the i18n messages
-			$error = Kohana::lang('core.generic_error');
-			$message = sprintf(Kohana::lang('core.errors_disabled'), url::site(), url::site(Router::$current_uri));
+			$error   = self::lang('core.generic_error');
+			$message = self::lang('core.errors_disabled', url::site(), url::site(Router::$current_uri));
 
 			// Load the errors_disabled view
-			include self::find_file('views', 'kohana_error_disabled');
+			require self::find_file('views', 'kohana_error_disabled');
 		}
 
-		// Run the system.shutdown event
-		Event::has_run('system.shutdown') or Event::run('system.shutdown');
+		if ( ! Event::has_run('system.shutdown'))
+		{
+			// Run the shutdown even to ensure a clean exit
+			Event::run('system.shutdown');
+		}
 
 		// Turn off error reporting
 		error_reporting(0);
 		exit;
-	}
-
-	/**
-	 * Displays a 404 page.
-	 *
-	 * @throws  Kohana_404_Exception
-	 * @param   string  URI of page
-	 * @param   string  custom template
-	 * @return  void
-	 */
-	public static function show_404($page = FALSE, $template = FALSE)
-	{
-		throw new Kohana_404_Exception($page, $template);
-	}
-
-	/**
-	 * Show a custom error message.
-	 *
-	 * @throws  Kohana_User_Exception
-	 * @param   string  error title
-	 * @param   string  error message
-	 * @param   string  custom template
-	 * @return  void
-	 */
-	public static function show_error($title, $message, $template = FALSE)
-	{
-		throw new Kohana_User_Exception($title, $message, $template);
-	}
-
-	/**
-	 * Save data to a simple cache file. This should only be used internally, and
-	 * is NOT a replacement for the Cache library.
-	 *
-	 * @param   string  cache name
-	 * @param   mixed   data to cache
-	 * @return  boolean
-	 */
-	public static function save_cache($name, $data = NULL)
-	{
-		static $cache_time;
-
-		if ($cache_time === NULL)
-		{
-			// Load cache time from config
-			$cache_time = Config::item('core.internal_cache');
-		}
-
-		if ($cache_time > 0)
-		{
-			$path = APPPATH.'cache/kohana_'.$name;
-
-			if ($data === NULL)
-			{
-				// Delete cache
-				return unlink($path);
-			}
-			else
-			{
-				// Write data to cache file
-				return (bool) file_put_contents($path, serialize($data));
-			}
-		}
-		else
-		{
-			// No caching enabled
-			return FALSE;
-		}
-	}
-
-	/**
-	 * Load data from a simple cache file. This should only be used internally,
-	 * and is NOT a replacement for the Cache library.
-	 *
-	 * @param   string  cache name
-	 * @return  mixed
-	 */
-	public static function load_cache($name)
-	{
-		static $cache_time;
-
-		if ($cache_time === NULL)
-		{
-			// Load cache time from config
-			$cache_time = Config::item('core.internal_cache');
-		}
-
-		if ($cache_time > 0)
-		{
-			$path = APPPATH.'cache/kohana_'.$name;
-
-			if (file_exists($path))
-			{
-				// Check the file modification time
-				if ((time() - filemtime($path)) < $cache_time)
-				{
-					// Cache is valid
-					return unserialize(file_get_contents($path));
-				}
-				else
-				{
-					// Cache is invalid, delete it
-					unlink($path);
-				}
-			}
-		}
-
-		// No cache found
-		return NULL;
 	}
 
 	/**
@@ -716,67 +934,68 @@ class Kohana {
 	 */
 	public static function auto_load($class)
 	{
-		static $prefix;
-
-		// Set the extension prefix
-		empty($prefix) and $prefix = Config::item('core.extension_prefix');
-
 		if (class_exists($class, FALSE))
 			return TRUE;
 
-		if (($type = strrpos($class, '_')) !== FALSE)
+		if (($suffix = strrpos($class, '_')) > 0)
 		{
 			// Find the class suffix
-			$type = substr($class, $type + 1);
+			$suffix = substr($class, $suffix + 1);
 		}
-
-		switch ($type)
+		else
 		{
-			case 'Core':
-				$type = 'libraries';
-				$file = substr($class, 0, -5);
-			break;
-			case 'Controller':
-				$type = 'controllers';
-				// Lowercase filename
-				$file = strtolower(substr($class, 0, -11));
-			break;
-			case 'Model':
-				$type = 'models';
-				// Lowercase filename
-				$file = strtolower(substr($class, 0, -6));
-			break;
-			case 'Driver':
-				$type = 'libraries/drivers';
-				$file = str_replace('_', '/', substr($class, 0, -7));
-			break;
-			default:
-				// This can mean either a library or a helper, but libraries must
-				// always be capitalized, so we check if the first character is
-				// lowercase. If it is, we are loading a helper, not a library.
-				$type = (ord($class[0]) > 96) ? 'helpers' : 'libraries';
-				$file = $class;
-			break;
+			// No suffix
+			$suffix = FALSE;
 		}
 
-		// If the file doesn't exist, just return
+		if ($suffix === 'Core')
+		{
+			$type = 'libraries';
+			$file = substr($class, 0, -5);
+		}
+		elseif ($suffix === 'Controller')
+		{
+			$type = 'controllers';
+			// Lowercase filename
+			$file = strtolower(substr($class, 0, -11));
+		}
+		elseif ($suffix === 'Model')
+		{
+			$type = 'models';
+			// Lowercase filename
+			$file = strtolower(substr($class, 0, -6));
+		}
+		elseif ($suffix === 'Driver')
+		{
+			$type = 'libraries/drivers';
+			$file = str_replace('_', '/', substr($class, 0, -7));
+		}
+		else
+		{
+			// This could be either a library or a helper, but libraries must
+			// always be capitalized, so we check if the first character is
+			// uppercase. If it is, we are loading a library, not a helper.
+			$type = ($class[0] < 'a') ? 'libraries' : 'helpers';
+			$file = $class;
+		}
+
 		if (($filepath = self::find_file($type, $file)) === FALSE)
 			return FALSE;
 
 		// Load the requested file
-		require_once $filepath;
+		require $filepath;
 
 		if ($type === 'libraries' OR $type === 'helpers')
 		{
-			if ($extension = self::find_file($type, $prefix.$class))
+			if ($extension = self::find_file($type, self::$configuration['core']['extension_prefix'].$class))
 			{
 				// Load the class extension
-				require_once $extension;
+				require $extension;
 			}
-			elseif (substr($class, -5) !== '_Core' AND class_exists($class.'_Core', FALSE))
+			elseif ($suffix !== 'Core' AND class_exists($class.'_Core', FALSE))
 			{
 				// Transparent class extensions are handled using eval. This is
-				// a disgusting hack, but it works very well.
+				// a disgusting hack, but it gets the job done.
 				eval('class '.$class.' extends '.$class.'_Core { }');
 			}
 		}
@@ -785,7 +1004,9 @@ class Kohana {
 	}
 
 	/**
-	 * Find a resource file in a given directory.
+	 * Find a resource file in a given directory. Files will be located according
+	 * to the order of the include paths. Configuration and i18n files will be
+	 * returned in reverse order.
 	 *
 	 * @throws  Kohana_Exception  if file is required and not found
 	 * @param   string   directory to search in
@@ -798,46 +1019,55 @@ class Kohana {
 	 */
 	public static function find_file($directory, $filename, $required = FALSE, $ext = FALSE)
 	{
-		// Users can define their own extensions, css, xml, html, etc
-		$ext = ($ext === FALSE) ? EXT : '.'.ltrim($ext, '.');
+		// NOTE: This test MUST be not be a strict comparison (===), or empty
+		// extensions will be allowed!
+		if ($ext == '')
+		{
+			// Use the default extension
+			$ext = EXT;
+		}
+		else
+		{
+			// Add a period before the extension
+			$ext = '.'.$ext;
+		}
 
 		// Search path
 		$search = $directory.'/'.$filename.$ext;
 
-		if (isset(self::$paths[$search]))
-		{
-			// Return the cached path
-			return self::$paths[$search];
-		}
+		if (isset(self::$internal_cache['include_paths'][$search]))
+			return self::$internal_cache['include_paths'][$search];
+
+		// Load include paths
+		$paths = self::$include_paths;
 
 		// Nothing found, yet
 		$found = NULL;
 
-		if ($directory === 'config' OR $directory === 'i18n' OR $directory === 'l10n')
+		if ($directory === 'config' OR $directory === 'i18n')
 		{
-			// Search from SYSPATH up
-			$paths = array_reverse(Config::include_paths());
+			// Search in reverse, for merging
+			$paths = array_reverse($paths);
 
 			foreach ($paths as $path)
 			{
 				if (is_file($path.$search))
 				{
-					// A file has been found
+					// A matching file has been found
 					$found[] = $path.$search;
 				}
 			}
 		}
 		else
 		{
-			// Find the file and return its filename
-			$paths = Config::include_paths();
-
 			foreach ($paths as $path)
 			{
 				if (is_file($path.$search))
 				{
-					// A file has been found
+					// A matching file has been found
 					$found = $path.$search;
+
+					// Stop searching
 					break;
 				}
 			}
@@ -847,40 +1077,26 @@ class Kohana {
 		{
 			if ($required === TRUE)
 			{
+				// Directory i18n key
+				$directory = 'core.'.inflector::singular($directory);
+
 				// If the file is required, throw an exception
-				throw new Kohana_Exception('core.resource_not_found', Kohana::lang('core.'.inflector::singular($directory)), $filename);
+				throw new Kohana_Exception('core.resource_not_found', self::lang($directory), $filename);
 			}
 			else
 			{
-				// Nothing was found
+				// Nothing was found, return FALSE
 				$found = FALSE;
 			}
 		}
 
-		// Add paths to cache
-		self::$paths[$search] = $found;
-
-		if (self::$paths_changed === FALSE)
+		if ( ! isset(self::$write_cache['include_paths']))
 		{
-			// Cache has changed
-			self::$paths_changed = TRUE;
-
-			// Save cache at shutdown
-			Event::add('system.shutdown', array(__CLASS__, 'write_path_cache'));
+			// Write cache at shutdown
+			self::$write_cache['include_paths'] = TRUE;
 		}
 
-		return $found;
-	}
-
-	/**
-	 * Writes the file path cache.
-	 *
-	 * @return  boolean
-	 */
-	public static function write_path_cache()
-	{
-		// Save updated cache
-		return Kohana::save_cache('file_paths', self::$paths);
+		return self::$internal_cache['include_paths'][$search] = $found;;
 	}
 
 	/**
@@ -897,7 +1113,7 @@ class Kohana {
 
 		if ($path === FALSE)
 		{
-			$paths = array_reverse(Config::include_paths());
+			$paths = array_reverse(Kohana::include_paths());
 
 			foreach ($paths as $path)
 			{
@@ -942,28 +1158,19 @@ class Kohana {
 	 */
 	public static function lang($key, $args = array())
 	{
-		static $language = array();
-
-		// Get locale name
-		$locale = Config::item('locale.language.0');
-
 		// Extract the main group from the key
 		$group = explode('.', $key, 2);
 		$group = $group[0];
 
-		if (empty($language[$group]))
+		if ( ! isset(self::$internal_cache['language'][$group]))
 		{
-			// Messages from this file
+			// Get locale name
+			$locale = Kohana::config('locale.language.0');
+
+			// Messages for this group
 			$messages = array();
 
-			// The name of the file to search for
-			$filename = $locale.'/'.$group;
-
-			// Loop through the files and include each one, so SYSPATH files
-			// can be overloaded by more localized files
-			$files = self::find_file('i18n', $filename);
-
-			if ( ! empty($files))
+			if ($files = self::find_file('i18n', $locale.'/'.$group))
 			{
 				foreach ($files as $file)
 				{
@@ -980,16 +1187,22 @@ class Kohana {
 				}
 			}
 
-			// Cache the type
-			$language[$group] = $messages;
+			// Cache the messages
+			self::$internal_cache['language'][$group] = $messages;
+
+			if ( ! isset(self::$write_cache['language']))
+			{
+				// Write language cache
+				self::$write_cache['language'] = TRUE;
+			}
 		}
 
-		// Get the line from the language
-		$line = self::key_string($language, $key);
+		// Get the line from cache
+		$line = self::key_string(self::$internal_cache['language'], $key);
 
 		if ($line === NULL)
 		{
-			Log::add('error', 'Missing i18n entry '.$key.' for language '.$locale);
+			Kohana::log('error', 'Missing i18n entry '.$key.' for language '.$locale);
 
 			// Return the key string as fallback
 			return $key;
@@ -1007,59 +1220,6 @@ class Kohana {
 	}
 
 	/**
-	 * Fetch an i10n locale item.
-	 *
-	 * @param   string  locale key to fetch
-	 * @return  mixed   NULL if the key is not found
-	 */
-	public static function locale($key)
-	{
-		static $locale = array();
-
-		if (empty($locale))
-		{
-			// Messages from this file
-			$messages = array();
-
-			// The name of the file to search for
-			$filename = Config::item('locale.country');
-
-			// Loop through the files and include each one, so SYSPATH files
-			// can be overloaded by more localized files
-			$files = self::find_file('l10n', Config::item('locale.language').'/'.$filename);
-
-			if ( ! empty($files))
-			{
-				foreach ($files as $file)
-				{
-					include $file;
-
-					// Merge in configuration
-					if ( ! empty($locale) AND is_array($locale))
-					{
-						foreach ($locale as $k => $v)
-						{
-							$locale[$k] = $v;
-						}
-					}
-				}
-			}
-		}
-
-		// Get the line from the language
-		$line = self::key_string($locale, $key);
-
-		// Return the key string as fallback
-		if ($line === NULL)
-		{
-			Log::add('error', 'Missing i10n entry '.$key.' for locale '.$filename);
-			return NULL;
-		}
-
-		return $line;
-	}
-
-	/**
 	 * Returns the value of a key, defined by a 'dot-noted' string, from an array.
 	 *
 	 * @param   string  dot-noted string: foo.bar.baz
@@ -1069,32 +1229,22 @@ class Kohana {
 	 */
 	public static function key_string($array, $keys)
 	{
-		// No array to search
-		if ((empty($keys) AND is_string($keys)) OR (empty($array) AND is_array($array)))
+		if (empty($array))
 			return NULL;
-
-		if (substr($keys, -2) === '.*')
-		{
-			// Remove the wildcard from the keys
-			$keys = substr($keys, 0, -2);
-		}
 
 		// Prepare for loop
 		$keys = explode('.', $keys);
 
-		// Loop down and find the key
 		do
 		{
-			// Get the current key
+			// Get the next key
 			$key = array_shift($keys);
 
-			// Value is set, dig deeper or return
 			if (isset($array[$key]))
 			{
-				// If the key is an array, and we haven't hit bottom, prepare
-				// for the next loop by re-referencing to the next child
 				if (is_array($array[$key]) AND ! empty($keys))
 				{
+					// Dig down to prepare the next loop
 					$array = $array[$key];
 				}
 				else
@@ -1111,7 +1261,6 @@ class Kohana {
 		}
 		while ( ! empty($keys));
 
-		// We return NULL, because it's less common than FALSE
 		return NULL;
 	}
 
@@ -1211,7 +1360,7 @@ class Kohana {
 		if ($info === NULL)
 		{
 			// Parse the user agent and extract basic information
-			$agents = Config::item('user_agents');
+			$agents = Kohana::config('user_agents');
 
 			foreach ($agents as $type => $data)
 			{
@@ -1388,6 +1537,37 @@ class Kohana {
 		}
 
 		return '<ul class="backtrace">'.implode("\n", $output).'</ul>';
+	}
+
+	/**
+	 * Saves the internal caches: configuration, include paths, etc.
+	 *
+	 * @return  boolean
+	 */
+	public static function internal_cache_save()
+	{
+		if ( ! is_array(self::$write_cache))
+			return FALSE;
+
+		// Get internal cache names
+		$caches = array_keys(self::$write_cache);
+
+		// Nothing written
+		$written = FALSE;
+
+		foreach ($caches as $cache)
+		{
+			if (isset(self::$internal_cache[$cache]))
+			{
+				// Write the cache file
+				self::cache_save($cache, self::$internal_cache[$cache], self::$configuration['core']['internal_cache']);
+
+				// A cache has been written
+				$written = TRUE;
+			}
+		}
+
+		return $written;
 	}
 
 } // End Kohana

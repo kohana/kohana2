@@ -16,14 +16,14 @@ class Session_Cookie_Driver implements Session_Driver {
 
 	public function __construct()
 	{
-		$this->cookie_name = Config::item('session.name').'_data';
+		$this->cookie_name = Kohana::config('session.name').'_data';
 
-		if (Config::item('session.encryption'))
+		if (Kohana::config('session.encryption'))
 		{
 			$this->encrypt = Encrypt::instance();
 		}
 
-		Log::add('debug', 'Session Cookie Driver Initialized');
+		Kohana::log('debug', 'Session Cookie Driver Initialized');
 	}
 
 	public function open($path, $name)
@@ -52,11 +52,11 @@ class Session_Cookie_Driver implements Session_Driver {
 
 		if (strlen($data) > 4048)
 		{
-			Log::add('error', 'Session ('.$id.') data exceeds the 4KB limit, ignoring write.');
+			Kohana::log('error', 'Session ('.$id.') data exceeds the 4KB limit, ignoring write.');
 			return FALSE;
 		}
 
-		return cookie::set($this->cookie_name, $data, Config::item('session.expiration'));
+		return cookie::set($this->cookie_name, $data, Kohana::config('session.expiration'));
 	}
 
 	public function destroy($id)

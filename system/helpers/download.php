@@ -52,7 +52,7 @@ class download_Core {
 		}
 
 		// Get the mime type of the file
-		$mime = Config::item('mimes.'.$extension);
+		$mime = Kohana::config('mimes.'.$extension);
 
 		if (empty($mime))
 		{

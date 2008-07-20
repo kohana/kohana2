@@ -62,7 +62,7 @@ class Pagination_Core {
 		// Pagination setup
 		$this->initialize($config);
 
-		Log::add('debug', 'Pagination Library initialized');
+		Kohana::log('debug', 'Pagination Library initialized');
 	}
 
 	/**
@@ -78,14 +78,14 @@ class Pagination_Core {
 		if (isset($config['group']))
 		{
 			// Load and validate config group
-			if ( ! is_array($group_config = Config::item('pagination.'.$config['group'])))
+			if ( ! is_array($group_config = Kohana::config('pagination.'.$config['group'])))
 				throw new Kohana_Exception('pagination.undefined_group', $config['group']);
 
 			// All pagination config groups inherit default config group
 			if ($config['group'] !== 'default')
 			{
 				// Load and validate default config group
-				if ( ! is_array($default_config = Config::item('pagination.default')))
+				if ( ! is_array($default_config = Kohana::config('pagination.default')))
 					throw new Kohana_Exception('pagination.undefined_group', 'default');
 
 				// Merge config group with default config group

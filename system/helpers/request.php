@@ -140,7 +140,7 @@ class request_Core {
 			$q = 0;
 
 			// Look up relevant mime types
-			foreach ((array) Config::item('mimes.'.$type) as $type)
+			foreach ((array) Kohana::config('mimes.'.$type) as $type)
 			{
 				$q2 = request::accepts_at_quality($type, $explicit_check);
 				$q = ($q2 > $q) ? $q2 : $q;

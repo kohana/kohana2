@@ -37,11 +37,11 @@ class url_Core {
 		if ($protocol == FALSE)
 		{
 			// Use the default configured protocol
-			$protocol = Config::item('core.site_protocol');
+			$protocol = Kohana::config('core.site_protocol');
 		}
 
 		// Load the site domain
-		$site_domain = (string) Config::item('core.site_domain', TRUE);
+		$site_domain = (string) Kohana::config('core.site_domain', TRUE);
 
 		if ($protocol == FALSE)
 		{
@@ -70,7 +70,7 @@ class url_Core {
 			}
 		}
 
-		if ($index === TRUE AND $index = Config::item('core.index_page'))
+		if ($index === TRUE AND $index = Kohana::config('core.index_page'))
 		{
 			// Append the index page
 			$base_url = $base_url.$index;
@@ -92,7 +92,7 @@ class url_Core {
 		if ($path = trim(parse_url($uri, PHP_URL_PATH), '/'))
 		{
 			// Add path suffix
-			$path .= Config::item('core.url_suffix');
+			$path .= Kohana::config('core.url_suffix');
 		}
 
 		if ($query = parse_url($uri, PHP_URL_QUERY))

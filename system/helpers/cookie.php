@@ -33,7 +33,7 @@ class cookie_Core {
 		is_array($name) and extract($name, EXTR_OVERWRITE);
 
 		// Fetch default options
-		$config = Config::item('cookie');
+		$config = Kohana::config('cookie');
 
 		foreach (array('value', 'expire', 'domain', 'path', 'prefix', 'secure', 'httponly') as $item)
 		{
@@ -61,7 +61,7 @@ class cookie_Core {
 	{
 		if ($prefix === NULL)
 		{
-			$prefix = (string) Config::item('cookie.prefix');
+			$prefix = (string) Kohana::config('cookie.prefix');
 		}
 
 		return Input::instance()->cookie($prefix.$name, NULL, $xss_clean);

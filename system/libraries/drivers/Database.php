@@ -375,7 +375,7 @@ abstract class Database_Driver {
 		if ($sql_types === NULL)
 		{
 			// Load SQL data types
-			$sql_types = Config::item('sql_types');
+			$sql_types = Kohana::config('sql_types');
 		}
 
 		$str = strtolower(trim($str));
@@ -438,7 +438,7 @@ abstract class Database_Driver {
 			unset(self::$query_cache[$this->query_hash($sql)]);
 		}
 
-		Log::add('debug', 'Database cache cleared: '.get_class($this));
+		Kohana::log('debug', 'Database cache cleared: '.get_class($this));
 	}
 
 	/**

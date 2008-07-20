@@ -44,7 +44,7 @@ class Router_Core {
 		if (self::$routes === NULL)
 		{
 			// Load routes
-			self::$routes = Config::item('routes');
+			self::$routes = Kohana::config('routes');
 		}
 
 		// Default route status
@@ -95,7 +95,7 @@ class Router_Core {
 		$method_segment  = NULL;
 
 		// Paths to search
-		$paths = Config::include_paths();
+		$paths = Kohana::include_paths();
 
 		foreach (self::$rsegments as $key => $segment)
 		{
@@ -197,7 +197,7 @@ class Router_Core {
 			self::$current_uri = key($_GET);
 
 			// Fixes really strange handling of a suffix in a GET string
-			if ($suffix = Config::item('core.url_suffix') AND substr(self::$current_uri, -(strlen($suffix))) === '_'.substr($suffix, 1))
+			if ($suffix = Kohana::config('core.url_suffix') AND substr(self::$current_uri, -(strlen($suffix))) === '_'.substr($suffix, 1))
 			{
 				self::$current_uri = substr(self::$current_uri, 0, -(strlen($suffix)));
 			}
@@ -233,7 +233,7 @@ class Router_Core {
 
 		if (self::$current_uri !== '')
 		{
-			if ($suffix = Config::item('core.url_suffix') AND strpos(self::$current_uri, $suffix) !== FALSE)
+			if ($suffix = Kohana::config('core.url_suffix') AND strpos(self::$current_uri, $suffix) !== FALSE)
 			{
 				// Remove the URL suffix
 				self::$current_uri = preg_replace('#'.preg_quote($suffix).'$#u', '', self::$current_uri);
@@ -258,7 +258,7 @@ class Router_Core {
 		if (self::$routes === NULL)
 		{
 			// Load routes
-			self::$routes = Config::item('routes');
+			self::$routes = Kohana::config('routes');
 		}
 
 		// Prepare variables

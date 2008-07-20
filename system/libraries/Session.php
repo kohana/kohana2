@@ -49,7 +49,7 @@ class Session_Core {
 		if (self::$instance === NULL)
 		{
 			// Load config
-			self::$config = Config::item('session');
+			self::$config = Kohana::config('session');
 
 			// Makes a mirrored array, eg: foo=foo
 			self::$protect = array_combine(self::$protect, self::$protect);
@@ -84,7 +84,7 @@ class Session_Core {
 			self::$instance = $this;
 		}
 
-		Log::add('debug', 'Session Library initialized');
+		Kohana::log('debug', 'Session Library initialized');
 	}
 
 	/**
@@ -147,10 +147,10 @@ class Session_Core {
 		session_set_cookie_params
 		(
 			self::$config['expiration'],
-			Config::item('cookie.path'),
-			Config::item('cookie.domain'),
-			Config::item('cookie.secure'),
-			Config::item('cookie.httponly')
+			Kohana::config('cookie.path'),
+			Kohana::config('cookie.domain'),
+			Kohana::config('cookie.secure'),
+			Kohana::config('cookie.httponly')
 		);
 
 		// Start the session!

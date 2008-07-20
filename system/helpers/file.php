@@ -74,7 +74,7 @@ class file_Core {
 			return mime_content_type($filename);
 		}
 
-		if ( ! empty($extension) AND is_array($mime = Config::item('mimes.'.$extension)))
+		if ( ! empty($extension) AND is_array($mime = Kohana::config('mimes.'.$extension)))
 		{
 			// Return the mime-type guess, based on the extension
 			return $mime[0];

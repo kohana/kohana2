@@ -112,7 +112,7 @@ class valid_Core {
 		if (($number = preg_replace('/\D+/', '', $number)) === '')
 			return FALSE;
 
-		$cards = Config::item('credit_cards');
+		$cards = Kohana::config('credit_cards');
 
 		// Check card type
 		$type = strtolower($type);

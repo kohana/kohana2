@@ -253,7 +253,7 @@ class html_Core {
 		}
 
 		// Set the meta attribute value
-		$attr = in_array(strtolower($tag), Config::item('http.meta_equiv')) ? 'http-equiv' : 'name';
+		$attr = in_array(strtolower($tag), Kohana::config('http.meta_equiv')) ? 'http-equiv' : 'name';
 
 		return '<meta '.$attr.'="'.$tag.'" content="'.$value.'" />';
 	}

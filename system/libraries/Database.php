@@ -87,7 +87,7 @@ class Database_Core {
 		if (empty($config))
 		{
 			// Load the default group
-			$config = Config::item('database.default');
+			$config = Kohana::config('database.default');
 		}
 		elseif (is_array($config) AND count($config) > 0)
 		{
@@ -109,7 +109,7 @@ class Database_Core {
 				$name = $config;
 
 				// Test the config group name
-				if (($config = Config::item('database.'.$config)) === NULL)
+				if (($config = Kohana::config('database.'.$config)) === NULL)
 					throw new Kohana_Database_Exception('database.undefined_group', $name);
 			}
 		}
@@ -202,7 +202,7 @@ class Database_Core {
 		if ( ! ($this->driver instanceof Database_Driver))
 			throw new Kohana_Database_Exception('core.driver_implements', $this->config['connection']['type'], get_class($this), 'Database_Driver');
 
-		Log::add('debug', 'Database Library initialized');
+		Kohana::log('debug', 'Database Library initialized');
 	}
 
 	/**

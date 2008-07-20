@@ -25,33 +25,33 @@ class Session_Cache_Driver implements Session_Driver {
 	public function __construct()
 	{
 		// Load Encrypt library
-		if (Config::item('session.encryption'))
+		if (Kohana::config('session.encryption'))
 		{
 			$this->encrypt = new Encrypt;
 		}
 
-		Log::add('debug', 'Session Cache Driver Initialized');
+		Kohana::log('debug', 'Session Cache Driver Initialized');
 	}
 
 	public function open($path, $name)
 	{
-		$config = Config::item('session.storage');
+		$config = Kohana::config('session.storage');
 
 		if (empty($config))
 		{
 			// Load the default group
-			$config = Config::item('cache.default');
+			$config = Kohana::config('cache.default');
 		}
 		elseif (is_string($config))
 		{
 			$name = $config;
 
 			// Test the config group name
-			if (($config = Config::item('cache.'.$config)) === NULL)
+			if (($config = Kohana::config('cache.'.$config)) === NULL)
 				throw new Kohana_Exception('cache.undefined_group', $name);
 		}
 
-		$config['lifetime'] = (Config::item('session.expiration') == 0) ? 86400 : Config::item('session.expiration');
+		$config['lifetime'] = (Kohana::config('session.expiration') == 0) ? 86400 : Kohana::config('session.expiration');
 		$this->cache = new Cache($config);
 
 		return is_object($this->cache);
@@ -67,7 +67,7 @@ class Session_Cache_Driver implements Session_Driver {
 		$id = 'session_'.$id;
 		if ($data = $this->cache->get($id))
 		{
-			return Config::item('session.encryption') ? $this->encrypt->decode($data) : $data;
+			return Kohana::config('session.encryption') ? $this->encrypt->decode($data) : $data;
 		}
 
 		// Return value must be string, NOT a boolean
@@ -77,7 +77,7 @@ class Session_Cache_Driver implements Session_Driver {
 	public function write($id, $data)
 	{
 		$id = 'session_'.$id;
-		$data = Config::item('session.encryption') ? $this->encrypt->encode($data) : $data;
+		$data = Kohana::config('session.encryption') ? $this->encrypt->encode($data) : $data;
 
 		return $this->cache->set($id, $data);
 	}

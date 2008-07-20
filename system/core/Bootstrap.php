@@ -30,8 +30,6 @@ Benchmark::start(SYSTEM_BENCHMARK.'_kohana_loading');
 
 // Load core files
 require SYSPATH.'core/utf8'.EXT;
-require SYSPATH.'core/Config'.EXT;
-require SYSPATH.'core/Log'.EXT;
 require SYSPATH.'core/Event'.EXT;
 require SYSPATH.'core/Kohana'.EXT;
 

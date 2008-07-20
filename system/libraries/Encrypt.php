@@ -46,7 +46,7 @@ class Encrypt_Core {
 			throw new Kohana_Exception('encrypt.requires_mcrypt');
 
 		// Append the default configuration options
-		$config += Config::item('encryption');
+		$config += Kohana::config('encryption');
 
 		if (empty($config['key']))
 			throw new Kohana_Exception('encrypt.no_encryption_key');
@@ -66,7 +66,7 @@ class Encrypt_Core {
 		// Cache the config in the object
 		$this->config = $config;
 
-		Log::add('debug', 'Encrypt Library initialized');
+		Kohana::log('debug', 'Encrypt Library initialized');
 	}
 
 	/**

@@ -43,7 +43,7 @@ class Input_Core {
 	public function __construct()
 	{
 		// Use XSS clean?
-		$this->use_xss_clean = (bool) Config::item('core.global_xss_filtering');
+		$this->use_xss_clean = (bool) Kohana::config('core.global_xss_filtering');
 
 		if (self::$instance === NULL)
 		{
@@ -73,7 +73,7 @@ class Input_Core {
 				}
 
 				// Warn the developer about register globals
-				Log::add('debug', 'Register globals is enabled. To save resources, disable register_globals in php.ini');
+				Kohana::log('debug', 'Register globals is enabled. To save resources, disable register_globals in php.ini');
 			}
 
 			if (is_array($_GET) AND count($_GET) > 0)
@@ -118,7 +118,7 @@ class Input_Core {
 			// Create a singleton
 			self::$instance = $this;
 
-			Log::add('debug', 'Global GET, POST and COOKIE data sanitized');
+			Kohana::log('debug', 'Global GET, POST and COOKIE data sanitized');
 		}
 	}
 
@@ -273,7 +273,7 @@ class Input_Core {
 		if ( ! is_string($tool))
 		{
 			// Fetch the configured tool
-			if (is_bool($tool = Config::item('core.global_xss_filtering')))
+			if (is_bool($tool = Kohana::config('core.global_xss_filtering')))
 			{
 				// Make sure that the default tool is used
 				$tool = 'default';
@@ -289,7 +289,7 @@ class Input_Core {
 				if ( ! class_exists('HTMLPurifier_Config', FALSE))
 				{
 					// Load HTMLPurifier
-					require Kohana::find_file('vendor', 'htmlpurifier/HTMLPurifier.auto');
+					require Kohana::find_file('vendor', 'htmlpurifier/HTMLPurifier.auto', TRUE);
 					require 'HTMLPurifier.func.php';
 				}
 

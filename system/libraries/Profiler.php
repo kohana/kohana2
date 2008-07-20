@@ -32,7 +32,7 @@ class Profiler_Core {
 		// Add profiler to page output automatically
 		Event::add('system.display', array($this, 'render'));
 
-		Log::add('debug', 'Profiler Library initialized');
+		Kohana::log('debug', 'Profiler Library initialized');
 	}
 
 	/**
@@ -80,7 +80,7 @@ class Profiler_Core {
 		$start = microtime(TRUE);
 
 		$get = isset($_GET['profiler']) ? explode(',', $_GET['profiler']) : array();
-		$this->show = empty($get) ? Config::item('profiler.show') : $get;
+		$this->show = empty($get) ? Kohana::config('profiler.show') : $get;
 
 		Event::run('profiler.run', $this);
 
