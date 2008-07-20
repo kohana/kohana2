@@ -135,6 +135,7 @@ class Gmap_Core {
 	protected $options;
 	protected $center;
 	protected $control;
+	protected $overview_control;
 	protected $type_control = FALSE;
 	
 	// Map types
@@ -200,6 +201,22 @@ class Gmap_Core {
 	}
 	
 	/**
+	 * Set the GMap overview map.
+	 *
+	 * @chainable
+	 * @param integer $width width
+	 * @param integer $height height
+	 * @return object
+	 */
+	public function overview($width = '', $height = '')
+	{
+		$size = (is_int($width) AND is_int($height)) ? 'new GSize('.$width.','.$height.')' : '';
+		$this->overview_control = 'map.addControl(new google.maps.OverviewMapControl('.$size.'));';
+		
+		return $this;
+	}
+	
+	/**
 	 * Set the GMap type controls.
 	 * by default renders G_NORMAL_MAP, G_SATELLITE_MAP, and G_HYBRID_MAP
 	 *
@@ -258,7 +275,7 @@ class Gmap_Core {
 		$map = 'var map = new google.maps.Map2(document.getElementById("'.$this->id.'"));';
 		
 		// Map controls
-		$controls = empty($this->control) ? '' : 'map.addControl(new google.maps.'.$this->control.'MapControl());';
+		$controls[] = empty($this->control) ? '' : 'map.addControl(new google.maps.'.$this->control.'MapControl());';
 
 		// Map Types
 		if ($this->type_control === TRUE)
@@ -266,11 +283,14 @@ class Gmap_Core {
 			if (count($this->types) > 0) 
 			{
 				foreach($this->types as $type => $action)
-					$controls .= 'map.'.$action.'MapType('.$type.');';
+					$controls[] = 'map.'.$action.'MapType('.$type.');';
 			}
 			
-			$controls .= 'map.addControl(new google.maps.MapTypeControl());';
+			$controls[] = 'map.addControl(new google.maps.MapTypeControl());';
 		}
+		
+		if ( ! empty($this->overview_control))
+			$controls[] = $this->overview_control;
 
 		// Map centering
 		$center = 'map.setCenter(new google.maps.LatLng('.$lat.', '.$lon.'), '.$zoom.');';
@@ -280,7 +300,7 @@ class Gmap_Core {
 			(
 				'map' => $map,
 				'options' => $this->options,
-				'controls' => $controls,
+				'controls' => implode("\n", $controls),
 				'center' => $center,
 				'markers' => $this->markers,
 			))
