@@ -411,6 +411,61 @@ final class Kohana {
 	}
 
 	/**
+	 * Sets a configuration item, if allowed.
+	 *
+	 * @param   string   config key string
+	 * @param   string   config value
+	 * @return  boolean
+	 */
+	public static function config_set($key, $value)
+	{
+		if (self::$configuration['core']['allow_config_set'] !== TRUE)
+			throw new Kohana_Exception('core.config_set_disabled');
+
+		// Empty keys and core.allow_set cannot be set
+		if ($key === 'core.allow_config_set')
+			return FALSE;
+
+		// Do this to make sure that the config array is already loaded
+		self::config($key);
+
+		if (substr($key, 0, 7) === 'routes.')
+		{
+			// Routes cannot contain sub keys due to possible dots in regex
+			$keys = explode('.', $key, 2);
+		}
+		else
+		{
+			// Convert dot-noted key string to an array
+			$keys = explode('.', $key);
+		}
+
+		// Used for recursion
+		$conf =& self::$configuration;
+		$last = count($keys) - 1;
+
+		foreach ($keys as $i => $k)
+		{
+			if ($i === $last)
+			{
+				$conf[$k] = $value;
+			}
+			else
+			{
+				$conf =& $conf[$k];
+			}
+		}
+
+		if ($key === 'core.modules')
+		{
+			// Reprocess the include paths
+			self::include_paths(TRUE);
+		}
+
+		return TRUE;
+	}
+
+	/**
 	 * Load a config file.
 	 *
 	 * @param   string   config filename, without extension
