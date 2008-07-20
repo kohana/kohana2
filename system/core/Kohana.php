@@ -111,9 +111,9 @@ final class Kohana {
 
 		if ($lifetime = self::config('core.internal_cache'))
 		{
-			// Load cached configuration and include paths
+			// Load cached configuration and file paths
 			self::$internal_cache['configuration'] = self::cache('configuration', $lifetime);
-			self::$internal_cache['include_paths'] = self::cache('include_paths', $lifetime);
+			self::$internal_cache['file_path']     = self::cache('file_path', $lifetime);
 
 			// Enable cache saving
 			Event::add('system.shutdown', array(__CLASS__, 'internal_cache_save'));
@@ -1035,8 +1035,8 @@ final class Kohana {
 		// Search path
 		$search = $directory.'/'.$filename.$ext;
 
-		if (isset(self::$internal_cache['include_paths'][$search]))
-			return self::$internal_cache['include_paths'][$search];
+		if (isset(self::$internal_cache['file_path'][$search]))
+			return self::$internal_cache['file_path'][$search];
 
 		// Load include paths
 		$paths = self::$include_paths;
@@ -1090,13 +1090,13 @@ final class Kohana {
 			}
 		}
 
-		if ( ! isset(self::$write_cache['include_paths']))
+		if ( ! isset(self::$write_cache['file_path']))
 		{
 			// Write cache at shutdown
-			self::$write_cache['include_paths'] = TRUE;
+			self::$write_cache['file_path'] = TRUE;
 		}
 
-		return self::$internal_cache['include_paths'][$search] = $found;;
+		return self::$internal_cache['file_path'][$search] = $found;;
 	}
 
 	/**
