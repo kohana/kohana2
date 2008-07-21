@@ -32,9 +32,6 @@ final class Event {
 	 */
 	public static function add($name, $callback)
 	{
-		if (empty($name) OR empty($callback))
-			return FALSE;
-
 		if ( ! isset(self::$events[$name]))
 		{
 			// Create an empty event if it is not yet defined
@@ -62,9 +59,6 @@ final class Event {
 	 */
 	public static function add_before($name, $existing, $callback)
 	{
-		if (empty($name) OR empty($existing) OR empty($callback))
-			return FALSE;
-
 		if (empty(self::$events[$name]) OR ($key = array_search($existing, self::$events[$name])) === FALSE)
 		{
 			// Just add the event if there are no events
@@ -87,9 +81,6 @@ final class Event {
 	 */
 	public static function add_after($name, $existing, $callback)
 	{
-		if (empty($name) OR empty($existing) OR empty($callback))
-			return FALSE;
-
 		if (empty(self::$events[$name]) OR ($key = array_search($existing, self::$events[$name])) === FALSE)
 		{
 			// Just add the event if there are no events
@@ -139,10 +130,7 @@ final class Event {
 	 */
 	public static function replace($name, $existing, $callback)
 	{
-		if (empty($name) OR empty($existing) OR empty($callback) OR empty(self::$events[$name]))
-			return FALSE;
-
-		if (($key = array_search($existing, self::$events[$name], TRUE)) === FALSE)
+		if (empty(self::$events[$name]) OR ($key = array_search($existing, self::$events[$name], TRUE)) === FALSE)
 			return FALSE;
 
 		if ( ! in_array($callback, self::$events[$name], TRUE))
@@ -182,7 +170,7 @@ final class Event {
 	 */
 	public static function clear($name, $callback = FALSE)
 	{
-		if ($callback == FALSE)
+		if ($callback === FALSE)
 		{
 			self::$events[$name] = array();
 		}
