@@ -55,7 +55,7 @@ class Database_Core {
 	 * @param   mixed   configuration array or DSN
 	 * @return  Database_Core
 	 */
-	public static function instance($name = 'default', $config = NULL)
+	public static function & instance($name = 'default', $config = NULL)
 	{
 		if ( ! isset(Database::$instances[$name]))
 		{
