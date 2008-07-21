@@ -1217,11 +1217,11 @@ final class Kohana {
 		$group = explode('.', $key, 2);
 		$group = $group[0];
 
+		// Get locale name
+		$locale = Kohana::config('locale.language.0');
+
 		if ( ! isset(self::$internal_cache['language'][$group]))
 		{
-			// Get locale name
-			$locale = Kohana::config('locale.language.0');
-
 			// Messages for this group
 			$messages = array();
 
