@@ -108,7 +108,7 @@ class Router_Core {
 				// Search within controllers only
 				$dir .= 'controllers/';
 
-				if (file_exists($dir.$controller_path) OR file_exists($dir.$controller_path.EXT))
+				if (is_dir($dir.$controller_path) OR is_file($dir.$controller_path.EXT))
 				{
 					// Valid path
 					$found = TRUE;

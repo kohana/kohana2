@@ -104,7 +104,7 @@ class Captcha_Core {
 		{
 			self::$config['background'] = str_replace('\\', '/', realpath($config['background']));
 
-			if ( ! file_exists(self::$config['background']))
+			if ( ! is_file(self::$config['background']))
 				throw new Kohana_Exception('captcha.file_not_found', self::$config['background']);
 		}
 
@@ -115,7 +115,7 @@ class Captcha_Core {
 
 			foreach ($config['fonts'] as $font)
 			{
-				if ( ! file_exists(self::$config['fontpath'].$font))
+				if ( ! is_file(self::$config['fontpath'].$font))
 					throw new Kohana_Exception('captcha.file_not_found', self::$config['fontpath'].$font);
 			}
 		}

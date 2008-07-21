@@ -562,7 +562,7 @@ final class Kohana {
 		// Filename of the log
 		$filename = self::log_directory().date('Y-m-d').'.log'.EXT;
 
-		if ( ! file_exists($filename))
+		if ( ! is_file($filename))
 		{
 			// Write the SYSPATH checking header
 			file_put_contents($filename,
@@ -604,7 +604,7 @@ final class Kohana {
 			// Get the directory path
 			$dir = realpath($dir);
 
-			if (file_exists($dir) AND is_dir($dir) AND is_writable($dir))
+			if (is_dir($dir) AND is_writable($dir))
 			{
 				// Change the log directory
 				$directory = str_replace('\\', '/', $dir).'/';
@@ -633,7 +633,7 @@ final class Kohana {
 		{
 			$path = APPPATH.'cache/kohana_'.$name;
 
-			if (file_exists($path))
+			if (is_file($path))
 			{
 				// Check the file modification time
 				if ((time() - filemtime($path)) < $lifetime)
@@ -670,7 +670,7 @@ final class Kohana {
 			if ($data === NULL)
 			{
 				// Delete cache
-				return (file_exists($path) and unlink($path));
+				return (is_file($path) and unlink($path));
 			}
 			else
 			{

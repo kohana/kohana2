@@ -59,7 +59,7 @@ class MY_Smarty_Core extends Smarty {
 	
 	public function checkDirectory($directory)
 	{
-		if ((! file_exists($directory) AND ! @mkdir($directory, 0755)) OR ! is_writeable($directory) OR !is_executable($directory)) 
+		if ((! file_exists($directory) AND ! @mkdir($directory, 0755)) OR ! is_writable($directory) OR !is_executable($directory)) 
 		{
 			$error = 'Compile/Cache directory "%s" is not writeable/executable';
 			$error = sprintf($error, $directory);

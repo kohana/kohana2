@@ -42,7 +42,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		$this->ext = (PHP_SHLIB_SUFFIX === 'dll') ? '.exe' : '';
 
 		// Check to make sure the provided path is correct
-		if ( ! file_exists(realpath($config['directory']).'/convert'.$this->ext))
+		if ( ! is_file(realpath($config['directory']).'/convert'.$this->ext))
 			throw new Kohana_Exception('image.imagemagick.not_found', 'convert'.$this->ext);
 
 		// Set the installation directory

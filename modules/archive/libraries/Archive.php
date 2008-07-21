@@ -61,7 +61,7 @@ class Archive_Core {
 		// Set the name
 		empty($name) and $name = $path;
 
-		if (file_exists($path) AND is_dir($path))
+		if (is_dir($path))
 		{
 			// Force directories to end with a slash
 			$path = rtrim($path, '/').'/';
@@ -108,7 +108,7 @@ class Archive_Core {
 		if ( ! is_writable($directory))
 			throw new Kohana_Exception('archive.directory_unwritable', $directory);
 
-		if (file_exists($filename))
+		if (is_file($filename))
 		{
 			// Unable to write to the file
 			if ( ! is_writable($filename))

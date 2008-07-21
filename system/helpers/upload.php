@@ -47,7 +47,7 @@ class upload_Core {
 		// Make sure the directory ends with a slash
 		$directory = rtrim($directory, '/').'/';
 
-		if ( ! file_exists($directory) AND Kohana::config('upload.create_directories') === TRUE)
+		if ( ! is_dir($directory) AND Kohana::config('upload.create_directories') === TRUE)
 		{
 			// Create the upload directory
 			mkdir($directory, 0777, TRUE);

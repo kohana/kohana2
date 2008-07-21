@@ -55,7 +55,7 @@ class Payment_Yourpay_Driver implements Payment_Driver
 	public function __construct($config)
 	{
 		// Check to make sure the certificate is valid
-		$this->certificate = (file_exists($config['certificate'])) ? $config['certificate'] : FALSE;
+		$this->certificate = is_file($config['certificate']) ? $config['certificate'] : FALSE;
 
 		if (!$this->certificate)
 			throw new Kohana_Exception('payment.invalid_certificate', $config['certificate']);

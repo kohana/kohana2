@@ -2,6 +2,6 @@
 /**
  * @package  Core
  *
- * Default route to use when no URI segments are available.
+ * Sets the default route to "welcome"
  */
 $config['_default'] = 'welcome';

@@ -42,7 +42,7 @@ class Cache_Sqlite_Driver implements Cache_Driver {
 			throw new Kohana_Exception('cache.unwritable', $directory);
 
 		// Make sure the cache database is writable
-		if (file_exists($filename) AND ! is_writable($filename))
+		if (is_file($filename) AND ! is_writable($filename))
 			throw new Kohana_Exception('cache.unwritable', $filename);
 
 		// Open up an instance of the database

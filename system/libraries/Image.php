@@ -71,7 +71,7 @@ class Image_Core {
 			throw new Kohana_Exception('image.getimagesize_missing');
 
 		// Check to make sure the image exists
-		if ( ! file_exists($image))
+		if ( ! is_file($image))
 			throw new Kohana_Exception('image.file_not_found', $image);
 
 		// Disable error reporting, to prevent PHP warnings
