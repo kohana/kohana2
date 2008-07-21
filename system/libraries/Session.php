@@ -32,8 +32,11 @@ class Session_Core {
 	 */
 	public static function instance()
 	{
-		// Create the instance if it does not exist
-		empty(self::$instance) and new Session;
+		if (self::$instance == NULL)
+		{
+			// Create a new instance
+			new Session;
+		}
 
 		return self::$instance;
 	}
