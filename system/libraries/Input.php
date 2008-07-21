@@ -17,6 +17,9 @@ class Input_Core {
 	// IP address of current user
 	public $ip_address = FALSE;
 
+	// Input singleton
+	static $instance;
+
 	/**
 	 * Retrieve a singleton instance of Input. This will always be the first
 	 * created instance of this class.
@@ -25,15 +28,13 @@ class Input_Core {
 	 */
 	public static function instance()
 	{
-		static $instance;
-
-		if ($instance == NULL)
+		if (self::$instance === NULL)
 		{
 			// Create a new instance
-			$instance = new Input;
+			return new Input;
 		}
 
-		return $instance;
+		return self::$instance;
 	}
 
 	/**
@@ -278,7 +279,7 @@ class Input_Core {
 			$tool = Kohana::config('core.global_xss_filtering');
 		}
 
-		switch ($tool)
+		switch ((string) $tool)
 		{
 			case 'htmlpurifier':
 				/**
