@@ -18,14 +18,8 @@ class Gmap_Core {
 	 * @param   array   API parameters
 	 * @return  string
 	 */
-	 public static function api_uri($component = 'jsapi', $parameters = NULL)
+	 public static function api_url($component = 'jsapi', $parameters = NULL)
 	 {
-		if (empty($parameters['key']))
-		{
-			// Set the API key
-			$parameters['key'] = Kohana::config('gmaps.api_key');
-		}
-
 		if (empty($parameters['ie']))
 		{
 			// Set input encoding to UTF-8
@@ -38,7 +32,13 @@ class Gmap_Core {
 			$parameters['oe'] = $parameters['ie'];
 		}
 
-		return html::specialchars('http://www.google.com/'.$component.'?'.http_build_query($parameters), FALSE);
+		if (empty($parameters['key']))
+		{
+			// Set the API key last
+			$parameters['key'] = Kohana::config('gmaps.api_key');
+		}
+
+		return 'http://www.google.com/'.$component.'?'.http_build_query($parameters);
 	 }
 
 	/**
@@ -86,18 +86,14 @@ class Gmap_Core {
 		}
 		else
 		{
+			// Set the XML URL
+			$xml = Gmap::api_url('maps/geo', array('output' => 'xml', 'q' => rawurlencode($address)));
+
 			// Disable error reporting while fetching the feed
 			$ER = error_reporting(~E_NOTICE);
 
 			// Load the XML
-			$xml = simplexml_load_file
-			(
-				'http://maps.google.com/maps/geo?'.
-				'&output=xml'.
-				'&oe=utf-8'.
-				'&key='.Kohana::config('gmaps.api_key'). // Get the API key
-				'&q='.rawurlencode($address) // Send the address URL encoded
-			);
+			$xml = simplexml_load_file($xml);
 
 			if (is_object($xml) AND ($xml instanceof SimpleXMLElement) AND (int) $xml->Response->Status->code === 200)
 			{
@@ -162,7 +158,7 @@ class Gmap_Core {
 			$parameters['center'] = $lat.','.$lon;
 		}
 
-        return Gmap::api_uri('staticmap', $parameters);
+        return Gmap::api_url('staticmap', $parameters);
 	}
 
 	// Map settings
