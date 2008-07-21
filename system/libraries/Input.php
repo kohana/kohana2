@@ -18,7 +18,7 @@ class Input_Core {
 	public $ip_address = FALSE;
 
 	// Input singleton
-	static $instance;
+	protected static $instance;
 
 	/**
 	 * Retrieve a singleton instance of Input. This will always be the first
