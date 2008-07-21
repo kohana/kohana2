@@ -20,8 +20,11 @@ class URI_Core extends Router {
 	{
 		static $instance;
 
-		// Initialize the URI instance
-		empty($instance) and $instance = new URI;
+		if ($instance == NULL)
+		{
+			// Initialize the URI instance
+			$instance = new URI;
+		}
 
 		return $instance;
 	}

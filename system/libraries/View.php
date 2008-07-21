@@ -67,7 +67,7 @@ class View_Core {
 	 */
 	public function set_filename($name, $type = NULL)
 	{
-		if (empty($type))
+		if ($type == NULL)
 		{
 			// Load the filename and set the content type
 			$this->kohana_filename = Kohana::find_file('views', $name, TRUE);
@@ -82,7 +82,12 @@ class View_Core {
 			// Load the filename and set the content type
 			$this->kohana_filename = Kohana::find_file('views', $name, TRUE, $type);
 			$this->kohana_filetype = Kohana::config('mimes.'.$type);
-			$this->kohana_filetype = empty($this->kohana_filetype) ? $type : $this->kohana_filetype;
+
+			if ($this->kohana_filetype == NULL)
+			{
+				// Use the specified type
+				$this->kohana_filetype = $type;
+			}
 		}
 
 		return $this;
@@ -231,7 +236,7 @@ class View_Core {
 		else
 		{
 			// Set the content type and size
-			header('Content-Type: '.$this->kohana_filetype[0]);
+			header('Content-type: '.$this->kohana_filetype[0]);
 
 			if ($print === TRUE)
 			{

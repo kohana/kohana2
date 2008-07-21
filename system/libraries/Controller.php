@@ -22,25 +22,17 @@ abstract class Controller_Core {
 	 */
 	public function __construct()
 	{
-		if (Kohana::$instance === NULL)
+		if (Kohana::$instance == NULL)
 		{
 			// Set the instance to the first controller loaded
 			Kohana::$instance = $this;
-
-			// URI should always be available
-			$this->uri = new URI;
-
-			// Input should always be available
-			$this->input = new Input;
 		}
-		else
-		{
-			// URI should always be available
-			$this->uri = Kohana::$instance->uri;
 
-			// Input should always be available
-			$this->input = Kohana::$instance->input;
-		}
+		// URI should always be available
+		$this->uri = URI::instance();
+
+		// Input should always be available
+		$this->input = Input::instance();
 	}
 
 	/**

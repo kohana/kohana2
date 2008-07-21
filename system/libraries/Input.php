@@ -11,9 +11,6 @@
  */
 class Input_Core {
 
-	// Singleton instance
-	protected static $instance;
-
 	// Enable or disable automatic XSS cleaning
 	protected $use_xss_clean = FALSE;
 
@@ -28,10 +25,15 @@ class Input_Core {
 	 */
 	public static function instance()
 	{
-		// Create an instance if none exists
-		empty(self::$instance) and new Input;
+		static $instance;
 
-		return self::$instance;
+		if ($instance == NULL)
+		{
+			// Create a new instance
+			$instance = new Input;
+		}
+
+		return $instance;
 	}
 
 	/**
@@ -267,17 +269,13 @@ class Input_Core {
 		$string = $data;
 
 		// Do not clean empty strings
-		if (trim($string) === '')
+		if (trim($string) == '')
 			return $string;
 
-		if ( ! is_string($tool))
+		if ($tool === NULL)
 		{
-			// Fetch the configured tool
-			if (is_bool($tool = Kohana::config('core.global_xss_filtering')))
-			{
-				// Make sure that the default tool is used
-				$tool = 'default';
-			}
+			// Use the default tool
+			$tool = Kohana::config('core.global_xss_filtering');
 		}
 
 		switch ($tool)
