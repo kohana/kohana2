@@ -337,7 +337,7 @@ class ORM_Core {
 			(
 				'primary_key', 'primary_val', 'table_name', 'table_columns', // Table
 				'loaded', 'saved', // Status
-				'has_one', 'belongs_to', 'has_many', 'has_many_and_belongs_to', // Relationships
+				'has_one', 'belongs_to', 'has_many', 'has_and_belongs_to_many', // Relationships
 			)))
 		{
 			// Model meta information
