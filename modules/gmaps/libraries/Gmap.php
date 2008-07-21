@@ -162,7 +162,7 @@ class Gmap_Core {
 			$parameters['center'] = $lat.','.$lon;
 		}
 
-        return Gmap::api_url('staticmap', $parameters);
+        return Gmap::api_uri('staticmap', $parameters);
 	}
 
 	// Map settings
