@@ -52,8 +52,11 @@ class Input_Core {
 		{
 			if (ini_get('register_globals'))
 			{
-				// Prevent GLOBALS override attacks
-				isset($_REQUEST['GLOBALS']) and exit('Global variable overload attack.');
+				if (isset($_REQUEST['GLOBALS']))
+				{
+					// Prevent GLOBALS override attacks
+					exit('Global variable overload attack.');
+				}
 
 				// Destroy the REQUEST global
 				$_REQUEST = array();
@@ -66,12 +69,11 @@ class Input_Core {
 				{
 					if ( ! in_array($key, $preserve))
 					{
-						// NULL-ify the global variable
 						global $$key;
 						$$key = NULL;
+
 						// Unset the global variable
-						unset($GLOBALS[$key]);
-						unset($$key);
+						unset($GLOBALS[$key], $$key);
 					}
 				}
 
@@ -79,7 +81,7 @@ class Input_Core {
 				Kohana::log('debug', 'Register globals is enabled. To save resources, disable register_globals in php.ini');
 			}
 
-			if (is_array($_GET) AND count($_GET) > 0)
+			if (is_array($_GET))
 			{
 				foreach ($_GET as $key => $val)
 				{
@@ -92,7 +94,7 @@ class Input_Core {
 				$_GET = array();
 			}
 
-			if (is_array($_POST) AND count($_POST) > 0)
+			if (is_array($_POST))
 			{
 				foreach ($_POST as $key => $val)
 				{
@@ -105,7 +107,7 @@ class Input_Core {
 				$_POST = array();
 			}
 
-			if (is_array($_COOKIE) AND count($_COOKIE) > 0)
+			if (is_array($_COOKIE))
 			{
 				foreach ($_COOKIE as $key => $val)
 				{
@@ -191,8 +193,11 @@ class Input_Core {
 		if ($key === array())
 			return $array;
 
-		// Get the value from the array
-		$value = isset($array[$key]) ? $array[$key] : $default;
+		if ( ! array_key_exists($key, $array))
+			return $default;
+
+		// Get the value
+		$value = $array[$key];
 
 		if ($this->use_xss_clean === FALSE AND $xss_clean === TRUE)
 		{
@@ -210,24 +215,20 @@ class Input_Core {
 	 */
 	public function ip_address()
 	{
-		if ($this->ip_address !== FALSE)
+		if ($this->ip_address != NULL)
 			return $this->ip_address;
 
-		if ($this->server('REMOTE_ADDR') AND $this->server('HTTP_CLIENT_IP'))
+		if ($ip = $this->server('HTTP_CLIENT_IP'))
 		{
-			 $this->ip_address = $_SERVER['HTTP_CLIENT_IP'];
+			 $this->ip_address = $ip;
 		}
-		elseif ($this->server('REMOTE_ADDR'))
+		elseif ($ip = $this->server('REMOTE_ADDR'))
 		{
-			 $this->ip_address = $_SERVER['REMOTE_ADDR'];
+			 $this->ip_address = $ip;
 		}
-		elseif ($this->server('HTTP_CLIENT_IP'))
+		elseif ($ip = $this->server('HTTP_X_FORWARDED_FOR'))
 		{
-			 $this->ip_address = $_SERVER['HTTP_CLIENT_IP'];
-		}
-		elseif ($this->server('HTTP_X_FORWARDED_FOR'))
-		{
-			 $this->ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
+			 $this->ip_address = $ip;
 		}
 
 		if (strpos($this->ip_address, ',') !== FALSE)
@@ -238,6 +239,7 @@ class Input_Core {
 
 		if ( ! valid::ip($this->ip_address))
 		{
+			// Use an empty IP
 			$this->ip_address = '0.0.0.0';
 		}
 
@@ -257,6 +259,12 @@ class Input_Core {
 	 */
 	public function xss_clean($data, $tool = NULL)
 	{
+		if ($tool == NULL)
+		{
+			// Use the default tool
+			$tool = Kohana::config('core.global_xss_filtering');
+		}
+
 		if (is_array($data))
 		{
 			foreach ($data as $key => $val)
@@ -270,16 +278,16 @@ class Input_Core {
 		$string = $data;
 
 		// Do not clean empty strings
-		if (trim($string) == '')
+		if (trim($string) == '' OR $tool == FALSE)
 			return $string;
 
-		if ($tool === NULL)
+		if ($tool === TRUE)
 		{
 			// Use the default tool
-			$tool = Kohana::config('core.global_xss_filtering');
+			$tool = 'default';
 		}
 
-		switch ((string) $tool)
+		switch ($tool)
 		{
 			case 'htmlpurifier':
 				/**
