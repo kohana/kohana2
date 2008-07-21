@@ -12,6 +12,36 @@
 class Gmap_Core {
 
 	/**
+	 * Return GMap javascript url
+	 *
+	 * @param   string  API component
+	 * @param   array   API parameters
+	 * @return  string
+	 */
+	 public static function api_uri($component = 'jsapi', $parameters = NULL)
+	 {
+		if (empty($parameters['key']))
+		{
+			// Set the API key
+			$parameters['key'] = Kohana::config('gmaps.api_key');
+		}
+
+		if (empty($parameters['ie']))
+		{
+			// Set input encoding to UTF-8
+			$parameters['ie'] = 'utf-8';
+		}
+
+		if (empty($parameters['oe']))
+		{
+			// Set ouput encoding to input encoding
+			$parameters['oe'] = $parameters['ie'];
+		}
+
+		return html::specialchars('http://www.google.com/'.$component.'?'.http_build_query($parameters), FALSE);
+	 }
+
+	/**
 	 * Retrieves the latitude and longitude of an address.
 	 *
 	 * @param string $address address
@@ -86,7 +116,7 @@ class Gmap_Core {
 
 		return $xml;
 	}
-	
+
 	/**
 	 * Returns an image map
 	 *
@@ -98,36 +128,41 @@ class Gmap_Core {
 	 * @param integer $height map height
 	 * @return string
 	 */
-	public static function static_map($lat = 0, $lon = 0, $zoom = 6, $type = 'roadmap', $width = 300, $height = 300)
+	public static function static_map($lat = 0, $lon = 0, $zoom = 6, $type = NULL, $width = 300, $height = 300)
 	{
-		$api_url = 'http://maps.google.com/staticmap?key='.Kohana::config('gmaps.api_key');
-
+		// Valid map types
 		$types = array('roadmap', 'mobile');
 
-		$width = min(640, (int) $width);
-        $height = min(640, (int) $height);
+		// Maximum width and height are 640px
+		$width = min(640, abs($width));
+        $height = min(640, abs($height));
 
-		if ($width <= 0 OR $height <= 0)
-			throw new Kohana_Exception('gmaps.invalid_dimensions', $width, $height);
+		$parameters['size'] = $width.'x'.$height;
 
-		$api_url = $api_url.'&amp;size='.$width.'x'.$height;
-		
+		// Minimum zoom = 0, maximum zoom = 19
+		$parameters['zoom'] = min(0, max(19, abs($zoom)));
+
 		if (in_array($type, $types))
-            $api_url = $api_url.'&amp;maptype='.$type;
- 		
+		{
+			// Set map type
+			$parameters['maptype'] = $type;
+		}
+
 		if (is_array($lat))
 		{
-			foreach ($lat as $key => $value)
-				$markers[] = $key.','.$value;
+			foreach ($lat as $_lat => $_lon)
+			{
+				$parameters['markers'][] = $_lat.','.$_lon;
+			}
 
-			$api_url = $api_url.'&amp;markers='.implode('|', $markers);
+			$parameters['markers'] = implode('|', $parameters['markers']);
 		}
 		else
 		{
-			$api_url = $api_url.'&amp;center='.$lat.','.$lon.'&amp;zoom='.$zoom;
+			$parameters['center'] = $lat.','.$lon;
 		}
 
-        return $api_url;
+        return Gmap::api_url('staticmap', $parameters);
 	}
 
 	// Map settings
@@ -137,7 +172,7 @@ class Gmap_Core {
 	protected $control;
 	protected $overview_control;
 	protected $type_control = FALSE;
-	
+
 	// Map types
 	protected $types = array();
 
@@ -157,16 +192,6 @@ class Gmap_Core {
 		$this->id = $id;
 		$this->options = new Gmap_Options((array) $options);
 	}
-	
-	/**
-	 * Return GMap javascript url
-	 * 
-	 * @return string
-	 */
-	 public function api_uri()
-	 {
-	    return 'http://www.google.com/jsapi?key='.Kohana::config('gmaps.api_key').'&amp;oe=utf-8';
-	 }
 
 	/**
 	 * Set the GMap center point.
@@ -195,11 +220,11 @@ class Gmap_Core {
 	public function controls($size = NULL)
 	{
 		// Set the control type
-		$this->control = (strtolower($size) === 'small') ? 'Small' : 'Large';
+		$this->control = (strtolower($size) == 'small') ? 'Small' : 'Large';
 
 		return $this;
 	}
-	
+
 	/**
 	 * Set the GMap overview map.
 	 *
@@ -212,10 +237,10 @@ class Gmap_Core {
 	{
 		$size = (is_int($width) AND is_int($height)) ? 'new GSize('.$width.','.$height.')' : '';
 		$this->overview_control = 'map.addControl(new google.maps.OverviewMapControl('.$size.'));';
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Set the GMap type controls.
 	 * by default renders G_NORMAL_MAP, G_SATELLITE_MAP, and G_HYBRID_MAP
@@ -228,18 +253,18 @@ class Gmap_Core {
 	public function types($type = NULL, $action = 'remove')
 	{
 		$this->type_control = TRUE;
-		
+
 		$types = array
 		(
 			'G_NORMAL_MAP','G_SATELLITE_MAP','G_HYBRID_MAP','G_PHYSICAL_MAP'
 		);
-		
+
 		if ($type !== NULL and in_array($type, $types, true))
 		{
 			// Set the map type and action
 			$this->types[$type] = (strtolower($action) === 'remove') ? 'remove' : 'add';
 		}
-		
+
 		return $this;
 	}
 
@@ -273,22 +298,22 @@ class Gmap_Core {
 
 		// Map
 		$map = 'var map = new google.maps.Map2(document.getElementById("'.$this->id.'"));';
-		
+
 		// Map controls
 		$controls[] = empty($this->control) ? '' : 'map.addControl(new google.maps.'.$this->control.'MapControl());';
 
 		// Map Types
 		if ($this->type_control === TRUE)
 		{
-			if (count($this->types) > 0) 
+			if (count($this->types) > 0)
 			{
 				foreach($this->types as $type => $action)
 					$controls[] = 'map.'.$action.'MapType('.$type.');';
 			}
-			
+
 			$controls[] = 'map.addControl(new google.maps.MapTypeControl());';
 		}
-		
+
 		if ( ! empty($this->overview_control))
 			$controls[] = $this->overview_control;
 
