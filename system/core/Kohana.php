@@ -422,7 +422,7 @@ final class Kohana {
 		if (self::$configuration['core']['allow_config_set'] !== TRUE)
 			throw new Kohana_Exception('core.config_set_disabled');
 
-		// Empty keys and core.allow_set cannot be set
+		// No not allow changing allow_config_set at runtime
 		if ($key === 'core.allow_config_set')
 			return FALSE;
 
