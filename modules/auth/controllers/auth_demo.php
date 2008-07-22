@@ -15,14 +15,6 @@ class Auth_Demo_Controller extends Controller {
 	// Do not allow to run in production
 	const ALLOW_PRODUCTION = FALSE;
 
-	public function __construct()
-	{
-		parent::__construct();
-
-		// Load auth library
-		$this->auth = new Auth;
-	}
-
 	public function index()
 	{
 		// Display the install page
@@ -33,7 +25,7 @@ class Auth_Demo_Controller extends Controller {
 	{
 		$form = new Forge(NULL, 'Create User');
 
-		$form->input('email')->label(TRUE)->rules('required|length[4,32]');
+		$form->input('email')->label(TRUE)->rules('required|length[4,32]|valid_email');
 		$form->input('username')->label(TRUE)->rules('required|length[4,32]');
 		$form->password('password')->label(TRUE)->rules('required|length[5,40]');
 		$form->submit('Create New User');
@@ -41,9 +33,9 @@ class Auth_Demo_Controller extends Controller {
 		if ($form->validate())
 		{
 			// Create new user
-			$user = new User_Model;
+			$user = ORM::factory('user');
 
-			if ( ! $user->username_exists($this->input->post('username')))
+			if ( ! $user->username_exists($form->username->value))
 			{
 				foreach ($form->as_array() as $key => $val)
 				{
@@ -51,8 +43,10 @@ class Auth_Demo_Controller extends Controller {
 					$user->$key = $val;
 				}
 
-				if ($user->save() AND $user->add_role('login'))
+				if ($user->save() AND $user->add('role', 'login'))
 				{
+					Auth::instance()->login($user, $form->password->value);
+
 					// Redirect to the login page
 					url::redirect('auth_demo/login');
 				}
@@ -65,7 +59,7 @@ class Auth_Demo_Controller extends Controller {
 
 	public function login()
 	{
-		if ($this->auth->logged_in())
+		if (Auth::instance()->logged_in())
 		{
 			$form = new Forge('auth_demo/logout', 'Log Out');
 
@@ -85,7 +79,7 @@ class Auth_Demo_Controller extends Controller {
 				$user = ORM::factory('user', $form->username->value);
 
 				// Attempt a login
-				if ($this->auth->login($user, $form->password->value))
+				if (Auth::instance()->login($user, $form->password->value))
 				{
 					echo '<h4>Login Success!</h4>';
 					echo '<p>Your roles are:</p>';
@@ -105,8 +99,8 @@ class Auth_Demo_Controller extends Controller {
 
 	public function logout()
 	{
-		// Load auth and log out
-		$this->auth->logout(TRUE);
+		// Force a complete logout
+		Auth::instance()->logout(TRUE);
 
 		// Redirect back to the login page
 		url::redirect('auth_demo/login');
