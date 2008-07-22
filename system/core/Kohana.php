@@ -1609,8 +1609,6 @@ final class Kohana {
 		{
 			if (isset(self::$internal_cache[$cache]))
 			{
-				var_dump('saved cache: '.$cache);
-
 				// Write the cache file
 				self::cache_save($cache, self::$internal_cache[$cache], self::$configuration['core']['internal_cache']);
 
