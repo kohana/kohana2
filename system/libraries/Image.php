@@ -130,14 +130,14 @@ class Image_Core {
 	{
 		if (isset($this->image[$property]))
 		{
-			return $this->image[$property];	
-		}		
+			return $this->image[$property];
+		}
 		else
 		{
 			throw new Kohana_Exception('core.invalid_property', $column, get_class($this));
-		}			
+		}
 	}
-	
+
 	/**
 	 * Resize an image to a specific width and height. By default, Kohana will
 	 * maintain the aspect ratio using the width as the master dimension. If you

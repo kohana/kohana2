@@ -21,6 +21,12 @@ class Calendar_Core extends Event_Subject {
 	// Observed data
 	protected $observed_data;
 
+	/**
+	 * Returns an array of the names of the days, using the current locale.
+	 *
+	 * @param   boolean  return short names
+	 * @return  array
+	 */
 	public static function days($short = FALSE)
 	{
 		// strftime day format
@@ -29,13 +35,21 @@ class Calendar_Core extends Event_Subject {
 		// Days of the week
 		$headings = array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
 
-		if (strpos(Kohana::config('locale.lang.0'), 'en') === FALSE)
+		if (strpos(Kohana::config('locale.language.0'), 'en') !== 0)
 		{
 			// This is a bit awkward, but it works properly and is reliable
 			foreach ($headings as $i => $day)
 			{
 				// Convert the English names to i18n names
 				$headings[$i] = strftime($format, strtotime($day));
+			}
+		}
+		elseif ($short == TRUE)
+		{
+			foreach ($headings as $i => $day)
+			{
+				// Shorten the day names to 3 letters
+				$headings[$i] = substr($day, 0, 3);
 			}
 		}
 
