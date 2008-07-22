@@ -74,8 +74,11 @@ class Gmap_Core {
 		static $cache;
 
 		// Load Cache
-		($cache === NULL) and $cache = Cache::instance();
-
+		if ($cache === NULL) 
+		{
+			$cache = Cache::instance();
+		}
+		
 		// Address cache key
 		$key = 'gmap-address-'.sha1($address);
 
@@ -118,7 +121,7 @@ class Gmap_Core {
 	 *
 	 * @param mixed $lat latitude or an array of marker points
 	 * @param float $lon longitude
-	 * @param integer $zoom zoom level (1-16)
+	 * @param integer $zoom zoom level (1-19)
 	 * @param string $type map type (roadmap or mobile)
 	 * @param integer $width map width
 	 * @param integer $height map height
@@ -171,6 +174,10 @@ class Gmap_Core {
 
 	// Map types
 	protected $types = array();
+	protected $default_types = array
+	(
+		'G_NORMAL_MAP','G_SATELLITE_MAP','G_HYBRID_MAP','G_PHYSICAL_MAP'
+	);
 
 	// Map markers
 	protected $markers = array();
@@ -195,13 +202,17 @@ class Gmap_Core {
 	 * @chainable
 	 * @param float $lat latitude
 	 * @param float $lon longitude
-	 * @param integer $zoom zoom level (1-16)
+	 * @param integer $zoom zoom level (1-19)
+	 * @param string $type default map type
 	 * @return object
 	 */
-	public function center($lat, $lon, $zoom = 6)
+	public function center($lat, $lon, $zoom = 6, $type = 'G_NORMAL_MAP')
 	{
-		// Set center location and zoom
-		$this->center = array($lat, $lon, $zoom);
+		$zoom = min(0, max(19, abs($zoom)));
+		$type = ($type != 'G_NORMAL_MAP' AND in_array($type, $this->default_types, true)) ? $type : 'G_NORMAL_MAP';
+
+		// Set center location, zoom and default map type
+		$this->center = array($lat, $lon, $zoom, $type);
 
 		return $this;
 	}
@@ -250,15 +261,10 @@ class Gmap_Core {
 	{
 		$this->type_control = TRUE;
 
-		$types = array
-		(
-			'G_NORMAL_MAP','G_SATELLITE_MAP','G_HYBRID_MAP','G_PHYSICAL_MAP'
-		);
-
-		if ($type !== NULL and in_array($type, $types, true))
+		if ($type !== NULL AND in_array($type, $this->default_types, true))
 		{
 			// Set the map type and action
-			$this->types[$type] = (strtolower($action) === 'remove') ? 'remove' : 'add';
+			$this->types[$type] = (strtolower($action) == 'remove') ? 'remove' : 'add';
 		}
 
 		return $this;
@@ -289,8 +295,8 @@ class Gmap_Core {
 	 */
 	public function render($template = 'gmaps/javascript')
 	{
-		// Latitude, longitude, and zoom
-		list ($lat, $lon, $zoom) = $this->center;
+		// Latitude, longitude, zoom and default map type
+		list ($lat, $lon, $zoom, $default_type) = $this->center;
 
 		// Map
 		$map = 'var map = new google.maps.Map2(document.getElementById("'.$this->id.'"));';
@@ -314,7 +320,7 @@ class Gmap_Core {
 			$controls[] = $this->overview_control;
 
 		// Map centering
-		$center = 'map.setCenter(new google.maps.LatLng('.$lat.', '.$lon.'), '.$zoom.');';
+		$center = 'map.setCenter(new google.maps.LatLng('.$lat.', '.$lon.'), '.$zoom.', '.$default_type.');';
 
 		// Render the Javascript
 		return View::factory($template, array
