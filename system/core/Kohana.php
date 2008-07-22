@@ -85,6 +85,17 @@ final class Kohana {
 		// Define database error constant
 		define('E_DATABASE_ERROR', 44);
 
+		if ($lifetime = self::config('core.internal_cache'))
+		{
+			// Load cached configuration and file paths
+			self::$internal_cache['configuration'] = self::cache('configuration', $lifetime);
+			self::$internal_cache['file_path']     = self::cache('file_path', $lifetime);
+			self::$internal_cache['language']      = self::cache('language', $lifetime);
+
+			// Enable cache saving
+			Event::add('system.shutdown', array(__CLASS__, 'internal_cache_save'));
+		}
+
 		// Disable notices and "strict" errors
 		$ER = error_reporting(~E_NOTICE & ~E_STRICT);
 
@@ -108,16 +119,6 @@ final class Kohana {
 
 		// Save buffering level
 		self::$buffer_level = ob_get_level();
-
-		if ($lifetime = self::config('core.internal_cache'))
-		{
-			// Load cached configuration and file paths
-			self::$internal_cache['configuration'] = self::cache('configuration', $lifetime);
-			self::$internal_cache['file_path']     = self::cache('file_path', $lifetime);
-
-			// Enable cache saving
-			Event::add('system.shutdown', array(__CLASS__, 'internal_cache_save'));
-		}
 
 		// Set autoloader
 		spl_autoload_register(array('Kohana', 'auto_load'));
@@ -663,25 +664,20 @@ final class Kohana {
 	 */
 	public static function cache_save($name, $data, $lifetime)
 	{
-		if ($lifetime > 0)
-		{
-			$path = APPPATH.'cache/kohana_'.$name;
+		if ($lifetime < 1)
+			return FALSE;
 
-			if ($data === NULL)
-			{
-				// Delete cache
-				return (is_file($path) and unlink($path));
-			}
-			else
-			{
-				// Write data to cache file
-				return (bool) file_put_contents($path, serialize($data));
-			}
+		$path = APPPATH.'cache/kohana_'.$name;
+
+		if ($data === NULL)
+		{
+			// Delete cache
+			return (is_file($path) and unlink($path));
 		}
 		else
 		{
-			// No caching enabled
-			return FALSE;
+			// Write data to cache file
+			return (bool) file_put_contents($path, serialize($data));
 		}
 	}
 
@@ -1220,7 +1216,7 @@ final class Kohana {
 		// Get locale name
 		$locale = Kohana::config('locale.language.0');
 
-		if ( ! isset(self::$internal_cache['language'][$group]))
+		if ( ! isset(self::$internal_cache['language'][$locale][$group]))
 		{
 			// Messages for this group
 			$messages = array();
@@ -1242,18 +1238,17 @@ final class Kohana {
 				}
 			}
 
-			// Cache the messages
-			self::$internal_cache['language'][$group] = $messages;
-
 			if ( ! isset(self::$write_cache['language']))
 			{
 				// Write language cache
 				self::$write_cache['language'] = TRUE;
 			}
+
+			self::$internal_cache['language'][$locale][$group] = $messages;
 		}
 
 		// Get the line from cache
-		$line = self::key_string(self::$internal_cache['language'], $key);
+		$line = self::key_string(self::$internal_cache['language'][$locale], $key);
 
 		if ($line === NULL)
 		{
@@ -1277,8 +1272,8 @@ final class Kohana {
 	/**
 	 * Returns the value of a key, defined by a 'dot-noted' string, from an array.
 	 *
-	 * @param   string  dot-noted string: foo.bar.baz
 	 * @param   array   array to search
+	 * @param   string  dot-noted string: foo.bar.baz
 	 * @return  string  if the key is found
 	 * @return  void    if the key is not found
 	 */
@@ -1614,6 +1609,8 @@ final class Kohana {
 		{
 			if (isset(self::$internal_cache[$cache]))
 			{
+				var_dump('saved cache: '.$cache);
+
 				// Write the cache file
 				self::cache_save($cache, self::$internal_cache[$cache], self::$configuration['core']['internal_cache']);
 
