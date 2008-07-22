@@ -64,7 +64,7 @@ class MY_Smarty_Core extends Smarty {
 			$error = 'Compile/Cache directory "%s" is not writeable/executable';
 			$error = sprintf($error, $directory);
 
-			Kohana::show_error('Compile/Cache directory is not writeable/executable', $error);
+			throw new Kohana_User_Exception('Compile/Cache directory is not writeable/executable', $error);
 		}
 		
 		return TRUE;
