@@ -29,7 +29,7 @@ class Gmaps_Demo_Controller extends Controller {
 		// Add a new marker
 		$map->add_marker(44.9801, -93.2519, '<strong>Minneapolis, MN</strong><p>Hello world!</p>');
 
-		View::factory('gmaps/api_demo')->set(array('api_url' => $map->api_uri(), 'map' => $map->render()))->render(TRUE);
+		View::factory('gmaps/api_demo')->set(array('api_url' => $map->api_url(), 'map' => $map->render()))->render(TRUE);
 	}
 	
 	public function image_map()
@@ -128,7 +128,7 @@ class Gmaps_Demo_Controller extends Controller {
 		
 		$map->center(0, 35, 16)->controls('large');
 
-		View::factory('gmaps/jquery')->set(array('api_url' => $map->api_uri(), 'map' => $map->render('gmaps/jquery_javascript')))->render(TRUE);
+		View::factory('gmaps/jquery')->set(array('api_url' => $map->api_url(), 'map' => $map->render('gmaps/jquery_javascript')))->render(TRUE);
 	}
 
 	public function xml()
