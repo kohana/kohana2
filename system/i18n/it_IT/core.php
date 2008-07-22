@@ -3,8 +3,10 @@
 $lang = array
 (
 	'there_can_be_only_one' => 'Ci può essere una sola istanza di Kohana per ogni pagina richiesta.',
+	'config_set_disabled'   => 'Il tuo file di configurazione non consente la scrittura degli elementi in forma dinamica',
 	'uncaught_exception'    => 'Uncaught %s: %s in %s, linea %s',
 	'invalid_method'        => 'Metodo non valido <tt>%s</tt> chiamato in <tt>%s</tt>.',
+	'invalid_property'      => 'La proprietà %s non esiste nella classe %s.',
 	'log_dir_unwritable'    => 'Il parametro di configurazione log.directory non punta ad una cartella con permesso di scrittura.',
 	'resource_not_found'    => 'Il %s richiesto, <tt>%s</tt>, non è stato trovato.',
 	'invalid_filetype'      => 'Il tipo di file richiesto, <tt>.%s</tt>, non è presente nel file di configurazione.',
