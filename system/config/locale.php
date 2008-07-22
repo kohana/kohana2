@@ -10,11 +10,6 @@
 $config['language'] = array('en_US', 'English_United States');
 
 /**
- * Default country locale.
- */
-$config['country'] = 'USA';
-
-/**
  * Locale timezone. Defaults to use the server timezone.
  * @see http://php.net/timezones
  */
