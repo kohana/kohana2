@@ -11,12 +11,15 @@
  */
 class Calendar_Core extends Event_Subject {
 
+	// Start the calendar on Sunday by default
+	public static $start_monday = FALSE;
+
 	// Month and year to use for calendaring
 	protected $month;
 	protected $year;
 
-	// Start the calendar on Sunday by default
-	public $week_start = 0;
+	// Week starts on Sunday
+	protected $week_start = 0;
 
 	// Observed data
 	protected $observed_data;
@@ -33,27 +36,33 @@ class Calendar_Core extends Event_Subject {
 		$format = ($short == TRUE) ? '%a' : '%A';
 
 		// Days of the week
-		$headings = array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
+		$days = array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
+
+		if (Calendar::$start_monday === TRUE)
+		{
+			// Push Sunday to the end of the days
+			array_push($days, array_shift($days));
+		}
 
 		if (strpos(Kohana::config('locale.language.0'), 'en') !== 0)
 		{
 			// This is a bit awkward, but it works properly and is reliable
-			foreach ($headings as $i => $day)
+			foreach ($days as $i => $day)
 			{
 				// Convert the English names to i18n names
-				$headings[$i] = strftime($format, strtotime($day));
+				$days[$i] = strftime($format, strtotime($day));
 			}
 		}
 		elseif ($short == TRUE)
 		{
-			foreach ($headings as $i => $day)
+			foreach ($days as $i => $day)
 			{
 				// Shorten the day names to 3 letters
-				$headings[$i] = substr($day, 0, 3);
+				$days[$i] = substr($day, 0, 3);
 			}
 		}
 
-		return $headings;
+		return $days;
 	}
 
 	/**
@@ -62,12 +71,11 @@ class Calendar_Core extends Event_Subject {
 	 *
 	 * @param   integer  month number
 	 * @param   integer  year number
-	 * @param   boolean  start weeks on monday
 	 * @return  object
 	 */
-	public static function factory($month = NULL, $year = NULL, $start_monday = NULL)
+	public static function factory($month = NULL, $year = NULL)
 	{
-		return new Calendar($month, $year, $start_monday);
+		return new Calendar($month, $year);
 	}
 
 	/**
@@ -76,10 +84,9 @@ class Calendar_Core extends Event_Subject {
 	 *
 	 * @param   integer  month number
 	 * @param   integer  year number
-	 * @param   boolean  start weeks on monday
 	 * @return  void
 	 */
-	public function __construct($month = NULL, $year = NULL, $start_monday = NULL)
+	public function __construct($month = NULL, $year = NULL)
 	{
 		empty($month) and $month = date('n'); // Current month
 		empty($year)  and $year  = date('Y'); // Current year
@@ -88,9 +95,9 @@ class Calendar_Core extends Event_Subject {
 		$this->month = (int) $month;
 		$this->year  = (int) $year;
 
-		if ($start_monday === TRUE)
+		if (Calendar::$start_monday === TRUE)
 		{
-			// Some locales start the week on Monday, not Sunday.
+			// Week starts on Monday
 			$this->week_start = 1;
 		}
 	}
