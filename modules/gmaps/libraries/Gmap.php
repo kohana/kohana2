@@ -139,7 +139,7 @@ class Gmap_Core {
 		$parameters['size'] = $width.'x'.$height;
 
 		// Minimum zoom = 0, maximum zoom = 19
-		$parameters['zoom'] = min(0, max(19, abs($zoom)));
+		$parameters['zoom'] = max(0, min(19, abs($zoom)));
 
 		if (in_array($type, $types))
 		{
@@ -208,7 +208,7 @@ class Gmap_Core {
 	 */
 	public function center($lat, $lon, $zoom = 6, $type = 'G_NORMAL_MAP')
 	{
-		$zoom = min(0, max(19, abs($zoom)));
+		$zoom = max(0, min(19, abs($zoom)));
 		$type = ($type != 'G_NORMAL_MAP' AND in_array($type, $this->default_types, true)) ? $type : 'G_NORMAL_MAP';
 
 		// Set center location, zoom and default map type
