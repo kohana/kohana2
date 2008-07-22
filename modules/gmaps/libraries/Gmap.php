@@ -90,7 +90,7 @@ class Gmap_Core {
 		else
 		{
 			// Set the XML URL
-			$xml = Gmap::api_url('maps/geo', array('output' => 'xml', 'q' => rawurlencode($address)));
+			$xml = Gmap::api_url('maps/geo', array('output' => 'xml', 'q' => $address));
 
 			// Disable error reporting while fetching the feed
 			$ER = error_reporting(~E_NOTICE);
