@@ -1,9 +1,7 @@
 <?php
 
-/**
- * @todo This needs to be moved to an i18n file, or be configured in the library.
- */
-$headings = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
+// Get the day names
+$days = Calendar::days(TRUE);
 
 // Previous and next month timestamps
 $next = mktime(0, 0, 0, $month + 1, 1, $year);
@@ -25,27 +23,13 @@ $next = Router::$current_uri.'?'.http_build_query(array_merge($qs, array('month'
 <td class="next"><?php echo html::anchor($next, '&raquo;') ?></td>
 </tr>
 <tr>
-<?php
-
-foreach ($headings as $day):
-
-?>
+<?php foreach ($days as $day): ?>
 <th><?php echo $day ?></th>
-<?php
-
-endforeach
-
-?>
+<?php endforeach ?>
 </tr>
-<?php
-
-foreach ($weeks as $week):
-
-?>
+<?php foreach ($weeks as $week): ?>
 <tr>
-<?php
-
-foreach ($week as $day):
+<?php foreach ($week as $day):
 
 list ($number, $current, $data) = $day;
 
@@ -62,15 +46,7 @@ else
 
 ?>
 <td class="<?php echo implode(' ', $classes) ?>"><span class="day"><?php echo $day[0] ?></span><?php echo $output ?></td>
-<?php
-
-endforeach
-
-?>
+<?php endforeach ?>
 </tr>
-<?php
-
-endforeach
-
-?>
+<?php endforeach ?>
 </table>

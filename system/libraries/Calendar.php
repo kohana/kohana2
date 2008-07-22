@@ -21,6 +21,27 @@ class Calendar_Core extends Event_Subject {
 	// Observed data
 	protected $observed_data;
 
+	public static function days($short = FALSE)
+	{
+		// strftime day format
+		$format = ($short == TRUE) ? '%a' : '%A';
+
+		// Days of the week
+		$headings = array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
+
+		if (strpos(Kohana::config('locale.lang.0'), 'en') === FALSE)
+		{
+			// This is a bit awkward, but it works properly and is reliable
+			foreach ($headings as $i => $day)
+			{
+				// Convert the English names to i18n names
+				$headings[$i] = strftime($format, strtotime($day));
+			}
+		}
+
+		return $headings;
+	}
+
 	/**
 	 * Create a new Calendar instance. A month and year can be specified.
 	 * By default, the current month and year are used.
@@ -219,7 +240,7 @@ class Calendar_Core extends Event_Subject {
 			$days++;
 		}
 
-		if (($w = (int) date('w', $last) - $this->week_start) < 6 )
+		if (($w = (int) date('w', $last) - $this->week_start) < 6 AND $w > -1)
 		{
 			// i = number of day, t = number of days to pad
 			for ($i = 1, $t = 6 - $w; $t > 0; $t--, $i++)
