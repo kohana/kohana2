@@ -25,9 +25,10 @@ class Gmap_Marker_Core {
 	/**
 	 * Create a new GMap marker.
 	 *
-	 * @param   float   latitude
-	 * @param   float   longitude
-	 * @param   string  HTML of info window
+	 * @param float $lat latitude
+	 * @param float $lon longitude
+	 * @param string $html HTML of info window
+	 * @param array $options marker options
 	 * @return  void
 	 */
 	public function __construct($lat, $lon, $html, $options = array())
@@ -46,6 +47,7 @@ class Gmap_Marker_Core {
 		{
 			foreach ($options as $option => $value) 
 			{
+				// Set marker options
 				if (in_array($option, $this->valid_options, true))
 					$this->options[$option] = $value;
 			}
