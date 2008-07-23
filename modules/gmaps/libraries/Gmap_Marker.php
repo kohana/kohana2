@@ -8,6 +8,19 @@ class Gmap_Marker_Core {
 	// Latitude and longitude
 	public $latitude;
 	public $longitude;
+	
+	// Marker Options
+	protected $options = array();
+	protected $valid_options = array
+	(
+		'dragCrossMove',
+		'title',
+		'clickable',
+		'draggable',
+		'bouncy',
+		'bounceGravity',
+		'autoPan'
+	);
 
 	/**
 	 * Create a new GMap marker.
@@ -17,7 +30,7 @@ class Gmap_Marker_Core {
 	 * @param   string  HTML of info window
 	 * @return  void
 	 */
-	public function __construct($lat, $lon, $html)
+	public function __construct($lat, $lon, $html, $options = array())
 	{
 		if ( ! is_numeric($lat) OR ! is_numeric($lon))
 			throw new Kohana_Exception('gmaps.invalid_marker', $lat, $lon);
@@ -28,6 +41,15 @@ class Gmap_Marker_Core {
 
 		// Set the info window HTML
 		$this->html = $html;
+		
+		if (count($options) > 0)
+		{
+			foreach ($options as $option => $value) 
+			{
+				if (in_array($option, $this->valid_options, true))
+					$this->options[$option] = $value;
+			}
+		}
 	}
 
 	public function render($tabs = 0)
@@ -36,7 +58,7 @@ class Gmap_Marker_Core {
 		$tabs = empty($tabs) ? '' : str_repeat("\t", $tabs);
 
 		$output = array();
-		$output[] = 'var m = new google.maps.Marker(new google.maps.LatLng('.$this->latitude.', '.$this->longitude.'));';
+		$output[] = 'var m = new google.maps.Marker(new google.maps.LatLng('.$this->latitude.', '.$this->longitude.'), '.json_encode($this->options).');';
 		if ($html = $this->html)
 		{
 			$output[] = 'google.maps.Event.addListener(m, "click", function()';

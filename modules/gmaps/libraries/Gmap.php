@@ -279,10 +279,10 @@ class Gmap_Core {
 	 * @param string $html HTML for info window
 	 * @return object
 	 */
-	public function add_marker($lat, $lon, $html = '')
+	public function add_marker($lat, $lon, $html = '', $options = array())
 	{
 		// Add a new marker
-		$this->markers[] = new Gmap_Marker($lat, $lon, $html);
+		$this->markers[] = new Gmap_Marker($lat, $lon, $html, $options);
 
 		return $this;
 	}
