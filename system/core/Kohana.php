@@ -238,22 +238,27 @@ final class Kohana {
 			// Include the Controller file
 			require Router::$controller_path;
 
-			// Set controller class name
-			$controller = ucfirst(Router::$controller).'_Controller';
+			try
+			{
+				// Start validation of the controller
+				$class = new ReflectionClass(ucfirst(Router::$controller).'_Controller');
+			}
+			catch (ReflectionException $e)
+			{
+				// Controller does not exist
+				Event::run('system.404');
+			}
 
-			// Make sure the controller class exists
-			class_exists($controller, FALSE) or Event::run('system.404');
-
-			// Production enviroment protection, based on the IN_PRODUCTION flag
-			(IN_PRODUCTION AND constant($controller.'::ALLOW_PRODUCTION') === FALSE) and Event::run('system.404');
+			if (IN_PRODUCTION AND $class->getConstant('ALLOW_PRODUCTION') == FALSE)
+			{
+				// Controller is not allowed to run in production
+				Event::run('system.404');
+			}
 
 			// Run system.pre_controller
 			Event::run('system.pre_controller');
 
-			// Get the controller methods
-			$methods = array_flip(get_class_methods($controller));
-
-			if (isset($methods['_remap']))
+			if ($class->hasMethod('_remap'))
 			{
 				// Make the arguments routed
 				$arguments = array(Router::$method, Router::$arguments);
@@ -264,36 +269,49 @@ final class Kohana {
 				// Set the method to _remap
 				Router::$method = '_remap';
 			}
-			elseif (isset($methods[Router::$method]) AND Router::$method[0] !== '_')
+			elseif (Router::$method[0] != '_')
 			{
 				// Use the arguments normally
 				$arguments = Router::$arguments;
 			}
-			elseif (isset($methods['_default']))
-			{
-				// Make the arguments routed
-				$arguments = array(Router::$method, Router::$arguments);
 
-				// The method becomes part of the arguments
-				array_unshift(Router::$arguments, Router::$method);
-
-				// Set the method to _default
-				Router::$method = '_default';
-			}
-			else
+			if ($class->hasMethod(Router::$method))
 			{
-				// Method was not found, run the system.404 event
-				Event::run('system.404');
+				// Start validation of method
+				$method = $class->getMethod(Router::$method);
+
+				if ($method->isPrivate() OR $method->isProtected())
+				{
+					// Method is invalid
+					unset($method);
+				}
 			}
 
-			// Initialize the controller
-			$controller = new $controller;
+			if ( ! isset($method))
+			{
+				if ($class->hasMethod('_default'))
+				{
+					// Make the arguments routed
+					$arguments = array(Router::$method, Router::$arguments);
+
+					// The method becomes part of the arguments
+					array_unshift(Router::$arguments, Router::$method);
+
+					// Set the method to _default
+					Router::$method = '_default';
+				}
+				else
+				{
+					// Method was not found, run the system.404 event
+					Event::run('system.404');
+				}
+			}
+
+			// Create a new controller instance
+			$controller = $class->newInstance();
 
 			// Run system.post_controller_constructor
 			Event::run('system.post_controller_constructor');
-
-			// Controller method name, used for calling
-			$method = Router::$method;
 
 			// Stop the controller setup benchmark
 			Benchmark::stop(SYSTEM_BENCHMARK.'_controller_setup');
@@ -301,34 +319,8 @@ final class Kohana {
 			// Start the controller execution benchmark
 			Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
 
-			if (empty($arguments))
-			{
-				// Call the controller method with no arguments
-				$controller->$method();
-			}
-			else
-			{
-				// Manually call the controller for up to 4 arguments, to increase performance
-				switch (count($arguments))
-				{
-					case 1:
-						$controller->$method($arguments[0]);
-					break;
-					case 2:
-						$controller->$method($arguments[0], $arguments[1]);
-					break;
-					case 3:
-						$controller->$method($arguments[0], $arguments[1], $arguments[2]);
-					break;
-					case 4:
-						$controller->$method($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
-					break;
-					default:
-						// Resort to using call_user_func_array for many segments
-						call_user_func_array(array($controller, $method), $arguments);
-					break;
-				}
-			}
+			// Execute the controller
+			$method->invokeArgs($controller, $arguments);
 
 			// Run system.post_controller
 			Event::run('system.post_controller');
