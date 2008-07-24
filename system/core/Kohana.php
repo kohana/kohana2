@@ -299,10 +299,12 @@ final class Kohana {
 
 					// Set the method to _default
 					Router::$method = '_default';
+
+					// Load method
+					$method = $class->getMethod('_default');
 				}
 				else
 				{
-					// Method was not found, run the system.404 event
 					Event::run('system.404');
 				}
 			}
@@ -310,7 +312,7 @@ final class Kohana {
 			// Create a new controller instance
 			$controller = $class->newInstance();
 
-			// Run system.post_controller_constructor
+			// Controller constructor has been executed
 			Event::run('system.post_controller_constructor');
 
 			// Stop the controller setup benchmark
@@ -319,10 +321,10 @@ final class Kohana {
 			// Start the controller execution benchmark
 			Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
 
-			// Execute the controller
+			// Execute the controller method
 			$method->invokeArgs($controller, $arguments);
 
-			// Run system.post_controller
+			// Controller method has been executed
 			Event::run('system.post_controller');
 
 			// Stop the controller execution benchmark
