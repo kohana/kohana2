@@ -9,6 +9,9 @@ class Gmap_Marker_Core {
 	public $latitude;
 	public $longitude;
 	
+	// Marker ID
+	protected static $id = 0;
+	
 	// Marker Options
 	protected $options = array();
 	protected $valid_options = array
@@ -59,18 +62,20 @@ class Gmap_Marker_Core {
 		// Create the tabs
 		$tabs = empty($tabs) ? '' : str_repeat("\t", $tabs);
 
-		$output = array();
-		$output[] = 'var m = new google.maps.Marker(new google.maps.LatLng('.$this->latitude.', '.$this->longitude.'), '.json_encode($this->options).');';
+		// Marker ID
+		$marker = 'm'.++self::$id;
+
+		$output[] = 'var '.$marker.' = new google.maps.Marker(new google.maps.LatLng('.$this->latitude.', '.$this->longitude.'), '.json_encode($this->options).');';
 		if ($html = $this->html)
 		{
-			$output[] = 'google.maps.Event.addListener(m, "click", function()';
+			$output[] = 'google.maps.Event.addListener('.$marker.', "click", function()';
 			$output[] = '{';
-			$output[] = "\t".'m.openInfoWindowHtml(';
+			$output[] = "\t".$marker.'.openInfoWindowHtml(';
 			$output[] = "\t\t'".implode("'+\n\t\t$tabs'", explode("\n", $html))."'";
 			$output[] = "\t);";
 			$output[] = '});';
 		}
-		$output[] = 'map.addOverlay(m);';
+		$output[] = 'map.addOverlay('.$marker.');';
 
 		return implode("\n".$tabs, $output);
 	}
