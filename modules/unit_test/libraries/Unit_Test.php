@@ -140,8 +140,12 @@ class Unit_Test_Core {
 							$object->setup();
 						}
 
+						xdebug_start_code_coverage();
+
 						// Run the actual test
 						$object->$method_name();
+
+						var_dump(xdebug_get_code_coverage());
 
 						// Run teardown method
 						if ($teardown === TRUE)
@@ -246,6 +250,15 @@ class Unit_Test_Core {
 
 
 abstract class Unit_Test_Case {
+	
+	// Mock Objects
+	public function get_mock_object($class) 
+	{
+			
+
+
+	}
+
 
 	public function assert_true($value, $debug = NULL)
 	{
@@ -479,10 +492,14 @@ abstract class Unit_Test_Case {
 
 	}
 
+
+
+
+
 } // End Unit_Test_Case
 
 
-abstract class Database_Unit_Test_Case {
+abstract class Database_Test_Case {
 
 
 
