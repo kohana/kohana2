@@ -84,11 +84,6 @@ class Gmap_Icon_Core {
 		}
 	}
 	
-	public function __toString()
-	{
-		return (string) $this->name;
-	}
-	
 	public function set_url($key, $url)
 	{
 		$this->options[$key] = (valid::url($url)) ? '"'.$url.'";' : '"'.url::site($url).'";';
