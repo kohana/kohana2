@@ -38,7 +38,7 @@ class Gmap_Core {
 			$parameters['key'] = Kohana::config('gmaps.api_key');
 		}
 
-		return 'http://www.google.com/'.$component.'?'.http_build_query($parameters);
+		return 'http://www.google.com/'.$component.'?'.http_build_query($parameters, '', '&amp;');
 	 }
 
 	/**
