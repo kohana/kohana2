@@ -178,6 +178,9 @@ class Gmap_Core {
 	(
 		'G_NORMAL_MAP','G_SATELLITE_MAP','G_HYBRID_MAP','G_PHYSICAL_MAP'
 	);
+	
+	// Markers icons
+	protected $icons = array();
 
 	// Map markers
 	protected $markers = array();
@@ -269,6 +272,22 @@ class Gmap_Core {
 
 		return $this;
 	}
+	
+	/**
+	 * Create a custom marker icon
+	 *
+	 * @chainable
+	 * @param string $name icon name
+	 * @param array $options icon options
+	 * @return object
+	 */
+	public function add_icon($name, array $options)
+	{
+	    // Add a new cusotm icon
+	    $this->icons[] = new Gmap_Icon($name, $options);
+	    
+	    return $this;
+	}
 
 	/**
 	 * Set the GMap marker point.
@@ -329,6 +348,7 @@ class Gmap_Core {
 				'options' => $this->options,
 				'controls' => implode("\n", $controls),
 				'center' => $center,
+				'icons' => $this->icons,
 				'markers' => $this->markers,
 			))
 			->render();

@@ -16,6 +16,7 @@ class Gmap_Marker_Core {
 	protected $options = array();
 	protected $valid_options = array
 	(
+		'icon',
 		'dragCrossMove',
 		'title',
 		'clickable',
@@ -52,7 +53,7 @@ class Gmap_Marker_Core {
 			{
 				// Set marker options
 				if (in_array($option, $this->valid_options, true))
-					$this->options[$option] = $value;
+					$this->options[] = "$option:$value";
 			}
 		}
 	}
@@ -65,7 +66,7 @@ class Gmap_Marker_Core {
 		// Marker ID
 		$marker = 'm'.++self::$id;
 
-		$output[] = 'var '.$marker.' = new google.maps.Marker(new google.maps.LatLng('.$this->latitude.', '.$this->longitude.'), '.json_encode($this->options).');';
+		$output[] = 'var '.$marker.' = new google.maps.Marker(new google.maps.LatLng('.$this->latitude.', '.$this->longitude.'), {'.implode(",", $this->options).'});';
 		if ($html = $this->html)
 		{
 			$output[] = 'google.maps.Event.addListener('.$marker.', "click", function()';
