@@ -54,6 +54,11 @@ echo html::script(array
 	'media/js/effects'
 ))
 ?>
+<?php /* Kohana 2.2 Teaser */ if (time() < strtotime('2008-08-09')): ?>
+<style type="text/css">
+#logo { background-image: url(<?php echo url::base() ?>media/img/kohana080808.png); }
+</style>
+<?php endif ?>
 </head>
 <body>
 <!-- Start Language Picker -->
