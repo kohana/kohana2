@@ -18,7 +18,7 @@ class Gmap_Core {
 	 * @param   array   API parameters
 	 * @return  string
 	 */
-	 public static function api_url($component = 'jsapi', $parameters = NULL)
+	 public static function api_url($component = 'jsapi', $parameters = NULL, $separator = '&amp;')
 	 {
 		if (empty($parameters['ie']))
 		{
@@ -38,7 +38,7 @@ class Gmap_Core {
 			$parameters['key'] = Kohana::config('gmaps.api_key');
 		}
 
-		return 'http://www.google.com/'.$component.'?'.http_build_query($parameters, '', '&amp;');
+		return 'http://www.google.com/'.$component.'?'.http_build_query($parameters, '', $separator);
 	 }
 
 	/**
@@ -90,7 +90,7 @@ class Gmap_Core {
 		else
 		{
 			// Set the XML URL
-			$xml = Gmap::api_url('maps/geo', array('output' => 'xml', 'q' => $address));
+			$xml = Gmap::api_url('maps/geo', array('output' => 'xml', 'q' => $address), '&');
 
 			// Disable error reporting while fetching the feed
 			$ER = error_reporting(~E_NOTICE);
@@ -296,6 +296,7 @@ class Gmap_Core {
 	 * @param float $lat latitude
 	 * @param float $lon longitude
 	 * @param string $html HTML for info window
+	 * @param array $options marker options
 	 * @return object
 	 */
 	public function add_marker($lat, $lon, $html = '', $options = array())
