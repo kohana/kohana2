@@ -25,6 +25,7 @@ $lang = array
 	'driver_not_found'      => 'Der Treiber %s für die Bibliothek %s konnte nicht gefunden werden',
 
 	// Resource names
+	'config'                => 'Die Konfigurationsdatei',
 	'controller'            => 'Der Controller',
 	'helper'                => 'Der Helfer',
 	'library'               => 'Die Bibliothek',
