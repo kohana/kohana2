@@ -372,7 +372,7 @@ final class Kohana {
 	 * @param   boolean  is the item required?
 	 * @return  mixed
 	 */
-	public static function config($key, $slash = FALSE)
+	public static function config($key, $slash = FALSE, $required = TRUE)
 	{
 		if (self::$configuration === NULL)
 		{
@@ -390,7 +390,7 @@ final class Kohana {
 		if ( ! isset(self::$configuration[$group]))
 		{
 			// Load the configuration group
-			self::$configuration[$group] = self::config_load($group);
+			self::$configuration[$group] = self::config_load($group, $required);
 		}
 
 		// Get the value of the key string
@@ -464,9 +464,10 @@ final class Kohana {
 	 * Load a config file.
 	 *
 	 * @param   string   config filename, without extension
+	 * @param   boolean  is the file required?
 	 * @return  array
 	 */
-	public static function config_load($name)
+	public static function config_load($name, $required = TRUE)
 	{
 		if ($name === 'core')
 		{
@@ -488,7 +489,7 @@ final class Kohana {
 		// Load matching configs
 		$configuration = array();
 
-		if ($files = self::find_file('config', $name, TRUE))
+		if ($files = self::find_file('config', $name, $required))
 		{
 			foreach ($files as $file)
 			{
