@@ -134,7 +134,7 @@ final class Kohana {
 		set_magic_quotes_runtime(0);
 
 		// Send default text/html UTF-8 header
-		header('Content-type: text/html; charset=UTF-8');
+		header('Content-Type: text/html; charset=UTF-8');
 
 		// Load locales
 		$locales = self::config('locale.language');

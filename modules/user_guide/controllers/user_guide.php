@@ -118,14 +118,14 @@ class User_Guide_Controller extends Controller {
 
 	public function js($filename)
 	{
-		header('Content-type: text/javascript');
+		header('Content-Type: text/javascript');
 
 		$this->_media('js', $filename);
 	}
 
 	public function css($filename)
 	{
-		header('Content-type: text/css');
+		header('Content-Type: text/css');
 
 		$this->_media('css', $filename);
 	}

@@ -81,7 +81,7 @@ class Media_Controller extends Controller {
 			($this->use_cache) AND $this->cache->set('media.css.'.$querystr, $data, array('media'), $this->cache_lifetime);
 		}
 
-		$mimetype AND header('Content-type: '.$mimetype);
+		$mimetype AND header('Content-Type: '.$mimetype);
 		echo $output;
 	}
 
@@ -115,10 +115,9 @@ class Media_Controller extends Controller {
 			($this->use_cache) AND $this->cache->set('media.js.'.$querystr, $data, array('media'), $this->cache_lifetime);
 		}
 
-		$mimetype AND header('Content-type: '.$mimetype);
+		$mimetype AND header('Content-Type: '.$mimetype);
 		echo $output;
 	}
-
 
 	public function _default()
 	{

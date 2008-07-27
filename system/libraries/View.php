@@ -236,7 +236,7 @@ class View_Core {
 		else
 		{
 			// Set the content type and size
-			header('Content-type: '.$this->kohana_filetype[0]);
+			header('Content-Type: '.$this->kohana_filetype[0]);
 
 			if ($print === TRUE)
 			{

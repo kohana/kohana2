@@ -25,10 +25,10 @@ class Gmaps_Demo_Controller extends Controller {
 
 		// Set the map center point
 		$map->center(0, 0, 1)->controls('large')->types('G_PHYSICAL_MAP', 'add');
-		
+
 		// Add a custom marker icon
-	    $map->add_icon('tinyIcon', array
-	    (
+		$map->add_icon('tinyIcon', array
+		(
 			'image' => 'http://labs.google.com/ridefinder/images/mm_20_red.png',
 			'shadow' => 'http://labs.google.com/ridefinder/images/mm_20_shadow.png',
 			'iconSize' => array('12', '20'),
@@ -42,11 +42,11 @@ class Gmaps_Demo_Controller extends Controller {
 
 		View::factory('gmaps/api_demo')->set(array('api_url' => Gmap::api_url(), 'map' => $map->render()))->render(TRUE);
 	}
-	
+
 	public function image_map()
 	{
 		$points = array('-37.814251' => '144.963169', '-33.867139' => '151.207114', '-27.467580' => '153.027892');
-		
+
 		View::factory('gmaps/static_demo')->set(array('simple' => Gmap::static_map(44.9801, -93.2519),'multi' => Gmap::static_map($points)))->render(TRUE);
 	}
 
@@ -66,12 +66,12 @@ class Gmaps_Demo_Controller extends Controller {
 		{
 			// Add a new marker
 			$map->add_marker($location->lat, $location->lon,
-			
+
 			// Get the info window HTML
 			View::factory('gmaps/info_window')->bind('location', $location)->render());
 		}
 
-		header('Content-type: text/javascript');
+		header('Content-Type: text/javascript');
 		echo $map->render();
 	}
 
@@ -137,7 +137,7 @@ class Gmaps_Demo_Controller extends Controller {
 	public function jquery()
 	{
 		$map = new Gmap('map');
-		
+
 		$map->center(0, 35, 16)->controls('large');
 
 		View::factory('gmaps/jquery')->set(array('api_url' => Gmap::api_url(), 'map' => $map->render('gmaps/jquery_javascript')))->render(TRUE);
