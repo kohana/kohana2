@@ -76,7 +76,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 
 		if ($status = $this->execute($actions))
 		{
-			// Use convert to change the image into it's final version. This is
+			// Use convert to change the image into its final version. This is
 			// done to allow the file type to change correctly, and to handle
 			// the quality conversion in the most effective way possible.
 			if ($error = exec(escapeshellcmd($this->dir.'convert'.$this->ext).' -quality '.$quality.'% '.$this->cmd_image.' '.$this->new_image))

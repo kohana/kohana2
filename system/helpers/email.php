@@ -69,7 +69,7 @@ class email_Core {
 
 					if ($class === 'PopB4Smtp')
 					{
-						// Load the PopB4Smtp class manually, due to it's odd filename
+						// Load the PopB4Smtp class manually, due to its odd filename
 						require Kohana::find_file('vendor', 'swift/Swift/Authenticator/$PopB4Smtp$');
 					}
 

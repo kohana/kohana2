@@ -123,7 +123,7 @@ class Encrypt_Core {
 	}
 
 	/**
-	 * Decrypts an encoded string back to it's original value.
+	 * Decrypts an encoded string back to its original value.
 	 *
 	 * @param   string  encoded string to be decrypted
 	 * @return  string  decrypted data

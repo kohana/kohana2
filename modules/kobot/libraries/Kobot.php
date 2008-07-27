@@ -215,7 +215,7 @@ class Kobot_Core {
 
 	public function set_trigger($pattern, $callback)
 	{
-		// Store the trigger and it's callback
+		// Store the trigger and its callback
 		$this->triggers[$pattern] = $callback;
 
 		return $this;
