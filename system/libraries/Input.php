@@ -14,8 +14,11 @@ class Input_Core {
 	// Enable or disable automatic XSS cleaning
 	protected $use_xss_clean = FALSE;
 
+	// Are magic quotes enabled?
+	protected $magic_quotes_gpc = FALSE;
+
 	// IP address of current user
-	public $ip_address = FALSE;
+	public $ip_address;
 
 	// Input singleton
 	protected static $instance;
@@ -39,7 +42,7 @@ class Input_Core {
 
 	/**
 	 * Sanitizes global GET, POST and COOKIE data. Also takes care of
-	 * register_globals, if it has been enabled.
+	 * magic_quotes and register_globals, if they have been enabled.
 	 *
 	 * @return  void
 	 */
@@ -50,6 +53,21 @@ class Input_Core {
 
 		if (self::$instance === NULL)
 		{
+			// magic_quotes_runtime is enabled
+			if (get_magic_quotes_runtime())
+			{
+				set_magic_quotes_runtime(0);
+				Kohana::log('debug', 'Disable magic_quotes_runtime! It is evil and deprecated: http://php.net/magic_quotes');
+			}
+
+			// magic_quotes_gpc is enabled
+			if (get_magic_quotes_gpc())
+			{
+				$this->magic_quotes_gpc = TRUE;
+				Kohana::log('debug', 'Disable magic_quotes_gpc! It is evil and deprecated: http://php.net/magic_quotes');
+			}
+
+			// register_globals is enabled
 			if (ini_get('register_globals'))
 			{
 				if (isset($_REQUEST['GLOBALS']))
@@ -78,7 +96,7 @@ class Input_Core {
 				}
 
 				// Warn the developer about register globals
-				Kohana::log('debug', 'Register globals is enabled. To save resources, disable register_globals in php.ini');
+				Kohana::log('debug', 'Disable register_globals! It is evil and deprecated: http://php.net/register_globals');
 			}
 
 			if (is_array($_GET))
@@ -215,7 +233,7 @@ class Input_Core {
 	 */
 	public function ip_address()
 	{
-		if ($this->ip_address != NULL)
+		if ($this->ip_address !== NULL)
 			return $this->ip_address;
 
 		if ($ip = $this->server('HTTP_CLIENT_IP'))
@@ -231,10 +249,9 @@ class Input_Core {
 			 $this->ip_address = $ip;
 		}
 
-		if (strpos($this->ip_address, ',') !== FALSE)
+		if ($comma = strrpos($this->ip_address, ',') !== FALSE)
 		{
-			$x = explode(',', $this->ip_address);
-			$this->ip_address = end($x);
+			$this->ip_address = substr($this->ip_address, $comma + 1);
 		}
 
 		if ( ! valid::ip($this->ip_address))
@@ -254,12 +271,12 @@ class Input_Core {
 	 * since it requires a fair amount of processing overhead.
 	 *
 	 * @param   string  data to clean
-	 * @param   string  xss_clean method to use ('htmlpurifier' or defaults to built in method)
+	 * @param   string  xss_clean method to use ('htmlpurifier' or defaults to built-in method)
 	 * @return  string
 	 */
 	public function xss_clean($data, $tool = NULL)
 	{
-		if ($tool == NULL)
+		if ($tool === NULL)
 		{
 			// Use the default tool
 			$tool = Kohana::config('core.global_xss_filtering');
@@ -271,21 +288,13 @@ class Input_Core {
 			{
 				$data[$key] = $this->xss_clean($val, $tool);
 			}
+
 			return $data;
 		}
 
-		// It is a string
-		$string = $data;
-
 		// Do not clean empty strings
-		if (trim($string) == '' OR $tool == FALSE)
-			return $string;
-
-		if ($tool === TRUE)
-		{
-			// Use the default tool
-			$tool = 'default';
-		}
+		if (trim($data) === '')
+			return $data;
 
 		switch ($tool)
 		{
@@ -305,7 +314,7 @@ class Input_Core {
 				$config->set('HTML', 'TidyLevel', 'none'); // Only XSS cleaning now
 
 				// Run HTMLPurifier
-				$string = HTMLPurifier($string, $config);
+				$data = HTMLPurifier($data, $config);
 			break;
 			default:
 				// http://svn.bitflux.ch/repos/public/popoon/trunk/classes/externalinput.php
@@ -336,39 +345,41 @@ class Input_Core {
 				//   * Made capturing parentheses non-capturing where possible
 				//   * Removed parentheses where possible
 				//   * Split up alternation alternatives
-				//
+				//   * Made some quantifiers possessive
 
-				$string = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $string);
-				// fix &entitiy\n;
+				// Fix &entity\n;
+				$data = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $data);
+				$data = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $data);
+				$data = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $data);
+				$data = html_entity_decode($data, ENT_COMPAT, 'UTF-8');
 
-				$string = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $string);
-				$string = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $string);
-				$string = html_entity_decode($string, ENT_COMPAT, 'UTF-8');
+				// Remove any attribute starting with "on" or xmlns
+				$data = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu', '$1>', $data);
 
-				// remove any attribute starting with "on" or xmlns
-				$string = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*>#iu', '$1>', $string);
-				// remove javascript: and vbscript: protocol
-				$string = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $string);
-				$string = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2novbscript...', $string);
-				$string = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u', '$1=$2nomozbinding...', $string);
-				//<span style="width: expression(alert('Ping!'));"></span>
-				// only works in ie...
-				$string = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*>#i', '$1>', $string);
-				$string = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*>#i', '$1>', $string);
-				$string = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*>#iu', '$1>', $string);
-				//remove namespaced elements (we do not need them...)
-				$string = preg_replace('#</*\w+:\w[^>]*>#i', '',$string);
-				//remove really unwanted tags
+				// Remove javascript: and vbscript: protocols
+				$data = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $data);
+				$data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2novbscript...', $data);
+				$data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u', '$1=$2nomozbinding...', $data);
 
-				do {
-					$oldstring = $string;
-					$string = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*>#i', '', $string);
+				// Only works in IE: <span style="width: expression(alert('Ping!'));"></span>
+				$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
+				$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
+				$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu', '$1>', $data);
+
+				// Remove namespaced elements (we do not need them)
+				$data = preg_replace('#</*\w+:\w[^>]*+>#i', '', $data);
+
+				do
+				{
+					// Remove really unwanted tags
+					$old_data = $data;
+					$data = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $data);
 				}
-				while ($oldstring !== $string);
+				while ($old_data !== $data);
 			break;
 		}
 
-		return $string;
+		return $data;
 	}
 
 	/**
@@ -410,7 +421,7 @@ class Input_Core {
 			return $new_array;
 		}
 
-		if (get_magic_quotes_gpc())
+		if ($this->magic_quotes_gpc === TRUE)
 		{
 			// Remove annoying magic quotes
 			$str = stripslashes($str);
