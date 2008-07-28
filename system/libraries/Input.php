@@ -296,6 +296,12 @@ class Input_Core {
 		if (trim($data) === '')
 			return $data;
 
+		if ($tool === TRUE)
+		{
+			// NOTE: This is necessary because switch is NOT type-sensative!
+			$tool = 'default';
+		}
+
 		switch ($tool)
 		{
 			case 'htmlpurifier':
