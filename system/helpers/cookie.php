@@ -21,10 +21,9 @@ class cookie_Core {
 	 * @param   string   URL domain to allow
 	 * @param   boolean  HTTPS only
 	 * @param   boolean  HTTP only (requires PHP 5.2 or higher)
-	 * @param   string   collision-prevention prefix
 	 * @return  boolean
 	 */
-	public static function set($name, $value = NULL, $expire = NULL, $path = NULL, $domain = NULL, $secure = NULL, $httponly = NULL, $prefix = NULL)
+	public static function set($name, $value = NULL, $expire = NULL, $path = NULL, $domain = NULL, $secure = NULL, $httponly = NULL)
 	{
 		if (headers_sent())
 			return FALSE;
@@ -35,7 +34,7 @@ class cookie_Core {
 		// Fetch default options
 		$config = Kohana::config('cookie');
 
-		foreach (array('value', 'expire', 'domain', 'path', 'prefix', 'secure', 'httponly') as $item)
+		foreach (array('value', 'expire', 'domain', 'path', 'secure', 'httponly') as $item)
 		{
 			if ($$item === NULL AND isset($config[$item]))
 			{
@@ -46,25 +45,20 @@ class cookie_Core {
 		// Expiration timestamp
 		$expire = ($expire == 0) ? 0 : time() + (int) $expire;
 
-		return setcookie($prefix.$name, $value, $expire, $path, $domain, $secure, $httponly);
+		return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
 	}
 
 	/**
 	 * Fetch a cookie value, using the Input library.
 	 *
 	 * @param   string   cookie name
-	 * @param   string   collision-prevention prefix
+	 * @param   mixed    default value
 	 * @param   boolean  use XSS cleaning on the value
 	 * @return  string
 	 */
-	public static function get($name, $prefix = NULL, $xss_clean = FALSE)
+	public static function get($name, $default = NULL, $xss_clean = FALSE)
 	{
-		if ($prefix === NULL)
-		{
-			$prefix = (string) Kohana::config('cookie.prefix');
-		}
-
-		return Input::instance()->cookie($prefix.$name, NULL, $xss_clean);
+		return Input::instance()->cookie($name, $default, $xss_clean);
 	}
 
 	/**
@@ -73,24 +67,18 @@ class cookie_Core {
 	 * @param   string   cookie name
 	 * @param   string   URL path
 	 * @param   string   URL domain
-	 * @param   string   collision-prevention prefix
 	 * @return  boolean
 	 */
-	public static function delete($name, $path = NULL, $domain = NULL, $prefix = NULL)
+	public static function delete($name, $path = NULL, $domain = NULL)
 	{
-		if ($prefix === NULL)
-		{
-			$prefix = (string) Kohana::config('cookie.prefix');
-		}
-
-		if ( ! isset($_COOKIE[$prefix.$name]))
+		if ( ! isset($_COOKIE[$name]))
 			return FALSE;
 
 		// Delete the cookie from globals
-		unset($_COOKIE[$prefix.$name]);
+		unset($_COOKIE[$name]);
 
 		// Sets the cookie value to an empty string, and the expiration to 24 hours ago
-		return cookie::set($name, '', -86400, $path, $domain, FALSE, FALSE, $prefix);
+		return cookie::set($name, '', -86400, $path, $domain, FALSE, FALSE);
 	}
 
 } // End cookie

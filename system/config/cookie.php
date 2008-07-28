@@ -2,11 +2,6 @@
 /**
  * @package  Core
  *
- * Prefix, used to avoid collisions between cookie names.
- */
-$config['prefix'] = '';
-
-/**
  * Domain, to restrict the cookie to a specific website domain. For security,
  * you are encouraged to set this option. An empty setting allows the cookie
  * to be read by any website domain.
