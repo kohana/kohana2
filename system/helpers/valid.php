@@ -119,8 +119,14 @@ class valid_Core {
 		}
 		elseif (is_array($type))
 		{
-			// Use the first type, for use with Validation
-			$type = $type[0];
+			foreach ($type as $t)
+			{
+				// Test each type for validity
+				if (valid::credit_card($number, $t))
+					return TRUE;
+			}
+
+			return FALSE;
 		}
 
 		$cards = Kohana::config('credit_cards');
