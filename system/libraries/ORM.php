@@ -617,12 +617,24 @@ class ORM_Core {
 	 * relationships that have been created with other objects.
 	 *
 	 * @chainable
+	 * @param   array  ids to delete
 	 * @return  ORM
 	 */
-	public function delete_all()
+	public function delete_all($ids = NULL)
 	{
+		if (is_array($ids))
+		{
+			// Delete only given ids
+			$this->db->in($this->primary_key, $ids);
+		}
+		else
+		{
+			// Delete all records
+			$this->db->where(TRUE);
+		}
+
 		// Delete all objects
-		$this->db->delete($this->table_name, TRUE);
+		$this->db->delete($this->table_name);
 
 		return $this->clear();
 	}
