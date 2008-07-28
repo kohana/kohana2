@@ -191,7 +191,7 @@ class Router_Core {
 				}
 			}
 		}
-		elseif (count($_GET) === 1 AND current($_GET) === '' AND substr($_SERVER['QUERY_STRING'], -1) !== '=')
+		elseif (current($_GET) === '' AND substr($_SERVER['QUERY_STRING'], -1) !== '=')
 		{
 			// The URI is the array key, eg: ?this/is/the/uri
 			self::$current_uri = key($_GET);
