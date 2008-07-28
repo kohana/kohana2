@@ -11,16 +11,17 @@ $lang = array
 	'invalid_dimensions'      => 'Le dimensioni specificate per %s non sono valide.',
 	'invalid_master'          => 'Master dimension specificato non valido.',
 	'invalid_flip'            => 'La direzione di rotazione specificata non è valida.',
+	'directory_unwritable'    => 'La directory specificata, %s, non consente la scrittura.',
 
 	// Messaggi specifici per ImageMagick
 	'imagemagick' => array
 	(
-	    'not_found'           => 'La cartella di ImageMagick specificata, non contiene il programma richiesto, %s.', 
+		'not_found'       => 'La cartella di ImageMagick specificata, non contiene il programma richiesto, %s.', 
 	),
 
 	// Messaggi specifici per GD
 	'gd' => array
 	(
-    	'requires_v2'         => 'La libreria Image richiede GD2. Leggere http://php.net/gd_info per maggiori informazioni.',
+		'requires_v2'     => 'La libreria Image richiede GD2. Leggere http://php.net/gd_info per maggiori informazioni.',
 	),
 );

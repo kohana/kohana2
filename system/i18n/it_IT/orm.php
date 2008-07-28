@@ -2,5 +2,5 @@
 
 $lang = array
 (
-	'method_not_implemented'   => 'Il metodo %s non è implementato nel modello ORM %s.',
+	'query_methods_not_allowed'   => 'Non è consentito l\'uso dei metodi di Query mediante ORM.',
 );
