@@ -78,14 +78,19 @@ class cookie_Core {
 	 */
 	public static function delete($name, $path = NULL, $domain = NULL, $prefix = NULL)
 	{
-		if ( ! isset($_COOKIE[$name]))
+		if ($prefix === NULL)
+		{
+			$prefix = (string) Kohana::config('cookie.prefix');
+		}
+
+		if ( ! isset($_COOKIE[$prefix.$name]))
 			return FALSE;
 
 		// Delete the cookie from globals
-		unset($_COOKIE[$name]);
+		unset($_COOKIE[$prefix.$name]);
 
 		// Sets the cookie value to an empty string, and the expiration to 24 hours ago
-		return cookie::set($name, '', -(60 * 60 * 24), $path, $domain, FALSE, FALSE);
+		return cookie::set($name, '', -86400, $path, $domain, FALSE, FALSE, $prefix);
 	}
 
 } // End cookie
