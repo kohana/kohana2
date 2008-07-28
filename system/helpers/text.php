@@ -373,7 +373,7 @@ class text_Core {
 	 * @param   string  string to remove widows from
 	 * @return  string
 	 */
-	public function widont($str)
+	public static function widont($str)
 	{
 		$str = rtrim($str);
 		$space = strrpos($str, ' ');

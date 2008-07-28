@@ -283,7 +283,7 @@ class valid_Core {
 	 * @param   array    decimal format: y or x,y
 	 * @return  boolean
 	 */
-	public function decimal($str, $format = NULL)
+	public static function decimal($str, $format = NULL)
 	{
 		// Create the pattern
 		$pattern = '/^[0-9]%s\.[0-9]%s$/';

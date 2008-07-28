@@ -21,7 +21,7 @@ class upload_Core {
 	 * @param   integer  chmod mask
 	 * @return  string   full path to new file
 	 */
-	public function save($file, $filename = NULL, $directory = NULL, $chmod = 0644)
+	public static function save($file, $filename = NULL, $directory = NULL, $chmod = 0644)
 	{
 		// Load file data from FILES if not passed as array
 		$file = is_array($file) ? $file : $_FILES[$file];
@@ -135,7 +135,7 @@ class upload_Core {
 	 * @param   array    maximum file size
 	 * @return  bool
 	 */
-	public function size(array $file, array $size)
+	public static function size(array $file, array $size)
 	{
 		if ((int) $file['error'] !== UPLOAD_ERR_OK)
 			return TRUE;
