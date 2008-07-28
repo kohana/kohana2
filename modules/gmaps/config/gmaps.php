@@ -13,4 +13,4 @@ $config['api_key'] = 'ABQIAAAAnfs7bKE82qgb3Zc2YyS-oBT2yXp_ZAY8_ufC3CFXhHIE1Nvwkx
  * specified by a country code of "es" than within the default domain within the United States (http://maps.google.com).
  */
 
-$config['api_domain'] = 'mqps.google.com';
+$config['api_domain'] = 'maps.google.com';
