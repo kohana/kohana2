@@ -106,11 +106,22 @@ class valid_Core {
 	 * @param   string   card type
 	 * @return  boolean
 	 */
-	public static function credit_card($number, $type = 'default')
+	public static function credit_card($number, $type = NULL)
 	{
 		// Remove all non-digit characters from the number
 		if (($number = preg_replace('/\D+/', '', $number)) === '')
 			return FALSE;
+
+		if ($type == NULL)
+		{
+			// Use the default type
+			$type = 'default';
+		}
+		elseif (is_array($type))
+		{
+			// Use the first type, for use with Validation
+			$type = $type[0];
+		}
 
 		$cards = Kohana::config('credit_cards');
 
