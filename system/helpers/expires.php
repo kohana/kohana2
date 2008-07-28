@@ -27,8 +27,8 @@ class expires_Core {
 			$expires += $seconds;
 
 			// Send headers
-			header('Last-Modified: '.gmdate('D, d M Y H:i:s', $now).' GMT');
-			header('Expires: '.gmdate('D, d M Y H:i:s', $expires).' GMT');
+			header('Last-Modified: '.gmdate('D, d M Y H:i:s T', $now));
+			header('Expires: '.gmdate('D, d M Y H:i:s T', $expires));
 			header('Cache-Control: max-age='.$seconds);
 
 			return $expires;
@@ -47,26 +47,24 @@ class expires_Core {
 	{
 		if ( ! empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) AND expires::check_headers())
 		{
-			if (strpos($_SERVER['HTTP_IF_MODIFIED_SINCE'], ';') !== FALSE)
+			if (($strpos = strpos($_SERVER['HTTP_IF_MODIFIED_SINCE'], ';')) !== FALSE)
 			{
 				// IE6 and perhaps other IE versions send length too, compensate here
-				$mod_time = preg_replace('/^(.+?);/', '$1', $_SERVER['HTTP_IF_MODIFIED_SINCE']);
+				$mod_time = substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 0, $strpos);
 			}
 			else
 			{
 				$mod_time = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
 			}
 
-			$current_time = time();
-
 			$mod_time = strtotime($mod_time);
-			$mod_time_diff = $mod_time + $seconds - $current_time;
+			$mod_time_diff = $mod_time + $seconds - time();
 
 			if ($mod_time_diff > 0)
 			{
 				// Re-send headers
-				header('Last-Modified: '.gmdate('D, d M Y H:i:s', $mod_time).' GMT');
-				header('Expires: '.gmdate('D, d M Y H:i:s', $current_time + $mod_time_diff).' GMT');
+				header('Last-Modified: '.gmdate('D, d M Y H:i:s T', $mod_time));
+				header('Expires: '.gmdate('D, d M Y H:i:s T', time() + $mod_time_diff));
 				header('Cache-Control: max-age='.$mod_time_diff);
 				header('Status: 304 Not Modified', TRUE, 304);
 
