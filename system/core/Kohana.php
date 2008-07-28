@@ -1169,7 +1169,7 @@ final class Kohana {
 
 			if (is_readable($path))
 			{
-				$items = glob($path.'*');
+				$items = (array) glob($path.'*');
 
 				foreach ($items as $index => $item)
 				{
