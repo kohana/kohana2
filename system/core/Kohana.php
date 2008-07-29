@@ -163,7 +163,7 @@ final class Kohana {
 		// Enable Kohana output handling
 		Event::add('system.shutdown', array('Kohana', 'shutdown'));
 
-		if ($config = Kohana::config('hooks.enable'))
+		if ($config = Kohana::config('enable_hooks'))
 		{
 			$hooks = array();
 

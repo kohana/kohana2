@@ -54,6 +54,13 @@ $config['global_xss_filtering'] = TRUE;
 $config['allow_config_set'] = FALSE;
 
 /**
+ * Enable or disable hooks. Setting this option to TRUE will enable
+ * all hooks. By using an array of hook filenames, you can control
+ * which hooks are enabled. Setting this option to FALSE disables hooks.
+ */
+$config['enable_hooks'] = FALSE;
+
+/**
  * Log thresholds:
  *  0 - Disable logging
  *  1 - Errors and exceptions
@@ -100,6 +107,7 @@ $config['modules'] = array
 	// MODPATH.'kodoc',     // Self-generating documentation
 	// MODPATH.'media',     // Media caching and compression
 	// MODPATH.'gmaps',     // Google Maps integration
+	// MODPATH.'archive',   // Archive utility
 	// MODPATH.'payment',   // Online payments
 	// MODPATH.'unit_test', // Unit testing
 	// MODPATH.'object_db', // New OOP Database library (testing only!)
