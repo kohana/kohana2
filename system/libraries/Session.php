@@ -46,7 +46,7 @@ class Session_Core {
 	 */
 	public function __construct()
 	{
-		$this->input = new Input;
+		$this->input = Input::instance();
 
 		// This part only needs to be run once
 		if (self::$instance === NULL)
