@@ -111,6 +111,7 @@ $config = array
 	'mpv'   => array('video/x-matroska'),
 	'mpv2'  => array('video/mpeg'),
 	'ms'    => array('application/x-troff-ms'),
+	'msg'   => array('application/msoutlook','application/x-msg'),
 	'msi'   => array('application/x-msi'),
 	'nws'   => array('message/rfc822'),
 	'oda'   => array('application/oda'),
