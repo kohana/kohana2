@@ -17,9 +17,10 @@ class download_Core {
 	 *
 	 * @param   string  a file path or file name
 	 * @param   mixed   data to be sent if the filename does not exist
+	 * @param   string  suggested filename to display in the download
 	 * @return  void
 	 */
-	public static function force($filename = '', $data = '')
+	public static function force($filename = NULL, $data = NULL, $nicename = NULL)
 	{
 		if (empty($filename))
 			return FALSE;
@@ -62,7 +63,7 @@ class download_Core {
 
 		// Generate the server headers
 		header('Content-Type: '.$mime[0]);
-		header('Content-Disposition: attachment; filename="'.$filename.'"');
+		header('Content-Disposition: attachment; filename="'.(empty($nicename) ? $filename : $nicename).'"');
 		header('Content-Transfer-Encoding: binary');
 		header('Content-Length: '.sprintf('%d', $filesize));
 
