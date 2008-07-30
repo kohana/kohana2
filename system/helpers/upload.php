@@ -116,7 +116,7 @@ class upload_Core {
 			return TRUE;
 
 		// Get the default extension of the file
-		$extension = strtolower(file::extension($file['name']));
+		$extension = strtolower(substr(strrchr($file['name'], '.'), 1));
 
 		// Get the mime types for the extension
 		$mime_types = Kohana::config('mimes.'.$extension);

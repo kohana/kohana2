@@ -78,7 +78,7 @@ abstract class Captcha_Driver {
 	 */
 	public function image_type($filename)
 	{
-		switch (strtolower(file::extension($filename)))
+		switch (strtolower(substr(strrchr($filename, '.'), 1)))
 		{
 			case 'png':
 				return 'png';

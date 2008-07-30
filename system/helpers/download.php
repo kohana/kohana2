@@ -34,11 +34,10 @@ class download_Core {
 			$filesize = filesize($filepath);
 
 			// Get filename
-			// Note: Do not use pathinfo for this, it may not be utf8 compatible
-			$filename = end(explode('/', $filepath));
+			$filename = substr(strrchr('/'.$filepath, '/'), 1);
 
 			// Get extension
-			$extension = pathinfo($filepath, PATHINFO_EXTENSION);
+			$extension = strtolower(substr(strrchr($filepath, '.'), 1));
 		}
 		else
 		{
@@ -46,10 +45,10 @@ class download_Core {
 			$filesize = strlen($data);
 
 			// Make sure the filename does not have directory info
-			$filename = end(explode('/', $filename));
+			$filename = substr(strrchr('/'.$filename, '/'), 1);
 
 			// Get extension
-			$extension = end(explode('.', $filename));
+			$extension = strtolower(substr(strrchr($filename, '.'), 1));
 		}
 
 		// Get the mime type of the file

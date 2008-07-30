@@ -12,18 +12,6 @@
 class file_Core {
 
 	/**
-	 * Get the extension of a filename.
-	 *
-	 * @param   string  filename
-	 * @return  string
-	 */
-	public static function extension($filename)
-	{
-		// Faster than pathinfo($filename, PATHINFO_EXTENSION)
-		return substr(strrchr($filename, '.'), 1);
-	}
-
-	/**
 	 * Attempt to get the mime type from a file. This method is horribly
 	 * unreliable, due to PHP being horribly unreliable when it comes to
 	 * determining the mime-type of a file.
@@ -39,7 +27,7 @@ class file_Core {
 			return FALSE;
 
 		// Get the extension from the filename
-		$extension = pathinfo($filename, PATHINFO_EXTENSION);
+		$extension = strtolower(substr(strrchr($filename, '.'), 1));
 
 		if (preg_match('/^(?:jpe?g|png|[gt]if|bmp|swf)$/', $extension))
 		{
