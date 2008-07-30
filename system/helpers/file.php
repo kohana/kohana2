@@ -19,8 +19,8 @@ class file_Core {
 	 */
 	public static function extension($filename)
 	{
-		// Return the extension of the filename
-		return ltrim(substr($filename, strrpos($filename, '.')), '.');
+		// Faster than pathinfo($filename, PATHINFO_EXTENSION)
+		return substr(strrchr($filename, '.'), 1);
 	}
 
 	/**
