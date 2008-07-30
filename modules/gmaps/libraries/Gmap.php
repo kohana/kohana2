@@ -311,9 +311,10 @@ class Gmap_Core {
 	 * Render the map into GMap Javascript.
 	 *
 	 * @param string $template template name
+	 * @param array $extra extra fields passed to the template
 	 * @return string
 	 */
-	public function render($template = 'gmaps/javascript')
+	public function render($template = 'gmaps/javascript', $extra = array())
 	{
 		// Latitude, longitude, zoom and default map type
 		list ($lat, $lon, $zoom, $default_type) = $this->center;
@@ -341,9 +342,8 @@ class Gmap_Core {
 
 		// Map centering
 		$center = 'map.setCenter(new google.maps.LatLng('.$lat.', '.$lon.'), '.$zoom.', '.$default_type.');';
-
-		// Render the Javascript
-		return View::factory($template, array
+		
+		$data = array_merge($extra, array
 			(
 				'map' => $map,
 				'options' => $this->options,
@@ -351,8 +351,10 @@ class Gmap_Core {
 				'center' => $center,
 				'icons' => $this->icons,
 				'markers' => $this->markers,
-			))
-			->render();
+			));
+
+		// Render the Javascript
+		return View::factory($template, $data)->render();
 	}
 
 } // End Gmap
