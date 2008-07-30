@@ -48,12 +48,6 @@ $config['output_compression'] = FALSE;
 $config['global_xss_filtering'] = TRUE;
 
 /**
- * Enable or disable dynamic setting of configuration options. By default, all
- * configuration options are read-only.
- */
-$config['allow_config_set'] = FALSE;
-
-/**
  * Enable or disable hooks. Setting this option to TRUE will enable
  * all hooks. By using an array of hook filenames, you can control
  * which hooks are enabled. Setting this option to FALSE disables hooks.

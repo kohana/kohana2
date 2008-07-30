@@ -410,13 +410,6 @@ final class Kohana {
 	 */
 	public static function config_set($key, $value)
 	{
-		if (self::$configuration['core']['allow_config_set'] !== TRUE)
-			throw new Kohana_Exception('core.config_set_disabled');
-
-		// No not allow changing allow_config_set at runtime
-		if ($key === 'core.allow_config_set')
-			return FALSE;
-
 		// Do this to make sure that the config array is already loaded
 		self::config($key);
 

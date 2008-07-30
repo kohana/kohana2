@@ -3,7 +3,6 @@
 $lang = array
 (
 	'there_can_be_only_one' => 'Solo puede haber una instancia de Kohana por cada página.',
-	'config_set_disabled'   => 'Tu configuración no permite escribir elementos de la configuración de forma dinámica',
 	'uncaught_exception'    => '%s no capturada: %s en el archivo %s, linea %s',
 	'invalid_method'        => 'Método inválido %s llamado en %s.',
 	'invalid_property'      => 'La propiedad %s no existe en la clase %s.',
