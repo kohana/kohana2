@@ -112,6 +112,25 @@ class url_Core {
 	}
 
 	/**
+	 * Return the URL to a file. Absolute filenames and relative filenames
+	 * are allowed.
+	 *
+	 * @param   string   filename
+	 * @param   boolean  include the index page
+	 * @return  string
+	 */
+	public static function file($file, $index = FALSE)
+	{
+		if (strpos($file, '://') === FALSE)
+		{
+			// Add the base URL to the filename
+			$file = url::base($index).$file;
+		}
+
+		return $file;
+	}
+
+	/**
 	 * Merges an array of arguments with the current URI and query string to
 	 * overload, instead of replace, the current query string.
 	 *

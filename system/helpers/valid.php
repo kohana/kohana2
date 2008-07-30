@@ -102,8 +102,8 @@ class valid_Core {
 	 * Validates a credit card number using the Luhn (mod10) formula.
 	 * @see http://en.wikipedia.org/wiki/Luhn_algorithm
 	 *
-	 * @param   integer  credit card number
-	 * @param   string   card type
+	 * @param   integer       credit card number
+	 * @param   string|array  card type, or an array of card types
 	 * @return  boolean
 	 */
 	public static function credit_card($number, $type = NULL)

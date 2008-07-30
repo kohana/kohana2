@@ -81,7 +81,7 @@ class download_Core {
 			header('Pragma: no-cache');
 		}
 
-		// Flush the output buffer
+		// Clear the output buffer
 		Kohana::close_buffers(FALSE);
 
 		if (isset($filepath))
