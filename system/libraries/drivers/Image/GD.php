@@ -194,7 +194,7 @@ class Image_GD_Driver extends Image_Driver {
 		if ($properties['master'] === Image::AUTO)
 		{
 			// Change an automatic master dim to the correct type
-			$properties['master'] = ($width > $height) ? Image::WIDTH : Image::HEIGHT;
+			$properties['master'] = (($width / $properties['width']) > ($height / $properties['height'])) ? Image::WIDTH : Image::HEIGHT;
 		}
 
 		// Recalculate the width and height, if they are missing
