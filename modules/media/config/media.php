@@ -14,8 +14,7 @@
  */
  
 /**
- * Separator character for multiple files. Make sure this is in your "allowed characters"
- * configuration setting.
+ * Separator character for multiple files.
  */
 $config['separator'] = ',';
 
