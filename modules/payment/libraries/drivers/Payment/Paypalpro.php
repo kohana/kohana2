@@ -223,7 +223,7 @@ class Payment_Paypalpro_Driver implements Payment_Driver
 
 		parse_str(urldecode($response),$nvp_res_array);
 
-		return ($nvpResArray['ACK'] == TRUE);
+		return ($nvp_res_array['ACK'] == TRUE);
 
 	}
 } // End Payment_Paypalpro_Driver Class
