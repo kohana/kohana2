@@ -71,11 +71,12 @@ class Media_Controller extends Controller {
 
 			foreach ($filedata as $filename=>$data)
 			{
-				if ($this->pack_css)
-				{
-					$data = $this->css_compress($data);
-				}
-				$output .= $data;
+			    $output .= $data;
+			}
+
+			if ($this->pack_css)
+			{
+				$output = $this->css_compress($output);
 			}
 
 			($this->use_cache) AND $this->cache->set('media.css.'.$querystr, $data, array('media'), $this->cache_lifetime);
