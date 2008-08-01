@@ -84,25 +84,25 @@ class Image_ImageMagick_Driver extends Image_Driver {
 				$this->errors[] = $error;
 			}
 			else
-			{ 
+			{
 				// Output the image directly to the browser
 				if ($render != FALSE)
-				{ 
-					$contents = file_get_contents($this->tmp_image); 
-					switch (substr($file, strrpos($file, '.') + 1)) 
-					{ 
-						case 'jpg': 
-						case 'jpeg': 
-							header ("Content-Type: image/jpeg"); 
-							break; 
-						case 'gif': 
-							header ("Content-Type: image/gif"); 
-							break; 
-						case 'png': 
-							header ("Content-Type: image/png"); 
-							break; 
- 					} 
-					echo ($contents); 
+				{
+					$contents = file_get_contents($this->tmp_image);
+					switch (substr($file, strrpos($file, '.') + 1))
+					{
+						case 'jpg':
+						case 'jpeg':
+							header('Content-Type: image/jpeg');
+						break;
+						case 'gif':
+							header('Content-Type: image/gif');
+						break;
+						case 'png':
+							header('Content-Type: image/png');
+						break;
+ 					}
+					echo ($contents);
 				}
 			}
 		}
