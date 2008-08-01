@@ -53,7 +53,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 	 * Creates a temporary image and executes the given actions. By creating a
 	 * temporary copy of the image before manipulating it, this process is atomic.
 	 */
-	public function process($image, $actions, $dir, $file)
+	public function process($image, $actions, $dir, $file, $render = FALSE)
 	{
 		// We only need the filename
 		$image = $image['file'];
@@ -72,7 +72,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 
 		// All calls to these will need to be escaped, so do it now
 		$this->cmd_image = escapeshellarg($this->tmp_image);
-		$this->new_image = escapeshellarg($dir.$file);
+		$this->new_image = ($render)? $this->cmd_image : escapeshellarg($dir.$file);
 
 		if ($status = $this->execute($actions))
 		{
@@ -82,6 +82,28 @@ class Image_ImageMagick_Driver extends Image_Driver {
 			if ($error = exec(escapeshellcmd($this->dir.'convert'.$this->ext).' -quality '.$quality.'% '.$this->cmd_image.' '.$this->new_image))
 			{
 				$this->errors[] = $error;
+			}
+			else
+			{ 
+				// Output the image directly to the browser
+				if ($render != FALSE)
+				{ 
+					$contents = file_get_contents($this->tmp_image); 
+					switch (substr($file, strrpos($file, '.') + 1)) 
+					{ 
+						case 'jpg': 
+						case 'jpeg': 
+							header ("Content-Type: image/jpeg"); 
+							break; 
+						case 'gif': 
+							header ("Content-Type: image/gif"); 
+							break; 
+						case 'png': 
+							header ("Content-Type: image/png"); 
+							break; 
+ 					} 
+					echo ($contents); 
+				}
 			}
 		}
 

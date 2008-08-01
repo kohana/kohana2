@@ -30,7 +30,7 @@ class Image_GD_Driver extends Image_Driver {
 			throw new Kohana_Exception('image.gd.requires_v2');
 	}
 
-	public function process($image, $actions, $dir, $file)
+	public function process($image, $actions, $dir, $file, $render = FALSE) 
 	{
 		// Set the "create" function
 		switch ($image['type'])
@@ -101,8 +101,29 @@ class Image_GD_Driver extends Image_Driver {
 				break;
 			}
 
-			// Set the status to the save return value, saving with the quality reques
-			$status = isset($quality) ? $save($this->tmp_image, $dir.$file, $quality) : $save($this->tmp_image, $dir.$file);
+			if ($render == FALSE)
+			{ 
+				// Set the status to the save return value, saving with the quality requested 
+				$status = isset($quality) ? $save($this->tmp_image, $dir.$file, $quality) : $save($this->tmp_image, $dir.$file); 
+			}
+			else
+			{ 
+				// Output the image directly to the browser
+				switch ($save)
+				{ 
+					case 'imagejpeg': 
+						header ("Content-Type: image/jpeg"); 
+						break; 
+					case 'imagegif': 
+						header ("Content-Type: image/gif"); 
+						break; 
+					case 'imagepng': 
+						header ("Content-Type: image/png"); 
+						break; 
+				} 
+				
+				$status = isset($quality) ? $save($this->tmp_image, null, $quality) : $save($this->tmp_image); 
+			}
 
 			// Destroy the temporary image
 			imagedestroy($this->tmp_image);
