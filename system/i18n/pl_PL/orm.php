@@ -1,4 +1,3 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-$lang['method_not_implemented'] = 'Metoda %s nie jest zaimplementowana w modelu ORM %s.';
-
+$lang['query_methods_not_allowed'] = 'Korzystając z ORM nie można używać zapytań.';

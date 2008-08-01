@@ -12,6 +12,8 @@ $lang = array
 	'invalid_master'          => 'Nadrzędne podane wymiary, nie są prawidłowe.',
 	'invalid_flip'            => 'Podany kierunek obrotu jest nieprawidłowy.',
 
+	'directory_unwritable'    => 'W podanym folderze, %s, zapis jest niedozwolony.',
+
 	// ImageMagick specific messages
 	'imagemagick' => array
 	(

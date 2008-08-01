@@ -5,6 +5,7 @@ $lang = array
 	'there_can_be_only_one' => 'Na jedno wywołanie strony można powołać tylko jedną instancję Kohany.',
 	'uncaught_exception'    => 'Nieobsługiwany %s: %s w pliku %s w lini %s',
 	'invalid_method'        => 'Nieprawidłowa metoda %s wywołana w %s.',
+	'invalid_property'      => 'Właściwość %s w klasie %s nie istnieje.',
 	'log_dir_unwritable'    => 'Katalog zapisu dziennika w konfiguracji, wskazuje na położenie tylko do odczytu.',
 	'resource_not_found'    => 'Żądany %s, %s, Nie może zostać znaleziony.',
 	'invalid_filetype'      => 'Żądany typ pliku, .%s, w konfiguracji widoków nie jest podany jako dozwolony.',
@@ -23,6 +24,7 @@ $lang = array
 	'driver_not_found'      => 'Nie znaleziono sterownika %s dla biblioteki %s',
 
 	// Resource names
+	'config'                => 'plik konfiguracyjny',
 	'controller'            => 'kontroler',
 	'helper'                => 'pomocnik',
 	'library'               => 'biblioteka',
