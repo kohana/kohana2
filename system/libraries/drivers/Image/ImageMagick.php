@@ -86,7 +86,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 			else
 			{
 				// Output the image directly to the browser
-				if ($render != FALSE)
+				if ($render !== FALSE)
 				{
 					$contents = file_get_contents($this->tmp_image);
 					switch (substr($file, strrpos($file, '.') + 1))
@@ -102,7 +102,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 							header('Content-Type: image/png');
 						break;
  					}
-					echo ($contents);
+					echo $contents;
 				}
 			}
 		}

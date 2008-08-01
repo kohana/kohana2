@@ -101,7 +101,7 @@ class Image_GD_Driver extends Image_Driver {
 				break;
 			}
 
-			if ($render == FALSE)
+			if ($render === FALSE)
 			{
 				// Set the status to the save return value, saving with the quality requested
 				$status = isset($quality) ? $save($this->tmp_image, $dir.$file, $quality) : $save($this->tmp_image, $dir.$file);
