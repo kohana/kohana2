@@ -1131,7 +1131,7 @@ final class Kohana {
 			self::$write_cache['file_path'] = TRUE;
 		}
 
-		return self::$internal_cache['file_path'][$search] = $found;;
+		return self::$internal_cache['file_path'][$search] = $found;
 	}
 
 	/**
