@@ -3,7 +3,7 @@
 class Smarty_Demo_Controller extends Controller
 {
 	// Do not allow to run in production
-	const ALLOW_PRODUCTION = FALSE;    
+	const ALLOW_PRODUCTION = FALSE;
 
 	public function index()
 	{

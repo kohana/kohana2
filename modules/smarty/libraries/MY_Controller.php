@@ -5,22 +5,22 @@ class Controller extends Controller_Core {
 	function __construct()
 	{
 		parent::__construct();
-	
+
 		if (Kohana::config('smarty.integration') == TRUE)
 		{
 			$this->MY_Smarty = new MY_Smarty;
 		}
 	}
-	
+
 	public function _kohana_load_view($template, $vars)
 	{
 		if ($template == '')
 			return;
 
-		if (substr(strrchr($template, '.'), 1) === Kohana::config('smarty.templates_ext')) 
+		if (substr(strrchr($template, '.'), 1) === Kohana::config('smarty.templates_ext'))
 		{
 			// Assign variables to the template
-			if (is_array($vars) AND count($vars) > 0) 
+			if (is_array($vars) AND count($vars) > 0)
 			{
 				foreach ($vars AS $key => $val)
 				{
@@ -33,9 +33,9 @@ class Controller extends Controller_Core {
 
 			// Fetch the output
 			$output = $this->MY_Smarty->fetch($template);
-			
-		} 
-		else 
+
+		}
+		else
 		{
 			$output = parent::_kohana_load_view($template, $vars);
 		}

@@ -18,10 +18,10 @@ $config = array
 	'secure_dirs'           => array         // Smarty secure directories
 	(
         MODPATH.'smarty/views'
-	),    
+	),
 	'if_funcs'              => array         // We'll allow these functions in if statement
 	(
-		'array',  'list',     'trim',       'isset', 'empty', 
+		'array',  'list',     'trim',       'isset', 'empty',
 		'sizeof', 'in_array', 'is_array',   'true',  'false',
 		'null',   'reset',    'array_keys', 'end',   'count'
 	),
@@ -37,9 +37,9 @@ $config = array
 	(
 		'trimwhitespace'
 	),
-	'pre_filters'           => array  
+	'pre_filters'           => array
 	(
-	),  
+	),
 	'escape_exclude_list'   => array
 	(
 	),

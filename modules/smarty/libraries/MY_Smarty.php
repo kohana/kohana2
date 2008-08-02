@@ -7,7 +7,7 @@ class MY_Smarty_Core extends Smarty {
 	function __construct()
 	{
 		// Check if we should use smarty or not
-		if (Kohana::config('smarty.integration') == FALSE) 
+		if (Kohana::config('smarty.integration') == FALSE)
 			return;
 
 		// Okay, integration is enabled, so call the parent constructor
@@ -29,7 +29,7 @@ class MY_Smarty_Core extends Smarty {
 
 		// check if smarty_compile directory is exists
 		$this->checkDirectory($this->compile_dir);
-		
+
 		// check if smarty_cache directory is exists
 		$this->checkDirectory($this->cache_dir);
 
@@ -41,8 +41,8 @@ class MY_Smarty_Core extends Smarty {
 			$this->secure_dir                          = array_merge($configSecureDirectories, $safeTemplates);
 			$this->security_settings['IF_FUNCS']       = Kohana::config('smarty.if_funcs');
 			$this->security_settings['MODIFIER_FUNCS'] = Kohana::config('smarty.modifier_funcs');
-		}    
-		
+		}
+
 		// Autoload filters
 		$this->autoload_filters = array('pre'    => Kohana::config('smarty.pre_filters'),
 										'post'   => Kohana::config('smarty.post_filters'),
@@ -56,17 +56,17 @@ class MY_Smarty_Core extends Smarty {
 			$this->plugins_dir[] = $helper;
 		}
 	}
-	
+
 	public function checkDirectory($directory)
 	{
-		if ((! file_exists($directory) AND ! @mkdir($directory, 0755)) OR ! is_writable($directory) OR !is_executable($directory)) 
+		if ((! file_exists($directory) AND ! @mkdir($directory, 0755)) OR ! is_writable($directory) OR !is_executable($directory))
 		{
 			$error = 'Compile/Cache directory "%s" is not writeable/executable';
 			$error = sprintf($error, $directory);
 
 			throw new Kohana_User_Exception('Compile/Cache directory is not writeable/executable', $error);
 		}
-		
+
 		return TRUE;
 	}
 }

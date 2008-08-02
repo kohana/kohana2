@@ -10,7 +10,7 @@ class View extends View_Core {
 		{
 			$type = empty($type) ? Kohana::config('smarty.templates_ext') : $type;
 		}
-	
+
 		parent::__construct($name, $data, $type);
 	}
 }
