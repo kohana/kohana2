@@ -211,7 +211,7 @@ class Input_Core {
 		if ($key === array())
 			return $array;
 
-		if ( ! array_key_exists($key, $array))
+		if ( ! isset($array[$key]))
 			return $default;
 
 		// Get the value
