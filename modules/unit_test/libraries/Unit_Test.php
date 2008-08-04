@@ -140,12 +140,8 @@ class Unit_Test_Core {
 							$object->setup();
 						}
 
-						xdebug_start_code_coverage();
-
 						// Run the actual test
 						$object->$method_name();
-
-						var_dump(xdebug_get_code_coverage());
 
 						// Run teardown method
 						if ($teardown === TRUE)
@@ -209,20 +205,6 @@ class Unit_Test_Core {
 			->render();
 	}
 
-
-	/**
-	 *
-	 *@TODO
-	 *
-	 */
-	private function collect_code_coverage_information()
-	{
-
-
-
-	}
-
-
 	/**
 	 * Magically convert this object to a string.
 	 *
@@ -254,15 +236,11 @@ abstract class Unit_Test_Case {
 	// Mock Objects
 	public function get_mock_object($class) 
 	{
-			
-
 
 	}
 
-
 	public function assert_true($value, $debug = NULL)
 	{
-
 		if ($value != TRUE)
 			throw new Kohana_Unit_Test_Exception(Kohana::lang('unit_test.assert_true', gettype($value), var_export($value, TRUE)), $debug);
 
@@ -474,27 +452,17 @@ abstract class Unit_Test_Case {
 	public function assert_class_attribute($attribute, $class)
 	{
 
-
-
 	}
 
 	public function assert_class_static_attribute($attribute, $class)
 	{
-
-
 
 	}
 
 	public function assert_file_exists($file)
 	{
 
-
-
 	}
-
-
-
-
 
 } // End Unit_Test_Case
 
@@ -504,7 +472,6 @@ abstract class Database_Test_Case {
 
 
 } // End Database_Unit_Test_Case
-
 
 
 class Kohana_Unit_Test_Exception extends Exception {
