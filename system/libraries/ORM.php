@@ -32,6 +32,7 @@ class ORM_Core {
 	protected $related = array();
 
 	// Model table information
+	protected $object_name;
 	protected $table_name;
 	protected $table_columns;
 	protected $ignored_columns;
@@ -72,6 +73,9 @@ class ORM_Core {
 	 */
 	public function __construct($id = NULL)
 	{
+		// Set the object name
+		$this->object_name = strtolower(substr(get_class($this), 0, -6));
+
 		// Initialize database
 		$this->__initialize();
 
@@ -111,8 +115,8 @@ class ORM_Core {
 
 		if (empty($this->table_name))
 		{
-			// Set the table name
-			$this->table_name = strtolower(substr(get_class($this), 0, -6));
+			// Table name is the same as the object name
+			$this->table_name = $this->object_name;
 
 			if ($this->table_names_plural === TRUE)
 			{
@@ -140,7 +144,7 @@ class ORM_Core {
 	public function __sleep()
 	{
 		// Store only information about the object
-		return array('object', 'changed', 'loaded', 'saved', 'sorting');
+		return array('object_name', 'object', 'changed', 'loaded', 'saved', 'sorting');
 	}
 
 	/**
@@ -335,6 +339,7 @@ class ORM_Core {
 		}
 		elseif (in_array($column, array
 			(
+				'object_name', // Object
 				'primary_key', 'primary_val', 'table_name', 'table_columns', // Table
 				'loaded', 'saved', // Status
 				'has_one', 'belongs_to', 'has_many', 'has_and_belongs_to_many', // Relationships
@@ -694,28 +699,27 @@ class ORM_Core {
 	/**
 	 * Tests if this object has a relationship to a different model.
 	 *
-	 * @param   string   model name
-	 * @param   mixed    primary key
+	 * @param   object   related ORM model
 	 * @return  boolean
 	 */
-	public function has($object, $id = NULL)
+	public function has(ORM $model)
 	{
-		if (($join_table = array_search(inflector::plural($object), $this->has_and_belongs_to_many)) === FALSE)
+		if ( ! $this->loaded)
 			return FALSE;
 
-		// Load the model
-		$model = ORM::factory($object);
+		if (($join_table = array_search(inflector::plural($model->object_name), $this->has_and_belongs_to_many)) === FALSE)
+			return FALSE;
 
 		if (is_int($join_table))
 		{
-			// Load JOIN table
+			// No "through" table, load the default JOIN table
 			$join_table = $model->join_table($this->table_name);
 		}
 
-		if ($id !== NULL)
+		if ($model->loaded)
 		{
 			// Select only objects of a specific id
-			$this->db->where($model->foreign_key(NULL, $join_table), $id);
+			$this->db->where($model->foreign_key(NULL, $join_table), $model->primary_key_value);
 		}
 
 		// Return the number of rows that exist
@@ -727,29 +731,31 @@ class ORM_Core {
 	/**
 	 * Adds a new relationship to between this model and another.
 	 *
-	 * @param   string   model name
-	 * @param   mixed    primary key
+	 * @param   object   related ORM model
 	 * @return  boolean
 	 */
-	public function add($object, $id)
+	public function add(ORM $model)
 	{
-		if ($this->has($object, $id))
-			return TRUE;
-
-		if ( ! is_int(array_search(inflector::plural($object), $this->has_and_belongs_to_many)))
+		if ( ! $this->loaded)
 			return FALSE;
 
-		// Load the model
-		$model = ORM::factory($object);
+		if ($this->has($model))
+			return TRUE;
 
-		// Load JOIN table
-		$join_table = $model->join_table($this->table_name);
+		if (($join_table = array_search(inflector::plural($model->object_name), $this->has_and_belongs_to_many)) === FALSE)
+			return FALSE;
+
+		if (is_int($join_table))
+		{
+			// No "through" table, load the default JOIN table
+			$join_table = $model->join_table($this->table_name);
+		}
 
 		// Insert the new relationship
 		$this->db->insert($join_table, array
 		(
 			$this->foreign_key(NULL, $join_table)  => $this->object[$this->primary_key],
-			$model->foreign_key(NULL, $join_table) => $id,
+			$model->foreign_key(NULL, $join_table) => $model->primary_key_value,
 		));
 
 		return TRUE;
@@ -758,28 +764,27 @@ class ORM_Core {
 	/**
 	 * Adds a new relationship to between this model and another.
 	 *
-	 * @param   string   model name
-	 * @param   mixed    primary key
+	 * @param   object   related ORM model
 	 * @return  boolean
 	 */
-	public function remove($object, $id = NULL)
+	public function remove(ORM $model)
 	{
-		if ( ! $this->has($object, $id))
+		if ( ! $this->has($object))
 			return FALSE;
 
-		if ( ! is_int(array_search(inflector::plural($object), $this->has_and_belongs_to_many)))
+		if (($join_table = array_search(inflector::plural($model->object_name), $this->has_and_belongs_to_many)) === FALSE)
 			return FALSE;
 
-		// Load the model
-		$model = ORM::factory($object);
+		if (is_int($join_table))
+		{
+			// No "through" table, load the default JOIN table
+			$join_table = $model->join_table($this->table_name);
+		}
 
-		// Load JOIN table
-		$join_table = $model->join_table($this->table_name);
-
-		if ($id !== NULL)
+		if ($model->loaded)
 		{
 			// Delete only a specific object
-			$this->db->where($model->foreign_key(NULL, $join_table), $id);
+			$this->db->where($model->foreign_key(NULL, $join_table), $model->primary_key_value);
 		}
 
 		// Return the number of rows deleted
