@@ -24,6 +24,7 @@ $lang = array
 	'driver_not_found'      => 'De %s driver voor de %s library werd niet gevonden.',
 
 	// Resource names
+	'config'                => 'configuratiebestand',
 	'controller'            => 'controller',
 	'helper'                => 'helper',
 	'library'               => 'library',

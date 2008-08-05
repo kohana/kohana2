@@ -11,6 +11,7 @@ $lang = array
 	'invalid_dimensions'      => 'De afmetingen die je opgaf voor %s zijn ongeldig.',
 	'invalid_master'          => 'De master afmeting die je opgaf, is ongeldig.',
 	'invalid_flip'            => 'De spiegelrichting die je opgaf, is ongeldig.',
+	'directory_unwritable'    => 'De opgegeven directory, %s, is niet schrijfbaar.',
 
 	// ImageMagick specific messages
 	'imagemagick' => array

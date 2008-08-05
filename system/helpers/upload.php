@@ -143,7 +143,7 @@ class upload_Core {
 		// Only one size is allowed
 		$size = strtoupper($size[0]);
 
-		if ( ! preg_match('/[0-9]+[BKMG]/', $size))
+		if ( ! preg_match('/[0-9]++[BKMG]/', $size))
 			return FALSE;
 
 		// Make the size into a power of 1024
