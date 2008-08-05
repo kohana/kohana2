@@ -38,7 +38,7 @@ class Router_Core {
 		if ( ! empty($_SERVER['QUERY_STRING']))
 		{
 			// Set the query string to the current query string
-			self::$query_string = '?'.trim($_SERVER['QUERY_STRING'], '&');
+			self::$query_string = '?'.trim($_SERVER['QUERY_STRING'], '&/');
 		}
 
 		if (self::$routes === NULL)
@@ -198,6 +198,9 @@ class Router_Core {
 
 			// Remove the URI from $_GET
 			unset($_GET[self::$current_uri]);
+
+			// Remove the URI from $_SERVER['QUERY_STRING']
+			$_SERVER['QUERY_STRING'] = ltrim(substr($_SERVER['QUERY_STRING'], strlen(self::$current_uri)), '/&');
 
 			// Fixes really strange handling of a suffix in a GET string
 			if ($suffix = Kohana::config('core.url_suffix') AND substr(self::$current_uri, -(strlen($suffix))) === '_'.substr($suffix, 1))
