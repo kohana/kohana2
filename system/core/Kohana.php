@@ -908,6 +908,12 @@ final class Kohana {
 		{
 			$description = self::lang('errors.'.E_RECOVERABLE_ERROR);
 			$description = is_array($description) ? $description[2] : '';
+
+			if ( ! headers_sent())
+			{
+				// Send the 500 header
+				header('HTTP/1.1 500 Internal Server Error');
+			}
 		}
 		else
 		{
