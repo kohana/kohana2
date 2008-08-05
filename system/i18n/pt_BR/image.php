@@ -12,6 +12,8 @@ $lang = array
 	'invalid_master'          => 'A dimenção principal especificada não é valida.',
 	'invalid_flip'            => 'A direção de rotação especificada não é valida.',
 
+    'directory_unwritable'    => 'O diretório especificado, %s, não pode ser escrito.',
+
 	// ImageMagick specific messages
 	'imagemagick' => array
 	(

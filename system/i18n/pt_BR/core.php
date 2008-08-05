@@ -5,6 +5,7 @@ $lang = array
 	'there_can_be_only_one' => 'Apenas uma instância do Kohana é permitida para cada página requisitada.',
 	'uncaught_exception'    => 'Não foi possível capturar  %s: %s no arquivo %s, linha %s',
 	'invalid_method'        => 'Método <tt>%s</tt> inválido, chamado por <tt>%s</tt>.',
+	'invalid_property'      => 'A propriedade %s não existe na classe %s.',
 	'log_dir_unwritable'    => 'A diretiva de configuracao do seu log.directory nao esta apontando para um diretorio com permissao de escrita disponivel.',
 	'resource_not_found'    => 'Nao foi possivel executar a requisicao %s, <tt>%s</tt>,.',
     'invalid_filetype'      => 'O tipo de arquivo solicitado, <tt>.%s</tt>, não é permitido em seu arquivo de configuração do view.',
@@ -18,6 +19,7 @@ $lang = array
     'errors_disabled'       => 'Você pode ir para <a href="%s">home page</a> ou <a href="%s">tentar novamente</a>.',
 
     // Resource names
+    'config'                => 'arquivo de configuração',
     'controller'            => 'controlador',
     'helper'                => 'ajudante',
     'library'               => 'biblioteca',
