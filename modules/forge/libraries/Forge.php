@@ -36,7 +36,7 @@ class Forge_Core {
 	 *
 	 * @return  void
 	 */
-	public function __construct($action = '', $title = '', $method = NULL, $attr = array())
+	public function __construct($action = NULL, $title = '', $method = NULL, $attr = array())
 	{
 		// Set form attributes
 		$this->attr['action'] = $action;
@@ -156,7 +156,10 @@ class Forge_Core {
 	public function validate()
 	{
 		$status = TRUE;
-		foreach ($this->inputs as $input)
+
+		$inputs = array_merge($this->hidden, $this->inputs);
+
+		foreach ($inputs as $input)
 		{
 			if ($input->validate() == FALSE)
 			{
