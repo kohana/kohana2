@@ -41,17 +41,12 @@ class Cache_Core {
 	/**
 	 * Loads the configured driver and validates it.
 	 *
-	 * @param   array  custom configuration
+	 * @param   array|string  custom configuration or config group name
 	 * @return  void
 	 */
-	public function __construct($config = array())
+	public function __construct($config = FALSE)
 	{
-		if (empty($config))
-		{
-			// Load the default group
-			$config = Kohana::config('cache.default');
-		}
-		elseif (is_string($config))
+		if (is_string($config))
 		{
 			$name = $config;
 
@@ -60,8 +55,19 @@ class Cache_Core {
 				throw new Kohana_Exception('cache.undefined_group', $name);
 		}
 
-		// Load configuration
-		$this->config = (array) $config + Kohana::config('cache.default');
+		if (is_array($config))
+		{
+			// Append the default configuration options
+			$config += Kohana::config('cache.default');
+		}
+		else
+		{
+			// Load the default group
+			$config = Kohana::config('cache.default');
+		}
+
+		// Cache the config in the object
+		$this->config = $config;
 
 		// Set driver name
 		$driver = 'Cache_'.ucfirst($this->config['driver']).'_Driver';

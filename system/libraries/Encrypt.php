@@ -22,8 +22,8 @@ class Encrypt_Core {
 	/**
 	 * Returns a singleton instance of Encrypt.
 	 *
-	 * @param   array    configuration options
-	 * @return  object
+	 * @param   array  configuration options
+	 * @return  Encrypt_Core
 	 */
 	public static function instance($config = NULL)
 	{
@@ -38,15 +38,33 @@ class Encrypt_Core {
 	/**
 	 * Loads encryption configuration and validates the data.
 	 *
-	 * @throws Kohana_Exception
+	 * @param   array|string      custom configuration or config group name
+	 * @throws  Kohana_Exception
 	 */
-	public function __construct($config = array())
+	public function __construct($config = FALSE)
 	{
 		if ( ! defined('MCRYPT_ENCRYPT'))
 			throw new Kohana_Exception('encrypt.requires_mcrypt');
 
-		// Append the default configuration options
-		$config += Kohana::config('encryption');
+		if (is_string($config))
+		{
+			$name = $config;
+
+			// Test the config group name
+			if (($config = Kohana::config('encryption.'.$config)) === NULL)
+				throw new Kohana_Exception('encrypt.undefined_group', $name);
+		}
+
+		if (is_array($config))
+		{
+			// Append the default configuration options
+			$config += Kohana::config('encryption.default');
+		}
+		else
+		{
+			// Load the default group
+			$config = Kohana::config('encryption.default');
+		}
 
 		if (empty($config['key']))
 			throw new Kohana_Exception('encrypt.no_encryption_key');
