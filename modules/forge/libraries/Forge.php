@@ -36,7 +36,7 @@ class Forge_Core {
 	 *
 	 * @return  void
 	 */
-	public function __construct($action = '', $title = '', $method = NULL, $attr = array())
+	public function __construct($action = NULL, $title = '', $method = NULL, $attr = array())
 	{
 		// Set form attributes
 		$this->attr['action'] = $action;
@@ -87,7 +87,7 @@ class Forge_Core {
 		$input = 'Form_'.ucfirst($method);
 
 		// Create the input
-		switch(count($args))
+		switch (count($args))
 		{
 			case 1:
 				$input = new $input($args[0]);
@@ -156,7 +156,10 @@ class Forge_Core {
 	public function validate()
 	{
 		$status = TRUE;
-		foreach($this->inputs as $input)
+
+		$inputs = array_merge($this->hidden, $this->inputs);
+
+		foreach ($inputs as $input)
 		{
 			if ($input->validate() == FALSE)
 			{
@@ -175,9 +178,29 @@ class Forge_Core {
 	public function as_array()
 	{
 		$data = array();
-		foreach(array_merge($this->hidden, $this->inputs) as $input)
+		foreach (array_merge($this->hidden, $this->inputs) as $input)
 		{
-			if ($name = $input->name)
+			if (is_object($input->name)) // It's a Forge_Group object (hopefully)
+			{
+				foreach ($input->inputs as $group_input)
+				{
+					if ($name = $group_input->name)
+					{
+						$data[$name] = $group_input->value;
+					}
+				}
+			}
+			else if (is_array($input->inputs))
+			{
+				foreach ($input->inputs as $group_input)
+				{
+					if ($name = $group_input->name)
+					{
+						$data[$name] = $group_input->value;
+					}
+				}
+			}
+			else if ($name = $input->name) // It's a normal input
 			{
 				// Return only named inputs
 				$data[$name] = $input->value;
@@ -209,7 +232,7 @@ class Forge_Core {
 	 * @param   boolean  use a custom view
 	 * @return  string
 	 */
-	public function html($template = 'forge_template', $custom = FALSE)
+	public function render($template = 'forge_template', $custom = FALSE)
 	{
 		// Load template
 		$form = new View($template);
@@ -232,7 +255,7 @@ class Forge_Core {
 				$errors = $input->error_messages();
 				if (is_array($errors) AND ! empty($errors))
 				{
-					foreach($errors as $error)
+					foreach ($errors as $error)
 					{
 						// Replace the message with the error in the html error string
 						$messages .= str_replace('{message}', $error, $this->error_format).$this->newline_char;
@@ -252,7 +275,7 @@ class Forge_Core {
 			$hidden = array();
 			if ( ! empty($this->hidden))
 			{
-				foreach($this->hidden as $input)
+				foreach ($this->hidden as $input)
 				{
 					$hidden[$input->name] = $input->value;
 				}
@@ -284,7 +307,7 @@ class Forge_Core {
 	 */
 	public function __toString()
 	{
-		return $this->html();
+		return (string) $this->render();
 	}
 
 } // End Forge
