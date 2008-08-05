@@ -57,15 +57,22 @@ class Form_Dropdown_Core extends Form_Input {
 		if (is_bool($this->is_valid))
 			return $this->is_valid;
 
-		// No data to validate
 		if ($this->input_value() == FALSE)
+		{
+			// No data to validate
 			return $this->is_valid = FALSE;
+		}
 
 		// Load the submitted value
 		$this->load_value();
 
-		// Use array_key_exists because it properly tests NULL
-		return array_key_exists($this->value, $this->data['options']);
+		if ( ! array_key_exists($this->value, $this->data['options']))
+		{
+			// Value does not exist in the options
+			return $this->is_valid = FALSE;
+		}
+
+		return parent::validate();
 	}
 
 } // End Form Dropdown
