@@ -220,17 +220,22 @@ class Calendar_Core extends Event_Subject {
 		// Make the month and week empty arrays
 		$month = $week = array();
 
-		// Number of days added. When this reaches 7, start a new month
+		// Number of days added. When this reaches 7, start a new week
 		$days = 0;
 		$week_number = 1;
 
-		if (($w = (int) date('w', $first)) > $this->week_start)
+		if (($w = (int) date('w', $first) - $this->week_start) < 0)
+		{
+			$w = 6;
+		}
+
+		if ($w > 0)
 		{
 			// Number of days in the previous month
 			$n = (int) date('t', mktime(1, 0, 0, $this->month - 1, 1, $this->year));
 
 			// i = number of day, t = number of days to pad
-			for ($i = $n - $w + $this->week_start + 1, $t = $w - $this->week_start; $t > 0; $t--, $i++)
+			for ($i = $n - $w + 1, $t = $w; $t > 0; $t--, $i++)
 			{
 				// Notify the listeners
 				$this->notify(array($this->month - 1, $i, $this->year, $week_number, FALSE));
@@ -261,7 +266,12 @@ class Calendar_Core extends Event_Subject {
 			$days++;
 		}
 
-		if (($w = (int) date('w', $last) - $this->week_start) < 6 AND $w > -1)
+		if (($w = (int) date('w', $last) - $this->week_start) < 0)
+		{
+			$w = 6;
+		}
+
+		if ($w >= 0)
 		{
 			// i = number of day, t = number of days to pad
 			for ($i = 1, $t = 6 - $w; $t > 0; $t--, $i++)
