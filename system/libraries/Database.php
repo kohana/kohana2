@@ -868,20 +868,20 @@ class Database_Core {
 
 	/**
 	 * Adds an "IN" condition to the where clause
-	 * 
+	 *
 	 * @param   string  Name of the column being examined
 	 * @param   mixed   An array or string to match against
 	 * @param   bool    Generate a NOT IN clause instead
 	 * @return  Database_Core  This Database object.
 	 */
-	public function in($field, $values, $not = FALSE) 
+	public function in($field, $values, $not = FALSE)
 	{
 		if (is_array($values))
 		{
 			$escaped_values = array();
 			foreach ($values as $v)
 			{
-				if (is_numeric($v)) 
+				if (is_numeric($v))
 				{
 					$escaped_values[] = $v;
 				}
@@ -899,12 +899,12 @@ class Database_Core {
 
 	/**
 	 * Adds a "NOT IN" condition to the where clause
-	 * 
+	 *
 	 * @param   string  Name of the column being examined
 	 * @param   mixed   An array or string to match against
 	 * @return  Database_Core  This Database object.
 	 */
-	public function notin($field, $values) 
+	public function notin($field, $values)
 	{
 		return $this->in($field, $values, TRUE);
 	}
