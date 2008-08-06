@@ -38,6 +38,9 @@ final class Kohana {
 	// Logged messages
 	private static $log;
 
+	// Cache lifetime
+	private static $cache_lifetime;
+
 	// Log levels
 	private static $log_levels = array
 	(
@@ -85,12 +88,14 @@ final class Kohana {
 		// Define database error constant
 		define('E_DATABASE_ERROR', 44);
 
-		if ($lifetime = self::config('core.internal_cache'))
+		if (self::$cache_lifetime = self::config('core.internal_cache'))
 		{
-			// Load cached configuration and file paths
-			self::$internal_cache['configuration'] = self::cache('configuration', $lifetime);
-			self::$internal_cache['file_path']     = self::cache('file_path', $lifetime);
-			self::$internal_cache['language']      = self::cache('language', $lifetime);
+			// Load cached configuration and language files
+			self::$internal_cache['configuration'] = self::cache('configuration', self::$cache_lifetime);
+			self::$internal_cache['language']      = self::cache('language', self::$cache_lifetime);
+
+			// Load cached file paths
+			self::$internal_cache['find_file_paths'] = self::cache('find_file_paths', self::$cache_lifetime);
 
 			// Enable cache saving
 			Event::add('system.shutdown', array(__CLASS__, 'internal_cache_save'));
@@ -587,7 +592,7 @@ final class Kohana {
 	 * and is NOT a replacement for the Cache library.
 	 *
 	 * @param   string   unique name of cache
-	 * @param   integer  lifetime of cache
+	 * @param   integer  expiration in seconds
 	 * @return  mixed
 	 */
 	public static function cache($name, $lifetime)
@@ -620,8 +625,9 @@ final class Kohana {
 	 * Save data to a simple cache file. This should only be used internally, and
 	 * is NOT a replacement for the Cache library.
 	 *
-	 * @param   string  cache name
-	 * @param   mixed   data to cache
+	 * @param   string   cache name
+	 * @param   mixed    data to cache
+	 * @param   integer  expiration in seconds
 	 * @return  boolean
 	 */
 	public static function cache_save($name, $data, $lifetime)
@@ -953,9 +959,6 @@ final class Kohana {
 	 */
 	public static function auto_load($class)
 	{
-		if (class_exists($class, FALSE))
-			return TRUE;
-
 		if (($suffix = strrpos($class, '_')) > 0)
 		{
 			// Find the class suffix
@@ -1001,25 +1004,37 @@ final class Kohana {
 		if (($filepath = self::find_file($type, $file)) === FALSE)
 			return FALSE;
 
-		// Load the requested file
+		// Load the file
 		require $filepath;
 
 		if ($type === 'libraries' OR $type === 'helpers')
 		{
 			if ($extension = self::find_file($type, self::$configuration['core']['extension_prefix'].$class))
 			{
-				// Load the class extension
+				// Load the extension
 				require $extension;
 			}
 			elseif ($suffix !== 'Core' AND class_exists($class.'_Core', FALSE))
 			{
+				// Class extension to be evaluated
+				$extension = 'class '.$class.' extends '.$class.'_Core { }';
+
+				// Start class analysis
+				$core = new ReflectionClass($class.'_Core');
+
+				if ($core->isAbstract())
+				{
+					// Make the extension abstract
+					$extension = 'abstract '.$extension;
+				}
+
 				// Transparent class extensions are handled using eval. This is
 				// a disgusting hack, but it gets the job done.
-				eval('class '.$class.' extends '.$class.'_Core { }');
+				eval($extension);
 			}
 		}
 
-		return class_exists($class, FALSE);
+		return TRUE;
 	}
 
 	/**
@@ -1054,8 +1069,8 @@ final class Kohana {
 		// Search path
 		$search = $directory.'/'.$filename.$ext;
 
-		if (isset(self::$internal_cache['file_path'][$search]))
-			return self::$internal_cache['file_path'][$search];
+		if (isset(self::$internal_cache['find_file_paths'][$search]))
+			return self::$internal_cache['find_file_paths'][$search];
 
 		// Load include paths
 		$paths = self::$include_paths;
@@ -1109,13 +1124,13 @@ final class Kohana {
 			}
 		}
 
-		if ( ! isset(self::$write_cache['file_path']))
+		if ( ! isset(self::$write_cache['find_file_paths']))
 		{
 			// Write cache at shutdown
-			self::$write_cache['file_path'] = TRUE;
+			self::$write_cache['find_file_paths'] = TRUE;
 		}
 
-		return self::$internal_cache['file_path'][$search] = $found;
+		return self::$internal_cache['find_file_paths'][$search] = $found;
 	}
 
 	/**
