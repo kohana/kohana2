@@ -769,7 +769,7 @@ class ORM_Core {
 	 */
 	public function remove(ORM $model)
 	{
-		if ( ! $this->has($object))
+		if ( ! $this->has($model))
 			return FALSE;
 
 		if (($join_table = array_search(inflector::plural($model->object_name), $this->has_and_belongs_to_many)) === FALSE)
