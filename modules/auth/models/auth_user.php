@@ -6,9 +6,6 @@ class Auth_User_Model extends ORM {
 	protected $has_many = array('user_tokens');
 	protected $has_and_belongs_to_many = array('roles');
 
-	// User roles
-	protected $has_roles;
-
 	public function __set($key, $value)
 	{
 		if ($key === 'password')
@@ -18,34 +15,6 @@ class Auth_User_Model extends ORM {
 		}
 
 		parent::__set($key, $value);
-	}
-
-	public function has($object, $id = NULL)
-	{
-		if ($object === 'role')
-		{
-			if ( ! $this->loaded)
-				return FALSE;
-
-			if ($this->has_roles === NULL)
-			{
-				$this->db->select('id', 'name');
-
-				// Load the roles
-				$this->has_roles = $this->roles->select_list('id', 'name');
-			}
-
-			if (is_string($id) AND ! ctype_digit($id))
-			{
-				return in_array($id, $this->has_roles);
-			}
-			else
-			{
-				return isset($this->has_roles[$id]);
-			}
-		}
-
-		return parent::has($object, $id);
 	}
 
 	/**
@@ -72,22 +41,6 @@ class Auth_User_Model extends ORM {
 		}
 
 		return parent::unique_key($id);
-	}
-
-	/**
-	 * Resets roles when results are loaded.
-	 */
-	protected function load_result($array = FALSE)
-	{
-		$result = parent::load_result($array);
-
-		if ($array === FALSE)
-		{
-			// Reset roles
-			$this->has_roles = NULL;
-		}
-
-		return $result;
 	}
 
 } // End Auth User Model

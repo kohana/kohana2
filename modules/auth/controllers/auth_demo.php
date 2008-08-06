@@ -10,21 +10,26 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Auth_Demo_Controller extends Controller {
+class Auth_Demo_Controller extends Template_Controller {
 
 	// Do not allow to run in production
 	const ALLOW_PRODUCTION = FALSE;
 
+	// Use the default Kohana template
+	public $template = 'kohana/template';
+
 	public function index()
 	{
 		// Display the install page
-		echo new View('auth/install');
+		$this->template->title   = 'Auth Module Installation';
+		$this->template->content = View::factory('auth/install');
 	}
 
 	public function create()
 	{
-		$form = new Forge(NULL, 'Create User');
+		$this->template->title = 'Create User';
 
+		$form = new Forge;
 		$form->input('email')->label(TRUE)->rules('required|length[4,32]|valid_email');
 		$form->input('username')->label(TRUE)->rules('required|length[4,32]');
 		$form->password('password')->label(TRUE)->rules('required|length[5,40]');
@@ -43,7 +48,7 @@ class Auth_Demo_Controller extends Controller {
 					$user->$key = $val;
 				}
 
-				if ($user->save() AND $user->add('role', 'login'))
+				if ($user->save() AND $user->add(ORM::factory('role', 'login')))
 				{
 					Auth::instance()->login($user, $form->password->value);
 
@@ -54,21 +59,23 @@ class Auth_Demo_Controller extends Controller {
 		}
 
 		// Display the form
-		echo $form->render();
+		$this->template->content = $form->render();
 	}
 
 	public function login()
 	{
 		if (Auth::instance()->logged_in())
 		{
-			$form = new Forge('auth_demo/logout', 'Log Out');
+			$this->template->title = 'User Logout';
 
+			$form = new Forge('auth_demo/logout');
 			$form->submit('Logout Now');
 		}
 		else
 		{
-			$form = new Forge(NULL, 'User Login');
+			$this->template->title = 'User Login';
 
+			$form = new Forge;
 			$form->input('username')->label(TRUE)->rules('required|length[4,32]');
 			$form->password('password')->label(TRUE)->rules('required|length[5,40]');
 			$form->submit('Attempt Login');
@@ -78,13 +85,10 @@ class Auth_Demo_Controller extends Controller {
 				// Load the user
 				$user = ORM::factory('user', $form->username->value);
 
-				// Attempt a login
 				if (Auth::instance()->login($user, $form->password->value))
 				{
-					echo '<h4>Login Success!</h4>';
-					echo '<p>Your roles are:</p>';
-					echo Kohana::debug($user->roles);
-					return;
+					// Login successful, redirect
+					url::redirect('auth_demo/login');
 				}
 				else
 				{
@@ -94,7 +98,7 @@ class Auth_Demo_Controller extends Controller {
 		}
 
 		// Display the form
-		echo $form->render();
+		$this->template->content = $form->render();
 	}
 
 	public function logout()
