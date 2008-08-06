@@ -228,12 +228,6 @@ class Unit_Test_Core {
 
 
 abstract class Unit_Test_Case {
-	
-	// Mock Objects
-	public function get_mock_object($class) 
-	{
-
-	}
 
 	public function assert_true($value, $debug = NULL)
 	{
@@ -445,29 +439,7 @@ abstract class Unit_Test_Case {
 		return $this;
 	}
 
-	public function assert_class_attribute($attribute, $class)
-	{
-
-	}
-
-	public function assert_class_static_attribute($attribute, $class)
-	{
-
-	}
-
-	public function assert_file_exists($file)
-	{
-
-	}
-
 } // End Unit_Test_Case
-
-
-abstract class Database_Test_Case {
-
-
-
-} // End Database_Unit_Test_Case
 
 
 class Kohana_Unit_Test_Exception extends Exception {
