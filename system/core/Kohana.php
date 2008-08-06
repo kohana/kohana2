@@ -959,6 +959,9 @@ final class Kohana {
 	 */
 	public static function auto_load($class)
 	{
+		if (class_exists($class, FALSE))
+			return TRUE;
+
 		if (($suffix = strrpos($class, '_')) > 0)
 		{
 			// Find the class suffix
