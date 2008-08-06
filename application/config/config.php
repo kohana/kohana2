@@ -76,7 +76,7 @@ $config['log_directory'] = APPPATH.'logs';
 $config['display_errors'] = TRUE;
 
 /**
- * Enable or display statistics in the final output. Stats are replaced via
+ * Enable or disable statistics in the final output. Stats are replaced via
  * specific strings, such as {execution_time}.
  *
  * @see http://docs.kohanaphp.com/general/configuration
