@@ -70,7 +70,7 @@ $config['log_threshold'] = 1;
 $config['log_directory'] = APPPATH.'logs';
 
 /**
- * Enable or display displaying of Kohana error pages. This will not affect
+ * Enable or disable displaying of Kohana error pages. This will not affect
  * logging. Turning this off will disable ALL error pages.
  */
 $config['display_errors'] = TRUE;
