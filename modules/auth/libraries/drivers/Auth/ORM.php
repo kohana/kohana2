@@ -44,7 +44,7 @@ class Auth_ORM_Driver implements Auth_Driver {
 			if ( ! empty($role))
 			{
 				// Check that the user has the given role
-				$status = $_SESSION['auth_user']->has('role', $role);
+				$status = $_SESSION['auth_user']->has(new Role_Model($role));
 			}
 		}
 
@@ -60,7 +60,7 @@ class Auth_ORM_Driver implements Auth_Driver {
 		}
 
 		// If the passwords match, perform a login
-		if ($user->has(ORM::factory('role', 'login')) AND $user->password === $password)
+		if ($user->has(new Role_Model('login')) AND $user->password === $password)
 		{
 			if ($remember === TRUE)
 			{
@@ -108,7 +108,7 @@ class Auth_ORM_Driver implements Auth_Driver {
 			// Load the token and user
 			$token = ORM::factory('user_token', $token);
 
-			if ($token->id > 0 AND $token->user->id > 0)
+			if ($token->loaded AND $token->user->loaded)
 			{
 				if ($token->user_agent === sha1(Kohana::$user_agent))
 				{
