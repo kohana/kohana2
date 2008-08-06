@@ -231,6 +231,12 @@ final class Kohana {
 		{
 			Benchmark::start(SYSTEM_BENCHMARK.'_controller_setup');
 
+			if (Router::$method[0] === '_')
+			{
+				// Do not allow access to hidden methods
+				Event::run('system.404');
+			}
+
 			// Include the Controller file
 			require Router::$controller_path;
 
@@ -254,62 +260,34 @@ final class Kohana {
 			// Run system.pre_controller
 			Event::run('system.pre_controller');
 
-			if ($class->hasMethod('_remap'))
-			{
-				// Make the arguments routed
-				$arguments = array(Router::$method, Router::$arguments);
-
-				// The method becomes part of the arguments
-				array_unshift(Router::$arguments, Router::$method);
-
-				// Set the method to _remap
-				Router::$method = '_remap';
-			}
-			elseif (Router::$method[0] != '_')
-			{
-				// Use the arguments normally
-				$arguments = Router::$arguments;
-			}
-
-			if ($class->hasMethod(Router::$method))
-			{
-				// Start validation of method
-				$method = $class->getMethod(Router::$method);
-
-				if ($method->isPrivate() OR $method->isProtected())
-				{
-					// Method is invalid
-					unset($method);
-				}
-			}
-
-			if ( ! isset($method))
-			{
-				if ($class->hasMethod('_default'))
-				{
-					// Make the arguments routed
-					$arguments = array(Router::$method, Router::$arguments);
-
-					// The method becomes part of the arguments
-					array_unshift(Router::$arguments, Router::$method);
-
-					// Set the method to _default
-					Router::$method = '_default';
-
-					// Load method
-					$method = $class->getMethod('_default');
-				}
-				else
-				{
-					Event::run('system.404');
-				}
-			}
-
 			// Create a new controller instance
 			$controller = $class->newInstance();
 
 			// Controller constructor has been executed
 			Event::run('system.post_controller_constructor');
+
+			try
+			{
+				// Load the controller method
+				$method = $class->getMethod(Router::$method);
+
+				if ($method->isProtected() or $method->isPrivate())
+				{
+					// Do not attempt to invoke protected methods
+					throw new ReflectionException('protected controller method');
+				}
+
+				// Default arguments
+				$arguments = Router::$arguments;
+			}
+			catch (ReflectionException $e)
+			{
+				// Use __call instead
+				$method = $class->getMethod('__call');
+
+				// Use arguments in __call format
+				$arguments = array(Router::$method, Router::$arguments);
+			}
 
 			// Stop the controller setup benchmark
 			Benchmark::stop(SYSTEM_BENCHMARK.'_controller_setup');
