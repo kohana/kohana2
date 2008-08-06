@@ -53,7 +53,7 @@ class Kodoc_Controller extends Template_Controller {
 		}
 	}
 
-	public function _default()
+	public function __call($method, $args)
 	{
 		if (count($segments = $this->uri->segment_array(1)) > 1)
 		{

@@ -13,7 +13,7 @@
  */
 class Captcha_Controller extends Controller {
 
-	public function _default()
+	public function __call($method, $args)
 	{
 		// Output the Captcha challenge resource (no html)
 		// Pull the config group name from the URL

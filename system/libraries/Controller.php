@@ -36,6 +36,19 @@ abstract class Controller_Core {
 	}
 
 	/**
+	 * Handles methods that do not exist.
+	 *
+	 * @param   string  method name
+	 * @param   array   arguments
+	 * @return  void
+	 */
+	public function __call($method, $args)
+	{
+		// Default to showing a 404 page
+		Event::run('system.404');
+	}
+
+	/**
 	 * Includes a View within the controller scope.
 	 *
 	 * @param   string  view filename

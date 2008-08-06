@@ -120,7 +120,7 @@ class Media_Controller extends Controller {
 		echo $output;
 	}
 
-	public function _default()
+	public function __call($method, $args)
 	{
 		$segments = $this->uri->argument_array();
 
