@@ -11,7 +11,6 @@ $lang = array
 	'invalid_dimensions'      => 'Podane rozmiary dla %s są nieprawidłowe.',
 	'invalid_master'          => 'Nadrzędne podane wymiary, nie są prawidłowe.',
 	'invalid_flip'            => 'Podany kierunek obrotu jest nieprawidłowy.',
-
 	'directory_unwritable'    => 'W podanym folderze, %s, zapis jest niedozwolony.',
 
 	// ImageMagick specific messages
