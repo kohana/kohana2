@@ -760,9 +760,10 @@ class Database_Core {
 
 		$sql = $this->driver->compile_select(get_object_vars($this));
 
+		$this->reset_select();
+
 		$result = $this->query($sql);
 
-		$this->reset_select();
 		$this->last_query = $sql;
 
 		return $result;
@@ -796,8 +797,10 @@ class Database_Core {
 
 		$sql = $this->driver->compile_select(get_object_vars($this));
 
-		$result = $this->query($sql);
 		$this->reset_select();
+
+		$result = $this->query($sql);
+
 		return $result;
 	}
 
@@ -859,6 +862,7 @@ class Database_Core {
 		$sql = $this->driver->insert($this->config['table_prefix'].$table, array_keys($this->set), array_values($this->set));
 
 		$this->reset_write();
+
 		return $this->query($sql);
 	}
 
