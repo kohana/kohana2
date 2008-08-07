@@ -997,6 +997,10 @@ class Database_Core {
 
 			$table = $this->from[0];
 		}
+		else
+		{
+			$table = $this->config['table_prefix'].$table;
+		}
 
 		if (! is_null($where))
 		{
@@ -1006,7 +1010,7 @@ class Database_Core {
 		if (count($this->where) < 1)
 			throw new Kohana_Database_Exception('database.must_use_where');
 
-		$sql = $this->driver->delete($this->config['table_prefix'].$table, $this->where);
+		$sql = $this->driver->delete($table, $this->where);
 
 		$this->reset_write();
 		return $this->query($sql);
