@@ -732,6 +732,10 @@ class Database_Core {
 
 		foreach ($key as $k => $v)
 		{
+			// Add a table prefix if the column includes the table.
+			if (strpos($k, '.'))
+				$k = $this->config['table_prefix'].$k;
+
 			$this->set[$k] = $this->driver->escape($v);
 		}
 
