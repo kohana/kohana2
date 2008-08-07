@@ -113,30 +113,52 @@ class Examples_Controller extends Controller {
 	}
 
 	/**
-	 * Demonstrates how to use the form helper with the Validation library.
+	 * Demonstrates how to use the form helper with the Validation libraryfor file uploads .
 	 */
 	function form()
 	{
-		$validation = new Validation;
-
-		echo form::open('', array('enctype' => 'multipart/form-data'));
-
-		echo form::label('imageup', 'Image Uploads').':<br/>';
-		echo form::upload('imageup[]').'<br/>';
-		echo form::upload('imageup[]').'<br/>';
-		echo form::upload('imageup[]').'<br/>';
-		echo form::submit('upload', 'Upload!');
-
-		echo form::close();
-
-		if ( ! empty($_POST))
+		// Anything submitted?
+		if ($_POST)
 		{
-			$validation->set_rules('imageup', 'required|upload[gif,png,jpg,500K]', 'Image Upload');
-			echo '<p>validation result: '.var_export($validation->run(), TRUE).'</p>';
+			// Merge the globals into our validation object.
+			$post = Validation::factory(array_merge($_POST, $_FILES));
+
+			// Ensure upload helper is correctly configured, config/upload.php contains default entries.
+			// Uploads can be required or optional, but should be valid
+			$post->add_rules('imageup1', 'upload::required', 'upload::valid', 'upload::type[gif,jpg,png]', 'upload::size[1M]');
+			$post->add_rules('imageup2', 'upload::required', 'upload::valid', 'upload::type[gif,jpg,png]', 'upload::size[1M]');
+
+			// Alternative syntax for multiple file upload validation rules
+			//$post->add_rules('imageup.*', 'upload::required', 'upload::valid', 'upload::type[gif,jpg,png]', 'upload::size[1M]');
+
+			if ($post->validate() )
+			{
+				// It worked!
+				// Move (and rename) the files from php upload folder to configured application folder
+				upload::save('imageup1');
+				upload::save('imageup2');
+				echo 'Validation successfull, check your upload folder!';
+			}
+			else
+			{
+				// You got validation errors
+				echo '<p>validation errors: '.var_export($post->errors(), TRUE).'</p>';
+				echo Kohana::debug($post);
+			}
 		}
 
-		echo Kohana::debug($validation);
-		echo Kohana::lang('core.stats_footer');
+		// Display the form
+		echo form::open('examples/form', array('enctype' => 'multipart/form-data'));
+		echo form::label('imageup', 'Image Uploads').':<br/>';
+		// Use discrete upload fields
+		// Alternative syntax for multiple file uploads
+		// echo form::upload('imageup[]').'<br/>';
+
+		echo form::upload('imageup1').'<br/>';
+		echo form::upload('imageup2').'<br/>';
+		echo form::submit('upload', 'Upload!');
+		echo form::close();
+
 	}
 
 	/**
@@ -248,7 +270,7 @@ class Examples_Controller extends Controller {
 	function database()
 	{
 		$db = new Database;
-		
+
 		$table = 'pages';
 		echo 'Does the '.$table.' table exist? ';
 		if ($db->table_exists($table))
