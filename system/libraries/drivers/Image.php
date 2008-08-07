@@ -55,30 +55,32 @@ abstract class Image_Driver {
 		$geometry['width']  = min($geometry['width'], $width);
 		$geometry['height'] = min($geometry['height'], $height);
 
-		switch ($geometry['top'])
+		// Set standard coordinates if given, otherwise use pixel values
+		if ($geometry['top'] === 'center')
 		{
-			case 'center':
-				$geometry['top'] = floor(($height / 2) - ($geometry['height'] / 2));
-			break;
-			case 'top':
-				$geometry['top'] = 0;
-			break;
-			case 'bottom':
-				$geometry['top'] = $height - $geometry['height'];
-			break;
+			$geometry['top'] = floor(($height / 2) - ($geometry['height'] / 2));
+		}
+		elseif ($geometry['top'] === 'top')
+		{
+			$geometry['top'] = 0;
+		}
+		elseif ($geometry['top'] === 'bottom')
+		{
+			$geometry['top'] = $height - $geometry['height'];
 		}
 
-		switch ($geometry['left'])
+		// Set standard coordinates if given, otherwise use pixel values
+		if ($geometry['left'] === 'center')
 		{
-			case 'center':
-				$geometry['left'] = floor(($width / 2) - ($geometry['width'] / 2));
-			break;
-			case 'left':
-				$geometry['left'] = 0;
-			break;
-			case 'right':
-				$geometry['left'] = $width - $geometry['height'];
-			break;
+			$geometry['left'] = floor(($width / 2) - ($geometry['width'] / 2));
+		}
+		elseif ($geometry['left'] === 'left')
+		{
+			$geometry['left'] = 0;
+		}
+		elseif ($geometry['left'] === 'right')
+		{
+			$geometry['left'] = $width - $geometry['height'];
 		}
 
 		// Restore error reporting
