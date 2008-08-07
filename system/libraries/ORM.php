@@ -652,14 +652,14 @@ class ORM_Core {
 	 */
 	public function clear()
 	{
-		// Replace the current object with an empty one
-		$this->load_values(array());
-
 		// Object is no longer loaded or saved
 		$this->loaded = $this->saved = FALSE;
 
 		// Nothing has been changed
 		$this->changed = array();
+
+		// Replace the current object with an empty one
+		$this->load_values(array());
 
 		return $this;
 	}
@@ -1071,14 +1071,14 @@ class ORM_Core {
 
 		if ($result->count() === 1)
 		{
-			// Load object values
-			$this->load_values($result->result(FALSE)->current());
-
 			// Model is loaded and saved
 			$this->loaded = $this->saved = TRUE;
 
 			// Clear relationships and changed values
 			$this->related = $this->changed = array();
+
+			// Load object values
+			$this->load_values($result->result(FALSE)->current());
 		}
 		else
 		{
