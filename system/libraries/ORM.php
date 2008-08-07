@@ -86,11 +86,11 @@ class ORM_Core {
 		}
 		elseif (is_object($id))
 		{
-			// Load an object
-			$this->load_values((array) $id);
-
 			// Object is loaded and saved
 			$this->loaded = $this->saved = TRUE;
+
+			// Load an object
+			$this->load_values((array) $id);
 		}
 		else
 		{
