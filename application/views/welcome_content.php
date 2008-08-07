@@ -2,7 +2,7 @@
 
 <p>To change what gets displayed for this page, edit <code>application/controllers/welcome.php</code>.</p>
 
-<p>To change this text, <code>application/views/welcome_content.php</code>.
+<p>To change this text, edit <code>application/views/welcome_content.php</code>.
 
 <ul>
 <?php foreach ($links as $title => $url): ?>
