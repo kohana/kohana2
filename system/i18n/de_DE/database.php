@@ -4,7 +4,7 @@ $lang = array
 (
 	'undefined_group'       => 'Die Gruppe %s ist in Ihrer Konfiguration nicht definiert worden.',
 	'error'                 => 'Es gab einen SQL-Fehler: %s',
-	'connection'            => 'Es Gab einen Fehler bei der Verbindung mit der Datenbank: %s',
+	'connection'            => 'Es gab einen Fehler bei der Verbindung mit der Datenbank: %s',
 	'invalid_dsn'           => 'Die von Ihnen angegebene DSN ist ungültig: %s',
 	'must_use_set'          => 'Sie müssen SET in Ihrem Query benutzen.',
 	'must_use_where'        => 'Sie müssen WHERE in Ihrem Query benutzen.',
