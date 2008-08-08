@@ -2,6 +2,7 @@
 
 $lang = array
 (
+    'directory_unwritable'    => 'Le répertoire %s spécifié n\'est pas accessible en écriture.',
 	'getimagesize_missing'    => 'La librairie d\'image requiert la function PHP getimagesize. Celle-ci n\'est pas disponible dans votre installation.',
 	'unsupported_method'      => 'Le pilote configuré ne supporte pas la transformation d\'image %s.',
 	'file_not_found'          => 'L\'image spécifié %s n\'a pas été trouvée. Merci de vérifier que l\'image existe bien avec la fonction file_exists avant sa manipulation.',

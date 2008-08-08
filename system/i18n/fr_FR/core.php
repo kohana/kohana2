@@ -5,7 +5,8 @@ $lang = array
 	'there_can_be_only_one' => 'Il ne peut y avoir qu\'une instance de Kohana par page.',
 	'uncaught_exception'    => 'Uncaught %s: %s dans le fichier %s à la ligne %s',
 	'invalid_method'        => 'La méthode %s appelée dans %s est invalide.',
-	'log_dir_unwritable'      => 'Le répertoire spécifié dans votre fichier de configuration pour le fichier de log ne pointe pas vers un répertoire accessible en écriture.',
+	'invalid_property'      => 'La propriété %s n\'existe pas dans la classe %s.',	
+	'log_dir_unwritable'    => 'Le répertoire spécifié dans votre fichier de configuration pour le fichier de log ne pointe pas vers un répertoire accessible en écriture.',
 	'resource_not_found'    => 'La ressource %s, %s, n\'a pas été trouvée.',
 	'invalid_filetype'      => 'Le type de ficher demandé, .%s, n\'est pas autorisé dans le fichier de configuration des vues (view configuration file).',
 	'no_default_route'      => 'Aucune route par défaut n\a été définie. Veuillez la spécifer dans le fichier config/routes.php.',
@@ -22,10 +23,11 @@ $lang = array
 	'driver_not_found'      => 'Le driver %s de la librairie %s est introuvable.',
 
 	// Resource names
-	'controller'            => 'controller',
+    'config'                => 'fichier de configuration',	
+	'controller'            => 'contrôleur',
 	'helper'                => 'helper',
-	'library'               => 'library',
+	'library'               => 'librairie',
 	'driver'                => 'driver',
-	'model'                 => 'model',
-	'view'                  => 'view',
+	'model'                 => 'modèle',
+	'view'                  => 'vue',
 );
