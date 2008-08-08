@@ -24,6 +24,7 @@ $lang = array
 	'driver_not_found'      => 'Драйвер %s библиотеки %s не найден',
 
 	// Resource names
+	'config'                => 'конфигурация',
 	'controller'            => 'контроллер',
 	'helper'                => 'помощник',
 	'library'               => 'библиотека',
