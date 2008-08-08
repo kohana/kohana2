@@ -46,42 +46,27 @@ class Examples_Controller extends Controller {
 		echo '<p>'.Kohana::lang('core.stats_footer')."</p>\n";
 	}
 
-	public function archive($build = FALSE)
-	{
-		if ($build === 'build')
-		{
-			// Load archive
-			$archive = new Archive('zip');
-
-			// Download the application/views directory
-			$archive->add(APPPATH.'views/', 'app_views/', TRUE);
-
-			// Download the built archive
-			$archive->download('test.zip');
-		}
-		else
-		{
-			echo html::anchor(Router::$current_uri.'/build', 'Download views');
-		}
-	}
-
 	/**
-	 * Demonstrates how to use views inside of views.
+	 * Demonstrates how to archive a directory. First enable the archive module
 	 */
-	function template()
-	{
-		$data = array
-		(
-			'title'   => 'View-in-View Example',
-			'content' => 'This is my view-in-view page content.',
-			'copyright' => '&copy; 2007 Kohana Team'
-		);
+	//public function archive($build = FALSE)
+	//{
+	//	if ($build === 'build')
+	//	{
+	//		// Load archive
+	//		$archive = new Archive('zip');
 
-		$view = new View('viewinview/container', $data);
-		$view->header = new View('viewinview/header', $data);
+	//		// Download the application/views directory
+	//		$archive->add(APPPATH.'views/', 'app_views/', TRUE);
 
-		$view->render(TRUE);
-	}
+	//		// Download the built archive
+	//		$archive->download('test.zip');
+	//	}
+	//	else
+	//	{
+	//		echo html::anchor(Router::$current_uri.'/build', 'Download views');
+	//	}
+	//}
 
 	/**
 	 * Demonstrates how to parse RSS feeds by using DOMDocument.
@@ -421,31 +406,63 @@ class Examples_Controller extends Controller {
 	{
 		$profiler = new Profiler;
 
-		$cal = new Calendar(5, 2007);
+		$calendar = new Calendar(8, 2008);
+		$calendar->attach($calendar->event()
+				->condition('year', 2008)
+				->condition('month', 8)
+				->condition('day', 8)
+				->output(html::anchor('http://forum.kohanaphp.com/comments.php?DiscussionID=275', 'Learning about Kohana Calendar')));
 
-		echo $cal->render();
+		echo $calendar->render();
 	}
 
+	/**
+	 * Demonstrates how to use the Image libarary..
+	 */
 	function image()
 	{
-		$profiler = new Profiler;
-
-		// Upload directory
+		// Application Upload directory
 		$dir = realpath(DOCROOT.'upload').'/';
 
 		// Image filename
-		$image = $dir.'mypic.jpg';
+		$image = DOCROOT.'kohana.png';
 
 		// Create an instance of Image, with file
+		// The orginal image is not affected
 		$image = new Image($image);
 
-		// Resize the image
-		$image->resize(100, 100);
+		// Most methods are chainable
+		// Resize the image, crop the center left
+		$image->resize(200, 100)->crop(150, 50, 'center', 'left');
+
+		// Display image in browser
+		$image->render();
 
 		// Save the image
 		$image->save($dir.'mypic_thumb.jpg');
 
-		echo Kohana::debug($image);
+		//echo Kohana::debug($image);
 	}
 
+	/**
+	 * Demonstrates how to use vendor software with Kohana.
+	 */
+	function vendor()
+	{
+		// Let's do a little Markdown shall we.
+		$br = "\n\n";
+		$output = '#Marked Down!#'.$br;
+		$output .= 'This **_markup_** is created *on-the-fly*, by ';
+		$output .= '[php-markdown-extra](http://michelf.com/projects/php-markdown/extra)'.$br;
+		$output .= 'It\'s *great* for user <input> & writing about `<HTML>`'.$br;
+		$output .= 'It\'s also good at footnotes :-) [^1]'.$br;
+		$output .= '[^1]: A footnote.';
+
+		// looks in system/vendor for Markdown.php
+		require Kohana::find_file('vendor', 'Markdown');
+
+		echo Markdown($output);
+
+		echo 'done in {execution_time} seconds';
+	}
 } // End Examples
