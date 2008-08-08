@@ -574,6 +574,9 @@ class ORM_Core {
 
 			// Object has been saved
 			$this->saved = TRUE;
+
+			// Nothing has been changed
+			$this->changed = array();
 		}
 		else
 		{
