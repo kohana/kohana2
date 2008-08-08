@@ -2,6 +2,7 @@
 
 $lang = array
 (
+	'undefined_group' => 'The %s group is not defined in your pagination configuration.',
 	'page'     => 'page',
 	'pages'    => 'pages',
 	'item'     => 'item',

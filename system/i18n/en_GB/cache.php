@@ -2,9 +2,9 @@
 
 $lang = array
 (
-	'driver_not_supported' => 'The requested Cache driver, %s, was not found.',
+	'undefined_group'      => 'The %s group is not defined in your configuration.',
 	'extension_not_loaded' => 'The %s PHP extension must be loaded to use this driver.',
-	'unwritable'           => 'The configured storage location, <tt>%s</tt>, is not writable.',
+	'unwritable'           => 'The configured storage location, %s, is not writable.',
 	'resources'            => 'Caching of resources is impossible, because resources cannot be serialised.',
 	'driver_error'         => '%s',
 );
