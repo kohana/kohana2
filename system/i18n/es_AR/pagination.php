@@ -2,13 +2,14 @@
 
 $lang = array
 (
+	'undefined_group' => 'El grupo %s no esta definido en la configuracion de la paginación.', 
 	'page'     => 'página',
 	'pages'    => 'páginas',
-	'item'     => 'item',
-	'items'    => 'items',
+	'item'     => 'elemento',
+	'items'    => 'elementos',
 	'of'       => 'de',
 	'first'    => 'primero',
-	'last'     => 'ultimo',
-	'previous' => 'anterior',
-	'next'     => 'siguiente',
+	'last'     => 'último',
+	'previous' => 'Anterior',
+	'next'     => 'Siguiente',
 );

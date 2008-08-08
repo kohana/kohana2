@@ -2,6 +2,5 @@
 
 $lang = array
 (
-	'driver_not_supported' => 'El driver de sessiones, %s, no fue encontrado.',
-	'driver_implements'    => 'Los driver de sessiones deben implementar la interfase Session_Driver.'
+	'invalid_session_name' => 'El parametro session_name, %s, no es valido. Solo debe contener caracteres alfanumericos y guiones bajos. También al menos uno debe de ser una letra.',
 );
