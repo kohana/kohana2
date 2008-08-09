@@ -135,7 +135,7 @@ class Download_Controller extends Website_Controller {
 
 				// Add the system directory
 				$archive->add($source.'system', $prefix.'system', FALSE);
-				foreach (glob($source.'system/*') as $file)
+				foreach (glob($source.'system/*') as $dir)
 				{
 					// Skip i18n directory, it's added manually
 					if (($dir = basename($dir)) === 'i18n' OR $dir === 'vendor')
