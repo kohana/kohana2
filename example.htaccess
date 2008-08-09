@@ -9,7 +9,7 @@ RewriteBase /kohana/
 # - robots.txt
 # - favicon.ico
 # - Any file inside of the media/ directory
-RewriteRule ^(index\.php|robots\.txt|favicon\.ico|media) - [PT,L]
+RewriteRule ^(index\.php|robots\.txt|favicon\.ico|kohana\.png|media) - [PT,L]
 
 # Protect application and system files from being viewed
 RewriteRule ^(application|modules|system) - [F,L]
