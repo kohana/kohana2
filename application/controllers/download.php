@@ -126,6 +126,7 @@ class Download_Controller extends Website_Controller {
 
 				// Add the prefix directory, index.php, license, and logo
 				$archive->add($source, $prefix, FALSE);
+				$archive->add($source.'example.htaccess', $prefix.'example.htaccess');
 				$archive->add($source.'index.php', $prefix.'index.php');
 				$archive->add($source.'Kohana License.html', $prefix.'Kohana License.html');
 				$archive->add($source.'kohana.png', $prefix.'kohana.png');
