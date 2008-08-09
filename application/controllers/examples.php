@@ -406,7 +406,7 @@ class Examples_Controller extends Controller {
 	{
 		$profiler = new Profiler;
 
-		$calendar = new Calendar(8, 2008);
+		$calendar = new Calendar($this->input->get('month', date('m')), $this->input->get('year', date('Y')));
 		$calendar->attach($calendar->event()
 				->condition('year', 2008)
 				->condition('month', 8)
