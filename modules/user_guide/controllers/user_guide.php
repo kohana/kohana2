@@ -26,11 +26,11 @@ class User_Guide_Controller extends Controller {
 
 		if ($this->uri->segment(2) == FALSE)
 		{
-			url::redirect('user_guide/'.current(explode('_', Kohana::config('locale.language'))).'/kohana/about');
+			url::redirect('user_guide/'.current(explode('_', Kohana::config('locale.language.0'))).'/kohana/about');
 		}
 	}
 
-	public function _remap()
+	public function __call($method, $args)
 	{
 		$language = strtolower($this->uri->segment(2));
 		$category = strtolower($this->uri->segment(3));
