@@ -6,6 +6,7 @@ $lang = array
 	'archive_description'   => 'Compressed archive creation, supports zip, tar, gzip, and bzip.',
 	'auth_description'      => 'Simple authentication and user management. Uses <a href="http://doc.kohanaphp.com/libraries/orm">ORM</a> for models.',
 	'forge_description'     => 'Object-oriented form generation and templating.',
+	'gmaps_description'     => 'Google Maps integration, geolocation, and API support.',
 	'media_description'     => 'Media caching, compression, and aggregation for CSS and Javascript files.',
 	'kodoc_description'     => 'Dynamic self-generated documentation. (Beta!)',
 	'payment_description'   => 'Provides merchant and payment gateway wrappers. Supports Authorize.net, PayPal, Trident, Trust Commerce, and YourPay.',
