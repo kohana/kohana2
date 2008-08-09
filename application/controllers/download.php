@@ -22,9 +22,9 @@ class Download_Controller extends Website_Controller {
 			->bind('errors', $errors);
 
 		// Release version, codename, and date
-		$content->release_version = '2.1.2';
-		$content->release_codename = 'Diuturnal';
-		$content->release_date = strtotime('2008/06/10');
+		$content->release_version = '2.2';
+		$content->release_codename = 'efímera';
+		$content->release_date = strtotime('2008/08/08');
 
 		// Counter
 		$content->counter = file_get_contents(APPPATH.'cache/counter.txt');
@@ -32,10 +32,11 @@ class Download_Controller extends Website_Controller {
 		// Modules
 		$content->modules = array
 		(
+			'Archive' => Kohana::lang('download.archive_description'),
 			'Auth' => Kohana::lang('download.auth_description'),
-			'Forge' => Kohana::lang('download.forge_description'),
-			'Media' => Kohana::lang('download.media_description'),
+			'Gmaps' => Kohana::lang('download.gmaps_description'),
 			'Kodoc' => Kohana::lang('download.kodoc_description'),
+			'Payment' => Kohana::lang('download.payment_description'),
 		);
 
 		// Vendor resources
@@ -67,11 +68,16 @@ class Download_Controller extends Website_Controller {
 			'en_US' => Kohana::lang('download.lang_en_US'),
 			'en_GB' => Kohana::lang('download.lang_en_GB'),
 			'de_DE' => Kohana::lang('download.lang_de_DE'),
+			'es_AR' => Kohana::lang('download.lang_es_AR'),
 			'es_ES' => Kohana::lang('download.lang_es_ES'),
-			// 'fr_FR' => Kohana::lang('download.lang_fr_FR'),
+			'fi_FI' => Kohana::lang('download.lang_fi_FI'),
+			'fr_FR' => Kohana::lang('download.lang_fr_FR'),
+			'it_IT' => Kohana::lang('download.lang_it_IT'),
 			'nl_NL' => Kohana::lang('download.lang_nl_NL'),
 			// 'mk_MK' => Kohana::lang('download.lang_mk_MK'),
 			'pl_PL' => Kohana::lang('download.lang_pl_PL'),
+			'pt_BR' => Kohana::lang('download.lang_pt_BR'),
+			'ru_RU' => Kohana::lang('download.lang_ru_RU'),
 		);
 
 		// Download formats
@@ -110,7 +116,7 @@ class Download_Controller extends Website_Controller {
 				// Kohana release directory
 				$source = IN_PRODUCTION
 					? '/home/kohana/checkout/kohana_releases/'.$content->release_version.'/'
-					: '/Volumes/Media/Sites/Kohana/releases/'.$content->release_version.'/';
+					: '/Volumes/Media/Sites/Kohana/tags/'.$content->release_version.'/';
 
 				// Directory prefix that will be added to the archive as the base directory
 				$prefix = 'Kohana_v'.$content->release_version.'/';
@@ -132,7 +138,7 @@ class Download_Controller extends Website_Controller {
 				foreach (glob($source.'system/*') as $file)
 				{
 					// Skip i18n directory, it's added manually
-					if (($dir = substr($file, strrpos($file, '/') + 1)) === 'i18n' OR $dir === 'vendor')
+					if (($dir = basename($dir)) === 'i18n' OR $dir === 'vendor')
 						continue;
 
 					// Add files
@@ -152,8 +158,24 @@ class Download_Controller extends Website_Controller {
 
 					foreach ($module_files as $file)
 					{
-						// Add module files
-						$this->add_files($source, $prefix, 'modules/'.strtolower($file).'/', $archive);
+						foreach (glob($source.'modules/'.strtolower($file).'/*', GLOB_ONLYDIR) as $dir)
+						{
+							// Skip i18n files, they are added manually
+							if (($dir = basename($dir)) === 'i18n' OR $dir === 'vendor')
+								continue;
+
+							// Add module files
+							$this->add_files($source, $prefix, 'modules/'.strtolower($file).'/'.$dir.'/', $archive);
+						}
+
+						foreach ($download['languages'] as $lang)
+						{
+							if (is_dir($source.'modules/'.strtolower($file).'/i18n/'.$lang))
+							{
+								// Add module language files
+								$this->add_files($source, $prefix, 'modules/'.strtolower($file).'/i18n/'.$lang.'/', $archive);
+							}
+						}
 					}
 				}
 

@@ -248,8 +248,8 @@ echo geshi_highlight('function index()
 
 ?>
 <p>Here we load the page from the model, and also cleverly show a 404 status if the page doesn't exist (the database result would be FALSE).</p>
-<p>I have provided a whole <?= html::file_anchor(Config::item('core.index_page', TRUE).'tutorials/download/page_tutorial.zip', 'application')?> for you to look at, pick apart or use on your own projects.<br />
+<p>I have provided a whole <?= html::file_anchor(Kohana::config('core.index_page', TRUE).'tutorials/download/page_tutorial.zip', 'application')?> for you to look at, pick apart or use on your own projects.<br />
 Feel free to send any changes or improvements back to me at <?=html::mailto('jeremy.bush@kohanaphp.com')?>.</p>
 <p>It includes a basic authentication system for administrating pages, a FCKeditor for easy editing of pages, and some basic HTML views to get you going.</p>
 
-<p><strong><?= html::file_anchor(Config::item('core.index_page', TRUE).'tutorials/download/page_tutorial.zip', 'Download Tutorial Files') ?></strong></p>
+<p><strong><?= html::file_anchor(Kohana::config('core.index_page', TRUE).'tutorials/download/page_tutorial.zip', 'Download Tutorial Files') ?></strong></p>

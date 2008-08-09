@@ -75,7 +75,7 @@ RewriteRule ^(.*)$ index.php/$1 [PT,L]
 
 class Access_denied_Controller extends Controller {
 
-	function _remap()
+	function __call($method, $args)
 	{
 		// Attempted access path, with "access_denied/" removed
 		$path = preg_replace(\'|^access_denied/|\', \'\', $this->uri->string());

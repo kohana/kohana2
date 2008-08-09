@@ -46,7 +46,7 @@ Event::add(\'system.routing\', \'site_lang\');
 function site_lang()
 {
 	// Array of allowed languages
-	$locales = Config::item(\'locale.allowed_locales\');
+	$locales = Kohana::config(\'locale.allowed_locales\');
 
 	// Extract language from URL
 	$lang = strtolower(substr(url::current(), 0, 2));
@@ -92,11 +92,11 @@ function site_lang()
 	}
 
 	// Store locale config values
-	Config::set(\'locale.lang\', $lang);
-	Config::set(\'locale.language\', $locales[$lang]);
+	Kohana::config_set(\'locale.lang\', $lang);
+	Kohana::config_set(\'locale.language\', $locales[$lang]);
 
 	// Overwrite setlocale which has already been set before in Kohana::setup()
-	setlocale(LC_ALL, Config::item(\'locale.language\').\'.UTF-8\');
+	setlocale(LC_ALL, Kohana::config(\'locale.language\').\'.UTF-8\');
 
 	// Finally set a language cookie for 6 months
 	cookie::set(\'lang\', $lang, 15768000);
@@ -133,7 +133,7 @@ $config = array
 
 ?>
 
-<p>Note that from this point <tt>Kohana::lang()</tt> will pull text from the i18n/locale folder based on the language in the URL. Also, know that the current language now is available via <tt>Config::item('locale.lang')</tt>.</p>
+<p>Note that from this point <tt>Kohana::lang()</tt> will pull text from the i18n/locale folder based on the language in the URL. Also, know that the current language now is available via <tt>Kohana::config('locale.lang')</tt>.</p>
 
 
 <h3>3. Catch-all route</h3>
@@ -198,7 +198,7 @@ class url_lang {
 	{
 		if ($lang === FALSE)
 		{
-			$lang = Config::item(\'locale.lang\');
+			$lang = Kohana::config(\'locale.lang\');
 		}
 
 		return url::site($lang.\'/\'.trim($uri, \'/\'), $protocol);
@@ -233,7 +233,7 @@ class url_lang {
 	{
 		if ($lang === FALSE)
 		{
-			$lang = Config::item(\'locale.lang\');
+			$lang = Kohana::config(\'locale.lang\');
 		}
 
 		return url::redirect($lang.\'/\'.trim($uri, \'/\'), $method);

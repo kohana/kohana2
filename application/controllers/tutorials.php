@@ -4,7 +4,7 @@ class Tutorials_Controller extends Website_Controller {
 
 	public $auto_render = TRUE;
 
-	public function _default()
+	public function __call($method, $args)
 	{
 		$titles = array();
 

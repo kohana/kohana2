@@ -7,12 +7,12 @@ preg_match('/kohanaphp\.(.+)$/', $_SERVER['SERVER_NAME'], $tld);
 define('TLD', empty($tld[1]) ? NULL : $tld[1]);
 
 // TLD => lang
-$langs = Config::item('locale.tlds');
+$langs = Kohana::config('locale.tlds');
 
 if (isset($langs[TLD]))
 {
 	// Set the language
-	Config::set('locale.language', $langs[TLD]);
+	Kohana::config_set('locale.language.0', $langs[TLD]);
 }
 
 // Clean up

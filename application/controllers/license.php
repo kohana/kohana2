@@ -7,7 +7,7 @@ class License_Controller extends Website_Controller {
 	public function index()
 	{
 		$this->template->title = Kohana::lang('license.title');
-		$this->template->content = View::factory('pages/license/license_'.Config::item('locale.language'));
+		$this->template->content = View::factory('pages/license/license_'.Kohana::config('locale.language.0'));
 	}
 
 } // End License Controller

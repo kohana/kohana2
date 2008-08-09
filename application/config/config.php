@@ -1,13 +1,17 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Domain name, with the installation directory. Default: localhost/kohana/
+ * Base path of the web site. If this includes a domain, eg: localhost/kohana/
+ * then a full URL will be used, eg: http://localhost/kohana/. If it only includes
+ * the path, and a site_protocol is specified, the domain will be auto-detected.
  */
-$config['site_domain'] = IN_PRODUCTION ? $_SERVER['SERVER_NAME'] : 'localhost/kohanaphp.com/';
+$config['site_domain'] = '/kohanaphp.com/';
 
 /**
- * Default protocol used to access the website. Default: http
+ * Force a default protocol to be used by the site. If no site_protocol is
+ * specified, then the current protocol is used, or when possible, only an
+ * absolute path (with no protocol/domain) is used.
  */
-$config['site_protocol'] = 'http';
+$config['site_protocol'] = '';
 
 /**
  * Name of the front controller for this application. Default: index.php
@@ -19,7 +23,14 @@ $config['index_page'] = '';
 /**
  * Fake file extension that will be added to all generated URLs. Example: .html
  */
-$config['url_suffix'] = '.html';
+$config['url_suffix'] = '';
+
+/**
+ * Length of time of the internal cache in seconds. 0 or FALSE means no caching.
+ * The internal cache stores file paths and config entries across requests and
+ * can give significant speed improvements at the expense of delayed updating.
+ */
+$config['internal_cache'] = IN_PRODUCTION ? 3600 : FALSE;
 
 /**
  * Enable or disable gzip output compression. This can dramatically decrease
@@ -31,28 +42,47 @@ $config['url_suffix'] = '.html';
 $config['output_compression'] = IN_PRODUCTION;
 
 /**
- * Enable or disable global XSS filtering of GET, POST, and SERVER data. This
- * option also accepts a string to specify a specific XSS filtering tool.
+ * Enable or disable global XSS filtering of GET, POST, and COOKIE data.
+ * Supported options:
+ *  FALSE        - Disable global XSS filtering (NOT RECOMMENDED)
+ *  TRUE         - Enable internal XSS filtering
+ *  htmlpurifier - Use HTMLPurifier for XSS filtering
  */
 $config['global_xss_filtering'] = TRUE;
 
 /**
- * Enable or disable dynamic setting of configuration options. By default, all
- * configuration options are read-only.
+ * Enable or disable hooks. Setting this option to TRUE will enable
+ * all hooks. By using an array of hook filenames, you can control
+ * which hooks are enabled. Setting this option to FALSE disables hooks.
  */
-$config['allow_config_set'] = TRUE;
+$config['enable_hooks'] = TRUE;
 
 /**
- * Enable or display displaying of Kohana error pages. This will not affect
+ * Log thresholds:
+ *  0 - Disable logging
+ *  1 - Errors and exceptions
+ *  2 - Warnings
+ *  3 - Notices
+ *  4 - Debugging
+ */
+$config['log_threshold'] = 1;
+
+/**
+ * Message logging directory.
+ */
+$config['log_directory'] = APPPATH.'logs';
+
+/**
+ * Enable or disable displaying of Kohana error pages. This will not affect
  * logging. Turning this off will disable ALL error pages.
  */
 $config['display_errors'] = ! IN_PRODUCTION;
 
 /**
- * Enable or display statistics in the final output. Stats are replaced via
+ * Enable or disable statistics in the final output. Stats are replaced via
  * specific strings, such as {execution_time}.
  *
- * @see http://doc.kohanaphp.com/general/configuration/config
+ * @see http://docs.kohanaphp.com/general/configuration
  */
 $config['render_stats'] = TRUE;
 
@@ -69,11 +99,14 @@ $config['extension_prefix'] = 'MY_';
  */
 $config['modules'] = array
 (
+	MODPATH.'archive',   // Compressed archives
 	MODPATH.'auth',      // Authentication
 	MODPATH.'forge',     // Form generation
-	// MODPATH.'gmaps',     // Google Maps Javascript generator
-	// MODPATH.'kobot',     // Kohana IRC bot
 	// MODPATH.'kodoc',     // Self-generating documentation
 	// MODPATH.'media',     // Media caching and compression
-	// MODPATH.'shoutbox',  // Shoutbox demo module
+	// MODPATH.'gmaps',     // Google Maps integration
+	// MODPATH.'archive',   // Archive utility
+	// MODPATH.'payment',   // Online payments
+	// MODPATH.'unit_test', // Unit testing
+	// MODPATH.'object_db', // New OOP Database library (testing only!)
 );
