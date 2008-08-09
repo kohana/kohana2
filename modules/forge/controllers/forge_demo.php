@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 /**
  * Forge module demo controller. This controller should NOT be used in production.
  * It is for demonstration purposes only!

@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 /**
  * Handles loading of site resources (CSS, JS, images) using Views.
  * By default it is assumed that your media files will be stored in

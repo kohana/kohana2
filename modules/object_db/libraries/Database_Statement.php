@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 
 abstract class Database_Statement_Core extends Database_Escape {
 

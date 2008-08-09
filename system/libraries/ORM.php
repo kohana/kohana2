@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 /**
  * Object Relational Mapping (ORM) is a method of abstracting database
  * access to standard PHP calls. All table rows are represented as a model.

@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 /**
 * Object Relational Mapping (ORM) result iterator.
 *

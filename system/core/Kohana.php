@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 /**
  * Provides Kohana-specific helper functions. This is where the magic happens!
  *

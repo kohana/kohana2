@@ -3,7 +3,7 @@ Index: cache.php
 --- cache.php	(revision 0)
 +++ cache.php	(revision 0)
 @@ -0,0 +1,10 @@
-+<?php defined('SYSPATH') or die('No direct script access.'); 
++<?php
 +
 +$lang = array
 +(
@@ -57,7 +57,7 @@ Index: captcha.php
 --- captcha.php	(revision 0)
 +++ captcha.php	(revision 0)
 @@ -0,0 +1,33 @@
-+<?php defined('SYSPATH') or die('No direct access allowed.');
++<?php
 +
 +$lang = array
 +(
@@ -209,7 +209,7 @@ Index: event.php
 --- event.php	(revision 0)
 +++ event.php	(revision 0)
 @@ -0,0 +1,7 @@
-+<?php defined('SYSPATH') or die('No direct script access.');
++<?php
 +
 +$lang = array
 +(
@@ -221,7 +221,7 @@ Index: image.php
 --- image.php	(revision 0)
 +++ image.php	(revision 0)
 @@ -0,0 +1,27 @@
-+<?php defined('SYSPATH') or die('No direct script access.'); 
++<?php
 +
 +$lang = array
 +(
@@ -253,7 +253,7 @@ Index: orm.php
 --- orm.php	(revision 0)
 +++ orm.php	(revision 0)
 @@ -0,0 +1,3 @@
-+<?php defined('SYSPATH') or die('No direct script access.');
++<?php
 +
 +$lang['query_methods_not_allowed'] = 'No esta permitido utilizar metodos de Query mediante ORM.';
 Index: pagination.php
@@ -319,7 +319,7 @@ Index: swift.php
 --- swift.php	(revision 0)
 +++ swift.php	(revision 0)
 @@ -0,0 +1,6 @@
-+<?php defined('SYSPATH') or die('No direct access allowed.');
++<?php
 +
 +$lang = array
 +(
@@ -331,7 +331,7 @@ Index: upload.php
 --- upload.php	(revision 0)
 +++ upload.php	(revision 0)
 @@ -0,0 +1,6 @@
-+<?php defined('SYSPATH') or die('No direct access allowed.');
++<?php
 +
 +$lang = array
 +(

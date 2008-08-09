@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php
 /* $Id$ */
 
 class User_Guide_Controller extends Controller {
