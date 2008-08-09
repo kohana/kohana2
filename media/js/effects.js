@@ -50,9 +50,9 @@ $(document).ready(function()
 		$.each($('#downloadBuilder input'), function(i, value)
 		{
 			if($(value).attr('checked'))
-			queryString += encodeURI($(value).attr('name'))+'='+encodeURI($(value).attr('value'));
+				queryString += encodeURI($(value).attr('name')) +'='+ encodeURI($(value).attr('value')) +'&';
 		});
 
-		$('#downloadUrlDisplay').val($('#downloadBuilder').attr('action') + queryString).show();
+		$('#downloadUrlDisplay').val($('#downloadBuilder').attr('action') + queryString.slice(0, -1)).show();
 	});
 });
