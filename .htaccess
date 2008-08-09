@@ -9,9 +9,8 @@ RewriteRule ^forums?(/.*)?$ http://forum.kohanaphp.com$1 [R=301,L]
 # Redirect to doc
 RewriteRule ^user_guide(/.*)?$ http://doc.kohanaphp.com$1 [R=301,L]
 
-<IfModule !php5_module>
-RewriteRule .* http://127.0.0.1:2480/$0 [PT,L]
-</IfModule>
+# Remove .html extensions
+RewriteRule ^(.*)\.html$ $1 [R=301,L]
 
 # Installation directory
 RewriteBase /
