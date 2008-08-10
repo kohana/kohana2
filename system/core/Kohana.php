@@ -534,7 +534,7 @@ final class Kohana {
 		{
 			// Write the SYSPATH checking header
 			file_put_contents($filename,
-				'<?php die(\'No direct access.\'); ?>'.PHP_EOL.PHP_EOL);
+				'<?php defined(\'SYSPATH\') or die(\'No direct access.\'); ?>'.PHP_EOL.PHP_EOL);
 
 			// Prevent external writes
 			chmod($filename, 0644);
