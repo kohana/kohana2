@@ -191,16 +191,16 @@ class Router_Core {
 				}
 			}
 		}
-		elseif (current($_GET) === '' AND substr($_SERVER['QUERY_STRING'], -1) !== '=')
+		elseif (isset($_GET['kohana_uri']))
 		{
-			// The URI is the array key, eg: ?this/is/the/uri
-			self::$current_uri = key($_GET);
+			// Use the URI defined in the query string
+			self::$current_uri = $_GET['kohana_uri'];
 
 			// Remove the URI from $_GET
-			unset($_GET[self::$current_uri]);
+			unset($_GET['kohana_uri']);
 
 			// Remove the URI from $_SERVER['QUERY_STRING']
-			$_SERVER['QUERY_STRING'] = ltrim(substr($_SERVER['QUERY_STRING'], strlen(self::$current_uri)), '/&');
+			$_SERVER['QUERY_STRING'] = preg_replace('!kohana_uri[^&]+&?!', '', $_SERVER['QUERY_STRING']);
 
 			// Fixes really strange handling of a suffix in a GET string
 			if ($suffix = Kohana::config('core.url_suffix') AND substr(self::$current_uri, -(strlen($suffix))) === '_'.substr($suffix, 1))
