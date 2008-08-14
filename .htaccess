@@ -7,7 +7,7 @@ RewriteRule ^svn(/.*)?$ http://svn.kohanaphp.com$1 [R=301,L]
 # Redirect to forum
 RewriteRule ^forums?(/.*)?$ http://forum.kohanaphp.com$1 [R=301,L]
 # Redirect to doc
-RewriteRule ^user_guide(/.*)?$ http://doc.kohanaphp.com$1 [R=301,L]
+RewriteRule ^user_guide(/.*)?$ http://docs.kohanaphp.com$1 [R=301,L]
 
 # Remove .html extensions
 RewriteRule ^(.*)\.html$ $1 [R=301,L]

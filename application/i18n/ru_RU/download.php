@@ -3,7 +3,7 @@
 $lang = array
 (
 	'title'					=> 'Скачать',
-	'auth_description'		=> 'Простая система авторизации и управления пользователями. Использует <a href="http://doc.kohanaphp.com/libraries/orm">ORM</a> модель.',
+	'auth_description'		=> 'Простая система авторизации и управления пользователями. Использует <a href="http://docs.kohanaphp.com/libraries/orm">ORM</a> модель.',
 	'forge_description'		=> 'Объектно-ориентированное генерация форм.',
 	'media_description'		=> 'Кеширование, сжатие файлов CSS и Javascript.',
 	'kodoc_description'		=> 'Динамически генерируемая документация. (Beta!)',

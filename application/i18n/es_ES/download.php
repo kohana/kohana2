@@ -3,7 +3,7 @@
 $lang = array
 (
 	'title'			=> 'Descargar',
-	'auth_description'	=> 'Gestión de usuarios y autentificación. Utiliza <a href="http://doc.kohanaphp.com/libraries/orm">ORM</a> para la gestión de modelos.',
+	'auth_description'	=> 'Gestión de usuarios y autentificación. Utiliza <a href="http://docs.kohanaphp.com/libraries/orm">ORM</a> para la gestión de modelos.',
 	'forge_description'	=> 'Generación de formularios con interface Orientada a Objetos y plantillas.',
 	'media_description'	=> 'Compresión, cacheo y gestión de ficheros CSS y Javascript.',
 	'kodoc_description'	=> 'Documentación dinámica generada automáticamente. (Beta!)',
