@@ -1,10 +1,10 @@
 <?php
 /**
- * Object Relational Mapping (ORM) is a method of abstracting database
- * access to standard PHP calls. All table rows are represented as a model.
- *
- * @see http://en.wikipedia.org/wiki/Active_record
- * @see http://en.wikipedia.org/wiki/Object-relational_mapping
+ * [Object Relational Mapping](http://wikipedia.org/wiki/Object-relational_mapping)
+ * (ORM) is a method of abstracting database access to standard PHP calls.
+ * All table rows are represented as model objects, with object properties
+ * representingrow data. ORM in Kohana generally follows the
+ * [Active Record](http://wikipedia.org/wiki/Active_record) pattern.
  *
  * $Id$
  *
@@ -690,10 +690,7 @@ class ORM_Core {
 		if ($force === TRUE OR empty($this->table_columns))
 		{
 			// Load table columns
-			$this->table_columns = $this->db->list_fields($this->table_name);
-
-			if (empty($this->table_columns))
-				throw new Kohana_Exception('database.table_not_found', $this->table);
+			$this->table_columns = $this->db->list_columns($this->table_name, TRUE);
 		}
 
 		return $this;

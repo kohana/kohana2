@@ -1085,31 +1085,6 @@ class Database_Core {
 	}
 
 	/**
-	 * Lists all the tables in the current database.
-	 *
-	 * @return  array
-	 */
-	public function list_tables()
-	{
-		$this->link or $this->connect();
-
-		$this->reset_select();
-
-		return $this->driver->list_tables();
-	}
-
-	/**
-	 * See if a table exists in the database.
-	 *
-	 * @param   string   table name
-	 * @return  boolean
-	 */
-	public function table_exists($table_name)
-	{
-		return in_array($this->config['table_prefix'].$table_name, $this->list_tables());
-	}
-
-	/**
 	 * Combine a SQL statement with the bind values. Used for safe queries.
 	 *
 	 * @param   string  query to bind to the values
@@ -1139,29 +1114,40 @@ class Database_Core {
 	}
 
 	/**
-	 * Get the field data for a database table, along with the field's attributes.
+	 * See if a table exists in the database.
 	 *
-	 * @param   string  table name
-	 * @return  array
+	 * @param   string   table name
+	 * @return  boolean
 	 */
-	public function field_data($table = '')
+	public function table_exists($table_name)
 	{
-		$this->link or $this->connect();
-
-		return $this->driver->field_data($this->config['table_prefix'].$table);
+		return in_array($this->config['table_prefix'].$table_name, $this->list_tables());
 	}
 
 	/**
-	 * Get the field data for a database table, along with the field's attributes.
+	 * Lists all the tables in the current database.
 	 *
-	 * @param   string  table name
 	 * @return  array
 	 */
-	public function list_fields($table = '')
+	public function list_tables()
 	{
 		$this->link or $this->connect();
 
-		return $this->driver->list_fields($this->config['table_prefix'].$table);
+		return $this->driver->list_tables($this);
+	}
+
+	/**
+	 * Lists all columns in a table, and optionally include column metadata.
+	 *
+	 * @param   string   table name
+	 * @param   boolean  include metadata
+	 * @return  array
+	 */
+	public function list_columns($table, $metadata = FALSE)
+	{
+		$this->link or $this->connect();
+
+		return $this->driver->list_columns($this->config['table_prefix'].$table, $metadata, $this);
 	}
 
 	/**

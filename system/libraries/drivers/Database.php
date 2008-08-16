@@ -337,15 +337,16 @@ abstract class Database_Driver {
 	 *
 	 * @return  array
 	 */
-	abstract public function list_tables();
+	abstract public function list_tables(Database $db);
 
 	/**
-	 * Lists all fields in a table.
+	 * Lists all columns in a table, and optionally include column metadata.
 	 *
-	 * @param   string  table name
+	 * @param   string   table name
+	 * @param   boolean  include metadata
 	 * @return  array
 	 */
-	abstract function list_fields($table);
+	abstract public function list_columns($table, $metadata = FALSE, Database $db);
 
 	/**
 	 * Returns the last database error.
@@ -353,14 +354,6 @@ abstract class Database_Driver {
 	 * @return  string
 	 */
 	abstract public function show_error();
-
-	/**
-	 * Returns field data about a table.
-	 *
-	 * @param   string  table name
-	 * @return  array
-	 */
-	abstract public function field_data($table);
 
 	/**
 	 * Fetches SQL type information about a field, in a generic format.
@@ -396,7 +389,7 @@ abstract class Database_Driver {
 
 		empty($sql_types[$type]) and exit
 		(
-			'Unknown field type: '.$type.'. '.
+			'Unknown database column type: '.$type.'. '.
 			'Please report this: http://trac.kohanaphp.com/newticket'
 		);
 

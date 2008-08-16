@@ -112,19 +112,6 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 		return $this->link->error;
 	}
 
-	public function field_data($table)
-	{
-		$query  = $this->link->query('SHOW COLUMNS FROM '.$this->escape_table($table));
-
-		$table  = array();
-		while ($row = $query->fetch_object())
-		{
-			$table[] = $row;
-		}
-
-		return $table;
-	}
-
 } // End Database_Mysqli_Driver Class
 
 /**
