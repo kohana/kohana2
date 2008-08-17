@@ -1008,10 +1008,57 @@ final class Kohana {
 	 * @param   string   directory to search
 	 * @param   boolean  list all files to the maximum depth?
 	 * @param   string   full path to search (used for recursion, *never* set this manually)
+	 * @return  array    filenames and directories
+	 */
+	public static function list_files($directory, $recursive = FALSE)
+	{
+		$files = array();
+
+		$paths = array_reverse(Kohana::include_paths());
+
+		foreach ($paths as $path)
+		{
+			if (is_dir($path.$directory))
+			{
+				$dir = new DirectoryIterator($path.$directory);
+
+				foreach ($dir as $file)
+				{
+					$filename = $file->getFilename();
+
+					if ($filename[0] === '.')
+						continue;
+
+					if ($file->isDir())
+					{
+						if ($recursive == TRUE)
+						{
+							// Recursively add files
+							$files = array_merge($files, self::list_files($directory.'/'.$filename, TRUE));
+						}
+					}
+					else
+					{
+						// Add the file to the files
+						$files[$directory.'/'.$filename] = $file->getRealPath();
+					}
+				}
+			}
+		}
+
+		return $files;
+	}
+
+	/**
+	 * Lists all files and directories in a resource path.
+	 *
+	 * @param   string   directory to search
+	 * @param   boolean  list all files to the maximum depth?
+	 * @param   string   full path to search (used for recursion, *never* set this manually)
 	 * @param   array    filenames to exclude
 	 * @return  array    filenames and directories
 	 */
-	public static function list_files($directory = NULL, $recursive = FALSE, $exclude = NULL)
+	public static function new_list_files($directory = NULL, $recursive = FALSE, $exclude = NULL)
 	{
 		$files = array();
 
