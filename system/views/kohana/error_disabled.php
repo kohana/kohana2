@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title><?php echo $error ?></title>
 	<style type="text/css">
-	<?php include Kohana::find_file('views', 'kohana_errors', FALSE, 'css') ?>
+	<?php include Kohana::find_file('views', 'kohana/error_style', FALSE, 'css') ?>
 	</style>
 </head>
 <body>

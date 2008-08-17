@@ -5,7 +5,7 @@
 	<title><?php echo $error ?></title>
 	<base href="http://php.net/" />
 	<style type="text/css">
-	<?php include Kohana::find_file('views', 'kohana_errors', FALSE, 'css') ?>
+	<?php include Kohana::find_file('views', 'kohana/error_style', FALSE, 'css') ?>
 	</style>
 </head>
 <body>
