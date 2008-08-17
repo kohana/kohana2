@@ -1,14 +1,16 @@
 <?php
 /**
- * [Object Relational Mapping](http://wikipedia.org/wiki/Object-relational_mapping)
- * (ORM) is a method of abstracting database access to standard PHP calls.
- * All table rows are represented as model objects, with object properties
- * representingrow data. ORM in Kohana generally follows the
- * [Active Record](http://wikipedia.org/wiki/Active_record) pattern.
+ * [Object Relational Mapping][ref-orm] (ORM) is a method of abstracting database
+ * access to standard PHP calls. All table rows are represented as model objects,
+ * with object properties representing row data. ORM in Kohana generally follows
+ * the [Active Record][ref-act] pattern.
+ *
+ * [ref-orm]: http://wikipedia.org/wiki/Object-relational_mapping
+ * [ref-act]: http://wikipedia.org/wiki/Active_record
  *
  * $Id$
  *
- * @package    Core
+ * @package    ORM
  * @author     Kohana Team
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
