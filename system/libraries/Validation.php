@@ -270,10 +270,14 @@ class Validation_Core extends ArrayObject {
 				{
 					// Split the rule into the function and args
 					$rule = $matches[1];
-					$args = preg_split('/(?<!\\\\),\s*/', $matches[2]);
+					$args = $matches[2];
 
-					// Replace escaped comma with comma
-					$args = str_replace('\,', ',', $args);
+					// Split the args, but don't touch them in case of a chars regex check
+					if ($rule !== 'chars')
+					{
+						$args = preg_split('/(?<!\\\\),\s*/', $args);
+						$args = str_replace('\\,', ',', $args);
+					}
 				}
 
 				if (method_exists($this, $rule))
@@ -762,12 +766,19 @@ class Validation_Core extends ArrayObject {
 	 * Rule: chars. Generates an error if the field contains characters outside of the list.
 	 *
 	 * @param   string  field value
-	 * @param   array   allowed characters
+	 * @param   string  allowed characters
 	 * @return  bool
 	 */
-	public function chars($value, array $chars)
+	public function chars($value, $chars)
 	{
-		return ! preg_match('![^'.implode('', $chars).']!', $value);
+		// Escape the preg_match delimeter
+		$chars = str_replace('~', '\\~', $chars);
+
+		// Prevent chars to escape the closing bracket of the character class
+		$chars = rtrim($chars, '\\');
+
+		// Return FALSE if any char outside of chars list is found
+		return ! preg_match('~[^'.$chars.']~u', $value);
 	}
 
 } // End Validation
