@@ -153,6 +153,24 @@ class form_Core {
 			$data = array('name' => $data);
 		}
 
+		if (isset($data['type']))
+		{
+			if ($data['type'] == 'dropdown' OR $data['type'] == 'select')
+			{
+				// Type is not needed
+				unset($data['type']);
+
+				return form::dropdown($data);
+			}
+			elseif ($data['type'] == 'textarea')
+			{
+				// Type is not needed
+				unset($data['type']);
+
+				return form::textarea($data);
+			}
+		}
+
 		// Type and value are required attributes
 		$data += array
 		(
