@@ -1003,17 +1003,15 @@ final class Kohana {
 	}
 
 	/**
-	 * Lists all files and directories in a resource path.
+	 * Lists all files in a resource path.
 	 *
 	 * @param   string   directory to search
 	 * @param   boolean  list all files to the maximum depth?
-	 * @param   string   full path to search (used for recursion, *never* set this manually)
-	 * @return  array    filenames and directories
+	 * @return  array    resolved filename paths
 	 */
 	public static function list_files($directory, $recursive = FALSE)
 	{
 		$files = array();
-
 		$paths = array_reverse(Kohana::include_paths());
 
 		foreach ($paths as $path)
@@ -1031,7 +1029,7 @@ final class Kohana {
 
 					if ($file->isDir())
 					{
-						if ($recursive == TRUE)
+						if ($recursive === TRUE)
 						{
 							// Recursively add files
 							$files = array_merge($files, self::list_files($directory.'/'.$filename, TRUE));
@@ -1061,7 +1059,6 @@ final class Kohana {
 	public static function new_list_files($directory = NULL, $recursive = FALSE, $exclude = NULL)
 	{
 		$files = array();
-
 		$paths = array_reverse(Kohana::include_paths());
 
 		foreach ($paths as $path)
