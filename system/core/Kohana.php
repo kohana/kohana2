@@ -1077,7 +1077,7 @@ final class Kohana {
 					if ($recursive == TRUE AND $file->isDir())
 					{
 						// Recursively add files
-						$files[$filename] = self::list_files($directory.'/'.$filename, TRUE);
+						$files[$filename] = self::new_list_files($directory.'/'.$filename, TRUE);
 					}
 					else
 					{
