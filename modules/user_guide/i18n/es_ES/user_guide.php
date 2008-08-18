@@ -2,6 +2,6 @@
 
 $lang = array
 (
-	'title'     => 'Kohana User Guide',
-	'copyright' => 'copyright (c) %s Kohana Team :: All rights reserved :: Rendered in {execution_time} seconds using {memory_usage}MB of memory',
+	'title'     => 'Guía del usuario de Kohana',
+	'copyright' => 'copyright (c) %s Kohana Team :: Todos los derechos reservados :: Renderizado en {execution_time} segundos utilizando {memory_usage}MB de memoria',
 );

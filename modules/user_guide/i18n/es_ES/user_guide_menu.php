@@ -30,7 +30,7 @@ $lang = array
 		'Vistas',
 		'Helpers'
 	),
-	'Libraries' => array
+	'Librerías' => array
 	(
 		'Cache',
 		'Controlador',

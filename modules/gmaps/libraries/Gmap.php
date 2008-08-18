@@ -45,7 +45,7 @@ class Gmap_Core {
 	 * Retrieves the latitude and longitude of an address.
 	 *
 	 * @param string $address address
-	 * @return array longitude, latitude
+	 * @return array latitude, longitude
 	 */
 	public static function address_to_ll($address)
 	{
