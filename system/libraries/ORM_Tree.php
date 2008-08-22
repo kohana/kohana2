@@ -36,7 +36,7 @@ class ORM_Tree_Core extends ORM {
 				if (isset($this->object[$this->parent_key]))
 				{
 					// Find children of this parent
-					$model->where($this->parent_key, $this->object[$this->parent_key])->find();
+					$model->where($model->primary_key, $this->object[$this->parent_key])->find();
 				}
 
 				$this->related[$column] = $model;
