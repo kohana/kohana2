@@ -74,7 +74,7 @@ class Examples_Controller extends Controller {
 	function rss()
 	{
 		// Parse an external atom feed
-		$feed = feed::parse('http://codeigniter.com/feeds/atom/news/');
+		$feed = feed::parse('http://trac.kohanaphp.com/timeline?changeset=on&format=rss');
 
 		// Show debug info
 		echo Kohana::debug($feed);
@@ -406,7 +406,7 @@ class Examples_Controller extends Controller {
 	{
 		$profiler = new Profiler;
 
-		$calendar = new Calendar(8, 2008);
+		$calendar = new Calendar($this->input->get('month', date('m')), $this->input->get('year', date('Y')));
 		$calendar->attach($calendar->event()
 				->condition('year', 2008)
 				->condition('month', 8)
