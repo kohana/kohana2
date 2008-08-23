@@ -41,7 +41,7 @@ class Auth_File_Driver implements Auth_Driver {
 	public function login($username, $password, $remember)
 	{
 		// Validate username/password combination
-		if (isset($this->users[$username]) AND $this->users[$username] === $password)
+		if ($this->password($username) === $password)
 		{
 			// Regenerate session_id
 			$this->session->regenerate();
