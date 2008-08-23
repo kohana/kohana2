@@ -41,7 +41,7 @@ class Donate_Controller extends Website_Controller {
 			
 			// Something went wrong, so delete the session data and make em start over again.
 			$this->session->set_flash('donate_status', '<p style="color: red;">'.Kohana::lang('donate.error').'</p>');
-			$this->session->del('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token');
+			$this->session->delete('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token');
 			url::redirect('donate');
 		}
 		else if ($amount = $this->session->get('donate_amount') AND $payerid = $this->input->get('PayerID')) // They are returning from paypal
@@ -79,7 +79,7 @@ class Donate_Controller extends Website_Controller {
 			$this->db->insert('donations', $insert);
 
 			// Remove the session data
-			$this->session->del('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token');
+			$this->session->delete('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token');
 
 			$this->template->set(array
 			(
@@ -90,7 +90,7 @@ class Donate_Controller extends Website_Controller {
 		else
 		{
 			$this->session->set_flash('donate_status', '<p style="color: red;">'.Kohana::lang('donate.error').'</p>');
-			$this->session->del('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token');
+			$this->session->delete('donate_amount', 'donate_name', 'donate_email', 'reshash', 'paypal_token');
 			$this->template->set(array
 			(
 				'title'   => Kohana::lang('donate.title'),
