@@ -35,7 +35,7 @@ class Router_Core {
 		self::$complete_uri = self::$current_uri.self::$query_string;
 
 		// Load routes
-		$routes = Kohana::config('routing');
+		$routes = Kohana::config('routes');
 
 		if (isset($routes['_default']) OR count($routes) > 1 AND isset($routes[1]))
 		{
