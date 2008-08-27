@@ -1,26 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<title><?php echo $error ?></title>
-	<base href="http://php.net/" />
-	<style type="text/css">
-	<?php include Kohana::find_file('views', 'kohana/error_style', FALSE, 'css') ?>
-	</style>
-</head>
-<body>
-	<div id="framework_error" style="width:42em;margin:20px auto;">
-		<h3><?php echo html::specialchars($error) ?></h3>
-		<p><?php echo html::specialchars($description) ?></p>
-		<?php if ( ! empty($line) AND ! empty($file)): ?>
-			<p><?php echo Kohana::lang('core.error_file_line', $file, $line) ?></p>
-		<?php endif ?>
-		<p><code class="block"><?php echo $message ?></code></p>
-		<?php if ( ! empty($trace)): ?>
-			<h3><?php echo Kohana::lang('core.stack_trace') ?></h3>
-			<?php echo $trace ?>
-		<?php endif ?>
-		<p class="stats"><?php echo Kohana::lang('core.stats_footer') ?></p>
-	</div>
-</body>
-</html>
+<pre class="kohana_error"><a href="#show_trace"><?php echo $code ?></a>: <code><?php echo $error ?></code> [ <strong><?php echo $file ?></strong>, line <strong><?php echo $line ?></strong> ]</pre>
+<?php if ( ! empty($trace)): ?>
+<div class="kohana_trace">
+<?php if ( ! empty($source)): ?>
+<div class="source"><a href="#show_source">Source</a><pre><?php echo $source ?></pre></div>
+<?php endif ?>
+<pre class="trace"><?php echo implode("\n", $trace) ?></pre>
+</div>
+<?php endif ?>

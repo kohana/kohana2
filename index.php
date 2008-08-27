@@ -105,7 +105,7 @@ if ( ! IN_PRODUCTION)
 	}
 
 	// Check SYSPATH
-	if ( ! (is_dir(SYSPATH) AND is_file(SYSPATH.'core/Bootstrap'.EXT)))
+	if ( ! (is_dir(SYSPATH) AND is_file(SYSPATH.'bootstrap'.EXT)))
 	{
 		die
 		(
@@ -118,5 +118,5 @@ if ( ! IN_PRODUCTION)
 	}
 }
 
-// Initialize.
-require SYSPATH.'core/Bootstrap'.EXT;
+// Initialize Kohana
+require SYSPATH.'bootstrap'.EXT;

@@ -1,7 +1,24 @@
 <?php
+
 /**
  * @package  Core
  *
- * Sets the default route to "welcome"
+ * Sets default routing, allowing up to 3 segments to be used:
+ *  - controller, defaults to "welcome"
+ *  - method, defaults to "index"
+ *  - id, no default
+ *
+ * The converted regex for this route is:
+ *
+ *     (?:([^/]+)(?:/([^/]+)(?:/([^/]+))?)?)?
+ *
  */
-$config['_default'] = 'welcome';
+$config['default'] = array
+(
+	// Default routing
+	':controller/:method/:id.xml',
+
+	// Defaults for route keys
+	'controller' => 'welcome',
+	'method' => 'index',
+);

@@ -12,10 +12,18 @@
 	h1 { font-size: 3em; font-weight: normal; text-transform: uppercase; color: #fff; }
 	a { color: inherit; }
 	code { font-size: 1.3em; }
-	ul { list-style: none; padding: 2em 0; }
-	ul li { display: inline; padding-right: 1em; text-transform: uppercase; }
-	ul li a { padding: 0.5em 1em; background: #69ad0f; border: 1px solid #569f09; color: #fff; text-decoration: none; }
-	ul li a:hover { background: #569f09; }
+/*	ul { list-style: none; padding: 2em 0; }*/
+/*		ul li { display: inline; padding-right: 1em; text-transform: uppercase; }*/
+/*			ul li a { padding: 0.5em 1em; background: #69ad0f; border: 1px solid #569f09; color: #fff; text-decoration: none; }*/
+/*			ul li a:hover { background: #569f09; }*/
+	form { margin: 0 0 1em; background: #eee; text-align: left; }
+		form fieldset { display: block; border: 0; padding: 1em; }
+		form fieldset.submit { text-align: right; }
+			form fieldset.submit a { float: left; }
+		form label { display: block; margin: 0 0 0.6em; }
+			form label span { display: block; font-size: 80%; padding: 0.1em 0; }
+		form ul.errors { list-style: outside square; padding: 1em 2em; }
+		form ul.errors li { display: list-item; text-transform: none; }
 	.box { padding: 2em; background: #98cc2b; border: 1px solid #569f09; }
 	.copyright { font-size: 0.9em; text-transform: uppercase; color: #557d10; }
 	</style>
