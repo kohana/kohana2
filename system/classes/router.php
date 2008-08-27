@@ -24,6 +24,7 @@ class Router_Core {
 	 * Event by default. 
 	 *
 	 * [ref-esr]: http://docs.kohanaphp.com/events/system.routing
+	 *
 	 * @return  boolean
 	 */
 	public static function setup()
@@ -80,7 +81,7 @@ class Router_Core {
 							$route[$key] = $matches[$i];
 						}
 
-						if (isset($route[$key]))
+						if ($key !== 'controller' AND $key !== 'method' AND isset($route[$key]))
 						{
 							// Add the value to the arguments
 							self::$arguments[$key] = $route[$key];
@@ -89,12 +90,12 @@ class Router_Core {
 				}
 
 				// Set controller name
-				self::$controller = $route['controller'];
+				self::$controller = str_replace('/', '_', $route['controller']);
 
 				if (isset($route['method']))
 				{
 					// Set controller method
-					self::$method = $route['method'];
+					self::$method = str_replace('/', '_', $route['method']);
 				}
 				else
 				{
