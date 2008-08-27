@@ -23,6 +23,7 @@ class Router_Core {
 	 * Router setup routine. Called during the [system.routing][ref-esr]
 	 * Event by default. 
 	 *
+	 * [ref-esr]: http://docs.kohanaphp.com/events/system.routing
 	 * @return  boolean
 	 */
 	public static function setup()
