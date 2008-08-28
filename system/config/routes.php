@@ -41,7 +41,7 @@
 $config['default'] = array
 (
 	// Default routing
-	':controller/:method/:id.xml',
+	':controller/:method/:id',
 
 	// Defaults for route keys
 	'controller' => 'welcome',
