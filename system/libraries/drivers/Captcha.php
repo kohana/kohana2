@@ -117,7 +117,7 @@ abstract class Captcha_Driver {
 		if ( ! empty($background))
 		{
 			// Create the image using the right function for the filetype
-			$function = 'imagecreatefrom'.$this->image_type($filename);
+			$function = 'imagecreatefrom'.$this->image_type($background);
 			$this->background_image = $function($background);
 
 			// Resize the image if needed
