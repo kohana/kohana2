@@ -62,7 +62,7 @@ class ORM_Core {
 	public static function factory($model, $id = NULL)
 	{
 		// Set class name
-		$model = ucfirst($model).'_Model';
+		$model = 'Model_'.ucfirst($model);
 
 		return new $model($id);
 	}
