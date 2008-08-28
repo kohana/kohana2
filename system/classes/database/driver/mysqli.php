@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Database_Driver_Mysqli_Core extends Database_Mysql_Driver {
+class Database_Driver_Mysqli_Core extends Database_Driver_Mysql {
 
 	// Database connection link
 	protected $link;
