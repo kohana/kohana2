@@ -1,6 +1,6 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 
-class Download_Controller extends Website_Controller {
+class Controller_Download extends Controller_Website {
 
 	public $auto_render = TRUE;
 
@@ -243,4 +243,4 @@ class Download_Controller extends Website_Controller {
 		closedir($dir);
 	}
 
-} // End Download_Controller
+} // End Controller_Download

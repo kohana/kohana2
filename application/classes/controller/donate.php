@@ -1,6 +1,6 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 
-class Donate_Controller extends Website_Controller {
+class Controller_Donate extends Controller_Website {
 
 	protected $auth_required = 'developer';
 
@@ -115,4 +115,4 @@ class Donate_Controller extends Website_Controller {
 		));
 	}
 
-} // End Donate
+} // End Controller_Donate

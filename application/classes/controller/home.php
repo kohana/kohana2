@@ -1,6 +1,6 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 
-class Home_Controller extends Website_Controller {
+class Controller_Home extends Controller_Website {
 
 	public $auto_render = TRUE;
 
@@ -10,4 +10,4 @@ class Home_Controller extends Website_Controller {
 		$this->template->content = View::factory('pages/home/home_'.Kohana::config('locale.language.0'));
 	}
 
-} // End Kohana Website Controller
+} // End Controller_Home

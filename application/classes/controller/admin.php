@@ -1,6 +1,6 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 
-class Admin_Controller extends Website_Controller {
+class Controller_Admin extends Controller_Website {
 
 	public $auto_render = TRUE;
 
@@ -290,4 +290,4 @@ class Admin_Controller extends Website_Controller {
 		}
 	}
 
-} // End Admin
+} // End Controller_Admin

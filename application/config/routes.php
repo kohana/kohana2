@@ -1,7 +1,12 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
-$config = array
+<?php
+
+$config['default']['controller'] = 'home';
+
+$config['gophp5'] = array
 (
-	'_default' => 'home',
-	'gophp5'   => 'news/gophp5',
-	'auth.+'   => 'home'
+	'gophp5',
+	
+	'controller' => 'news',
+	'method' => 'gophp5',
 );
+

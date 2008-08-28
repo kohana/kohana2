@@ -1,6 +1,6 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 
-class Video_tutorial_Model extends ORM {
+class Model_Video_Tutorial extends ORM {
 
 	public function save()
 	{

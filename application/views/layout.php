@@ -93,7 +93,7 @@ echo html::script(array
 <div id="menu" class="clearfix">
 <ul>
 <?php foreach($menu as $link => $title): ?>
-<li<?php if ($link == $this->uri->segment(1)): ?> class="active"<?php endif; ?>><?php echo html::anchor($link, $title) ?></li>
+<li<?php if (strpos(Router::$current_uri, $link) === 0): ?> class="active"<?php endif; ?>><?php echo html::anchor($link, $title) ?></li>
 <?php endforeach; ?>
 </ul>
 </div>

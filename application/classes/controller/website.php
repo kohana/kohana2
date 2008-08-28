@@ -1,6 +1,6 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 
-class Website_Controller extends Template_Controller {
+class Controller_Website extends Controller_Template {
 
 	// Use auto-rendering, defaults to false
 	public $auto_render = FALSE;
@@ -35,8 +35,11 @@ class Website_Controller extends Template_Controller {
 	{
 		parent::__construct();
 
-		// Need the first segment so that the main menu has an active tab
-		$this->uri->segment(1) or url::redirect('home');
+		if (Router::$current_uri === '')
+		{
+			// Need the first segment so that the main menu has an active tab
+			url::redirect('home');
+		}
 
 		if ($this->auto_render === TRUE)
 		{
@@ -142,4 +145,4 @@ class Website_Controller extends Template_Controller {
 		}
 	}
 
-} // End Website Controller
+} // End Controller_Website

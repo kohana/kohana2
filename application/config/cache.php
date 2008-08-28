@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 
 $config['params'] = APPPATH.'cache';
 $config['lifetime'] = 7200;
