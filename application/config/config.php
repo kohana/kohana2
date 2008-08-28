@@ -4,7 +4,7 @@
  * then a full URL will be used, eg: http://localhost/kohana/. If it only includes
  * the path, and a site_protocol is specified, the domain will be auto-detected.
  */
-$config['site_domain'] = '/kohana/';
+$config['site_domain'] = '/kohana/trunk/';
 
 /**
  * Force a default protocol to be used by the site. If no site_protocol is
@@ -82,12 +82,6 @@ $config['display_errors'] = TRUE;
  * @see http://docs.kohanaphp.com/general/configuration
  */
 $config['render_stats'] = TRUE;
-
-/**
- * Filename prefixed used to determine extensions. For example, an
- * extension to the Controller class would be named MY_Controller.php.
- */
-$config['extension_prefix'] = 'MY_';
 
 /**
  * Additional resource paths, or "modules". Each path can either be absolute
