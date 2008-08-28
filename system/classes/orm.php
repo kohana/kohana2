@@ -76,7 +76,7 @@ class ORM_Core {
 	public function __construct($id = NULL)
 	{
 		// Set the object name
-		$this->object_name = strtolower(substr(get_class($this), 0, -6));
+		$this->object_name = strtolower(substr(get_class($this), 6));
 
 		// Initialize database
 		$this->__initialize();
@@ -451,6 +451,12 @@ class ORM_Core {
 				// Search for a specific column
 				$this->db->where($this->unique_key($id), $id);
 			}
+		}
+
+		if ( ! isset($this->db_applied['orderby']))
+		{
+			// Apply sorting
+			$this->db->orderby($this->sorting);
 		}
 
 		return $this->load_result();

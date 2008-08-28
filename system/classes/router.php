@@ -69,6 +69,8 @@ class Router_Core {
 
 			if (preg_match('#^'.$regex.'$#u', self::$current_uri, $matches))
 			{
+				echo Kohana::debug($regex, $name);
+
 				// If matches exist and there are keys for the URI, parse them
 				if (count($matches) > 1 AND $keys = Router::keys($route[0]))
 				{
@@ -102,6 +104,9 @@ class Router_Core {
 						}
 					}
 				}
+
+				// Set controller name
+				self::$controller = $route['controller'];
 
 				if (isset($route['method']))
 				{
