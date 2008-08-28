@@ -70,7 +70,7 @@ class Cache_Core {
 		$this->config = $config;
 
 		// Set driver name
-		$driver = 'Cache_'.ucfirst($this->config['driver']).'_Driver';
+		$driver = 'Cache_Driver_'.ucfirst($this->config['driver']);
 
 		// Load the driver
 		if ( ! Kohana::auto_load($driver))

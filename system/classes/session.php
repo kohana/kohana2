@@ -114,7 +114,7 @@ class Session_Core {
 		if (self::$config['driver'] !== 'native')
 		{
 			// Set driver name
-			$driver = 'Session_'.ucfirst(self::$config['driver']).'_Driver';
+			$driver = 'Session_Driver_'.ucfirst(self::$config['driver']);
 
 			// Load the driver
 			if ( ! Kohana::auto_load($driver))
