@@ -11,6 +11,8 @@
  */
 class Router_Core {
 
+	public static $readonly_keys = array('regex', 'prefix');
+
 	public static $current_uri  = '';
 	public static $query_string = '';
 	public static $complete_uri = '';
@@ -75,10 +77,22 @@ class Router_Core {
 
 					foreach ($keys as $i => $key)
 					{
+						if (in_array($key, Router::$readonly_keys))
+						{
+							// Skip keys that are readonly, such as "regex"
+							continue;
+						}
+
 						if (isset($matches[$i]))
 						{
 							// Set the route value from the URI
 							$route[$key] = $matches[$i];
+						}
+
+						if (isset($route['prefix'][$key]))
+						{
+							// Add the prefix to the key
+							$route[$key] = $route['prefix'][$key].$route[$key];
 						}
 
 						if ($key !== 'controller' AND $key !== 'method' AND isset($route[$key]))
@@ -89,13 +103,10 @@ class Router_Core {
 					}
 				}
 
-				// Set controller name
-				self::$controller = str_replace('/', '_', $route['controller']);
-
 				if (isset($route['method']))
 				{
 					// Set controller method
-					self::$method = str_replace('/', '_', $route['method']);
+					self::$method = $route['method'];
 				}
 				else
 				{

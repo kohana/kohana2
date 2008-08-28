@@ -7,4 +7,4 @@
  * Built in sections are benchmarks, database, session, post and cookies, custom
  * sections can be used too.
  */
-$config['show'] = array('benchmarks');
+$config['show'] = TRUE;
