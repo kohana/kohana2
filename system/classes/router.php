@@ -69,6 +69,8 @@ class Router_Core {
 			// Compile the route into regex
 			$regex = Router::compile($route);
 
+			echo Kohana::debug($name, $regex);
+
 			if (preg_match('#^'.$regex.'$#u', self::$current_uri, $matches))
 			{
 				// If matches exist and there are keys for the URI, parse them
@@ -104,6 +106,8 @@ class Router_Core {
 						}
 					}
 				}
+
+				echo Kohana::debug($route, $regex);exit;
 
 				// Set controller name
 				self::$controller = $route['controller'];
@@ -332,7 +336,7 @@ class Router_Core {
 				if ($i > 0)
 				{
 					// Add slash from previous segment
-					$uri[$i] .= '/';
+					$uri[$i - 1] .= '/';
 				}
 			}
 		}
