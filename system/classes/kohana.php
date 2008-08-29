@@ -76,9 +76,6 @@ final class Kohana {
 		if ($run === TRUE)
 			return;
 
-		// Start the environment setup benchmark
-		Benchmark::start(SYSTEM_BENCHMARK.'_environment_setup');
-
 		// Define Kohana error constant
 		define('E_KOHANA', 42);
 
@@ -101,35 +98,8 @@ final class Kohana {
 			Event::add('system.shutdown', array(__CLASS__, 'internal_cache_save'));
 		}
 
-		// Disable notices and "strict" errors
-		$ER = error_reporting(~E_NOTICE & ~E_STRICT);
-
-		// Set the user agent
-		self::$user_agent = trim($_SERVER['HTTP_USER_AGENT']);
-
-		if (function_exists('date_default_timezone_set'))
-		{
-			$timezone = Kohana::config('locale.timezone');
-
-			// Set default timezone, due to increased validation of date settings
-			// which cause massive amounts of E_NOTICEs to be generated in PHP 5.2+
-			date_default_timezone_set(empty($timezone) ? date_default_timezone_get() : $timezone);
-		}
-
-		// Restore error reporting
-		error_reporting($ER);
-
-		// Start output buffering
-		ob_start(array(__CLASS__, 'output_buffer'));
-
-		// Save buffering level
-		self::$buffer_level = ob_get_level();
-
 		// Send default text/html UTF-8 header
 		header('Content-Type: text/html; charset=UTF-8');
-
-		// Set autoloader
-		spl_autoload_register(array('Kohana', 'auto_load'));
 
 		// Enable exception handling
 		Kohana_Exception::enable();
@@ -145,6 +115,34 @@ final class Kohana {
 			// Enable log writing at shutdown
 			register_shutdown_function(array(__CLASS__, 'log_save'));
 		}
+
+		// Set the user agent
+		self::$user_agent = trim($_SERVER['HTTP_USER_AGENT']);
+
+		if ( ! ($timezone = Kohana::config('locale.timezone')))
+		{
+			// Disable notices and "strict" errors, due to the E_NOTICE that
+			// will be generated in PHP 5.2+
+			$ER = error_reporting(~E_NOTICE & ~E_STRICT);
+
+			// Get the default timezone
+			$timezone = date_default_timezone_get();
+
+			// Restore error reporting
+			error_reporting($ER);
+		}
+
+		// Set the default timezone
+		date_default_timezone_set($timezone);
+
+		// Start output buffering
+		ob_start(array(__CLASS__, 'output_buffer'));
+
+		// Save buffering level
+		self::$buffer_level = ob_get_level();
+
+		// Set autoloader
+		spl_autoload_register(array('Kohana', 'auto_load'));
 
 		// Load locales
 		$locales = Kohana::config('locale.language');
@@ -170,6 +168,9 @@ final class Kohana {
 
 		if ($config = Kohana::config('core.enable_hooks'))
 		{
+			// Start the loading_hooks routine
+			Benchmark::start(SYSTEM_BENCHMARK.'_loading_hooks');
+
 			$hooks = array();
 
 			if ( ! is_array($config))
@@ -212,13 +213,13 @@ final class Kohana {
 					Kohana::log('error', 'Hook not found: '.$hook);
 				}
 			}
+
+			// Stop the loading_hooks routine
+			Benchmark::stop(SYSTEM_BENCHMARK.'_loading_hooks');
 		}
 
 		// Setup is complete, prevent it from being run again
 		$run = TRUE;
-
-		// Stop the environment setup routine
-		Benchmark::stop(SYSTEM_BENCHMARK.'_environment_setup');
 	}
 
 	/**

@@ -13,9 +13,6 @@
 define('KOHANA_VERSION',  '2.3');
 define('KOHANA_CODENAME', 'kernachtig');
 
-// Test of Kohana is running in Windows
-define('KOHANA_IS_WIN', PHP_SHLIB_SUFFIX === 'dll');
-
 // Kohana benchmarks are prefixed to prevent collisions
 define('SYSTEM_BENCHMARK', 'system_benchmark');
 
@@ -25,8 +22,11 @@ require SYSPATH.'classes/benchmark'.EXT;
 // Start total_execution
 Benchmark::start(SYSTEM_BENCHMARK.'_total_execution');
 
-// Start kohana_loading
-Benchmark::start(SYSTEM_BENCHMARK.'_kohana_loading');
+// Start environment_test
+Benchmark::start(SYSTEM_BENCHMARK.'_environment_test');
+
+// Test of Kohana is running in Windows
+define('KOHANA_IS_WIN', PHP_SHLIB_SUFFIX === 'dll');
 
 // Check UTF-8 support
 if ( ! preg_match('/^.$/u', 'ñ'))
@@ -78,8 +78,23 @@ else
 	define('SERVER_UTF8', FALSE);
 }
 
+// Stop environment_test
+Benchmark::stop(SYSTEM_BENCHMARK.'_environment_test');
+
+// Start system_initialization
+Benchmark::start(SYSTEM_BENCHMARK.'_system_initialization');
+
 // Load utf8 support
 require SYSPATH.'classes/utf8'.EXT;
+
+// Load Event support
+require SYSPATH.'classes/event'.EXT;
+
+// Load Kohana core
+require SYSPATH.'classes/kohana'.EXT;
+
+// Start utf8_conversion
+Benchmark::start(SYSTEM_BENCHMARK.'_utf8_conversion');
 
 // Convert all global variables to UTF-8.
 $_GET    = utf8::clean($_GET);
@@ -93,20 +108,11 @@ if (PHP_SAPI == 'cli')
 	$_SERVER['argv'] = utf8::clean($_SERVER['argv']);
 }
 
-// Load Event support
-require SYSPATH.'classes/event'.EXT;
-
-// Load Kohana core
-require SYSPATH.'classes/kohana'.EXT;
+// Stop utf8_conversion
+Benchmark::stop(SYSTEM_BENCHMARK.'_utf8_conversion');
 
 // Prepare the environment
 Kohana::setup();
-
-// End kohana_loading
-Benchmark::stop(SYSTEM_BENCHMARK.'_kohana_loading');
-
-// Start system_initialization
-Benchmark::start(SYSTEM_BENCHMARK.'_system_initialization');
 
 // Prepare the system
 Event::run('system.ready');
