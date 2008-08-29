@@ -133,8 +133,6 @@ class Router_Core {
 				// A matching route has been found!
 				self::$current_route = $name;
 
-				echo Kohana::debug($route, self::$arguments);exit;
-
 				return TRUE;
 			}
 		}
