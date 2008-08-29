@@ -1,6 +1,6 @@
 <?php
 
-class Role_Model extends Auth_Role_Model {
+class Model_Role extends Model_Auth_Role {
 
 	// This class can be replaced or extended
 

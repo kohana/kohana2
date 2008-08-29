@@ -1,7 +1,7 @@
 <?php
 
-class User_Model extends Auth_User_Model {
-	
+class Model_User extends Model_Auth_User {
+
 	// This class can be replaced or extended
-	
+
 } // End User Model

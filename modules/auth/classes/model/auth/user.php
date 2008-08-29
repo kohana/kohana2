@@ -1,6 +1,6 @@
 <?php
 
-class Auth_User_Model extends ORM {
+class Model_Auth_User extends ORM {
 
 	// Relationships
 	protected $has_many = array('user_tokens');

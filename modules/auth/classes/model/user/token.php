@@ -1,6 +1,6 @@
 <?php
 
-class User_Token_Model extends Auth_User_Token_Model {
+class Model_User_Token extends Model_Auth_User_Token {
 
 	// This class can be replaced or extended
 

@@ -1,6 +1,6 @@
 <?php
 
-class Auth_User_Token_Model extends ORM {
+class Model_Auth_User_Token extends ORM {
 
 	// Relationships
 	protected $belongs_to = array('user');

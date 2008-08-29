@@ -10,7 +10,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Auth_Demo_Controller extends Template_Controller {
+class Controller_Auth extends Controller_Template {
 
 	// Do not allow to run in production
 	const ALLOW_PRODUCTION = FALSE;
