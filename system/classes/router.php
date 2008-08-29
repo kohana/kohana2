@@ -72,7 +72,7 @@ class Router_Core {
 			if (preg_match('#^'.$regex.'$#u', self::$current_uri, $matches))
 			{
 				// If matches exist and there are keys for the URI, parse them
-				if (count($matches) > 1 AND $keys = Router::keys($route[0]))
+				if ($keys = Router::keys($route[0]))
 				{
 					// Remove the matched string
 					$matches = array_slice($matches, 1);
