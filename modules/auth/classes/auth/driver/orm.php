@@ -36,7 +36,7 @@ class Auth_Driver_ORM_Core implements Auth_Driver {
 
 		// Checks if a user is logged in and valid
 		if ( ! empty($_SESSION['auth_user']) AND is_object($_SESSION['auth_user'])
-			AND ($_SESSION['auth_user'] instanceof User_Model) AND $_SESSION['auth_user']->loaded)
+			AND ($_SESSION['auth_user'] instanceof Model_User) AND $_SESSION['auth_user']->loaded)
 		{
 			// Everything is okay so far
 			$status = TRUE;
@@ -44,7 +44,7 @@ class Auth_Driver_ORM_Core implements Auth_Driver {
 			if ( ! empty($role))
 			{
 				// Check that the user has the given role
-				$status = $_SESSION['auth_user']->has(new Role_Model($role));
+				$status = $_SESSION['auth_user']->has(ORM::factory('role', $role));
 			}
 		}
 
@@ -60,7 +60,7 @@ class Auth_Driver_ORM_Core implements Auth_Driver {
 		}
 
 		// If the passwords match, perform a login
-		if ($user->has(new Role_Model('login')) AND $user->password === $password)
+		if ($user->has(ORM::factory('role', 'login')) AND $user->password === $password)
 		{
 			if ($remember === TRUE)
 			{
@@ -174,7 +174,7 @@ class Auth_Driver_ORM_Core implements Auth_Driver {
 	 * @param   object   user model object
 	 * @return  void
 	 */
-	protected function complete_login(User_Model $user)
+	protected function complete_login(Model_User $user)
 	{
 		// Update the number of logins
 		$user->logins += 1;

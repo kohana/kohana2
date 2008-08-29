@@ -58,7 +58,7 @@ class Auth_Core {
 		$this->config = $config;
 
 		// Set the driver class name
-		$driver = 'Auth_'.$config['driver'].'_Driver';
+		$driver = 'Auth_Driver_'.$config['driver'];
 
 		if ( ! Kohana::auto_load($driver))
 			throw new Kohana_Exception('core.driver_not_found', $config['driver'], get_class($this));
