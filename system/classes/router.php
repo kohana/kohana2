@@ -13,6 +13,8 @@ class Router_Core {
 
 	public static $readonly_keys = array('regex', 'prefix');
 
+	public static $current_route;
+
 	public static $current_uri  = '';
 	public static $query_string = '';
 	public static $complete_uri = '';
@@ -118,6 +120,8 @@ class Router_Core {
 				}
 
 				// A matching route has been found!
+				self::$current_route = $name;
+
 				return TRUE;
 			}
 		}
