@@ -83,7 +83,7 @@ class Router_Core {
 							continue;
 						}
 
-						if (isset($matches[$i]))
+						if (isset($matches[$i]) AND $matches[$i] !== '')
 						{
 							// Set the route value from the URI
 							$route[$key] = $matches[$i];
