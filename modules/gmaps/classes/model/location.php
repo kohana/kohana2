@@ -16,7 +16,7 @@ CREATE TABLE `locations` (
 
 */
 
-class Location_Model extends ORM {
+class Model_Location extends ORM {
 
 	// Exciting!
 

@@ -10,7 +10,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Gmaps_Demo_Controller extends Controller {
+class Controller_Gmaps extends Controller {
 
 	// Do not allow to run in production
 	const ALLOW_PRODUCTION = FALSE;
@@ -50,7 +50,7 @@ class Gmaps_Demo_Controller extends Controller {
 		View::factory('gmaps/static_demo')->set(array('simple' => Gmap::static_map(44.9801, -93.2519),'multi' => Gmap::static_map($points)))->render(TRUE);
 	}
 
-	public function azmap()
+	public function map_test()
 	{
 		// Create a new Gmap
 		$map = new Gmap('map', array
