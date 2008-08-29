@@ -10,7 +10,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Auth_File_Driver implements Auth_Driver {
+class Auth_Driver_File_Core implements Auth_Driver {
 
 	// User list
 	protected $users;

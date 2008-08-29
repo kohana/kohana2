@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Auth_ORM_Driver implements Auth_Driver {
+class Auth_Driver_ORM_Core implements Auth_Driver {
 
 	protected $config;
 
