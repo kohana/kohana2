@@ -72,7 +72,7 @@ class Router_Core {
 			if (preg_match('#^'.$regex.'$#u', self::$current_uri, $matches))
 			{
 				// If matches exist and there are keys for the URI, parse them
-				if ($keys = Router::keys($route[0]))
+				if (count($matches) > 1 AND $keys = Router::keys($route[0]))
 				{
 					// Remove the matched string
 					$matches = array_slice($matches, 1);
@@ -90,19 +90,30 @@ class Router_Core {
 							// Set the route value from the URI
 							$route[$key] = $matches[$i];
 						}
+					}
+				}
 
-						if (isset($route['prefix'][$key]))
+				if (isset($route['prefix']))
+				{
+					foreach ($route['prefix'] as $key => $prefix)
+					{
+						if (isset($route[$key]))
 						{
 							// Add the prefix to the key
 							$route[$key] = $route['prefix'][$key].$route[$key];
 						}
-
-						if ($key !== 'controller' AND $key !== 'method' AND isset($route[$key]))
-						{
-							// Add the value to the arguments
-							self::$arguments[$key] = $route[$key];
-						}
 					}
+				}
+
+				foreach ($route as $key => $val)
+				{
+					if ( ! is_string($key) OR $key === 'controller' OR $key === 'method' OR in_array($key, self::$readonly_keys))
+					{
+						// These keys are not arguments, skip them
+						continue;
+					}
+
+					self::$arguments[$key] = $val;
 				}
 
 				// Set controller name
@@ -121,6 +132,8 @@ class Router_Core {
 
 				// A matching route has been found!
 				self::$current_route = $name;
+
+				echo Kohana::debug($route, self::$arguments);exit;
 
 				return TRUE;
 			}
