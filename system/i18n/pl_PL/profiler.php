@@ -12,5 +12,4 @@ $lang = array
 	'no_database'  => 'Baza danych nie jest załadowana',
 	'cookie_data'  => 'Dane Ciasteczka',
 	'no_cookie'    => 'Brak Ciasteczka',
-
 );
