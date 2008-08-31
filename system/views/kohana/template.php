@@ -11,7 +11,7 @@
 	body { width: 52em; margin: 200px auto 2em; font-size: 76%; font-family: Arial, sans-serif; color: #273907; line-height: 1.5; text-align: center; }
 	h1 { font-size: 3em; font-weight: normal; text-transform: uppercase; color: #fff; }
 	a { color: inherit; }
-	p { padding: 1em 0; margin: 0; }
+	p { padding: 0 0 1em; margin: 0; }
 	code { font-size: 1.3em; }
 	ul { list-style: none; padding: 2em 0; margin: 0; }
 		ul li { display: inline; padding-right: 1em; text-transform: uppercase; }
@@ -26,12 +26,11 @@
 		form fieldset { display: block; border: 0; padding: 1em; }
 		form fieldset.submit { text-align: right; }
 			form fieldset.submit a { float: left; }
-		form fieldset p { padding: 0 0 1em; }
 		form label { display: block; margin: 0 0 0.6em; }
 			form label span { display: block; font-size: 80%; padding: 0.1em 0; }
 		form ul.errors { list-style: outside square; padding: 1em; }
 		form ul.errors li { display: list-item; margin-left: 1em; text-transform: none; color: #800; }
-	.intro { padding: 0 1em 1em; border-bottom: dotted 1px #569f09; font-size: 1.2em; }
+	.intro { padding: 0 1em 1em; margin-bottom: 1em; border-bottom: dotted 1px #569f09; font-size: 1.2em; }
 	.box { padding: 2em; background: #98cc2b; border: 1px solid #569f09; }
 	.copyright { font-size: 0.9em; text-transform: uppercase; color: #557d10; }
 	</style>
