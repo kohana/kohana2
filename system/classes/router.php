@@ -203,20 +203,14 @@ class Router_Core {
 			self::$current_uri = substr(self::$current_uri, $strpos_fc + strlen($fc));
 		}
 
-		// Remove slashes from the start and end of the URI
-		self::$current_uri = trim(self::$current_uri, '/');
+		// Remove all dot-paths from the URI, they are not valid
+		self::$current_uri = preg_replace('#\.[\s./]*/#', '', self::$current_uri);
 
-		if (self::$current_uri !== '')
-		{
-			// Reduce multiple slashes into single slashes
-			self::$current_uri = preg_replace('#//+#', '/', self::$current_uri);
+		// Reduce multiple slashes into single slashes, remove trailing slashes
+		self::$current_uri = trim(preg_replace('#//+#', '/', self::$current_uri), '/');
 
-			// Remove all dot-paths from the URI, they are not valid
-			self::$current_uri = preg_replace('#\.[\s./]*/#', '', self::$current_uri);
-
-			// Make sure the URL is not tainted with HTML characters
-			self::$current_uri = html::specialchars(self::$current_uri, FALSE);
-		}
+		// Make sure the URL is not tainted with HTML characters
+		self::$current_uri = html::specialchars(self::$current_uri, FALSE);
 
 		if ( ! empty($_SERVER['QUERY_STRING']))
 		{
