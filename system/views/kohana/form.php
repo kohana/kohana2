@@ -1,12 +1,6 @@
 <?php echo form::open($action, $attributes) ?>
 
-<?php if ( ! empty($errors)): ?>
-<ul class="errors">
-<?php foreach ($errors as $error): ?>
-<li><?php echo $error ?></li>
-<?php endforeach ?>
-</ul>
-<?php endif ?>
+<?php include Kohana::find_file('views', 'kohana/form_errors') ?>
 
 <fieldset>
 <?php foreach ($inputs as $title => $input): ?>
