@@ -25,7 +25,7 @@ class Router_Core {
 
 	/**
 	 * Router setup routine. Called during the [system.routing][ref-esr]
-	 * Event by default. 
+	 * Event by default.
 	 *
 	 * [ref-esr]: http://docs.kohanaphp.com/events/system.routing
 	 *
@@ -33,9 +33,6 @@ class Router_Core {
 	 */
 	public static function setup()
 	{
-		// Remove all dot-paths from the URI, they are not valid
-		self::$current_uri = trim(preg_replace('#\.[\s./]*/#', '', self::$current_uri), '/');
-
 		// Set the complete URI
 		self::$complete_uri = self::$current_uri.self::$query_string;
 
@@ -47,9 +44,8 @@ class Router_Core {
 			throw new Kohana_User_Exception
 			(
 				'Routing API Changed!',
-				'Routing has been significantly changed, and your configuration '.
-				'files are not up to date. Please check http://dev.kohanaphp.com/changeset/3366 '.
-				'for more details.'
+				'Routing has been significantly changed, and your configuration files are not up to date. '.
+				'Please check http://dev.kohanaphp.com/changeset/3366 for more details.'
 			);
 		}
 
@@ -203,7 +199,7 @@ class Router_Core {
 
 		if (($strpos_fc = strpos(self::$current_uri, $fc)) !== FALSE)
 		{
-			// Remove the front controller from the current uri
+			// Remove the front controller from the current URI
 			self::$current_uri = substr(self::$current_uri, $strpos_fc + strlen($fc));
 		}
 
@@ -214,6 +210,9 @@ class Router_Core {
 		{
 			// Reduce multiple slashes into single slashes
 			self::$current_uri = preg_replace('#//+#', '/', self::$current_uri);
+
+			// Remove all dot-paths from the URI, they are not valid
+			self::$current_uri = preg_replace('#\.[\s./]*/#', '', self::$current_uri);
 
 			// Make sure the URL is not tainted with HTML characters
 			self::$current_uri = html::specialchars(self::$current_uri, FALSE);
@@ -263,7 +262,7 @@ class Router_Core {
 		$uri = str_replace($search, $replace, $uri);
 
 		// Remove trailing parts from the URI
-		$uri = preg_replace('#/?\:.+$#', '', $uri);
+		$uri = preg_replace('#/?:.+$#', '', $uri);
 
 		return $uri;
 	}
@@ -280,13 +279,13 @@ class Router_Core {
 			return array();
 
 		// Find all keys that start with a colon
-		preg_match_all('#:([a-z]+)#', $uri, $keys);
+		preg_match_all('#(?<=:)[a-z]+#', $uri, $keys);
 
-		return $keys[1];
+		return $keys[0];
 	}
 
 	/**
-	 * Creates a [regular expression][ref-reg] that can be used to match a 
+	 * Creates a [regular expression][ref-reg] that can be used to match a
 	 * route against a URI with [preg_match][ref-prm].
 	 *
 	 * [ref-reg]: http://php.net/manual/book.pcre.php
@@ -301,23 +300,23 @@ class Router_Core {
 		$uri = explode('/', $route[0]);
 
 		// Regular expression end
-		$end = array();
+		$end = '';
 
 		// Nothing is optional yet
 		$optional = FALSE;
 
 		foreach ($uri as $i => $segment)
 		{
-			// Regular expression
-			$exp = array();
-
 			if ($segment[0] === ':')
 			{
 				// Find the actual segment key and any trailing garbage
-				preg_match('#^:([a-z]+)(.*)$#', $segment, $matches);
+				preg_match('#^:([a-z]++)(.*)$#', $segment, $matches);
 
 				// Segment key
 				$key = $matches[1];
+
+				// Regular expression
+				$exp = '';
 
 				if ($optional === FALSE AND isset($route[$key]))
 				{
@@ -328,41 +327,38 @@ class Router_Core {
 
 				if ($optional === TRUE)
 				{
-					// Start the expression as an optional match
-					$exp[] = '(?:';
+					// Start the expression as non-capturing group
+					$exp .= '(?:';
+
+					// End the expression as an optional match
+					$end .= ')?';
 				}
 
 				if ($i > 0)
 				{
 					// Add the slash from the previous segment
-					$exp[] = '/';
+					$exp .= '/';
 				}
 
 				if (isset($route['regex'][$key]))
 				{
 					// Matches specified regex for the segment
-					$exp[] = '('.$route['regex'][$key].')';
+					$exp .= '('.$route['regex'][$key].')';
 				}
 				else
 				{
-					// Default regex matches all characters
-					$exp[] = '([^/]+)';
+					// Default regex matches all characters except slashes
+					$exp .= '([^/]++)';
 				}
 
 				if ($matches[2] !== '')
 				{
 					// Add trailing segment junk
-					$exp[] = preg_quote($matches[2], '#');
-				}
-
-				if ($optional === TRUE)
-				{
-					// End the expression
-					$end[] = ')?';
+					$exp .= preg_quote($matches[2], '#');
 				}
 
 				// Replace the segment with the segment expression
-				$uri[$i] = implode('', $exp);
+				$uri[$i] = $exp;
 			}
 			else
 			{
@@ -377,7 +373,7 @@ class Router_Core {
 			}
 		}
 
-		return implode('', $uri).implode('', $end);
+		return implode('', $uri).$end;
 	}
 
 } // End Router

@@ -16,7 +16,7 @@
  *
  * The converted regex for this route is:
  *
- *     (?:([^/]+)(?:/([^/]+)(?:/([^/]+))?)?)?
+ *     (?:([^/]++)(?:/([^/]++)(?:/([^/]++))?)?)?
  *
  * To define a specific pattern for a key, you can use the special "regex" key:
  *
