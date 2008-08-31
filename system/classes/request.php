@@ -30,14 +30,39 @@ class request_Core {
 			// Set referrer
 			$ref = $_SERVER['HTTP_REFERER'];
 
-			if (strpos($ref, url::base(FALSE)) === 0)
+			// Set the request protocol
+			$protocol = request::protocol();
+
+			if (strpos($ref, url::base(FALSE, $protocol)) === 0)
 			{
 				// Remove the base URL from the referrer
-				$ref = substr($ref, strlen(url::base(TRUE)));
+				$ref = substr($ref, strlen(url::base(TRUE, $protocol)));
 			}
 		}
 
 		return isset($ref) ? $ref : $default;
+	}
+
+	/**
+	 * Returns the current request protocol, based on $_SERVER['https']. In CLI
+	 * mode, NULL will be returned.
+	 *
+	 * @return  string
+	 */
+	public static function protocol()
+	{
+		if (PHP_SAPI === 'cli')
+		{
+			return NULL;
+		}
+		elseif ( ! empty($_SERVER['HTTPS']) AND $_SERVER['HTTPS'] === 'on')
+		{
+			return 'https';
+		}
+		else
+		{
+			return 'http';
+		}
 	}
 
 	/**

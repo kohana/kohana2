@@ -46,6 +46,7 @@ class Router_Core {
 		{
 			throw new Kohana_User_Exception
 			(
+				'Routing API Changed!',
 				'Routing has been significantly changed, and your configuration '.
 				'files are not up to date. Please check http://dev.kohanaphp.com/changeset/3366 '.
 				'for more details.'
@@ -232,11 +233,39 @@ class Router_Core {
 	 * @param   array    route key values
 	 * @return  string
 	 */
-	public static function uri($name, array $values = array())
+	public static function uri($route, array $values = array())
 	{
-		$route = Kohana::config('routes.'.$name);
+		if ( ! ($route = Kohana::config('routes.'.$route)))
+		{
+			// @todo: This should be an exception
+			return FALSE;
+		}
 
-		throw new Kohana_User_Exception('Router::uri() is not functional yet');
+		// Get the URI keys from the route
+		$keys = Router::keys($route[0]);
+
+		// Copy the URI, it will have parameters replaced
+		$uri = $route[0];
+
+		// String searches and replacements
+		$search = $replace = array();
+
+		foreach ($keys as $key)
+		{
+			if (isset($values[$key]))
+			{
+				$search[] = ':'.$key;
+				$replace[] = $values[$key];
+			}
+		}
+
+		// Replace all the keys with the values
+		$uri = str_replace($search, $replace, $uri);
+
+		// Remove trailing parts from the URI
+		$uri = preg_replace('#/?\:.+$#', '', $uri);
+
+		return $uri;
 	}
 
 	/**

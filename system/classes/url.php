@@ -53,7 +53,7 @@ class url_Core {
 			else
 			{
 				// Guess the protocol to provide full http://domain/path URL
-				$base_url = ((empty($_SERVER['HTTPS']) OR $_SERVER['HTTPS'] === 'off') ? 'http' : 'https').'://'.$site_domain;
+				$base_url = request::protocol().'://'.$site_domain;
 			}
 		}
 		else
