@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package  Core
  *
@@ -8,8 +7,8 @@
  *     $config['default'] = array
  *     (
  *         // Default routing
- *         :controller/:method/:id.xml',
- *    
+ *         :controller/:method/:id',
+ *         
  *         // Defaults for route keys
  *         'controller' => 'welcome',
  *         'method' => 'index',
@@ -32,7 +31,7 @@
  *     $config['admin'] = array
  *     (
  *         'admin/:controller/:method/:id',
- *
+ *         
  *         // Will change all controllers to admin_:controller
  *         'prefix' => array('controller' => 'admin_'),
  *     );
