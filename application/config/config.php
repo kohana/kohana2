@@ -17,13 +17,13 @@ $config['site_domain'] = '/kohana/';
  *     $config['site_protocol'] = '';
  *
  * If no site_protocol is specified, then the current protocol will be detected.
- * This setting must be left empty if you do not want generated URLs to not
- * contain the domain name.
+ * This setting must be left empty if you do not want generated URLs to contain
+ * the domain name.
  */
 $config['site_protocol'] = '';
 
 /**
- * Name of the front controller for this application. 
+ * Name of the front controller for this application.
  *
  *     $config['index_page'] = 'index.php';
  *
@@ -66,7 +66,7 @@ $config['output_compression'] = FALSE;
  *
  *     $config['render_stats'] = TRUE;
  *
- * Enable by default, this will replace specific stings in generated output
+ * Enabled by default, this will replace specific strings in generated output
  * with generated statistics or information.
  *
  * {execution_time}
@@ -110,14 +110,13 @@ $config['display_errors'] = TRUE;
  *     $config['log_threshold'] = 1;
  *
  * It is highly recommended to enable error and exception logging on production
- * websites and to disable 
+ * websites and to disable
  *
  * - 0: Disable all logging
  * - 1: Log only PHP errors and exceptions
  * - 2: Also log PHP warnings
  * - 3: Also log PHP notices
  * - 4: Also log Kohana debugging messages
- *
  */
 $config['log_threshold'] = 1;
 
