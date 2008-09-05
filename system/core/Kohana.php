@@ -256,7 +256,7 @@ final class Kohana {
 				Event::run('system.404');
 			}
 
-			if (IN_PRODUCTION AND $class->getConstant('ALLOW_PRODUCTION') == FALSE)
+			if ($class->isAbstract() OR (IN_PRODUCTION AND $class->getConstant('ALLOW_PRODUCTION') == FALSE))
 			{
 				// Controller is not allowed to run in production
 				Event::run('system.404');
