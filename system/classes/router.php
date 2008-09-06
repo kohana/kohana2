@@ -267,7 +267,7 @@ class Router_Core {
 	 * @param   string   URI string
 	 * @return  array
 	 */
-	protected static function keys($uri)
+	public static function keys($uri)
 	{
 		if (strpos($uri, ':') === FALSE)
 			return array();
@@ -288,7 +288,7 @@ class Router_Core {
 	 * @param   array   route array
 	 * @return  string  regular expression
 	 */
-	protected static function compile(array $route)
+	public static function compile(array $route)
 	{
 		// Split the route URI by slashes
 		$uri = explode('/', $route[0]);

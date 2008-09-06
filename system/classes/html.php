@@ -375,6 +375,41 @@ class html_Core {
 	}
 
 	/**
+	 * Creates an embedded flash object. If you use an array of attributes,
+	 * define the flash source with the "data" key.
+	 *
+	 * @param   string        flash source, or an array of attributes
+	 * @param   boolean       include the index_page in the link
+	 * @return  string
+	 */
+	public static function flash($data = NULL, $index = FALSE)
+	{
+		// Create attribute list
+		$attributes = is_array($data) ? $data : array('data' => $data);
+
+		$attributes += array
+		(
+			// Add the Flash mime type
+			'type'  => 'application/x-shockwave-flash',
+
+			// Default alt text
+			'alt' => '<a href="http://www.adobe.com/go/getflashplayer">Please download Adobe Flash Player.</a>',
+		);
+
+		// Remove the alt text from the string
+		$alt = $attributes['alt'];
+		unset($attributes['alt']);
+
+		if (strpos($attributes['data'], '://') === FALSE)
+		{
+			// Make the src attribute into an absolute URL
+			$attributes['data'] = url::base($index).$attributes['data'];
+		}
+
+		return '<object'.html::attributes($attributes).'><param name="movie" value="'.$attributes['data'].'" />'.$alt.'</object>';
+	}
+
+	/**
 	 * Compiles an array of HTML attributes into an attribute string.
 	 *
 	 * @param   string|array  array of attributes

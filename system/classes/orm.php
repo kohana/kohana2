@@ -453,12 +453,6 @@ class ORM_Core {
 			}
 		}
 
-		if ( ! isset($this->db_applied['orderby']))
-		{
-			// Apply sorting
-			$this->db->orderby($this->sorting);
-		}
-
 		return $this->load_result();
 	}
 
@@ -482,12 +476,6 @@ class ORM_Core {
 		{
 			// Set offset
 			$this->db->offset($offset);
-		}
-
-		if ( ! isset($this->db_applied['orderby']))
-		{
-			// Apply sorting
-			$this->db->orderby($this->sorting);
 		}
 
 		return $this->load_result(TRUE);
@@ -1066,6 +1054,12 @@ class ORM_Core {
 		{
 			// Selete all columns by default
 			$this->db->select($this->table_name.'.*');
+		}
+
+		if ( ! isset($this->db_applied['orderby']))
+		{
+			// Apply the user-defined sorting
+			$this->db->orderby($this->sorting);
 		}
 
 		// Load the result
