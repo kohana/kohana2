@@ -681,12 +681,13 @@ final class Kohana {
 
 	/**
 	 * Closes all open output buffers, either by flushing or cleaning all
-	 * open buffers, including the Kohana output buffer.
+	 * open buffers, and optionally, the Kohana output buffer.
 	 *
 	 * @param   boolean  disable to clear buffers, rather than flushing
+	 * @param   boolean  close the kohana output buffer
 	 * @return  void
 	 */
-	public static function close_buffers($flush = TRUE)
+	public static function close_buffers($flush = TRUE, $kohana_buffer = TRUE)
 	{
 		if (ob_get_level() >= self::$buffer_level)
 		{
@@ -699,11 +700,14 @@ final class Kohana {
 				$close();
 			}
 
-			// This will flush the Kohana buffer, which sets self::$output
-			ob_end_clean();
+			if ($kohana_buffer === TRUE)
+			{
+				// This will flush the Kohana buffer, which sets self::$output
+				ob_end_clean();
 
-			// Reset the buffer level
-			self::$buffer_level = ob_get_level();
+				// Reset the buffer level
+				self::$buffer_level = ob_get_level();
+			}
 		}
 	}
 
@@ -1608,6 +1612,9 @@ class Kohana_Exception extends Exception {
 		}
 
 		echo $exception;
+
+		// Exceptions must halt execution
+		exit;
 	}
 
 	// Error template
@@ -1645,58 +1652,70 @@ class Kohana_Exception extends Exception {
 	 */
 	public function __toString()
 	{
-		// Load variables locally
-		$code  = $this->code;
-		$error = $this->message;
-		$file  = $this->file;
-		$line  = $this->line;
+		if (Kohana::config('core.display_errors') === FALSE)
+		{
+			// Load the "errors disabled" message
+			$code  = Kohana::lang('core.generic_error');
+			$error = Kohana::lang('core.errors_disabled', url::site(''), url::site(Router::$current_uri));
+
+			// Do not show the file or line
+			$file = $line = NULL;
+		}
+		else
+		{
+			// Load exception properties locally
+			$code  = $this->code;
+			$error = $this->message;
+			$file  = $this->file;
+			$line  = $this->line;
+
+			// Load the i18n error name
+			$code = Kohana::lang('errors.'.$code.'.1').' ('.$code.')';
+		}
 
 		if (Kohana_Exception::$html_output)
 		{
-			// Lines to read from the source
-			$start_line = $line - 4;
-			$end_line   = $line + 3;
-
-			$file_source = fopen($file, 'r');
-			$file_line   = 1;
-
-			// Source code
-			$source = '';
-
-			while ($read_line = fgets($file_source))
+			if ( ! empty($file))
 			{
-				if ($file_line >= $start_line)
+				// Lines to read from the source
+				$start_line = $line - 4;
+				$end_line   = $line + 3;
+
+				$file_source = fopen($file, 'r');
+				$file_line   = 1;
+
+				// Source code
+				$source = '';
+
+				while ($read_line = fgets($file_source))
 				{
-					if ($file_line === $line)
+					if ($file_line >= $start_line)
 					{
-						// Wrap the text of this line in <span> tags, for highlighting
-						$read_line = preg_replace('/^(\s+)(.+?)(\s+)$/', '$1<span>$2</span>$3', $read_line);
+						if ($file_line === $line)
+						{
+							// Wrap the text of this line in <span> tags, for highlighting
+							$read_line = preg_replace('/^(\s+)(.+?)(\s+)$/', '$1<span>$2</span>$3', $read_line);
+						}
+
+						$source .= $read_line;
 					}
 
-					$source .= $read_line;
+					if (++$file_line > $end_line)
+					{
+						// Stop reading lines
+						fclose($file_source);
+
+						break;
+					}
 				}
 
-				if (++$file_line > $end_line)
+				if (Kohana_Exception::$trace_output)
 				{
-					// Stop reading lines
-					fclose($file_source);
+					$trace = $this->getTrace();
 
-					break;
+					// Read trace
+					$trace = Kohana::read_trace($trace);
 				}
-			}
-
-			if (Kohana_Exception::$trace_output)
-			{
-				$trace = $this->getTrace();
-
-				if ($this instanceof Kohana_PHP_Exception)
-				{
-					// Remove the error handler call
-					array_shift($trace);
-				}
-
-				// Read trace
-				$trace = Kohana::read_trace($trace);
 			}
 
 			if (method_exists($this, 'sendHeaders') AND ! headers_sent())
@@ -1704,41 +1723,50 @@ class Kohana_Exception extends Exception {
 				// Send the headers if they have not already been sent
 				$this->sendHeaders();
 			}
+
+			// Sanitize filepath for greater security
+			$file = Kohana::sanitize_path($file);
 		}
-
-		// Sanitize file
-		$file = Kohana::sanitize_path($file);
-
-		// Error name
-		$code = Kohana::lang('errors.'.$code.'.1').' ('.$code.')';
 
 		if ( ! Kohana_Exception::$html_output)
 		{
 			// Show only the error text
-			return $code.': '.$error.' [ '.$file.', '.$line.' ]';
+			return $code.': '.$error.' [ '.$file.', '.$line.' ] '."\n";
 		}
 
-		ob_start();
-
-		if ( ! self::$error_resources)
+		if (Kohana::config('core.display_errors'))
 		{
-			// Include error style
-			echo '<style type="text/css">', "\n";
-			include Kohana::find_file('views', 'kohana/error_style', FALSE, 'css');
-			echo '</style>', "\n";
+			ob_start();
 
-			// Include error js
-			echo '<script type="text/javascript">', "\n";
-			include Kohana::find_file('vendor', 'jquery', FALSE, 'js');
-			include Kohana::find_file('views', 'kohana/error_script', FALSE, 'js');
-			echo '</script>', "\n";
+			if ( ! self::$error_resources)
+			{
+				// Include error style
+				echo '<style type="text/css">', "\n";
+				include Kohana::find_file('views', 'kohana/error_style', FALSE, 'css');
+				echo '</style>', "\n";
 
-			// Error resources have been loaded
-			self::$error_resources = TRUE;
+				// Include error js
+				echo '<script type="text/javascript">', "\n";
+				include Kohana::find_file('vendor', 'jquery', FALSE, 'js');
+				include Kohana::find_file('views', 'kohana/error_script', FALSE, 'js');
+				echo '</script>', "\n";
+
+				// Error resources have been loaded
+				self::$error_resources = TRUE;
+			}
+
+			require Kohana::find_file('views', 'kohana/error', FALSE);
 		}
+		else
+		{
+			// Clean and stop all output buffers except the Kohana buffer
+			Kohana::close_buffers(FALSE, FALSE);
 
-		// Include error template
-		require Kohana::find_file('views', 'kohana/error', FALSE);
+			// Clean the Kohana output buffer
+			ob_clean();
+
+			require Kohana::find_file('views', 'kohana/error_disabled', FALSE);
+		}
 
 		return ob_get_clean();
 	}
@@ -1817,13 +1845,13 @@ class Kohana_PHP_Exception extends Kohana_Exception {
 			Kohana::log('error', Kohana::lang('core.uncaught_exception', $error, $exception->message, $exception->file, $exception->line));
 		}
 
-		if (method_exists($exception, 'sendHeaders') AND ! headers_sent())
-		{
-			// Send the headers if they have not already been sent
-			$exception->sendHeaders();
-		}
-
 		echo $exception;
+
+		if (Kohana::config('core.display_errors') === FALSE)
+		{
+			// Execution must halt
+			exit;
+		}
 	}
 
 	/**

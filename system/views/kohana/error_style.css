@@ -12,3 +12,4 @@ div.kohana_trace { display: none; border-top: dotted 1px #809953; }
 			div.kohana_trace div.source pre span { background: #ede33b; }
 	div.kohana_trace ul.trace { list-style: none; padding: 0; margin: 0; line-height: 120%; }
 		div.kohana_trace ul.trace li { display: list-item; font-family: monospace; }
+	div.kohana_trace .logged { padding: 0.6em; margin: 0; background: #fff; font-size: 1.2em; color: #711; text-align: center; }
