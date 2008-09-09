@@ -1540,6 +1540,12 @@ final class Kohana {
 
 class Kohana_Exception extends Exception {
 
+	// Generate HTML errors
+	public static $html_output = TRUE;
+
+	// Show stack traces in errors
+	public static $trace_output = TRUE;
+
 	// Error resources have not been loaded
 	protected static $error_resources = FALSE;
 
@@ -1601,82 +1607,7 @@ class Kohana_Exception extends Exception {
 			Kohana::log('error', Kohana::lang('core.uncaught_exception', $error, $exception->message, $exception->file, $exception->line));
 		}
 
-		if (method_exists($exception, 'sendHeaders') AND ! headers_sent())
-		{
-			// Send the headers if they have not already been sent
-			$exception->sendHeaders();
-		}
-
 		echo $exception;
-		return;
-
-		$code     = $exception->getCode();
-		$type     = get_class($exception);
-		$message  = $exception->getMessage();
-		$file     = $exception->getFile();
-		$line     = $exception->getLine();
-		$template = ($exception instanceof Kohana_Exception) ? $exception->getTemplate() : 'kohana/error';
-
-		if (is_numeric($code))
-		{
-			$codes = Kohana::lang('errors');
-
-			if ( ! empty($codes[$code]))
-			{
-				list($level, $error, $description) = $codes[$code];
-			}
-			else
-			{
-				$level = 1;
-				$error = get_class($exception);
-				$description = '';
-			}
-		}
-		else
-		{
-			// Custom error message, this will never be logged
-			$level = 5;
-			$error = $code;
-			$description = '';
-		}
-
-		// Remove the DOCROOT from the path, as a security precaution
-		$file = str_replace('\\', '/', realpath($file));
-		$file = preg_replace('|^'.preg_quote(DOCROOT).'|', '', $file);
-
-		if ($level >= Kohana::config('core.log_threshold'))
-		{
-			// Log the error
-			Kohana::log('error', Kohana::lang('core.uncaught_exception', $type, $message, $file, $line));
-		}
-
-		if (method_exists($exception, 'sendHeaders') AND ! headers_sent())
-		{
-			// Send the headers if they have not already been sent
-			$exception->sendHeaders();
-		}
-
-		// Test if display_errors is on
-		if (Kohana::config('core.display_errors') === TRUE)
-		{
-			if ( ! IN_PRODUCTION AND $line != FALSE)
-			{
-				// Beautify backtrace
-				$trace = Kohana::backtrace($exception->getTrace());
-			}
-
-			// Load the error
-			require Kohana::find_file('views', $template);
-		}
-		else
-		{
-			// Get the i18n messages
-			$error   = Kohana::lang('core.generic_error');
-			$message = Kohana::lang('core.errors_disabled', url::site(), url::site(Router::$current_uri));
-
-			// Load the errors_disabled view
-			require Kohana::find_file('views', 'kohana/error_disabled');
-		}
 	}
 
 	// Error template
@@ -1719,39 +1650,73 @@ class Kohana_Exception extends Exception {
 		$error = $this->message;
 		$file  = $this->file;
 		$line  = $this->line;
-		$trace = $this->getTrace();
 
-		// Load source
-		$source = file($file, FILE_IGNORE_NEW_LINES);
+		if (Kohana_Exception::$html_output)
+		{
+			// Lines to read from the source
+			$start_line = $line - 4;
+			$end_line   = $line + 3;
 
-		// Highlight line
-		$source[$line - 1] = '{hilight}'.$source[$line - 1].'{/hilight}';
+			$file_source = fopen($file, 'r');
+			$file_line   = 1;
 
-		// Limit source to 6 lines
-		$source = array_map(array('html', 'specialchars'), array_slice($source, max($line - 4, 0), 7));
+			// Source code
+			$source = '';
 
-		// Highlight the triggering line
-		$source = str_replace
-		(
-			array('{hilight}', '{/hilight}'),
-			array('<span>', '</span>'),
-			implode("\n", $source)
-		);
+			while ($read_line = fgets($file_source))
+			{
+				if ($file_line >= $start_line)
+				{
+					if ($file_line === $line)
+					{
+						// Wrap the text of this line in <span> tags, for highlighting
+						$read_line = preg_replace('/^(\s+)(.+?)(\s+)$/', '$1<span>$2</span>$3', $read_line);
+					}
+
+					$source .= $read_line;
+				}
+
+				if (++$file_line > $end_line)
+				{
+					// Stop reading lines
+					fclose($file_source);
+
+					break;
+				}
+			}
+
+			if (Kohana_Exception::$trace_output)
+			{
+				$trace = $this->getTrace();
+
+				if ($this instanceof Kohana_PHP_Exception)
+				{
+					// Remove the error handler call
+					array_shift($trace);
+				}
+
+				// Read trace
+				$trace = Kohana::read_trace($trace);
+			}
+
+			if (method_exists($this, 'sendHeaders') AND ! headers_sent())
+			{
+				// Send the headers if they have not already been sent
+				$this->sendHeaders();
+			}
+		}
 
 		// Sanitize file
 		$file = Kohana::sanitize_path($file);
 
-		if ($this instanceof Kohana_PHP_Exception)
-		{
-			// Remove the error handler call
-			array_shift($trace);
-		}
-
-		// Read trace
-		$trace = Kohana::read_trace($trace);
-
 		// Error name
 		$code = Kohana::lang('errors.'.$code.'.1').' ('.$code.')';
+
+		if ( ! Kohana_Exception::$html_output)
+		{
+			// Show only the error text
+			return $code.': '.$error.' [ '.$file.', '.$line.' ]';
+		}
 
 		ob_start();
 

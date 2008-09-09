@@ -163,6 +163,9 @@ class Router_Core {
 					$_GET = utf8::clean($_GET);
 				}
 			}
+
+			// Disable HTML errors, they will be messy in CLI
+			Kohana_Exception::$html_output = FALSE;
 		}
 		elseif (isset($_GET['kohana_uri']))
 		{
