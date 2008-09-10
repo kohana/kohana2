@@ -987,7 +987,7 @@ class ORM_Core {
 		switch ($column['type'])
 		{
 			case 'int':
-				if($value === '' AND ! empty($column['null'])
+				if ($value === '' AND ! empty($column['null']))
 				{
 					// Forms will only submit strings, so empty integer values must be null
 					$value = NULL;
