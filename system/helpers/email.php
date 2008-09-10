@@ -95,7 +95,7 @@ class email_Core {
 			break;
 			default:
 				// Use the native connection
-				$connection = new Swift_Connection_NativeMail;
+				$connection = new Swift_Connection_NativeMail($config['options']);
 			break;
 		}
 
