@@ -464,22 +464,16 @@ class ORM_Core {
 	 */
 	public function find_all($limit = NULL, $offset = 0)
 	{
-		if ($limit !== NULL)
+		if ($limit !== NULL AND ! isset($this->db_applied['limit']))
 		{
 			// Set limit
-			$this->db->limit($limit);
+			$this->limit($limit);
 		}
 
-		if ($offset !== NULL)
+		if ($offset !== NULL AND ! isset($this->db_applied['offset']))
 		{
 			// Set offset
-			$this->db->offset($offset);
-		}
-
-		if ( ! isset($this->db_applied['orderby']))
-		{
-			// Apply sorting
-			$this->db->orderby($this->sorting);
+			$this->offset($offset);
 		}
 
 		return $this->load_result(TRUE);
@@ -1055,6 +1049,12 @@ class ORM_Core {
 		{
 			// Only fetch 1 record
 			$this->db->limit(1);
+		}
+
+		if ( ! isset($this->db_applied['orderby']))
+		{
+			// Apply sorting
+			$this->db->orderby($this->sorting);
 		}
 
 		if ( ! isset($this->db_applied['select']))
