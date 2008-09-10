@@ -453,10 +453,14 @@ class Mysql_Result extends Database_Result {
 
 	public function seek($offset)
 	{
-		if ( ! $this->offsetExists($offset))
+		if ($this->offsetExists($offset) AND mysql_data_seek($this->result))
+		{
+			return TRUE;
+		}
+		else
+		{
 			return FALSE;
-
-		return mysql_data_seek($this->result, $offset);
+		}
 	}
 
 } // End Mysql_Result Class
