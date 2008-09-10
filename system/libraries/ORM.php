@@ -195,7 +195,7 @@ class ORM_Core {
 			{
 				// We use switch here to manually call the database methods. This is
 				// done for speed: call_user_func_array can take over 300% longer to
-				// make calls. Mose database methods are 4 arguments or less, so this
+				// make calls. Most database methods are 4 arguments or less, so this
 				// avoids almost any calls to call_user_func_array.
 
 				switch ($num_args)
@@ -814,13 +814,13 @@ class ORM_Core {
 			if (stripos($sql, 'LIMIT') !== FALSE)
 			{
 				// Remove LIMIT from the SQL
-				$sql = preg_replace('/\bLIMIT\s+[^a-z]+/i', '', $sql);
+				$sql = preg_replace('/\sLIMIT\s+[^a-z]+/i', ' ', $sql);
 			}
 
 			if (stripos($sql, 'OFFSET') !== FALSE)
 			{
 				// Remove OFFSET from the SQL
-				$sql = preg_replace('/\bOFFSET\s+\d+/i', '', $sql);
+				$sql = preg_replace('/\sOFFSET\s+\d+/i', '', $sql);
 			}
 
 			// Get the total rows from the last query executed
@@ -830,11 +830,8 @@ class ORM_Core {
 				'FROM ('.trim($sql).') AS '.$this->db->escape_table('counted_results')
 			);
 
-			if ($result->count())
-			{
-				// Return the total number of rows from the query
-				return (int) $result->current()->total_rows;
-			}
+			// Return the total number of rows from the query
+			return (int) $result->current()->total_rows;
 		}
 
 		return FALSE;
@@ -991,7 +988,7 @@ class ORM_Core {
 		switch ($column['type'])
 		{
 			case 'int':
-				$value = ($value === '' AND ! empty($data['null'])) ? NULL : (int) $value;
+				$value = ($value === '' AND ! empty($column['null'])) ? NULL : (int) $value;
 			break;
 			case 'float':
 				$value = (float) $value;
