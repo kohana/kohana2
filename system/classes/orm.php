@@ -987,7 +987,20 @@ class ORM_Core {
 		switch ($column['type'])
 		{
 			case 'int':
-				$value = ($value === '' AND ! empty($column['null'])) ? NULL : (int) $value;
+				if($value === '' AND ! empty($column['null'])
+				{
+					// Forms will only submit strings, so empty integer values must be null
+					$value = NULL;
+				}
+				elseif ((float) $value > PHP_INT_MAX)
+				{
+					// This number cannot be represented by a PHP integer, so we convert it to a string
+					$value = (string) $value;
+				}
+				else
+				{
+					$value = (int) $value;
+				}
 			break;
 			case 'float':
 				$value = (float) $value;
