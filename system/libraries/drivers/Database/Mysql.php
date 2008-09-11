@@ -470,7 +470,7 @@ class Mysql_Result extends Database_Result {
 
 	public function seek($offset)
 	{
-		if ($this->offsetExists($offset) AND mysql_data_seek($this->result))
+		if ($this->offsetExists($offset) AND mysql_data_seek($this->result, $offset))
 		{
 			return TRUE;
 		}
