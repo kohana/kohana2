@@ -842,10 +842,10 @@ class ORM_Core {
 	 * @param   string  table name
 	 * @return  array
 	 */
-	public function list_fields($table)
+	public function list_columns($table)
 	{
 		// Proxy to database
-		return $this->db->list_fields($table);
+		return $this->db->list_columns($table);
 	}
 
 	/**
