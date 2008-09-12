@@ -462,7 +462,7 @@ class ORM_Core {
 	 * @param   integer  SQL offset
 	 * @return  ORM_Iterator
 	 */
-	public function find_all($limit = NULL, $offset = 0)
+	public function find_all($limit = NULL, $offset = NULL)
 	{
 		if ($limit !== NULL AND ! isset($this->db_applied['limit']))
 		{
