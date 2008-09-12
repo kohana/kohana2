@@ -43,6 +43,9 @@ class ORM_Core {
 	protected $primary_key = 'id';
 	protected $primary_val = 'name';
 
+	// Array of foreign key name overloads
+	protected $foreign_key = array();
+
 	// Model configuration
 	protected $table_names_plural = TRUE;
 	protected $reload_on_wakeup   = TRUE;
@@ -919,19 +922,29 @@ class ORM_Core {
 			$prefix_table .= '.';
 		}
 
-		if ( ! is_string($table) OR ! isset($this->object[$table.'_'.$this->primary_key]))
+		if (isset($this->foreign_key[$table]))
 		{
-			// Use this table
-			$table = $this->table_name;
-
-			if ($this->table_names_plural === TRUE)
+			// Use the defined foreign key name, no magic here!
+			$foreign_key = $this->foreign_key[$table];
+		}
+		else
+		{
+			if ( ! is_string($table) OR ! isset($this->object[$table.'_'.$this->primary_key]))
 			{
-				// Make the key name singular
-				$table = inflector::singular($table);
+				// Use this table
+				$table = $this->table_name;
+
+				if ($this->table_names_plural === TRUE)
+				{
+					// Make the key name singular
+					$table = inflector::singular($table);
+				}
 			}
+
+			$foreign_key = $table.'_'.$this->primary_key;
 		}
 
-		return $prefix_table.$table.'_'.$this->primary_key;
+		return $prefix_table.$foreign_key;
 	}
 
 	/**
