@@ -1488,6 +1488,13 @@ final class Kohana {
 		return $file;
 	}
 
+	/**
+	 * Similar to print_r or var_dump, generates a string representation of
+	 * any variable.
+	 *
+	 * @param   mixed   variable to dump
+	 * @return  string
+	 */
 	public static function debug_var($var)
 	{
 		switch (gettype($var))
@@ -1500,13 +1507,7 @@ final class Kohana {
 				{
 					if ($property->isPublic())
 					{
-						if ($more === TRUE)
-						{
-							$out .= ', ';
-						}
-
-						$out .= $property->getName().' => '.self::debug_var($property->getValue($var));
-
+						$out .= ($more === TRUE ? ', ' : '').$property->getName().' => '.self::debug_var($property->getValue($var));
 						$more = TRUE;
 					}
 				}
@@ -1516,11 +1517,6 @@ final class Kohana {
 				$out = 'array (';
 				foreach ((array) $var as $key => $val)
 				{
-					if ($more === TRUE)
-					{
-						$out .= ', ';
-					}
-
 					if ( ! is_int($key))
 					{
 						$key = self::debug_var($key).' => ';
@@ -1529,8 +1525,7 @@ final class Kohana {
 					{
 						$key = '';
 					}
-
-					$out .= $key.self::debug_var($val);
+					$out .= ($more ? ', ' : '').$key.self::debug_var($val);
 					$more = TRUE;
 				}
 				return $out.')';
