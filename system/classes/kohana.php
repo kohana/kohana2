@@ -1405,7 +1405,7 @@ final class Kohana {
 		{
 			if (isset($trace['file']))
 			{
-				$line = '<strong>'.Kohana::sanitize_path($trace['file']).'</strong>';
+				$line = '<strong>'.Kohana::debug_path($trace['file']).'</strong>';
 
 				if (isset($trace['line']))
 				{
@@ -1443,31 +1443,10 @@ final class Kohana {
 						if (is_string($arg) AND file_exists($arg))
 						{
 							// Sanitize path
-							$arg = Kohana::sanitize_path($arg);
+							$arg = Kohana::debug_path($arg);
 						}
 
-						switch (gettype($arg))
-						{
-							case 'object':
-								$args[] = '&lt;object&gt; '.get_class($arg);
-							break;
-							case 'array':
-								if (is_callable($arg, FALSE, $call))
-								{
-									$args[] = '&lt;callback&gt; '.$call;
-								}
-								else
-								{
-									$args[] = '&lt;array&gt;';
-								}
-							break;
-							case 'string':
-								$args[] = "'$arg'";
-							break;
-							default:
-								$args[] = $arg;
-							break;
-						}
+						$args[] = '<code>'.self::debug_var($arg).'</code>';
 					}
 				}
 
@@ -1487,7 +1466,7 @@ final class Kohana {
 	 * @param   string  path to sanitize
 	 * @return  string
 	 */
-	public static function sanitize_path($file)
+	public static function debug_path($file)
 	{
 		if (strpos($file, APPPATH) === 0)
 		{
@@ -1507,6 +1486,67 @@ final class Kohana {
 		}
 
 		return $file;
+	}
+
+	public static function debug_var($var)
+	{
+		switch (gettype($var))
+		{
+			case 'object':
+				$object = new ReflectionObject($var);
+				$more = FALSE;
+				$out = 'object '.$object->getName().' { ';
+				foreach ($object->getProperties() as $property)
+				{
+					if ($property->isPublic())
+					{
+						if ($more === TRUE)
+						{
+							$out .= ', ';
+						}
+
+						$out .= $property->getName().' => '.self::debug_var($property->getValue($var));
+
+						$more = TRUE;
+					}
+				}
+				return $out.' }';
+			case 'array':
+				$more = FALSE;
+				$out = 'array (';
+				foreach ((array) $var as $key => $val)
+				{
+					if ($more === TRUE)
+					{
+						$out .= ', ';
+					}
+
+					if ( ! is_int($key))
+					{
+						$key = self::debug_var($key).' => ';
+					}
+					else
+					{
+						$key = '';
+					}
+
+					$out .= $key.self::debug_var($val);
+					$more = TRUE;
+				}
+				return $out.')';
+
+			case 'string':
+				return "'$var'";
+
+			case 'float':
+				return number_format($var, 6).'&hellip;';
+
+			case 'boolean':
+				return $var === TRUE ? 'TRUE' : 'FALSE';
+
+			default:
+				return (string) $var;
+		}
 	}
 
 	/**
@@ -1725,7 +1765,7 @@ class Kohana_Exception extends Exception {
 			}
 
 			// Sanitize filepath for greater security
-			$file = Kohana::sanitize_path($file);
+			$file = Kohana::debug_path($file);
 		}
 
 		if ( ! Kohana_Exception::$html_output)
