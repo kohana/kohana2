@@ -1907,6 +1907,8 @@ class Kohana_PHP_Exception extends Kohana_Exception {
 		$this->code = $code;
 		$this->file = $file;
 		$this->line = $line;
+
+		$this->instance_identifier = uniqid();
 	}
 
 	public function sendHeaders()
@@ -1941,6 +1943,8 @@ class Kohana_User_Exception extends Kohana_Exception {
 			// Override the default template
 			$this->template = $template;
 		}
+
+		$this->instance_identifier = uniqid();
 	}
 
 } // End Kohana PHP Exception
