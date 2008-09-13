@@ -1079,10 +1079,23 @@ class ORM_Core {
 			$this->db->select($this->table_name.'.*');
 		}
 
-		if ( ! isset($this->db_applied['orderby']))
+		if ( ! isset($this->db_applied['orderby']) AND ! empty($this->sorting))
 		{
+			$sorting = array();
+			foreach ($this->sorting as $column => $direction)
+			{
+				if (strpos($column, '.') === FALSE)
+				{
+					// Keeps sorting working properly when using JOINs on
+					// tables with columns of the same name
+					$column = $this->table_name.'.'.$column;
+				}
+
+				$sorting[$column] = $direction;
+			}
+
 			// Apply the user-defined sorting
-			$this->db->orderby($this->sorting);
+			$this->db->orderby($sorting);
 		}
 
 		// Load the result
