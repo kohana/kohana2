@@ -1588,6 +1588,9 @@ class Kohana_Exception extends Exception {
 	// Error resources have not been loaded
 	protected static $error_resources = FALSE;
 
+    // To hold unique identifier to distinguish error output
+	protected $instance_identifier;
+
 	/**
 	 * Enable Kohana exception handling.
 	 *
@@ -1676,6 +1679,8 @@ class Kohana_Exception extends Exception {
 			$message = 'Unknown Exception: '.$error;
 		}
 
+		$this->instance_identifier = uniqid();
+
 		// Sets $this->message the proper way
 		parent::__construct($message);
 	}
@@ -1703,6 +1708,7 @@ class Kohana_Exception extends Exception {
 			$error = $this->message;
 			$file  = $this->file;
 			$line  = $this->line;
+			$instance_identifier = $this->instance_identifier;
 
 			// Load the i18n error name
 			$code = Kohana::lang('errors.'.$code.'.1').' ('.$code.')';
@@ -1778,18 +1784,17 @@ class Kohana_Exception extends Exception {
 				// Include error style
 				echo '<style type="text/css">', "\n";
 				include Kohana::find_file('views', 'kohana/error_style', FALSE, 'css');
-				echo '</style>', "\n";
+				echo "\n", '</style>', "\n";
 
 				// Include error js
 				echo '<script type="text/javascript">', "\n";
-				include Kohana::find_file('vendor', 'jquery', FALSE, 'js');
 				include Kohana::find_file('views', 'kohana/error_script', FALSE, 'js');
-				echo '</script>', "\n";
+				echo "\n", '</script>', "\n";
 
 				// Error resources have been loaded
 				self::$error_resources = TRUE;
 			}
-
+			
 			require Kohana::find_file('views', 'kohana/error', FALSE);
 		}
 		else
