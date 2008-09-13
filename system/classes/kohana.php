@@ -240,6 +240,9 @@ final class Kohana {
 
 			Benchmark::start(SYSTEM_BENCHMARK.'_controller_setup');
 
+			// Log the current routing state for debugging purposes
+			Kohana::log('debug', 'Routing "'.Router::$current_uri.'" using the "'.Router::$current_route.'" route, '.Router::$controller.'::'.Router::$method);
+
 			if (Router::$controller === NULL OR Router::$method[0] === '_')
 			{
 				// Do not allow access to hidden methods
