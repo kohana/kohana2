@@ -1,7 +1,7 @@
 <?php
 
 // Get the day names
-$days = Calendar::days(TRUE);
+$days = Calendar::days(2);
 
 // Previous and next month timestamps
 $next = mktime(0, 0, 0, $month + 1, 1, $year);
