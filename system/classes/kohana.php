@@ -1588,7 +1588,7 @@ class Kohana_Exception extends Exception {
 	// Error resources have not been loaded
 	protected static $error_resources = FALSE;
 
-    // To hold unique identifier to distinguish error output
+	// To hold unique identifier to distinguish error output
 	protected $instance_identifier;
 
 	/**
