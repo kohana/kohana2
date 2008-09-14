@@ -23,6 +23,9 @@ class ORM_Core {
 	protected $has_many                = array();
 	protected $has_and_belongs_to_many = array();
 
+	// Relationships that should always be joined
+	protected $load_with = NULL;
+
 	// Current object
 	protected $object  = array();
 	protected $changed = array();
@@ -1150,6 +1153,15 @@ class ORM_Core {
 		{
 			// Only fetch 1 record
 			$this->db->limit(1);
+		}
+
+		if ( ! empty($this->load_with))
+		{
+			foreach ($this->load_with as $object)
+			{
+				// Join each object into the results
+				$this->with($object);
+			}
 		}
 
 		if ( ! isset($this->db_applied['select']))
