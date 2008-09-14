@@ -676,12 +676,7 @@ class ORM_Core {
 	 */
 	public function clear()
 	{
-		// Object is no longer loaded or saved
-		$this->loaded = $this->saved = FALSE;
-
-		// Nothing has been changed
-		$this->changed = $this->related = array();
-
+		// Create an array with all the columns set to NULL
 		$columns = array_keys($this->table_columns);
 		$values  = array_combine($columns, array_fill(0, count($columns), NULL));
 
@@ -1038,13 +1033,13 @@ class ORM_Core {
 		// Get the table columns
 		$columns = array_keys($this->table_columns);
 
-		if (isset($values[$this->primary_key]) AND $values[$this->primary_key] > 0)
+		if (array_key_exists($this->primary_key, $values))
 		{
 			// Replace the object and reset the object status
 			$this->object = $this->changed = $this->related = array();
 
-			// The object is loaded and saved
-			$this->loaded = $this->saved = TRUE;
+			// Set the loaded and saved object status based on the primary key
+			$this->loaded = $this->saved = ($values[$this->primary_key] > 0);
 		}
 
 		// Related objects
@@ -1155,6 +1150,12 @@ class ORM_Core {
 			$this->db->limit(1);
 		}
 
+		if ( ! isset($this->db_applied['select']))
+		{
+			// Selete all columns by default
+			$this->db->select($this->table_name.'.*');
+		}
+
 		if ( ! empty($this->load_with))
 		{
 			foreach ($this->load_with as $object)
@@ -1162,12 +1163,6 @@ class ORM_Core {
 				// Join each object into the results
 				$this->with($object);
 			}
-		}
-
-		if ( ! isset($this->db_applied['select']))
-		{
-			// Selete all columns by default
-			$this->db->select($this->table_name.'.*');
 		}
 
 		if ( ! isset($this->db_applied['orderby']) AND ! empty($this->sorting))
