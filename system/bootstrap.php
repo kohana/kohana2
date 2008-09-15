@@ -26,7 +26,7 @@ Benchmark::start(SYSTEM_BENCHMARK.'_total_execution');
 Benchmark::start(SYSTEM_BENCHMARK.'_environment_test');
 
 // Test of Kohana is running in Windows
-define('KOHANA_IS_WIN', PHP_SHLIB_SUFFIX === 'dll');
+define('KOHANA_IS_WIN', DIRECTORY_SEPARATOR === '\\');
 
 // Check UTF-8 support
 if ( ! preg_match('/^.$/u', 'ñ'))
