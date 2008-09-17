@@ -1,6 +1,8 @@
 <?php
 /**
- * Tagcloud creation library.
+ * [Tag cloud][ref-tcl] creation library.
+ *
+ * [ref-tcl]: http://en.wikipedia.org/wiki/Tag_cloud
  *
  * $Id$
  *
@@ -11,6 +13,15 @@
  */
 class Tagcloud_Core {
 
+	/**
+	 * Creates a new Tagcloud instance and returns it.
+	 *
+	 * @chainable
+	 * @param   array    elements of the tagcloud
+	 * @param   integer  minimum font size
+	 * @param   integer  maximum font size
+	 * @return  Tagcloud
+	 */
 	public static function factory(array $elements, $min_size = NULL, $max_size = NULL)
 	{
 		return new Tagcloud($elements, $min_size, $max_size);
@@ -21,10 +32,10 @@ class Tagcloud_Core {
 	public $attributes = array('class' => 'tag');
 	public $shuffle    = FALSE;
 
+	// Tag elements, biggest and smallest values
 	protected $elements;
 	protected $biggest;
 	protected $smallest;
-	protected $range;
 
 	/**
 	 * Construct a new tagcloud. The elements must be passed in as an array,
