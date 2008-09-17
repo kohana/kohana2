@@ -134,7 +134,7 @@ class Image_Core {
 		}
 		else
 		{
-			throw new Kohana_Exception('core.invalid_property', $column, get_class($this));
+			throw new Kohana_Exception('core.invalid_property', $property, get_class($this));
 		}
 	}
 

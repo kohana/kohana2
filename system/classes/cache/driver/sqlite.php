@@ -23,7 +23,7 @@ class Cache_Driver_Sqlite_Core extends Cache_Driver {
 	protected static function log_error($code)
 	{
 		// Log an error
-		Kohana::log('error', 'Cache: SQLite error: '.sqlite_error_string($error));
+		Kohana::log('error', 'Cache: SQLite error: '.sqlite_error_string($code));
 	}
 
 	/**
