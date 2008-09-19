@@ -1030,9 +1030,6 @@ class ORM_Core {
 	 */
 	public function load_values(array $values)
 	{
-		// Get the table columns
-		$columns = array_keys($this->table_columns);
-
 		if (array_key_exists($this->primary_key, $values))
 		{
 			// Replace the object and reset the object status
@@ -1049,7 +1046,7 @@ class ORM_Core {
 		{
 			if (strpos($column, ':') === FALSE)
 			{
-				if (isset($columns[$column]))
+				if (isset($this->table_columns[$column]))
 				{
 					// The type of the value can be determined, convert the value
 					$value = $this->load_type($column, $value);
