@@ -301,16 +301,16 @@ class html_Core {
 		{
 			if (strpos($href, '://') === FALSE)
 			{
+				$length = strlen($suffix);
+
+				if (substr_compare($href, $suffix, -$length, $length, FALSE) !== 0)
+				{
+					// Add the defined suffix
+					$href .= $suffix;
+				}
+
 				// Make the URL absolute
 				$href = url::base($index).$href;
-			}
-
-			$length = strlen($suffix);
-
-			if (substr_compare($href, $suffix, -$length, $length, FALSE) !== 0)
-			{
-				// Add the defined suffix
-				$href .= $suffix;
 			}
 
 			$attr = array
@@ -354,14 +354,14 @@ class html_Core {
 		{
 			if (strpos($script, '://') === FALSE)
 			{
+				if (substr_compare($script, '.js', -3, 3, FALSE) !== 0)
+				{
+					// Add the javascript suffix
+					$script .= '.js';
+				}
+
 				// Add the suffix only when it's not already present
 				$script = url::base((bool) $index).$script;
-			}
-
-			if (substr_compare($script, '.js', -3, 3, FALSE) !== 0)
-			{
-				// Add the javascript suffix
-				$script .= '.js';
 			}
 
 			$compiled = '<script type="text/javascript" src="'.$script.'"></script>';
