@@ -116,21 +116,21 @@ final class Kohana {
 			register_shutdown_function(array(__CLASS__, 'log_save'));
 		}
 
+		// Disable notices and "strict" errors, to prevent some oddities in
+		// PHP 5.2 and when using Kohana under CLI
+		$ER = error_reporting(~E_NOTICE & ~E_STRICT);
+
 		// Set the user agent
 		self::$user_agent = trim($_SERVER['HTTP_USER_AGENT']);
 
 		if ( ! ($timezone = Kohana::config('locale.timezone')))
 		{
-			// Disable notices and "strict" errors, due to the E_NOTICE that
-			// will be generated in PHP 5.2+
-			$ER = error_reporting(~E_NOTICE & ~E_STRICT);
-
 			// Get the default timezone
 			$timezone = date_default_timezone_get();
-
-			// Restore error reporting
-			error_reporting($ER);
 		}
+
+		// Restore error reporting
+		error_reporting($ER);
 
 		// Set the default timezone
 		date_default_timezone_set($timezone);
