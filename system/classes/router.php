@@ -68,25 +68,18 @@ class Router_Core {
 
 			if (preg_match('#^'.$regex.'$#u', self::$current_uri, $matches))
 			{
-				// If matches exist and there are keys for the URI, parse them
-				if (count($matches) > 1 AND $keys = Router::keys($route[0]))
+				foreach ($matches as $key => $value)
 				{
-					// Remove the matched string
-					$matches = array_slice($matches, 1);
-
-					foreach ($keys as $i => $key)
+					if (is_int($key) OR in_array($key, Router::$readonly_keys))
 					{
-						if (in_array($key, Router::$readonly_keys))
-						{
-							// Skip keys that are readonly, such as "regex"
-							continue;
-						}
+						// Skip matches that are not named or readonly
+						continue;
+					}
 
-						if (isset($matches[$i]) AND $matches[$i] !== '')
-						{
-							// Set the route value from the URI
-							$route[$key] = $matches[$i];
-						}
+					if (isset($route[$key]) AND $value !== '')
+					{
+						// Overload the route with the matched value
+						$route[$key] = $value;
 					}
 				}
 
@@ -337,15 +330,18 @@ class Router_Core {
 					$exp .= '/';
 				}
 
+				// Use the key as the regex subpattern name
+				$name = '?P<'.$key.'>';
+
 				if (isset($route['regex'][$key]))
 				{
 					// Matches specified regex for the segment
-					$exp .= '('.$route['regex'][$key].')';
+					$exp .= '('.$name.$route['regex'][$key].')';
 				}
 				else
 				{
 					// Default regex matches all characters except slashes
-					$exp .= '([^/]++)';
+					$exp .= '('.$name.'[^/]++)';
 				}
 
 				if ($matches[2] !== '')
