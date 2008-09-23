@@ -455,6 +455,9 @@ class Mysql_Result extends Database_Result {
 	{
 		if ($this->offsetExists($offset) AND mysql_data_seek($this->result, $offset))
 		{
+			// Set the current row to the offset
+			$this->current_row = $offset;
+
 			return TRUE;
 		}
 		else
