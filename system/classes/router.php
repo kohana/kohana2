@@ -76,7 +76,7 @@ class Router_Core {
 						continue;
 					}
 
-					if (isset($route[$key]) AND $value !== '')
+					if ($value !== '')
 					{
 						// Overload the route with the matched value
 						$route[$key] = $value;
@@ -97,7 +97,7 @@ class Router_Core {
 
 				foreach ($route as $key => $val)
 				{
-					if ( ! is_string($key) OR $key === 'controller' OR $key === 'method' OR in_array($key, self::$readonly_keys))
+					if (is_int($key) OR $key === 'controller' OR $key === 'method' OR in_array($key, self::$readonly_keys))
 					{
 						// These keys are not arguments, skip them
 						continue;
