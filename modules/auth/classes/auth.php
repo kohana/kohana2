@@ -88,6 +88,21 @@ class Auth_Core {
 	}
 
 	/**
+	 * Returns the currently logged in user, or FALSE.
+	 *
+	 * @return  mixed
+	 */
+	public function get_user()
+	{
+		if ($this->driver->logged_in(NULL))
+		{
+			return Session::instance()->get('auth_user', FALSE);
+		}
+
+		return FALSE;
+	}
+
+	/**
 	 * Attempt to log in a user by using an ORM object and plain-text password.
 	 *
 	 * @param   string   username to log in
