@@ -55,7 +55,7 @@ class Auth_File_Driver extends Auth_Driver {
 	public function force_login($username)
 	{
 		// Complete the login
-		return $this->complate_login($username);
+		return $this->complete_login($username);
 	}
 
 	/**
