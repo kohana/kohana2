@@ -205,10 +205,10 @@ class Session_Core {
 					break;
 				}
 			}
-
-			// Expire flash keys
-			$this->expire_flash();
 		}
+
+		// Expire flash keys
+		$this->expire_flash();
 
 		// Update last activity
 		$_SESSION['last_activity'] = time();
