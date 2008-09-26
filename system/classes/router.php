@@ -224,6 +224,18 @@ class Router_Core {
 	 */
 	public static function uri($route, array $values = array())
 	{
+		if ($route === TRUE)
+		{
+			$route = Router::$current_route;
+
+			$values = array_merge
+			(
+				array('controller' => Router::$controller, 'method' => Router::$method),
+				Router::$arguments,
+				$values
+			);
+		}
+		
 		if ( ! ($route = Kohana::config('routes.'.$route)))
 		{
 			// @todo: This should be an exception
