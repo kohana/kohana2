@@ -453,7 +453,7 @@ class Pgsql_Result extends Database_Result {
 		{
 			$query = 'SELECT LASTVAL() AS insert_id';
 
-			$result = pg_query($link, $query);
+			$result = pg_query($query);
 			$insert_id = pg_fetch_array($result, NULL, PGSQL_ASSOC);
 
 			$this->insert_id = $insert_id['insert_id'];
