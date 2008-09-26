@@ -222,10 +222,10 @@ class Database_Driver_Pgsql_Core extends Database_Driver {
 		return pg_escape_string($this->link, $str);
 	}
 
-	public function list_tables()
+	public function list_tables(Database $db)
 	{
 		$sql    = 'SELECT table_schema || \'.\' || table_name FROM information_schema.tables WHERE table_schema NOT IN (\'pg_catalog\', \'information_schema\')';
-		$result = $this->query($sql)->result(FALSE, PGSQL_ASSOC);
+		$result = $db->query($sql)->result(FALSE, PGSQL_ASSOC);
 
 		$retval = array();
 		foreach ($result as $row)
