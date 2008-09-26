@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Auth_ORM extends Auth_Driver {
+class Auth_ORM_Core extends Auth_Driver {
 
 	/**
 	 * Checks if a session is active.
