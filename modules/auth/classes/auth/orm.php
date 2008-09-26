@@ -198,4 +198,4 @@ class Auth_ORM_Core extends Auth_Driver {
 		return parent::complete_login($user);
 	}
 
-} // End Auth_ORM_Driver Class
+} // End Auth_ORM

@@ -70,4 +70,4 @@ class Auth_File_Core extends Auth_Driver {
 		return isset($this->users[$username]) ? $this->users[$username] : FALSE;
 	}
 
-} // End Auth_File_Driver Class
+} // End Auth_File

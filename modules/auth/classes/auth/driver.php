@@ -44,6 +44,22 @@ abstract class Auth_Driver {
 	}
 
 	/**
+	 * Gets the currently logged in user from the session.
+	 * Returns FALSE if no user is currently logged in.
+	 *
+	 * @return  mixed
+	 */
+	public function get_user()
+	{
+		if ($this->logged_in(NULL))
+		{
+			return $_SESSION[$this->config['session_key']];
+		}
+
+		return FALSE;
+	}
+
+	/**
 	 * Logs a user in.
 	 *
 	 * @param   string   username
@@ -123,4 +139,4 @@ abstract class Auth_Driver {
 		return TRUE;
 	}
 
-} // End Auth_Driver Interface
+} // End Auth_Driver
