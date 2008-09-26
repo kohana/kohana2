@@ -94,12 +94,7 @@ class Auth_Core {
 	 */
 	public function get_user()
 	{
-		if ($this->driver->logged_in(NULL))
-		{
-			return Session::instance()->get('auth_user', FALSE);
-		}
-
-		return FALSE;
+		return $this->driver->get_user();
 	}
 
 	/**
