@@ -954,6 +954,12 @@ class ORM_Core {
 				// Use this table
 				$table = $this->table_name;
 
+				if (strpos($table, '.') !== FALSE)
+				{
+					// Hack around support for PostgreSQL schemas
+					list ($schema, $table) = explode('.', $table, 2);
+				}
+
 				if ($this->table_names_plural === TRUE)
 				{
 					// Make the key name singular
