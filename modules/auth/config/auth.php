@@ -9,7 +9,7 @@
  */
 
 /**
- * Driver to use for authentication. By default, LDAP and ORM are available.
+ * Driver to use for authentication. By default, File and ORM are available.
  */
 $config['driver'] = 'ORM';
 
@@ -35,9 +35,15 @@ $config['salt_pattern'] = '1, 3, 5, 9, 14, 15, 20, 21, 28, 30';
 $config['lifetime'] = 1209600;
 
 /**
+ * Set the session key that will be used to store the current user.
+ */
+$config['session_key'] = 'auth_user';
+
+/**
  * Usernames (keys) and hashed passwords (values) used by the File driver.
+ * Default admin password is "admin". You are encouraged to change this.
  */
 $config['users'] = array
 (
-	// 'admin' => '4ccd0e25c2a7ffefd4b92ecbbd4781752920145f826a881073',
+	// 'admin' => 'b3154acf3a344170077d11bdb5fff31532f679a1919e716a02',
 );

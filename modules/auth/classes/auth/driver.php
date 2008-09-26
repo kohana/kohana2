@@ -1,6 +1,6 @@
 <?php
 /**
- * Auth driver interface.
+ * Abstract Auth driver, must be extended by all drivers.
  *
  * $Id$
  *
@@ -9,7 +9,39 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-interface Auth_Driver {
+abstract class Auth_Driver {
+
+	// Session instance
+	protected $session;
+
+	// Configuration
+	protected $config;
+
+	/**
+	 * Creates a new driver instance, loading the session and storing config.
+	 *
+	 * @param   array  configuration
+	 * @return  void
+	 */
+	public function __construct(array $config)
+	{
+		// Load Session
+		$this->session = Session::instance();
+
+		// Store config
+		$this->config = $config;
+	}
+
+	/**
+	 * Checks if a session is active.
+	 *
+	 * @param   string   role name (not supported)
+	 * @return  boolean
+	 */
+	public function logged_in($role)
+	{
+		return isset($_SESSION[$this->config['session_key']]);
+	}
 
 	/**
 	 * Logs a user in.
@@ -19,7 +51,7 @@ interface Auth_Driver {
 	 * @param   boolean  enable auto-login
 	 * @return  boolean
 	 */
-	public function login($username, $password, $remember);
+	abstract public function login($username, $password, $remember);
 
 	/**
 	 * Forces a user to be logged in, without specifying a password.
@@ -27,14 +59,18 @@ interface Auth_Driver {
 	 * @param   mixed    username
 	 * @return  boolean
 	 */
-	public function force_login($username);
+	abstract public function force_login($username);
 
 	/**
 	 * Logs a user in, based on stored credentials, typically cookies.
+	 * Not supported by default.
 	 *
 	 * @return  boolean
 	 */
-	public function auto_login();
+	public function auto_login()
+	{
+		return FALSE;
+	}
 
 	/**
 	 * Log a user out.
@@ -42,15 +78,25 @@ interface Auth_Driver {
 	 * @param   boolean  completely destroy the session
 	 * @return  boolean
 	 */
-	public function logout($destroy);
+	public function logout($destroy)
+	{
+		if ($destroy === TRUE)
+		{
+			// Destroy the session completely
+			Session::instance()->destroy();
+		}
+		else
+		{
+			// Remove the user from the session
+			$this->session->delete($this->config['session_key']);
 
-	/**
-	 * Checks if a session is active.
-	 *
-	 * @param   string   role name
-	 * @return  boolean
-	 */
-	public function logged_in($role);
+			// Regenerate session_id
+			$this->session->regenerate();
+		}
+
+		// Double check
+		return ! $this->logged_in(NULL);
+	}
 
 	/**
 	 * Get the stored password for a username.
@@ -58,6 +104,23 @@ interface Auth_Driver {
 	 * @param   mixed   username
 	 * @return  string
 	 */
-	public function password($username);
+	abstract public function password($username);
+
+	/**
+	 * Completes a login by assigning the user to the session key.
+	 *
+	 * @param   string   username
+	 * @return  TRUE
+	 */
+	protected function complete_login($user)
+	{
+		// Regenerate session_id
+		$this->session->regenerate();
+
+		// Store username in session
+		$_SESSION[$this->config['session_key']] = $user;
+
+		return TRUE;
+	}
 
 } // End Auth_Driver Interface
