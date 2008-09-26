@@ -24,7 +24,7 @@ class Auth_ORM_Driver extends Auth_Driver {
 		// Get the user from the session
 		$user = $this->session->get($this->config['session_key']);
 
-		if (is_object($user) AND $user instanceof Model_User AND $user->loaded)
+		if (is_object($user) AND $user instanceof User_Model AND $user->loaded)
 		{
 			// Everything is okay so far
 			$status = TRUE;
@@ -187,7 +187,7 @@ class Auth_ORM_Driver extends Auth_Driver {
 	 * @param   object   user model object
 	 * @return  void
 	 */
-	protected function complete_login(Model_User $user)
+	protected function complete_login(User_Model $user)
 	{
 		// Update the number of logins
 		$user->logins += 1;
