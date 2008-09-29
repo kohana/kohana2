@@ -123,7 +123,7 @@ class arr_Core {
 	 * @param   mixed   value to unshift
 	 * @return  array
 	 */
-	public static function unshift_assoc( array & $array, $key, $val)
+	public static function unshift_assoc(array & $array, $key, $val)
 	{
 		$array = array_reverse($array, TRUE);
 		$array[$key] = $val;
@@ -140,12 +140,14 @@ class arr_Core {
 	 * @param   array  array to map to
 	 * @return  array
 	 */
-	public static function map_recursive($callback, array $array)
+	public static function map_recursive($callback, $array)
 	{
 		foreach ($array as $key => $val)
 		{
 			// Map the callback to the key
-			$array[$key] = is_array($val) ? arr::map_recursive($callback, $val) : call_user_func($callback, $val);
+			$array[$key] = (is_array($val) OR is_object($val))
+			             ? arr::map_recursive($callback, $val)
+			             : call_user_func($callback, $val);
 		}
 
 		return $array;
