@@ -17,7 +17,7 @@ $lang = array
 	'error_file_line'       => '<tt>%s <strong>[%s]:</strong></tt>',
 	'stack_trace'           => 'Stack Trace',
 	'generic_error'         => 'Unable to Complete Request',
-	'errors_disabled'       => 'You can go to the <a href="%s">home page</a> or <a href="%s">try again</a>.',
+	'errors_disabled'       => 'An error occurred during the loading of this page. You can go to the <a href="%s">home page</a> or <a href="%s">try again</a>. The error has been logged for review.',
 
 	// Drivers
 	'driver_implements'     => 'The %s driver for the %s library must implement the %s interface',
