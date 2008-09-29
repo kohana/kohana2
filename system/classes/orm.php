@@ -531,7 +531,7 @@ class ORM_Core {
 	{
 		if ( ! $array->submitted())
 		{
-			$safe_array = $array->safe_array();
+			$safe_array = $array->as_array();
 
 			foreach ($safe_array as $key => $val)
 			{
@@ -543,7 +543,7 @@ class ORM_Core {
 		// Validate the array
 		if ($status = $array->validate())
 		{
-			$safe_array = $array->safe_array();
+			$safe_array = $array->as_array();
 
 			foreach ($safe_array as $key => $val)
 			{
