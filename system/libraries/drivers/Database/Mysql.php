@@ -201,14 +201,19 @@ class Database_Mysql_Driver extends Database_Driver {
 			// Escape the tables
 			$froms = array();
 			foreach ($database['from'] as $from)
+			{
 				$froms[] = $this->escape_column($from);
+			}
 			$sql .= "\nFROM ";
 			$sql .= implode(', ', $froms);
 		}
 
 		if (count($database['join']) > 0)
 		{
-			$sql .= ' '.$database['join']['type'].'JOIN ('.implode(', ', $database['join']['tables']).') ON '.implode(' AND ', $database['join']['conditions']);
+			foreach($database['join'] AS $join)
+			{
+				$sql .= "\n".$join['type'].'JOIN '.$join['tables'].' ON '.$join['conditions'];
+			}
 		}
 
 		if (count($database['where']) > 0)
