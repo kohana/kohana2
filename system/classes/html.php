@@ -212,7 +212,11 @@ class html_Core {
 	 */
 	public static function breadcrumb($segments = NULL)
 	{
-		empty($segments) and $segments = Router::$segments;
+		if (empty($segments))
+		{
+			// Fetch the URI segments
+			$segments = URI::instance()->segments();
+		}
 
 		$array = array();
 		while ($segment = array_pop($segments))
@@ -261,75 +265,57 @@ class html_Core {
 	/**
 	 * Creates a stylesheet link.
 	 *
-	 * @param   string|array  filename, or array of filenames to match to array of medias
-	 * @param   string|array  media type of stylesheet, or array to match filenames
-	 * @param   boolean       include the index_page in the link
+	 * @param   string   stylesheet URI or URL
+	 * @param   mixed    media type of stylesheet, or array of attributes
+	 * @param   boolean  include the index_page in the link
 	 * @return  string
 	 */
-	public static function stylesheet($style, $media = FALSE, $index = FALSE)
+	public static function stylesheet($href, $attr = NULL, $index = FALSE)
 	{
-		return html::link($style, 'stylesheet', 'text/css', '.css', $media, $index);
+		if ( ! is_array($attr))
+		{
+			// Make the attributes into an array
+			$attr = array('media' => $attr);
+		}
+
+		$attr['rel'] = 'stylesheet';
+		$attr['type'] = 'text/css';
+
+		if (substr_compare($href, '.css', -4, 4, FALSE) === FALSE)
+		{
+			// Add CSS suffix
+			$href .= '.css';
+		}
+
+		return html::link($style, $attr, $index);
 	}
 
 	/**
 	 * Creates a link tag.
 	 *
-	 * @param   string|array  filename
-	 * @param   string|array  relationship
-	 * @param   string|array  mimetype
-	 * @param   string        specifies suffix of the file
-	 * @param   string|array  specifies on what device the document will be displayed
-	 * @param   boolean       include the index_page in the link
+	 * @param   string   URI or URL
+	 * @param   mixed    rel type or attribute array for the link
+	 * @param   boolean  include the index page in the link
 	 * @return  string
 	 */
-	public static function link($href, $rel, $type, $suffix = FALSE, $media = FALSE, $index = FALSE)
+	public static function link($href, $attr = NULL, $index = FALSE)
 	{
-		$compiled = '';
-
-		if (is_array($href))
+		if (strpos($href, '://') === FALSE)
 		{
-			foreach ($href as $_href)
-			{
-				$_rel   = is_array($rel) ? array_shift($rel) : $rel;
-				$_type  = is_array($type) ? array_shift($type) : $type;
-				$_media = is_array($media) ? array_shift($media) : $media;
-
-				$compiled .= html::link($_href, $_rel, $_type, $suffix, $_media, $index);
-			}
-		}
-		else
-		{
-			if (strpos($href, '://') === FALSE)
-			{
-				$length = strlen($suffix);
-
-				if (substr_compare($href, $suffix, -$length, $length, FALSE) !== 0)
-				{
-					// Add the defined suffix
-					$href .= $suffix;
-				}
-
-				// Make the URL absolute
-				$href = url::base($index).$href;
-			}
-
-			$attr = array
-			(
-				'rel' => $rel,
-				'type' => $type,
-				'href' => $href,
-			);
-
-			if ( ! empty($media))
-			{
-				// Add the media type to the attributes
-				$attr['media'] = $media;
-			}
-
-			$compiled = '<link'.html::attributes($attr).' />';
+			// Make the URL absolute
+			$href = url::base($index).$href;
 		}
 
-		return $compiled."\n";
+		if ( ! is_array($attr))
+		{
+			// Make the attributes into an array
+			$attr = array('rel' => $attr);
+		}
+
+		// Add the href to the attributes
+		$attr['href'] = $href;
+
+		return '<link'.html::attributes($attr).' />'."\n";
 	}
 
 	/**
