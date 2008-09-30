@@ -644,7 +644,7 @@ class Validation_Core extends ArrayObject {
 		}
 
 		// Return TRUE if there are no errors
-		return empty($this->errors);
+		return $this->errors === array();
 	}
 
 	/**
