@@ -287,7 +287,7 @@ class html_Core {
 			$href .= '.css';
 		}
 
-		return html::link($style, $attr, $index);
+		return html::link($href, $attr, $index);
 	}
 
 	/**
