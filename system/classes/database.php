@@ -353,9 +353,11 @@ class Database_Core {
 	 * @param   string        type of join
 	 * @return  Database_Core        This Database object.
 	 */
-	public function join($table, $key, $value = NULL, $type = '')
+public function join($table, $key, $value = NULL, $type = '')
 	{
-		if ($type != '')
+		$join = array();
+
+		if ( ! empty($type))
 		{
 			$type = strtoupper(trim($type));
 
@@ -377,19 +379,17 @@ class Database_Core {
 			$cond[] = $this->driver->where($key, $this->driver->escape_column($this->config['table_prefix'].$value), 'AND ', count($cond), FALSE);
 		}
 
-		if( ! isset($this->join['tables']) OR ! isset($this->join['conditions']))
-		{
-			$this->join['tables'] = array();
-			$this->join['conditions'] = array();
-		}
+		if( ! is_array($this->join)) { $this->join = array(); }
 
 		foreach ((array) $table as $t)
 		{
-			$this->join['tables'][] = $this->driver->escape_column($this->config['table_prefix'].$t);
+			$join['tables'] = $this->driver->escape_column($this->config['table_prefix'].$t);
 		}
 
-		$this->join['conditions'][] = '('.trim(implode(' ', $cond)).')';
-		$this->join['type'] = $type;
+		$join['conditions'] = '('.trim(implode(' ', $cond)).')';
+		$join['type'] = $type;
+
+		$this->join[] = $join;
 
 		return $this;
 	}
