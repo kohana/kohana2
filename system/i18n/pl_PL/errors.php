@@ -11,7 +11,7 @@ $lang = array
 	E_PARSE              => array( 1, 'Błąd składni'),
 	E_WARNING            => array( 1, 'Ostrzeżenie'),
 	E_USER_WARNING       => array( 1, 'Ostrzeżenie'),
-	E_STRICT             => array( 2, 'Błąd ścisłej notacji'),
-	E_NOTICE             => array( 2, 'Błąd wykonania'),
-	E_USER_NOTICE        => array( 2, 'Notice'),
+	E_STRICT             => array( 2, 'Błąd ścisłej składni'),
+	E_NOTICE             => array( 2, 'Powiadomienie'),
+	E_USER_NOTICE        => array( 2, 'Powiadomienie'),
 );
