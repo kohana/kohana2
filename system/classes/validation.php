@@ -672,15 +672,6 @@ class Validation_Core extends ArrayObject {
 		}
 		else
 		{
-			if ( ! empty($prefix))
-			{
-				// Add a dot to the end of the prefix
-				$prefix .= '.';
-			}
-			else
-			{
-				$prefix = '';
-			}
 
 			$errors = array();
 			foreach ($this->errors as $input => $error)
