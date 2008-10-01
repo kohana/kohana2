@@ -11,9 +11,6 @@
  */
 class Validation_Core extends ArrayObject {
 
-	// Array fields
-	protected $array_fields = array();
-
 	// Filters
 	protected $pre_filters = array();
 	protected $post_filters = array();
@@ -28,6 +25,9 @@ class Validation_Core extends ArrayObject {
 	// Errors
 	protected $errors = array();
 	protected $messages = array();
+
+	// Fields that are expected to be arrays
+	protected $array_fields = array();
 
 	// Checks if there is data to validate.
 	protected $submitted;
@@ -54,21 +54,6 @@ class Validation_Core extends ArrayObject {
 	{
 		// The array is submitted if the array is not empty
 		$this->submitted = ! empty($array);
-
-		foreach ($array as $field => $value)
-		{
-			if (is_array($value))
-			{
-				// Store the field name so that it can be handled correctly
-				$this->array_fields[] = $field;
-
-				// Recursively make arrays into objects
-				$array[$field] = new Validation($value);
-
-				// Make sure the array has the same submitted status
-				$array[$field]->submitted($this->submitted);
-			}
-		}
 
 		parent::__construct($array, ArrayObject::ARRAY_AS_PROPS | ArrayObject::STD_PROP_LIST);
 	}
@@ -111,12 +96,23 @@ class Validation_Core extends ArrayObject {
 	}
 
 	/**
-	 * Returns the ArrayObject values, removing all inputs without rules.
-	 * To choose specific inputs, list the field name as arguments.
+	 * Returns the array values of the current object.
 	 *
 	 * @return  array
 	 */
 	public function as_array()
+	{
+		return $this->getArrayCopy();
+	}
+
+	/**
+	 * Returns the ArrayObject values, removing all inputs without rules.
+	 * To choose specific inputs, list the field name as arguments.
+	 *
+	 * @param   boolean  return only fields with filters, rules, and callbacks
+	 * @return  array
+	 */
+	public function safe_array()
 	{
 		// Load choices
 		$choices = func_get_args();
@@ -339,6 +335,12 @@ class Validation_Core extends ArrayObject {
 				}
 			}
 
+			if ($rule === 'is_array')
+			{
+				// This field is expected to be an array
+				$this->array_fields[$field] = $field;
+			}
+
 			// Convert to a proper callback
 			$rule = $this->callback($rule);
 
@@ -416,9 +418,10 @@ class Validation_Core extends ArrayObject {
 
 			if ( ! isset($array[$field]))
 			{
-				if (in_array($field, $this->array_fields))
+				if (isset($this->array_fields[$field]))
 				{
-					$array[$field] = new Validation(array());
+					// This field must be an array
+					$array[$field] = array();
 				}
 				else
 				{
@@ -441,12 +444,12 @@ class Validation_Core extends ArrayObject {
 				{
 					foreach ($fields as $f)
 					{
-						$this->apply_filter($f, $callback);
+						$this[$f] = call_user_func($callback, $this[$f]);
 					}
 				}
 				else
 				{
-					$this->apply_filter($field, $callback);
+					$this[$field] = call_user_func($callback, $this[$field]);
 				}
 			}
 		}
@@ -472,42 +475,23 @@ class Validation_Core extends ArrayObject {
 						// applying rules using a wildcard, so that all fields
 						// will be validated.
 
-						if ( ! empty($this->errors[$f]))
+						if (isset($this->errors[$f]))
 						{
 							// Prevent other rules from being evaluated if an error has occurred
 							continue;
 						}
 
-						if ( ! in_array($rule, $this->empty_rules) AND ! $this->required($this[$f]))
+						if (empty($this[$f]) AND ! in_array($rule, $this->empty_rules))
 						{
 							// This rule does not need to be processed on empty fields
 							continue;
-						}
-
-						if (is_string($field_name))
-						{
-							if (is_int($f))
-							{
-								// Numerically indexed arrays use the parent field name
-								$name = $field_name;
-							}
-							else
-							{
-								// Associative arrays use a normal key string
-								$name = $field_name.'.'.$f;
-							}
-						}
-						else
-						{
-							// Use the field as the name
-							$name = $f;
 						}
 
 						if ($args === NULL)
 						{
 							if ( ! call_user_func($callback, $this[$f]))
 							{
-								$object->add_error($name, $rule);
+								$this->errors[$f] = $rule;
 
 								// Stop validating this field when an error is found
 								continue;
@@ -517,7 +501,7 @@ class Validation_Core extends ArrayObject {
 						{
 							if ( ! call_user_func($callback, $this[$f], $args))
 							{
-								$object->add_error($name, $rule);
+								$this->errors[$f] = $rule;
 
 								// Stop validating this field when an error is found
 								continue;
@@ -527,7 +511,7 @@ class Validation_Core extends ArrayObject {
 				}
 				else
 				{
-					if ( ! empty($this->errors[$field]))
+					if (isset($this->errors[$field]))
 					{
 						// Prevent other rules from being evaluated if an error has occurred
 						break;
@@ -539,30 +523,11 @@ class Validation_Core extends ArrayObject {
 						continue;
 					}
 
-					if (is_string($field_name))
-					{
-						if (is_int($field))
-						{
-							// Numerically indexed arrays use the parent field name
-							$name = $field_name;
-						}
-						else
-						{
-							// Associative arrays use a normal key string
-							$name = $field_name.'.'.$field;
-						}
-					}
-					else
-					{
-						// Use the field as the name
-						$name = $field;
-					}
-
 					if ($args === NULL)
 					{
 						if ( ! call_user_func($callback, $this[$field]))
 						{
-							$object->add_error($name, $rule);
+							$this->errors[$field] = $rule;
 
 							// Stop validating this field when an error is found
 							break;
@@ -572,7 +537,7 @@ class Validation_Core extends ArrayObject {
 					{
 						if ( ! call_user_func($callback, $this[$field], $args))
 						{
-							$object->add_error($name, $rule);
+							$this->errors[$field] = $rule;
 
 							// Stop validating this field when an error is found
 							break;
@@ -594,7 +559,7 @@ class Validation_Core extends ArrayObject {
 						// applying rules using a wildcard, so that all fields
 						// will be validated.
 
-						if ( ! empty($this->errors[$f]))
+						if (isset($this->errors[$f]))
 						{
 							// Stop validating this field when an error is found
 							continue;
@@ -605,23 +570,14 @@ class Validation_Core extends ArrayObject {
 				}
 				else
 				{
-					call_user_func($callback, $this, $field);
-
-					if ( ! empty($this->errors[$field]))
+					if (isset($this->errors[$field]))
 					{
 						// Stop validating this field when an error is found
 						break;
 					}
-				}
-			}
-		}
 
-		foreach ($this->array_fields as $field)
-		{
-			if (empty($this->errors[$field]))
-			{
-				// Validate sub-arrays recursively
-				$this[$field]->validate($this, $field);
+					call_user_func($callback, $this, $field);
+				}
 			}
 		}
 
@@ -633,39 +589,18 @@ class Validation_Core extends ArrayObject {
 				{
 					foreach ($fields as $f)
 					{
-						$this->apply_filter($f, $callback);
+						$this[$f] = call_user_func($callback, $this[$f]);
 					}
 				}
 				else
 				{
-					$this->apply_filter($field, $callback);
+					$this[$field] = call_user_func($callback, $this[$field]);
 				}
 			}
 		}
 
 		// Return TRUE if there are no errors
 		return $this->errors === array();
-	}
-
-	/**
-	 * Apply a callback to a specified field.
-	 *
-	 * @param   string  field name
-	 * @param   mixed   filter callback
-	 * @return  void
-	 */
-	protected function apply_filter($field, $callback)
-	{
-		if (is_object($this[$field]))
-		{
-			// Apply the filter recursively
-			$this[$field] = arr::map_recursive($callback, $this[$field]);
-		}
-		else
-		{
-			// Apply the filter
-			$this[$field] = call_user_func($callback, $this[$field]);
-		}
 	}
 
 	/**
@@ -737,6 +672,16 @@ class Validation_Core extends ArrayObject {
 		}
 		else
 		{
+			if ( ! empty($prefix))
+			{
+				// Add a dot to the end of the prefix
+				$prefix .= '.';
+			}
+			else
+			{
+				$prefix = '';
+			}
+
 			$errors = array();
 			foreach ($this->errors as $input => $error)
 			{
