@@ -281,7 +281,7 @@ class html_Core {
 		$attr['rel'] = 'stylesheet';
 		$attr['type'] = 'text/css';
 
-		if (substr_compare($href, '.css', -4, 4, FALSE) === FALSE)
+		if (substr_compare($href, '.css', -4, 4, FALSE) !== 0)
 		{
 			// Add CSS suffix
 			$href .= '.css';
