@@ -2,8 +2,7 @@
 
 $lang = array
 (
-	// Class errors
-	'invalid_rule'  => 'Ungültige Validierungsregel benutzt: %s',
+	'not_callable'  => 'Das Callback %s, das für Validierung benutzt wird, ist nicht aufrufbar',
 
 	// General errors
 	'unknown_error' => 'Unbekannter Fehler bei der Validierungsregel von dem Feld %s aufgetreten.',
