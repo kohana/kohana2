@@ -31,7 +31,7 @@ class inflector_Core {
 			// Cache uncountables
 			self::$uncountable = Kohana::config('inflector.uncountable');
 
-			// Make uncountables mirroed
+			// Make uncountables mirrored
 			self::$uncountable = array_combine(self::$uncountable, self::$uncountable);
 		}
 
@@ -176,13 +176,13 @@ class inflector_Core {
 	 */
 	public static function underscore($str)
 	{
-		return preg_replace('/\s+/', '_', trim($str));
+		return preg_replace('/[\s_]+/', '_', trim($str));
 	}
 
 	/**
-	 * Makes an underscored or dashed phrase human-reable.
+	 * Makes an underscored or dashed phrase human-readable.
 	 *
-	 * @param   string  phrase to make human-reable
+	 * @param   string  phrase to make human-readable
 	 * @return  string
 	 */
 	public static function humanize($str)
