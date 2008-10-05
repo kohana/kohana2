@@ -1646,7 +1646,7 @@ class Kohana_Exception extends Exception {
 			$error = $exception->code;
 		}
 
-		if ($level >= Kohana::config('core.log_threshold'))
+		if ($level <= Kohana::config('core.log_threshold'))
 		{
 			// Log the error
 			Kohana::log('error', Kohana::lang('core.uncaught_exception', $error, $exception->message, $exception->file, $exception->line));
