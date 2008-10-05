@@ -882,7 +882,7 @@ final class Kohana {
 		$file = str_replace('\\', '/', realpath($file));
 		$file = preg_replace('|^'.preg_quote(DOCROOT).'|', '', $file);
 
-		if ($level >= self::$configuration['core']['log_threshold'])
+		if ($level <= self::$configuration['core']['log_threshold'])
 		{
 			// Log the error
 			self::log('error', self::lang('core.uncaught_exception', $type, $message, $file, $line));
