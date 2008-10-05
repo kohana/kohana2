@@ -1495,22 +1495,53 @@ final class Kohana {
 	 * Similar to print_r or var_dump, generates a string representation of
 	 * any variable.
 	 *
-	 * @param   mixed   variable to dump
+	 * @param   mixed    variable to dump
+	 * @param   boolean  internal recursion
 	 * @return  string
 	 */
-	public static function debug_var($var)
+	public static function debug_var($var, $recursion = FALSE)
 	{
+		static $objects;
+
+		if ($recursion === FALSE)
+		{
+			$objects = array();
+		}
+
 		switch (gettype($var))
 		{
 			case 'object':
+				// Unique hash of the object
+				$hash = spl_object_hash($var);
+
 				$object = new ReflectionObject($var);
 				$more = FALSE;
 				$out = 'object '.$object->getName().' { ';
-				foreach ($object->getProperties() as $property)
+
+				if ($recursion === TRUE AND in_array($hash, $objects))
 				{
-					if ($property->isPublic())
+					$out .= '*RECURSION*';
+				}
+				else
+				{
+					// Add the hash to the objects, to detect later recursion
+					$objects[] = $hash;
+
+					foreach ($object->getProperties() as $property)
 					{
-						$out .= ($more === TRUE ? ', ' : '').$property->getName().' => '.self::debug_var($property->getValue($var));
+						$out .= ($more === TRUE ? ', ' : '').$property->getName().' => ';
+						if ($property->isPublic())
+						{
+							$out .= self::debug_var($property->getValue($var), TRUE);
+						}
+						elseif ($property->isPrivate())
+						{
+							$out .= '*PRIVATE*';
+						}
+						else
+						{
+							$out .= '*PROTECTED*';
+						}
 						$more = TRUE;
 					}
 				}
@@ -1522,26 +1553,22 @@ final class Kohana {
 				{
 					if ( ! is_int($key))
 					{
-						$key = self::debug_var($key).' => ';
+						$key = self::debug_var($key, TRUE).' => ';
 					}
 					else
 					{
 						$key = '';
 					}
-					$out .= ($more ? ', ' : '').$key.self::debug_var($val);
+					$out .= ($more ? ', ' : '').$key.self::debug_var($val, TRUE);
 					$more = TRUE;
 				}
 				return $out.')';
-
 			case 'string':
 				return "'$var'";
-
 			case 'float':
 				return number_format($var, 6).'&hellip;';
-
 			case 'boolean':
 				return $var === TRUE ? 'TRUE' : 'FALSE';
-
 			default:
 				return (string) $var;
 		}
