@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Captcha_Driver_Word_Core extends Captcha_Basic_Driver {
+class Captcha_Driver_Word_Core extends Captcha_Driver_Basic {
 
 	/**
 	 * Generates a new Captcha challenge.
