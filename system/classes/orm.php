@@ -569,8 +569,7 @@ class ORM_Core {
 	}
 
 	/**
-	 * Saves the current object. If the object is new, it will be reloaded
-	 * after being saved.
+	 * Saves the current object.
 	 *
 	 * @chainable
 	 * @return  ORM
@@ -611,9 +610,6 @@ class ORM_Core {
 					// Load the insert id as the primary key
 					$this->object[$this->primary_key] = $query->insert_id();
 				}
-
-				// Reload the object
-				$this->reload();
 			}
 		}
 
@@ -932,7 +928,7 @@ class ORM_Core {
 	{
 		if ($table === TRUE)
 		{
-			// Return the name of this tables PK
+			// Return the name of this table's PK
 			return $this->table_name.'.'.$this->primary_key;
 		}
 
@@ -1155,7 +1151,7 @@ class ORM_Core {
 
 		if ( ! isset($this->db_applied['select']))
 		{
-			// Selete all columns by default
+			// Select all columns by default
 			$this->db->select($this->table_name.'.*');
 		}
 
