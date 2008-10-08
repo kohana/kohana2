@@ -594,9 +594,6 @@ class ORM_Core {
 
 			// Object has been saved
 			$this->saved = TRUE;
-
-			// Nothing has been changed
-			$this->changed = array();
 		}
 		else
 		{
@@ -610,7 +607,16 @@ class ORM_Core {
 					// Load the insert id as the primary key
 					$this->object[$this->primary_key] = $query->insert_id();
 				}
+
+				// Object is now loaded and saved
+				$this->loaded = $this->saved = TRUE;
 			}
+		}
+
+		if ($this->saved === TRUE)
+		{
+			// All changes have been saved
+			$this->changed = array();
 		}
 
 		return $this;
