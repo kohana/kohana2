@@ -260,18 +260,19 @@ class Database_Mysql_Driver extends Database_Driver {
 		return mysql_real_escape_string($str, $this->link);
 	}
 
-	public function list_tables()
+	public function list_tables(Database $db)
 	{
-		$sql    = 'SHOW TABLES FROM `'.$this->db_config['connection']['database'].'`';
-		$result = $this->query($sql)->result(FALSE, MYSQL_ASSOC);
+		static $tables;
 
-		$retval = array();
-		foreach ($result as $row)
+		if (empty($tables) AND $query = $db->query('SHOW TABLES FROM '.$this->escape_table($this->db_config['connection']['database'])))
 		{
-			$retval[] = current($row);
+			foreach ($query->result(FALSE) as $row)
+			{
+				$tables[] = current($row);
+			}
 		}
 
-		return $retval;
+		return $tables;
 	}
 
 	public function show_error()
