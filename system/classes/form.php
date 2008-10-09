@@ -185,6 +185,39 @@ class form_Core {
 	}
 
 	/**
+	 * Combines several similar input tags. Values for each input can be defined
+	 * in the values array.
+	 *
+	 * @param   integer       number of inputs
+	 * @param   string|array  input name or an array of HTML attributes
+	 * @param   array         input values
+	 * @param   string        a string to be attached to the end of the attributes
+	 * @return  array
+	 */
+	public static function multi_input($count, $data, array $values = array(), $extra = '')
+	{
+		if ( ! is_array($data))
+		{
+			$data = array('name' => $data);
+		}
+
+		// Make the name create arrays
+		$data['name'] = $data['name'].'[]';
+
+		$output = array();
+		for ($i = 0, $count = (int) $count; $i < $count; $i++)
+		{
+			if ( ! isset($value[$i]))
+			{
+				$values[$i] = NULL;
+			}
+
+			$output[] = form::input($data, $values[$i]);
+		}
+		return $output;
+	}
+
+	/**
 	 * Creates a HTML form password input tag.
 	 *
 	 * @param   string|array  input name or an array of HTML attributes

@@ -59,6 +59,33 @@ class Validation_Core extends ArrayObject {
 	}
 
 	/**
+	 * Magic clone method, clears errors and messages.
+	 *
+	 * @return  void
+	 */
+	public function __clone()
+	{
+		$this->errors = array();
+		$this->messages = array();
+	}
+
+	/**
+	 * Create a copy of the current validation rules and change the array.
+	 *
+	 * @chainable
+	 * @param   array  new array to validate
+	 * @return  Validation
+	 */
+	public function copy(array $array)
+	{
+		$copy = clone $this;
+
+		$copy->exchangeArray($array);
+
+		return $copy;
+	}
+
+	/**
 	 * Test if the data has been submitted.
 	 *
 	 * @return  boolean
@@ -793,7 +820,7 @@ class Validation_Core extends ArrayObject {
 	 */
 	public function chars($value, array $chars)
 	{
-		return ! preg_match('![^'.implode('', $chars).']!', $value);
+		return ! preg_match('![^'.implode('', $chars).']!u', $value);
 	}
 
 } // End Validation
