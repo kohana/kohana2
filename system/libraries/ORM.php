@@ -751,8 +751,8 @@ class ORM_Core {
 		// Insert the new relationship
 		$this->db->insert($join_table, array
 		(
-			$this->foreign_key(NULL, $join_table)  => $this->object[$this->primary_key],
-			$model->foreign_key(NULL, $join_table) => $model->primary_key_value,
+			$this->foreign_key(NULL)  => $this->object[$this->primary_key],
+			$model->foreign_key(NULL) => $model->primary_key_value,
 		));
 
 		return TRUE;
