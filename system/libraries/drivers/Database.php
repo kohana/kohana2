@@ -337,7 +337,7 @@ abstract class Database_Driver {
 	 *
 	 * @return  array
 	 */
-	abstract public function list_tables();
+	abstract public function list_tables(Database $db);
 
 	/**
 	 * Lists all fields in a table.
