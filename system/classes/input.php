@@ -305,9 +305,9 @@ class Input_Core {
 		switch ($tool)
 		{
 			case 'htmlpurifier':
-				/**
-				 * @todo License should go here, http://htmlpurifier.org/
-				 */
+				// Licensed under the GNU Lesser General Public License
+				// http://htmlpurifier.org/viewvc.cgi/htmlpurifier/trunk/LICENSE
+				// Author: Edward Z. Yang <admin@htmlpurifier.org>
 				if ( ! class_exists('HTMLPurifier_Config', FALSE))
 				{
 					// Load HTMLPurifier
