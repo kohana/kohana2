@@ -4,7 +4,7 @@
  * 
  * @package    Core
  * @author     Kohana Team
- * @copyright  (c) 2007-2008 Kohana Team
+ * @copyright  (c) 2007-2008 Kohana Team 
  * @license    http://kohanaphp.com/license.html
  */
 class Database_Mssql_Driver extends Database_Driver
@@ -257,7 +257,7 @@ class Database_Mssql_Driver extends Database_Driver
 
 	public function show_error()
 	{
-		return mssql_error($this->link);
+		return mssql_get_last_message($this->link);
 	}
 
 	public function list_fields($table)
