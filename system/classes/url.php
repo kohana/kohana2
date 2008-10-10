@@ -186,7 +186,9 @@ class url_Core {
 	public static function redirect($uri = '', $method = '302')
 	{
 		if (Event::has_run('system.send_headers'))
-			return;
+		{
+			return FALSE;
+		}
 
 		$uri = (array) $uri;
 
@@ -202,6 +204,9 @@ class url_Core {
 		{
 			if ($count_uri > 0)
 			{
+				// Run the redirect event
+				Event::run('system.redirect', $uri);
+
 				header('HTTP/1.1 300 Multiple Choices');
 				header('Location: '.$uri[0]);
 
@@ -217,6 +222,9 @@ class url_Core {
 		else
 		{
 			$uri = $uri[0];
+
+			// Run the redirect event
+			Event::run('system.redirect', $uri);
 
 			if ($method == 'refresh')
 			{
