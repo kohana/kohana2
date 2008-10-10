@@ -49,7 +49,7 @@ class Database_Driver_Mysqli_Core extends Database_Driver_Mysql {
 		$host = isset($host) ? $host : $socket;
 
 		// Make the connection and select the database
-		if ($this->link = new mysqli($host, $user, $pass, $database))
+		if ($this->link = new mysqli($host, $user, $pass, $database, $port))
 		{
 			if ($charset = $this->db_config['character_set'])
 			{
