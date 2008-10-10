@@ -474,7 +474,7 @@ class ORM_Core {
 			else
 			{
 				// Search for a specific column
-				$this->db->where($this->table_name.'.'.$this->unique_key($id), $id);
+				$this->db->where($this->unique_key($id), $id);
 			}
 		}
 
@@ -805,12 +805,12 @@ class ORM_Core {
 		if ($model->loaded)
 		{
 			// Delete only a specific object
-			$this->db->where($model->foreign_key(NULL, $join_table), $model->primary_key_value);
+			$this->db->where($model->foreign_key(NULL), $model->primary_key_value);
 		}
 
 		// Return the number of rows deleted
 		return $this->db
-			->where($this->foreign_key(NULL, $join_table), $this->object[$this->primary_key])
+			->where($this->foreign_key(NULL), $this->object[$this->primary_key])
 			->delete($join_table)
 			->count();
 	}
