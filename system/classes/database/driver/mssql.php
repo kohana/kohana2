@@ -260,7 +260,7 @@ class Database_Driver_Mssql_Core extends Database_Driver
 
 	public function show_error()
 	{
-		return mssql_error($this->link);
+		return mssql_get_last_message($this->link);
 	}
 
 	public function list_fields($table)
