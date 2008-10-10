@@ -190,6 +190,21 @@ class url_Core {
 			return FALSE;
 		}
 
+		$codes = array
+		(
+			'refresh' => 'Refresh',
+			'300' => 'Multiple Choices',
+			'301' => 'Moved Permanently',
+			'302' => 'Found',
+			'303' => 'See Other',
+			'304' => 'Not Modified',
+			'305' => 'Use Proxy',
+			'307' => 'Temporary Redirect'
+		);
+
+		// Validate the method and default to 302
+		$method = isset($codes[$method]) ? (string) $method : '302';
+
 		if ($method === '300')
 		{
 			$uri = (array) $uri;
@@ -212,31 +227,17 @@ class url_Core {
 		// Run the redirect event
 		Event::run('system.redirect', array('uri' => $uri));
 
-		if ($method == 'refresh')
+		if ($method === 'refresh')
 		{
 			header('Refresh: 0; url='.$uri);
 		}
 		else
 		{
-			$codes = array
-			(
-				'300' => 'Multiple Choices',
-				'301' => 'Moved Permanently',
-				'302' => 'Found',
-				'303' => 'See Other',
-				'304' => 'Not Modified',
-				'305' => 'Use Proxy',
-				'307' => 'Temporary Redirect'
-			);
-
-			$method = isset($codes[$method]) ? $method : '302';
-
 			header('HTTP/1.1 '.$method.' '.$codes[$method]);
 			header('Location: '.$uri);
 		}
 
 		exit('<h1>'.$method.' - '.$codes[$method].'</h1>'.$output);
-
 	}
 
 } // End url
