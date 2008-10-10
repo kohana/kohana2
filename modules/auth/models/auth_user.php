@@ -59,7 +59,10 @@ class Auth_User_Model extends ORM {
 
 		if ($array->validate())
 		{
-			if ($this->find($array['username']) AND Auth::instance()->login($this, $array['password']))
+			// Attempt to load the user
+			$this->find($array['username']);
+
+			if ($this->loaded AND Auth::instance()->login($this, $array['password']))
 			{
 				if (is_string($redirect))
 				{
@@ -73,6 +76,38 @@ class Auth_User_Model extends ORM {
 			else
 			{
 				$array->add_error('username', 'invalid');
+			}
+		}
+
+		return $status;
+	}
+
+	/**
+	 * Validates an array for a matching password and password_confirm field.
+	 *
+	 * @param  array    values to check
+	 * @param  string   save the user if
+	 * @return boolean
+	 */
+	public function change_password(array & $array, $save = FALSE)
+	{
+		$array = Validation::factory($array)
+			->pre_filter('trim')
+			->add_rules('password', 'required', 'length[5,127]')
+			->add_rules('password_confirm', 'matches[password]');
+
+		if ($status = $array->validate())
+		{
+			// Change the password
+			$this->password = $array['password'];
+
+			if ($save == TRUE AND $status = $this->save())
+			{
+				if (is_string($save))
+				{
+					// Redirect to the success page
+					url::redirect($save);
+				}
 			}
 		}
 
