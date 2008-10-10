@@ -59,23 +59,16 @@ class Model_Auth_User extends ORM {
 
 		if ($array->validate())
 		{
-			if ($this->find($array['username']))
+			if ($this->find($array['username']) AND Auth::instance()->login($this, $array['password']))
 			{
-				if (Auth::instance()->login($this, $array['password']))
+				if (is_string($redirect))
 				{
-					if (is_string($redirect))
-					{
-						// Redirect after a successful login
-						url::redirect($redirect);
-					}
+					// Redirect after a successful login
+					url::redirect($redirect);
+				}
 
-					// Login is successful
-					$status = TRUE;
-				}
-				else
-				{
-					$array->add_error('password', 'invalid');
-				}
+				// Login is successful
+				$status = TRUE;
 			}
 			else
 			{
