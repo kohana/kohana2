@@ -89,11 +89,8 @@ class url_Core {
 	 */
 	public static function site($uri = '', $protocol = FALSE)
 	{
-		if ($path = trim(parse_url($uri, PHP_URL_PATH), '/'))
-		{
-			// Add path suffix
-			$path .= Kohana::config('core.url_suffix');
-		}
+		// Remove any trailing / from the path
+		$path = trim(parse_url($uri, PHP_URL_PATH), '/');
 
 		if ($query = parse_url($uri, PHP_URL_QUERY))
 		{
@@ -227,10 +224,10 @@ class url_Core {
 		// Run the redirect event
 		Event::run('system.redirect', $uri);
 
-		// HTTP headers expect absolute URLs
 		if (strpos($uri, '://') === FALSE)
 		{
-			$uri = url::site($uri);
+			// HTTP headers expect absolute URLs
+			$uri = url::site($uri, request::protocol());
 		}
 
 		if ($method === 'refresh')
