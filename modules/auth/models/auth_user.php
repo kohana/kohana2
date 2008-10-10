@@ -32,7 +32,7 @@ class Auth_User_Model extends ORM {
 		$array = Validation::factory($array)
 			->pre_filter('trim')
 			->add_rules('email', 'required', 'length[4,127]', 'valid::email')
-			->add_rules('username', 'required', 'length[4,32]', 'chars[a-zA-Z0-9_.]', array($this, 'username_available'))
+			->add_rules('username', 'required', 'length[4,32]', 'chars[a-zA-Z0-9_.]', array($this, 'username_exists'))
 			->add_rules('password', 'required', 'length[5,42]')
 			->add_rules('password_confirm', 'matches[password]');
 
@@ -121,7 +121,7 @@ class Auth_User_Model extends ORM {
 	 * @param   mixed    id to check
 	 * @return  boolean
 	 */
-	public function username_available($id)
+	public function username_exists($id)
 	{
 		return ! $this->db
 			->where($this->unique_key($id), $id)
