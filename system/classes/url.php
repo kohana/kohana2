@@ -210,7 +210,7 @@ class url_Core {
 		}
 
 		// Run the redirect event
-		Event::run('system.redirect', array('uri' => $uri);
+		Event::run('system.redirect', array('uri' => $uri));
 
 		if ($method == 'refresh')
 		{
