@@ -101,7 +101,7 @@ class Auth_User_Model extends ORM {
 			// Change the password
 			$this->password = $array['password'];
 
-			if ($save == TRUE AND $status = $this->save())
+			if ($save !== FALSE AND $status = $this->save())
 			{
 				if (is_string($save))
 				{
