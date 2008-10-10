@@ -513,7 +513,12 @@ final class Kohana {
 	{
 		if (self::$log_levels[$type] <= self::$configuration['core']['log_threshold'])
 		{
-			self::$log[] = array(date('Y-m-d H:i:s P'), $type, $message);
+			$message = array(date('Y-m-d H:i:s P'), $type, $message);
+
+			// Run the system.log event
+			Event::run('system.log', $message);
+
+			self::$log[] = $message;
 		}
 	}
 
