@@ -51,7 +51,7 @@ class Auth_User_Model extends ORM {
 	{
 		$array = Validation::factory($array)
 			->pre_filter('trim')
-			->add_rules('username', 'required', 'length[4,32]', 'chars[a-zA-Z0-9_.]')
+			->add_rules('username', 'required', 'length[4,127]')
 			->add_rules('password', 'required', 'length[5,42]');
 
 		// Login starts out invalid
