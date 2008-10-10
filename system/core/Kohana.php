@@ -524,7 +524,7 @@ final class Kohana {
 	 */
 	public static function log_save()
 	{
-		if (empty(self::$log))
+		if (empty(self::$log) OR self::$configuration['core']['log_threshold'] < 1)
 			return;
 
 		// Filename of the log
