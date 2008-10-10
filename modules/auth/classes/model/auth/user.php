@@ -63,7 +63,7 @@ class Model_Auth_User extends ORM {
 			{
 				if (Auth::instance()->login($this, $array['password']))
 				{
-					if (is_string($redirect)
+					if (is_string($redirect))
 					{
 						// Redirect after a successful login
 						url::redirect($redirect);
