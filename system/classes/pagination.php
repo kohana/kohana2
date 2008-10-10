@@ -129,7 +129,7 @@ class Pagination_Core {
 		else
 		{
 			// Use current URI if no base_url set
-			$this->url = ($this->base_url === '') ? Router::$segments : explode('/', trim($this->base_url, '/'));
+			$this->url = ($this->base_url === '') ? explode('/', Router::$current_uri) : explode('/', trim($this->base_url, '/'));
 
 			// Convert uri 'label' to corresponding integer if needed
 			if (is_string($this->uri_segment))
