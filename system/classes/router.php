@@ -170,12 +170,6 @@ class Router_Core {
 
 			// Remove the URI from $_SERVER['QUERY_STRING']
 			$_SERVER['QUERY_STRING'] = preg_replace('~\bkohana_uri\b[^&]*+&?~', '', $_SERVER['QUERY_STRING']);
-
-			// Fixes really strange handling of a suffix in a GET string
-			if ($suffix = Kohana::config('core.url_suffix') AND substr(self::$current_uri, -(strlen($suffix))) === '_'.substr($suffix, 1))
-			{
-				self::$current_uri = substr(self::$current_uri, 0, -(strlen($suffix)));
-			}
 		}
 		elseif (isset($_SERVER['PATH_INFO']) AND $_SERVER['PATH_INFO'])
 		{
