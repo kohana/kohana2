@@ -40,6 +40,53 @@ class Model_Auth_User extends ORM {
 	}
 
 	/**
+	 * Validates login information from an array, and optionally redirects
+	 * after a successful login.
+	 *
+	 * @param  array    values to check
+	 * @param  string   URI or URL to redirect to
+	 * @return boolean
+	 */
+	public function login(array & $array, $redirect = FALSE)
+	{
+		$array = Validation::factory($array)
+			->pre_filter('trim')
+			->add_rules('username', 'required', 'length[4,32]', 'chars[a-zA-Z0-9_.]')
+			->add_rules('password', 'required', 'length[5,42]');
+
+		// Login starts out invalid
+		$status = FALSE;
+
+		if ($array->validate())
+		{
+			if ($this->find($array['username']))
+			{
+				if (Auth::instance()->login($this, $array['password']))
+				{
+					if (is_string($redirect)
+					{
+						// Redirect after a successful login
+						url::redirect($redirect);
+					}
+
+					// Login is successful
+					$status = TRUE;
+				}
+				else
+				{
+					$array->add_error('password', 'invalid');
+				}
+			}
+			else
+			{
+				$array->add_error('username', 'invalid');
+			}
+		}
+
+		return $status;
+	}
+
+	/**
 	 * Tests if a username exists in the database. This can be used as a
 	 * Valdidation rule.
 	 *
