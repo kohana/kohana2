@@ -202,23 +202,23 @@ class Database_Driver_Pdosqlite_Core extends Database_Driver {
 		return $res;
 	}
 
-	public function list_tables()
+	public function list_tables(Database $db)
 	{
 		$sql = "SELECT `name` FROM `sqlite_master` WHERE `type`='table' ORDER BY `name`;";
 		try
 		{
-			$result = $this->query($sql)->result(FALSE, PDO::FETCH_ASSOC);
-			$retval = array();
+			$result = $db->query($sql)->result(FALSE, PDO::FETCH_ASSOC);
+			$tables = array();
 			foreach ($result as $row)
 			{
-				$retval[] = current($row);
+				$tables[] = current($row);
 			}
 		}
 		catch (PDOException $e)
 		{
 			throw new Kohana_Database_Exception('database.error', $e->getMessage());
 		}
-		return $retval;
+		return $tables;
 	}
 
 	public function show_error()
