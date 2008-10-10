@@ -41,6 +41,28 @@ class request_Core {
 	}
 
 	/**
+	 * Returns the current request protocol, based on $_SERVER['https']. In CLI
+	 * mode, NULL will be returned.
+	 *
+	 * @return  string
+	 */
+	public static function protocol()
+	{
+		if (PHP_SAPI === 'cli')
+		{
+			return NULL;
+		}
+		elseif ( ! empty($_SERVER['HTTPS']) AND $_SERVER['HTTPS'] === 'on')
+		{
+			return 'https';
+		}
+		else
+		{
+			return 'http';
+		}
+	}
+
+	/**
 	 * Tests if the current request is an AJAX request by checking the X-Requested-With HTTP
 	 * request header that most popular JS frameworks now set for AJAX calls.
 	 *
