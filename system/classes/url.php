@@ -225,7 +225,13 @@ class url_Core {
 		}
 
 		// Run the redirect event
-		Event::run('system.redirect', array('uri' => $uri));
+		Event::run('system.redirect', $data = array('uri' => $uri));
+
+		// HTTP headers expect absolute URLs
+		if (strpos($uri, '://') === FALSE)
+		{
+			$uri = url::site($uri);
+		}
 
 		if ($method === 'refresh')
 		{
