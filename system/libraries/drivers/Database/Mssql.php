@@ -255,11 +255,6 @@ class Database_Mssql_Driver extends Database_Driver
 		return $retval;
 	}
 
-	public function list_columns($table, $metadata = FALSE, Database $db)
-	{
-		throw new Kohana_Exception('database.not_implemented', 'list_columns');
-	}
-
 	public function show_error()
 	{
 		return mssql_get_last_message($this->link);
