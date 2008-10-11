@@ -241,7 +241,7 @@ class Database_Mssql_Driver extends Database_Driver
 		return preg_replace($characters, $replace, $str);
 	}
 
-	public function list_tables()
+	public function list_tables(Database $db)
 	{
 		$sql    = 'SHOW TABLES FROM ['.$this->db_config['connection']['database'].']';
 		$result = $this->query($sql)->result(FALSE, MSSQL_ASSOC);
@@ -253,6 +253,11 @@ class Database_Mssql_Driver extends Database_Driver
 		}
 
 		return $retval;
+	}
+
+	public function list_columns($table, $metadata = FALSE, Database $db)
+	{
+		throw new Kohana_Exception('database.not_implemented', 'list_columns');
 	}
 
 	public function show_error()
