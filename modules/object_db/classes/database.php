@@ -86,11 +86,14 @@ class Database_Core extends PDO {
 			case 'object':
 				$value = (string) $value;
 			break;
-			case 'string':
-				$value = parent::quote($value);
-			break;
 			case 'NULL':
 				$value = 'NULL';
+			break;
+			case 'string':
+				$value = parent::quote($value, PDO::PARAM_STR);
+			break;
+			case 'bool':
+				$value = parent::quote($value, PDO::PARAM_BOOL);
 			break;
 		}
 
