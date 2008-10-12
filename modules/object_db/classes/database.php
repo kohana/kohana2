@@ -89,6 +89,9 @@ class Database_Core extends PDO {
 			case 'string':
 				$value = parent::quote($value);
 			break;
+			case 'NULL':
+				$value = 'NULL';
+			break;
 		}
 
 		return $value;
