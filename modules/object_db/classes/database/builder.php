@@ -23,68 +23,76 @@ abstract class Database_Builder_Core extends Database_Query {
 
 	public function compile()
 	{
-		$sql = 'FROM '.implode(', ', $this->flatten($this->from))."\n";
-		$end = '';
+		$sql = 'FROM '.implode(', ', $this->flatten($this->from));
 
-		foreach ($this->join as $table)
-		{
-			list($table, $keys, $type) = $table;
-
-			if ($type !== NULL)
-			{
-				$type = $type.' ';
-			}
-
-			$sql .= $type.'JOIN ';
-			if (is_array($table))
-			{
-				// (t1, t2, (SQL), t4)
-				$sql .= '('.implode(', ', $this->flatten($table)).')';
-			}
-			else
-			{
-				// table
-				$sql .= $table;
-			}
-			$sql .= ' ON ';
-
-			if (count($keys) > 1)
-			{
-				$sql .= '(';
-			}
-			foreach ($keys as $c1 => $c2)
-			{
-				$keys[$c1] = $c1.' = '.$c2;
-			}
-			// column1 = column2
-			$sql .= implode(', ', $keys);
-			if (count($keys) > 1)
-			{
-				$sql .= ')';
-			}
-		}
 		if ( ! empty($this->join))
 		{
 			$sql .= "\n";
+			foreach ($this->join as $i => $table)
+			{
+				list($table, $keys, $type) = $table;
+
+				if ($i > 0)
+				{
+					$sql .= "\n";
+				}
+
+				if ($type !== NULL)
+				{
+					$type = $type.' ';
+				}
+
+				$sql .= $type.'JOIN ';
+				if (is_array($table))
+				{
+					// (t1, t2, (SQL), t4)
+					$sql .= '('.implode(', ', $this->flatten($table)).')';
+				}
+				else
+				{
+					// table
+					$sql .= $table;
+				}
+				$sql .= ' ON ';
+
+				if (count($keys) > 1)
+				{
+					$sql .= '(';
+				}
+				foreach ($keys as $c1 => $c2)
+				{
+					$keys[$c1] = $c1.' = '.$c2;
+				}
+				// column1 = column2
+				$sql .= implode(', ', $keys);
+				if (count($keys) > 1)
+				{
+					$sql .= ')';
+				}
+			}
 		}
 
-		foreach ($this->where as $i => $where)
+		if ( ! empty($this->where))
 		{
-			if ($i > 0)
+			$sql .= "\n";
+			foreach ($this->where as $i => $where)
 			{
-				// Add the proper operator
-				$sql .= "\n\t".$where[0].' ';
-			}
-			else
-			{
-				$sql .= 'WHERE ';
-			}
+				if ($i > 0)
+				{
+					// Add the proper operator
+					$sql .= "\n".$where[0].' ';
+				}
+				else
+				{
+					$sql .= 'WHERE ';
+				}
 
-			// WHERE column = "value"
-			$sql .= (string) $where[1];
+				// WHERE column = "value"
+				$sql .= (string) $where[1];
+			}
 		}
 
-		return $sql.$end;
+		return $sql;
 	}
 
 	public function from($tables)
