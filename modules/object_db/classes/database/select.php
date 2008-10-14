@@ -6,6 +6,8 @@ class Database_Select_Core extends Database_Builder {
 	protected $group_by = array();
 	protected $having   = array();
 	protected $order_by = array();
+	protected $limit    = NULL;
+	protected $offset   = NULL;
 
 	protected $order_directions = array('ASC', 'DESC', 'RAND()');
 
@@ -63,6 +65,16 @@ class Database_Select_Core extends Database_Builder {
 
 			// ORDER BY column DIRECTION
 			$sql .= "\nORDER BY ".implode(', ', $ordering);
+		}
+
+		if (is_int($this->limit))
+		{
+			$sql .= "\nLIMIT {$this->limit}";
+		}
+
+		if (is_int($this->offset))
+		{
+			$sql .= "\nOFFSET {$this->offset}";
 		}
 
 		return $sql;
@@ -136,6 +148,20 @@ class Database_Select_Core extends Database_Builder {
 		}
 
 		$this->order_by[$column] = $direction;
+
+		return $this;
+	}
+
+	public function limit($number)
+	{
+		$this->limit = (int) $number;
+
+		return $this;
+	}
+
+	public function offset($number)
+	{
+		$this->offset = (int) $number;
 
 		return $this;
 	}
