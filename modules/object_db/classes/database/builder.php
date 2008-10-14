@@ -2,7 +2,6 @@
 
 abstract class Database_Builder_Core extends Database_Query {
 
-	protected $from  = array();
 	protected $join  = array();
 	protected $where = array();
 
@@ -23,11 +22,11 @@ abstract class Database_Builder_Core extends Database_Query {
 
 	public function compile()
 	{
-		$sql = 'FROM '.implode(', ', $this->flatten($this->from));
+		$sql = '';
 
 		if ( ! empty($this->join))
 		{
-			$sql .= "\n";
+			empty($sql) or $sql .= "\n";
 			foreach ($this->join as $i => $table)
 			{
 				list($table, $keys, $type) = $table;
@@ -74,7 +73,7 @@ abstract class Database_Builder_Core extends Database_Query {
 
 		if ( ! empty($this->where))
 		{
-			$sql .= "\n";
+			empty($sql) or $sql .= "\n";
 			foreach ($this->where as $i => $where)
 			{
 				if ($i > 0)
@@ -93,23 +92,6 @@ abstract class Database_Builder_Core extends Database_Query {
 		}
 
 		return $sql;
-	}
-
-	public function from($tables)
-	{
-		$tables = func_get_args();
-
-		foreach ($tables as $table)
-		{
-			if (is_string($table))
-			{
-				$table = trim($table);
-			}
-
-			$this->from[] = $table;
-		}
-
-		return $this;
 	}
 
 	public function join($table, $keys, $value = NULL, $type = NULL)

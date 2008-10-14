@@ -3,11 +3,13 @@
 class Database_Select_Core extends Database_Builder {
 
 	protected $select   = array();
+	protected $from     = array();
 	protected $group_by = array();
 	protected $having   = array();
 	protected $order_by = array();
 	protected $limit    = NULL;
 	protected $offset   = NULL;
+
 
 	protected $order_directions = array('ASC', 'DESC', 'RAND()');
 
@@ -18,11 +20,15 @@ class Database_Select_Core extends Database_Builder {
 
 	public function compile()
 	{
-		// SELECT columns
-		$sql = 'SELECT '.implode(', ', $this->flatten($this->select))."\n";
+		// SELECT columns FROM table
+		$sql = 'SELECT '.implode(', ', $this->flatten($this->select))."\n"
+		     . 'FROM '.implode(', ', $this->flatten($this->from));
 
-		// FROM ... JOIN ... WHERE ...
-		$sql .= parent::compile();
+		if ($where = parent::compile())
+		{
+			// WHERE ... JOIN ...
+			$sql .= "\n".$where;
+		}
 
 		if ( ! empty($this->group_by))
 		{
@@ -92,6 +98,23 @@ class Database_Select_Core extends Database_Builder {
 		}
 
 		$this->select = array_merge($this->select, $columns);
+
+		return $this;
+	}
+
+	public function from($tables)
+	{
+		$tables = func_get_args();
+
+		foreach ($tables as $table)
+		{
+			if (is_string($table))
+			{
+				$table = trim($table);
+			}
+
+			$this->from[] = $table;
+		}
 
 		return $this;
 	}

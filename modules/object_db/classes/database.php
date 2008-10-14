@@ -52,17 +52,37 @@ class Database_Core extends PDO {
 			$columns = func_get_args();
 		}
 
-		return Database::build('select', $this)->select($columns);
+		// Create a new SELECT query
+		$query = new Database_Select($this);
+
+		return $query->select($columns);
 	}
 
-	public function insert($table, $columns = NULL, $values = NULL)
+	public function insert($table, $columns = NULL)
 	{
-		return new Database_Insert($this, $table, $columns, $values);
+		$query = new Database_Insert($this);
+
+		// Set the table name
+		$query->table($table);
+
+		if (is_array($columns))
+		{
+			// Set the column names
+			$query->columns($columns);
+		}
+
+		return $query;
 	}
 
-	public function update($table, $columns = NULL)
+	public function update($table)
 	{
-		return new Database_Update($this, $table, $columns);
+		// Create a new UPDATE statement
+		$query =  new Database_Update($this);
+
+		// Set the table name
+		$query->table($table);
+
+		return $query;
 	}
 
 	public function delete($table)
