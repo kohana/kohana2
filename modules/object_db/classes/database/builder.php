@@ -218,9 +218,4 @@ abstract class Database_Builder_Core extends Database_Query {
 		return $this;
 	}
 
-	public function prepare()
-	{
-		return $this->db->prepare($this->compile());
-	}
-
 } // End Database_Builder

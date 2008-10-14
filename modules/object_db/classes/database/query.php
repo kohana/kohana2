@@ -16,4 +16,9 @@ abstract class Database_Query_Core {
 
 	abstract public function compile();
 
+	public function prepare()
+	{
+		return $this->db->prepare($this->compile());
+	}
+
 } // End Database_Query

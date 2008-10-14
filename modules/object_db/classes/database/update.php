@@ -27,17 +27,20 @@ class Database_Update_Core extends Database_Builder {
 
 	public function compile()
 	{
-		$sql = "UPDATE {$this->table}\nSET ";
+		// UPDATE table SET
+		$sql = 'UPDATE  '.$this->table."\n";
 
 		$columns = array();
 		foreach ($this->set as $column => $value)
 		{
+			// column = 'value'
 			$columns[] = $column.' = '.$this->db->escape($value);
 		}
-		$sql .= implode(",\n", $columns);
+		$sql .= 'SET '.implode(",\n\t", $columns);
 
 		if ($where = parent::compile())
 		{
+			// WHERE ... JOIN ...
 			$sql .= "\n".$where;
 		}
 
