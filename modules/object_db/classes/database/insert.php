@@ -6,6 +6,35 @@ class Database_Insert_Core extends Database_Query {
 	protected $columns = array();
 	protected $values  = array();
 
+	/**
+	 * Magic object-to-string method. This method is repeated in Database_Builder,
+	 * but Database_Insert does not extend Database_Builder.
+	 *
+	 * @return  string
+	 */
+	public function __toString()
+	{
+		return '('.$this->compile().')';
+	}
+
+	public function compile()
+	{
+		// INSERT INTO table (c1, c2, c3)
+		$sql = 'INSERT INTO '.$this->table."\n"
+		     . '('.implode(', ', $this->columns).')';
+
+		$values = array();
+		foreach ($this->values as $set)
+		{
+			// (val1, val2, val3)
+			$values[] = '('.$this->db->escape($set).')';
+		}
+		// VALUES ...
+		$sql .= "\nVALUES\n".implode(",\n", $values);
+
+		return $sql;
+	}
+
 	public function table($table)
 	{
 		// Set the table name
@@ -47,24 +76,6 @@ class Database_Insert_Core extends Database_Query {
 		}
 
 		return $this;
-	}
-
-	public function compile()
-	{
-		// INSERT INTO table (c1, c2, c3)
-		$sql = 'INSERT INTO '.$this->table."\n"
-		     . '('.implode(', ', $this->columns).')'."\n";
-
-		$values = array();
-		foreach ($this->values as $set)
-		{
-			// (val1, val2, val3)
-			$values[] = '('.$this->db->escape($set).')';
-		}
-		// VALUES ...
-		$sql .= "VALUES\n".implode(",\n", $values);
-
-		return $sql;
 	}
 
 } // End Database_Update

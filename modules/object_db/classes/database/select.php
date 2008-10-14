@@ -10,13 +10,7 @@ class Database_Select_Core extends Database_Builder {
 	protected $limit    = NULL;
 	protected $offset   = NULL;
 
-
 	protected $order_directions = array('ASC', 'DESC', 'RAND()');
-
-	public function __toString()
-	{
-		return '('.$this->compile().')';
-	}
 
 	public function compile()
 	{
@@ -104,17 +98,12 @@ class Database_Select_Core extends Database_Builder {
 
 	public function from($tables)
 	{
-		$tables = func_get_args();
-
-		foreach ($tables as $table)
+		if ( ! is_array($tables))
 		{
-			if (is_string($table))
-			{
-				$table = trim($table);
-			}
-
-			$this->from[] = $table;
+			$tables = func_get_args();
 		}
+
+		$this->from = array_merge($this->from, $tables);
 
 		return $this;
 	}

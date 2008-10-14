@@ -10,14 +10,9 @@ abstract class Database_Builder_Core extends Database_Query {
 	// Contains the last WHERE, LIKE, IN, or BETWEEN builder
 	protected $last_build;
 
-	protected function flatten(array $values)
+	public function __toString()
 	{
-		foreach ($values as & $val)
-		{
-			$val = (string) $val;
-		}
-
-		return $values;
+		return '('.$this->compile().')';
 	}
 
 	public function compile()
@@ -216,6 +211,16 @@ abstract class Database_Builder_Core extends Database_Query {
 		$this->where[] = array('OR', $this->last_build);
 
 		return $this;
+	}
+
+	protected function flatten(array $values)
+	{
+		foreach ($values as & $val)
+		{
+			$val = (string) $val;
+		}
+
+		return $values;
 	}
 
 } // End Database_Builder

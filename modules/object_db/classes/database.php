@@ -52,7 +52,7 @@ class Database_Core extends PDO {
 			$columns = func_get_args();
 		}
 
-		// Create a new SELECT query
+		// Create a SELECT query
 		$query = new Database_Select($this);
 
 		return $query->select($columns);
@@ -60,6 +60,7 @@ class Database_Core extends PDO {
 
 	public function insert($table, $columns = NULL)
 	{
+		// Create an INSERT query
 		$query = new Database_Insert($this);
 
 		// Set the table name
@@ -85,9 +86,20 @@ class Database_Core extends PDO {
 		return $query;
 	}
 
-	public function delete($table)
+	public function delete($tables)
 	{
-		return new Database_Delete($this, $table);
+		if ( ! is_array($tables))
+		{
+			$tables = func_get_args();
+		}
+
+		// Create a DELETE query
+		$query = new Database_Delete($this);
+
+		// Set the 
+		$query->from($tables);
+
+		return $query;
 	}
 
 	public function expression($exp)
