@@ -471,12 +471,12 @@ class Validation_Core extends ArrayObject {
 				{
 					foreach ($fields as $f)
 					{
-						$this[$f] = call_user_func($callback, $this[$f]);
+						$this[$f] = is_array($this[$f]) ? array_map($callback, $this[$f]) : call_user_func($callback, $this[$f]);
 					}
 				}
 				else
 				{
-					$this[$field] = call_user_func($callback, $this[$field]);
+					$this[$field] = is_array($this[$field]) ? array_map($callback, $this[$field]) : call_user_func($callback, $this[$field]);
 				}
 			}
 		}
@@ -616,12 +616,12 @@ class Validation_Core extends ArrayObject {
 				{
 					foreach ($fields as $f)
 					{
-						$this[$f] = call_user_func($callback, $this[$f]);
+						$this[$f] = is_array($this[$f]) ? array_map($callback, $this[$f]) : call_user_func($callback, $this[$f]);
 					}
 				}
 				else
 				{
-					$this[$field] = call_user_func($callback, $this[$field]);
+					$this[$field] = is_array($this[$field]) ? array_map($callback, $this[$field]) : call_user_func($callback, $this[$field]);
 				}
 			}
 		}
