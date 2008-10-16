@@ -317,7 +317,7 @@ class Validation_Core extends ArrayObject {
 		foreach ($fields as $field)
 		{
 			// Add the filter to specified field
-			$this->post_filter[$field][] = $filter;
+			$this->post_filters[$field][] = $filter;
 		}
 
 		return $this;
