@@ -1019,7 +1019,7 @@ final class Kohana {
 					else
 					{
 						// Add the file to the files
-						$files[$directory.'/'.$filename] = $file->getRealPath();
+						$files[$directory.'/'.$filename] = realpath($file->getPathname());
 					}
 				}
 			}
