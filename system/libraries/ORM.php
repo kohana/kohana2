@@ -450,7 +450,7 @@ class ORM_Core {
 		}
 
 		// Join the related object into the result
-		$this->db->join($object->table_name, $join_col1, $join_col2, 'INNER');
+		$this->db->join($object->table_name, $join_col1, $join_col2, 'LEFT');
 
 		return $this;
 	}
