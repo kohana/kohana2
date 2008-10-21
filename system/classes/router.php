@@ -11,9 +11,8 @@
  */
 class Router_Core {
 
-	public static $readonly_keys = array('regex', 'prefix');
-
 	public static $current_route;
+	public static $request_method;
 
 	public static $current_uri  = '';
 	public static $query_string = '';
@@ -68,9 +67,37 @@ class Router_Core {
 
 			if (preg_match('#^'.$regex.'$#u', self::$current_uri, $matches))
 			{
+				if (isset($route['route']['request']) AND $route['route']['request'] !== Router::$request_method)
+				{
+					// The request method is invalid
+					continue;
+				}
+
+				if (isset($route['route']['global']))
+				{
+					foreach ($route['route']['global'] as $type => $keys)
+					{
+						switch ($type)
+						{
+							case 'get':   $global = $_GET;   break;
+							case 'post':  $global = $_POST;  break;
+							case 'files': $global = $_FILES; break;
+						}
+
+						foreach ($keys as $key)
+						{
+							if ( ! isset($global[$key]))
+							{
+								// The request does not have a required global value
+								continue 3;
+							}
+						}
+					}
+				}
+
 				foreach ($matches as $key => $value)
 				{
-					if (is_int($key) OR in_array($key, Router::$readonly_keys))
+					if (is_int($key) OR $key === 'route')
 					{
 						// Skip matches that are not named or readonly
 						continue;
@@ -83,21 +110,21 @@ class Router_Core {
 					}
 				}
 
-				if (isset($route['prefix']))
+				if (isset($route['route']['prefix']))
 				{
-					foreach ($route['prefix'] as $key => $prefix)
+					foreach ($route['route']['prefix'] as $key => $prefix)
 					{
 						if (isset($route[$key]))
 						{
 							// Add the prefix to the key
-							$route[$key] = $route['prefix'][$key].$route[$key];
+							$route[$key] = $route['route']['prefix'][$key].$route[$key];
 						}
 					}
 				}
 
 				foreach ($route as $key => $val)
 				{
-					if (is_int($key) OR $key === 'controller' OR $key === 'method' OR in_array($key, self::$readonly_keys))
+					if (is_int($key) OR $key === 'controller' OR $key === 'method' OR $key === 'route')
 					{
 						// These keys are not arguments, skip them
 						continue;
@@ -184,6 +211,17 @@ class Router_Core {
 			self::$current_uri = $_SERVER['PHP_SELF'];
 		}
 
+		if (PHP_SAPI === 'cli')
+		{
+			// The request method is command line
+			Router::$request_method = 'cli';
+		}
+		elseif (isset($_SERVER['REQUEST_METHOD']))
+		{
+			// Set the request method using server information
+			Router::$request_method = strtolower($_SERVER['REQUEST_METHOD']);
+		}
+
 		// The front controller directory and filename
 		$fc = substr(realpath($_SERVER['SCRIPT_FILENAME']), strlen(DOCROOT));
 
@@ -237,10 +275,10 @@ class Router_Core {
 		}
 
 		// Get the URI keys from the route
-		$keys = Router::keys($route[0]);
+		$keys = Router::keys($route['route']['uri']);
 
 		// Copy the URI, it will have parameters replaced
-		$uri = $route[0];
+		$uri = $route['route']['uri'];
 
 		// String searches and replacements
 		$search = $replace = array();
@@ -293,7 +331,7 @@ class Router_Core {
 	public static function compile(array $route)
 	{
 		// Split the route URI by slashes
-		$uri = explode('/', $route[0]);
+		$uri = explode('/', $route['route']['uri']);
 
 		// Regular expression end
 		$end = '';
@@ -339,10 +377,10 @@ class Router_Core {
 				// Use the key as the regex subpattern name
 				$name = '?P<'.$key.'>';
 
-				if (isset($route['regex'][$key]))
+				if (isset($route['route']['regex'][$key]))
 				{
 					// Matches specified regex for the segment
-					$exp .= '('.$name.$route['regex'][$key].')';
+					$exp .= '('.$name.$route['route']['regex'][$key].')';
 				}
 				else
 				{
