@@ -383,7 +383,7 @@ class Database_Core {
 
 		foreach ((array) $table as $t)
 		{
-			$join['tables'] = $this->driver->escape_column($this->config['table_prefix'].$t);
+			$join['tables'][] = $this->driver->escape_column($this->config['table_prefix'].$t);
 		}
 
 		$join['conditions'] = '('.trim(implode(' ', $cond)).')';
