@@ -62,6 +62,15 @@ class file_Core {
 			return mime_content_type($filename);
 		}
 
+		if ( ! KOHANA_IS_WIN)
+		{
+			// Attempt to locate use the file command, checking the return value
+			if ($command = trim(exec('which file', $output, $return)) AND $return === 0)
+			{
+				return trim(exec($command.' -bi '.escapeshellarg($filename)));
+			}
+		}
+
 		if ( ! empty($extension) AND is_array($mime = Kohana::config('mimes.'.$extension)))
 		{
 			// Return the mime-type guess, based on the extension
