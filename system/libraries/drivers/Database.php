@@ -163,7 +163,7 @@ abstract class Database_Driver {
 		if ($auto === TRUE)
 		{
 			// Add the start and end quotes
-			$match = '%'.$match.'%';
+			$match = '%'.str_replace('%', '\\%', $match).'%';
 		}
 
 		return $prefix.' '.$this->escape_column($field).' LIKE \''.$match . '\'';
