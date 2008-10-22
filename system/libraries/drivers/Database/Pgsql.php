@@ -345,7 +345,7 @@ class Pgsql_Result extends Database_Result {
 		if (is_resource($result))
 		{
 			// Its an DELETE, INSERT, REPLACE, or UPDATE query
-			if (preg_match('/^(?:delete|insert|replace|update)\b/i', trim($sql), $matches))
+			if (preg_match('/^(?:delete|insert|replace|update)\b/iD', trim($sql), $matches))
 			{
 				$this->insert_id  = (strtolower($matches[0]) == 'insert') ? $this->insert_id() : FALSE;
 				$this->total_rows = pg_affected_rows($this->result);
