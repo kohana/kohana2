@@ -453,10 +453,17 @@ class Pgsql_Result extends Database_Result {
 		{
 			$query = 'SELECT LASTVAL() AS insert_id';
 
+			// Disable error reporting for this, just to silence errors on
+			// tables that have no serial column.
+			$ER = error_reporting(0);
+
 			$result = pg_query($query);
 			$insert_id = pg_fetch_array($result, NULL, PGSQL_ASSOC);
 
 			$this->insert_id = $insert_id['insert_id'];
+
+			// Reset error reporting
+			error_reporting($ER);
 		}
 
 		return $this->insert_id;
