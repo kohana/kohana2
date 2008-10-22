@@ -32,6 +32,7 @@ $config['uncountable'] = array
 	'sheep',
 	'sms',
 	'species',
+	'staff',
 	'toothpaste',
 	'traffic',
 	'understanding',
