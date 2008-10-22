@@ -291,14 +291,17 @@ FROM pg_class
     ON (pg_class.oid=pg_attrdef.adrelid AND pg_attribute.attnum=pg_attrdef.adnum)
 WHERE pg_class.relname=\''.$this->escape_str($table).'\' AND pg_attribute.attnum>=1 AND NOT pg_attribute.attisdropped
 ORDER BY pg_attribute.attnum');
-                $fields = array();
-                foreach ($query as $row)
-                {
-                        $fields[$row->Field]=$row->Type;
-                }
 
-                return $fields;
+				// Load the result as objects
+				$query->result(TRUE);
 
+				$fields = array();
+				foreach ($query as $row)
+				{
+					$fields[$row->Field] = $row->Type;
+				}
+
+				return $fields;
 	}
 
 	public function field_data($table)
