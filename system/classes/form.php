@@ -311,9 +311,6 @@ class form_Core {
 			}
 		}
 
-		// Selected value should always be a string
-		$selected = (string) $selected;
-
 		$input = '<select'.form::attributes($data, 'select').' '.$extra.'>'."\n";
 		foreach ((array) $options as $key => $val)
 		{
@@ -328,7 +325,16 @@ class form_Core {
 					// Inner key should always be a string
 					$inner_key = (string) $inner_key;
 
-					$sel = ($selected === $inner_key) ? ' selected="selected"' : '';
+					if (is_array($selected))
+					{
+						$sel = in_array($inner_key, $selected, TRUE);
+					}
+					else
+					{
+						$sel = ($selected === $inner_key);
+					}
+
+					$sel = ($sel === TRUE) ? ' selected="selected"' : '';
 					$input .= '<option value="'.$inner_key.'"'.$sel.'>'.$inner_val.'</option>'."\n";
 				}
 				$input .= '</optgroup>'."\n";
