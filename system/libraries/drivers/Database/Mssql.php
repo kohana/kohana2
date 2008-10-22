@@ -331,7 +331,7 @@ class Mssql_Result extends Database_Result {
 			if ($result == FALSE)
 			{
 				// SQL error
-				throw new Kohana_Database_Exception('database.error', MSSQL_error($link).' - '.$sql);
+				throw new Kohana_Database_Exception('database.error', mssql_get_last_message($link).' - '.$sql);
 			}
 			else
 			{
