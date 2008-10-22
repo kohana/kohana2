@@ -345,7 +345,7 @@ class Pgsql_Result extends Database_Result {
 		if (is_resource($result))
 		{
 			// Its an DELETE, INSERT, REPLACE, or UPDATE query
-			if (preg_match('/^(?:delete|insert|replace|update)\s+/i', trim($sql), $matches))
+			if (preg_match('/^(?:delete|insert|replace|update)\b/i', trim($sql), $matches))
 			{
 				$this->insert_id  = (strtolower($matches[0]) == 'insert') ? $this->insert_id() : FALSE;
 				$this->total_rows = pg_affected_rows($this->result);
@@ -453,10 +453,17 @@ class Pgsql_Result extends Database_Result {
 		{
 			$query = 'SELECT LASTVAL() AS insert_id';
 
+			// Disable error reporting for this, just to silence errors on
+			// tables that have no serial column.
+			$ER = error_reporting(0);
+
 			$result = pg_query($query);
 			$insert_id = pg_fetch_array($result, NULL, PGSQL_ASSOC);
 
 			$this->insert_id = $insert_id['insert_id'];
+
+			// Reset error reporting
+			error_reporting($ER);
 		}
 
 		return $this->insert_id;
