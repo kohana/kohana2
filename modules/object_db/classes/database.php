@@ -21,7 +21,7 @@ class Database_Core extends PDO {
 	public function __construct(array $config)
 	{
 		if ( ! isset($config['type']) OR ! isset($config['dsn']))
-			throw new Kohana_Exception('invalid_config');
+			throw new Kohana_Exception('database.invalid_config');
 
 		// Set all errors to throw exceptions
 		$attr[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
@@ -78,7 +78,7 @@ class Database_Core extends PDO {
 	public function update($table)
 	{
 		// Create a new UPDATE statement
-		$query =  new Database_Update($this);
+		$query = new Database_Update($this);
 
 		// Set the table name
 		$query->table($table);
@@ -96,7 +96,7 @@ class Database_Core extends PDO {
 		// Create a DELETE query
 		$query = new Database_Delete($this);
 
-		// Set the 
+		// Set the table names
 		$query->from($tables);
 
 		return $query;
@@ -124,7 +124,7 @@ class Database_Core extends PDO {
 			case 'string':
 				$value = parent::quote($value, PDO::PARAM_STR);
 			break;
-			case 'bool':
+			case 'boolean':
 				$value = parent::quote($value, PDO::PARAM_BOOL);
 			break;
 		}

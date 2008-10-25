@@ -980,7 +980,7 @@ class ORM_Core {
 	 *
 	 * Example: The joining table of users and roles would be roles_users,
 	 * because "r" comes before "u". Joining products and categories would
-	 * result in categories_prouducts, because "c" comes before "p".
+	 * result in categories_products, because "c" comes before "p".
 	 *
 	 * Example: zoo > zebra > robber > ocean > angel > aardvark
 	 *
