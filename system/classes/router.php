@@ -313,7 +313,7 @@ class Router_Core {
 			return array();
 
 		// Find all keys that start with a colon
-		preg_match_all('#(?<=:)[a-z]+#', $uri, $keys);
+		preg_match_all('#(?<=:)[a-z]{1,32}#', $uri, $keys);
 
 		return $keys[0];
 	}
