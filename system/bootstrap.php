@@ -1,7 +1,7 @@
 <?php
 /**
  * Kohana process control file, loaded by the front controller.
- * 
+ *
  * $Id$
  *
  * @package    Core
@@ -22,8 +22,8 @@ require SYSPATH.'classes/benchmark'.EXT;
 // Start total_execution
 Benchmark::start(SYSTEM_BENCHMARK.'_total_execution');
 
-// Start environment_test
-Benchmark::start(SYSTEM_BENCHMARK.'_environment_test');
+// Start system_initialization
+Benchmark::start(SYSTEM_BENCHMARK.'_system_initialization');
 
 // Test of Kohana is running in Windows
 define('KOHANA_IS_WIN', DIRECTORY_SEPARATOR === '\\');
@@ -78,12 +78,6 @@ else
 	define('SERVER_UTF8', FALSE);
 }
 
-// Stop environment_test
-Benchmark::stop(SYSTEM_BENCHMARK.'_environment_test');
-
-// Start system_initialization
-Benchmark::start(SYSTEM_BENCHMARK.'_system_initialization');
-
 // Load utf8 support
 require SYSPATH.'classes/utf8'.EXT;
 
@@ -92,9 +86,6 @@ require SYSPATH.'classes/event'.EXT;
 
 // Load Kohana core
 require SYSPATH.'classes/kohana'.EXT;
-
-// Start utf8_conversion
-Benchmark::start(SYSTEM_BENCHMARK.'_utf8_conversion');
 
 // Convert all global variables to UTF-8.
 $_GET    = utf8::clean($_GET);
@@ -108,20 +99,23 @@ if (PHP_SAPI == 'cli')
 	$_SERVER['argv'] = utf8::clean($_SERVER['argv']);
 }
 
-// Stop utf8_conversion
-Benchmark::stop(SYSTEM_BENCHMARK.'_utf8_conversion');
-
 // Prepare the environment
 Kohana::setup();
 
 // Prepare the system
 Event::run('system.ready');
 
+// Stop system_initialization
+Benchmark::stop(SYSTEM_BENCHMARK.'_system_initialization');
+
+// Start routing
+Benchmark::start(SYSTEM_BENCHMARK.'_routing');
+
 // Determine routing
 Event::run('system.routing');
 
-// End system_initialization
-Benchmark::stop(SYSTEM_BENCHMARK.'_system_initialization');
+// Stop routing
+Benchmark::stop(SYSTEM_BENCHMARK.'_routing');
 
 // Make the magic happen!
 Event::run('system.execute');

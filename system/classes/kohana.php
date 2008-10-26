@@ -235,10 +235,11 @@ final class Kohana {
 	{
 		if (self::$instance === NULL)
 		{
+			// Start the controller setup benchmark
+			Benchmark::start(SYSTEM_BENCHMARK.'_controller_setup');
+
 			// Routing has been completed
 			Event::run('system.post_routing');
-
-			Benchmark::start(SYSTEM_BENCHMARK.'_controller_setup');
 
 			// Log the current routing state for debugging purposes
 			Kohana::log('debug', 'Routing "'.Router::$current_uri.'" using the "'.Router::$current_route.'" route, '.Router::$controller.'::'.Router::$method);
@@ -1829,7 +1830,7 @@ class Kohana_Exception extends Exception {
 				// Error resources have been loaded
 				self::$error_resources = TRUE;
 			}
-			
+
 			require Kohana::find_file('views', 'kohana/error', FALSE);
 		}
 		else
