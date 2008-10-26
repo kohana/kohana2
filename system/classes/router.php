@@ -344,7 +344,7 @@ class Router_Core {
 			if ($segment[0] === ':')
 			{
 				// Find the actual segment key and any trailing garbage
-				preg_match('#^:([a-z]++)(.*)$#', $segment, $matches);
+				preg_match('#^:([a-z]{1,32})(.*)$#', $segment, $matches);
 
 				// Segment key
 				$key = $matches[1];
