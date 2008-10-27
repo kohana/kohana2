@@ -241,16 +241,7 @@ class Controller_Kohana_Documentation extends Controller_Template {
 			exit('/* type not allowed */');
 		}
 
-		// Get the mime type
-		$mime = Kohana::config('mimes.'.$ext);
-		$mime = $mime[0];
-
-		// Send header
-		header('Content-Type: '.$mime);
-
-		// Output file contents
-		$filename = Kohana::find_file('views', 'kohana_docs/media/img/'.$filename, FALSE, $ext);
-		echo file_get_contents($filename);
+		View::factory('kohana_docs/media/img/'.$filename, NULL, $ext)->render(TRUE);
 	}
 
 	/**
