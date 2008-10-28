@@ -693,10 +693,10 @@ class ORM_Core {
 						->in($related_fk, $removed)
 						->delete($join_table);
 				}
-			}
 
-			// Clear all relations
-			$this->object_relations = $this->changed_relations = array();
+				// Clear all relations for this column
+				unset($this->object_relations[$column], $this->changed_relations[$column]);
+			}
 		}
 
 		return $this;
