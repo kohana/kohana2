@@ -19,7 +19,7 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 	// Database result object
 	protected $result;
 
-	public function __construct(ORM $model, $result)
+	public function __construct(ORM $model, Database_Result $result)
 	{
 		// Class attributes
 		$this->class_name  = get_class($model);
