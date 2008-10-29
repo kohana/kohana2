@@ -33,7 +33,7 @@ class ORM_Tree_Core extends ORM {
 				// Load child model
 				$model = ORM::factory(inflector::singular($this->children));
 
-				if (isset($this->object[$this->parent_key]))
+				if (array_key_exists($this->parent_key, $this->object))
 				{
 					// Find children of this parent
 					$model->where($model->primary_key, $this->object[$this->parent_key])->find();
