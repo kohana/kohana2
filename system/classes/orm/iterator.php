@@ -21,6 +21,9 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 
 	public function __construct(ORM $model, Database_Result $result)
 	{
+		// Cache the model
+		$this->model = $model;
+
 		// Class attributes
 		$this->class_name  = get_class($model);
 		$this->primary_key = $model->primary_key;
@@ -51,6 +54,21 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 		}
 
 		return $array;
+	}
+
+	/**
+	 * Return an array of all of the primary keys for this object.
+	 *
+	 * @return  array
+	 */
+	public function primary_key_array()
+	{
+		$ids = array();
+		foreach ($this->result as $row)
+		{
+			$ids[] = $row->{$this->primary_key};
+		}
+		return $ids;
 	}
 
 	/**
