@@ -552,10 +552,19 @@ class ORM_Core {
 		{
 			$safe_array = $array->safe_array();
 
-			foreach ($safe_array as $key => $val)
+			foreach ($safe_array as $key => $value)
 			{
+				// Get the value from this object
+				$value = $this->$key;
+
+				if (is_object($value) AND $value instanceof ORM_Iterator)
+				{
+					// Convert the value to an array of primary keys
+					$value = $value->primary_key_array();
+				}
+
 				// Pre-fill data
-				$array[$key] = $this->$key;
+				$array[$key] = $value;
 			}
 		}
 
@@ -564,10 +573,10 @@ class ORM_Core {
 		{
 			$safe_array = $array->safe_array();
 
-			foreach ($safe_array as $key => $val)
+			foreach ($safe_array as $key => $value)
 			{
 				// Set new data
-				$this->$key = $val;
+				$this->$key = $value;
 			}
 
 			if ($save === TRUE OR is_string($save))
