@@ -48,24 +48,26 @@ class text_Core {
 	 */
 	public static function limit_chars($str, $limit = 100, $end_char = NULL, $preserve_words = FALSE)
 	{
+		$limit = (int) $limit;
 		$end_char = ($end_char === NULL) ? '…' : $end_char;
 
-		$limit = (int) $limit;
-
-		if (trim($str) === '' OR utf8::strlen($str) <= $limit)
+		if (utf8::strlen($str) <= $limit)
 			return $str;
 
 		if ($limit <= 0)
 			return $end_char;
 
-		if ($preserve_words == FALSE)
+		if ($preserve_words === FALSE)
 		{
-			return rtrim(utf8::substr($str, 0, $limit)).$end_char;
+			$str = utf8::substr($str, 0, $limit);
+		}
+		else
+		{
+			$str = utf8::substr($str, 0, $limit + 1);
+			$str = preg_replace('~\s++\S*+$~', '', $str);
 		}
 
-		preg_match('/^.{'.($limit - 1).'}\S*/us', $str, $matches);
-
-		return rtrim($matches[0]).(strlen($matches[0]) == strlen($str) ? '' : $end_char);
+		return rtrim($str).$end_char;
 	}
 
 	/**
@@ -169,12 +171,12 @@ class text_Core {
 			$badwords[$key] = str_replace('\*', '\S*?', preg_quote((string) $badword));
 		}
 
-		$regex = '('.implode('|', $badwords).')';
+		$regex = implode('|', $badwords);
 
-		if ($replace_partial_words == TRUE)
+		if ($replace_partial_words === TRUE)
 		{
 			// Just using \b isn't sufficient when we need to replace a badword that already contains word boundaries itself
-			$regex = '(?<=\b|\s|^)'.$regex.'(?=\b|\s|$)';
+			$regex = '(?<=\b|\s|^)(?:'.$regex.')(?=\b|\s|$)';
 		}
 
 		$regex = '!'.$regex.'!ui';
@@ -182,7 +184,7 @@ class text_Core {
 		if (utf8::strlen($replacement) == 1)
 		{
 			$regex .= 'e';
-			return preg_replace($regex, 'str_repeat($replacement, utf8::strlen(\'$1\')', $str);
+			return preg_replace($regex, 'str_repeat($replacement, utf8::strlen(\'$0\'))', $str);
 		}
 
 		return preg_replace($regex, $replacement, $str);
