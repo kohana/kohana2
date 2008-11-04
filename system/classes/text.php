@@ -64,7 +64,7 @@ class text_Core {
 		else
 		{
 			$str = utf8::substr($str, 0, $limit + 1);
-			$str = preg_replace('~\s++\S*+$~', '', $str);
+			$str = preg_replace('~\s++\S*+$|.$~u', '', $str);
 		}
 
 		return rtrim($str).$end_char;
