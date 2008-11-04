@@ -182,7 +182,7 @@ class text_Core {
 		if (utf8::strlen($replacement) == 1)
 		{
 			$regex .= 'e';
-			return preg_replace($regex, 'str_repeat($replacement, utf8::strlen(\'$1\')', $str);
+			return preg_replace($regex, 'str_repeat($replacement, utf8::strlen(\'$1\'))', $str);
 		}
 
 		return preg_replace($regex, $replacement, $str);
