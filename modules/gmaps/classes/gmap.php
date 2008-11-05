@@ -12,6 +12,17 @@
 class Gmap_Core {
 
 	/**
+	 * Creates a new Gmap instance.
+	 *
+	 * @param   string  HTML id for map container
+	 * @param   array   options
+	 */
+	public static function factory($id = 'map', $options = NULL)
+	{
+		return new Gmap($id, $options);
+	}
+
+	/**
 	 * Return GMap javascript url
 	 *
 	 * @param   string  API component
