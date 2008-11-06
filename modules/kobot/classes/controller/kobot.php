@@ -1,6 +1,6 @@
 <?php
 
-class Kobot_Controller extends Controller {
+class Controller_Kobot extends Controller {
 
 	public function index()
 	{
@@ -14,12 +14,13 @@ class Kobot_Controller extends Controller {
 		$bot->set_trigger('^goodnight, bot$', array($this, 'trigger_quit'))
 		    ->set_trigger('^register(.+)?$', array($this, 'register'))
 		    ->set_trigger('^tell (.+?) about (.+)$', array($this, 'trigger_say'))
+		    ->set_trigger('^updates$', array($this, 'trigger_updates'))
 		    ->set_trigger('^([r|#])(\d+)$', array($this, 'trigger_trac'))
 		    ->set_trigger('^[a-z_]+$', array($this, 'trigger_default'));
 
 		// Login and join the default channel
 		$bot->login('koboto', 'PhoenixRisingKO');
-		$bot->join('#kohana-dev', 'lovespeed');
+		$bot->join('#kohana-dev', 'codefest');
 		$bot->read();
 	}
 
@@ -97,11 +98,35 @@ class Kobot_Controller extends Controller {
 		switch ($params[1])
 		{
 			case '#':
-				$bot->send('PRIVMSG '.$data['target'].' :Ticket '.$params[2].', http://trac.kohanaphp.com/ticket/'.$params[2]);
+				$type = 'Ticket';
+				$url  = 'http://dev.kohanaphp.com/ticket/'.$params[2];
 			break;
 			case 'r':
-				$bot->send('PRIVMSG '.$data['target'].' :Revision '.$params[2].', http://trac.kohanaphp.com/changeset/'.$params[2]);
+				$type = 'Revision';
+				$url  = 'http://dev.kohanaphp.com/changeset/'.$params[2];
 			break;
+		}
+
+		if (remote::status($url) === 200)
+		{
+			$bot->send('PRIVMSG '.$data['target'].' :'.$type.' '.$params[2].', '.$url);
+		}
+	}
+
+	public function trigger_updates(Kobot $bot, array $data)
+	{
+		if (($feed = Kohana::cache('svn_updates', 300)) === NULL)
+		{
+			// Load the feed
+			$feed = feed::parse('http://dev.kohanaphp.com/timeline?changeset=on&max=3&daysback=90&format=rss');
+
+			// Save the feed
+			Kohana::cache_save('svn_updates', $feed, 300);
+		}
+
+		foreach ($feed as $item)
+		{
+			$bot->send('PRIVMSG '.$data['target'].' :'.strip_tags($item['description']).' '.$item['link']);
 		}
 	}
 
