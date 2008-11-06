@@ -533,8 +533,18 @@ class ORM_Core {
 	 * @param   string  value column
 	 * @return  array
 	 */
-	public function select_list($key, $val)
+	public function select_list($key = NULL, $val = NULL)
 	{
+		if ($key === NULL)
+		{
+			$key = $this->primary_key;
+		}
+
+		if ($val === NULL)
+		{
+			$val = $this->primary_val;
+		}
+
 		// Return a select list from the results
 		return $this->select($key, $val)->find_all()->select_list($key, $val);
 	}
