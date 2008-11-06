@@ -5,7 +5,7 @@
  * can be overloaded.
  *
  * To use it, declare your controller to extend this class:
- * `class Your_Controller extends Template_Controller`
+ * `class Controller_Your extends Controller_Template`
  *
  * $Id: template.php 3326 2008-08-09 21:24:30Z Shadowhand $
  *
@@ -51,4 +51,4 @@ abstract class Controller_Template extends Controller {
 		}
 	}
 
-} // End Template_Controller
+} // End Controller_Template

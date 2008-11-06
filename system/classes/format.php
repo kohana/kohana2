@@ -12,6 +12,24 @@
 class format_Core {
 
 	/**
+	 * Formats a date string or timestamp to the specified format.
+	 *
+	 * @param   string  string or timestamp
+	 * @param   string  format
+	 * @return  string
+	 */
+	public static function date($timestamp, $format = 'Y-m-d H:i:s')
+	{
+		if (is_string($timestamp) AND ! ctype_digit($timestamp))
+		{
+			// Make the date string into a UNIX timestamp
+			$timestamp = strtotime($timestamp);
+		}
+
+		return date($format, $timestamp);
+	}
+
+	/**
 	 * Formats a phone number according to the specified format.
 	 *
 	 * @param   string  phone number

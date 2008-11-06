@@ -195,6 +195,20 @@ class valid_Core {
 	}
 
 	/**
+	 * Checks if a string is a valid date by seeing if it can be parsed
+	 * using [strtotime][ref-stt]
+	 *
+	 * [ref-stt]: http://php.net/strtotime
+	 *
+	 * @param   string   date string
+	 * @return  boolean
+	 */
+	public static function date_string($date)
+	{
+		return is_int(strtotime((string) $date));
+	}
+
+	/**
 	 * Checks whether a string consists of alphabetical characters only.
 	 *
 	 * @param   string   input string
