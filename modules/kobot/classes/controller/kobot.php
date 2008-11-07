@@ -15,7 +15,7 @@ class Controller_Kobot extends Controller {
 		    ->set_trigger('^register(.+)?$', array($this, 'register'))
 		    ->set_trigger('^tell (.+?) about (.+)$', array($this, 'trigger_say'))
 		    ->set_trigger('^updates$', array($this, 'trigger_updates'))
-		    ->set_trigger('^([r|#])(\d+)$', array($this, 'trigger_trac'))
+		    ->set_trigger('^([r#])(\d+)$', array($this, 'trigger_trac'))
 		    ->set_trigger('^[a-z_]+$', array($this, 'trigger_default'));
 
 		// Login and join the default channel
