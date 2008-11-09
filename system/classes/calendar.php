@@ -333,13 +333,13 @@ class Calendar_Core extends Event_Subject {
 	}
 
 	/**
-	 * Convert the calendar to HTML using the kohana_calendar view.
+	 * Convert the calendar to HTML using the kohana/calendar view.
 	 *
 	 * @return  string
 	 */
 	public function render()
 	{
-		$view =  new View('kohana_calendar', array
+		$view =  new View('kohana/calendar', array
 		(
 			'month'  => $this->month,
 			'year'   => $this->year,
