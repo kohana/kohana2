@@ -117,7 +117,7 @@ class Cache_Core {
 
 		if ($data = $this->driver->get($id))
 		{
-			if (substr($data, 0, 14) === '<{serialized}>')
+			if ($this->driver->serialize === FALSE AND substr($data, 0, 14) === '<{serialized}>')
 			{
 				// Data has been serialized, unserialize now
 				$data = unserialize(substr($data, 14));
@@ -172,7 +172,7 @@ class Cache_Core {
 		// Change slashes to colons
 		$id = str_replace(array('/', '\\'), '=', $id);
 
-		if ( ! is_string($data))
+		if ($this->driver->serialize === FALSE AND ! is_string($data))
 		{
 			// Serialize all non-string data, so that types can be preserved
 			$data = '<{serialized}>'.serialize($data);

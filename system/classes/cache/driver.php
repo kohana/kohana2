@@ -12,6 +12,12 @@
 abstract class Cache_Driver {
 
 	/**
+	 * A driver specific overridable serialize setting,
+	 * TRUE means the driver takes care of serializing.
+	 */
+	public $serialize = FALSE;
+
+	/**
 	 * Set a cache item.
 	 */
 	abstract public function set($id, $data, $tags, $lifetime);

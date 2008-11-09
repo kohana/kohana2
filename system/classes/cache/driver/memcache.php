@@ -15,6 +15,9 @@ class Cache_Driver_Memcache extends Cache_Driver {
 	protected $backend;
 	protected $flags;
 
+	// Memcache itself takes care of serializing
+	public $serialize = TRUE;
+
 	public function __construct()
 	{
 		if ( ! extension_loaded('memcache'))
