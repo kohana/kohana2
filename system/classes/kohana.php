@@ -41,6 +41,9 @@ final class Kohana {
 	// Cache lifetime
 	private static $cache_lifetime;
 
+	// Config cache
+	private static $config_cache = array();
+
 	// Log levels
 	private static $log_levels = array
 	(
@@ -366,6 +369,12 @@ final class Kohana {
 	 */
 	public static function config($key, $slash = FALSE, $required = TRUE)
 	{
+		// Fetch value from config cache if it exists
+		if (isset(self::$config_cache[$key]))
+		{
+			return self::$config_cache[$key];
+		}
+
 		if (self::$configuration === NULL)
 		{
 			// Load core configuration
@@ -393,6 +402,9 @@ final class Kohana {
 			// Force the value to end with "/"
 			$value = rtrim($value, '/').'/';
 		}
+
+		// Set config cache
+		self::$config_cache[$key] = $value;
 
 		return $value;
 	}
@@ -442,6 +454,9 @@ final class Kohana {
 			self::include_paths(TRUE);
 		}
 
+		// Update the config cache
+		self::$config_cache[$key] = $value;
+
 		return TRUE;
 	}
 
@@ -490,7 +505,7 @@ final class Kohana {
 
 		if ( ! isset(self::$write_cache['configuration']))
 		{
-			// Cache has changed
+			// Internal cache has changed
 			self::$write_cache['configuration'] = TRUE;
 		}
 
@@ -508,9 +523,19 @@ final class Kohana {
 		// Remove the group from config
 		unset(self::$configuration[$group], self::$internal_cache['configuration'][$group]);
 
+		// Clear values from config cache
+		foreach (self::$config_cache as $key => $value)
+		{
+			// Match keys that start with the group name
+			if (substr($key, 0, strlen($group) + 1) === $group.'.')
+			{
+				unset(self::$config_cache[$key]);
+			}
+		}
+
 		if ( ! isset(self::$write_cache['configuration']))
 		{
-			// Cache has changed
+			// Internal cache has changed
 			self::$write_cache['configuration'] = TRUE;
 		}
 	}
