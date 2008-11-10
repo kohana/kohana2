@@ -330,6 +330,12 @@ class Router_Core {
 	 */
 	public static function compile(array $route)
 	{
+		if ($route['route']['uri'] === '')
+		{
+			// Empty route
+			return '';
+		}
+
 		// Split the route URI by slashes
 		$uri = explode('/', $route['route']['uri']);
 
