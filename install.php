@@ -58,10 +58,12 @@ body { width: 42em; margin: 0 auto; font-family: sans-serif; font-size: 90%; }
 </tr>
 <tr>
 <th>PCRE UTF-8</th>
-<?php if (@preg_match('/^.$/u', 'ñ')): ?>
-<td class="pass">Pass</td>
-<?php else: $failed = TRUE ?>
+<?php if ( ! @preg_match('/^.$/u', 'ñ')): $failed = TRUE ?>
 <td class="fail"><a href="http://php.net/pcre">PCRE</a> has not been compiled with UTF-8 support.</td>
+<?php elseif ( ! @preg_match('/^\pL$/u', 'ñ')): $failed = TRUE ?>
+<td class="fail"><a href="http://php.net/pcre">PCRE</a> has not been compiled with Unicode property support.</td>
+<?php else: ?>
+<td class="pass">Pass</td>
 <?php endif ?>
 </tr>
 <tr>
