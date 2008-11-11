@@ -152,8 +152,8 @@ class Profiler_Core {
 		text::alternate();
 		foreach ($benchmarks as $name => $benchmark)
 		{
-			// Clean unique id from system benchmark names
-			$name = ucwords(str_replace(array('_', '-'), ' ', str_replace(SYSTEM_BENCHMARK.'_', '', $name)));
+			// Remove the system prefix from the name
+			$name = ucwords(str_replace(array('_', '-'), ' ', substr($name, 7)));
 
 			$data = array($name, number_format($benchmark['time'], 3), number_format($benchmark['memory'] / 1024 / 1024, 2).'MB');
 			$class = text::alternate('', 'kp-altrow');

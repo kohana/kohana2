@@ -13,25 +13,17 @@
 define('KOHANA_VERSION',  '2.3');
 define('KOHANA_CODENAME', 'kernachtig');
 
-// Kohana benchmarks are prefixed to prevent collisions
-define('SYSTEM_BENCHMARK', 'system_benchmark');
-
 // Load benchmarking support
 require SYSPATH.'classes/benchmark'.EXT;
 
 // Start total_execution
-Benchmark::start(SYSTEM_BENCHMARK.'_total_execution');
-
-// Start system_initialization
-Benchmark::start(SYSTEM_BENCHMARK.'_system_initialization');
+Benchmark::start('system.total_execution');
 
 // Test of Kohana is running in Windows
 define('KOHANA_IS_WIN', DIRECTORY_SEPARATOR === '\\');
 
-// Check PCRE support for Unicode properties such as \p and \X.
-$ER = error_reporting(0);
-define('PCRE_UNICODE_PROPERTIES', (bool) preg_match('/^\pL$/u', 'ñ'));
-error_reporting($ER);
+// Start prepare_utf8
+Benchmark::start('system.prepare_utf8');
 
 // SERVER_UTF8 ? use mb_* functions : use non-native functions
 if (extension_loaded('mbstring'))
@@ -47,12 +39,6 @@ else
 // Load utf8 support
 require SYSPATH.'classes/utf8'.EXT;
 
-// Load Event support
-require SYSPATH.'classes/event'.EXT;
-
-// Load Kohana core
-require SYSPATH.'classes/kohana'.EXT;
-
 // Convert all global variables to UTF-8.
 $_GET    = utf8::clean($_GET);
 $_POST   = utf8::clean($_POST);
@@ -65,6 +51,14 @@ if (PHP_SAPI == 'cli')
 	$_SERVER['argv'] = utf8::clean($_SERVER['argv']);
 }
 
+// Stop prepare_utf8
+Benchmark::stop('system.prepare_utf8');
+
+// Start kohana_setup
+Benchmark::start('system.kohana_setup');
+
+require SYSPATH.'classes/kohana'.EXT;
+
 // Prepare the environment
 Kohana::setup();
 
@@ -72,16 +66,16 @@ Kohana::setup();
 Event::run('system.ready');
 
 // Stop system_initialization
-Benchmark::stop(SYSTEM_BENCHMARK.'_system_initialization');
+Benchmark::stop('system.kohana_setup');
 
 // Start routing
-Benchmark::start(SYSTEM_BENCHMARK.'_routing');
+Benchmark::start('system.routing');
 
 // Determine routing
 Event::run('system.routing');
 
 // Stop routing
-Benchmark::stop(SYSTEM_BENCHMARK.'_routing');
+Benchmark::stop('system.routing');
 
 // Make the magic happen!
 Event::run('system.execute');

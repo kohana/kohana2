@@ -172,7 +172,7 @@ final class Kohana {
 		if ($config = Kohana::config('core.enable_hooks'))
 		{
 			// Start the loading_hooks routine
-			Benchmark::start(SYSTEM_BENCHMARK.'_loading_hooks');
+			Benchmark::start('system.loading_hooks');
 
 			$hooks = array();
 
@@ -218,7 +218,7 @@ final class Kohana {
 			}
 
 			// Stop the loading_hooks routine
-			Benchmark::stop(SYSTEM_BENCHMARK.'_loading_hooks');
+			Benchmark::stop('system.loading_hooks');
 		}
 
 		// Setup is complete, prevent it from being run again
@@ -239,7 +239,7 @@ final class Kohana {
 		if (self::$instance === NULL)
 		{
 			// Start the controller setup benchmark
-			Benchmark::start(SYSTEM_BENCHMARK.'_controller_setup');
+			Benchmark::start('system.controller_setup');
 
 			// Routing has been completed
 			Event::run('system.post_routing');
@@ -303,10 +303,10 @@ final class Kohana {
 			}
 
 			// Stop the controller setup benchmark
-			Benchmark::stop(SYSTEM_BENCHMARK.'_controller_setup');
+			Benchmark::stop('system.controller_setup');
 
 			// Start the controller execution benchmark
-			Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
+			Benchmark::start('system.controller_execution');
 
 			// Execute the controller method
 			$method->invokeArgs($controller, $arguments);
@@ -315,7 +315,7 @@ final class Kohana {
 			Event::run('system.post_controller');
 
 			// Stop the controller execution benchmark
-			Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
+			Benchmark::stop('system.controller_execution');
 		}
 
 		return self::$instance;
@@ -770,16 +770,14 @@ final class Kohana {
 	 */
 	public static function render($output)
 	{
-		// Fetch memory usage in MB
-		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
-
 		// Fetch benchmark for page execution time
-		$benchmark = Benchmark::get(SYSTEM_BENCHMARK.'_total_execution');
+		$benchmark = Benchmark::get('system.total_execution');
 
 		if (Kohana::config('core.render_stats') === TRUE)
 		{
 			// Replace the global template variables
-			$output = str_replace(
+			$output = str_replace
+			(
 				array
 				(
 					'{kohana_version}',
@@ -792,8 +790,8 @@ final class Kohana {
 				(
 					KOHANA_VERSION,
 					KOHANA_CODENAME,
-					$benchmark['time'],
-					number_format($memory, 2).'MB',
+					number_format($benchmark['time'], 4),
+					number_format($benchmark['memory'] / 1024 / 1024, 2).'MB',
 					count(get_included_files()),
 				),
 				$output

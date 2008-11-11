@@ -11,83 +11,93 @@
  */
 final class Benchmark {
 
-	// Benchmark timestamps
-	private static $marks;
+	private static $benchmarks = array();
 
 	/**
-	 * Set a benchmark start point.
+	 * Start a benchmark that tracks elapsed time and memory usage.
 	 *
 	 * @param   string  benchmark name
 	 * @return  void
 	 */
 	public static function start($name)
 	{
-		if ( ! isset(self::$marks[$name]))
+		if ( ! isset(self::$benchmarks[$name]))
 		{
-			self::$marks[$name] = array
-			(
-				'start'        => microtime(TRUE),
-				'stop'         => FALSE,
-				'memory_start' => function_exists('memory_get_usage') ? memory_get_usage() : 0,
-				'memory_stop'  => FALSE
-			);
+			// Start timer tracking
+			self::$benchmarks[$name]['start']['time'] = microtime(TRUE);
+
+			// Start memory usage tracking
+			self::$benchmarks[$name]['start']['memory'] = function_exists('memory_get_usage') ? memory_get_usage() : 0;
 		}
 	}
 
 	/**
-	 * Set a benchmark stop point.
+	 * Stop a benchmark.
 	 *
 	 * @param   string  benchmark name
 	 * @return  void
 	 */
 	public static function stop($name)
 	{
-		if (isset(self::$marks[$name]) AND self::$marks[$name]['stop'] === FALSE)
+		if (isset(self::$benchmarks[$name]) AND ! isset(self::$benchmarks[$name]['stop']))
 		{
-			self::$marks[$name]['stop'] = microtime(TRUE);
-			self::$marks[$name]['memory_stop'] = function_exists('memory_get_usage') ? memory_get_usage() : 0;
+			// Stop timer tracking
+			self::$benchmarks[$name]['stop']['time'] = microtime(TRUE);
+
+			// Stop memory usage tracking
+			self::$benchmarks[$name]['stop']['memory'] = function_exists('memory_get_usage') ? memory_get_usage() : 0;
 		}
 	}
 
 	/**
-	 * Get the elapsed time between a start and stop.
+	 * Clear a benchmark.
+	 *
+	 * @param   string  benchmark name
+	 * @return  void
+	 */
+	public static function clear($name)
+	{
+		unset(self::$benchmarks[$name]);
+	}
+
+	/**
+	 * Get the total elapsed time and memory usage of a benchmark.
 	 *
 	 * @param   string   benchmark name, TRUE for all
-	 * @param   integer  number of decimal places to count to
-	 * @return  array
+	 * @return  array    time => (float), memory = (bytes)
 	 */
-	public static function get($name, $decimals = 4)
+	public static function get($name)
 	{
 		if ($name === TRUE)
 		{
-			$times = array();
-			$names = array_keys(self::$marks);
+			$names = array_keys(self::$benchmarks);
 
+			$marks = array();
 			foreach ($names as $name)
 			{
-				// Get each mark recursively
-				$times[$name] = self::get($name, $decimals);
+				// Get each benchmark total
+				$marks[$name] = self::get($name);
 			}
 
-			// Return the array
-			return $times;
+			return $marks;
 		}
 
-		if ( ! isset(self::$marks[$name]))
-			return FALSE;
-
-		if (self::$marks[$name]['stop'] === FALSE)
+		if ( ! isset(self::$benchmarks[$name]))
 		{
-			// Stop the benchmark to prevent mis-matched results
+			// Benchmark does not exist
+			return FALSE;
+		}
+
+		if ( ! isset(self::$benchmarks[$name]['stop']))
+		{
+			// Stop the benchmark
 			self::stop($name);
 		}
 
-		// Return a string version of the time between the start and stop points
-		// Properly reading a float requires using number_format or sprintf
 		return array
 		(
-			'time'   => number_format(self::$marks[$name]['stop'] - self::$marks[$name]['start'], $decimals),
-			'memory' => (self::$marks[$name]['memory_stop'] - self::$marks[$name]['memory_start'])
+			'time'   => self::$benchmarks[$name]['stop']['time']   - self::$benchmarks[$name]['start']['time'],
+			'memory' => self::$benchmarks[$name]['stop']['memory'] - self::$benchmarks[$name]['start']['memory'],
 		);
 	}
 

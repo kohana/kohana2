@@ -85,8 +85,9 @@ if (file_exists('install'.EXT))
 {
 	// Load the installation tests
 	include 'install'.EXT;
-	return;
 }
-
-// Initialize Kohana
-require SYSPATH.'bootstrap'.EXT;
+else
+{
+	// Initialize Kohana
+	require SYSPATH.'bootstrap'.EXT;
+}
