@@ -42,14 +42,6 @@ $kohana_modules = 'modules';
 $kohana_system = 'system';
 
 /**
- * Test to make sure that Kohana is running on PHP 5.2 or newer. Once you are
- * sure that your environment is compatible with Kohana, you can comment this
- * line out. When running an application on a new server, uncomment this line
- * to check the PHP version quickly.
- */
-version_compare(PHP_VERSION, '5.2', '<') and exit('Kohana requires PHP 5.2 or newer, '.PHP_VERSION.' is installed');
-
-/**
  * Set the error reporting level. Unless you have a special need, E_ALL is a
  * good level for error reporting.
  */
@@ -89,33 +81,11 @@ define('SYSPATH', str_replace('\\', '/', realpath($kohana_system)).'/');
 // Clean up
 unset($kohana_application, $kohana_modules, $kohana_system);
 
-if ( ! IN_PRODUCTION)
+if (file_exists('install'.EXT))
 {
-	// Check APPPATH
-	if ( ! (is_dir(APPPATH) AND is_file(APPPATH.'config/config'.EXT)))
-	{
-		die
-		(
-			'<div style="width:80%;margin:50px auto;text-align:center;">'.
-				'<h3>Application Directory Not Found</h3>'.
-				'<p>The <code>$kohana_application</code> directory does not exist.</p>'.
-				'<p>Set <code>$kohana_application</code> in <tt>'.KOHANA.'</tt> to a valid directory and refresh the page.</p>'.
-			'</div>'
-		);
-	}
-
-	// Check SYSPATH
-	if ( ! (is_dir(SYSPATH) AND is_file(SYSPATH.'bootstrap'.EXT)))
-	{
-		die
-		(
-			'<div style="width:80%;margin:50px auto;text-align:center;">'.
-				'<h3>System Directory Not Found</h3>'.
-				'<p>The <code>$kohana_system</code> directory does not exist.</p>'.
-				'<p>Set <code>$kohana_system</code> in <tt>'.KOHANA.'</tt> to a valid directory and refresh the page.</p>'.
-			'</div>'
-		);
-	}
+	// Load the installation tests
+	include 'install'.EXT;
+	return;
 }
 
 // Initialize Kohana
