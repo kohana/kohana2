@@ -7,18 +7,19 @@
 <title>Kohana Installation</title>
 
 <style type="text/css">
-body { width: 40em; margin: 0 auto; font-family: sans-serif; font-size: 90%; }
+body { width: 42em; margin: 0 auto; font-family: sans-serif; font-size: 90%; }
 
 #tests table { border-collapse: collapse; width: 100%; }
 	#tests table th,
 	#tests table td { padding: 0.2em 0.4em; text-align: left; vertical-align: top; }
 	#tests table th { width: 12em; font-weight: normal; font-size: 1.2em; }
 	#tests table tr:nth-child(odd) { background: #eee; }
-	#tests table tr.results { background: #efd; }
-		#tests table tr.results th,
-		#tests table tr.results td { padding: 0.6em 0.4em; }
 	#tests table td.pass { color: #191; }
 	#tests table td.fail { color: #911; }
+		#tests #results { color: #fff; }
+		#tests #results p { padding: 0.8em 0.4em; }
+		#tests #results p.pass { background: #191; }
+		#tests #results p.fail { background: #911; }
 </style>
 
 </head>
@@ -34,23 +35,23 @@ body { width: 40em; margin: 0 auto; font-family: sans-serif; font-size: 90%; }
 <tr>
 <th>PHP Version</th>
 <?php if (version_compare(PHP_VERSION, '5.2', '>=')): ?>
-<td class="pass">Pass</td>
+<td class="pass"><?php echo PHP_VERSION ?></td>
 <?php else: $failed = TRUE ?>
 <td class="fail">Kohana requires PHP 5.2 or newer, this version is <?php echo PHP_VERSION ?>.</td>
 <?php endif ?>
 </tr>
 <tr>
-<th>System Files Exist</th>
+<th>System Files</th>
 <?php if (is_dir(SYSPATH) AND is_file(SYSPATH.'classes/kohana'.EXT)): ?>
-<td class="pass">Pass</td>
+<td class="pass"><?php echo SYSPATH ?></td>
 <?php else: $failed = TRUE ?>
 <td class="fail">The <tt>system</tt> directory does not exist or does not contain required files.</td>
 <?php endif ?>
 </tr>
 <tr>
-<th>Application Files Exist</th>
+<th>Application Files</th>
 <?php if (is_dir(APPPATH) AND is_file(APPPATH.'config/config'.EXT)): ?>
-<td class="pass">Pass</td>
+<td class="pass"><?php echo APPPATH ?></td>
 <?php else: $failed = TRUE ?>
 <td class="fail">The <tt>application</tt> directory does not exist or does not contain required files.</td>
 <?php endif ?>
@@ -82,21 +83,22 @@ body { width: 40em; margin: 0 auto; font-family: sans-serif; font-size: 90%; }
 <?php endif ?>
 </tr>
 <tr>
-<th>Determine URI</th>
+<th>URI Determination</th>
 <?php if (isset($_SERVER['REQUEST_URI']) OR isset($_SERVER['PHP_SELF'])): ?>
 <td class="pass">Pass</td>
 <?php else: $failed = TRUE ?>
-<td class="fail">Neither <code>$_SERVER['REQUEST_URI']</code> or <code>$_SERVER['PHP_SELF']</code> is set.</td>
+<td class="fail">Neither <code>$_SERVER['REQUEST_URI']</code> or <code>$_SERVER['PHP_SELF']</code> is available.</td>
 <?php endif ?>
 </tr>
-<tr class="results">
-<th>Results</th>
-<?php if ($failed === TRUE): ?>
-<td class="fail">Your environment may not work with Kohana.</td>
-<?php else: ?>
-<td class="pass">Your environment passed all requirements. Remove or rename the <tt>install<?php echo EXT ?></tt> file now.</td>
-<?php endif ?>
 </table>
+
+<div id="results">
+<?php if ($failed === TRUE): ?>
+<p class="fail">Your environment may not work with Kohana.</p>
+<?php else: ?>
+<p class="pass">Your environment passed all requirements. Remove or rename the <tt>install<?php echo EXT ?></tt> file now.</p>
+<?php endif ?>
+</div>
 
 </div>
 
