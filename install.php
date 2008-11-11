@@ -92,11 +92,19 @@ body { width: 42em; margin: 0 auto; font-family: sans-serif; font-size: 90%; }
 <td class="fail">Neither <code>$_SERVER['REQUEST_URI']</code> or <code>$_SERVER['PHP_SELF']</code> is available.</td>
 <?php endif ?>
 </tr>
+<tr>
+<th>Filters Enabled</th>
+<?php if (function_exists('filter_list')): ?>
+<td class="pass">Pass</td>
+<?php else: $failed = TRUE ?>
+<td class="fail">The <a href="http://www.php.net/filter">filter</a> extension is either not loaded or not compiled in.</td>
+<?php endif ?>
+</tr>
 </table>
 
 <div id="results">
 <?php if ($failed === TRUE): ?>
-<p class="fail">Your environment may not work with Kohana.</p>
+<p class="fail">Kohana may not work correctly with your environment.</p>
 <?php else: ?>
 <p class="pass">Your environment passed all requirements. Remove or rename the <tt>install<?php echo EXT ?></tt> file now.</p>
 <?php endif ?>
