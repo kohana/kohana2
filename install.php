@@ -41,19 +41,27 @@ body { width: 42em; margin: 0 auto; font-family: sans-serif; font-size: 90%; }
 <?php endif ?>
 </tr>
 <tr>
-<th>System Files</th>
+<th>System Directory</th>
 <?php if (is_dir(SYSPATH) AND is_file(SYSPATH.'classes/kohana'.EXT)): ?>
 <td class="pass"><?php echo SYSPATH ?></td>
 <?php else: $failed = TRUE ?>
-<td class="fail">The <tt>system</tt> directory does not exist or does not contain required files.</td>
+<td class="fail">The configured <code>system</code> directory does not exist or does not contain required files.</td>
 <?php endif ?>
 </tr>
 <tr>
-<th>Application Files</th>
+<th>Application Directory</th>
 <?php if (is_dir(APPPATH) AND is_file(APPPATH.'config/config'.EXT)): ?>
 <td class="pass"><?php echo APPPATH ?></td>
 <?php else: $failed = TRUE ?>
-<td class="fail">The <tt>application</tt> directory does not exist or does not contain required files.</td>
+<td class="fail">The configured <code>application</code> directory does not exist or does not contain required files.</td>
+<?php endif ?>
+</tr>
+<tr>
+<th>Modules Directory</th>
+<?php if (is_dir(MODPATH)): ?>
+<td class="pass"><?php echo MODPATH ?></td>
+<?php else: $failed = TRUE ?>
+<td class="fail">The configured <code>modules</code> directory does not exist or does not contain required files.</td>
 <?php endif ?>
 </tr>
 <tr>
@@ -64,6 +72,22 @@ body { width: 42em; margin: 0 auto; font-family: sans-serif; font-size: 90%; }
 <td class="fail"><a href="http://php.net/pcre">PCRE</a> has not been compiled with Unicode property support.</td>
 <?php else: ?>
 <td class="pass">Pass</td>
+<?php endif ?>
+</tr>
+<tr>
+<th>Reflection Enabled</th>
+<?php if (class_exists('ReflectionClass')): ?>
+<td class="pass">Pass</td>
+<?php else: $failed = TRUE ?>
+<td class="fail">PHP <a href="http://www.php.net/reflection">reflection</a> is either not loaded or not compiled in.</td>
+<?php endif ?>
+</tr>
+<tr>
+<th>Filters Enabled</th>
+<?php if (function_exists('filter_list')): ?>
+<td class="pass">Pass</td>
+<?php else: $failed = TRUE ?>
+<td class="fail">The <a href="http://www.php.net/filter">filter</a> extension is either not loaded or not compiled in.</td>
 <?php endif ?>
 </tr>
 <tr>
@@ -92,21 +116,13 @@ body { width: 42em; margin: 0 auto; font-family: sans-serif; font-size: 90%; }
 <td class="fail">Neither <code>$_SERVER['REQUEST_URI']</code> or <code>$_SERVER['PHP_SELF']</code> is available.</td>
 <?php endif ?>
 </tr>
-<tr>
-<th>Filters Enabled</th>
-<?php if (function_exists('filter_list')): ?>
-<td class="pass">Pass</td>
-<?php else: $failed = TRUE ?>
-<td class="fail">The <a href="http://www.php.net/filter">filter</a> extension is either not loaded or not compiled in.</td>
-<?php endif ?>
-</tr>
 </table>
 
 <div id="results">
 <?php if ($failed === TRUE): ?>
 <p class="fail">Kohana may not work correctly with your environment.</p>
 <?php else: ?>
-<p class="pass">Your environment passed all requirements. Remove or rename the <tt>install<?php echo EXT ?></tt> file now.</p>
+<p class="pass">Your environment passed all requirements. Remove or rename the <code>install<?php echo EXT ?></code> file now.</p>
 <?php endif ?>
 </div>
 
