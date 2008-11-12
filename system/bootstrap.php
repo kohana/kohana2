@@ -22,37 +22,17 @@ Benchmark::start('system.total_execution');
 // Test of Kohana is running in Windows
 define('KOHANA_IS_WIN', DIRECTORY_SEPARATOR === '\\');
 
-// Start prepare_utf8
-Benchmark::start('system.prepare_utf8');
-
-// SERVER_UTF8 ? use mb_* functions : use non-native functions
 if (extension_loaded('mbstring'))
 {
+	// Use mb_* utf8 functions when possible
 	mb_internal_encoding('UTF-8');
 	define('SERVER_UTF8', TRUE);
 }
 else
 {
+	// Use internal utf8 functions
 	define('SERVER_UTF8', FALSE);
 }
-
-// Load utf8 support
-require SYSPATH.'classes/utf8'.EXT;
-
-// Convert all global variables to UTF-8.
-$_GET    = utf8::clean($_GET);
-$_POST   = utf8::clean($_POST);
-$_COOKIE = utf8::clean($_COOKIE);
-$_SERVER = utf8::clean($_SERVER);
-
-if (PHP_SAPI == 'cli')
-{
-	// Convert command line arguments
-	$_SERVER['argv'] = utf8::clean($_SERVER['argv']);
-}
-
-// Stop prepare_utf8
-Benchmark::stop('system.prepare_utf8');
 
 // Start kohana_setup
 Benchmark::start('system.kohana_setup');

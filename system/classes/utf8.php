@@ -32,6 +32,28 @@ final class utf8 {
 	static $called = array();
 
 	/**
+	 * Recursively clean GET, POST, COOKIE, and SERVER global arrays.
+	 *
+	 * @return  void
+	 */
+	public static function clean_globals()
+	{
+		static $run;
+
+		if ($run === NULL)
+		{
+			// Convert all global variables to UTF-8.
+			$_GET    = utf8::clean($_GET);
+			$_POST   = utf8::clean($_POST);
+			$_COOKIE = utf8::clean($_COOKIE);
+			$_SERVER = utf8::clean($_SERVER);
+
+			// Prevent this from running again
+			$run = TRUE;
+		}
+	}
+
+	/**
 	 * Recursively cleans arrays, objects, and strings. Removes ASCII control
 	 * codes and converts to UTF-8 while silently discarding incompatible
 	 * UTF-8 characters.

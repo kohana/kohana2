@@ -9,7 +9,7 @@
  * a path, generated URLs will not contain a domain name. (See exception in
  * [site_protocol][ref-sip] below.)
  */
-$config['site_domain'] = '/kohana/';
+$config['site_domain'] = '/kohana/trunk/';
 
 /**
  * Set a default protocol protocol for this application.
@@ -148,13 +148,14 @@ $config['enable_hooks'] = FALSE;
  */
 $config['modules'] = array
 (
-	// MODPATH.'archive',   // Archive utility
-	// MODPATH.'auth',      // Authentication
-	// MODPATH.'forge',     // Form generation
-	// MODPATH.'kodoc',     // Self-generating documentation
-	// MODPATH.'media',     // Media caching and compression
-	// MODPATH.'gmaps',     // Google Maps integration
-	// MODPATH.'payment',   // Online payments
-	// MODPATH.'unit_test', // Unit testing
-	// MODPATH.'object_db', // New OOP Database library (testing only!)
+	// MODPATH.'archive',         // Archive utility
+	// MODPATH.'auth',            // Authentication
+	MODPATH.'documentation',   // Kohana documentation
+	// MODPATH.'forge',           // Form generation
+	MODPATH.'kobot',           // Kohana IRC bot
+	// MODPATH.'media',           // Media caching and compression
+	// MODPATH.'gmaps',           // Google Maps integration
+	// MODPATH.'object_db',       // New OOP Database library (testing only!)
+	// MODPATH.'payment',         // Online payments
+	// MODPATH.'unit_test',       // Unit testing
 );

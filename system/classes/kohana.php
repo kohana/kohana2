@@ -156,6 +156,9 @@ final class Kohana {
 		// Set locale information
 		self::$locale = setlocale(LC_ALL, $locales);
 
+		// Enable UTF-8 globals
+		Event::add('system.ready', array('utf8', 'clean_globals'));
+
 		// Enable Kohana routing
 		Event::add('system.routing', array('Router', 'find_uri'));
 		Event::add('system.routing', array('Router', 'setup'));
