@@ -556,10 +556,8 @@ final class Kohana {
 		{
 			$message = array(date('Y-m-d H:i:s P'), $type, $message);
 
-			// Run the system.log event
-			Event::run('system.log', $message);
-
-			self::$log[] = $message;
+			// Log the message after processing
+			self::$log[] = Event::run('system.log', $message);
 		}
 	}
 
@@ -758,8 +756,8 @@ final class Kohana {
 		// Close output buffers
 		self::close_buffers(TRUE);
 
-		// Run the output event
-		Event::run('system.display', self::$output);
+		// Run the output through the display event
+		self::$output = Event::run('system.display', self::$output);
 
 		// Render the final output
 		self::render(self::$output);

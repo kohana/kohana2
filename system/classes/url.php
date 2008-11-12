@@ -222,7 +222,7 @@ class url_Core {
 		}
 
 		// Run the redirect event
-		Event::run('system.redirect', $uri);
+		$uri = Event::run('system.redirect', $uri);
 
 		if (strpos($uri, '://') === FALSE)
 		{

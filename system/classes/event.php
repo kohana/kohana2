@@ -2,7 +2,7 @@
 /**
  * Process queuing/execution class. Allows an unlimited number of callbacks
  * to be added to 'events'. Events can be run multiple times, and can also
- * process event-specific data. By default, Kohana has several system events.
+ * process event-specific data.
  *
  * $Id$
  *
@@ -18,9 +18,6 @@ final class Event {
 
 	// Cache of events that have been run
 	private static $has_run = array();
-
-	// Data that can be processed during events
-	public static $data;
 
 	/**
 	 * Add a callback to an event queue.
@@ -103,7 +100,10 @@ final class Event {
 	private static function insert_event($name, $key, $callback)
 	{
 		if (in_array($callback, self::$events[$name], TRUE))
+		{
+			// The callback already exists in the event
 			return FALSE;
+		}
 
 		// Add the new event at the given key location
 		self::$events[$name] = array_merge
@@ -130,7 +130,10 @@ final class Event {
 	public static function replace($name, $existing, $callback)
 	{
 		if (empty(self::$events[$name]) OR ($key = array_search($existing, self::$events[$name], TRUE)) === FALSE)
+		{
+			// The existing event was not found
 			return FALSE;
+		}
 
 		if ( ! in_array($callback, self::$events[$name], TRUE))
 		{
@@ -171,20 +174,16 @@ final class Event {
 	{
 		if ($callback === FALSE)
 		{
+			// Clear all events on this name
 			self::$events[$name] = array();
 		}
-		elseif (isset(self::$events[$name]))
+		elseif (isset(self::$events[$name]) AND ($key = array_search($callback, self::$events[$name], TRUE)) !== FALSE)
 		{
-			// Loop through each of the event callbacks and compare it to the
-			// callback requested for removal. The callback is removed if it
-			// matches.
-			foreach (self::$events[$name] as $i => $event_callback)
-			{
-				if ($callback === $event_callback)
-				{
-					unset(self::$events[$name][$i]);
-				}
-			}
+			// Remove the event
+			unset(self::$events[$name][$key]);
+
+			// Reset the array so the keys are ordered properly
+			self::$events[$name] = array_values(self::$events[$name]);
 		}
 	}
 
@@ -192,29 +191,25 @@ final class Event {
 	 * Execute all of the callbacks attached to an event.
 	 *
 	 * @param   string   event name
-	 * @param   array    data can be processed as Event::$data by the callbacks
-	 * @return  void
+	 * @param   mixed    data that will be passed to each callback
+	 * @return  mixed
 	 */
-	public static function run($name, & $data = NULL)
+	public static function run($name, $data = NULL)
 	{
 		if ( ! empty(self::$events[$name]))
 		{
-			// So callbacks can access Event::$data
-			self::$data =& $data;
-			$callbacks  =  self::get($name);
+			$callbacks = self::get($name);
 
 			foreach ($callbacks as $callback)
 			{
-				call_user_func($callback);
+				$data = call_user_func($callback, $data);
 			}
-
-			// Do this to prevent data from getting 'stuck'
-			$clear_data = '';
-			self::$data =& $clear_data;
 
 			// The event has been run!
 			self::$has_run[$name] = $name;
 		}
+
+		return $data;
 	}
 
 	/**
