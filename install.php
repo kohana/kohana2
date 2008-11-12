@@ -30,7 +30,7 @@ body { width: 42em; margin: 0 auto; font-family: sans-serif; font-size: 90%; }
 <p>The following tests have been run to determine if Kohana will work in your environment. If any of the tests have failed, consult the <a href="http://docs.kohanaphp.com/general/installation">documentation</a> for more information on how to correct the problem.</p>
 
 <div id="tests">
-<?php $failed = FALSE; ?>
+<?php $failed = FALSE ?>
 <table cellspacing="0">
 <tr>
 <th>PHP Version</th>
@@ -50,7 +50,7 @@ body { width: 42em; margin: 0 auto; font-family: sans-serif; font-size: 90%; }
 </tr>
 <tr>
 <th>Application Directory</th>
-<?php if (is_dir(APPPATH) AND is_file(APPPATH.'config/config'.EXT)): ?>
+<?php if (is_dir(APPPATH) AND is_file(APPPATH.'config/config'.EXT)): include APPPATH.'config/config'.EXT; ?>
 <td class="pass"><?php echo APPPATH ?></td>
 <?php else: $failed = TRUE ?>
 <td class="fail">The configured <code>application</code> directory does not exist or does not contain required files.</td>
@@ -62,6 +62,14 @@ body { width: 42em; margin: 0 auto; font-family: sans-serif; font-size: 90%; }
 <td class="pass"><?php echo MODPATH ?></td>
 <?php else: $failed = TRUE ?>
 <td class="fail">The configured <code>modules</code> directory does not exist or does not contain required files.</td>
+<?php endif ?>
+</tr>
+<tr>
+<th>Log Directory</th>
+<?php if (@is_writable($config['log_directory'])): ?>
+<td class="pass"><?php echo $config['log_directory'] ?></td>
+<?php else: $failed = TRUE ?>
+<td class="fail">The configured <code>log_directory</code> is not writable.</td>
 <?php endif ?>
 </tr>
 <tr>
