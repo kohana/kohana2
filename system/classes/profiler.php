@@ -79,12 +79,12 @@ class Profiler_Core {
 	}
 
 	/**
-	 * Render the profiler. Output is added to the bottom of the page by default.
+	 * Render the profiler.
 	 *
-	 * @param   boolean  return the output if TRUE
-	 * @return  void|string
+	 * @param   string  string to add profiler output to
+	 * @return  string
 	 */
-	public function render($return = FALSE)
+	public function render($output = '')
 	{
 		$start = microtime(TRUE);
 
@@ -106,27 +106,25 @@ class Profiler_Core {
 		// Load the profiler view
 		$data = array
 		(
-			'profiles' => $this->profiles,
-			'styles'   => $styles,
+			'profiles'       => $this->profiles,
+			'styles'         => $styles,
 			'execution_time' => microtime(TRUE) - $start
 		);
 		$view = new View('kohana/profiler', $data);
 
-		// Return rendered view if $return is TRUE
-		if ($return == TRUE)
-			return $view->render();
-
 		// Add profiler data to the output
-		if (stripos(Kohana::$output, '</body>') !== FALSE)
+		if (stripos($output, '</body>') !== FALSE)
 		{
 			// Closing body tag was found, insert the profiler data before it
-			Kohana::$output = str_ireplace('</body>', $view->render().'</body>', Kohana::$output);
+			$output = str_ireplace('</body>', $view->render().'</body>', $output);
 		}
 		else
 		{
 			// Append the profiler data to the output
-			Kohana::$output .= $view->render();
+			$output .= $view->render();
 		}
+
+		return $output;
 	}
 
 	/**
