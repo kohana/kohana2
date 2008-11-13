@@ -38,16 +38,6 @@ class Router_Core {
 		// Load routes
 		$routes = Kohana::config('routes');
 
-		if (isset($routes['_default']) OR count($routes) > 1 AND isset($routes[1]))
-		{
-			throw new Kohana_User_Exception
-			(
-				'Routing API Changed!',
-				'Routing has been significantly changed, and your configuration files are not up to date. '.
-				'Please check http://dev.kohanaphp.com/changeset/3366 for more details.'
-			);
-		}
-
 		if (count($routes) > 1)
 		{
 			// Get the default route
@@ -67,32 +57,10 @@ class Router_Core {
 
 			if (preg_match('#^'.$regex.'$#u', self::$current_uri, $matches))
 			{
-				if (isset($route['route']['request']) AND $route['route']['request'] !== Router::$request_method)
+				if (isset($route['request']) AND $route['request'] !== Router::$request_method)
 				{
 					// The request method is invalid
 					continue;
-				}
-
-				if (isset($route['route']['global']))
-				{
-					foreach ($route['route']['global'] as $type => $keys)
-					{
-						switch ($type)
-						{
-							case 'get':   $global = $_GET;   break;
-							case 'post':  $global = $_POST;  break;
-							case 'files': $global = $_FILES; break;
-						}
-
-						foreach ($keys as $key)
-						{
-							if ( ! isset($global[$key]))
-							{
-								// The request does not have a required global value
-								continue 3;
-							}
-						}
-					}
 				}
 
 				foreach ($matches as $key => $value)
@@ -106,25 +74,25 @@ class Router_Core {
 					if ($value !== '')
 					{
 						// Overload the route with the matched value
-						$route[$key] = $value;
+						$route['defaults'][$key] = $value;
 					}
 				}
 
-				if (isset($route['route']['prefix']))
+				if (isset($route['prefix']))
 				{
-					foreach ($route['route']['prefix'] as $key => $prefix)
+					foreach ($route['prefix'] as $key => $prefix)
 					{
-						if (isset($route[$key]))
+						if (isset($route['defaults'][$key]))
 						{
 							// Add the prefix to the key
-							$route[$key] = $route['route']['prefix'][$key].$route[$key];
+							$route['defaults'][$key] = $route['prefix'][$key].$route['defaults'][$key];
 						}
 					}
 				}
 
-				foreach ($route as $key => $val)
+				foreach ($route['defaults'] as $key => $val)
 				{
-					if (is_int($key) OR $key === 'controller' OR $key === 'method' OR $key === 'route')
+					if (is_int($key) OR $key === 'controller' OR $key === 'method')
 					{
 						// These keys are not arguments, skip them
 						continue;
@@ -134,12 +102,12 @@ class Router_Core {
 				}
 
 				// Set controller name
-				self::$controller = $route['controller'];
+				self::$controller = $route['defaults']['controller'];
 
-				if (isset($route['method']))
+				if (isset($route['defaults']['method']))
 				{
 					// Set controller method
-					self::$method = $route['method'];
+					self::$method = $route['defaults']['method'];
 				}
 				else
 				{
@@ -274,11 +242,11 @@ class Router_Core {
 			return FALSE;
 		}
 
-		// Get the URI keys from the route
-		$keys = Router::keys($route['route']['uri']);
-
 		// Copy the URI, it will have parameters replaced
-		$uri = $route['route']['uri'];
+		$uri = $route['uri'];
+
+		// Get the URI keys from the route
+		$keys = Router::keys($uri);
 
 		// String searches and replacements
 		$search = $replace = array();
@@ -313,7 +281,7 @@ class Router_Core {
 			return array();
 
 		// Find all keys that start with a colon
-		preg_match_all('#(?<=:)[a-z]{1,32}#', $uri, $keys);
+		preg_match_all('#(?<=:)[a-z_]{1,32}#', $uri, $keys);
 
 		return $keys[0];
 	}
@@ -330,14 +298,14 @@ class Router_Core {
 	 */
 	public static function compile(array $route)
 	{
-		if ($route['route']['uri'] === '')
+		if ($route['uri'] === '')
 		{
 			// Empty route
 			return '';
 		}
 
 		// Split the route URI by slashes
-		$uri = explode('/', $route['route']['uri']);
+		$uri = explode('/', $route['uri']);
 
 		// Regular expression end
 		$end = '';
@@ -350,7 +318,7 @@ class Router_Core {
 			if ($segment[0] === ':')
 			{
 				// Find the actual segment key and any trailing garbage
-				preg_match('#^:([a-z]{1,32})(.*)$#', $segment, $matches);
+				preg_match('#^:([a-z_]{1,32})(.*)$#', $segment, $matches);
 
 				// Segment key
 				$key = $matches[1];
@@ -358,7 +326,7 @@ class Router_Core {
 				// Regular expression
 				$exp = '';
 
-				if ($optional === FALSE AND isset($route[$key]))
+				if ($optional === FALSE AND isset($route['defaults'][$key]))
 				{
 					// This key has a default value, so all following matches
 					// will be optional as well.
@@ -383,10 +351,10 @@ class Router_Core {
 				// Use the key as the regex subpattern name
 				$name = '?P<'.$key.'>';
 
-				if (isset($route['route']['regex'][$key]))
+				if (isset($route['regex'][$key]))
 				{
 					// Matches specified regex for the segment
-					$exp .= '('.$name.$route['route']['regex'][$key].')';
+					$exp .= '('.$name.$route['regex'][$key].')';
 				}
 				else
 				{
