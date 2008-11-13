@@ -1,12 +1,12 @@
 <?php
 /**
- * @package  Unit_Test
+ * @package  Unittest
  *
  * Default paths to scan for tests.
  */
 $config['paths'] = array
 (
-	MODPATH.'unit_test/tests',
+	MODPATH.'unittest/tests',
 );
 
 /**

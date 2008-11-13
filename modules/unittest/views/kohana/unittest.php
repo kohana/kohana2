@@ -102,18 +102,18 @@ text::alternate();
 		<tr>
 			<th><?php echo $class ?></th>
 			<th class="k-stats">
-				<?php printf('%s: %.2f%%', Kohana::lang('unit_test.score'), $stats[$class]['score']) ?> |
-				<?php echo Kohana::lang('unit_test.total'),  ': ', $stats[$class]['total'] ?>,
-				<?php echo Kohana::lang('unit_test.passed'), ': ', $stats[$class]['passed'] ?>,
-				<?php echo Kohana::lang('unit_test.failed'), ': ', $stats[$class]['failed'] ?>,
-				<?php echo Kohana::lang('unit_test.errors'), ': ', $stats[$class]['errors'] ?>
+				<?php printf('%s: %.2f%%', Kohana::lang('unittest.score'), $stats[$class]['score']) ?> |
+				<?php echo Kohana::lang('unittest.total'),  ': ', $stats[$class]['total'] ?>,
+				<?php echo Kohana::lang('unittest.passed'), ': ', $stats[$class]['passed'] ?>,
+				<?php echo Kohana::lang('unittest.failed'), ': ', $stats[$class]['failed'] ?>,
+				<?php echo Kohana::lang('unittest.errors'), ': ', $stats[$class]['errors'] ?>
 			</th>
 		</tr>
 
 		<?php if (empty($methods)): ?>
 
 			<tr>
-				<td colspan="2"><?php echo Kohana::lang('unit_test.no_tests_found') ?></td>
+				<td colspan="2"><?php echo Kohana::lang('unittest.no_tests_found') ?></td>
 			</tr>
 
 		<?php else:
@@ -131,14 +131,14 @@ text::alternate();
 
 					<?php if ($result === TRUE): ?>
 
-						<td class="k-passed"><strong><?php echo Kohana::lang('unit_test.passed') ?></strong></td>
+						<td class="k-passed"><strong><?php echo Kohana::lang('unittest.passed') ?></strong></td>
 
-					<?php elseif ($result instanceof Kohana_Unit_Test_Exception): ?>
+					<?php elseif ($result instanceof Kohana_Unittest_Exception): ?>
 
 						<td class="k-failed">
-							<strong><?php echo Kohana::lang('unit_test.failed') ?></strong>
+							<strong><?php echo Kohana::lang('unittest.failed') ?></strong>
 							<pre><?php echo html::specialchars($result->getMessage()) ?></pre>
-							<?php echo html::specialchars($result->getFile()) ?> (<?php echo Kohana::lang('unit_test.line') ?>&nbsp;<?php echo $result->getLine() ?>)
+							<?php echo html::specialchars($result->getFile()) ?> (<?php echo Kohana::lang('unittest.line') ?>&nbsp;<?php echo $result->getLine() ?>)
 
 							<?php if ($result->getDebug() !== NULL): ?>
 								<pre class="k-debug" title="Debug info"><?php echo '(', gettype($result->getDebug()), ') ', html::specialchars(var_export($result->getDebug(), TRUE)) ?></pre>
@@ -149,9 +149,9 @@ text::alternate();
 					<?php elseif ($result instanceof Exception): ?>
 
 						<td class="k-error">
-							<strong><?php echo Kohana::lang('unit_test.error') ?></strong>
+							<strong><?php echo Kohana::lang('unittest.error') ?></strong>
 							<pre><?php echo html::specialchars($result->getMessage()) ?></pre>
-							<?php echo html::specialchars($result->getFile()) ?> (<?php echo Kohana::lang('unit_test.line') ?>&nbsp;<?php echo $result->getLine() ?>)
+							<?php echo html::specialchars($result->getFile()) ?> (<?php echo Kohana::lang('unittest.line') ?>&nbsp;<?php echo $result->getLine() ?>)
 						</td>
 
 					<?php endif ?>

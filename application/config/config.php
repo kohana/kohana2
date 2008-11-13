@@ -155,6 +155,6 @@ $config['modules'] = array
 	// MODPATH.'media',     // Media caching and compression
 	// MODPATH.'gmaps',     // Google Maps integration
 	// MODPATH.'payment',   // Online payments
-	// MODPATH.'unit_test', // Unit testing
+	// MODPATH.'unittest',  // Unit testing
 	// MODPATH.'object_db', // New OOP Database library (testing only!)
 );

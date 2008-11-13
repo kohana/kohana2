@@ -2,12 +2,14 @@
 /**
  * Valid Helper Test.
  *
- * @package    Unit_Test
+ * $Id$
+ *
+ * @package    Unittest
  * @author     Kohana Team
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Valid_Helper_Test extends Unit_Test_Case {
+class Valid_Helper_Test extends Unittest_Case {
 
 	// Disable this Test class?
 	const DISABLED = FALSE;
@@ -28,13 +30,14 @@ class Valid_Helper_Test extends Unit_Test_Case {
 
 	public function valid_email_domain_test()
 	{
-		// not implemented on windows platform
+		// Not implemented on windows platform
 		$var1 = (KOHANA_IS_WIN) ? TRUE : valid::email_domain('address@gmail.tld');
 		$var2 = (KOHANA_IS_WIN) ? FALSE : valid::email_domain('address@domain-should_not-exist.tld');
 		$this
 			->assert_true_strict($var1)
 			->assert_false_strict($var2);
 	}
+
 	public function valid_url_test()
 	{
 		$this
@@ -118,4 +121,5 @@ class Valid_Helper_Test extends Unit_Test_Case {
 			->assert_true_strict(valid::decimal(12.99))
 			->assert_false_strict(valid::decimal(12,99));
 	}
-} // End Valid Helper Test Controller
+
+}

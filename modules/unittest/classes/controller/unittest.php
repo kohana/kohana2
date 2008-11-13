@@ -1,22 +1,22 @@
 <?php
 /**
- * Unit_Test controller.
+ * Unittest controller.
  *
  * $Id$
  *
- * @package    Unit_Test
+ * @package    Unittest
  * @author     Kohana Team
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Unit_test_Controller extends Controller {
+class Controller_Unittest extends Controller {
 
 	const ALLOW_PRODUCTION = FALSE;
 
 	public function index()
 	{
 		// Run tests and show results!
-		echo new Unit_Test;
+		echo new Unittest;
 	}
 
 }

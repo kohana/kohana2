@@ -4,12 +4,12 @@
  *
  * $Id$
  *
- * @package    Unit_Test
+ * @package    Unittest
  * @author     Kohana Team
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Example_Test extends Unit_Test_Case {
+class Example_Test extends Unittest_Case {
 
 	// Disable this Test class?
 	const DISABLED = FALSE;
