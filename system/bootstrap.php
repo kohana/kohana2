@@ -37,6 +37,10 @@ else
 // Start kohana_setup
 Benchmark::start('system.kohana_setup');
 
+// Load Event support
+require SYSPATH.'classes/event'.EXT;
+
+// Load Kohana core
 require SYSPATH.'classes/kohana'.EXT;
 
 // Prepare the environment
