@@ -15,7 +15,7 @@ $config['kohana_documentation'] = array
 $config['kohana_media'] = array
 (
 	'uri'   => 'docs/:method/:file',
-	'regex' => array('method' => 'js|css|img')
+	'regex' => array('method' => 'js|css|img'),
 
 	'defaults' => array
 	(
@@ -27,7 +27,7 @@ $config['kohana_media'] = array
 $config['kohana_user_guide'] = array
 (
 	'uri'   => 'docs/user_guide/:lang/:page/:dummy',
-	'regex' => array('dummy' => '.*')
+	'regex' => array('dummy' => '.*'),
 
 	'defaults' => array
 	(
