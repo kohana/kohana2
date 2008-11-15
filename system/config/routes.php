@@ -8,7 +8,7 @@
  *     (
  *         'uri' => ':controller/:method/:id',
  * 
- *         'keys' => array
+ *         'defaults' => array
  *         (
  *             // Default key values
  *             'controller' => 'welcome',
