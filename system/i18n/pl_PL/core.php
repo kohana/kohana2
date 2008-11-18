@@ -13,6 +13,7 @@ $lang = array
 	'no_default_route'      => 'Proszę ustawić domyślny adres wywołania w config/routes.php.',
 	'no_controller'         => 'Kohana nie była w stanie określić kontrolera obsługującego wywołanie: %s',
 	'page_not_found'        => 'Wywołana strona, %s, nie może zostać znaleziona.',
+	'route_not_found'       => 'Przekierowanie %s nie istnieje w konfiguracji przekierowań',
 	'stats_footer'          => 'Czas wywołania: {execution_time} sekund, użyto {memory_usage} MB pamięci. Wygenerowano przez Kohana v{kohana_version}.',
 	'error_file_line'       => '<tt>%s <strong>[%s]:</strong></tt>',
 	'stack_trace'           => 'Zrzut stosu (Stack Trace)',

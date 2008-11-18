@@ -3,7 +3,6 @@
 $lang = array
 (
 	E_KOHANA             => array( 1, 'Błąd aplikacji'),
-	E_PAGE_NOT_FOUND     => array( 1, 'Strony nie znaleziono'),
 	E_DATABASE_ERROR     => array( 1, 'Błąd Bazy Danych'),
 	E_RECOVERABLE_ERROR  => array( 1, 'Nieoczekiwany błąd'),
 	E_ERROR              => array( 1, 'Błąd krytyczny'),
@@ -14,4 +13,6 @@ $lang = array
 	E_STRICT             => array( 2, 'Błąd ścisłej składni'),
 	E_NOTICE             => array( 2, 'Powiadomienie'),
 	E_USER_NOTICE        => array( 2, 'Powiadomienie'),
+
+	'cli_error'          => "%s w %s w lini %d: %s\n%s",
 );
