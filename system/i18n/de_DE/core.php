@@ -13,6 +13,7 @@ $lang = array
 	'no_default_route'      => 'Erstellen Sie bitte eine Standardroute config/routes.php',
 	'no_controller'         => 'Kohana gelang es nicht einen Controller zu finden, um diesen Aufruf zu verarbeiten: %s',
 	'page_not_found'        => 'Die Seite %s konnte nicht gefunden werden.',
+	'route_not_found'       => 'Die Route %s ist in Ihrer Routes-Konfiguration nicht vorhanden.',
 	'stats_footer'          => 'Seite geladen in {execution_time} Sekunden bei {memory_usage} Speichernutzung. Generiert von Kohana v{kohana_version}.',
 	'error_file_line'       => '<tt>%s <strong>[%s]:</strong></tt>',
 	'stack_trace'           => 'Stack Trace',
