@@ -30,7 +30,7 @@ class Database_Driver_Mysql_Core extends Database_Driver {
 	{
 		$this->db_config = $config;
 
-		Kohana::log('debug', 'MySQL Database Driver Initialized');
+		Kohana_Log::debug('MySQL Database Driver Initialized');
 	}
 
 	/**

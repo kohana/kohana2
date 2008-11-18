@@ -44,7 +44,7 @@ class URI_Core {
 		// Create a singleton
 		self::$instance = $this;
 
-		Kohana::log('debug', 'URI Library initialized');
+		Kohana_Log::debug('URI Library initialized');
 	}
 
 	/**

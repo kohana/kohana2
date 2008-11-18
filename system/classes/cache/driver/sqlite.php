@@ -23,7 +23,7 @@ class Cache_Driver_Sqlite_Core extends Cache_Driver {
 	protected static function log_error($code)
 	{
 		// Log an error
-		Kohana::log('error', 'Cache: SQLite error: '.sqlite_error_string($code));
+		Kohana_Log::error('Cache: SQLite error: '.sqlite_error_string($code));
 	}
 
 	/**
@@ -61,10 +61,10 @@ class Cache_Driver_Sqlite_Core extends Cache_Driver {
 
 		if ($tables->numRows() == 0)
 		{
-			Kohana::log('error', 'Cache: Initializing new SQLite cache database');
+			Kohana_Log::error('Cache: Initializing new SQLite cache database');
 
 			// Issue a CREATE TABLE command
-			$this->db->unbufferedQuery(Kohana::config('cache_sqlite.schema'));
+			$this->db->unbufferedQuery(Kohana_Config::get('cache_sqlite.schema'));
 		}
 	}
 

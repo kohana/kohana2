@@ -44,7 +44,7 @@ class Calendar_Core extends Event_Subject {
 			array_push($days, array_shift($days));
 		}
 
-		if (strpos(Kohana::config('locale.language.0'), 'en') !== 0)
+		if (strpos(Kohana_Config::get('locale.language.0'), 'en') !== 0)
 		{
 			// This is a bit awkward, but it works properly and is reliable
 			foreach ($days as $i => $day)

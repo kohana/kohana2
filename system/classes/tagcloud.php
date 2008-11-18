@@ -8,7 +8,7 @@
  *
  * @package    Tagcloud
  * @author     Kohana Team
- * @copyright  (c) 2007-2008 Kohana Team
+ * @copyright  (c) 2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
 class Tagcloud_Core {

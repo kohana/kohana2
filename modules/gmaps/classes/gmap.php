@@ -46,10 +46,10 @@ class Gmap_Core {
 		if (empty($parameters['key']))
 		{
 			// Set the API key last
-			$parameters['key'] = Kohana::config('gmaps.api_key');
+			$parameters['key'] = Kohana_Config::get('gmaps.api_key');
 		}
 
-		return 'http://'.Kohana::config('gmaps.api_domain').'/'.$component.'?'.http_build_query($parameters, '', $separator);
+		return 'http://'.Kohana_Config::get('gmaps.api_domain').'/'.$component.'?'.http_build_query($parameters, '', $separator);
 	 }
 
 	/**

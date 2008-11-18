@@ -32,7 +32,7 @@ class upload_Core {
 			$filename = time().$file['name'];
 		}
 
-		if (Kohana::config('upload.remove_spaces') === TRUE)
+		if (Kohana_Config::get('upload.remove_spaces') === TRUE)
 		{
 			// Remove spaces from the filename
 			$filename = preg_replace('/\s+/', '_', $filename);
@@ -41,13 +41,13 @@ class upload_Core {
 		if ($directory === NULL)
 		{
 			// Use the pre-configured upload directory
-			$directory = Kohana::config('upload.directory', TRUE);
+			$directory = Kohana_Config::get('upload.directory', TRUE);
 		}
 
 		// Make sure the directory ends with a slash
 		$directory = rtrim($directory, '/').'/';
 
-		if ( ! is_dir($directory) AND Kohana::config('upload.create_directories') === TRUE)
+		if ( ! is_dir($directory) AND Kohana_Config::get('upload.create_directories') === TRUE)
 		{
 			// Create the upload directory
 			mkdir($directory, 0777, TRUE);
@@ -119,7 +119,7 @@ class upload_Core {
 		$extension = strtolower(substr(strrchr($file['name'], '.'), 1));
 
 		// Get the mime types for the extension
-		$mime_types = Kohana::config('mimes.'.$extension);
+		$mime_types = Kohana_Config::get('mimes.'.$extension);
 
 		// Make sure there is an extension, that the extension is allowed, and that mime types exist
 		return ( ! empty($extension) AND in_array($extension, $allowed_types) AND is_array($mime_types));

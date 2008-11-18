@@ -70,14 +70,14 @@ class View_Core {
 		if ($type === NULL)
 		{
 			// Load the filename and set the content type
-			$this->kohana_filename = Kohana::find_file('views', $name, TRUE);
+			$this->kohana_filename = Kohana::find_file('views', $name);
 			$this->kohana_filetype = EXT;
 		}
 		else
 		{
 			// Load the filename and set the content type
-			$this->kohana_filename = Kohana::find_file('views', $name, TRUE, $type);
-			$this->kohana_filetype = Kohana::config('mimes.'.$type);
+			$this->kohana_filename = Kohana::find_file('views', $name, $type);
+			$this->kohana_filetype = Kohana_Config::get('mimes.'.$type);
 
 			if ($this->kohana_filetype === NULL)
 			{
@@ -214,7 +214,7 @@ class View_Core {
 			$data = array_merge(self::$kohana_global_data, $this->kohana_local_data);
 
 			// Load the view in the controller for access to $this
-			$output = Kohana::$instance->_kohana_load_view($this->kohana_filename, $data);
+			$output = Kohana_Request::$instance->_kohana_load_view($this->kohana_filename, $data);
 
 			if ($renderer !== FALSE AND is_callable($renderer, TRUE))
 			{

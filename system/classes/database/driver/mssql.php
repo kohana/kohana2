@@ -28,7 +28,7 @@ class Database_Driver_Mssql_Core extends Database_Driver
 	{
 		$this->db_config = $config;
 
-		Kohana::log('debug', 'MSSQL Database Driver Initialized');
+		Kohana_Log::debug('MSSQL Database Driver Initialized');
 	}
 
 	/**

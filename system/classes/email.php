@@ -32,7 +32,7 @@ class email_Core {
 		}
 
 		// Load default configuration
-		($config === NULL) and $config = Kohana::config('email');
+		($config === NULL) and $config = Kohana_Config::get('email');
 
 		switch ($config['driver'])
 		{

@@ -35,7 +35,7 @@ class Session_Driver_Database_Core implements Session_Driver {
 	public function __construct()
 	{
 		// Load configuration
-		$config = Kohana::config('session');
+		$config = Kohana_Config::get('session');
 
 		if ( ! empty($config['encryption']))
 		{
@@ -61,7 +61,7 @@ class Session_Driver_Database_Core implements Session_Driver {
 		// Load database
 		$this->db = Database::instance($this->db);
 
-		Kohana::log('debug', 'Session Database Driver Initialized');
+		Kohana_Log::debug('Session Database Driver Initialized');
 	}
 
 	public function open($path, $name)
@@ -155,7 +155,7 @@ class Session_Driver_Database_Core implements Session_Driver {
 		// Delete all expired sessions
 		$query = $this->db->delete($this->table, array('last_activity <' => time() - $maxlifetime));
 
-		Kohana::log('debug', 'Session garbage collected: '.$query->count().' row(s) deleted.');
+		Kohana_Log::debug('Session garbage collected: '.$query->count().' row(s) deleted.');
 
 		return TRUE;
 	}

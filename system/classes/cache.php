@@ -51,19 +51,19 @@ class Cache_Core {
 			$name = $config;
 
 			// Test the config group name
-			if (($config = Kohana::config('cache.'.$config)) === NULL)
+			if (($config = Kohana_Config::get('cache.'.$config)) === NULL)
 				throw new Kohana_Exception('cache.undefined_group', $name);
 		}
 
 		if (is_array($config))
 		{
 			// Append the default configuration options
-			$config += Kohana::config('cache.default');
+			$config += Kohana_Config::get('cache.default');
 		}
 		else
 		{
 			// Load the default group
-			$config = Kohana::config('cache.default');
+			$config = Kohana_Config::get('cache.default');
 		}
 
 		// Cache the config in the object
@@ -83,7 +83,7 @@ class Cache_Core {
 		if ( ! ($this->driver instanceof Cache_Driver))
 			throw new Kohana_Exception('core.driver_implements', $this->config['driver'], get_class($this), 'Cache_Driver');
 
-		Kohana::log('debug', 'Cache Library initialized');
+		Kohana_Log::debug('Cache Library initialized');
 
 		if (self::$loaded !== TRUE)
 		{
@@ -94,7 +94,7 @@ class Cache_Core {
 				// Do garbage collection
 				$this->driver->delete_expired();
 
-				Kohana::log('debug', 'Cache: Expired caches deleted.');
+				Kohana_Log::debug('Cache: Expired caches deleted.');
 			}
 
 			// Cache has been loaded once

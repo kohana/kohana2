@@ -50,19 +50,19 @@ class Encrypt_Core {
 			$name = $config;
 
 			// Test the config group name
-			if (($config = Kohana::config('encryption.'.$config)) === NULL)
+			if (($config = Kohana_Config::get('encryption.'.$config)) === NULL)
 				throw new Kohana_Exception('encrypt.undefined_group', $name);
 		}
 
 		if (is_array($config))
 		{
 			// Append the default configuration options
-			$config += Kohana::config('encryption.default');
+			$config += Kohana_Config::get('encryption.default');
 		}
 		else
 		{
 			// Load the default group
-			$config = Kohana::config('encryption.default');
+			$config = Kohana_Config::get('encryption.default');
 		}
 
 		if (empty($config['key']))
@@ -83,7 +83,7 @@ class Encrypt_Core {
 		// Cache the config in the object
 		$this->config = $config;
 
-		Kohana::log('debug', 'Encrypt Library initialized');
+		Kohana_Log::debug('Encrypt Library initialized');
 	}
 
 	/**

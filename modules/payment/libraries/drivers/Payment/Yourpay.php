@@ -63,7 +63,7 @@ class Payment_Yourpay_Driver implements Payment_Driver
 		$this->curl_config = $config['curl_config'];
 		$this->test_mode = $config['test_mode'];
 
-		Kohana::log('debug', 'YourPay.net Payment Driver Initialized');
+		Kohana_Log::debug('YourPay.net Payment Driver Initialized');
 	}
 
 	public function set_fields($fields)

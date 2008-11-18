@@ -51,7 +51,7 @@ class Payment_Trustcommerce_Driver implements Payment_Driver
 				throw new Kohana_Exception('payment.no_dlib', $this->tclink_library);
 			}
 		}
-		Kohana::log('debug', 'TrustCommerce Payment Driver Initialized');
+		Kohana_Log::debug('TrustCommerce Payment Driver Initialized');
 	}
 
 	public function set_fields($fields)

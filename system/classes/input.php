@@ -49,7 +49,7 @@ class Input_Core {
 	public function __construct()
 	{
 		// Use XSS clean?
-		$this->use_xss_clean = (bool) Kohana::config('core.global_xss_filtering');
+		$this->use_xss_clean = (bool) Kohana_Config::get('config.global_xss_filtering');
 
 		if (self::$instance === NULL)
 		{
@@ -57,14 +57,14 @@ class Input_Core {
 			if (get_magic_quotes_runtime())
 			{
 				set_magic_quotes_runtime(0);
-				Kohana::log('debug', 'Disable magic_quotes_runtime! It is evil and deprecated: http://php.net/magic_quotes');
+				Kohana_Log::debug('Disable magic_quotes_runtime! It is evil and deprecated: http://php.net/magic_quotes');
 			}
 
 			// magic_quotes_gpc is enabled
 			if (get_magic_quotes_gpc())
 			{
 				$this->magic_quotes_gpc = TRUE;
-				Kohana::log('debug', 'Disable magic_quotes_gpc! It is evil and deprecated: http://php.net/magic_quotes');
+				Kohana_Log::debug('Disable magic_quotes_gpc! It is evil and deprecated: http://php.net/magic_quotes');
 			}
 
 			// register_globals is enabled
@@ -96,7 +96,7 @@ class Input_Core {
 				}
 
 				// Warn the developer about register globals
-				Kohana::log('debug', 'Disable register_globals! It is evil and deprecated: http://php.net/register_globals');
+				Kohana::debug('Disable register_globals! It is evil and deprecated: http://php.net/register_globals');
 			}
 
 			if (is_array($_GET))
@@ -141,7 +141,7 @@ class Input_Core {
 			// Create a singleton
 			self::$instance = $this;
 
-			Kohana::log('debug', 'Global GET, POST and COOKIE data sanitized');
+			Kohana_Log::debug('Global GET, POST and COOKIE data sanitized');
 		}
 	}
 
@@ -279,7 +279,7 @@ class Input_Core {
 		if ($tool === NULL)
 		{
 			// Use the default tool
-			$tool = Kohana::config('core.global_xss_filtering');
+			$tool = Kohana_Config::get('config.global_xss_filtering');
 		}
 
 		if (is_array($data))

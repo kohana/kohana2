@@ -25,7 +25,7 @@ class Database_Driver_Mysqli_Core extends Database_Driver_Mysql {
 	{
 		$this->db_config = $config;
 
-		Kohana::log('debug', 'MySQLi Database Driver Initialized');
+		Kohana_Log::debug('MySQLi Database Driver Initialized');
 	}
 
 	/**

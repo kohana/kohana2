@@ -1,6 +1,6 @@
 <?php
 
-$lang = substr(Kohana::config('locale.language.0'), 0, 2);
+$lang = substr(Kohana_Config::get('locale.language.0'), 0, 2);
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//<?php echo strtoupper($lang) ?>" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

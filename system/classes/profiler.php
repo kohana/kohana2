@@ -39,9 +39,9 @@ class Profiler_Core {
 		Event::add('profiler.run', array($this, 'cookies'));
 
 		// Add profiler to page output automatically
-		Event::add('system.display', array($this, 'render'));
+		Event::add('system.display', array($this, 'append_output'));
 
-		Kohana::log('debug', 'Profiler Library initialized');
+		Kohana_Log::debug('Profiler Library initialized');
 	}
 
 	/**
@@ -75,22 +75,44 @@ class Profiler_Core {
 	public function disable()
 	{
 		// Removes itself from the event queue
-		Event::clear('system.display', array($this, 'render'));
+		Event::clear('system.display', array($this, 'append_output'));
 	}
 
 	/**
-	 * Render the profiler.
+	 * Appends the profiler output to existing output. Used as an Event callback.
 	 *
-	 * @param   string  string to add profiler output to
+	 * @param   string   output
+	 * @return  string  output
+	 */
+	public function append_output($output)
+	{
+		if (stripos($output, '</body>') !== FALSE)
+		{
+			// Add the output just before the closing body tag
+			$output = str_ireplace('</body>', $this->render().'</body>', $output);
+		}
+		else
+		{
+			$output = $output.$this->render();
+		}
+
+		return $output;
+	}
+
+	/**
+	 * Render the profiler output and return it.
+	 *
+	 * @param   boolean  print the output instead of returning it
 	 * @return  string
 	 */
-	public function render($output = '')
+	public function render($print = FALSE)
 	{
 		$start = microtime(TRUE);
 
 		$get = isset($_GET['profiler']) ? explode(',', $_GET['profiler']) : array();
-		$this->show = empty($get) ? Kohana::config('profiler.show') : $get;
+		$this->show = empty($get) ? Kohana_Config::get('profiler.show') : $get;
 
+		// Run the profiler event queue
 		Event::run('profiler.run', $this);
 
 		$styles = '';
@@ -106,25 +128,25 @@ class Profiler_Core {
 		// Load the profiler view
 		$data = array
 		(
-			'profiles'       => $this->profiles,
-			'styles'         => $styles,
+			'profiles' => $this->profiles,
+			'styles'   => $styles,
 			'execution_time' => microtime(TRUE) - $start
 		);
-		$view = new View('kohana/profiler', $data);
 
-		// Add profiler data to the output
-		if (stripos($output, '</body>') !== FALSE)
+		// Load and render the profiler template
+		$profiler = View::factory('kohana/profiler', $data)
+			->render();
+
+		if ($print === FALSE)
 		{
-			// Closing body tag was found, insert the profiler data before it
-			$output = str_ireplace('</body>', $view->render().'</body>', $output);
+			// Return the output
+			return $profiler;
 		}
 		else
 		{
-			// Append the profiler data to the output
-			$output .= $view->render();
+			// Display the output
+			echo $profiler;
 		}
-
-		return $output;
 	}
 
 	/**

@@ -73,14 +73,14 @@ class Captcha_Core {
 		}
 
 		// Load and validate config group
-		if ( ! is_array($config = Kohana::config('captcha.'.$group)))
+		if ( ! is_array($config = Kohana_Config::get('captcha.'.$group)))
 			throw new Kohana_Exception('captcha.undefined_group', $group);
 
 		// All captcha config groups inherit default config group
 		if ($group !== 'default')
 		{
 			// Load and validate default config group
-			if ( ! is_array($default = Kohana::config('captcha.default')))
+			if ( ! is_array($default = Kohana_Config::get('captcha.default')))
 				throw new Kohana_Exception('captcha.undefined_group', 'default');
 
 			// Merge config group with default config group
@@ -134,7 +134,7 @@ class Captcha_Core {
 		if ( ! ($this->driver instanceof Captcha_Driver))
 			throw new Kohana_Exception('core.driver_implements', $config['style'], get_class($this), 'Captcha_Driver');
 
-		Kohana::log('debug', 'Captcha Library initialized');
+		Kohana_Log::debug('Captcha Library initialized');
 	}
 
 	/**

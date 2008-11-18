@@ -8,7 +8,7 @@ class Database_Core extends PDO {
 
 	public static function instance($name = 'default')
 	{
-		return Database::$instances[$name] = new Database(Kohana::config('database.'.$name));
+		return Database::$instances[$name] = new Database(Kohana_Config::get('database.'.$name));
 	}
 
 	protected static function build($class, Database $db)

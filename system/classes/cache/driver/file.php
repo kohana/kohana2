@@ -198,7 +198,7 @@ class Cache_Driver_File_Core extends Cache_Driver {
 		{
 			// Remove the cache file
 			if ( ! unlink($file))
-				Kohana::log('error', 'Cache: Unable to delete cache file: '.$file);
+				Kohana_Log::error('Cache: Unable to delete cache file: '.$file);
 		}
 
 		// Turn on error reporting again
@@ -221,7 +221,7 @@ class Cache_Driver_File_Core extends Cache_Driver {
 				if ($this->expired($file))
 				{
 					// The cache file has already expired, delete it
-					@unlink($file) or Kohana::log('error', 'Cache: Unable to delete cache file: '.$file);
+					@unlink($file) or Kohana_Log::error('Cache: Unable to delete cache file: '.$file);
 				}
 			}
 		}

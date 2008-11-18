@@ -25,26 +25,20 @@ abstract class Controller_Template extends Controller {
 	/**
 	 * Template loading and setup routine.
 	 */
-	public function __construct()
+	public function __construct(Kohana_Request $request)
 	{
-		parent::__construct();
+		parent::__construct($request);
 
 		// Load the template
-		$this->template = new View($this->template);
-
-		if ($this->auto_render == TRUE)
-		{
-			// Render the template immediately after the controller method
-			Event::add('system.post_controller', array($this, '_render'));
-		}
+		$this->template = View::factory($this->template);
 	}
 
 	/**
 	 * Render the loaded template.
 	 */
-	public function _render()
+	public function _end_request()
 	{
-		if ($this->auto_render == TRUE)
+		if ($this->auto_render === TRUE)
 		{
 			// Render the template when the class is destroyed
 			$this->template->render(TRUE);

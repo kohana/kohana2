@@ -37,11 +37,11 @@ class url_Core {
 		if ($protocol == FALSE)
 		{
 			// Use the default configured protocol
-			$protocol = Kohana::config('core.site_protocol');
+			$protocol = Kohana_Config::get('config.site_protocol');
 		}
 
 		// Load the site domain
-		$site_domain = (string) Kohana::config('core.site_domain', TRUE);
+		$site_domain = (string) Kohana_Config::get('config.site_domain', TRUE);
 
 		if ($protocol == FALSE)
 		{
@@ -70,7 +70,7 @@ class url_Core {
 			}
 		}
 
-		if ($index === TRUE AND $index = Kohana::config('core.index_page'))
+		if ($index === TRUE AND $index = Kohana_Config::get('config.index_page'))
 		{
 			// Append the index page
 			$base_url = $base_url.$index;

@@ -1,6 +1,6 @@
 <?php
 /**
- * @package  Cache:Memcache
+ * @package  Cache/Memcache
  *
  * memcache server configuration.
  */
@@ -11,7 +11,7 @@ $config['servers'] = array
 		'host' => '127.0.0.1',
 		'port' => 11211,
 		'persistent' => FALSE,
-	)
+	),
 );
 
 /**

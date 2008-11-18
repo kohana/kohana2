@@ -3,7 +3,6 @@
 $lang = array
 (
 	E_KOHANA             => array( 1, 'Framework Error'),
-	E_PAGE_NOT_FOUND     => array( 1, 'Page Not Found'),
 	E_DATABASE_ERROR     => array( 1, 'Database Error'),
 	E_RECOVERABLE_ERROR  => array( 1, 'Recoverable Error'),
 	E_ERROR              => array( 1, 'Fatal Error'),
@@ -14,4 +13,6 @@ $lang = array
 	E_STRICT             => array( 2, 'Strict Mode Error'),
 	E_NOTICE             => array( 2, 'Notice'),
 	E_USER_NOTICE        => array( 2, 'Notice'),
+
+	'cli_error'          => "%s in %s on line %d: %s\n%s",
 );

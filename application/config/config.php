@@ -36,18 +36,6 @@ $config['site_protocol'] = '';
 $config['index_page'] = 'index.php';
 
 /**
- * Length of internal configuration, language, and include path caching.
- *
- *    $config['internal_cache'] = FALSE;
- *
- * Disabled by default, internal caching can give significant speed improvements
- * at the expense of configuration changes being visibly delayed. Enabling
- * short (30-300) seconds of internal caching on production sites is a highly
- * recommended way to increase performance.
- */
-$config['internal_cache'] = FALSE;
-
-/**
  * Enable or disable gzip output compression.
  *
  *     $config['output_compression'] = FALSE;
@@ -103,58 +91,3 @@ $config['global_xss_filtering'] = TRUE;
  * logging. Turning this off will disable ALL error pages.
  */
 $config['display_errors'] = TRUE;
-
-/**
- * Set default logging threshold.
- *
- *     $config['log_threshold'] = 1;
- *
- * It is highly recommended to enable error and exception logging on production
- * websites and to disable
- *
- * - 0: Disable all logging
- * - 1: Log only PHP errors and exceptions
- * - 2: Also log PHP warnings
- * - 3: Also log PHP notices
- * - 4: Also log Kohana debugging messages
- */
-$config['log_threshold'] = 1;
-
-/**
- * Set default logging directory.
- *
- *     $config['log_directory'] = APPPATH.'logs';
- *
- * Any writable directory can be specified here. Path can be relative to the
- * DOCROOT, or an absolute path.
- */
-$config['log_directory'] = APPPATH.'logs';
-
-/**
- * Enable or disable hooks, raw PHP files that are included during setup.
- *
- *     $config['enable_hooks'] = FALSE;
- *
- * Disabled by default, hooks allow you to change default Events, run custom
- * code, and extend Kohana in completely custom ways. This option can be set
- * to TRUE, FALSE, or an array of filenames (no extension).
- */
-$config['enable_hooks'] = FALSE;
-
-/**
- * Additional resource paths, or "modules". Each path can either be absolute
- * or relative to the DOCROOT. Modules can include any resource that can exist
- * in your application directory, configuration files, controllers, views, etc.
- */
-$config['modules'] = array
-(
-	// MODPATH.'archive',   // Archive utility
-	// MODPATH.'auth',      // Authentication
-	// MODPATH.'forge',     // Form generation
-	// MODPATH.'kodoc',     // Self-generating documentation
-	// MODPATH.'media',     // Media caching and compression
-	// MODPATH.'gmaps',     // Google Maps integration
-	// MODPATH.'payment',   // Online payments
-	// MODPATH.'unittest',  // Unit testing
-	// MODPATH.'object_db', // New OOP Database library (testing only!)
-);

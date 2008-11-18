@@ -15,21 +15,15 @@ abstract class Controller_Core {
 	// Allow all controllers to run in production by default
 	const ALLOW_PRODUCTION = TRUE;
 
-	/**
-	 * Loads URI, and Input into this controller.
-	 *
-	 * @return  void
-	 */
-	public function __construct()
-	{
-		if (Kohana::$instance == NULL)
-		{
-			// Set the instance to the first controller loaded
-			Kohana::$instance = $this;
-		}
+	// Current request
+	protected $request;
 
-		// Input should always be available
-		$this->input = Input::instance();
+	/**
+	 * Loads the request locally.
+	 */
+	public function __construct(Kohana_Request $request)
+	{
+		$this->request = $request;
 	}
 
 	/**
@@ -43,6 +37,16 @@ abstract class Controller_Core {
 	{
 		// Default to showing a 404 page
 		Event::run('system.404');
+	}
+
+	/**
+	 * Called when the request stops processing the controller.
+	 *
+	 * @return  void
+	 */
+	public function _end_request()
+	{
+		// Do nothing by default
 	}
 
 	/**

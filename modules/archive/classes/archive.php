@@ -42,7 +42,7 @@ class Archive_Core {
 		if ( ! ($this->driver instanceof Archive_Driver))
 			throw new Kohana_Exception('core.driver_implements', $type, get_class($this), 'Archive_Driver');
 
-		Kohana::log('debug', 'Archive Library initialized');
+		Kohana_Log::debug('Archive Library initialized');
 	}
 
 	/**

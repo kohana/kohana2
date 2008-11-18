@@ -29,7 +29,7 @@ class Database_Driver_Pdosqlite_Core extends Database_Driver {
 	{
 		$this->db_config = $config;
 
-		Kohana::log('debug', 'PDO:Sqlite Database Driver Initialized');
+		Kohana_Log::debug('PDO:Sqlite Database Driver Initialized');
 	}
 
 	public function connect()
@@ -262,7 +262,7 @@ class Database_Driver_Pdosqlite_Core extends Database_Driver {
 
 	public function field_data($table)
 	{
-		Kohana::log('error', 'This method is under developing');
+		Kohana_Log::error('This method is under developing');
 	}
 	/**
 	 * Version number query string
@@ -447,7 +447,7 @@ class Pdosqlite_Result extends Database_Result {
 		// To request a scrollable cursor for your PDOStatement object, you must
 		// set the PDO::ATTR_CURSOR attribute to PDO::CURSOR_SCROLL when you
 		// prepare the statement.
-		Kohana::log('error', get_class($this).' does not support scrollable cursors, '.__FUNCTION__.' call ignored');
+		Kohana_Log::error(get_class($this).' does not support scrollable cursors, '.__FUNCTION__.' call ignored');
 
 		return FALSE;
 	}

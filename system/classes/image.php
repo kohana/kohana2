@@ -103,7 +103,7 @@ class Image_Core {
 		);
 
 		// Load configuration
-		$this->config = (array) $config + Kohana::config('image');
+		$this->config = (array) $config + Kohana_Config::get('image');
 
 		// Set driver class name
 		$driver = 'Image_Driver_'.ucfirst($this->config['driver']);

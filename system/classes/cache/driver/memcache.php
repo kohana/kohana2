@@ -24,9 +24,9 @@ class Cache_Driver_Memcache extends Cache_Driver {
 			throw new Kohana_Exception('cache.extension_not_loaded', 'memcache');
 
 		$this->backend = new Memcache;
-		$this->flags = Kohana::config('cache_memcache.compression') ? MEMCACHE_COMPRESSED : 0;
+		$this->flags = Kohana_Config::get('cache_memcache.compression') ? MEMCACHE_COMPRESSED : 0;
 
-		$servers = Kohana::config('cache_memcache.servers');
+		$servers = Kohana_Config::get('cache_memcache.servers');
 
 		foreach ($servers as $server)
 		{
@@ -35,7 +35,7 @@ class Cache_Driver_Memcache extends Cache_Driver {
 
 			// Add the server to the pool
 			$this->backend->addServer($server['host'], $server['port'], (bool) $server['persistent'])
-				or Kohana::log('error', 'Cache: Connection failed: '.$server['host']);
+				or Kohana_Log::error('Cache: Connection failed: '.$server['host']);
 		}
 	}
 
@@ -51,7 +51,7 @@ class Cache_Driver_Memcache extends Cache_Driver {
 
 	public function set($id, $data, $tags, $lifetime)
 	{
-		count($tags) and Kohana::log('error', 'Cache: Tags are unsupported by the memcache driver');
+		count($tags) and Kohana_Log::error('Cache: Tags are unsupported by the memcache driver');
 
 		// Memcache driver expects unix timestamp
 		if ($lifetime !== 0)

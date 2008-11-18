@@ -32,7 +32,7 @@ class cookie_Core {
 		is_array($name) and extract($name, EXTR_OVERWRITE);
 
 		// Fetch default options
-		$config = Kohana::config('cookie');
+		$config = Kohana_Config::get('cookie');
 
 		foreach (array('value', 'expire', 'domain', 'path', 'secure', 'httponly') as $item)
 		{

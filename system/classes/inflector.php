@@ -29,7 +29,7 @@ class inflector_Core {
 		if (self::$uncountable === NULL)
 		{
 			// Cache uncountables
-			self::$uncountable = Kohana::config('inflector.uncountable');
+			self::$uncountable = Kohana_Config::get('inflector.uncountable');
 
 			// Make uncountables mirrored
 			self::$uncountable = array_combine(self::$uncountable, self::$uncountable);
@@ -72,7 +72,7 @@ class inflector_Core {
 		if (empty(self::$irregular))
 		{
 			// Cache irregular words
-			self::$irregular = Kohana::config('inflector.irregular');
+			self::$irregular = Kohana_Config::get('inflector.irregular');
 		}
 
 		if ($irregular = array_search($str, self::$irregular))
@@ -129,7 +129,7 @@ class inflector_Core {
 		if (empty(self::$irregular))
 		{
 			// Cache irregular words
-			self::$irregular = Kohana::config('inflector.irregular');
+			self::$irregular = Kohana_Config::get('inflector.irregular');
 		}
 
 		if (isset(self::$irregular[$str]))

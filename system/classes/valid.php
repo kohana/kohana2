@@ -129,7 +129,7 @@ class valid_Core {
 			return FALSE;
 		}
 
-		$cards = Kohana::config('credit_cards');
+		$cards = Kohana_Config::get('credit_cards');
 
 		// Check card type
 		$type = strtolower($type);
