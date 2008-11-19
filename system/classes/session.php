@@ -168,7 +168,7 @@ class Session_Core {
 			$_SESSION['total_hits'] = 0;
 			$_SESSION['_kf_flash_'] = array();
 
-			$_SESSION['user_agent'] = Kohana::$user_agent;
+			$_SESSION['user_agent'] = Kohana::user_agent();
 			$_SESSION['ip_address'] = $this->input->ip_address();
 		}
 
@@ -188,7 +188,7 @@ class Session_Core {
 				{
 					// Check user agent for consistency
 					case 'user_agent':
-						if ($_SESSION[$valid] !== Kohana::$user_agent)
+						if ($_SESSION[$valid] !== Kohana::user_agent())
 							return $this->create();
 					break;
 
