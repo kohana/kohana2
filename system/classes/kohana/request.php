@@ -180,7 +180,7 @@ class Kohana_Request_Core {
 	protected $route;
 	protected $controller;
 	protected $method;
-	protected $arguments;
+	protected $arguments = array();
 
 	// GET and POST data
 	protected $get;
