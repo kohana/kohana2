@@ -26,7 +26,7 @@ class Profiler_Table_Core {
 		if ( ! $styles_output)
 		{
 			$styles_output = TRUE;
-			return file_get_contents(Kohana::find_file('views', 'kohana/profiler_table', FALSE, 'css'));
+			return file_get_contents(Kohana::find_file('views', 'kohana/profiler_table', 'css'));
 		}
 
 		return '';
