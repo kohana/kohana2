@@ -120,7 +120,7 @@ class Auth_ORM_Core extends Auth_Driver {
 
 			if ($token->loaded AND $token->user->loaded)
 			{
-				if ($token->user_agent === sha1(Kohana::$user_agent))
+				if ($token->user_agent === sha1(Kohana::user_agent()))
 				{
 					// Save the token to create a new unique token
 					$token->save();

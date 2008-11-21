@@ -41,7 +41,7 @@ class Model_Auth_User_Token extends ORM {
 		{
 			// Set the created time, token, and hash of the user agent
 			$this->created = $this->now;
-			$this->user_agent = sha1(Kohana::$user_agent);
+			$this->user_agent = sha1(Kohana::user_agent());
 		}
 
 		// Create a new token each time the token is saved
