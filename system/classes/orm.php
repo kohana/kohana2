@@ -268,7 +268,7 @@ class ORM_Core {
 		{
 			// This handles the has_one and belongs_to relationships
 
-			if (isset($this->object[$column.'_'.$model->primary_key]))
+			if (array_key_exists($column.'_'.$model->primary_key, $this->object))
 			{
 				// Use the FK that exists in this model as the PK
 				$where = array($model->table_name.'.'.$model->primary_key => $this->object[$column.'_'.$model->primary_key]);
