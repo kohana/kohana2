@@ -16,7 +16,7 @@ abstract class Controller_Core {
 	const ALLOW_PRODUCTION = TRUE;
 
 	// Current request
-	protected $request;
+	public $request;
 
 	/**
 	 * Loads the request locally.
@@ -36,7 +36,7 @@ abstract class Controller_Core {
 	public function __call($method, $args)
 	{
 		// Default to showing a 404 page
-		Event::run('system.404');
+		Event::run('system.404', $this->request->current_uri);
 	}
 
 	/**

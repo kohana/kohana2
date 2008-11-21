@@ -120,7 +120,7 @@ class Pagination_Core {
 			$_GET[$this->query_string] = '{page}';
 
 			// Create full URL
-			$base_url = ($this->base_url === '') ? Router::$current_uri : $this->base_url;
+			$base_url = ($this->base_url === '') ? Kohana_Request::$instance->request->current_uri : $this->base_url;
 			$this->url = url::site($base_url).'?'.str_replace('%7Bpage%7D', '{page}', http_build_query($_GET));
 
 			// Reset page number
@@ -131,7 +131,7 @@ class Pagination_Core {
 		else
 		{
 			// Use current URI if no base_url set
-			$this->url = ($this->base_url === '') ? explode('/', Router::$current_uri) : explode('/', trim($this->base_url, '/'));
+			$this->url = ($this->base_url === '') ? explode('/', Kohana_Request::$instance->request->current_uri) : explode('/', trim($this->base_url, '/'));
 
 			// Convert uri 'label' to corresponding integer if needed
 			if (is_string($this->uri_segment))
@@ -155,7 +155,7 @@ class Pagination_Core {
 			$this->url[$this->uri_segment - 1] = '{page}';
 
 			// Create full URL
-			$this->url = url::site(implode('/', $this->url)).Router::$query_string;
+			$this->url = url::site(implode('/', $this->url)).Kohana_Request::$instance->request->query_string;
 
 			// Extract current page
 			$this->current_page = URI::instance()->segment($this->uri_segment);

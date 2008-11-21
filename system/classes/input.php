@@ -49,7 +49,7 @@ class Input_Core {
 	public function __construct()
 	{
 		// Use XSS clean?
-		$this->use_xss_clean = (bool) Kohana_Config::get('config.global_xss_filtering');
+		$this->use_xss_clean = (bool) Kohana_Config::get('core.global_xss_filtering');
 
 		if (self::$instance === NULL)
 		{
@@ -96,7 +96,7 @@ class Input_Core {
 				}
 
 				// Warn the developer about register globals
-				Kohana::debug('Disable register_globals! It is evil and deprecated: http://php.net/register_globals');
+				Kohana_Log::debug('Disable register_globals! It is evil and deprecated: http://php.net/register_globals');
 			}
 
 			if (is_array($_GET))
@@ -279,7 +279,7 @@ class Input_Core {
 		if ($tool === NULL)
 		{
 			// Use the default tool
-			$tool = Kohana_Config::get('config.global_xss_filtering');
+			$tool = Kohana_Config::get('core.global_xss_filtering');
 		}
 
 		if (is_array($data))

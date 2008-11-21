@@ -12,8 +12,8 @@ $qs = $_GET;
 unset($qs['day']);
 
 // Previous and next month query URIs
-$prev = Router::$current_uri.'?'.http_build_query(array_merge($qs, array('month' => date('n', $prev), 'year' => date('Y', $prev))));
-$next = Router::$current_uri.'?'.http_build_query(array_merge($qs, array('month' => date('n', $next), 'year' => date('Y', $next))));
+$prev = Kohana_Request::$instance->request->current_uri.'?'.http_build_query(array_merge($qs, array('month' => date('n', $prev), 'year' => date('Y', $prev))));
+$next = Kohana_Request::$instance->request->current_uri.'?'.http_build_query(array_merge($qs, array('month' => date('n', $next), 'year' => date('Y', $next))));
 
 ?>
 <table class="calendar">

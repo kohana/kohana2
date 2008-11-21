@@ -56,8 +56,8 @@ class ORM_Form_Core extends ORM {
 
 		// Load the form
 		$form = View::factory($this->view)
-			->set('action', Router::$current_uri)
-			->set('cancel', Router::$current_uri)
+			->set('action', Kohana_Request::$instance->request->current_uri)
+			->set('cancel', Kohana_Request::$instance->request->current_uri)
 			->set('attributes', array())
 			->bind('inputs', $inputs)
 			->bind('errors', $errors);

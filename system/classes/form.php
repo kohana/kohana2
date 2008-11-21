@@ -33,7 +33,7 @@ class form_Core {
 		if ($action === NULL)
 		{
 			// Use the current URL as the default action
-			$action = url::site(Router::$complete_uri);
+			$action = url::site(Kohana_Request::$instance->request->complete_uri);
 		}
 		elseif (strpos($action, '://') === FALSE)
 		{

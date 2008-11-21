@@ -67,16 +67,23 @@ class View_Core {
 	 */
 	public function set_filename($name, $type = NULL)
 	{
+		// Locate the view file
+		$this->kohana_filename = Kohana::find_file('views', $name, $type);
+
+		if ($this->kohana_filename === FALSE)
+		{
+			// The requested view was not found
+			throw new Kohana_Exception('core.resource_not_found', 'view', $name);
+		}
+
 		if ($type === NULL)
 		{
-			// Load the filename and set the content type
-			$this->kohana_filename = Kohana::find_file('views', $name);
+			// Normal PHP file
 			$this->kohana_filetype = EXT;
 		}
 		else
 		{
-			// Load the filename and set the content type
-			$this->kohana_filename = Kohana::find_file('views', $name, $type);
+			// Non-PHP file, find the content type
 			$this->kohana_filetype = Kohana_Config::get('mimes.'.$type);
 
 			if ($this->kohana_filetype === NULL)

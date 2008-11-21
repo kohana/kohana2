@@ -16,11 +16,24 @@ class Kohana_Request_Core {
 
 		if ($run === NULL)
 		{
-			// Split the URI by the front controller
-			$uri = explode(KOHANA, $_SERVER['PHP_SELF'], 2);
+			if (PHP_SAPI === 'cli')
+			{
+				// Command line URI
+				$uri = isset($argv[1]) ? $argv[1] : '';
+			}
+			elseif (isset($_SERVER['PATH_INFO']))
+			{
+				// Use PATH_INFO
+				$uri = $_SERVER['PATH_INFO'];
+			}
+			else
+			{
+				// Split the URI by the front controller
+				$uri = explode(KOHANA, $_SERVER['PHP_SELF'], 2);
 
-			// Use the URI after the front controller
-			$uri = $uri[1];
+				// Use the URI after the front controller
+				$uri = $uri[1];
+			}
 
 			// Remove all dot-paths from the URI, they are not valid
 			$uri = preg_replace('#\.[\s./]*/#', '', $uri);
@@ -30,6 +43,9 @@ class Kohana_Request_Core {
 
 			// Make sure the URL is not tainted with HTML characters
 			$uri = html::specialchars($uri, FALSE);
+
+			// Do additional detection on the URI
+			$uri = Event::run('system.detect_uri', $uri);
 
 			if (PHP_SAPI === 'cli')
 			{
@@ -51,7 +67,7 @@ class Kohana_Request_Core {
 			$request = new Kohana_Request($_GET, $_POST, $method);
 
 			// Start output buffering, so that headers will be trapped
-			ob_start(array('Kohana_Request', 'output_buffer'));
+			ob_start();
 
 			// Display the output of the main request
 			$output = $request->process($uri);
@@ -109,11 +125,10 @@ class Kohana_Request_Core {
 							header('Content-Length: '.strlen($output));
 						}
 					}
-					
 				}
 			}
 
-			// Display the output
+			// Display the final output
 			echo $output;
 
 			// This method has been run
@@ -139,7 +154,13 @@ class Kohana_Request_Core {
 		return $request->process($uri);
 	}
 
-	public static function output_buffer($output)
+	/**
+	 * Prepares the final output of a request, just before it is displayed.
+	 *
+	 * @param   string   output
+	 * @return  string
+	 */
+	public static function display($output)
 	{
 		if (Kohana_Config::get('config.render_stats') === TRUE)
 		{
@@ -172,19 +193,23 @@ class Kohana_Request_Core {
 		return $output;
 	}
 
-
 	// The request method
-	protected $request_method = 'GET';
+	public $request_method = 'GET';
 
-	// Current route, controller, method, and arguments
-	protected $route;
-	protected $controller;
-	protected $method;
-	protected $arguments = array();
+	// Current and complete URI
+	public $current_uri  = '';
+	public $complete_uri = '';
+
+	// Current route, prefixes, controller, method, and arguments
+	public $route;
+	public $controller;
+	public $method;
+	public $arguments = array();
+	public $prefix = array();
 
 	// GET and POST data
-	protected $get;
-	protected $post;
+	public $get;
+	public $post;
 
 	/**
 	 * Prepares a new request.
@@ -256,9 +281,13 @@ class Kohana_Request_Core {
 	 * @param   boolean  use XSS cleaning on the value
 	 * @return  mixed
 	 */
-	public function post($key, $default = NULL, $xss_clean = FALSE)
+	public function post($key = NULL, $default = NULL, $xss_clean = FALSE)
 	{
-		if (isset($this->post[$key]))
+		if ($key === NULL)
+		{
+			return $this->post;
+		}
+		elseif (isset($this->post[$key]))
 		{
 			$value = $this->post[$key];
 
@@ -283,10 +312,13 @@ class Kohana_Request_Core {
 			throw new Kohana_Exception('core.page_not_found', $uri);
 		}
 
+		// Set the controller class
+		$class = (isset($this->prefix['controller']) ? $this->prefix['controller'] : '').$this->controller;
+
 		try
 		{
 			// Start validation of the controller
-			$class = new ReflectionClass('Controller_'.ucfirst($this->controller));
+			$class = new ReflectionClass('Controller_'.$class);
 		}
 		catch (ReflectionException $e)
 		{
@@ -303,16 +335,28 @@ class Kohana_Request_Core {
 		// Start output buffering
 		ob_start();
 
+		// Set the current URI
+		$this->current_uri = $this->complete_uri = $uri;
+
+		if ( ! empty($this->get))
+		{
+			// Append the query string to the URI
+			$this->complete_uri .= '?'.http_build_query($this->get);
+		}
+
 		// Cache the previous controller
 		$previous_controller = Kohana_Request::$instance;
 
 		// Create a new controller instance, passing the request to the controller
 		Kohana_Request::$instance = $controller = $class->newInstance($this);
 
+		// Set method name
+		$method = (isset($this->prefix['method']) ? $this->prefix['method'] : '').$this->method;
+
 		try
 		{
 			// Load the controller method
-			$method = $class->getMethod($this->method);
+			$method = $class->getMethod($method);
 
 			if ($method->isProtected() or $method->isPrivate())
 			{
@@ -340,6 +384,9 @@ class Kohana_Request_Core {
 
 		if (is_object($previous_controller))
 		{
+			// Reset the current URI
+			$this->current_uri = $previous_controller->request->current_uri;
+
 			// Restore the previous controller
 			Kohana_Request::$instance = $previous_controller;
 		}
@@ -368,7 +415,7 @@ class Kohana_Request_Core {
 				$values
 			);
 		}
-		
+
 		if ( ! ($route = Kohana_Config::get('routes.'.$route)))
 		{
 			throw new Kohana_Exception('core.route_not_found', $route);
@@ -469,14 +516,8 @@ class Kohana_Request_Core {
 
 				if (isset($route['prefix']))
 				{
-					foreach ($route['prefix'] as $key => $prefix)
-					{
-						if (isset($route['defaults'][$key]))
-						{
-							// Add the prefix to the key
-							$route['defaults'][$key] = $route['prefix'][$key].$route['defaults'][$key];
-						}
-					}
+					// Set prefixes
+					$this->prefix = $route['prefix'];
 				}
 
 				foreach ($route['defaults'] as $key => $val)

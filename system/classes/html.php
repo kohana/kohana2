@@ -207,7 +207,7 @@ class html_Core {
 	/**
 	 * Generate a "breadcrumb" list of anchors representing the URI.
 	 *
-	 * @param   array   segments to use as breadcrumbs, defaults to using Router::$segments
+	 * @param   array   segments to use as breadcrumbs, defaults to using Kohana_Request::$instance->request->segments
 	 * @return  string
 	 */
 	public static function breadcrumb($segments = NULL)

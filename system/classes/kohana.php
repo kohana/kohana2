@@ -242,7 +242,7 @@ final class Kohana {
 	 */
 	public static function lang($key, $args = NULL)
 	{
-		if (strstr($key, '.') === FALSE)
+		if (strpos($key, '.') === FALSE)
 		{
 			// Only the filename is present
 			$file = $key;
@@ -300,7 +300,7 @@ final class Kohana {
 		else
 		{
 			// The requested key does not exist in the file
-			return $keys;
+			return $key;
 		}
 	}
 
@@ -714,6 +714,9 @@ final class Kohana {
 
 			// Add request processing to system.execute
 			Event::add('system.execute', array('Kohana_Request', 'instance'));
+
+			// Add request output preparation to system.display
+			Event::add('system.display', array('Kohana_Request', 'display'));
 
 			if ($config['enable_hooks'] === TRUE)
 			{

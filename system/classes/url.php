@@ -19,7 +19,7 @@ class url_Core {
 	 */
 	public static function current($qs = FALSE)
 	{
-		return ($qs === TRUE) ? Router::$complete_uri : Router::$current_uri;
+		return ($qs === TRUE) ? Kohana_Request::$instance->request->complete_uri : Kohana_Request::$instance->request->current_uri;
 	}
 
 	/**
@@ -37,11 +37,11 @@ class url_Core {
 		if ($protocol == FALSE)
 		{
 			// Use the default configured protocol
-			$protocol = Kohana_Config::get('config.site_protocol');
+			$protocol = Kohana_Config::get('core.site_protocol');
 		}
 
 		// Load the site domain
-		$site_domain = (string) Kohana_Config::get('config.site_domain', TRUE);
+		$site_domain = (string) Kohana_Config::get('core.site_domain', TRUE);
 
 		if ($protocol == FALSE)
 		{
@@ -70,7 +70,7 @@ class url_Core {
 			}
 		}
 
-		if ($index === TRUE AND $index = Kohana_Config::get('config.index_page'))
+		if ($index === TRUE AND $index = Kohana_Config::get('core.index_page'))
 		{
 			// Append the index page
 			$base_url = $base_url.$index;
@@ -138,7 +138,7 @@ class url_Core {
 	{
 		if ($_GET === $arguments)
 		{
-			$query = Router::$query_string;
+			$query = Kohana_Request::$instance->request->query_string;
 		}
 		elseif ($query = http_build_query(array_merge($_GET, $arguments)))
 		{
@@ -146,7 +146,7 @@ class url_Core {
 		}
 
 		// Return the current URI with the arguments merged into the query string
-		return Router::$current_uri.$query;
+		return Kohana_Request::$instance->request->current_uri.$query;
 	}
 
 	/**

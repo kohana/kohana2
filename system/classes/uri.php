@@ -39,7 +39,7 @@ class URI_Core {
 			return;
 
 		// Create segment array from the URI
-		self::$segments = explode('/', Router::$current_uri);
+		self::$segments = explode('/', Kohana_Request::$instance->request->current_uri);
 
 		// Create a singleton
 		self::$instance = $this;
