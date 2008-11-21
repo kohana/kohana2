@@ -13,6 +13,7 @@ $lang = array
 	'no_default_route'		=> 'Per favor, especifica la ruta en config/routes.php.',
 	'no_controller'			=> 'Kohana no va poder determinar un controlador per a processar: %s',
 	'page_not_found'		=> 'La pàgina que sol·licités, %s, no es troba.',
+	'route_not_found'       => 'La ruta %s no existeix en el fitxer de configuració de rutes',
 	'stats_footer'			=> 'Carregat en {execution_time} segons, usant {memory_usage} de memòria. Generat amb Kohana v{kohana_version}.',
 	'error_file_line'		=> '<tt>%s <strong>[%s]:</strong></tt>',
 	'stack_trace'			=> 'Stack Trace',

@@ -2,8 +2,7 @@
 
 $lang = array
 (
-	// Class errors
-	'invalid_rule'  => 'La regla de validació usada és invalida: %s',
+	'not_callable'  => 'La cridada de tornada %s utilitzada per la llibreria Validation no és valida',
 
 	// General errors
 	'unknown_error' => 'Error de validació desconegut al comprovar el camp %s.',
