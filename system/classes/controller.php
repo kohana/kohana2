@@ -23,6 +23,9 @@ abstract class Controller_Core {
 	 */
 	public function __construct(Kohana_Request $request)
 	{
+		// Set the instance to this controller
+		Kohana_Request::$instance = $this;
+
 		$this->request = $request;
 	}
 

@@ -348,7 +348,7 @@ class Kohana_Request_Core {
 		$previous_controller = Kohana_Request::$instance;
 
 		// Create a new controller instance, passing the request to the controller
-		Kohana_Request::$instance = $controller = $class->newInstance($this);
+		$controller = $class->newInstance($this);
 
 		// Set method name
 		$method = (isset($this->prefix['method']) ? $this->prefix['method'] : '').$this->method;
