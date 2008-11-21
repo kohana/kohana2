@@ -2,8 +2,7 @@
 
 $lang = array
 (
-	// Class errors
-	'invalid_rule'  => 'La regla de validación usada es invalida: %s',
+	'not_callable'  => 'La llamada de retorno %s utilizada por la librería Validation no es valida',
 
 	// General errors
 	'unknown_error' => 'Error de validación desconocido al comprobar el campo %s.',
