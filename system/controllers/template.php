@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 /**
  * Allows a template to be automatically loaded and displayed. Display can be
  * dynamically turned off in the controller methods, and the template file

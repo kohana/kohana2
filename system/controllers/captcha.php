@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 /**
  * Outputs the dynamic Captcha resource.
  * Usage: Call the Captcha controller from a view, e.g.

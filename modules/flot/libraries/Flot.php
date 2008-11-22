@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 /**
  * Flot (jQuery plotting plugin) Kohana integration.
  *

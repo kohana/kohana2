@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 /**
  * Provides Kohana-specific helper functions. This is where the magic happens!
  *
@@ -168,49 +168,15 @@ final class Kohana {
 		// Enable Kohana output handling
 		Event::add('system.shutdown', array('Kohana', 'shutdown'));
 
-		if ($config = Kohana::config('core.enable_hooks'))
+		if (Kohana::config('core.enable_hooks') === TRUE)
 		{
-			$hooks = array();
+			// Find all the hook files
+			$hooks = Kohana::list_files('hooks', TRUE);
 
-			if ( ! is_array($config))
+			foreach ($hooks as $file)
 			{
-				// All of the hooks are enabled, so we use list_files
-				$hooks = Kohana::list_files('hooks', TRUE);
-			}
-			else
-			{
-				// Individual hooks need to be found
-				foreach ($config as $name)
-				{
-					if ($hook = Kohana::find_file('hooks', $name, FALSE))
-					{
-						// Hook was found, add it to loaded hooks
-						$hooks[] = $hook;
-					}
-					else
-					{
-						// This should never happen
-						Kohana::log('error', 'Hook not found: '.$name);
-					}
-				}
-			}
-
-			// Length of extension, for offset
-			$ext = -(strlen(EXT));
-
-			foreach ($hooks as $hook)
-			{
-				// Validate the filename extension
-				if (substr($hook, $ext) === EXT)
-				{
-					// Hook was found, include it
-					include $hook;
-				}
-				else
-				{
-					// This should never happen
-					Kohana::log('error', 'Hook not found: '.$hook);
-				}
+				// Load the hook
+				include $file;
 			}
 		}
 

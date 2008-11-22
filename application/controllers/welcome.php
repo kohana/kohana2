@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 /**
  * Default Kohana controller. This controller should NOT be used in production.
  * It is for demonstration purposes only!

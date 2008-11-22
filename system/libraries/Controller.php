@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 /**
  * Kohana Controller class. The controller class must be extended to work
  * properly, so this class is defined as abstract.

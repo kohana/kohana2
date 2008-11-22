@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 /**
  * Kohana event observer. Uses the SPL observer pattern.
  *

@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 /**
  * Process queuing/execution class. Allows an unlimited number of callbacks
  * to be added to 'events'. Events can be run multiple times, and can also

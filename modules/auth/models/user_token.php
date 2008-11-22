@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 
 class User_Token_Model extends Auth_User_Token_Model {
 
