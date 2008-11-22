@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
  * @package  Core
  *
@@ -26,7 +26,7 @@ $config['expire'] = 0;
 $config['secure'] = FALSE;
 
 /**
- * Enable this option to disable the cookie from being accessed by scripting
- * languages like javascript. This option is only available in PHP 5.2 and above.
+ * Enable this option to disable the cookie from being accessed when using a
+ * secure protocol. This option is only available in PHP 5.2 and above.
  */
 $config['httponly'] = FALSE;

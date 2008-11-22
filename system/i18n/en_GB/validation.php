@@ -1,8 +1,9 @@
-<?php
+<?php defined('SYSPATH') or die('No direct access allowed.');
 
 $lang = array
 (
-	'not_callable'  => 'Callback %s used for Validation is not callable',
+	// Class errors
+	'invalid_rule'  => 'Invalid validation rule used: %s',
 
 	// General errors
 	'unknown_error' => 'Unknown validation error while validating the %s field.',

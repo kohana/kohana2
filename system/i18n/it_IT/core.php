@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.'); 
 
 $lang = array
 (
@@ -13,7 +13,6 @@ $lang = array
 	'no_default_route'      => 'Non è stato definito il default route in <tt>config/routes.php</tt>.',
 	'no_controller'         => 'Kohana non è in grado di determinare a quale controller inoltrare la richiesta: %s',
 	'page_not_found'        => 'La pagina richiesta, <tt>%s</tt>, non è stata trovata.',
-	'route_not_found'       => 'Il route %s non esiste non nella configurazione dei route',
 	'stats_footer'          => 'Caricato in {execution_time} secondi, usando {memory_usage} di memoria. Generato da Kohana v{kohana_version}.',
 	'error_file_line'       => 'Errore in <strong>%s</strong> linea: <strong>%s</strong>.',
 	'stack_trace'           => 'Tracciato',

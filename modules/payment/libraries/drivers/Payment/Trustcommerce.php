@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Trustcommerce Payment Driver
  *
@@ -51,7 +51,7 @@ class Payment_Trustcommerce_Driver implements Payment_Driver
 				throw new Kohana_Exception('payment.no_dlib', $this->tclink_library);
 			}
 		}
-		Kohana_Log::debug('TrustCommerce Payment Driver Initialized');
+		Kohana::log('debug', 'TrustCommerce Payment Driver Initialized');
 	}
 
 	public function set_fields($fields)

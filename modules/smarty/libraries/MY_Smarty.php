@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 include Kohana::find_file('vendor', 'smarty/Smarty.class');
 
@@ -7,22 +7,22 @@ class MY_Smarty_Core extends Smarty {
 	function __construct()
 	{
 		// Check if we should use smarty or not
-		if (Kohana_Config::get('smarty.integration') == FALSE)
+		if (Kohana::config('smarty.integration') == FALSE)
 			return;
 
 		// Okay, integration is enabled, so call the parent constructor
 		parent::Smarty();
 
-		$this->cache_dir      = Kohana_Config::get('smarty.cache_path');
-		$this->compile_dir    = Kohana_Config::get('smarty.compile_path');
-		$this->config_dir     = Kohana_Config::get('smarty.configs_path');
-		$this->plugins_dir[]  = Kohana_Config::get('smarty.plugins_path');
-		$this->debug_tpl      = Kohana_Config::get('smarty.debug_tpl');
-		$this->debugging_ctrl = Kohana_Config::get('smarty.debugging_ctrl');
-		$this->debugging      = Kohana_Config::get('smarty.debugging');
-		$this->caching        = Kohana_Config::get('smarty.caching');
-		$this->force_compile  = Kohana_Config::get('smarty.force_compile');
-		$this->security       = Kohana_Config::get('smarty.security');
+		$this->cache_dir      = Kohana::config('smarty.cache_path');
+		$this->compile_dir    = Kohana::config('smarty.compile_path');
+		$this->config_dir     = Kohana::config('smarty.configs_path');
+		$this->plugins_dir[]  = Kohana::config('smarty.plugins_path');
+		$this->debug_tpl      = Kohana::config('smarty.debug_tpl');
+		$this->debugging_ctrl = Kohana::config('smarty.debugging_ctrl');
+		$this->debugging      = Kohana::config('smarty.debugging');
+		$this->caching        = Kohana::config('smarty.caching');
+		$this->force_compile  = Kohana::config('smarty.force_compile');
+		$this->security       = Kohana::config('smarty.security');
 
 		// check if cache directory is exists
 		$this->checkDirectory($this->cache_dir);
@@ -35,18 +35,18 @@ class MY_Smarty_Core extends Smarty {
 
 		if ($this->security)
 		{
-			$configSecureDirectories = Kohana_Config::get('smarty.secure_dirs');
-			$safeTemplates           = array(Kohana_Config::get('smarty.global_templates_path'));
+			$configSecureDirectories = Kohana::config('smarty.secure_dirs');
+			$safeTemplates           = array(Kohana::config('smarty.global_templates_path'));
 
 			$this->secure_dir                          = array_merge($configSecureDirectories, $safeTemplates);
-			$this->security_settings['IF_FUNCS']       = Kohana_Config::get('smarty.if_funcs');
-			$this->security_settings['MODIFIER_FUNCS'] = Kohana_Config::get('smarty.modifier_funcs');
+			$this->security_settings['IF_FUNCS']       = Kohana::config('smarty.if_funcs');
+			$this->security_settings['MODIFIER_FUNCS'] = Kohana::config('smarty.modifier_funcs');
 		}
 
 		// Autoload filters
-		$this->autoload_filters = array('pre'    => Kohana_Config::get('smarty.pre_filters'),
-										'post'   => Kohana_Config::get('smarty.post_filters'),
-										'output' => Kohana_Config::get('smarty.output_filters'));
+		$this->autoload_filters = array('pre'    => Kohana::config('smarty.pre_filters'),
+										'post'   => Kohana::config('smarty.post_filters'),
+										'output' => Kohana::config('smarty.output_filters'));
 
 		// Add all helpers to plugins_dir
 		$helpers = glob(APPPATH . 'helpers/*', GLOB_ONLYDIR | GLOB_MARK);

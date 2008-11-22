@@ -1,7 +1,8 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.'); 
 
 $lang = array
 (
+	// Class errors
 	'invalid_rule'  => 'Regola di validazione usata non valida: %s',
 
 	// General errors

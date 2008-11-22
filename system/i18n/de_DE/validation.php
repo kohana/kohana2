@@ -1,8 +1,9 @@
-<?php
+<?php defined('SYSPATH') or die('No direct access allowed.');
 
 $lang = array
 (
-	'not_callable'  => 'Das Callback %s, das für Validierung benutzt wird, ist nicht aufrufbar',
+	// Class errors
+	'invalid_rule'  => 'Ungültige Validierungsregel benutzt: %s',
 
 	// General errors
 	'unknown_error' => 'Unbekannter Fehler bei der Validierungsregel von dem Feld %s aufgetreten.',
