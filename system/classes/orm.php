@@ -268,7 +268,7 @@ class ORM_Core {
 		{
 			// This handles the has_one and belongs_to relationships
 
-			if (isset($this->object[$column.'_'.$model->primary_key]))
+			if (array_key_exists($column.'_'.$model->primary_key, $this->object))
 			{
 				// Use the FK that exists in this model as the PK
 				$where = array($model->table_name.'.'.$model->primary_key => $this->object[$column.'_'.$model->primary_key]);
@@ -824,9 +824,6 @@ class ORM_Core {
 	 */
 	public function has(ORM $model)
 	{
-		if ( ! $this->loaded)
-			return FALSE;
-
 		// Get the plural object name as the related name
 		$related = $model->object_plural;
 
@@ -864,7 +861,7 @@ class ORM_Core {
 	 */
 	public function add(ORM $model)
 	{
-		if ( ! $this->loaded OR ! $model->loaded)
+		if ( ! $model->loaded)
 			return FALSE;
 
 		if ($this->has($model))
@@ -893,7 +890,7 @@ class ORM_Core {
 	 */
 	public function remove(ORM $model)
 	{
-		if ( ! $this->has($model))
+		if ( ! $model->loaded OR ! $this->has($model))
 			return FALSE;
 
 		// Get the faked column name
