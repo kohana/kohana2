@@ -14,126 +14,127 @@ class Kohana_Request_Core {
 	{
 		static $run;
 
-		if ($run === NULL)
+		// This method has been run already
+		if ($run !== NULL)
+			return;
+
+		if (PHP_SAPI === 'cli')
 		{
-			if (PHP_SAPI === 'cli')
+			// Command line URI
+			$uri = isset($argv[1]) ? $argv[1] : '';
+		}
+		elseif (isset($_SERVER['PATH_INFO']))
+		{
+			// Use PATH_INFO
+			$uri = $_SERVER['PATH_INFO'];
+		}
+		else
+		{
+			// Split the URI by the front controller
+			$uri = explode(KOHANA, $_SERVER['PHP_SELF'], 2);
+
+			// Use the URI after the front controller
+			$uri = $uri[1];
+		}
+
+		// Remove all dot-paths from the URI, they are not valid
+		$uri = preg_replace('#\.[\s./]*/#', '', $uri);
+
+		// Reduce multiple slashes into single slashes, remove trailing slashes
+		$uri = trim(preg_replace('#//+#', '/', $uri), '/');
+
+		// Make sure the URL is not tainted with HTML characters
+		$uri = html::specialchars($uri, FALSE);
+
+		// Do additional detection on the URI
+		$uri = Event::run('system.detect_uri', $uri);
+
+		if (PHP_SAPI === 'cli')
+		{
+			// Command line request
+			$method = 'CLI';
+		}
+		elseif (isset($_SERVER['REQUEST_METHOD']))
+		{
+			// Set the request method
+			$method = strtoupper($_SERVER['REQUEST_METHOD']);
+		}
+		else
+		{
+			// No request method available
+			$method = NULL;
+		}
+
+		// Create the main request
+		$request = new Kohana_Request($_GET, $_POST, $method);
+
+		// Start output buffering, so that headers will be trapped
+		ob_start();
+
+		// Display the output of the main request
+		$output = $request->process($uri);
+
+		// Run the system.display event on the output
+		$output = Event::run('system.display', $output);
+
+		if (isset($_SERVER['HTTP_ACCEPT_ENCODING'])
+			AND $level = Kohana_Config::get('config.output_compression')
+			AND ini_get('output_handler') !== 'ob_gzhandler' AND (int) ini_get('zlib.output_compression') === 0)
+		{
+			if (stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== FALSE
+				OR stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'deflate') !== FALSE)
 			{
-				// Command line URI
-				$uri = isset($argv[1]) ? $argv[1] : '';
-			}
-			elseif (isset($_SERVER['PATH_INFO']))
-			{
-				// Use PATH_INFO
-				$uri = $_SERVER['PATH_INFO'];
-			}
-			else
-			{
-				// Split the URI by the front controller
-				$uri = explode(KOHANA, $_SERVER['PHP_SELF'], 2);
-
-				// Use the URI after the front controller
-				$uri = $uri[1];
-			}
-
-			// Remove all dot-paths from the URI, they are not valid
-			$uri = preg_replace('#\.[\s./]*/#', '', $uri);
-
-			// Reduce multiple slashes into single slashes, remove trailing slashes
-			$uri = trim(preg_replace('#//+#', '/', $uri), '/');
-
-			// Make sure the URL is not tainted with HTML characters
-			$uri = html::specialchars($uri, FALSE);
-
-			// Do additional detection on the URI
-			$uri = Event::run('system.detect_uri', $uri);
-
-			if (PHP_SAPI === 'cli')
-			{
-				// Command line request
-				$method = 'CLI';
-			}
-			elseif (isset($_SERVER['REQUEST_METHOD']))
-			{
-				// Set the request method
-				$method = strtoupper($_SERVER['REQUEST_METHOD']);
-			}
-			else
-			{
-				// No request method available
-				$method = NULL;
-			}
-
-			// Create the main request
-			$request = new Kohana_Request($_GET, $_POST, $method);
-
-			// Start output buffering, so that headers will be trapped
-			ob_start();
-
-			// Display the output of the main request
-			$output = $request->process($uri);
-
-			// Run the system.display event on the output
-			$output = Event::run('system.display', $output);
-
-			if (isset($_SERVER['HTTP_ACCEPT_ENCODING'])
-				AND $level = Kohana_Config::get('config.output_compression')
-				AND ini_get('output_handler') !== 'ob_gzhandler' AND (int) ini_get('zlib.output_compression') === 0)
-			{
-				if (stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== FALSE
-					OR stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'deflate') !== FALSE)
+				if (stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== FALSE)
 				{
-					if (stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== FALSE)
+					$compress = 'gzip';
+				}
+				elseif (stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'deflate') !== FALSE)
+				{
+					$compress = 'deflate';
+				}
+
+				if (isset($compress))
+				{
+					if ($level < 1 OR $level > 9)
 					{
-						$compress = 'gzip';
+						// Normalize the level to be an integer between 1 and 9. This
+						// step must be done to prevent gzencode from triggering an error
+						$level = max(1, min($level, 9));
 					}
-					elseif (stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'deflate') !== FALSE)
+
+					switch ($compress)
 					{
-						$compress = 'deflate';
+						case 'gzip':
+							// Compress output using gzip
+							$output = gzencode($output, $level);
+						break;
+						case 'deflate':
+							// Compress output using zlib (HTTP deflate)
+							$output = gzdeflate($output, $level);
+						break;
 					}
 
-					if (isset($compress))
+					// This header must be sent with compressed content to prevent
+					// browser caches from breaking
+					header('Vary: Accept-Encoding');
+
+					// Send the content encoding header
+					header('Content-Encoding: '.$compress);
+
+					// Sending Content-Length in CGI can result in unexpected behavior
+					if (stripos(PHP_SAPI, 'cgi') === FALSE)
 					{
-						if ($level < 1 OR $level > 9)
-						{
-							// Normalize the level to be an integer between 1 and 9. This
-							// step must be done to prevent gzencode from triggering an error
-							$level = max(1, min($level, 9));
-						}
-
-						switch ($compress)
-						{
-							case 'gzip':
-								// Compress output using gzip
-								$output = gzencode($output, $level);
-							break;
-							case 'deflate':
-								// Compress output using zlib (HTTP deflate)
-								$output = gzdeflate($output, $level);
-							break;
-						}
-
-						// This header must be sent with compressed content to prevent
-						// browser caches from breaking
-						header('Vary: Accept-Encoding');
-
-						// Send the content encoding header
-						header('Content-Encoding: '.$compress);
-
-						// Sending Content-Length in CGI can result in unexpected behavior
-						if (stripos(PHP_SAPI, 'cgi') === FALSE)
-						{
-							header('Content-Length: '.strlen($output));
-						}
+						header('Content-Length: '.strlen($output));
 					}
 				}
 			}
-
-			// Display the final output
-			echo $output;
-
-			// This method has been run
-			$run = TRUE;
 		}
+
+		// Display the final output
+		echo $output;
+
+		// This method has been run
+		$run = TRUE;
 	}
 
 	/**
@@ -227,21 +228,9 @@ class Kohana_Request_Core {
 			$this->method = $method;
 		}
 
-		if ( ! is_array($get))
-		{
-			// Use global GET
-			$get = $_GET;
-		}
-
-		if ( ! is_array($post))
-		{
-			// Use global POST
-			$post = $_POST;
-		}
-
-		// Set GET and POST data
-		$this->get  = $get;
-		$this->post = $post;
+		// Use global GET and POST by default
+		$this->get  = is_array($get)  ? $get  : $_GET;
+		$this->post = is_array($post) ? $post : $_POST;
 	}
 
 	/**
@@ -253,23 +242,22 @@ class Kohana_Request_Core {
 	 * @param   boolean  use XSS cleaning on the value
 	 * @return  mixed
 	 */
-	public function get($key, $default = NULL, $xss_clean = FALSE)
+	public function get($key = NULL, $default = NULL, $xss_clean = FALSE)
 	{
-		if (isset($this->get[$key]))
-		{
-			$value = $this->get[$key];
+		if ($key === NULL)
+			return $this->post;
 
-			if ($xss_clean === TRUE)
-			{
-				// @todo: XSS cleaning
-			}
-
-			return $value;
-		}
-		else
-		{
+		if ( ! isset($this->get[$key]))
 			return $default;
+
+		$value = $this->get[$key];
+
+		if ($xss_clean === TRUE)
+		{
+			$value = Input::instance()->xss_clean($value);
 		}
+
+		return $value;
 	}
 
 	/**
@@ -284,24 +272,19 @@ class Kohana_Request_Core {
 	public function post($key = NULL, $default = NULL, $xss_clean = FALSE)
 	{
 		if ($key === NULL)
-		{
 			return $this->post;
-		}
-		elseif (isset($this->post[$key]))
-		{
-			$value = $this->post[$key];
 
-			if ($xss_clean === TRUE)
-			{
-				// @todo: XSS cleaning
-			}
-
-			return $value;
-		}
-		else
-		{
+		if ( ! isset($this->post[$key]))
 			return $default;
+
+		$value = $this->post[$key];
+
+		if ($xss_clean === TRUE)
+		{
+			$value = Input::instance()->xss_clean($value);
 		}
+
+		return $value;
 	}
 
 	public function process($uri)
