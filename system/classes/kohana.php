@@ -256,10 +256,20 @@ final class Kohana {
 				Event::run('system.404');
 			}
 
+			if (isset(Router::$prefix['controller']))
+			{
+				// Add the prefix to the controller
+				$class = Router::$prefix['controller'].Router::$controller;
+			}
+			else
+			{
+				$class = Router::$controller;
+			}
+
 			try
 			{
 				// Start validation of the controller
-				$class = new ReflectionClass('Controller_'.ucfirst(Router::$controller));
+				$class = new ReflectionClass('Controller_'.ucfirst($class));
 			}
 			catch (ReflectionException $e)
 			{
@@ -282,10 +292,20 @@ final class Kohana {
 			// Controller constructor has been executed
 			Event::run('system.post_controller_constructor');
 
+			if (isset(Router::$prefix['method']))
+			{
+				// Add the prefix to the method
+				$method = Router::$prefix['method'].Router::$method;
+			}
+			else
+			{
+				$method = Router::$method;
+			}
+
 			try
 			{
 				// Load the controller method
-				$method = $class->getMethod(Router::$method);
+				$method = $class->getMethod($method);
 
 				if ($method->isProtected() or $method->isPrivate())
 				{
