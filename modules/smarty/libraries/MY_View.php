@@ -1,14 +1,14 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 class View extends View_Core {
 
 	public function __construct($name, $data = NULL, $type = NULL)
 	{
-		$ext = empty($type) ? Kohana_Config::get('smarty.templates_ext') : $type;
+		$type = NULL;
 
-		if (Kohana_Config::get('smarty.integration') == TRUE AND Kohana::find_file('views', $name, FALSE, $ext))
+		if (Kohana::config('smarty.integration') == TRUE AND Kohana::find_file('views', $name, FALSE, $type))
 		{
-			$type = $ext;
+			$type = empty($type) ? Kohana::config('smarty.templates_ext') : $type;
 		}
 
 		parent::__construct($name, $data, $type);

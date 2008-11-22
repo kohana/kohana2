@@ -1,93 +1,108 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Base URL path of the website, including domain.
- *
- *     $config['site_domain'] = '/kohana/';
- *
- * If the site_domain contains a domain, eg: wwww.example.com/kohana/, then a
- * full URL, including the protocol and domain will be generated. If set to a
- * a path, generated URLs will not contain a domain name. (See exception in
- * [site_protocol][ref-sip] below.)
+ * Base path of the web site. If this includes a domain, eg: localhost/kohana/
+ * then a full URL will be used, eg: http://localhost/kohana/. If it only includes
+ * the path, and a site_protocol is specified, the domain will be auto-detected.
  */
 $config['site_domain'] = '/kohana/';
 
 /**
- * Set a default protocol protocol for this application.
- *
- *     $config['site_protocol'] = '';
- *
- * If no site_protocol is specified, then the current protocol will be detected.
- * This setting must be left empty if you do not want generated URLs to contain
- * the domain name.
+ * Force a default protocol to be used by the site. If no site_protocol is
+ * specified, then the current protocol is used, or when possible, only an
+ * absolute path (with no protocol/domain) is used.
  */
 $config['site_protocol'] = '';
 
 /**
- * Name of the front controller for this application.
+ * Name of the front controller for this application. Default: index.php
  *
- *     $config['index_page'] = 'index.php';
- *
- * If the front controller is removed from the URL using [rewriting][ref-url],
- * this setting must be set to an empty string, or generated URLs will still
- * contain the index_page filename.
- *
- * [ref-url]: http://doc.kohanaphp.com/routing
+ * This can be removed by using URL rewriting.
  */
 $config['index_page'] = 'index.php';
 
 /**
- * Enable or disable gzip output compression.
+ * Fake file extension that will be added to all generated URLs. Example: .html
+ */
+$config['url_suffix'] = '';
+
+/**
+ * Length of time of the internal cache in seconds. 0 or FALSE means no caching.
+ * The internal cache stores file paths and config entries across requests and
+ * can give significant speed improvements at the expense of delayed updating.
+ */
+$config['internal_cache'] = FALSE;
+
+/**
+ * Enable or disable gzip output compression. This can dramatically decrease
+ * server bandwidth usage, at the cost of slightly higher CPU usage. Set to
+ * the compression level (1-9) that you want to use, or FALSE to disable.
  *
- *     $config['output_compression'] = FALSE;
- *
- * Disabled by default, gzip output compression can significantly increase page
- * latency by decreasing server bandwidth usage, at the cost of slightly higher
- * CPU usage. A number from 1-9 can be used to set the compression level, or
- * TRUE can be used to use the PHP default.
- *
- * **Do not enable this if PHP output compression is enabled in php.ini!**
+ * Do not enable this option if you are using output compression in php.ini!
  */
 $config['output_compression'] = FALSE;
 
 /**
- * Enable or disable statistics in the final output.
- *
- *     $config['render_stats'] = TRUE;
- *
- * Enabled by default, this will replace specific strings in generated output
- * with generated statistics or information.
- *
- * {execution_time}
- * :  Total execution time in seconds
- *
- * {memory_usage}
- * :  Total memory usage in megabytes (MB)
- *
- * {included_files}
- * :  All of the filenames that are currently loaded
- *
- * {kohana_version}
- * :  The Kohana release version number
- *
- * {kohana_codename}
- * :  The Kohana release code name
- *
- * This setting can be disabled for a small performance increase.
- */
-$config['render_stats'] = TRUE;
-
-/**
- * Enable or disable global XSS filtering of GET, POST, and SERVER data.
- *
- *    $config['global_xss_filtering'] = TRUE;
- *
- * Enabled by default, global XSS filtering prevents client-side output attacks.
- * This can either be TRUE or 'htmlpurifier' to use [HTMLPurifier][ref-hpr].
+ * Enable or disable global XSS filtering of GET, POST, and SERVER data. This
+ * option also accepts a string to specify a specific XSS filtering tool.
  */
 $config['global_xss_filtering'] = TRUE;
+
+/**
+ * Enable or disable hooks. Setting this option to TRUE will enable
+ * all hooks. By using an array of hook filenames, you can control
+ * which hooks are enabled. Setting this option to FALSE disables hooks.
+ */
+$config['enable_hooks'] = FALSE;
+
+/**
+ * Log thresholds:
+ *  0 - Disable logging
+ *  1 - Errors and exceptions
+ *  2 - Warnings
+ *  3 - Notices
+ *  4 - Debugging
+ */
+$config['log_threshold'] = 1;
+
+/**
+ * Message logging directory.
+ */
+$config['log_directory'] = APPPATH.'logs';
 
 /**
  * Enable or disable displaying of Kohana error pages. This will not affect
  * logging. Turning this off will disable ALL error pages.
  */
 $config['display_errors'] = TRUE;
+
+/**
+ * Enable or disable statistics in the final output. Stats are replaced via
+ * specific strings, such as {execution_time}.
+ *
+ * @see http://docs.kohanaphp.com/general/configuration
+ */
+$config['render_stats'] = TRUE;
+
+/**
+ * Filename prefixed used to determine extensions. For example, an
+ * extension to the Controller class would be named MY_Controller.php.
+ */
+$config['extension_prefix'] = 'MY_';
+
+/**
+ * Additional resource paths, or "modules". Each path can either be absolute
+ * or relative to the docroot. Modules can include any resource that can exist
+ * in your application directory, configuration files, controllers, views, etc.
+ */
+$config['modules'] = array
+(
+	// MODPATH.'auth',      // Authentication
+	// MODPATH.'forge',     // Form generation
+	// MODPATH.'kodoc',     // Self-generating documentation
+	// MODPATH.'media',     // Media caching and compression
+	// MODPATH.'gmaps',     // Google Maps integration
+	// MODPATH.'archive',   // Archive utility
+	// MODPATH.'payment',   // Online payments
+	// MODPATH.'unit_test', // Unit testing
+	// MODPATH.'object_db', // New OOP Database library (testing only!)
+);

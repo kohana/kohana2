@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 class Controller extends Controller_Core {
 
@@ -6,7 +6,7 @@ class Controller extends Controller_Core {
 	{
 		parent::__construct();
 
-		if (Kohana_Config::get('smarty.integration') == TRUE)
+		if (Kohana::config('smarty.integration') == TRUE)
 		{
 			$this->MY_Smarty = new MY_Smarty;
 		}
@@ -17,7 +17,7 @@ class Controller extends Controller_Core {
 		if ($template == '')
 			return;
 
-		if (substr(strrchr($template, '.'), 1) === Kohana_Config::get('smarty.templates_ext'))
+		if (substr(strrchr($template, '.'), 1) === Kohana::config('smarty.templates_ext'))
 		{
 			// Assign variables to the template
 			if (is_array($vars) AND count($vars) > 0)

@@ -1,8 +1,8 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.'); 
 
 $lang = array
 (
-	'undefined_group' => 'El grupo %s no está definido en la configuración de la paginación.', 
+	'undefined_group' => 'El grupo %s no esta definido en la configuracion de la paginacion.', 
 	'page'     => 'página',
 	'pages'    => 'páginas',
 	'item'     => 'elemento',

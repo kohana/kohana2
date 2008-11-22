@@ -1,8 +1,8 @@
-<?php
+<?php defined('SYSPATH') or die('No direct access allowed.');
 
 $lang = array
 (
-	'invalid_config'        => 'A database driver and name must be defined in your configuration array',
+	'invalid_configuation'  => 'A database driver and name must be defined in your configuration array',
 	'invalid_query'         => 'All queries must be strings before they are executed',
 	'error'                 => '#%s: There was an SQL error: %s',
 	'connection'            => '#%s: There was an error connecting to the database: %s',

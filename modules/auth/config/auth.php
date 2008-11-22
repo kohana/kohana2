@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Auth library configuration. By default, Auth will use the controller
  * database connection. If Database is not loaded, it will use use the default
@@ -9,7 +9,7 @@
  */
 
 /**
- * Driver to use for authentication. By default, File and ORM are available.
+ * Driver to use for authentication. By default, LDAP and ORM are available.
  */
 $config['driver'] = 'ORM';
 

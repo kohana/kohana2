@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 /**
  * Paypay (website payments pro) Payment Driver
@@ -144,7 +144,7 @@ class Payment_Paypalpro_Driver implements Payment_Driver
 
 		$this->curl_config = $config['curl_config'];
 
-		Kohana_Log::debug('Paypalpro Payment Driver Initialized');
+		Kohana::log('debug', 'Paypalpro Payment Driver Initialized');
 	}
 
 	/**
