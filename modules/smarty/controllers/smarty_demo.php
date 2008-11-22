@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 
 class Smarty_Demo_Controller extends Controller
 {

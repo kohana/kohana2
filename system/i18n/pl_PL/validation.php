@@ -1,9 +1,8 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php
 
 $lang = array
 (
-	// Class errors
-	'invalid_rule'  => 'Użyto niepoprawnej reguły walidacji: %s',
+	'not_callable'  => 'Do walidacji użyto funkcji "Callback" %s, której nie można wywołać.',
 
 	// General errors
 	'unknown_error' => 'Nieznany błąd walidacji podczas walidowania pola %s.',

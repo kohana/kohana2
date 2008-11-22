@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php
 
 $lang = array
 (
@@ -16,8 +16,8 @@ $lang = array
 	'stats_footer'          => 'Seite geladen in {execution_time} Sekunden bei {memory_usage} Speichernutzung. Generiert von Kohana v{kohana_version}.',
 	'error_file_line'       => '<tt>%s <strong>[%s]:</strong></tt>',
 	'stack_trace'           => 'Stack Trace',
-	'generic_error'         => 'Die Abfrage konnte nicht abgeschlossen werden',
-	'errors_disabled'       => 'Sie können zur <a href="%s">Startseite</a> zurück kehren oder es <a href="%s">erneut versuchen</a>.',
+	'generic_error'         => 'Die Seite konnte nicht geladen werden',
+	'errors_disabled'       => 'Beim Laden der Seite ist ein Fehler aufgetreten. Sie können zur <a href="%s">Startseite</a> zurückkehren oder <a href="%s">diese Seite erneut laden</a>. Der Fehler wurde für zum Überpüfen geloggt.',
 
 	// Drivers
 	'driver_implements'     => 'Der Treiber %s für die Bibliothek %s muss das Interface %s implementieren',

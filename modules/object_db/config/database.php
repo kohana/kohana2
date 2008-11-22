@@ -1,14 +1,13 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 
 $config['default'] = array
 (
-	'driver'     => 'mysql',
-	'hostname'   => 'localhost',
-	'username'   => 'root',
-	'password'   => 'r00tdb',
-	'database'   => 'object_db_test',
-	'charset'    => 'utf8',
+	'benchmark'  => TRUE,
 	'persistent' => FALSE,
-	'escaping'   => TRUE,
-	'caching'    => TRUE,
+	'type'       => 'mysql',
+	'dsn'        => 'host=localhost;dbname=kohana',
+	'user'       => 'root',
+	'pass'       => 'r00tdb',
+	'charset'    => 'utf8',
+	'prefix'     => NULL,
 );

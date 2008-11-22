@@ -1,7 +1,7 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 
 $lang = array
 (
-	'invalid_marker'		=> 'Los parametros del marcador son incorrectos (latitud: %s, longitud: %s)',
-	'invalid_dimensions'	=> 'Las dimensones del mapa son incorrectas (ancho: %s, alto: %s)',
+	'invalid_marker'		=> 'Los parámetros del marcador son incorrectos (latitud: %s, longitud: %s)',
+	'invalid_dimensions'	=> 'Las dimensiones del mapa son incorrectas (ancho: %s, alto: %s)',
 );

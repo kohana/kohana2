@@ -1,0 +1,54 @@
+database:
+	select
+	insert
+	update
+	delete
+	? create
+	? alter
+	? drop
+	compile
+	execute
+
+database_driver:
+	escape
+	query
+
+database_result:
+	(same stuff as currently)
+
+database_builder:
+	and (reuse last builder)
+	or (reuse last builder)
+	where > and_where
+		and_where
+		or_where
+	like > and_like
+		and_like
+		or_like
+	in > and_in
+		and_in
+		or_in
+	between > and_between
+		and_between
+		or_between
+	join > left_join
+		left_join
+		right_join
+		inner_join
+		full_join
+
+database_select extends database_builder:
+	from
+	limit
+	offset
+	order_by
+	group_by
+	having > and_having
+		and_having
+		or_having
+
+database_insert:
+	set
+
+database_update extends database_builder:
+	set

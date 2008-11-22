@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 /**
  * Provides payment support for credit cards and other providers like PayPal.
  *

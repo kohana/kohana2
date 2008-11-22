@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
 /**
  * Paypal Payment Driver. Express Checkout transactions consist of 3 stages with
  * a separate API call for each: SetExpressCheckout, GetExpressCheckout (optional)
@@ -124,6 +124,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		'TOKEN'         => '', // this token is retrieved from the response to the setExpressCheckout call
 		'PAYERID'       => '',
 		'AMT'           => '', // payment amount - MUST include decimal point followed by two further digits
+		'PAYMENTACTION' => 'sale',
 
 		//-- OPTIONAL --
 		'CURRENCYCODE'  => '', // default is USD - only required if other currency needed
@@ -401,6 +402,8 @@ class Payment_Paypal_Driver implements Payment_Driver {
 			Kohana::log('error', Kohana::debug('GetExpressCheckout response:'.$response));
 			url::redirect($this->api_connection_fields['ERRORURL']);
 		}
+
+		$this->session->delete('paypal_token');
 	}
 
 	/**

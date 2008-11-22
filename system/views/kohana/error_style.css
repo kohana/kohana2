@@ -1,0 +1,15 @@
+pre.kohana_error,
+div.kohana_trace { width: 100%; padding: 1em; margin: 0; overflow: auto; background: #cff292; text-align: left; font-size: 100%; font-family: sans-serif; color: #000; }
+pre.kohana_error a,
+div.kohana_trace a { font-weight: bold; text-decoration: underline; color: #005; background: transparent; }
+pre.kohana_error { margin-top: 1em; }
+	pre.kohana_error code { font-size: 1em; font-family: monospace; padding: 0 0.5em; }
+	pre.kohana_error strong { font-weight: bold; }
+div.kohana_trace { border-top: dotted 1px #809953; }
+	div.kohana_trace div.source { margin-bottom: 1em; }
+		div.kohana_trace div.source a { display: block; }
+		div.kohana_trace div.source pre { padding: 1em; background: #fff; border: dotted 1px #809953; }
+			div.kohana_trace div.source pre span { background: #ede33b; }
+	div.kohana_trace ul.trace { list-style: none; padding: 0; margin: 0; line-height: 120%; }
+		div.kohana_trace ul.trace li { display: list-item; font-family: monospace; }
+	div.kohana_trace .logged { padding: 0.6em; margin: 0; background: #fff; font-size: 1.2em; color: #711; text-align: center; }

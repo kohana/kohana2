@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct access allowed.');
+<?php
 /**
  * @package Session
  *
@@ -25,7 +25,7 @@ $config['validate'] = array('user_agent');
 /**
  * Enable or disable session encryption.
  * Note: this has no effect on the native session driver.
- * Note: the cookie driver always encrypts session data. Set to TRUE for stronger encryption.
+ * Note: it is highly recommended to set this to TRUE if you are using the cookie driver.
  */
 $config['encryption'] = FALSE;
 
