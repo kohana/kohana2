@@ -27,7 +27,7 @@ body { width: 42em; margin: 0 auto; font-family: sans-serif; font-size: 90%; }
 
 <h1>Environment Tests</h1>
 
-<p>The following tests have been run to determine if Kohana will work in your environment. If any of the tests have failed, consult the <a href="http://docs.kohanaphp.com/general/installation">documentation</a> for more information on how to correct the problem.</p>
+<p>The following tests have been run to determine if Kohana will work in your environment. If any of the tests have failed, consult the <a href="http://docs.kohanaphp.com/installation">documentation</a> for more information on how to correct the problem.</p>
 
 <div id="tests">
 <?php $failed = FALSE ?>
