@@ -861,11 +861,8 @@ class ORM_Core {
 	 */
 	public function add(ORM $model)
 	{
-		if ( ! $model->loaded)
+		if ( ! $model->loaded OR $this->has($model))
 			return FALSE;
-
-		if ($this->has($model))
-			return TRUE;
 
 		// Get the faked column name
 		$column = $model->object_plural;
