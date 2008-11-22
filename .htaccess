@@ -1,30 +1,15 @@
 # Enable rewriting
 RewriteEngine on
-# Redirect to Trac
-RewriteRule ^trac(/.*)?$ http://trac.kohanaphp.com$1 [R=301,L]
-# Redirect to SVN
-RewriteRule ^svn(/.*)?$ http://svn.kohanaphp.com$1 [R=301,L]
-# Redirect to forum
-RewriteRule ^forums?(/.*)?$ http://forum.kohanaphp.com$1 [R=301,L]
-# Redirect to doc
-RewriteRule ^user_guide(/.*)?$ http://docs.kohanaphp.com$1 [R=301,L]
-
-# Remove .html extensions
-RewriteRule ^(.*)\.html$ $1 [R=301,L]
 
 # Installation directory
-RewriteBase /
-
-# Allow these directories and files to be displayed directly:
-# - index.php (DO NOT FORGET THIS!)
-# - robots.txt
-# - favicon.ico
-# - Any file inside of the media/ directory
-# - WordPress content/ directory
-RewriteRule ^(index\.php|robots\.txt|kohana\.png|favicon\.ico|media) - [PT,L]
+RewriteBase /kohanaphp.com/
 
 # Protect application and system files from being viewed
 RewriteRule ^(application|modules|system) - [F,L]
+
+# Allow any files or directories that exist to be displayed directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 
 # Rewrite all other URLs to index.php/URL
 RewriteRule .* index.php/$0 [PT,L]
