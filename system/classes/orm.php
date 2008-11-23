@@ -861,10 +861,7 @@ class ORM_Core {
 	 */
 	public function add(ORM $model)
 	{
-		if ( ! $model->loaded)
-			return FALSE;
-
-		if ($this->has($model))
+		if ( ! $model->loaded OR $this->has($model))
 			return TRUE;
 
 		// Get the faked column name
@@ -890,7 +887,7 @@ class ORM_Core {
 	 */
 	public function remove(ORM $model)
 	{
-		if ( ! $model->loaded OR ! $this->has($model))
+		if ( ! $this->has($model))
 			return FALSE;
 
 		// Get the faked column name
