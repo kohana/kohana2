@@ -94,11 +94,12 @@ class Controller_Auth extends Controller_Template {
 		// Create a new user
 		$user = ORM::factory('user');
 
+		// Give the user login privileges
+		$user->add(ORM::factory('role', 'login'));
+
+		// Validate and save the new user
 		if ($user->validate($post, TRUE))
 		{
-			// Give the user login privileges
-			$user->add(ORM::factory('role', 'login'));
-
 			// Log in now
 			Auth::instance()->login($user, $post['password']);
 
