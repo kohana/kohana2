@@ -139,6 +139,21 @@ class text_Core {
 				:       substr($pool, mt_rand(0, $pool_size - 1), 1);
 		}
 
+		// Make sure alnum strings contain at least one letter and one digit
+		if ($type == 'alnum' AND $length > 1)
+		{
+			if (ctype_alpha($str))
+			{
+				// Add a random digit
+				$str[mt_rand(0, $length - 1)] = chr(mt_rand(48, 57));
+			}
+			elseif (ctype_digit($str))
+			{
+				// Add a random letter
+				$str[mt_rand(0, $length - 1)] = chr(mt_rand(65, 90));
+			}
+		}
+
 		return $str;
 	}
 
