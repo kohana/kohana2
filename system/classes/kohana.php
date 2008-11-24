@@ -18,14 +18,7 @@ final class Kohana  {
 
 	public static function find_file($dir, $file, $ext = NULL)
 	{
-		if ($ext === NULL)
-		{
-			$ext = EXT;
-		}
-		else
-		{
-			$ext = '.'.EXT;
-		}
+		$ext = ($ext === NULL) ? EXT : '.'.$ext;
 
 		$file = $dir.'/'.$file.$ext;
 

@@ -8,14 +8,12 @@ $system = 'system';
 
 define('EXT', '.php');
 
-$fc = pathinfo(__FILE__);
-
-define('DOCROOT', str_replace('\\', '/', $fc['dirname']).'/');
+define('DOCROOT', str_replace('\\', '/', pathinfo(__FILE__, PATHINFO_DIRNAME)).'/');
 define('APPPATH', str_replace('\\', '/', realpath($application)).'/');
 define('MODPATH', str_replace('\\', '/', realpath($modules)).'/');
 define('SYSPATH', str_replace('\\', '/', realpath($system)).'/');
 
-unset($fc, $application, $modules, $system);
+unset($application, $modules, $system);
 
 if (file_exists('install'.EXT))
 {

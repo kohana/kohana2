@@ -2,7 +2,7 @@
 
 class Kohana_Route {
 
-	const REGEX_KEY     = '/:[a-zA-Z0-9_]+/';
+	const REGEX_KEY     = '/:[a-zA-Z0-9_]++/';
 	const REGEX_SEGMENT = '[^/.,;?]++';
 
 	public static function factory($uri, array $regex = array())
@@ -80,7 +80,7 @@ class Kohana_Route {
 	 * 
 	 *     // This route will only match if the :controller, :method, and :id exist
 	 *     $params = Route::factory(':controller/:method/:id', array('id' => '\d+'))
-	 *         ->matach('users/edit/10');
+	 *         ->match('users/edit/10');
 	 *     // The parameters are now:
 	 *     // controller = users
 	 *     // method = edit
@@ -155,13 +155,13 @@ class Kohana_Route {
 		}
 		else
 		{
-			// Make opational parts of the URI non-capturing and optional
+			// Make optional parts of the URI non-capturing and optional
 			$regex = str_replace(array('(', ')'), array('(?:', ')?'), $this->uri);
 		}
 
 		if (preg_match_all(Route::REGEX_KEY, $regex, $keys))
 		{
-			// Compile every :key into it's regex equivalent
+			// Compile every :key into its regex equivalent
 			$replace = $this->compile_keys($keys[0]);
 
 			// Replace each :key with with <key>PATTERN
@@ -197,6 +197,7 @@ class Kohana_Route {
 			// Add the regex group with its key
 			$groups[$key] = $regex.')';
 		}
+
 		return $groups;
 	}
 
