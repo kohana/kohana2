@@ -2,14 +2,18 @@
 
 class Kohana_Route {
 
+	const REGEX_KEY     = '/:[a-zA-Z0-9_]+/';
+	const REGEX_SEGMENT = '[^/.,;?]++';
+
 	public static function factory($uri, array $regex = array())
 	{
+		// Create a new route
 		return new Route($uri, $regex);
 	}
 
 	protected $uri = '';
 	protected $regex = array();
-	protected $defaults = array();
+	protected $defaults = array('method' => 'index');
 
 	// Compiled regex cache
 	protected $compiled;
@@ -17,24 +21,86 @@ class Kohana_Route {
 	// Matched URI keys
 	protected $keys = array();
 
-	public function __construct($uri, array $regex)
+	/**
+	 * Creates a new route. The URI may contain named "keys", in the format
+	 * of :key. Each :key will be translated to a regular expression using a
+	 * default regular expression pattern. You can override any :key by
+	 * providing a pattern for the key in the second parameter:
+	 * 
+	 *     // This route will only match when :id is a digit
+	 *     new Route('user/edit/:id', array('id' => '\d+'));
+	 * 
+	 *     // This route will match when :path is anything
+	 *     new Route(':path', array('path' => '.*'));
+	 * 
+	 * It is also possible to create optional segments by using parenthesis in
+	 * the URI definition:
+	 * 
+	 *     // This is the standard default route, and no keys are required
+	 *     new Route('(:controller(/:method(/:id)))');
+	 * 
+	 *     // This route only requires the :file key
+	 *     new Route('(:path/):file(:format)', array('path' => '.*', 'format' => '\.\w+'));
+	 * 
+	 * @param   string   route URI pattern
+	 * @param   array    key patterns
+	 */
+	public function __construct($uri, array $regex = array())
 	{
 		$this->uri = $uri;
 		$this->regex = $regex;
 	}
 
+	/**
+	 * Provides default values for keys when they are not present. The default
+	 * method will always be "index" unless it is overloaded with this method.
+	 * 
+	 *     $route->defaults(array('controller' => 'welcome', 'method' => 'index'));
+	 * 
+	 * @chainable
+	 * @param   array  key values
+	 * @return  Route
+	 */
 	public function defaults(array $defaults)
 	{
+		if (empty($defaults['method']))
+		{
+			$defaults['method'] = 'index';
+		}
+
 		$this->defaults = $defaults;
 
 		return $this;
 	}
 
+	/**
+	 * Tests if the route matches a given URI. A successful match will return
+	 * all of the routed parameters as an array. A failed match will return
+	 * boolean FALSE.
+	 * 
+	 *     // This route will only match if the :controller, :method, and :id exist
+	 *     $params = Route::factory(':controller/:method/:id', array('id' => '\d+'))
+	 *         ->matach('users/edit/10');
+	 *     // The parameters are now:
+	 *     // controller = users
+	 *     // method = edit
+	 *     // id = 10
+	 * 
+	 * This method should almost always be used within an if/else block:
+	 * 
+	 *     if ($params = $route->match($uri))
+	 *     {
+	 *         // Parse the parameters
+	 *     }
+	 * 
+	 * @param   string  URI to match
+	 * @return  array   on success
+	 * @return  FALSE   on failure
+	 */
 	public function matches($uri)
 	{
+		// Get the compiled regex
 		$regex = $this->compile();
-
-		echo Kohana::debug($regex);
 
 		if (preg_match('!'.$regex.'!', $uri, $matches))
 		{
@@ -68,11 +134,18 @@ class Kohana_Route {
 		}
 	}
 
+	/**
+	 * Returns the compiled regular expression for the route. The generated
+	 * pattern will be cached after it is compiled.
+	 * 
+	 * @return  string
+	 */
 	protected function compile()
 	{
-		if ($this->compiled !== NULL)
+		if (isset($this->cache[$this->uri]))
 		{
-			return $this->compiled;
+			// The regex has already been compiled
+			return $this->cache[$this->uri];
 		}
 
 		if (strpos($this->uri, '(') === FALSE)
@@ -86,76 +159,17 @@ class Kohana_Route {
 			$regex = str_replace(array('(', ')'), array('(?:', ')?'), $this->uri);
 		}
 
-		if (preg_match_all('!:[a-zA-Z0-9_]+!', $regex, $keys))
+		if (preg_match_all(Route::REGEX_KEY, $regex, $keys))
 		{
+			// Compile every :key into it's regex equivalent
 			$replace = $this->compile_keys($keys[0]);
 
-			// Replace each :key with (?<key>REGEX)
+			// Replace each :key with with <key>PATTERN
 			$regex = strtr($regex, $replace);
 		}
 
-		return $this->compiled = '^'.$regex.'$';
-	}
-
-	protected function compile_groups($uri)
-	{
-		preg_match('/^.*?\(.+\)/', $uri, $match);
-		
-		echo Kohana::debug($match);
-		
-		if (preg_match('/^.*?[\(\)]/', $uri, $match))
-		{
-			// Start the regex
-			$regex = $match = $match[0];
-
-			if (substr($regex, -1) === '(')
-			{
-				$depth++;
-
-				$regex .= '?:';
-
-				if (strlen($regex) > 1)
-				{
-					$regex .= ')?';
-				}
-
-				$next_uri = substr($uri, strlen($match));
-			}
-			elseif (strpos($regex, ')') !== FALSE)
-			{
-				$depth--;
-
-				// Find the position of the opening and closing parenthesis
-				$open  = strlen($match);
-				$close = strrpos($uri, ')');
-
-				$next_uri = substr($uri, $open, $close - $open);
-			}
-
-			// Add the next inner group
-			$regex .= $this->compile_groups($next_uri, $dpeth);
-
-			if ($depth > 0)
-			{
-				// Make the group optional
-				$regex .= ')?';
-			}
-
-		}
-		else
-		{
-			if ($depth > 0)
-			{
-				$depth--;
-			}
-
-			// There are no groups
-			$regex = $uri;
-
-			echo Kohana::debug('no groups', $uri);
-		}
-
-		return $regex;
+		// Add anchors and cache the compiled regex
+		return $this->cache[$this->uri] = '^'.$regex.'$';
 	}
 
 	protected function compile_keys(array $keys)
@@ -171,13 +185,13 @@ class Kohana_Route {
 
 			if (isset($this->regex[$name]))
 			{
-				// Use the pre-defined regex
+				// Use the pre-defined pattern
 				$regex .= $this->regex[$name];
 			}
 			else
 			{
-				// Match anything that is not a slash
-				$regex .= '[^/.,;?]++';
+				// Use the default pattern
+				$regex .= Route::REGEX_SEGMENT;
 			}
 
 			// Add the regex group with its key

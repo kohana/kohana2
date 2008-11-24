@@ -47,9 +47,6 @@ final class Kohana  {
 
 	public static function auto_load($class)
 	{
-		if (class_exists($class, FALSE))
-			return TRUE;
-
 		$file = str_replace('_', '/', strtolower($class));
 
 		if ($path = self::find_file('classes', $file))
@@ -61,19 +58,16 @@ final class Kohana  {
 			return FALSE;
 		}
 
-		if (class_exists('Kohana_'.$class, FALSE))
+		if ($path = self::find_file('extensions', $file))
 		{
-			if ($path = self::find_file('extensions', $file))
-			{
-				require $path;
-			}
-			else
-			{
-				eval('class '.$class.' extends Kohana_'.$class.' {}');
-			}
+			require $path;
+		}
+		elseif (class_exists('Kohana_'.$class, FALSE))
+		{
+			eval('class '.$class.' extends Kohana_'.$class.' {}');
 		}
 
-		return class_exists($class, FALSE);
+		return TRUE;
 	}
 
 	/**
