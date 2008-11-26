@@ -38,6 +38,7 @@ class Kohana_Route {
 
 	const REGEX_KEY     = ':[a-zA-Z0-9_]++';
 	const REGEX_SEGMENT = '[^/.,;?]++';
+	const REGEX_ESCAPE  = '[.\\+*?[^\\]${}=!<>|]';
 
 	/**
 	 * Returns a new Route object.
@@ -182,7 +183,7 @@ class Kohana_Route {
 
 		// The URI should be considered literal except for keys and optional parts
 		// Escape everything preg_quote would escape except for : ( )
-		$this->uri = preg_replace('#[.\\+*?[^\\]${}=!<>|]#', '\\\\$0', $this->uri);
+		$this->uri = preg_replace('#'.Route::REGEX_ESCAPE.'#', '\\\\$0', $this->uri);
 
 		if (strpos($this->uri, '(') === FALSE)
 		{
@@ -195,7 +196,7 @@ class Kohana_Route {
 			$regex = str_replace(array('(', ')'), array('(?:', ')?'), $this->uri);
 		}
 
-		if (preg_match_all('/'.Route::REGEX_KEY.'/', $regex, $keys))
+		if (preg_match_all('#'.Route::REGEX_KEY.'#', $regex, $keys))
 		{
 			// Compile every :key into its regex equivalent
 			$replace = $this->compile_keys($keys[0]);
