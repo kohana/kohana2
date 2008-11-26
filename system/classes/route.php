@@ -1,18 +1,64 @@
 <?php
-
+/**
+ * Routes are used to determine the controller and method for a requested URI.
+ * Every route generates a regular expression which is used to match a URI
+ * and a route. Routes may also contain keys which can be used to set the
+ * controller, method, and method arguments.
+ *
+ * Each :key will be translated to a regular expression using a default regular
+ * expression pattern. You can override the default pattern by providing a
+ * pattern for the key:
+ *
+ *     // This route will only match when :id is a digit
+ *     Route::factory('user/edit/:id', array('id' => '\d+'));
+ *
+ *     // This route will match when :path is anything
+ *     Route::factory(':path', array('path' => '.*'));
+ *
+ * It is also possible to create optional segments by using parenthesis in
+ * the URI definition:
+ *
+ *     // This is the standard default route, and no keys are required
+ *     Route::defautl('(:controller(/:method(/:id)))');
+ *
+ *     // This route only requires the :file key
+ *     Route::factory('(:path/):file(:format)', array('path' => '.*', 'format' => '\.\w+'));
+ *
+ * Routes also provide a way to generate URIs (called "reverse routing"), which
+ * makes them an extremely powerful and flexible way to generate internal links.
+ *
+ * $Id: view.php 3712 2008-11-22 22:07:36Z Shadowhand $
+ *
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2008 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
 class Kohana_Route {
 
 	const REGEX_KEY     = '/:[a-zA-Z0-9_]++/';
 	const REGEX_SEGMENT = '[^/.,;?]++';
 
+	/**
+	 * Returns a new Route object.
+	 *
+	 * @chainable
+	 * @param   string  route URI
+	 * @param   array   regular expressions for keys
+	 * @return  Route
+	 */
 	public static function factory($uri, array $regex = array())
 	{
-		// Create a new route
 		return new Route($uri, $regex);
 	}
 
+	// Route URI string
 	protected $uri = '';
+
+	// Regular expressions for route keys
 	protected $regex = array();
+
+	// Default values for route keys
 	protected $defaults = array('method' => 'index');
 
 	// Compiled regex cache
@@ -22,41 +68,27 @@ class Kohana_Route {
 	protected $keys = array();
 
 	/**
-	 * Creates a new route. The URI may contain named "keys", in the format
-	 * of :key. Each :key will be translated to a regular expression using a
-	 * default regular expression pattern. You can override any :key by
-	 * providing a pattern for the key in the second parameter:
-	 * 
-	 *     // This route will only match when :id is a digit
-	 *     new Route('user/edit/:id', array('id' => '\d+'));
-	 * 
-	 *     // This route will match when :path is anything
-	 *     new Route(':path', array('path' => '.*'));
-	 * 
-	 * It is also possible to create optional segments by using parenthesis in
-	 * the URI definition:
-	 * 
-	 *     // This is the standard default route, and no keys are required
-	 *     new Route('(:controller(/:method(/:id)))');
-	 * 
-	 *     // This route only requires the :file key
-	 *     new Route('(:path/):file(:format)', array('path' => '.*', 'format' => '\.\w+'));
-	 * 
+	 * Creates a new route. Sets the URI and regular expressions for keys.
+	 *
 	 * @param   string   route URI pattern
 	 * @param   array    key patterns
 	 */
 	public function __construct($uri, array $regex = array())
 	{
 		$this->uri = $uri;
-		$this->regex = $regex;
+
+		if ( ! empty($regex))
+		{
+			$this->regex = $regex;
+		}
 	}
 
 	/**
 	 * Provides default values for keys when they are not present. The default
 	 * method will always be "index" unless it is overloaded with this method.
-	 * 
+	 *
 	 *     $route->defaults(array('controller' => 'welcome', 'method' => 'index'));
-	 * 
+	 *
 	 * @chainable
 	 * @param   array  key values
 	 * @return  Route
@@ -77,7 +109,7 @@ class Kohana_Route {
 	 * Tests if the route matches a given URI. A successful match will return
 	 * all of the routed parameters as an array. A failed match will return
 	 * boolean FALSE.
-	 * 
+	 *
 	 *     // This route will only match if the :controller, :method, and :id exist
 	 *     $params = Route::factory(':controller/:method/:id', array('id' => '\d+'))
 	 *         ->match('users/edit/10');
@@ -85,14 +117,14 @@ class Kohana_Route {
 	 *     // controller = users
 	 *     // method = edit
 	 *     // id = 10
-	 * 
+	 *
 	 * This method should almost always be used within an if/else block:
-	 * 
+	 *
 	 *     if ($params = $route->match($uri))
 	 *     {
 	 *         // Parse the parameters
 	 *     }
-	 * 
+	 *
 	 * @param   string  URI to match
 	 * @return  array   on success
 	 * @return  FALSE   on failure
@@ -137,7 +169,7 @@ class Kohana_Route {
 	/**
 	 * Returns the compiled regular expression for the route. The generated
 	 * pattern will be cached after it is compiled.
-	 * 
+	 *
 	 * @return  string
 	 */
 	protected function compile()
@@ -169,7 +201,7 @@ class Kohana_Route {
 		}
 
 		// Add anchors and cache the compiled regex
-		return $this->cache[$this->uri] = '^'.$regex.'$';
+		return $this->compiled = '^'.$regex.'$';
 	}
 
 	protected function compile_keys(array $keys)
