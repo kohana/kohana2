@@ -114,7 +114,6 @@ class Kohana_View {
 		$this->set($key, $value);
 	}
 
-
 	/**
 	 * Magic method, returns the output of render(). If any exceptions are
 	 * thrown, the exception output will be returned instead.
@@ -157,7 +156,7 @@ class Kohana_View {
 	}
 
 	/**
-	 * Assigns a variable by name. Assigned values will be available in as a
+	 * Assigns a variable by name. Assigned values will be available as a
 	 * variable within the view file:
 	 *
 	 *     // This value can be accessed as $foo within the view
@@ -193,7 +192,7 @@ class Kohana_View {
 	/**
 	 * Assigns a value by reference. The benefit of binding is that values can
 	 * be altered without re-setting them. It is also possible to bind variables
-	 * before they have values. Assigned values will be available in as a
+	 * before they have values. Assigned values will be available as a
 	 * variable within the view file:
 	 *
 	 *     // This reference can be accessed as $ref within the view
@@ -229,7 +228,7 @@ class Kohana_View {
 	/**
 	 * Renders the view object to a string. Global and local data are merged
 	 * and extracted to create local variables within the view file.
-	 * Optionally, the view filename can set before rendering.
+	 * Optionally, the view filename can be set before rendering.
 	 *
 	 * @throws   Kohana_Exception
 	 * @param    string  filename

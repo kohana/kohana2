@@ -36,7 +36,7 @@
  */
 class Kohana_Route {
 
-	const REGEX_KEY     = '/:[a-zA-Z0-9_]++/';
+	const REGEX_KEY     = ':[a-zA-Z0-9_]++';
 	const REGEX_SEGMENT = '[^/.,;?]++';
 
 	/**
@@ -191,7 +191,7 @@ class Kohana_Route {
 			$regex = str_replace(array('(', ')'), array('(?:', ')?'), $this->uri);
 		}
 
-		if (preg_match_all(Route::REGEX_KEY, $regex, $keys))
+		if (preg_match_all('/'.Route::REGEX_KEY.'/', $regex, $keys))
 		{
 			// Compile every :key into its regex equivalent
 			$replace = $this->compile_keys($keys[0]);
