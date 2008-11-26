@@ -134,7 +134,7 @@ class Kohana_Route {
 		// Get the compiled regex
 		$regex = $this->compile();
 
-		if (preg_match('!'.$regex.'!', $uri, $matches))
+		if (preg_match('#'.$regex.'#', $uri, $matches))
 		{
 			$params = array();
 			foreach ($matches as $key => $value)
@@ -179,6 +179,10 @@ class Kohana_Route {
 			// The regex has already been compiled
 			return $this->cache[$this->uri];
 		}
+
+		// The URI should be considered literal except for keys and optional parts
+		// Escape everything preg_quote would escape except for : ( )
+		$this->uri = preg_replace('#[.\\+*?[^\\]${}=!<>|]#', '\\\\$0', $this->uri)
 
 		if (strpos($this->uri, '(') === FALSE)
 		{
