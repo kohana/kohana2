@@ -182,7 +182,7 @@ class Kohana_Route {
 
 		// The URI should be considered literal except for keys and optional parts
 		// Escape everything preg_quote would escape except for : ( )
-		$this->uri = preg_replace('#[.\\+*?[^\\]${}=!<>|]#', '\\\\$0', $this->uri)
+		$this->uri = preg_replace('#[.\\+*?[^\\]${}=!<>|]#', '\\\\$0', $this->uri);
 
 		if (strpos($this->uri, '(') === FALSE)
 		{
