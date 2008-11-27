@@ -15,4 +15,6 @@ $route = Route::factory('(:path/):file(.:format)', array('path' => '.*'));
 
 $view = View::factory('test');
 
+utf8::clean_globals();
+
 echo $view->render();

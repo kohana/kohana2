@@ -72,7 +72,7 @@ final class utf8 {
 		elseif (is_string($var) AND $var !== '')
 		{
 			// Remove control characters
-			$var = self::strip_ascii_ctrl($str);
+			$var = self::strip_ascii_ctrl($var);
 
 			if ( ! self::is_ascii($var))
 			{
