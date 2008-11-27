@@ -1,3 +1,3 @@
 <?php
 
-class Route extends Kohana_Route {}
+class Route extends Route_Core {}

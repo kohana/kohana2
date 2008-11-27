@@ -1,3 +1,3 @@
 <?php
 
-class View extends Kohana_View {}
+class View extends View_Core {}

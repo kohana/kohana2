@@ -27,14 +27,14 @@
  * Routes also provide a way to generate URIs (called "reverse routing"), which
  * makes them an extremely powerful and flexible way to generate internal links.
  *
- * $Id: view.php 3712 2008-11-22 22:07:36Z Shadowhand $
+ * $Id$
  *
  * @package    Core
  * @author     Kohana Team
  * @copyright  (c) 2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Kohana_Route {
+class Route_Core {
 
 	const REGEX_KEY     = ':[a-zA-Z0-9_]++';
 	const REGEX_SEGMENT = '[^/.,;?]++';

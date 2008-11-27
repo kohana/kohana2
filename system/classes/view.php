@@ -4,14 +4,14 @@
  * Variables can be assigned with the view object and referenced locally within
  * the view.
  *
- * $Id: view.php 3712 2008-11-22 22:07:36Z Shadowhand $
+ * $Id$
  *
  * @package    Core
  * @author     Kohana Team
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Kohana_View {
+class View_Core {
 
 	// Array of global variables
 	protected static $global_data = array();

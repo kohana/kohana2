@@ -1,6 +1,6 @@
 <?php
 
-class Kohana_Router  {
+class Router_Core {
 
 	protected $routes = array();
 

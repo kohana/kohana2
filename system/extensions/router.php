@@ -1,3 +1,3 @@
 <?php
 
-class Router extends Kohana_Router {}
+class Router extends Router_Core {}
