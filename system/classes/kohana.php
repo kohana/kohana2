@@ -40,6 +40,9 @@ final class Kohana {
 			return;
 
 		spl_autoload_register(array(__CLASS__, 'auto_load'));
+
+		// The system has been initialized
+		self::$init = TRUE;
 	}
 
 	/**
