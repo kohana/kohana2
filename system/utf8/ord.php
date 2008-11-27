@@ -13,9 +13,7 @@ function _ord($chr)
 	$ord0 = ord($chr);
 
 	if ($ord0 >= 0 AND $ord0 <= 127)
-	{
 		return $ord0;
-	}
 
 	if ( ! isset($chr[1]))
 	{
@@ -26,9 +24,7 @@ function _ord($chr)
 	$ord1 = ord($chr[1]);
 
 	if ($ord0 >= 192 AND $ord0 <= 223)
-	{
 		return ($ord0 - 192) * 64 + ($ord1 - 128);
-	}
 
 	if ( ! isset($chr[2]))
 	{
@@ -39,9 +35,7 @@ function _ord($chr)
 	$ord2 = ord($chr[2]);
 
 	if ($ord0 >= 224 AND $ord0 <= 239)
-	{
 		return ($ord0 - 224) * 4096 + ($ord1 - 128) * 64 + ($ord2 - 128);
-	}
 
 	if ( ! isset($chr[3]))
 	{
@@ -52,9 +46,7 @@ function _ord($chr)
 	$ord3 = ord($chr[3]);
 
 	if ($ord0 >= 240 AND $ord0 <= 247)
-	{
 		return ($ord0 - 240) * 262144 + ($ord1 - 128) * 4096 + ($ord2-128) * 64 + ($ord3 - 128);
-	}
 
 	if ( ! isset($chr[4]))
 	{
@@ -65,9 +57,7 @@ function _ord($chr)
 	$ord4 = ord($chr[4]);
 
 	if ($ord0 >= 248 AND $ord0 <= 251)
-	{
 		return ($ord0 - 248) * 16777216 + ($ord1-128) * 262144 + ($ord2 - 128) * 4096 + ($ord3 - 128) * 64 + ($ord4 - 128);
-	}
 
 	if ( ! isset($chr[5]))
 	{
@@ -76,9 +66,7 @@ function _ord($chr)
 	}
 
 	if ($ord0 >= 252 AND $ord0 <= 253)
-	{
 		return ($ord0 - 252) * 1073741824 + ($ord1 - 128) * 16777216 + ($ord2 - 128) * 262144 + ($ord3 - 128) * 4096 + ($ord4 - 128) * 64 + (ord($chr[5]) - 128);
-	}
 
 	if ($ord0 >= 254 AND $ord0 <= 255)
 	{

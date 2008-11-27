@@ -10,9 +10,6 @@
  */
 function _ucwords($str)
 {
-	if (SERVER_UTF8)
-		return mb_convert_case($str, MB_CASE_TITLE);
-
 	if (utf8::is_ascii($str))
 		return ucwords($str);
 

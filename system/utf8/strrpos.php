@@ -12,9 +12,6 @@ function _strrpos($str, $search, $offset = 0)
 {
 	$offset = (int) $offset;
 
-	if (SERVER_UTF8)
-		return mb_strrpos($str, $search, $offset);
-
 	if (utf8::is_ascii($str) AND utf8::is_ascii($search))
 		return strrpos($str, $search, $offset);
 

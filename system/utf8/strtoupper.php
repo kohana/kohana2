@@ -10,9 +10,6 @@
  */
 function _strtoupper($str)
 {
-	if (SERVER_UTF8)
-		return mb_strtoupper($str);
-
 	if (utf8::is_ascii($str))
 		return strtoupper($str);
 

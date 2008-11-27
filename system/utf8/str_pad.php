@@ -11,16 +11,12 @@
 function _str_pad($str, $final_str_length, $pad_str = ' ', $pad_type = STR_PAD_RIGHT)
 {
 	if (utf8::is_ascii($str) AND utf8::is_ascii($pad_str))
-	{
 		return str_pad($str, $final_str_length, $pad_str, $pad_type);
-	}
 
 	$str_length = utf8::strlen($str);
 
 	if ($final_str_length <= 0 OR $final_str_length <= $str_length)
-	{
 		return $str;
-	}
 
 	$pad_str_length = utf8::strlen($pad_str);
 	$pad_length = $final_str_length - $str_length;

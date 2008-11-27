@@ -10,9 +10,6 @@
  */
 function _strtolower($str)
 {
-	if (SERVER_UTF8)
-		return mb_strtolower($str);
-
 	if (utf8::is_ascii($str))
 		return strtolower($str);
 

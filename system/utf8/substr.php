@@ -10,9 +10,6 @@
  */
 function _substr($str, $offset, $length = NULL)
 {
-	if (SERVER_UTF8)
-		return ($length === NULL) ? mb_substr($str, $offset) : mb_substr($str, $offset, $length);
-
 	if (utf8::is_ascii($str))
 		return ($length === NULL) ? substr($str, $offset) : substr($str, $offset, $length);
 
