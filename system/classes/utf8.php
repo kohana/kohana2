@@ -3,7 +3,7 @@
  * A port of [phputf8][ref-p8] to a unified set of files. Provides multi-byte
  * aware replacement string functions.
  *
- * For UTF-8 support to work correctly, the follow requirements must be met:
+ * For UTF-8 support to work correctly, the following requirements must be met:
  *
  * - PCRE needs to be compiled with UTF-8 support (--enable-utf8)
  * - Support for [Unicode properties][ref-uc] is highly recommended (--enable-unicode-properties)
@@ -30,26 +30,6 @@ final class utf8 {
 
 	// Called methods
 	static $called = array();
-
-	/**
-	 * Recursively clean GET, POST, COOKIE, and SERVER global arrays.
-	 *
-	 * @return  void
-	 */
-	public static function clean_globals()
-	{
-		if (isset(self::$called[__FUNCTION__]))
-			return;
-
-		// Convert all global variables to UTF-8.
-		$_GET    = utf8::clean($_GET);
-		$_POST   = utf8::clean($_POST);
-		$_COOKIE = utf8::clean($_COOKIE);
-		$_SERVER = utf8::clean($_SERVER);
-
-		// Prevent this from running again
-		self::$called[__FUNCTION__] = TRUE;
-	}
 
 	/**
 	 * Recursively cleans arrays, objects, and strings. Removes ASCII control
