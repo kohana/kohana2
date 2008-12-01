@@ -163,13 +163,23 @@ class View_Core {
 	 *     $view->set('foo', 'my value');
 	 *
 	 * @chainable
-	 * @param   string   variable name
+	 * @param   string   variable name or an array of variables
 	 * @param   mixed    value
 	 * @return  View
 	 */
-	public function set($key, $value)
+	public function set($key, $value = NULL)
 	{
-		$this->data[$key] = $value;
+		if (is_array($key))
+		{
+			foreach ($key as $key2 => $value)
+			{
+				$this->data[$key2] = $value;
+			}
+		}
+		else
+		{
+			$this->data[$key] = $value;
+		}
 
 		return $this;
 	}
@@ -178,13 +188,23 @@ class View_Core {
 	 * Exactly the same as set, but assigns the value globally.
 	 *
 	 * @chainable
-	 * @param   string   variable name
+	 * @param   string   variable name or an array of variables
 	 * @param   mixed    value
 	 * @return  View
 	 */
-	public function set_global($key, $value)
+	public function set_global($key, $value = NULL)
 	{
-		View::$global_data[$key] = $value;
+		if (is_array($key))
+		{
+			foreach ($key as $key2 => $value)
+			{
+				View::$global_data[$key2] = $value;
+			}
+		}
+		else
+		{
+			View::$global_data[$key] = $value;
+		}
 
 		return $this;
 	}
