@@ -49,6 +49,8 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		//-- OPTIONAL --//
 		'CURRENCYCODE'  => '', // default is USD - only required if other currency needed
 		'MAXAMT'        => '',
+		// 'L_BILLING'		=> 'RecurringPayments',
+		// 'L_PAYMENTTYPE'		=> 'InstantOnly',
 
 		// USERACTION defaults to 'continue'
 		// if set to 'commit' the submit button on the paypal site transaction page is labelled 'Pay'
@@ -123,6 +125,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		'METHOD'        => 'DoExpressCheckoutPayment',
 		'TOKEN'         => '', // this token is retrieved from the response to the setExpressCheckout call
 		'PAYERID'       => '',
+		'PAYMENTACTION' => 'Sale',
 		'AMT'           => '', // payment amount - MUST include decimal point followed by two further digits
 
 		//-- OPTIONAL --
@@ -147,6 +150,18 @@ class Payment_Paypal_Driver implements Payment_Driver {
 		'L_NAME2'...
 
 		*/
+	);
+
+	private $refund_transaction_fields = array
+	(
+		//-- REQUIRED --
+		'METHOD'        => 'RefundTransaction',
+		'TRANSACTIONID' => '',
+		'REFUNDTYPE'    => 'Full',
+		'AMT'           => '', // payment amount - MUST include decimal point followed by two further digits
+
+		//-- OPTIONAL --
+		'NOTE'  => ''
 	);
 
 	private $api_authroization_fields = array
@@ -200,6 +215,7 @@ class Payment_Paypal_Driver implements Payment_Driver {
 			&$this->set_express_checkout_fields,
 			&$this->get_express_checkout_fields,
 			&$this->do_express_checkout_fields,
+			&$this->refund_transaction_fields,
 			&$this->api_authroization_fields,
 			&$this->api_connection_fields
 		);
@@ -275,6 +291,12 @@ class Payment_Paypal_Driver implements Payment_Driver {
 			throw new Kohana_Exception('payment.required', implode(', ', $fields));
 		}
 
+		if ($this->session->get_once('paypal_refund') === 'refund')
+		{
+			// Refund this transaction
+			return $this->refund_transaction();
+		}
+
 		// stage 1 - if no token yet set then we know we just need to run set_express_checkout
 		$paypal_token = $this->session->get('paypal_token', FALSE);
 		if ( ! $paypal_token)
@@ -314,7 +336,17 @@ class Payment_Paypal_Driver implements Payment_Driver {
 
 		$this->do_express_checkout_payment();
 
-		return (strtoupper($this->nvp_response_array['ACK']) == 'Success') ? TRUE : array_merge($this->nvp_response_array, $this->get_express_checkout_response);
+		if (strtoupper($this->nvp_response_array['ACK']) === 'SUCCESS')
+		{
+			$this->session->set('transaction_id', $this->nvp_response_array['TRANSACTIONID']);
+			$this->session->set('paypal_payment_type', $this->nvp_response_array['PAYMENTTYPE']);
+
+			return TRUE;
+		}
+		else
+		{
+			return array_merge($this->nvp_response_array, $this->get_express_checkout_response);
+		}
 	}
 
 	/**
@@ -394,13 +426,36 @@ class Payment_Paypal_Driver implements Payment_Driver {
 
 		parse_str(urldecode($response),$this->nvp_response_array);
 
-		if (strtoupper($this->nvp_response_array['ACK']) != 'SUCCESS')
+		if (strtoupper($this->nvp_response_array['ACK']) !== 'SUCCESS')
 		{
 			throw new Kohana_User_Exception('DoExpressCheckoutPayment ERROR', Kohana::debug($this->nvp_response_array));
 
 			Kohana::log('error', Kohana::debug('GetExpressCheckout response:'.$response));
 			url::redirect($this->api_connection_fields['ERRORURL']);
 		}
+	}
+
+	/**
+	* Refund call
+	* refund a transaction - store response in nvp_response_array
+	*
+	*/
+	protected function refund_transaction()
+	{
+		$nvp_qstr = http_build_query($this->remove_empty_optional_fields($this->refund_transaction_fields));
+		$response = $this->make_paypal_api_request($nvp_qstr);
+
+		parse_str(urldecode($response), $this->nvp_response_array);
+
+		if (strtoupper($this->nvp_response_array['ACK']) !== 'SUCCESS')
+		{
+			throw new Kohana_User_Exception('RefundTransaction ERROR', Kohana::debug($this->nvp_response_array));
+
+			Kohana::log('error', Kohana::debug('RefundTransaction response:'.$response));
+			url::redirect($this->api_connection_fields['ERRORURL']);
+		}
+
+		return TRUE;
 	}
 
 	/**
