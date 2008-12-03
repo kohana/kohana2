@@ -132,19 +132,21 @@ class text_Core {
 			break;
 		}
 
+		// Split the pool into an array of characters
+		$pool = ($utf8 === TRUE) ? utf8::str_split($pool, 1) : str_split($pool, 1);
+
+		// Largest pool key
+		$max = count($pool) - 1;
+
 		$str = '';
-
-		$pool_size = ($utf8 === TRUE) ? utf8::strlen($pool) : strlen($pool);
-
 		for ($i = 0; $i < $length; $i++)
 		{
-			$str .= ($utf8 === TRUE)
-				? utf8::substr($pool, mt_rand(0, $pool_size - 1), 1)
-				:       substr($pool, mt_rand(0, $pool_size - 1), 1);
+			// Select a random character from the pool and add it to the string
+			$str .= $pool[mt_rand(0, $max)];
 		}
 
 		// Make sure alnum strings contain at least one letter and one digit
-		if ($type == 'alnum' AND $length > 1)
+		if ($type === 'alnum' AND $length > 1)
 		{
 			if (ctype_alpha($str))
 			{
