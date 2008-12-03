@@ -97,9 +97,9 @@ class text_Core {
 	 *
 	 * @tutorial  alnum     alpha-numeric characters
 	 * @tutorial  alpha     alphabetical characters
+	 * @tutorial  hexdec    hexadecimal characters, 0-9 plus a-f
 	 * @tutorial  numeric   digit characters, 0-9
 	 * @tutorial  nozero    digit characters, 1-9
-	 * @tutorial  hexdec    hexadecimal characters, 0-9 plus a-f
 	 * @tutorial  distinct  clearly distinct alpha-numeric characters
 	 */
 	public static function random($type = 'alnum', $length = 8)
@@ -114,14 +114,15 @@ class text_Core {
 			case 'alpha':
 				$pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 			break;
+			case 'hexdec':
+				$pool = '0123456789abcdef';
+			break;
 			case 'numeric':
 				$pool = '0123456789';
 			break;
 			case 'nozero':
 				$pool = '123456789';
 			break;
-			case 'hexdec':
-				$pool = '0123456789abcdef';
 			case 'distinct':
 				$pool = '2345679ACDEFHJKLMNPRSTUVWXYZ';
 			break;
