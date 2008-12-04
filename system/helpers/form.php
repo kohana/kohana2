@@ -433,16 +433,26 @@ class form_Core {
 	 * @param   string        a string to be attached to the end of the attributes
 	 * @return  string
 	 */
-	public static function label($data = '', $text = '', $extra = '')
+	public static function label($data = '', $text = NULL, $extra = '')
 	{
 		if ( ! is_array($data))
 		{
-			if (strpos($data, '[') !== FALSE)
+			if (is_string($data))
 			{
-				$data = preg_replace('/\[.*\]/', '', $data);
+				// Specify the input this label is for
+				$data = array('for' => $data);
 			}
+			else
+			{
+				// No input specified
+				$data = array();
+			}
+		}
 
-			$data = empty($data) ? array() : array('for' => $data);
+		if ($text === NULL AND isset($data['for']))
+		{
+			// Make the text the human-readable input name
+			$text = ucwords(inflector::humanize($data['for']));
 		}
 
 		return '<label'.form::attributes($data).' '.$extra.'>'.$text.'</label>';
