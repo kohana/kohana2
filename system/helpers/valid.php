@@ -200,9 +200,9 @@ class valid_Core {
 	 * @param   string   date to check
 	 * @return  boolean
 	 */
-	public function date($str, $format = NULL)
+	public function date($str)
 	{
-		return (strtotime($str) === FALSE);
+		return (strtotime($str) !== FALSE);
 	}
 
 	/**
