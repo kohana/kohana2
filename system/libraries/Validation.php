@@ -763,11 +763,30 @@ class Validation_Core extends ArrayObject {
 	 *
 	 * @param   string  field value
 	 * @param   array   allowed characters
-	 * @return  bool
+	 * @return  boolean
 	 */
 	public function chars($value, array $chars)
 	{
 		return ! preg_match('![^'.preg_quote(implode(',', $chars)).']!', $value);
+	}
+
+	/**
+	 * Rule: in_lang. Generates an error if the field does not have a corresponding
+	 * key in the i18n array.
+	 * 
+	 * @param   string   field value
+	 * @param   array    language key
+	 * @return  boolean
+	 */
+	public function in_lang($value, array $lang)
+	{
+		if ( ! is_array($valid = Kohana::lang($lang[0])))
+		{
+			// The i18n key to check must be an array
+			throw new Kohana_Exception('validation.i18n_array', $lang[0]);
+		}
+
+		return isset($valid[$value]);
 	}
 
 } // End Validation
