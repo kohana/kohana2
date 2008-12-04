@@ -195,6 +195,17 @@ class valid_Core {
 	}
 
 	/**
+	 * Tests if a string is a valid date string.
+	 * 
+	 * @param   string   date to check
+	 * @return  boolean
+	 */
+	public function date($str, $format = NULL)
+	{
+		return (strtotime($str) === FALSE);
+	}
+
+	/**
 	 * Checks whether a string consists of alphabetical characters only.
 	 *
 	 * @param   string   input string
