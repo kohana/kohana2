@@ -57,7 +57,7 @@ Index: captcha.php
 --- captcha.php	(revision 0)
 +++ captcha.php	(revision 0)
 @@ -0,0 +1,33 @@
-+<?php defined('SYSPATH') or die('No direct access allowed.');
++<?php
 +
 +$lang = array
 +(
@@ -319,7 +319,7 @@ Index: swift.php
 --- swift.php	(revision 0)
 +++ swift.php	(revision 0)
 @@ -0,0 +1,6 @@
-+<?php defined('SYSPATH') or die('No direct access allowed.');
++<?php
 +
 +$lang = array
 +(
@@ -331,7 +331,7 @@ Index: upload.php
 --- upload.php	(revision 0)
 +++ upload.php	(revision 0)
 @@ -0,0 +1,6 @@
-+<?php defined('SYSPATH') or die('No direct access allowed.');
++<?php
 +
 +$lang = array
 +(
