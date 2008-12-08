@@ -396,4 +396,42 @@ class date_Core {
 		return $difference;
 	}
 
+	/**
+	 * Convert seconds into HH:MM:SS format, used for time lengths.
+	 * 
+	 * @param   integer   number of seconds
+	 * @return  string
+	 */
+	public function seconds_to_time($seconds)
+	{
+		$span = array();
+
+		if ($seconds > 3600)
+		{
+			// Reduce by hours
+			$seconds -= 3600 * ($span['hours'] = (int) floor($seconds / 3600));
+		}
+
+		if ($seconds > 60)
+		{
+			// Reducee by minutes
+			$seconds -= 60 * ($span['minutes'] = (int) floor($seconds / 60));
+		}
+		else
+		{
+			// No minutes
+			$span['minutes'] = 0;
+		}
+
+		// Add the remaining seconds
+		$span['seconds'] = $seconds;
+
+		foreach (array_slice($span, 1) as $key => $val)
+		{
+			$span[$key] = sprintf('%02d', $val);
+		}
+
+		return implode(':', $span);
+	}
+
 } // End date
