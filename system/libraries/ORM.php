@@ -384,6 +384,12 @@ class ORM_Core {
 
 			// Change the relationships
 			$this->changed_relations[$column] = $value;
+
+			if (isset($this->related[$column]))
+			{
+				// Force a reload of the relationships
+				unset($this->related[$column]);
+			}
 		}
 		else
 		{
