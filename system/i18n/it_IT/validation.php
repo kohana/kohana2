@@ -2,10 +2,12 @@
 
 $lang = array
 (
-	// Class errors
+	// Errori della classe
 	'invalid_rule'  => 'Regola di validazione usata non valida: %s',
+	'i18n_array'    => 'Il parametro i18n %s deve essere un array per essere utilizzato con la regola in_lang',
+	'not_callable'  => 'La callback %s usata per la Validation non puo essere richiamata',
 
-	// General errors
+	// Errori generici
 	'unknown_error' => 'Errore sconosciuto durante la validazione del campo %s.',
 	'required'      => 'Il campo %s è obbligatorio.',
 	'min_length'    => 'Il campo %s deve essere lungo almeno %d caratteri.',
@@ -21,7 +23,7 @@ $lang = array
 	'regex'         => 'Il campo %s non coincide con i dati accettati.',
 	'depends_on'    => 'Il campo %s dipende dal campo %s.',
 
-	// Upload errors
+	// Errori di upload
 	'user_aborted'  => 'Il caricamento del file %s è stato interrotto.',
 	'invalid_type'  => 'Il file %s non è un tipo di file permesso.',
 	'max_size'      => 'Il file %s inviato è troppo grande. La dimensone massima consentita è %s.',
@@ -30,7 +32,7 @@ $lang = array
 	'min_width'     => 'Il file %s inviato è troppo piccolo. La larghezza minima consentita è %spx.',
 	'min_height'    => 'Il file %s inviato è troppo piccolo. L\'altezza minima consentita è %spx.',
 
-	// Field types
+	// Tipi di valore dei campi
 	'alpha'         => 'alfabetico',
 	'alpha_numeric' => 'alfanumerico',
 	'alpha_dash'    => 'alfabetico, trattino e sottolineato',
