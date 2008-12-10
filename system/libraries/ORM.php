@@ -376,8 +376,11 @@ class ORM_Core {
 			// Load relations
 			$model = ORM::factory(inflector::singular($column));
 
-			// Load relations
-			$this->has($model);
+			if ( ! isset($this->object_relations[$column]))
+			{
+				// Load relations
+				$this->has($model);
+			}
 
 			// Change the relationships
 			$this->changed_relations[$column] = $value;
