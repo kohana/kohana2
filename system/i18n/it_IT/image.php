@@ -16,7 +16,13 @@ $lang = array
 	// Messaggi specifici per ImageMagick
 	'imagemagick' => array
 	(
-		'not_found'       => 'La cartella di ImageMagick specificata, non contiene il programma richiesto, %s.', 
+		'not_found'       => 'La cartella di ImageMagick specificata non contiene il programma richiesto, %s.', 
+	),
+
+	// Messaggi specifici per GraphicsMagick
+	'graphicsmagick' => array
+	(
+		'not_found' => 'La cartella di GraphicsMagick specificata non contiene il programma richiesto, %s.',
 	),
 
 	// Messaggi specifici per GD
