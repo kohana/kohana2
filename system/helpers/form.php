@@ -261,14 +261,14 @@ class form_Core {
 			}
 		}
 
-		// Selected must always be a string
-		$selected = (string) $selected;
-
 		$input = '<select'.form::attributes($data, 'select').' '.$extra.'>'."\n";
 		foreach ((array) $options as $key => $val)
 		{
 			// Key should always be a string
 			$key = (string) $key;
+
+			// Selected must always be a string
+			$selected = (string) $selected;
 
 			if (is_array($val))
 			{
