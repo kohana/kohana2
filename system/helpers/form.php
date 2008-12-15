@@ -241,6 +241,7 @@ class form_Core {
 	 */
 	public static function dropdown($data, $options = NULL, $selected = NULL, $extra = '')
 	{
+
 		if ( ! is_array($data))
 		{
 			$data = array('name' => $data);
@@ -259,6 +260,9 @@ class form_Core {
 				$selected = $data['selected'];
 			}
 		}
+
+		// Selected must always be a string
+		$selected = (string) $selected;
 
 		$input = '<select'.form::attributes($data, 'select').' '.$extra.'>'."\n";
 		foreach ((array) $options as $key => $val)
