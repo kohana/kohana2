@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Paypal Payment Driver. Express Checkout transactions consist of 3 stages with
  * a separate API call for each: SetExpressCheckout, GetExpressCheckout (optional)

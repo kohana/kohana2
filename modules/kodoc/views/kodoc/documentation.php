@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 
 if (empty($this->kodoc) OR count($docs = $this->kodoc->get()) < 1):
 

@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Adds useful information to the bottom of the current page for debugging and optimization purposes.
  *

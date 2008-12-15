@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Auth library configuration. By default, Auth will use the controller
  * database connection. If Database is not loaded, it will use use the default

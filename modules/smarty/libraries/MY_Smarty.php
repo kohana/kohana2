@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 
 include Kohana::find_file('vendor', 'smarty/Smarty.class');
 

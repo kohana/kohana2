@@ -1,3 +1,4 @@
+<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div class="box">
 
 <p>The following tables must be installed in your database: <code>users</code>, <code>roles</code>, <code>roles_users</code>, and <code>user_tokens</code>. If you have not already installed these tables, please run the installation query below.</p>

@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 /*
  * Class: Database_PdoSqlite_Driver
  *  Provides specific database items for Sqlite.

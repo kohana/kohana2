@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
  * You should set your own API key in application/config/gmaps.php

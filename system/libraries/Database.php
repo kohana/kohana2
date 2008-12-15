@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Provides database access in a platform agnostic way, using simple query building blocks.
  *

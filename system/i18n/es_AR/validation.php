@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No se permite acceder directamente a este archivo.');
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 
 $lang = array
 (

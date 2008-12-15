@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Gmaps module demo controller. This controller should NOT be used in production.
  * It is for demonstration purposes only!

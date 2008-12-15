@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 
 if ( ! empty($source)):
 	list ($option, $value) = $source;
