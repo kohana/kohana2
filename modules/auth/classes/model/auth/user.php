@@ -13,6 +13,12 @@ class Model_Auth_User extends ORM {
 	{
 		if ($key === 'password')
 		{
+			if ($this->loaded AND $value ==== '')
+			{
+				// Do not set empty passwords
+				return;
+			}
+
 			// Use Auth to hash the password
 			$value = Auth::instance()->hash_password($value);
 		}
@@ -33,8 +39,14 @@ class Model_Auth_User extends ORM {
 			->pre_filter('trim')
 			->add_rules('email', 'required', 'length[4,127]', 'valid::email')
 			->add_rules('username', 'required', 'length[4,32]', 'chars[a-zA-Z0-9_.]', array($this, 'username_available'))
-			->add_rules('password', 'required', 'length[5,42]')
+			->add_rules('password', 'length[5,42]')
 			->add_rules('password_confirm', 'matches[password]');
+
+		if ( ! $this->loaded)
+		{
+			// This user is new, the password must be provided
+			$array->add_rules('password', 'required');
+		}
 
 		return parent::validate($array, $save);
 	}
@@ -123,9 +135,15 @@ class Model_Auth_User extends ORM {
 	 */
 	public function username_available($id)
 	{
-		return ! $this->db
-			->where($this->unique_key($id), $id)
-			->count_records($this->table_name);
+		$key = $this->unique_key($id);
+
+		if ($this->loaded AND $this->$key === $id)
+		{
+			// This value is unchanged
+			return TRUE;
+		}
+
+		return ! ORM::factory('user')->where($key, $id)->count_all();
 	}
 
 	/**
