@@ -40,7 +40,7 @@ class Image_GraphicsMagick_Driver extends Image_Driver {
 		$this->ext = (PHP_SHLIB_SUFFIX === 'dll') ? '.exe' : '';
 
 		// Check to make sure the provided path is correct
-		if ( ! is_file(realpath($config['directory']).'/gmdisplay'.$this->ext))
+		if ( ! is_file(realpath($config['directory']).'/gm'.$this->ext))
 			throw new Kohana_Exception('image.graphicsmagick.not_found', 'gm'.$this->ext);
 
 
