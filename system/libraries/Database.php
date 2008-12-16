@@ -674,9 +674,16 @@ class Database_Core {
 		{
 			$direction = strtoupper(trim($direction));
 
+			// Add a direction if the provided one isn't valid
 			if ( ! in_array($direction, array('ASC', 'DESC', 'RAND()', 'RANDOM()', 'NULL')))
 			{
 				$direction = 'ASC';
+			}
+
+			// Add the table prefix if a table.column was passed
+			if (strpos($column, '.'))
+			{
+				$column = $this->config['table_prefix'].$column;
 			}
 
 			$this->orderby[] = $this->driver->escape_column($column).' '.$direction;
