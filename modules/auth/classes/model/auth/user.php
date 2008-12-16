@@ -13,7 +13,7 @@ class Model_Auth_User extends ORM {
 	{
 		if ($key === 'password')
 		{
-			if ($this->loaded AND $value ==== '')
+			if ($this->loaded AND $value === '')
 			{
 				// Do not set empty passwords
 				return;
