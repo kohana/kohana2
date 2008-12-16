@@ -266,12 +266,17 @@ class valid_Core {
 	/**
 	 * Checks whether a string is a valid number (negative and decimal numbers allowed).
 	 *
+	 * @see Uses locale conversion to allow decimal point to be locale specific.
+	 * @see http://www.php.net/manual/en/function.localeconv.php
+	 * 
 	 * @param   string   input string
 	 * @return  boolean
 	 */
 	public static function numeric($str)
 	{
-		return (is_numeric($str) AND preg_match('/^[-0-9.]++$/D', (string) $str));
+		// Use localeconv to set the decimal_point value: Usually a comma or period.
+		$locale = localeconv();
+		return (preg_match('/^[-0-9'.$locale['decimal_point'].']++$/D', (string) $str));
 	}
 
 	/**
