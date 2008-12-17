@@ -56,6 +56,17 @@ class View_Core {
 			$this->kohana_local_data = array_merge($this->kohana_local_data, $data);
 		}
 	}
+	
+	/**
+	 * Magic method access to test for view property
+	 *
+	 * @param   string   View property to test for
+	 * @return  boolean
+	 */
+	public function __isset($key = NULL)
+	{
+		return $this->is_set($key);
+	}
 
 	/**
 	 * Sets the view filename.
