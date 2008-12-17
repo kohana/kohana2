@@ -131,22 +131,22 @@ class View_Core {
 		$result = FALSE;
 
 		// If key is an array
-		if( is_array( $key ) )
+		if (is_array($key))
 		{
 			// Set the result to an array
 			$result = array();
 			
 			// Foreach key
-			foreach( $key as $property )
+			foreach ($key as $property)
 			{
 				// Set the result to an associative array
-				$result[ $property ] = ( array_key_exists( $property, $this->kohana_local_data ) OR array_key_exists( $property, self::$kohana_global_data ) ) ? TRUE : FALSE;
+				$result[$property] = (array_key_exists($property, $this->kohana_local_data) OR array_key_exists($property, self::$kohana_global_data)) ? TRUE : FALSE;
 			}
 		}
 		else
 		{
 			// Otherwise just check one property
-			$result = ( array_key_exists( $key, $this->kohana_local_data ) OR array_key_exists( $key, self::$kohana_global_data ) ) ? TRUE : FALSE;
+			$result = (array_key_exists($key, $this->kohana_local_data) OR array_key_exists($key, self::$kohana_global_data)) ? TRUE : FALSE;
 		}
 
 		// Return the result
