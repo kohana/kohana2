@@ -437,7 +437,15 @@ class ORM_Core {
 	 */
 	public function as_array()
 	{
-		return $this->object;
+		$object = array();
+
+		foreach ($this->object as $key => $val)
+		{
+			// Reconstruct the array (calls __get)
+			$object[$key] = $this->$key;
+		}
+
+		return $object;
 	}
 	
 	/**
@@ -449,9 +457,11 @@ class ORM_Core {
 	 */
 	public function with($object)
 	{
-		// Don't join anything already joined
 		if (isset($this->with_applied[$object]))
+		{
+			// Don't join anything already joined
 			return $this;
+		}
 
 		$prefix = $table = $object;
 
