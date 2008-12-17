@@ -621,6 +621,12 @@ class Database_Core {
 
 			if ($val != '')
 			{
+				// Add the table prefix if we are using table.column names
+				if(strpos($val, '.'))
+				{
+					$val = $this->config['table_prefix'].$val;
+				}
+
 				$this->groupby[] = $this->driver->escape_column($val);
 			}
 		}
