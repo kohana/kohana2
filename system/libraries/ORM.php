@@ -824,10 +824,15 @@ class ORM_Core {
 			// Delete only given ids
 			$this->db->in($this->primary_key, $ids);
 		}
-		else
+		elseif (is_null($ids))
 		{
 			// Delete all records
 			$this->db->where(TRUE);
+		}
+		else
+		{
+			// Do nothing - safeguard
+			return $this;
 		}
 
 		// Delete all objects
