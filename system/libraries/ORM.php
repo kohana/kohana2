@@ -1190,13 +1190,12 @@ class ORM_Core {
 	
 	/**
 	 * Outputs ORM iterator joined with given model
-	 * @param $related_model ORM Model the model related to this ORM
+	 * @param $related_model ORM Model the model related to this ORM (this must be pre-initialise before using as argument)
 	 * @return ORM iterator
-	 * @author credits to Josh Domagala
 	 */
 	public function join_model($related_model)
 	{
-		if( !in_array( $related_model->table_name, $this->has_and_belongs_to_many ) )
+		if ( ! ($related_model instanceof ORM) OR ! $related_model->loaded OR ! in_array( $related_model->table_name, $this->has_and_belongs_to_many ) )
 		{
 			return FALSE;
 		}
