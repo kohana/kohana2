@@ -1187,28 +1187,6 @@ class ORM_Core {
 
 		return $table;
 	}
-	
-	/**
-	 * Outputs ORM iterator joined with given model
-	 * @param $related_model ORM Model the model related to this ORM (this must be pre-initialise before using as argument)
-	 * @return ORM iterator
-	 */
-	public function join_model($related_model)
-	{
-		if ( ! ($related_model instanceof ORM) OR ! $related_model->loaded OR ! in_array( $related_model->table_name, $this->has_and_belongs_to_many ) )
-		{
-			return FALSE;
-		}
-		
-		// Get the join table name
-		$join_table = $this->join_table($related_model->table_name);
-
-		// Return ORM iterator of model
-		return $this
-			->join($join_table, $this->foreign_key(NULL, $join_table), $this->foreign_key(TRUE))
-			->where($related_model->foreign_key(NULL, $join_table), $related_model->id)
-			->find_all();
-	}
 
 	/**
 	 * Returns an ORM model for the given object name;
