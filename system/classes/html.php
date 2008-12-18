@@ -98,6 +98,11 @@ class html_Core {
 	 */
 	public static function file_anchor($file, $title = NULL, $attributes = NULL, $protocol = NULL)
 	{
+		if (html::$windowed_urls === TRUE AND empty($attributes['target']))
+		{
+			$attributes['target'] = '_blank';
+		}
+
 		return
 		// Base URL + URI = full URL
 		'<a href="'.html::specialchars(url::base(FALSE, $protocol).$file, FALSE).'"'
