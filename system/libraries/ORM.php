@@ -32,7 +32,7 @@ class ORM_Core {
 	protected $related = array();
 	protected $loaded  = FALSE;
 	protected $saved   = FALSE;
-	protected $sorting = array('id' => 'asc');
+	protected $sorting;
 
 	// Related objects
 	protected $object_relations = array();
@@ -90,6 +90,12 @@ class ORM_Core {
 		// Set the object name and plural name
 		$this->object_name   = strtolower(substr(get_class($this), 0, -6));
 		$this->object_plural = inflector::plural($this->object_name);
+
+		if (!isset($this->sorting))
+		{
+			// Default sorting
+			$this->sorting = array($this->primary_key => 'asc');
+		}
 
 		// Initialize database
 		$this->__initialize();
