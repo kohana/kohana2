@@ -129,7 +129,8 @@ class View_Core {
 	}
 
 	/**
-	 * Checks for a property existence in the view locally or globally
+	 * Checks for a property existence in the view locally or globally. Unlike the built in __isset(), 
+	 * this method can take an array of properties to test simultaneously.
 	 *
 	 * @param string $key property name to test for
 	 * @param array $key array of property names to test for
