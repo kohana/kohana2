@@ -212,10 +212,7 @@ class View_Core {
 	 */
 	public function __set($key, $value)
 	{
-		if ( ! isset($this->$key))
-		{
-			$this->kohana_local_data[$key] = $value;
-		}
+		$this->kohana_local_data[$key] = $value;
 	}
 
 	/**
