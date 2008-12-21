@@ -89,10 +89,10 @@ class Download_Controller extends Website_Controller {
 		// Load validation
 		$download = Validation::factory($_GET)
 			->pre_filter('trim')
-			->add_rules('modules.*', 'in_array['.implode(',', array_keys($content->modules)).']')
 			->add_rules('format', 'required', 'length[2,3]', 'in_array['.implode(',', array_keys($content->formats)).']')
-			->add_rules('vendors.*', 'length[1,64]', 'in_array['.implode(',', array_keys($content->vendors)).']')
-			->add_rules('languages.*', 'required', 'length[5]', 'in_array['.implode(',', array_keys($content->languages)).']');
+			->add_rules('modules', 'is_array')
+			->add_rules('languages', 'is_array')
+			->add_rules('vendors', 'is_array');
 
 		if ( ! $download->submitted())
 		{
