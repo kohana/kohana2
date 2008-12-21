@@ -63,7 +63,7 @@ define('EXT', '.php');
 //
 // DO NOT EDIT BELOW THIS LINE, UNLESS YOU FULLY UNDERSTAND THE IMPLICATIONS.
 // ----------------------------------------------------------------------------
-// $Id: index.php 3366 2008-08-27 22:15:39Z Shadowhand $
+// $Id: index.php 3701 2008-11-22 20:42:18Z Geert $
 //
 
 // Define the front controller name and docroot
@@ -81,34 +81,13 @@ define('SYSPATH', str_replace('\\', '/', realpath($kohana_system)).'/');
 // Clean up
 unset($kohana_application, $kohana_modules, $kohana_system);
 
-if ( ! IN_PRODUCTION)
+if (file_exists(DOCROOT.'install'.EXT))
 {
-	// Check APPPATH
-	if ( ! (is_dir(APPPATH) AND is_file(APPPATH.'config/config'.EXT)))
-	{
-		die
-		(
-			'<div style="width:80%;margin:50px auto;text-align:center;">'.
-				'<h3>Application Directory Not Found</h3>'.
-				'<p>The <code>$kohana_application</code> directory does not exist.</p>'.
-				'<p>Set <code>$kohana_application</code> in <tt>'.KOHANA.'</tt> to a valid directory and refresh the page.</p>'.
-			'</div>'
-		);
-	}
-
-	// Check SYSPATH
-	if ( ! (is_dir(SYSPATH) AND is_file(SYSPATH.'bootstrap'.EXT)))
-	{
-		die
-		(
-			'<div style="width:80%;margin:50px auto;text-align:center;">'.
-				'<h3>System Directory Not Found</h3>'.
-				'<p>The <code>$kohana_system</code> directory does not exist.</p>'.
-				'<p>Set <code>$kohana_system</code> in <tt>'.KOHANA.'</tt> to a valid directory and refresh the page.</p>'.
-			'</div>'
-		);
-	}
+	// Load the installation tests
+	include DOCROOT.'install'.EXT;
 }
-
-// Initialize Kohana
-require SYSPATH.'bootstrap'.EXT;
+else
+{
+	// Initialize Kohana
+	require SYSPATH.'core/Bootstrap'.EXT;
+}

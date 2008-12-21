@@ -1,11 +1,14 @@
 # Enable rewriting
-RewriteEngine on
+RewriteEngine On
 
 # Installation directory
-RewriteBase /kohanaphp.com/
+RewriteBase /kohana/branches/website/
 
 # Protect application and system files from being viewed
 RewriteRule ^(application|modules|system) - [F,L]
+
+# Protect .svn directories from being viewed
+RewriteRule \.svn - [F,L]
 
 # Allow any files or directories that exist to be displayed directly
 RewriteCond %{REQUEST_FILENAME} !-f

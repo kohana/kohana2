@@ -1,6 +1,6 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
-class Controller_Home extends Controller_Website {
+class Home_Controller extends Website_Controller {
 
 	public $auto_render = TRUE;
 

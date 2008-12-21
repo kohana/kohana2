@@ -1,10 +1,10 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Base path of the web site. If this includes a domain, eg: localhost/kohana/
  * then a full URL will be used, eg: http://localhost/kohana/. If it only includes
  * the path, and a site_protocol is specified, the domain will be auto-detected.
  */
-$config['site_domain'] = IN_PRODUCTION ? $_SERVER['SERVER_NAME'].'/' : '/kohanaphp.com/';
+$config['site_domain'] = IN_PRODUCTION ? $_SERVER['SERVER_NAME'].'/' : '/kohana/branches/website/';
 
 /**
  * Force a default protocol to be used by the site. If no site_protocol is
@@ -19,11 +19,6 @@ $config['site_protocol'] = '';
  * This can be removed by using URL rewriting.
  */
 $config['index_page'] = '';
-
-/**
- * Fake file extension that will be added to all generated URLs. Example: .html
- */
-$config['url_suffix'] = '';
 
 /**
  * Length of time of the internal cache in seconds. 0 or FALSE means no caching.
@@ -85,6 +80,12 @@ $config['display_errors'] = ! IN_PRODUCTION;
  * @see http://docs.kohanaphp.com/general/configuration
  */
 $config['render_stats'] = TRUE;
+
+/**
+ * Filename prefixed used to determine extensions. For example, an
+ * extension to the Controller class would be named MY_Controller.php.
+ */
+$config['extension_prefix'] = 'MY_';
 
 /**
  * Additional resource paths, or "modules". Each path can either be absolute

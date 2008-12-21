@@ -1,6 +1,6 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
-class Controller_Website extends Controller_Template {
+class Website_Controller extends Template_Controller {
 
 	// Use auto-rendering, defaults to false
 	public $auto_render = FALSE;
@@ -26,7 +26,7 @@ class Controller_Website extends Controller_Template {
 		'trac' => array
 		(
 			'title' => 'layout.trac_title',
-			'url'   => 'http://trac.kohanaphp.com/timeline?milestone=on&ticket=on&changeset=on&max=20&daysback=90&format=rss',
+			'url'   => 'http://dev.kohanaphp.com/timeline?milestone=on&ticket=on&changeset=on&max=20&daysback=90&format=rss',
 			'items' => array()
 		)
 	);

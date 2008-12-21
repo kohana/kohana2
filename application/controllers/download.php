@@ -1,6 +1,6 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
-class Controller_Download extends Controller_Website {
+class Download_Controller extends Website_Controller {
 
 	public $auto_render = TRUE;
 
@@ -22,9 +22,9 @@ class Controller_Download extends Controller_Website {
 			->bind('errors', $errors);
 
 		// Release version, codename, and date
-		$content->release_version = '2.2';
-		$content->release_codename = 'efímera';
-		$content->release_date = strtotime('2008/08/08');
+		$content->release_version = '2.3';
+		$content->release_codename = 'accipiter';
+		$content->release_date = strtotime('2008/12/19');
 
 		// Counter
 		$content->counter = file_get_contents(APPPATH.'cache/counter.txt');
@@ -128,6 +128,7 @@ class Controller_Download extends Controller_Website {
 				$archive->add($source, $prefix, FALSE);
 				$archive->add($source.'example.htaccess', $prefix.'example.htaccess');
 				$archive->add($source.'index.php', $prefix.'index.php');
+				$archive->add($source.'install.php', $prefix.'install.php');
 				$archive->add($source.'Kohana License.html', $prefix.'Kohana License.html');
 				$archive->add($source.'kohana.png', $prefix.'kohana.png');
 
@@ -243,4 +244,4 @@ class Controller_Download extends Controller_Website {
 		closedir($dir);
 	}
 
-} // End Controller_Download
+} // End Download_Controller

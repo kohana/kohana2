@@ -1,6 +1,6 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
-class Controller_Donate extends Controller_Website {
+class Donate_Controller extends Website_Controller {
 
 	protected $auth_required = 'developer';
 
