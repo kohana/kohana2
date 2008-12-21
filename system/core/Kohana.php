@@ -551,8 +551,7 @@ final class Kohana {
 			else
 			{
 				// Log directory is invalid
-				echo Kohana::lang('core.log_dir_unwritable', $dir);
-				exit(1);
+				throw new Kohana_Exception('core.log_dir_unwritable', $dir);
 			}
 		}
 
