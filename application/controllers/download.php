@@ -54,12 +54,12 @@ class Download_Controller extends Website_Controller {
 				'description' => Kohana::lang('download.swift_description'),
 				'file' => 'swift'
 			),
-			'HTMLPurifier' => array
-			(
-				'link' => 'http://htmlpurifier.org/',
-				'description' => Kohana::lang('download.purifier_description'),
-				'file' => 'htmlpurifier'
-			)
+			// 'HTMLPurifier' => array
+			// (
+			// 	'link' => 'http://htmlpurifier.org/',
+			// 	'description' => Kohana::lang('download.purifier_description'),
+			// 	'file' => 'htmlpurifier'
+			// )
 		);
 
 		// Supported languages
