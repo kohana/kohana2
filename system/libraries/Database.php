@@ -910,7 +910,9 @@ class Database_Core {
 			}
 			$values = implode(",", $escaped_values);
 		}
-		$this->where($this->driver->escape_column($field).' '.($not === TRUE ? 'NOT ' : '').'IN ('.$values.')');
+
+		$where = $this->driver->escape_column(((strpos($field,'.') !== FALSE) ? $this->config['table_prefix'] : ''). $field).' '.($not === TRUE ? 'NOT ' : '').'IN ('.$values.')';
+		$this->where[] = $this->driver->where($where, '', 'AND ', count($this->where), -1);
 
 		return $this;
 	}
