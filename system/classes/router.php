@@ -36,6 +36,30 @@ class Router_Core {
 		// Set the complete URI
 		Router::$complete_uri = Router::$current_uri.Router::$query_string;
 
+		if ($route = Router::find_route(Router::$current_uri))
+		{
+			// A matching route has been found
+			Router::$current_route = $route['name'];
+
+			// Argument prefixes
+			Router::$prefix = $route['prefix'];
+
+			// Controller, method, and arguments
+			Router::$controller = $route['controller'];
+			Router::$method     = $route['method'];
+			Router::$arguments  = $route['arguments'];
+		}
+	}
+
+	/**
+	 * Matches the given URI against the configured routes.
+	 * 
+	 * @param   string   URI string
+	 * @return  array    name, controller, method, arguments, prefix
+	 * @return  FALSE    no matching route
+	 */
+	public static function find_route($uri)
+	{
 		// Load routes
 		$routes = Kohana::config('routes');
 
@@ -56,7 +80,7 @@ class Router_Core {
 			// Compile the route into regex
 			$regex = Router::compile($route);
 
-			if (preg_match('#^'.$regex.'$#u', Router::$current_uri, $matches))
+			if (preg_match('#^'.$regex.'$#u', $uri, $matches))
 			{
 				if (isset($route['request']) AND $route['request'] !== Router::$request_method)
 				{
@@ -79,12 +103,10 @@ class Router_Core {
 					}
 				}
 
-				if (isset($route['prefix']))
-				{
-					// Set prefixes
-					Router::$prefix = $route['prefix'];
-				}
+				// Set prefixes
+				$prefix = isset($route['prefix']) ? $route['prefix'] : array();
 
+				$arguments = array();
 				foreach ($route['defaults'] as $key => $val)
 				{
 					if (is_int($key) OR $key === 'controller' OR $key === 'method')
@@ -93,33 +115,30 @@ class Router_Core {
 						continue;
 					}
 
-					if ( ! empty(Router::$prefix[$key]))
+					if ( ! empty($prefix[$key]))
 					{
 						// Add the prefix to the value
-						$val = Router::$prefix[$key].$val;
+						$val = $prefix[$key].$val;
 					}
 
-					Router::$arguments[$key] = $val;
+					$arguments[$key] = $val;
 				}
 
 				// Set controller name
-				Router::$controller = $route['defaults']['controller'];
+				$controller = $route['defaults']['controller'];
 
 				if (isset($route['defaults']['method']))
 				{
 					// Set controller method
-					Router::$method = $route['defaults']['method'];
+					$method = $route['defaults']['method'];
 				}
 				else
 				{
 					// Default method
-					Router::$method = 'index';
+					$method = 'index';
 				}
 
-				// A matching route has been found!
-				Router::$current_route = $name;
-
-				return TRUE;
+				return array('name' => $name, 'controller' => $controller, 'method' => $method, 'arguments' => $arguments, 'prefix' => $prefix);
 			}
 		}
 
