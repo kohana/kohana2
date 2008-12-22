@@ -36,6 +36,9 @@ abstract class Controller_Template extends Controller {
 		{
 			// Render the template immediately after the controller method
 			Event::add('system.post_controller', array($this, '_render'));
+
+			// Render the content immediately after the controller method
+			Event::add('dispatch.post_controller', array($this, '_render_content'));
 		}
 	}
 
@@ -48,6 +51,18 @@ abstract class Controller_Template extends Controller {
 		{
 			// Render the template when the class is destroyed
 			$this->template->render(TRUE);
+		}
+	}
+
+	/**
+	 * Render the content.
+	 */
+	public function _render_content()
+	{
+		if ($this->auto_render == TRUE)
+		{
+			// Display the template content
+			echo $this->template->content;
 		}
 	}
 
