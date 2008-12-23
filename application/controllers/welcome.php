@@ -22,6 +22,8 @@ class Welcome_Controller extends Template_Controller {
 		// In Kohana, all views are loaded and treated as objects.
 		$this->template->content = new View('welcome_content');
 
+		$this->template->content->blah = 'test';
+
 		// You can assign anything variable to a view by using standard OOP
 		// methods. In my welcome view, the $title variable will be assigned
 		// the value I give it here.
