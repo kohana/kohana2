@@ -324,7 +324,7 @@ class ORM_Core {
 			{
 				// many<>many relationship
 				return $this->related[$column] = $model
-					->in($model->primary_key, $this->changed_relations[$column])
+					->in($model->table_name.'.'.$model->primary_key, $this->changed_relations[$column])
 					->find_all();
 			}
 			else
