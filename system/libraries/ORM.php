@@ -324,14 +324,14 @@ class ORM_Core {
 			{
 				// many<>many relationship
 				return $this->related[$column] = $model
-					->in($model->primary_key, $this->changed_relations[$column])
+					->in($model->table_name.'.'.$model->primary_key, $this->changed_relations[$column])
 					->find_all();
 			}
 			else
 			{
 				// empty many<>many relationship
 				return $this->related[$column] = $model
-					->where($model->primary_key, NULL)
+					->where($model->table_name.'.'.$model->primary_key, NULL)
 					->find_all();
 			}
 		}
@@ -901,9 +901,16 @@ class ORM_Core {
 	 * @return  boolean
 	 */
 	public function has(ORM $model)
-	{
-		// Get the plural object name as the related name
-		$related = $model->object_plural;
+	{	
+		if ($model->table_names_plural)
+		{
+			// Get the plural object name as the related name	
+			$related = $model->object_plural;
+		}
+		else
+		{
+			$related = $model->object_name;
+		}
 
 		if (($join_table = array_search($related, $this->has_and_belongs_to_many)) === FALSE)
 			return FALSE;
@@ -1408,12 +1415,17 @@ class ORM_Core {
 	 */
 	protected function load_relations($table, ORM $model)
 	{
+		// Save the current query chain (otherwise the next call will clash)
+		$this->db->push();
+
 		$query = $this->db
 			->select($model->foreign_key(NULL).' AS id')
 			->from($table)
 			->where($this->foreign_key(NULL, $table), $this->object[$this->primary_key])
 			->get()
 			->result(TRUE);
+
+		$this->db->pop();
 
 		$relations = array();
 		foreach ($query as $row)
