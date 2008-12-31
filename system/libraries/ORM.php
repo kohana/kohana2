@@ -683,9 +683,10 @@ class ORM_Core {
 	 * Saves the current object.
 	 *
 	 * @chainable
+	 * @param   mixed  id to save
 	 * @return  ORM
 	 */
-	public function save()
+	public function save($id = NULL)
 	{
 		if ( ! empty($this->changed))
 		{
@@ -704,6 +705,16 @@ class ORM_Core {
 
 				// Object has been saved
 				$this->saved = TRUE;
+			}
+			elseif ($id !== NULL)
+			{
+				// Using the id parameter allows saving without first loading the object
+				$query = $this->db
+					->where($this->primary_key, $id)
+					->update($this->table_name, $data);
+
+				// Object has been saved
+				$this->saved = TRUE;				
 			}
 			else
 			{
@@ -799,6 +810,7 @@ class ORM_Core {
 	 * relationships that have been created with other objects.
 	 *
 	 * @chainable
+	 * @param   mixed  id to delete
 	 * @return  ORM
 	 */
 	public function delete($id = NULL)
