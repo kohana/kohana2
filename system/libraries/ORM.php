@@ -110,8 +110,8 @@ class ORM_Core {
 		}
 		elseif (!empty($id))
 		{			
-			// Find an object
-			$this->find($id);
+			// Set the object's primary key, but don't load it until needed
+			$this->object[$this->primary_key] = $id;			
 		}
 	}
 
@@ -261,8 +261,14 @@ class ORM_Core {
 		}
 		elseif (array_key_exists($column, $this->object))
 		{
+			if( ! $this->loaded AND $this->object[$this->primary_key] !== 0)
+			{
+				// Column asked for but the object hasn't been loaded yet, so do it now
+				$this->find($this->object[$this->primary_key]);
+			}
+			
 			return $this->object[$column];
-		}
+		}		
 		elseif (isset($this->related[$column]))
 		{
 			return $this->related[$column];
@@ -274,6 +280,12 @@ class ORM_Core {
 		elseif ($model = $this->related_object($column))
 		{
 			// This handles the has_one and belongs_to relationships
+
+			if( ! $this->loaded)
+			{
+				// Column asked for but the object hasn't been loaded yet, so do it now
+				$this->find($this->object[$this->primary_key]);
+			}
 
 			if (array_key_exists($column.'_'.$model->primary_key, $this->object))
 			{
