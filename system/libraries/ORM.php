@@ -638,7 +638,7 @@ class ORM_Core {
 		// Apply the validation library to this model
 		$this->validation = $array;
 		
-		if ( ! $this->validation>submitted())
+		if ( ! $this->validation->submitted())
 		{
 			$safe_array = $this->validation->safe_array();
 
