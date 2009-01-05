@@ -261,7 +261,7 @@ class ORM_Core {
 		}
 		elseif (array_key_exists($column, $this->object))
 		{
-			if( ! $this->loaded AND $this->object[$this->primary_key] !== 0)
+			if( ! $this->loaded AND ! empty($this->object[$this->primary_key]) AND ($this->object[$this->primary_key] !== '0'))
 			{
 				// Column asked for but the object hasn't been loaded yet, so do it now
 				$this->find($this->object[$this->primary_key]);
