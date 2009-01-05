@@ -62,9 +62,6 @@ class ORM_Core {
 	
 	// With calls already applied
 	protected $with_applied = array();
-	
-	// Validation library
-	protected $validation = NULL;
 
 	/**
 	 * Creates and returns a new model.
@@ -343,8 +340,7 @@ class ORM_Core {
 				'object_name', 'object_plural', // Object
 				'primary_key', 'primary_val', 'table_name', 'table_columns', // Table
 				'loaded', 'saved', // Status
-				'has_one', 'belongs_to', 'has_many', 'has_and_belongs_to_many', 'load_with', // Relationships
-				'validation' // Validation library
+				'has_one', 'belongs_to', 'has_many', 'has_and_belongs_to_many', 'load_with' // Relationships
 			)))
 		{
 			// Model meta information
@@ -635,12 +631,9 @@ class ORM_Core {
 	 */
 	public function validate(Validation $array, $save = FALSE)
 	{
-		// Apply the validation library to this model
-		$this->validation = $array;
-		
-		if ( ! $this->validation->submitted())
+		if ( ! $array->submitted())
 		{
-			$safe_array = $this->validation->safe_array();
+			$safe_array = $array->safe_array();
 
 			foreach ($safe_array as $key => $value)
 			{
@@ -654,14 +647,14 @@ class ORM_Core {
 				}
 
 				// Pre-fill data
-				$this->validation[$key] = $value;
+				$array[$key] = $value;
 			}
 		}
 
 		// Validate the array
-		if ($status = $this->validation->validate())
+		if ($status = $array->validate())
 		{
-			$safe_array = $this->validation->safe_array();
+			$safe_array = $array->safe_array();
 
 			foreach ($safe_array as $key => $value)
 			{
