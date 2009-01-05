@@ -59,7 +59,7 @@ class ORM_Core {
 	// Database configuration
 	protected $db = 'default';
 	protected $db_applied = array();
-	
+
 	// With calls already applied
 	protected $with_applied = array();
 
@@ -109,7 +109,7 @@ class ORM_Core {
 			$this->load_values((array) $id);
 		}
 		elseif (!empty($id))
-		{			
+		{
 			// Find an object
 			$this->find($id);
 		}
@@ -453,12 +453,12 @@ class ORM_Core {
 
 		return $object;
 	}
-	
+
 	/**
 	 * Binds another one-to-one object to this model.  One-to-one objects
 	 * can be nested using 'object1:object2' syntax
 	 *
-	 * @param string $object 
+	 * @param string $object
 	 * @return void
 	 */
 	public function with($object)
@@ -471,7 +471,7 @@ class ORM_Core {
 
 		$prefix = $table = $object;
 
-		// Split object parts 
+		// Split object parts
 		$objects = explode(':', $object);
 		$object	 = $this;
 		foreach ($objects as $object_part)
@@ -479,21 +479,21 @@ class ORM_Core {
 			// Go down the line of objects to find the given target
 			$parent = $object;
 			$object = $parent->related_object($object_part);
-			
+
 			if ( ! $object)
 			{
 				// Can't find related object
 				return $this;
 			}
 		}
-		
+
 		$table = $object_part;
-		
+
 		if ($this->table_names_plural)
 		{
 			$table = inflector::plural($table);
 		}
-		
+
 		// Pop-off top object to get the parent object (user:photo:tag's parent is user:photo)
 		array_pop($objects);
 		$parent_prefix = implode(':', $objects);
@@ -511,10 +511,10 @@ class ORM_Core {
 				$this->with($parent_prefix);
 			}
 		}
-		
+
 		// Add to with_applied to prevent duplicate joins
 		$this->with_applied[$prefix] = TRUE;
-		
+
 		// Use the keys of the empty object to determine the columns
 		$select = array_keys($object->as_array());
 		foreach ($select as $i => $column)
@@ -530,7 +530,7 @@ class ORM_Core {
 		$foreign_key = $object_part.'_'.$object->primary_key;
 
 		if (array_key_exists($foreign_key, $parent->object))
-		{	
+		{
 			// Foreign key exists in the joined object's parent
 			$join_col1 = $object->foreign_key(TRUE, $prefix);
 			$join_col2 = $parent_prefix.'.'.$foreign_key;
@@ -901,10 +901,10 @@ class ORM_Core {
 	 * @return  boolean
 	 */
 	public function has(ORM $model)
-	{	
+	{
 		if ($model->table_names_plural)
 		{
-			// Get the plural object name as the related name	
+			// Get the plural object name as the related name
 			$related = $model->object_plural;
 		}
 		else
