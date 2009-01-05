@@ -554,7 +554,7 @@ class ORM_Core {
 		}
 
 		// Join the related object into the result
-		$this->db->join($object->table_name.' AS '.$prefix, $join_col1, $join_col2, 'LEFT');
+		$this->db->join($object->table_name.' AS '.$this->db->table_prefix().$prefix, $join_col1, $join_col2, 'LEFT');
 
 		return $this;
 	}
