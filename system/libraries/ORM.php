@@ -261,10 +261,11 @@ class ORM_Core {
 		}
 		elseif (array_key_exists($column, $this->object))
 		{
-			if( ! $this->loaded AND ! empty($this->object[$this->primary_key]) AND ($this->object[$this->primary_key] !== '0'))
+			if( ! $this->loaded AND ! $this->empty_key())
 			{
 				// Column asked for but the object hasn't been loaded yet, so do it now
-				$this->find($this->object[$this->primary_key]);
+				// Ignore loading of any columns that have been changed
+				$this->find($this->object[$this->primary_key], TRUE);
 			}
 			
 			return $this->object[$column];
@@ -281,7 +282,7 @@ class ORM_Core {
 		{
 			// This handles the has_one and belongs_to relationships
 
-			if( ! $this->loaded)
+			if( ! $this->loaded AND ! $this->empty_key())
 			{
 				// Column asked for but the object hasn't been loaded yet, so do it now
 				$this->find($this->object[$this->primary_key]);
@@ -566,7 +567,7 @@ class ORM_Core {
 	 * @param   mixed  primary key or an array of clauses
 	 * @return  ORM
 	 */
-	public function find($id = NULL)
+	public function find($id = NULL, $ignore_changed = FALSE)
 	{
 		if ($id !== NULL)
 		{
@@ -582,7 +583,7 @@ class ORM_Core {
 			}
 		}
 
-		return $this->load_result();
+		return $this->load_result(FALSE, $ignore_changed);
 	}
 
 	/**
@@ -695,10 +696,9 @@ class ORM_Core {
 	 * Saves the current object.
 	 *
 	 * @chainable
-	 * @param   mixed  id to save
 	 * @return  ORM
 	 */
-	public function save($id = NULL)
+	public function save()
 	{
 		if ( ! empty($this->changed))
 		{
@@ -709,7 +709,7 @@ class ORM_Core {
 				$data[$column] = $this->object[$column];
 			}
 
-			if ($this->loaded === TRUE)
+			if ( ! $this->empty_key())
 			{
 				$query = $this->db
 					->where($this->primary_key, $this->object[$this->primary_key])
@@ -717,16 +717,6 @@ class ORM_Core {
 
 				// Object has been saved
 				$this->saved = TRUE;
-			}
-			elseif ($id !== NULL)
-			{
-				// Using the id parameter allows saving without first loading the object
-				$query = $this->db
-					->where($this->primary_key, $id)
-					->update($this->table_name, $data);
-
-				// Object has been saved
-				$this->saved = TRUE;				
 			}
 			else
 			{
@@ -1254,13 +1244,16 @@ class ORM_Core {
 	 * @param   array  values to load
 	 * @return  ORM
 	 */
-	public function load_values(array $values)
+	public function load_values(array $values, $ignore_changed = FALSE)
 	{
 		if (array_key_exists($this->primary_key, $values))
 		{
-			// Replace the object and reset the object status
-			$this->object = $this->changed = $this->related = array();
-
+			if ( ! $ignore_changed)
+			{
+				// Replace the object and reset the object status
+				$this->object = $this->changed = $this->related = array();
+			}
+			
 			// Set the loaded and saved object status based on the primary key
 			$this->loaded = $this->saved = (bool) $values[$this->primary_key];
 		}
@@ -1272,13 +1265,16 @@ class ORM_Core {
 		{
 			if (strpos($column, ':') === FALSE)
 			{
-				if (isset($this->table_columns[$column]))
+				if ( ! $ignore_changed OR ! isset($this->changed[$column]))
 				{
-					// The type of the value can be determined, convert the value
-					$value = $this->load_type($column, $value);
-				}
+					if (isset($this->table_columns[$column]))
+					{
+						// The type of the value can be determined, convert the value
+						$value = $this->load_type($column, $value);
+					}
 
-				$this->object[$column] = $value;
+					$this->object[$column] = $value;
+				}
 			}
 			else
 			{
@@ -1365,7 +1361,7 @@ class ORM_Core {
 	 * @return  ORM           for single rows
 	 * @return  ORM_Iterator  for multiple rows
 	 */
-	protected function load_result($array = FALSE)
+	protected function load_result($array = FALSE, $ignore_changed = FALSE)
 	{
 		if ($array === FALSE)
 		{
@@ -1419,7 +1415,7 @@ class ORM_Core {
 		if ($result->count() === 1)
 		{
 			// Load object values
-			$this->load_values($result->result(FALSE)->current());
+			$this->load_values($result->result(FALSE)->current(), $ignore_changed);
 		}
 		else
 		{
@@ -1458,6 +1454,26 @@ class ORM_Core {
 		}
 
 		return $relations;
+	}
+	
+	/**
+	 * Returns whether or not given key is empty, uses primary key by default
+	 *
+	 * @param  string  key/field name
+	 * @return bool
+	 */
+	protected function empty_key($key = NULL)
+	{
+		if($key === NULL)
+		{
+			$key = $this->object[$this->primary_key];
+		}
+		else
+		{
+			$key = $this->object[$key];
+		}
+
+		return (empty($key) AND $key !== '0');
 	}
 
 } // End ORM
