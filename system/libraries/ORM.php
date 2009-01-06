@@ -111,7 +111,7 @@ class ORM_Core {
 		elseif (!empty($id))
 		{
 			// Set the object's primary key, but don't load it until needed
-			$this->object[$this->primary_key] = $id;			
+			$this->object[$this->primary_key] = $id;
 		}
 	}
 
@@ -267,9 +267,9 @@ class ORM_Core {
 				// Ignore loading of any columns that have been changed
 				$this->find($this->object[$this->primary_key], TRUE);
 			}
-			
+
 			return $this->object[$column];
-		}		
+		}
 		elseif (isset($this->related[$column]))
 		{
 			return $this->related[$column];
@@ -284,8 +284,8 @@ class ORM_Core {
 
 			if( ! $this->loaded AND ! $this->empty_key())
 			{
-				// Column asked for but the object hasn't been loaded yet, so do it now
-				$this->find($this->object[$this->primary_key]);
+				// Column asked for but object hasn't been loaded yet
+				$this->find($this->object[$this->primary_key], TRUE);
 			}
 
 			if (array_key_exists($column.'_'.$model->primary_key, $this->object))
@@ -565,6 +565,7 @@ class ORM_Core {
 	 *
 	 * @chainable
 	 * @param   mixed  primary key or an array of clauses
+	 * @param   bool   ignore loading of columns that have been modified
 	 * @return  ORM
 	 */
 	public function find($id = NULL, $ignore_changed = FALSE)
@@ -711,6 +712,8 @@ class ORM_Core {
 
 			if ( ! $this->empty_key())
 			{
+				// Primary key isn't empty so do an update
+
 				$query = $this->db
 					->where($this->primary_key, $this->object[$this->primary_key])
 					->update($this->table_name, $data);
@@ -1242,6 +1245,7 @@ class ORM_Core {
 	 *
 	 * @chainable
 	 * @param   array  values to load
+	 * @param   bool   ignore loading of columns that have been modified
 	 * @return  ORM
 	 */
 	public function load_values(array $values, $ignore_changed = FALSE)
@@ -1253,7 +1257,7 @@ class ORM_Core {
 				// Replace the object and reset the object status
 				$this->object = $this->changed = $this->related = array();
 			}
-			
+
 			// Set the loaded and saved object status based on the primary key
 			$this->loaded = $this->saved = (bool) $values[$this->primary_key];
 		}
@@ -1358,6 +1362,7 @@ class ORM_Core {
 	 *
 	 * @chainable
 	 * @param   boolean       return an iterator or load a single row
+	 * @param   boolean       ignore loading of columns that have been modified
 	 * @return  ORM           for single rows
 	 * @return  ORM_Iterator  for multiple rows
 	 */
@@ -1455,7 +1460,7 @@ class ORM_Core {
 
 		return $relations;
 	}
-	
+
 	/**
 	 * Returns whether or not given key is empty, uses primary key by default
 	 *
