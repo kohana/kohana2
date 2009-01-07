@@ -49,6 +49,9 @@ class Database_Core {
 	protected $offset     = FALSE;
 	protected $last_query = '';
 
+	// Stack of queries for push/pop
+	protected $query_history = array();
+
 	/**
 	 * Returns a singleton instance of Database.
 	 *
