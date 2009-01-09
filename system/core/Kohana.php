@@ -1606,7 +1606,7 @@ class Kohana_Exception extends Exception {
 		$args = array_slice(func_get_args(), 1);
 
 		// Fetch the error message
-		$message = self::lang($error, $args);
+		$message = Kohana::lang($error, $args);
 
 		if ($message === $error OR empty($message))
 		{
@@ -1698,7 +1698,7 @@ class Kohana_404_Exception extends Kohana_Exception {
 			$page = Router::$current_uri.Router::$url_suffix.Router::$query_string;
 		}
 
-		Exception::__construct(self::lang('core.page_not_found', $page));
+		Exception::__construct(Kohana::lang('core.page_not_found', $page));
 
 		$this->template = $template;
 	}
