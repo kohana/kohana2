@@ -32,12 +32,12 @@ class Router_Core {
 	 *
 	 * [ref-esr]: http://docs.kohanaphp.com/events/system.routing
 	 *
-	 * @return  boolean
+	 * @return  void
 	 */
 	public static function setup()
 	{
 		// Set the complete URI
-		Router::$complete_uri = Router::$current_uri.Router::$query_string;
+		self::$complete_uri = self::$current_uri.self::$query_string;
 
 		// Load routes
 		$routes = Kohana::config('routes');
@@ -56,86 +56,96 @@ class Router_Core {
 
 		foreach ($routes as $name => $route)
 		{
-			// Compile the route into regex
-			$regex = Router::compile($route);
-
-			if (preg_match('#^'.$regex.'$#u', Router::$current_uri, $matches))
+			if (isset($route['request']) AND $route['request'] !== self::$request_method)
 			{
-				if (isset($route['request']) AND $route['request'] !== Router::$request_method)
+				// The request method is invalid
+				continue;
+			}
+			
+			// Compile the route into regex
+			$regex = self::compile($route);
+
+			if (! preg_match('#^'.$regex.'$#u', self::$current_uri, $matches))
+			{
+				// The route does not match
+				continue;
+			}
+
+			foreach ($matches as $key => $value)
+			{
+				if (is_int($key) OR $key === 'route')
 				{
-					// The request method is invalid
+					// Skip matches that are not named or readonly
 					continue;
 				}
 
-				foreach ($matches as $key => $value)
+				if ($value !== '')
 				{
-					if (is_int($key) OR $key === 'route')
-					{
-						// Skip matches that are not named or readonly
-						continue;
-					}
-
-					if ($value !== '')
-					{
-						// Overload the route with the matched value
-						$route['defaults'][$key] = $value;
-					}
+					// Overload the route with the matched value
+					$route['defaults'][$key] = $value;
 				}
-
-				if (isset($route['prefix']))
-				{
-					// Set prefixes
-					Router::$prefix = $route['prefix'];
-				}
-
-				foreach ($route['defaults'] as $key => $val)
-				{
-					if (is_int($key) OR $key === 'controller' OR $key === 'method')
-					{
-						// These keys are not arguments, skip them
-						continue;
-					}
-
-					if ( ! empty(Router::$prefix[$key]))
-					{
-						// Add the prefix to the value
-						$val = Router::$prefix[$key].$val;
-					}
-
-					Router::$arguments[$key] = $val;
-				}
-
-				// Set controller name
-				$path = Router::$controller = $route['defaults']['controller'];
-
-				if (isset(Router::$prefix['controller']))
-				{
-					// Add the prefix to the controller
-					$path = Router::$prefix['controller'].$path;
-				}
-
-				// Set the controller path
-				Router::$controller_path = Kohana::find_file('controllers', str_replace('_', '/', $path));
-
-				if (isset($route['defaults']['method']))
-				{
-					// Set controller method
-					Router::$method = $route['defaults']['method'];
-				}
-				else
-				{
-					// Default method
-					Router::$method = 'index';
-				}
-
-				// A matching route has been found!
-				Router::$current_route = $name;
-
-				return TRUE;
 			}
+
+			if (isset($route['prefix']))
+			{
+				// Set prefixes
+				self::$prefix = $route['prefix'];
+			}
+
+			foreach ($route['defaults'] as $key => $val)
+			{
+				if (is_int($key) OR $key === 'controller' OR $key === 'method')
+				{
+					// These keys are not arguments, skip them
+					continue;
+				}
+
+				if ( ! empty(self::$prefix[$key]))
+				{
+					// Add the prefix to the value
+					$val = self::$prefix[$key].$val;
+				}
+
+				self::$arguments[$key] = $val;
+			}
+
+			// Set controller name
+			$path = self::$controller = $route['defaults']['controller'];
+
+			if (isset(self::$prefix['controller']))
+			{
+				// Add the prefix to the controller
+				$path = self::$prefix['controller'].$path;
+			}
+
+			// Set the controller path
+			self::$controller_path = Kohana::find_file('controllers', str_replace('_', '/', $path));
+
+			if (isset($route['defaults']['method']))
+			{
+				// Set controller method
+				self::$method = $route['defaults']['method'];
+			}
+			else
+			{
+				// Default method
+				self::$method = 'index';
+			}
+
+			// A matching route has been found!
+			self::$current_route = $name;
+
+			break;
 		}
 
-		return FALSE;
+		// Last chance to set routing before a 404 is triggered
+		Event::run('system.post_routing');
+
+		if (!self::$controller_path)
+		{
+			// No controller was found, so no page can be rendered
+			Event::run('system.404');
+		}
 	}
 
 	/**
@@ -150,12 +160,12 @@ class Router_Core {
 			// Command line requires a bit of hacking
 			if (isset($_SERVER['argv'][1]))
 			{
-				Router::$current_uri = $_SERVER['argv'][1];
+				self::$current_uri = $_SERVER['argv'][1];
 
 				// Remove GET string from segments
-				if (($query = strpos(Router::$current_uri, '?')) !== FALSE)
+				if (($query = strpos(self::$current_uri, '?')) !== FALSE)
 				{
-					list (Router::$current_uri, $query) = explode('?', Router::$current_uri, 2);
+					list (self::$current_uri, $query) = explode('?', self::$current_uri, 2);
 
 					// Parse the query string into $_GET
 					parse_str($query, $_GET);
@@ -171,7 +181,7 @@ class Router_Core {
 		elseif (isset($_GET['kohana_uri']))
 		{
 			// Use the URI defined in the query string
-			Router::$current_uri = $_GET['kohana_uri'];
+			self::$current_uri = $_GET['kohana_uri'];
 
 			// Remove the URI from $_GET
 			unset($_GET['kohana_uri']);
@@ -181,50 +191,50 @@ class Router_Core {
 		}
 		elseif (isset($_SERVER['PATH_INFO']) AND $_SERVER['PATH_INFO'])
 		{
-			Router::$current_uri = $_SERVER['PATH_INFO'];
+			self::$current_uri = $_SERVER['PATH_INFO'];
 		}
 		elseif (isset($_SERVER['ORIG_PATH_INFO']) AND $_SERVER['ORIG_PATH_INFO'])
 		{
-			Router::$current_uri = $_SERVER['ORIG_PATH_INFO'];
+			self::$current_uri = $_SERVER['ORIG_PATH_INFO'];
 		}
 		elseif (isset($_SERVER['PHP_SELF']) AND $_SERVER['PHP_SELF'])
 		{
-			Router::$current_uri = $_SERVER['PHP_SELF'];
+			self::$current_uri = $_SERVER['PHP_SELF'];
 		}
 
 		if (PHP_SAPI === 'cli')
 		{
 			// The request method is command line
-			Router::$request_method = 'cli';
+			self::$request_method = 'cli';
 		}
 		elseif (isset($_SERVER['REQUEST_METHOD']))
 		{
 			// Set the request method using server information
-			Router::$request_method = strtolower($_SERVER['REQUEST_METHOD']);
+			self::$request_method = strtolower($_SERVER['REQUEST_METHOD']);
 		}
 
 		// The front controller directory and filename
 		$fc = substr(realpath($_SERVER['SCRIPT_FILENAME']), strlen(DOCROOT));
 
-		if (($strpos_fc = strpos(Router::$current_uri, $fc)) !== FALSE)
+		if (($strpos_fc = strpos(self::$current_uri, $fc)) !== FALSE)
 		{
 			// Remove the front controller from the current URI
-			Router::$current_uri = substr(Router::$current_uri, $strpos_fc + strlen($fc));
+			self::$current_uri = substr(self::$current_uri, $strpos_fc + strlen($fc));
 		}
 
 		// Remove all dot-paths from the URI, they are not valid
-		Router::$current_uri = preg_replace('#\.[\s./]*/#', '', Router::$current_uri);
+		self::$current_uri = preg_replace('#\.[\s./]*/#', '', self::$current_uri);
 
 		// Reduce multiple slashes into single slashes, remove trailing slashes
-		Router::$current_uri = trim(preg_replace('#//+#', '/', Router::$current_uri), '/');
+		self::$current_uri = trim(preg_replace('#//+#', '/', self::$current_uri), '/');
 
 		// Make sure the URL is not tainted with HTML characters
-		Router::$current_uri = html::specialchars(Router::$current_uri, FALSE);
+		self::$current_uri = html::specialchars(self::$current_uri, FALSE);
 
 		if ( ! empty($_SERVER['QUERY_STRING']))
 		{
 			// Set the query string to the current query string
-			Router::$query_string = '?'.trim($_SERVER['QUERY_STRING'], '&');
+			self::$query_string = '?'.trim($_SERVER['QUERY_STRING'], '&');
 		}
 	}
 
@@ -239,12 +249,12 @@ class Router_Core {
 	{
 		if ($route === TRUE)
 		{
-			$route = Router::$current_route;
+			$route = self::$current_route;
 
 			$values = array_merge
 			(
-				array('controller' => Router::$controller, 'method' => Router::$method),
-				Router::$arguments,
+				array('controller' => self::$controller, 'method' => self::$method),
+				self::$arguments,
 				$values
 			);
 		}
@@ -259,7 +269,7 @@ class Router_Core {
 		$uri = $route['uri'];
 
 		// Get the URI keys from the route
-		$keys = Router::keys($uri);
+		$keys = self::keys($uri);
 
 		// String searches and replacements
 		$search = $replace = array();
