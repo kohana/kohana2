@@ -63,6 +63,9 @@ class ORM_Core {
 	// With calls already applied
 	protected $with_applied = array();
 
+	// Stores column information for ORM models
+	protected static $column_cache = array();
+
 	/**
 	 * Creates and returns a new model.
 	 *
@@ -904,8 +907,16 @@ class ORM_Core {
 	{
 		if ($force === TRUE OR empty($this->table_columns))
 		{
-			// Load table columns
-			$this->table_columns = $this->db->list_fields($this->table_name, TRUE);
+			if (isset(self::$column_cache[$this->object_name]))
+			{
+				// Use cached column information
+				$this->table_columns = self::$column_cache[$this->object_name];
+			}
+			else
+			{
+				// Load table columns
+				self::$column_cache[$this->object_name] = $this->table_columns = $this->db->list_fields($this->table_name, TRUE);
+			}
 		}
 
 		return $this;
