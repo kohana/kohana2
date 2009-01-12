@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Payment_Paypalpro_Driver implements Payment_Driver
+class Payment_Driver_Paypalpro implements Payment_Driver
 {
 	// Fields required to do a transaction
 

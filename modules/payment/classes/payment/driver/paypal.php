@@ -14,7 +14,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
 */
-class Payment_Paypal_Driver implements Payment_Driver {
+class Payment_Driver_Paypal implements Payment_Driver {
 
 	// this array details the required fields within the arrays $set_express_checkout_fields,
 	// $get_express_checkout_fields, $do_express_checkout_fields as well as the

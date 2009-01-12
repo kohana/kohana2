@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Payment_Trident_Driver implements Payment_Driver
+class Payment_Driver_Trident implements Payment_Driver
 {
 	// Fields required to do a transaction
 	private $required_fields = array

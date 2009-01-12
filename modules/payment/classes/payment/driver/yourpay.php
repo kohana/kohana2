@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Payment_Yourpay_Driver implements Payment_Driver
+class Payment_Driver_Yourpay implements Payment_Driver
 {
 	// Fields required to do a transaction
 	private $required_fields = array

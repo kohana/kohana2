@@ -70,7 +70,7 @@ class Payment_Core {
 		is_array($config) AND $this->config = array_merge($this->config, $config);
 
 		// Set driver name
-		$driver = 'Payment_'.ucfirst($this->config['driver']).'_Driver';
+		$driver = 'Payment_Driver_'.ucfirst($this->config['driver']);
 
 		// Load the driver
 		if ( ! Kohana::auto_load($driver))
