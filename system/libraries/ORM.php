@@ -913,15 +913,7 @@ class ORM_Core {
 	 */
 	public function has(ORM $model)
 	{
-		if ($model->table_names_plural)
-		{
-			// Get the plural object name as the related name
-			$related = $model->object_plural;
-		}
-		else
-		{
-			$related = $model->object_name;
-		}
+		$related = $model->object_plural;
 
 		if (($join_table = array_search($related, $this->has_and_belongs_to_many)) === FALSE)
 			return FALSE;
