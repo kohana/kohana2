@@ -930,14 +930,14 @@ class ORM_Core {
 			$this->changed_relations[$related] = $this->object_relations[$related] = $this->load_relations($join_table, $model);
 		}
 
-		if ($model->loaded)
+		if ( ! $model->empty_key())
 		{
 			// Check if a specific object exists
 			return in_array($model->primary_key_value, $this->changed_relations[$related]);
 		}
 		else
 		{
-			return ! empty($this->changed_relations[$related]);
+			return FALSE;
 		}
 	}
 
@@ -981,19 +981,11 @@ class ORM_Core {
 		// Get the faked column name
 		$column = $model->object_plural;
 
-		if ($model->loaded)
-		{
-			if (($key = array_search($model->primary_key_value, $this->changed_relations[$column])) === FALSE)
-				return FALSE;
+		if (($key = array_search($model->primary_key_value, $this->changed_relations[$column])) === FALSE)
+			return FALSE;
 
-			// Remove the relationship
-			unset($this->changed_relations[$column][$key]);
-		}
-		else
-		{
-			// Clear all of this objects relationships
-			$this->changed_relations[$column] = array();
-		}
+		// Remove the relationship
+		unset($this->changed_relations[$column][$key]);
 
 		if (isset($this->related[$column]))
 		{
@@ -1437,6 +1429,26 @@ class ORM_Core {
 		}
 
 		return $relations;
+	}
+
+	/**
+	 * Returns whether or not given key is empty, uses primary key by default
+	 *
+	 * @param  string  key/field name
+	 * @return bool
+	 */
+	protected function empty_key($key = NULL)
+	{
+		if($key === NULL)
+		{
+			$key = $this->object[$this->primary_key];
+		}
+		else
+		{
+			$key = $this->object[$key];
+		}
+
+		return (empty($key) AND $key !== '0');
 	}
 
 } // End ORM
