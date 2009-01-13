@@ -267,7 +267,7 @@ class ORM_Core {
 		}
 		elseif (array_key_exists($column, $this->object))
 		{
-			if( ! $this->loaded AND ! $this->empty_key())
+			if( ! $this->loaded AND ! $this->empty_primary_key())
 			{
 				// Column asked for but the object hasn't been loaded yet, so do it now
 				// Ignore loading of any columns that have been changed
@@ -288,7 +288,7 @@ class ORM_Core {
 		{
 			// This handles the has_one and belongs_to relationships
 
-			if( ! $this->loaded AND ! $this->empty_key())
+			if( ! $this->loaded AND ! $this->empty_primary_key())
 			{
 				// Column asked for but object hasn't been loaded yet
 				$this->find($this->object[$this->primary_key], TRUE);
@@ -716,7 +716,7 @@ class ORM_Core {
 				$data[$column] = $this->object[$column];
 			}
 
-			if ( ! $this->empty_key())
+			if ( ! $this->empty_primary_key())
 			{
 				// Primary key isn't empty so do an update
 
@@ -950,7 +950,7 @@ class ORM_Core {
 			$this->changed_relations[$related] = $this->object_relations[$related] = $this->load_relations($join_table, $model);
 		}
 
-		if ( ! $model->empty_key())
+		if ( ! $model->empty_primary_key())
 		{
 			// Check if a specific object exists
 			return in_array($model->primary_key_value, $this->changed_relations[$related]);
@@ -1257,7 +1257,7 @@ class ORM_Core {
 			}
 
 			// Set the loaded and saved object status based on the primary key
-			$this->loaded = $this->saved = (bool) $values[$this->primary_key];
+			$this->loaded = $this->saved = ($values[$this->primary_key] !== NULL);
 		}
 
 		// Related objects
@@ -1460,23 +1460,13 @@ class ORM_Core {
 	}
 
 	/**
-	 * Returns whether or not given key is empty, uses primary key by default
+	 * Returns whether or not primary key is empty
 	 *
-	 * @param  string  key/field name
 	 * @return bool
 	 */
-	protected function empty_key($key = NULL)
+	protected function empty_primary_key()
 	{
-		if($key === NULL)
-		{
-			$key = $this->object[$this->primary_key];
-		}
-		else
-		{
-			$key = $this->object[$key];
-		}
-
-		return (empty($key) AND $key !== '0');
+		return (empty($this->object[$this->primary_key]) AND $this->object[$this->primary_key] !== '0');
 	}
 
 } // End ORM
