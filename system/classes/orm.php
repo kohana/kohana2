@@ -1139,7 +1139,7 @@ class ORM_Core {
 			$this->object = $this->changed = $this->related = array();
 
 			// Set the loaded and saved object status based on the primary key
-			$this->loaded = $this->saved = ($values[$this->primary_key] > 0);
+			$this->loaded = $this->saved = ! empty($values[$this->primary_key]);
 		}
 
 		// Related objects
