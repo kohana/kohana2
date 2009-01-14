@@ -264,15 +264,19 @@ class Database_Mysql_Driver extends Database_Driver {
 	{
 		static $tables;
 
-		if (empty($tables) AND $query = $db->query('SHOW TABLES FROM '.$this->escape_table($this->db_config['connection']['database'])))
+		$key = $this->db_config['connection']['host'].'/'.$this->db_config['connection']['database'];
+
+		if (empty($tables[$key]) AND $query = $db->query('SHOW TABLES FROM '.$this->escape_table($this->db_config['connection']['database'])))
 		{
+			$tables[$key] = array();
+
 			foreach ($query->result(FALSE) as $row)
 			{
-				$tables[] = current($row);
+				$tables[$key][] = current($row);
 			}
 		}
 
-		return $tables;
+		return $tables[$key];
 	}
 
 	public function show_error()
@@ -284,31 +288,33 @@ class Database_Mysql_Driver extends Database_Driver {
 	{
 		static $tables;
 
-		if (empty($tables[$table]))
+		$key = $this->db_config['connection']['host'].'/'.$this->db_config['connection']['database'].'/'.$table;
+
+		if (empty($tables[$key]))
 		{
 			foreach ($this->field_data($table) as $row)
 			{
 				// Make an associative array
-				$tables[$table][$row->Field] = $this->sql_type($row->Type);
+				$tables[$key][$row->Field] = $this->sql_type($row->Type);
 
 				if ($row->Key === 'PRI' AND $row->Extra === 'auto_increment')
 				{
 					// For sequenced (AUTO_INCREMENT) tables
-					$tables[$table][$row->Field]['sequenced'] = TRUE;
+					$tables[$key][$row->Field]['sequenced'] = TRUE;
 				}
 
 				if ($row->Null === 'YES')
 				{
 					// Set NULL status
-					$tables[$table][$row->Field]['null'] = TRUE;
+					$tables[$key][$row->Field]['null'] = TRUE;
 				}
 			}
 		}
 
-		if (!isset($tables[$table]))
+		if (!isset($tables[$key]))
 			throw new Kohana_Database_Exception('database.table_not_found', $table);
 
-		return $tables[$table];
+		return $tables[$key];
 	}
 
 	public function field_data($table)
@@ -317,7 +323,7 @@ class Database_Mysql_Driver extends Database_Driver {
 
 		if ($query = mysql_query('SHOW COLUMNS FROM '.$this->escape_table($table), $this->link))
 		{
-			if (mysql_num_rows($query) > 0)
+			if (mysql_num_rows($query))
 			{
 				while ($row = mysql_fetch_object($query))
 				{
