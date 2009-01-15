@@ -323,7 +323,7 @@ class ORM_Core {
 			// Load the remote model, always singular
 			$model = ORM::factory(inflector::singular($column));
 
-			if ($this->has($model))
+			if ( ! empty($this->changed_relations[$column]))
 			{
 				// many<>many relationship
 				return $this->related[$column] = $model
