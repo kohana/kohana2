@@ -323,7 +323,7 @@ class ORM_Core {
 			// Load the remote model, always singular
 			$model = ORM::factory(inflector::singular($column));
 
-			if ( ! empty($this->changed_relations[$column]))
+			if ($this->has($model, TRUE))
 			{
 				// many<>many relationship
 				return $this->related[$column] = $model
@@ -909,9 +909,10 @@ class ORM_Core {
 	 * Tests if this object has a relationship to a different model.
 	 *
 	 * @param   object   related ORM model
+	 * @param   boolean  check for any relations to given model
 	 * @return  boolean
 	 */
-	public function has(ORM $model)
+	public function has(ORM $model, $any = FALSE)
 	{
 		$related = $model->object_plural;
 
@@ -934,6 +935,11 @@ class ORM_Core {
 		{
 			// Check if a specific object exists
 			return in_array($model->primary_key_value, $this->changed_relations[$related]);
+		}
+		elseif ($any)
+		{
+			// Check if any relations to given model exist
+			return ! empty($this->changed_relations[$related]);
 		}
 		else
 		{
