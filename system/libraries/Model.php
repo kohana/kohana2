@@ -11,6 +11,9 @@
  */
 class Model_Core {
 
+	// Database object
+	protected $db;
+
 	/**
 	 * Creates and returns a new model.
 	 *
@@ -41,9 +44,6 @@ class Model_Core {
 		// Create a model with multiple arguments
 		return $class->newInstanceArgs($args);
 	}
-
-	// Database object
-	protected $db;
 
 	/**
 	 * Loads the database instance, if the database is not already loaded.
