@@ -15,37 +15,6 @@ class Model_Core {
 	protected $db;
 
 	/**
-	 * Creates and returns a new model.
-	 *
-	 * @param   string   model name
-	 * @param   mixed    constructor arguments
-	 * @param   boolean  construct the model with multiple arguments
-	 * @return  Model
-	 */
-	public static function factory($name, $args = NULL, $multiple = FALSE)
-	{
-		// Model class name
-		$class = ucfirst($name).'_Model';
-
-		if ($args === NULL)
-		{
-			// Create a new model with no arguments
-			return new $class;
-		}
-
-		if ($multiple !== TRUE)
-		{
-			// Create a model with a single argument
-			return new $class($args);
-		}
-
-		$class = new ReflectionClass($class);
-
-		// Create a model with multiple arguments
-		return $class->newInstanceArgs($args);
-	}
-
-	/**
 	 * Loads the database instance, if the database is not already loaded.
 	 *
 	 * @return  void
