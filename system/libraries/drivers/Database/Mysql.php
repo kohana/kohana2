@@ -162,14 +162,14 @@ class Database_Mysql_Driver extends Database_Driver {
 		return $column;
 	}
 
-	public function regex($field, $match = '', $type = 'AND ', $num_regexs)
+	public function regex($field, $match, $type, $num_regexs)
 	{
 		$prefix = ($num_regexs == 0) ? '' : $type;
 
 		return $prefix.' '.$this->escape_column($field).' REGEXP \''.$this->escape_str($match).'\'';
 	}
 
-	public function notregex($field, $match = '', $type = 'AND ', $num_regexs)
+	public function notregex($field, $match, $type, $num_regexs)
 	{
 		$prefix = $num_regexs == 0 ? '' : $type;
 
