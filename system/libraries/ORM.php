@@ -362,7 +362,7 @@ class ORM_Core {
 				'has_one', 'belongs_to', 'has_many', 'has_and_belongs_to_many', 'load_with' // Relationships
 			)))
 		{
-			if ($column == 'loaded' && ! $this->loaded AND ! $this->empty_primary_key())
+			if ($column === 'loaded' AND ! $this->loaded AND ! $this->empty_primary_key())
 			{
 				// If returning the loaded member and no load has been attempted, do it now
 				$this->find($this->object[$this->primary_key], TRUE);
