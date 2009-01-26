@@ -294,16 +294,8 @@ class ORM_Core {
 				$this->find($this->object[$this->primary_key], TRUE);
 			}
 
-			if (array_key_exists($column.'_'.$model->primary_key, $this->object))
-			{
-				// Use the FK that exists in this model as the PK
-				$where = array($model->table_name.'.'.$model->primary_key => $this->object[$column.'_'.$model->primary_key]);
-			}
-			else
-			{
-				// Use this model PK as the FK
-				$where = array($this->foreign_key() => $this->object[$this->primary_key]);
-			}
+			// Search where target model's primary key equals this model's foreign key value
+			$where = array($model->table_name.'.'.$model->primary_key => $this->object[$this->foreign_key($column)]);
 
 			// one<>alias:one relationship
 			return $this->related[$column] = $model->find($where);
@@ -316,15 +308,16 @@ class ORM_Core {
 			// Load the "end" model
 			$model = ORM::factory(inflector::singular($column));
 
-			// Load JOIN info
+			// Join ON target model's primary key equaling 'through' model's foreign key
+			// User-defined foreign keys are to be 'through' model
 			$join_table = $through->table_name;
-			$join_col1  = $model->foreign_key(NULL, $join_table);
+			$join_col1  = $through->foreign_key($model->object_name, $join_table);
 			$join_col2  = $model->foreign_key(TRUE);
 
 			// one<>alias:many relationship
 			return $this->related[$column] = $model
 				->join($join_table, $join_col1, $join_col2)
-				->where($this->foreign_key(NULL, $join_table), $this->object[$this->primary_key])
+				->where($through->foreign_key($this->object_name, $join_table), $this->object[$this->primary_key])
 				->find_all();
 		}
 		elseif (in_array($column, $this->has_many))
@@ -554,17 +547,9 @@ class ORM_Core {
 		// Use last object part to generate foreign key
 		$foreign_key = $object_part.'_'.$object->primary_key;
 
-		if (array_key_exists($foreign_key, $parent->object))
-		{
-			// Foreign key exists in the joined object's parent
-			$join_col1 = $object->foreign_key(TRUE, $prefix);
-			$join_col2 = $parent_prefix.'.'.$foreign_key;
-		}
-		else
-		{
-			$join_col1 = $parent->foreign_key(NULL, $prefix);
-			$join_col2 = $parent_prefix.'.'.$parent->primary_key;
-		}
+		// Join ON the target object's primary key and parent object's foreign key
+		$join_col1 = $object->foreign_key(TRUE, $prefix);
+		$join_col2 = $parent->foreign_key($prefix, $parent_prefix);
 
 		// Join the related object into the result
 		$this->db->join($object->table_name.' AS '.$this->db->table_prefix().$prefix, $join_col1, $join_col2, 'LEFT');
