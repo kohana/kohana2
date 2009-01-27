@@ -278,14 +278,14 @@ class ORM_Core {
 		{
 			// This handles the has_one and belongs_to relationships
 
-			if (in_array($model->object_name, $this->belongs_to) OR ! isset($this->object[$this->foreign_key($column, $model->table_name)]))
+			if (in_array($model->object_name, $this->belongs_to))
 			{
-				// Foreign key lies in this table (belongs_to)
-				$where = array($model->table_name.'.'.$model->primary_key => $this->object[$this->foreign_key($column)]);
+				// Foreign key lies in this table (this model belongs_to target model)
+				$where = array($model->table_name.'.'.$model->primary_key => $this->object[$model->foreign_key($column)]);
 			}
 			else
 			{
-				// Foreign key lies in the target table (has_one)
+				// Foreign key lies in the target table (this model has_one target model)
 				$where = array($this->foreign_key($column, $model->table_name) => $this->primary_key_value);
 			}
 
@@ -300,11 +300,11 @@ class ORM_Core {
 			// Load the "end" model
 			$model = ORM::factory(inflector::singular($column));
 
-			// Join ON target model's primary key equaling 'through' model's foreign key
-			// User-defined foreign keys are to be 'through' model
+			// Join ON target model's primary key set to 'through' model's foreign key
+			// User-defined foreign keys must be defined in the 'through' model
 			$join_table = $through->table_name;
 			$join_col1  = $through->foreign_key($model->object_name, $join_table);
-			$join_col2  = $model->foreign_key(TRUE);
+			$join_col2  = $model->table_name.'.'.$model->primary_key;
 
 			// one<>alias:many relationship
 			return $this->related[$column] = $model
@@ -530,12 +530,18 @@ class ORM_Core {
 		// Select all of the prefixed keys in the object
 		$this->db->select($select);
 
-		// Use last object part to generate foreign key
-		$foreign_key = $object_part.'_'.$object->primary_key;
-
-		// Join ON the target object's primary key and parent object's foreign key
-		$join_col1 = $object->foreign_key(TRUE, $prefix);
-		$join_col2 = $parent->foreign_key($prefix, $parent_prefix);
+		if (in_array($object->object_name, $parent->belongs_to))
+		{
+			// Join ON the target object's primary key and parent object's foreign key (parent belongs_to target)
+			$join_col1 = $prefix.'.'.$object->primary_key;
+			$join_col2 = $object->foreign_key($prefix, $parent_prefix);
+		}
+		else
+		{
+			// Join ON the target object's foreign key and parent object's primary key (parent has_one target)
+			$join_col1 = $parent->foreign_key($prefix, $prefix);
+			$join_col2 = $parent_prefix.'.'.$parent->primary_key;
+		}
 
 		// Join the related object into the result
 		$this->db->join($object->table_name.' AS '.$this->db->table_prefix().$prefix, $join_col1, $join_col2, 'LEFT');
