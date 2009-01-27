@@ -294,8 +294,16 @@ class ORM_Core {
 				$this->find($this->object[$this->primary_key], TRUE);
 			}
 
-			// Search where target model's primary key equals this model's foreign key value
-			$where = array($model->table_name.'.'.$model->primary_key => $this->object[$this->foreign_key($column)]);
+			if (in_array($model->object_name, $this->belongs_to) OR ! isset($this->object[$this->foreign_key($column, $model->table_name)]))
+			{
+				// Foreign key lies in this table (belongs_to)
+				$where = array($model->table_name.'.'.$model->primary_key => $this->object[$this->foreign_key($column)]);
+			}
+			else
+			{
+				// Foreign key lies in the target table (has_one)
+				$where = array($this->foreign_key($column, $model->table_name) => $this->primary_key_value);
+			}
 
 			// one<>alias:one relationship
 			return $this->related[$column] = $model->find($where);
