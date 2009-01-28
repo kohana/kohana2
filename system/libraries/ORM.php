@@ -530,7 +530,7 @@ class ORM_Core {
 		// Select all of the prefixed keys in the object
 		$this->db->select($select);
 
-		if (in_array($object->object_name, $parent->belongs_to))
+		if (in_array($object->object_name, $parent->belongs_to) OR ! isset($object->object[$object->foreign_key($prefix, $parent_prefix)))
 		{
 			// Join ON the target object's primary key and parent object's foreign key (parent belongs_to target)
 			$join_col1 = $prefix.'.'.$object->primary_key;
