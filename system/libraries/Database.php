@@ -1278,7 +1278,7 @@ class Database_Core {
 	 * @return Database_Core This Databaes object
 	 */
 	public function push()
-	{	
+	{
 		array_push($this->query_history, array(
 			$this->select,
 			$this->from,
@@ -1310,7 +1310,7 @@ class Database_Core {
 			// No history
 			return $this;
 		}
-	
+
 		list(
 			$this->select,
 			$this->from,
@@ -1328,6 +1328,47 @@ class Database_Core {
 		return $this;
 	}
 
+	/**
+	 * Opens a parenthesis in the where clause
+	 *
+	 * @return Database
+	 */
+	public function open_paren()
+	{
+		$this->where[] = '(';
+		return $this;
+	}
+
+	/**
+	 * Closes a parenthesis in the where clause
+	 *
+	 * @return Database
+	 */
+	public function close_paren()
+	{
+		// Search backwards for the last opening paren and resolve it
+		$i = count($this->where) - 1;
+		$this->where[$i] .= ')';
+
+		while (--$i >= 0)
+		{
+			if ($this->where[$i] == '(')
+			{
+				// Remove the paren from the where clauses, and add it to the right of the operator of the
+				// next where clause.  If removing the paren makes the next where clause the first element
+				// in the where list, then the operator shouldn't be there.  It's there because we
+				// calculate whether or not we need an operator based on the number of where clauses, and
+				// the open paren seems like a where clause even though it isn't.
+				array_splice($this->where, $i, 1);
+				$this->where[$i] = preg_replace("/^(AND|OR) /", $i ? "\\1 (" : "(", $this->where[$i]);
+
+				return $this;
+			}
+		}
+
+		// An error if we get to this point...
+		return $this;
+	}
 
 } // End Database Class
 

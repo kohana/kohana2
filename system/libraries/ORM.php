@@ -223,8 +223,12 @@ class ORM_Core {
 				switch ($num_args)
 				{
 					case 0:
-						// Support for things like reset_select, reset_write, list_tables
-						return $this->db->$method();
+						if ( ! in_array($method, array('open_paren', 'close_paren')))
+						{
+							// Support for things like reset_select, reset_write, list_tables which return other data
+							return $this->db->$method();
+						}
+						$this->db->$method();
 					break;
 					case 1:
 						$this->db->$method($args[0]);
@@ -1085,8 +1089,13 @@ class ORM_Core {
 	 * @param   string  table name
 	 * @return  array
 	 */
-	public function list_fields($table)
+	public function list_fields($table = NULL)
 	{
+		if ($table === NULL)
+		{
+			$table = $this->table_name;
+		}
+
 		// Proxy to database
 		return $this->db->list_fields($table);
 	}
@@ -1097,36 +1106,15 @@ class ORM_Core {
 	 * @param   string  table name
 	 * @return  array
 	 */
-	public function field_data($table)
+	public function field_data($table = NULL)
 	{
+		if ($table === NULL)
+		{
+			$table = $this->table_name;
+		}
+
 		// Proxy to database
 		return $this->db->field_data($table);
-	}
-
-	/**
-	 * Proxy method to Database last_query.
-	 *
-	 * @return  string
-	 */
-	public function last_query()
-	{
-		// Proxy to database
-		return $this->db->last_query();
-	}
-
-	/**
-	 * Proxy method to Database field_data.
-	 *
-	 * @chainable
-	 * @param   string  SQL query to clear
-	 * @return  ORM
-	 */
-	public function clear_cache($sql = NULL)
-	{
-		// Proxy to database
-		$this->db->clear_cache($sql);
-
-		return $this;
 	}
 
 	/**
