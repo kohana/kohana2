@@ -66,7 +66,7 @@ class Database_Mysql_Driver extends Database_Driver {
 			}
 
 			// Clear password after successful connect
-			$this->config['connection']['pass'] = NULL;
+			$this->db_config['connection']['pass'] = NULL;
 
 			return $this->link;
 		}
@@ -264,19 +264,15 @@ class Database_Mysql_Driver extends Database_Driver {
 	{
 		static $tables;
 
-		$key = $this->db_config['connection']['host'].'/'.$this->db_config['connection']['database'];
-
-		if (empty($tables[$key]) AND $query = $db->query('SHOW TABLES FROM '.$this->escape_table($this->db_config['connection']['database'])))
+		if (empty($tables) AND $query = $db->query('SHOW TABLES FROM '.$this->escape_table($this->db_config['connection']['database'])))
 		{
-			$tables[$key] = array();
-
 			foreach ($query->result(FALSE) as $row)
 			{
-				$tables[$key][] = current($row);
+				$tables[] = current($row);
 			}
 		}
 
-		return $tables[$key];
+		return $tables;
 	}
 
 	public function show_error()
@@ -288,33 +284,31 @@ class Database_Mysql_Driver extends Database_Driver {
 	{
 		static $tables;
 
-		$key = $this->db_config['connection']['host'].'/'.$this->db_config['connection']['database'].'/'.$table;
-
-		if (empty($tables[$key]))
+		if (empty($tables[$table]))
 		{
 			foreach ($this->field_data($table) as $row)
 			{
 				// Make an associative array
-				$tables[$key][$row->Field] = $this->sql_type($row->Type);
+				$tables[$table][$row->Field] = $this->sql_type($row->Type);
 
 				if ($row->Key === 'PRI' AND $row->Extra === 'auto_increment')
 				{
 					// For sequenced (AUTO_INCREMENT) tables
-					$tables[$key][$row->Field]['sequenced'] = TRUE;
+					$tables[$table][$row->Field]['sequenced'] = TRUE;
 				}
 
 				if ($row->Null === 'YES')
 				{
 					// Set NULL status
-					$tables[$key][$row->Field]['null'] = TRUE;
+					$tables[$table][$row->Field]['null'] = TRUE;
 				}
 			}
 		}
 
-		if (!isset($tables[$key]))
+		if (!isset($tables[$table]))
 			throw new Kohana_Database_Exception('database.table_not_found', $table);
 
-		return $tables[$key];
+		return $tables[$table];
 	}
 
 	public function field_data($table)
