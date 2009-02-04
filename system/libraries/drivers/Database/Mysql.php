@@ -66,7 +66,7 @@ class Database_Mysql_Driver extends Database_Driver {
 			}
 
 			// Clear password after successful connect
-			$this->config['connection']['pass'] = NULL;
+			$this->db_config['connection']['pass'] = NULL;
 
 			return $this->link;
 		}
