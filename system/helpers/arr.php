@@ -115,6 +115,19 @@ class arr_Core {
 		return $found;
 	}
 
+	/** 
+	 * Get the value of array[key]. If it doesn't exist, return default. 
+	 * 
+	 * @param   array   array to search 
+	 * @param   string  key name 
+	 * @param   mixed   default value 
+	 * @return  mixed 
+	 */ 
+	public static function get(array $array, $key, $default = NULL)
+	{
+		return isset($array[$key]) ? $array[$key] : $default;
+	}
+
 	/**
 	 * Because PHP does not have this function.
 	 *
