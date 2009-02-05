@@ -310,7 +310,7 @@ ORDER BY pg_attribute.attnum');
 	public function field_data($table)
 	{
 		// TODO: This whole function needs to be debugged.
-		$query  = pg_query('SELECT * FROM '.$this->escape_table($table).' LIMIT 1', $this->link);
+		$query  = pg_query($this->link, 'SELECT * FROM '.$this->escape_table($table).' LIMIT 1');
 		$fields = pg_num_fields($query);
 		$table  = array();
 
@@ -463,7 +463,7 @@ class Pgsql_Result extends Database_Result {
 			// tables that have no serial column.
 			$ER = error_reporting(0);
 
-			$result = pg_query($query);
+			$result = pg_query($this->link, $query);
 			$insert_id = pg_fetch_array($result, NULL, PGSQL_ASSOC);
 
 			$this->insert_id = $insert_id['insert_id'];
