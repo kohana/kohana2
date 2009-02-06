@@ -14,17 +14,17 @@ class Payment_Authorize_Driver implements Payment_Driver
 	// Fields required to do a transaction
 	private $required_fields = array
 	(
-		'x_login'			=> FALSE,
-		'x_version'			=> TRUE,
-		'x_delim_char'		=> TRUE,
-		'x_url'				=> TRUE,
-		'x_type'			=> TRUE,
-		'x_method'			=> TRUE,
-		'x_tran_key'		=> FALSE,
-		'x_relay_response'	=> TRUE,
-		'x_card_num'		=> FALSE,
-		'x_exp_date'		=> FALSE,
-		'x_amount'			=> FALSE,
+		'x_login'           => FALSE,
+		'x_version'         => TRUE,
+		'x_delim_char'      => TRUE,
+		'x_url'             => TRUE,
+		'x_type'            => TRUE,
+		'x_method'          => TRUE,
+		'x_tran_key'        => FALSE,
+		'x_relay_response'  => TRUE,
+		'x_card_num'        => FALSE,
+		'x_exp_date'        => FALSE,
+		'x_amount'          => FALSE,
 	);
 
 	// Default required values
@@ -48,14 +48,14 @@ class Payment_Authorize_Driver implements Payment_Driver
 	 */
 	public function __construct($config)
 	{
-		$this->authnet_values['x_login']	= $config['auth_net_login_id'];
-		$this->authnet_values['x_tran_key']	= $config['auth_net_tran_key'];
+		$this->authnet_values['x_login']    = $config['auth_net_login_id'];
+		$this->authnet_values['x_tran_key'] = $config['auth_net_tran_key'];
 		
-		$this->required_fields['x_login']	= !empty($config['auth_net_login_id']);
+		$this->required_fields['x_login']   = !empty($config['auth_net_login_id']);
 		$this->required_fields['x_tran_key']= !empty($config['auth_net_tran_key']);
 
-		$this->curl_config	= $config['curl_config'];
-		$this->test_mode	= $config['test_mode'];
+		$this->curl_config  = $config['curl_config'];
+		$this->test_mode    = $config['test_mode'];
 
 		Kohana::log('debug', 'Authorize.net Payment Driver Initialized');
 	}
@@ -101,32 +101,34 @@ class Payment_Authorize_Driver implements Payment_Driver
 		curl_setopt($ch, CURLOPT_POSTFIELDS, rtrim($fields, '& '));
 
 		//execute post and get results
-		$response	= curl_exec($ch);
-		curl_close ($ch);
+		$response = curl_exec($ch);
+		
+		curl_close($ch);
+		
 		if (!$response)
 			throw new Kohana_Exception('payment.gateway_connection_error');
 
 		// This could probably be done better, but it's taken right from the Authorize.net manual
 		// Need testing to opimize probably
-		$heading	= substr_count($response, '|');
+		$heading = substr_count($response, '|');
 
-		for($i=1; $i <= $heading; $i++)
+		for ($i=1; $i <= $heading; $i++)
 		{
-			$delimiterPosition	= strpos($response, '|');
+			$delimiter_position = strpos($response, '|');
 
-			if($delimiterPosition !== False)
+			if ($delimiter_position !== False)
 			{
-				$responseCode	= substr($response, 0, $delimiterPosition);
+				$response_code = substr($response, 0, $delimiter_position);
 				
-				$responseCode	= rtrim($responseCode, '|');
+				$response_code = rtrim($response_code, '|');
 				
-				if($responseCode == '')
+				if($response_code == '')
 					throw new Kohana_Exception('payment.gateway_connection_error');
 
-				switch($i)
+				switch ($i)
 				{
 					case 1:
-						return ($responseCode == '1' ? explode('|', $response) : False); // Approved
+						return (($response_code == '1') ? explode('|', $response) : False); // Approved
 					default:
 						return False;
 				}
