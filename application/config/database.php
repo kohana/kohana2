@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-$config['website'] = array
+$config['default'] = array
 (
 	'show_errors'   => TRUE,
 	'benchmark'     => ! IN_PRODUCTION,
@@ -11,3 +11,5 @@ $config['website'] = array
 	'object'        => TRUE,
 	'cache'         => IN_PRODUCTION,
 );
+
+$config['website'] = $config['default'];

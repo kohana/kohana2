@@ -4,7 +4,7 @@ $lang = array
 (
 	'title'			=> 'Donate',
 	'subtitle'		=> 'Donating',
-	'help'			=> 'To donate any amount to the Kohana project, enter the amount in the box below and click Submit. You will be sent to PayPal to login, then back to our site to complete the donation.',
+	'help'			=> 'You can give any amount of money to Kohana using secure PayPal donations. Entering your name and email address is optional.',
 	'list'			=> 'Donation List',
 	'list_help'		=> 'Below is the list of names of those who generously gave money to the Kohana Project.',
 	'name'			=> 'Name',
@@ -16,4 +16,11 @@ $lang = array
 	'total_amount'		=> 'You are donating <strong>$%s</strong>',
 	'thanks'		=> 'Thank you for your donation!',
 	'confirm_payment'	=> 'Confirm Your Payment',
+);
+
+$lang['errors'] = array
+(
+	'name'   => array('default' => 'Please enter your name, letters and spaces only'),
+	'email'  => array('default' => 'Please enter a valid email address'),
+	'amount' => array('default' => 'Please enter a donation amount over $0.50'),
 );

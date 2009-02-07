@@ -9,7 +9,7 @@
 $config['default'] = array
 (
 	'driver'        => 'Paypal',
-	'test_mode'     => FALSE,
+	'test_mode'     => TRUE,
 	'curl_config'   => array(CURLOPT_HEADER         => FALSE,
 	                         CURLOPT_RETURNTRANSFER => TRUE,
 	                         CURLOPT_SSL_VERIFYPEER => FALSE)
@@ -31,4 +31,13 @@ $config['Paypal'] = array
 	'SIGNATURE' => '',
 	'RETURNURL' => 'http://'.$_SERVER['SERVER_NAME'].'/donate/paypal.html',
 	'CANCELURL' => 'http://'.$_SERVER['SERVER_NAME'].'/donate/index.html',
+
+	// -- sandbox authorization details are generic
+	'SANDBOX_USER'      => 'sdk-three_api1.sdk.com',
+	'SANDBOX_PWD'       => 'QFZCWN5HZM8VBG7Q',
+	'SANDBOX_SIGNATURE' => 'A.d9eRKfd1yVkRrtmMfCFLTqa6M9AyodL0SJkhYztxUi8W9pCXF6.4NI',
+	'SANDBOX_ENDPOINT'  => 'https://api-3t.sandbox.paypal.com/nvp',
+
+	'VERSION'      => '3.2',
+	'CURRENCYCODE' => 'USD',
 );
