@@ -4,7 +4,7 @@ $lang = array
 (
 	'title'           => 'Faire un don',
 	'subtitle'        => 'Faire un don',
-	'help'            => 'Afin de faire un don au projet Kohana, saisissez le montant souhaité dans le champs ci-dessous et cliquez sur Envoyer. Vous serez alors redirigé sur Paypal pour vous authentifier et enfin vous serez redirigé vers notre site pour compléter le processus de donation.',
+	'help'            => 'Vous pouvez donner le montant que vous souhaitez pour aider le projet Kohana via le système de donations sécurisé Paypal. Votre nom et email sont optionnels.',
 	'list'            => 'Liste des donateurs',
 	'list_help'       => 'Ci-dessous la liste des peronnes ayant généreusement offert un don au projet Kohana.',
 	'name'            => 'Nom',
@@ -16,4 +16,11 @@ $lang = array
 	'total_amount'    => 'Vous allez offrir <strong>$%s</strong>',
 	'thanks'          => 'Merci beaucoup pour votre don!',
 	'confirm_payment' => 'Confirmer votre paiement',
+);
+
+$lang['errors'] = array
+(
+	'name'   => array('default' => 'Votre nom ne doit contenir que des lettres et des espaces'),
+	'email'  => array('default' => 'Veuillez entrer une adresse email valide'),
+	'amount' => array('default' => 'Veuillez entrer un montant de plus de $0.50'),
 );
