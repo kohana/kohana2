@@ -22,6 +22,7 @@ class ORM_Core {
 	protected $belongs_to              = array();
 	protected $has_many                = array();
 	protected $has_and_belongs_to_many = array();
+	protected $has_many_thru           = array();
 
 	// Relationships that should always be joined
 	protected $load_with = array();
@@ -301,7 +302,7 @@ class ORM_Core {
 			if (in_array($model->object_name, $this->belongs_to))
 			{
 				// Foreign key lies in this table (this model belongs_to target model)
-				$where = array($model->table_name.'.'.$model->primary_key => $this->object[$model->foreign_key($column)]);
+				$where = array($model->foreign_key(TRUE) => $this->object[$model->foreign_key($column)]);
 			}
 			else
 			{
@@ -312,10 +313,10 @@ class ORM_Core {
 			// one<>alias:one relationship
 			return $this->related[$column] = $model->find($where);
 		}
-		elseif (isset($this->has_many[$column]))
+		elseif (isset($this->has_many_thru[$column]))
 		{
 			// Load the "middle" model
-			$through = ORM::factory(inflector::singular($this->has_many[$column]));
+			$through = ORM::factory(inflector::singular($this->has_many_thru[$column]));
 
 			// Load the "end" model
 			$model = ORM::factory(inflector::singular($column));
@@ -324,12 +325,21 @@ class ORM_Core {
 			// User-defined foreign keys must be defined in the 'through' model
 			$join_table = $through->table_name;
 			$join_col1  = $through->foreign_key($model->object_name, $join_table);
-			$join_col2  = $model->table_name.'.'.$model->primary_key;
+			$join_col2  = $model->foreign_key(TRUE);
 
 			// one<>alias:many relationship
 			return $this->related[$column] = $model
 				->join($join_table, $join_col1, $join_col2)
 				->where($through->foreign_key($this->object_name, $join_table), $this->object[$this->primary_key])
+				->find_all();
+		}
+		elseif (isset($this->has_many[$column]))
+		{
+			// one<>many aliased relationship
+			$model_name = $this->has_many[$column];
+
+			return $this->related[$column] = ORM::factory(inflector::singular($model_name))
+				->where($this->foreign_key($column, $model_name), $this->object[$this->primary_key])
 				->find_all();
 		}
 		elseif (in_array($column, $this->has_many))
@@ -348,14 +358,14 @@ class ORM_Core {
 			{
 				// many<>many relationship
 				return $this->related[$column] = $model
-					->in($model->table_name.'.'.$model->primary_key, $this->changed_relations[$column])
+					->in($model->foreign_key(TRUE), $this->changed_relations[$column])
 					->find_all();
 			}
 			else
 			{
 				// empty many<>many relationship
 				return $this->related[$column] = $model
-					->where($model->table_name.'.'.$model->primary_key, NULL)
+					->where($model->foreign_key(TRUE), NULL)
 					->find_all();
 			}
 		}
