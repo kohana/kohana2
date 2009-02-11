@@ -16,6 +16,7 @@ $lang = array
 	'menu_tutorials'	=> 'Tutorials',
 	'menu_documentation'	=> 'Documentation',
 	'menu_forum'		=> 'Forum',
+	'menu_projects'		=> 'Modules',
 	'menu_api'		=> 'API Manual',
 	'forums_title'		=> 'Latest Forum Activity',
 	'trac_title'		=> 'Latest Changes',
