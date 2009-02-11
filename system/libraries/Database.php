@@ -52,6 +52,10 @@ class Database_Core {
 	// Stack of queries for push/pop
 	protected $query_history = array();
 
+	// Enabling/disabling of cross-request caching
+	protected $cache;
+	protected $enable_cache = FALSE;
+
 	/**
 	 * Returns a singleton instance of Database.
 	 *
@@ -205,6 +209,15 @@ class Database_Core {
 		if ( ! ($this->driver instanceof Database_Driver))
 			throw new Kohana_Database_Exception('core.driver_implements', $this->config['connection']['type'], get_class($this), 'Database_Driver');
 
+		if (is_string($this->config['cache']))
+		{
+			if ( ! class_exists($class, FALSE))
+				require Kohana::find_file('libraries/drivers/Database', 'Cache');
+
+			// Initialize cached result object for cross-request cache
+			$this->cache = new Cache($this->config['cache']);
+		}
+
 		Kohana::log('debug', 'Database Library initialized');
 	}
 
@@ -255,8 +268,18 @@ class Database_Core {
 			$sql = $this->compile_binds($sql, $binds);
 		}
 
-		// Fetch the result
-		$result = $this->driver->query($this->last_query = $sql);
+		if ($this->enable_cache AND isset($this->cache))
+		{
+			// Try obtaining result from Cache library
+			$result = $this->query_cache($sql);
+		}
+		else
+		{
+			// Fetch the result
+			$result = $this->driver->query($sql);
+		}
+
+		$this->last_query = $sql;
 
 		// Stop the benchmark
 		$stop = microtime(TRUE);
@@ -878,7 +901,7 @@ class Database_Core {
 		}
 
 		// If caching is enabled, clear the cache before inserting
-		($this->config['cache'] === TRUE) and $this->clear_cache();
+		($this->config['cache'] === TRUE) AND $this->clear_cache();
 
 		$sql = $this->driver->insert($this->config['table_prefix'].$table, array_keys($this->set), array_values($this->set));
 
@@ -1243,17 +1266,39 @@ class Database_Core {
 	 */
 	public function clear_cache($sql = NULL)
 	{
-		if ($sql === TRUE)
+		if ($this->config['cache'] === TRUE)
 		{
-			$this->driver->clear_cache($this->last_query);
+			// Using per-request memory cache
+
+			if ($sql === TRUE)
+			{
+				$this->driver->clear_cache($this->last_query);
+			}
+			elseif (is_string($sql))
+			{
+				$this->driver->clear_cache($sql);
+			}
+			else
+			{
+				$this->driver->clear_cache();
+			}
 		}
-		elseif (is_string($sql))
+		elseif (isset($this->cache))
 		{
-			$this->driver->clear_cache($sql);
-		}
-		else
-		{
-			$this->driver->clear_cache();
+			// Using Cache library
+
+			if ($sql === TRUE)
+			{
+				$this->cache->delete($this->hash($this->last_query));
+			}
+			elseif (is_string($sql))
+			{
+				$this->cache->delete($this->hash($sql));
+			}
+			else
+			{
+				$this->cache->delete_all();
+			}
 		}
 
 		return $this;
@@ -1368,6 +1413,67 @@ class Database_Core {
 
 		// An error if we get to this point...
 		return $this;
+	}
+
+	/**
+	 * Enable the Cache
+	 *
+	 * @return Database_Core
+	 */
+	public function enable_cache()
+	{
+		$this->enable_cache = TRUE;
+		return $this;
+	}
+
+	/**
+	 * Disable the Cache
+	 *
+	 * @return Database_Core
+	 */
+	public function disable_cache()
+	{
+		$this->eanble_cache = FALSE;
+		return $this;
+	}
+
+	/**
+	 * Checks for the query in the Cache and runs it if it does not exist
+	 *
+	 * @param string $sql Query
+	 * @return Database_Result
+	 */
+	protected function query_cache( & $sql)
+	{
+		$hash = $this->query_hash($sql);
+
+		if (($data = $this->cache->get($hash)) !== NULL)
+		{
+			// Found the result in the Cache, return the result
+			$result = new Cache_Result($data);
+
+			// For benchmarking
+			$sql .= ' [CACHE]';
+		}
+		else
+		{
+			// Not found, so run the query and cache the array of results
+			$result = $this->driver->query($sql);
+			$this->cache->set($hash, $result->result_array(FALSE));
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Returns a hash of the query
+	 *
+	 * @param string $sql Query
+	 * @return string
+	 */
+	protected function query_hash($sql)
+	{
+		return $hash = sha1(str_replace("\n", ' ', trim($sql)));
 	}
 
 } // End Database Class
