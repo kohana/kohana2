@@ -1289,11 +1289,11 @@ class Database_Core {
 
 			if ($sql === TRUE)
 			{
-				$this->cache->delete($this->hash($this->last_query));
+				$this->cache->delete($this->query_hash($this->last_query));
 			}
 			elseif (is_string($sql))
 			{
-				$this->cache->delete($this->hash($sql));
+				$this->cache->delete($this->query_hash($sql));
 			}
 			else
 			{
@@ -1433,7 +1433,7 @@ class Database_Core {
 	 */
 	public function disable_cache()
 	{
-		$this->eanble_cache = FALSE;
+		$this->enable_cache = FALSE;
 		return $this;
 	}
 
