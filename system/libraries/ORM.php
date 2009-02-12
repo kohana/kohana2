@@ -1351,10 +1351,19 @@ class ORM_Core {
 
 		if ( ! empty($this->load_with))
 		{
-			foreach ($this->load_with as $object)
+			foreach ($this->load_with as $alias => $object)
 			{
 				// Join each object into the results
-				$this->with($object);
+				if (is_string($alias))
+				{
+					// Use alias
+					$this->with($alias);
+				}
+				else
+				{
+					// Use object
+					$this->with($object);
+				}
 			}
 		}
 
