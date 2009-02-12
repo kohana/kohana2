@@ -278,7 +278,7 @@ class ORM_Core {
 		{
 			// This handles the has_one and belongs_to relationships
 
-			if (in_array($model->object_name, $this->belongs_to) OR ! isset($this->object[$this->foreign_key($column, $model->table_name)]))
+			if (in_array($model->object_name, $this->belongs_to) OR ! isset($model->object[$this->foreign_key($column)]))
 			{
 				// Foreign key lies in this table (this model belongs_to target model) OR an invalid has_one relationship
 				$where = array($model->table_name.'.'.$model->primary_key => $this->object[$model->foreign_key($column)]);
@@ -462,89 +462,85 @@ class ORM_Core {
 	 * Binds another one-to-one object to this model.  One-to-one objects
 	 * can be nested using 'object1:object2' syntax
 	 *
-	 * @param string $object
+	 * @param string $object_path
 	 * @return void
 	 */
-	public function with($object)
+	public function with($target_path)
 	{
-		if (isset($this->with_applied[$object]))
+		if (isset($this->with_applied[$target_path]))
 		{
 			// Don't join anything already joined
 			return $this;
 		}
 
-		$prefix = $table = $object;
+		$prefix = $table = $target_path;
 
 		// Split object parts
-		$objects = explode(':', $object);
-		$object	 = $this;
-		foreach ($objects as $object_part)
+		$objects = explode(':', $target_path);
+		$target	 = $this;
+		foreach ($objects as $object)
 		{
 			// Go down the line of objects to find the given target
-			$parent = $object;
-			$object = $parent->related_object($object_part);
+			$parent = $target;
+			$target = $parent->related_object($object);
 
-			if ( ! $object)
+			if ( ! $target)
 			{
 				// Can't find related object
 				return $this;
 			}
 		}
 
-		$table = $object_part;
+		$target_name = $object;
 
-		if ($this->table_names_plural)
-		{
-			$table = inflector::plural($table);
-		}
-
-		// Pop-off top object to get the parent object (user:photo:tag's parent is user:photo)
+		// Pop-off top object to get the parent object (user:photo:tag becomes user:photo - the parent table prefix)
 		array_pop($objects);
-		$parent_prefix = implode(':', $objects);
+		$parent_path = implode(':', $objects);
 
-		if (empty($parent_prefix))
+		if (empty($parent_path))
 		{
-			// Use this table name itself for the parent prefix
-			$parent_prefix = $this->table_name;
+			// Use this table name itself for the parent object
+			$parent_path = $this->table_name;
 		}
 		else
 		{
-			if( ! isset($this->with_applied[$parent_prefix]))
+			if( ! isset($this->with_applied[$parent_path]))
 			{
 				// If the parent object hasn't been joined yet, do it first (otherwise LEFT JOINs fail)
-				$this->with($parent_prefix);
+				$this->with($parent_path);
 			}
 		}
 
 		// Add to with_applied to prevent duplicate joins
-		$this->with_applied[$prefix] = TRUE;
+		$this->with_applied[$target_path] = TRUE;
 
 		// Use the keys of the empty object to determine the columns
-		$select = array_keys($object->as_array());
+		$select = array_keys($target->as_array());
 		foreach ($select as $i => $column)
 		{
 			// Add the prefix so that load_result can determine the relationship
-			$select[$i] = $prefix.'.'.$column.' AS '.$prefix.':'.$column;
+			$select[$i] = $target_path.'.'.$column.' AS '.$target_path.':'.$column;
 		}
+
 
 		// Select all of the prefixed keys in the object
 		$this->db->select($select);
-
-		if (in_array($object->object_name, $parent->belongs_to) OR ! isset($object->object[$object->foreign_key($prefix, $parent_prefix)]))
+		
+		if (in_array($target->object_name, $parent->belongs_to) OR ! isset($target->object[$parent->foreign_key($target_name)]))
 		{
-			// Join ON the target object's primary key and parent object's foreign key (parent belongs_to target)
-			$join_col1 = $prefix.'.'.$object->primary_key;
-			$join_col2 = $object->foreign_key($prefix, $parent_prefix);
+			// Parent belongs_to target, use target's primary key as join column
+			$join_col1 = $target->foreign_key(TRUE, $target_path);
+			$join_col2 = $parent->foreign_key($target_name, $parent_path);
 		}
 		else
 		{
-			// Join ON the target object's foreign key and parent object's primary key (parent has_one target)
-			$join_col1 = $parent->foreign_key($prefix, $prefix);
-			$join_col2 = $parent_prefix.'.'.$parent->primary_key;
+			// Parent has_one target, use parent's primary key as join column
+			$join_col2 = $parent->foreign_key(TRUE, $parent_path);
+			$join_col1 = $parent->foreign_key($target_name, $target_path);
 		}
 
 		// Join the related object into the result
-		$this->db->join($object->table_name.' AS '.$this->db->table_prefix().$prefix, $join_col1, $join_col2, 'LEFT');
+		$this->db->join($target->table_name.' AS '.$this->db->table_prefix().$target_path, $join_col1, $join_col2, 'LEFT');
 
 		return $this;
 	}
