@@ -498,7 +498,7 @@ class ORM_Core {
 	 * Binds another one-to-one object to this model.  One-to-one objects
 	 * can be nested using 'object1:object2' syntax
 	 *
-	 * @param string $object_path
+	 * @param string $target_path
 	 * @return void
 	 */
 	public function with($target_path)
@@ -508,8 +508,6 @@ class ORM_Core {
 			// Don't join anything already joined
 			return $this;
 		}
-
-		$prefix = $table = $target_path;
 
 		// Split object parts
 		$objects = explode(':', $target_path);
