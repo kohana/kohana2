@@ -245,7 +245,7 @@ class View_Core {
 		}
 		catch (Exception $e)
 		{
-			echo $e;
+			return $e;
 		}
 	}
 
