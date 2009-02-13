@@ -54,6 +54,7 @@ class Database_Core {
 
 	// Enabling/disabling of cross-request caching
 	protected $cache;
+	protected $cache_ttl;
 	protected $enable_cache = FALSE;
 
 	/**
@@ -1422,6 +1423,17 @@ class Database_Core {
 	 */
 	public function enable_cache()
 	{
+		if ($ttl !== NULL)
+		{
+			// Use given lifetime
+			$this->cache_ttl = $ttl;
+		}
+		else
+		{
+			// Use default lifetime
+			$this->cache_ttl = Kohana::config('cache.'.$this->config['cache'].'.lifetime');
+		}
+
 		$this->enable_cache = TRUE;
 		return $this;
 	}
@@ -1459,7 +1471,7 @@ class Database_Core {
 		{
 			// Not found, so run the query and cache the array of results
 			$result = $this->driver->query($sql);
-			$this->cache->set($hash, $result->result_array(FALSE));
+			$this->cache->set($hash, $result->result_array(FALSE), NULL, $this->cache_ttl);
 		}
 
 		return $result;
