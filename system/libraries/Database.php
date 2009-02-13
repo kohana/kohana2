@@ -1419,9 +1419,10 @@ class Database_Core {
 	/**
 	 * Enable the Cache
 	 *
+	 * @param int TTL in
 	 * @return Database_Core
 	 */
-	public function enable_cache()
+	public function enable_cache($ttl = NULL)
 	{
 		if ($ttl !== NULL)
 		{
