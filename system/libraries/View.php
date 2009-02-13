@@ -239,7 +239,14 @@ class View_Core {
 	 */
 	public function __toString()
 	{
-		return $this->render();
+		try
+		{
+			return $this->render();
+		}
+		catch (Exception $e)
+		{
+			echo $e;
+		}
 	}
 
 	/**
