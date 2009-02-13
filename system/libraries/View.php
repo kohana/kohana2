@@ -246,7 +246,7 @@ class View_Core {
 		catch (Exception $e)
 		{
 			// Display the exception using its internal __toString method
-			return $e;
+			return (string) $e;
 		}
 	}
 
