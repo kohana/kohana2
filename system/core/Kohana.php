@@ -1593,18 +1593,10 @@ class Kohana_Exception extends Exception {
 	 * @param  string  i18n language key for the message
 	 * @param  array   addition line parameters
 	 */
-	public function __construct($error)
+	public function __construct($error, array $args = NULL)
 	{
-		$args = array_slice(func_get_args(), 1);
-
 		// Fetch the error message
-		$message = __($error, $args[0]);
-
-		if ($message === $error OR empty($message))
-		{
-			// Unable to locate the message for the error
-			$message = 'Unknown Exception: '.$error;
-		}
+		$message = __($error, $args);
 
 		// Sets $this->message the proper way
 		parent::__construct($message);
