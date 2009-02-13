@@ -137,6 +137,9 @@ final class Kohana {
 		// Send default text/html UTF-8 header
 		header('Content-Type: text/html; charset=UTF-8');
 
+		// Load i18n
+		new I18n;
+
 		// Load locales
 		$locales = self::config('locale.language');
 
@@ -828,8 +831,7 @@ final class Kohana {
 
 		if (is_numeric($code))
 		{
-			$codes = self::lang('errors');
-
+			$codes = self::message('errors');
 			if ( ! empty($codes[$code]))
 			{
 				list($level, $error, $description) = $codes[$code];
@@ -856,12 +858,13 @@ final class Kohana {
 		if ($level <= self::$configuration['core']['log_threshold'])
 		{
 			// Log the error
-			self::log('error', self::lang('core.uncaught_exception', $type, $message, $file, $line));
+			self::log('error', __('Uncaught %type%: %message% in file %file% on line %line%',
+			                      array('%type%' => $type, '%message%' => $message, '%file%' => $file, '%line%' => $line)));
 		}
 
 		if ($PHP_ERROR)
 		{
-			$description = self::lang('errors.'.E_RECOVERABLE_ERROR);
+			$description = self::message('errors.'.E_RECOVERABLE_ERROR);
 			$description = is_array($description) ? $description[2] : '';
 
 			if ( ! headers_sent())
@@ -903,8 +906,9 @@ final class Kohana {
 		else
 		{
 			// Get the i18n messages
-			$error   = self::lang('core.generic_error');
-			$message = self::lang('core.errors_disabled', url::site(), url::site(Router::$current_uri));
+			$error   = __('Unable to Complete Request');
+			$message = __('You can go to the <a href="%site%">home page</a> or <a href="%uri%">try again</a>.',
+			              array('%site%' => url::site(), '%uri%' => url::site(Router::$current_uri)));
 
 			// Load the errors_disabled view
 			require self::find_file('views', 'kohana_error_disabled');
@@ -1054,7 +1058,7 @@ final class Kohana {
 		// Nothing found, yet
 		$found = NULL;
 
-		if ($directory === 'config' OR $directory === 'i18n')
+		if ($directory === 'config' OR $directory === 'messages')
 		{
 			// Search in reverse, for merging
 			$paths = array_reverse($paths);
@@ -1091,7 +1095,7 @@ final class Kohana {
 				$directory = 'core.'.inflector::singular($directory);
 
 				// If the file is required, throw an exception
-				throw new Kohana_Exception('core.resource_not_found', self::lang($directory), $filename);
+				throw new Kohana_Exception(__('The requested :resource:, :file:, could not be found', array(':resource:' => self::message($directory), ':file:' =>$filename)));
 			}
 			else
 			{
@@ -1160,13 +1164,13 @@ final class Kohana {
 	}
 
 	/**
-	 * Fetch an i18n language item.
+	 * Fetch a message item.
 	 *
 	 * @param   string  language key to fetch
 	 * @param   array   additional information to insert into the line
 	 * @return  string  i18n language string, or the requested key if the i18n item is not found
 	 */
-	public static function lang($key, $args = array())
+	public static function message($key, $args = array())
 	{
 		// Extract the main group from the key
 		$group = explode('.', $key, 2);
@@ -1175,43 +1179,31 @@ final class Kohana {
 		// Get locale name
 		$locale = self::config('locale.language.0');
 
-		if ( ! isset(self::$internal_cache['language'][$locale][$group]))
+		if ( ! isset(self::$internal_cache['messages'][$group]))
 		{
 			// Messages for this group
 			$messages = array();
 
-			if ($files = self::find_file('i18n', $locale.'/'.$group))
+			if ($file = self::find_file('messages', $group))
 			{
-				foreach ($files as $file)
-				{
-					include $file;
-
-					// Merge in configuration
-					if ( ! empty($lang) AND is_array($lang))
-					{
-						foreach ($lang as $k => $v)
-						{
-							$messages[$k] = $v;
-						}
-					}
-				}
+				include $file[0];
 			}
 
-			if ( ! isset(self::$write_cache['language']))
+			if ( ! isset(self::$write_cache['messages']))
 			{
 				// Write language cache
-				self::$write_cache['language'] = TRUE;
+				self::$write_cache['messages'] = TRUE;
 			}
 
-			self::$internal_cache['language'][$locale][$group] = $messages;
+			self::$internal_cache['messages'][$group] = $messages;
 		}
 
 		// Get the line from cache
-		$line = self::key_string(self::$internal_cache['language'][$locale], $key);
+		$line = self::key_string(self::$internal_cache['messages'], $key);
 
 		if ($line === NULL)
 		{
-			self::log('error', 'Missing i18n entry '.$key.' for language '.$locale);
+			self::log('error', 'Missing messages entry '.$key.' for message '.$group);
 
 			// Return the key string as fallback
 			return $key;
@@ -1505,7 +1497,7 @@ final class Kohana {
 
 			if (isset($entry['file']))
 			{
-				$temp .= self::lang('core.error_file_line', preg_replace('!^'.preg_quote(DOCROOT).'!', '', $entry['file']), $entry['line']);
+				$temp .= __('<tt>:file: <strong>[:line:]:</strong></tt>', array(':file:' => preg_replace('!^'.preg_quote(DOCROOT).'!', '', $entry['file']), ':line:' => $entry['line']));
 			}
 
 			$temp .= '<pre>';
@@ -1606,7 +1598,7 @@ class Kohana_Exception extends Exception {
 		$args = array_slice(func_get_args(), 1);
 
 		// Fetch the error message
-		$message = Kohana::lang($error, $args);
+		$message = __($error, $args[0]);
 
 		if ($message === $error OR empty($message))
 		{
@@ -1698,7 +1690,7 @@ class Kohana_404_Exception extends Kohana_Exception {
 			$page = Router::$current_uri.Router::$url_suffix.Router::$query_string;
 		}
 
-		Exception::__construct(Kohana::lang('core.page_not_found', $page));
+		Exception::__construct(__('The page you requested, :page:, could not be found.', array(':page:' => $page)));
 
 		$this->template = $template;
 	}

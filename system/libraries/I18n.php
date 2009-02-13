@@ -19,7 +19,7 @@
  */
 function __($string, $args = NULL)
 {
-	if (I18n::get_locale() != Kohana_Config::get('locale.language'))
+	if (I18n::get_locale() != Kohana::config('locale.language'))
 	{
 		$string = I18n::get_text($string);
 	}

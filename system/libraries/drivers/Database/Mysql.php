@@ -364,7 +364,7 @@ class Mysql_Result extends Database_Result {
 			if ($result == FALSE)
 			{
 				// SQL error
-				throw new Kohana_Database_Exception('database.error', mysql_error($link).' - '.$sql);
+				throw new Kohana_Database_Exception('There was an SQL error: :error:', array(':error:' => mysql_error($link).' - '.$sql));
 			}
 			else
 			{
