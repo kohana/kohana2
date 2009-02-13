@@ -554,7 +554,7 @@ final class Kohana {
 			else
 			{
 				// Log directory is invalid
-				throw new Kohana_Exception('core.log_dir_unwritable', $dir);
+				throw new Kohana_Exception('The log directory is not writable: %dir%', array('%dir%' => $dir));
 			}
 		}
 
@@ -1095,7 +1095,7 @@ final class Kohana {
 				$directory = 'core.'.inflector::singular($directory);
 
 				// If the file is required, throw an exception
-				throw new Kohana_Exception(__('The requested :resource:, :file:, could not be found', array(':resource:' => self::message($directory), ':file:' =>$filename)));
+				throw new Kohana_Exception('The requested :resource:, :file:, could not be found', array(':resource:' => self::message($directory), ':file:' =>$filename));
 			}
 			else
 			{
