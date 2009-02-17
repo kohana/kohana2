@@ -697,14 +697,14 @@ final class Kohana {
 	 */
 	public static function render($output)
 	{
-		// Fetch memory usage in MB
-		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
-
-		// Fetch benchmark for page execution time
-		$benchmark = Benchmark::get(SYSTEM_BENCHMARK.'_total_execution');
-
 		if (self::config('core.render_stats') === TRUE)
 		{
+			// Fetch memory usage in MB
+			$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
+
+			// Fetch benchmark for page execution time
+			$benchmark = Benchmark::get(SYSTEM_BENCHMARK.'_total_execution');
+
 			// Replace the global template variables
 			$output = str_replace(
 				array
