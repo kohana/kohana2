@@ -133,7 +133,6 @@ class Auth_User_Model extends ORM {
 	 *
 	 * @param    mixed    id to check 
 	 * @return   boolean
-	 * @author Sam Clark
 	 */
 	public function username_available($id)
 	{
