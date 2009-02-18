@@ -11,6 +11,6 @@ class View extends View_Core {
 			$type = empty($type) ? $smarty_ext : $type;
 		}
 
-		parent::__construct($name, $data, $type)
+		parent::__construct($name, $data, $type);
 	}
 }
