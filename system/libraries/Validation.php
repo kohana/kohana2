@@ -823,16 +823,4 @@ class Validation_Core extends ArrayObject {
 		return ! preg_match('![^'.implode('', $chars).']!u', $value);
 	}
 
-	/**
-	 * Rule : allow. Generates an error if the field value is not within the words supplied
-	 *
-	 * @param   mixed   field value
-	 * @param   array   allowed words
-	 * @return  bool
-	 */
-	public function allow($value, array $words)
-	{
-		return in_array($value, $words);
-	}
-
 } // End Validation
