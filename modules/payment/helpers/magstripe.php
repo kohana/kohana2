@@ -60,7 +60,7 @@ class magstripe_Core
 		$this->magstripe_parsed['card_holder_firstname'] = $cardholder[1];
 		
 		// Get the card expiry date
-		$this->magstripe_parsed['card_expiration']       = substr($magstripe_pieces[2], 2, 2).substr($magstripe_pieces[2], 0, 2);
+		$this->magstripe_parsed['card_expiration']       = substr($magstripe_pieces[2], 2, 2).'/'.substr($magstripe_pieces[2], 0, 2);
 		
 		// Return an array of the data
 		return $this->magstripe_parsed;
