@@ -12,7 +12,7 @@
 class Model_Core {
 
 	// Database object
-	protected $db;
+	protected $db = 'default';
 
 	/**
 	 * Creates and returns a new model.
@@ -55,7 +55,7 @@ class Model_Core {
 		if ( ! is_object($this->db))
 		{
 			// Load the default database
-			$this->db = Database::instance('default');
+			$this->db = Database::instance($this->db);
 		}
 	}
 
