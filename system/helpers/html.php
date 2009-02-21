@@ -64,7 +64,12 @@ class html_Core {
 		{
 			$site_url = url::base(FALSE);
 		}
-		elseif (strpos($uri, '://') === FALSE AND strpos($uri, '#') !== 0)
+		elseif (strpos($uri, '#') === 0)
+		{
+			// This is an id target link, not a URL
+			$site_url = $uri;
+		}
+		elseif (strpos($uri, '://') === FALSE)
 		{
 			$site_url = url::site($uri, $protocol);
 		}

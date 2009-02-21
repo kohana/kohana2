@@ -254,7 +254,8 @@ class ORM_Core {
 		}
 		else
 		{
-			throw new Kohana_Exception('core.invalid_method', $method, get_class($this));
+			throw new Kohana_Exception('Invalid method :method called in :class',
+				array(':method' => $method, ':class' => get_class($this)));
 		}
 	}
 
@@ -388,7 +389,8 @@ class ORM_Core {
 		}
 		else
 		{
-			throw new Kohana_Exception('core.invalid_property', $column, get_class($this));
+			throw new Kohana_Exception('The :property property does not exist in the :class class',
+				array(':property' => $column, ':class' => get_class($this)));
 		}
 	}
 
