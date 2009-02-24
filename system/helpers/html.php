@@ -358,12 +358,6 @@ class html_Core {
 				$script = url::base((bool) $index).$script;
 			}
 
-			if (substr_compare($script, '.js', -3, 3, FALSE) !== 0)
-			{
-				// Add the javascript suffix
-				$script .= '.js';
-			}
-
 			$compiled = '<script type="text/javascript" src="'.$script.'"></script>';
 		}
 
