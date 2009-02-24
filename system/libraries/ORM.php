@@ -22,7 +22,7 @@ class ORM_Core {
 	protected $belongs_to              = array();
 	protected $has_many                = array();
 	protected $has_and_belongs_to_many = array();
-	protected $has_many_thru           = array();
+	protected $has_many_through           = array();
 
 	// Relationships that should always be joined
 	protected $load_with = array();
@@ -314,10 +314,10 @@ class ORM_Core {
 			// one<>alias:one relationship
 			return $this->related[$column] = $model->find($where);
 		}
-		elseif (isset($this->has_many_thru[$column]))
+		elseif (isset($this->has_many_through[$column]))
 		{
 			// Load the "middle" model
-			$through = ORM::factory(inflector::singular($this->has_many_thru[$column]));
+			$through = ORM::factory(inflector::singular($this->has_many_through[$column]));
 
 			// Load the "end" model
 			$model = ORM::factory(inflector::singular($column));
