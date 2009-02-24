@@ -94,6 +94,11 @@ class Database_Mssql_Driver extends Database_Driver
 				// Set the cached object
 				self::$query_cache[$hash] = new Mssql_Result(mssql_query($sql, $this->link), $this->link, $this->db_config['object'], $sql);
 			}
+			else
+			{
+				// Rewind cached result
+				self::$query_cache[$hash]->rewind();
+			}
 
 			// Return the cached query
 			return self::$query_cache[$hash];

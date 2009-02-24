@@ -86,6 +86,11 @@ class Database_Mysql_Driver extends Database_Driver {
 				// Set the cached object
 				self::$query_cache[$hash] = new Mysql_Result(mysql_query($sql, $this->link), $this->link, $this->db_config['object'], $sql);
 			}
+			else
+			{
+				// Rewind cached result
+				self::$query_cache[$hash]->rewind();
+			}
 
 			// Return the cached query
 			return self::$query_cache[$hash];
