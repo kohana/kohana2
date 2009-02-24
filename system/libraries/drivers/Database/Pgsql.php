@@ -73,6 +73,11 @@ class Database_Pgsql_Driver extends Database_Driver {
 				// Set the cached object
 				self::$query_cache[$hash] = new Pgsql_Result(pg_query($this->link, $sql), $this->link, $this->db_config['object'], $sql);
 			}
+			else
+			{
+				// Rewind cached result
+				self::$query_cache[$hash]->rewind();
+			}
 
 			return self::$query_cache[$hash];
 		}
