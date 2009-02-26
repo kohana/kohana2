@@ -273,7 +273,7 @@ class html_Core {
 	 */
 	public static function stylesheet($style, $media = FALSE, $index = FALSE)
 	{
-		return html::link($style, 'stylesheet', 'text/css', '.css', $media, $index);
+		return html::link($style, 'stylesheet', 'text/css', $media, $index);
 	}
 
 	/**
@@ -282,12 +282,11 @@ class html_Core {
 	 * @param   string|array  filename
 	 * @param   string|array  relationship
 	 * @param   string|array  mimetype
-	 * @param   string        specifies suffix of the file
 	 * @param   string|array  specifies on what device the document will be displayed
 	 * @param   boolean       include the index_page in the link
 	 * @return  string
 	 */
-	public static function link($href, $rel, $type, $suffix = FALSE, $media = FALSE, $index = FALSE)
+	public static function link($href, $rel, $type, $media = FALSE, $index = FALSE)
 	{
 		$compiled = '';
 
@@ -308,14 +307,6 @@ class html_Core {
 			{
 				// Make the URL absolute
 				$href = url::base($index).$href;
-			}
-
-			$length = strlen($suffix);
-
-			if ( $length > 0 AND substr_compare($href, $suffix, -$length, $length, FALSE) !== 0)
-			{
-				// Add the defined suffix
-				$href .= $suffix;
 			}
 
 			$attr = array
