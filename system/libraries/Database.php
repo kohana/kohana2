@@ -392,7 +392,14 @@ class Database_Core {
 		foreach ($keys as $key => $value)
 		{
 			$key    = (strpos($key, '.') !== FALSE) ? $this->config['table_prefix'].$key : $key;
-			$cond[] = $this->driver->where($key, $this->driver->escape_column($this->config['table_prefix'].$value), 'AND ', count($cond), FALSE);
+
+			if (is_string($value))
+			{
+				// Only escape if it's a string
+				$value = $this->driver->escape_column($this->config['table_prefix'].$value);
+			}
+
+			$cond[] = $this->driver->where($key, $value, 'AND ', count($cond), FALSE);
 		}
 
 		if( ! is_array($this->join)) { $this->join = array(); }
