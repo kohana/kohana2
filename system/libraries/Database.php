@@ -358,27 +358,32 @@ class Database_Core {
 		}
 		else
 		{
-			$sql = (array) $sql;
+			$sql = array($sql);
 		}
 
 		foreach ($sql as $val)
 		{
 			if (($val = trim($val)) === '') continue;
 
-			// TODO: Temporary solution, this should be moved to database driver (AS is checked for twice)
-			if (stripos($val, ' AS ') !== FALSE)
+			if (is_string($val))
 			{
-				$val = str_ireplace(' AS ', ' AS ', $val);
+				// TODO: Temporary solution, this should be moved to database driver (AS is checked for twice)
+				if (stripos($val, ' AS ') !== FALSE)
+				{
+					$val = str_ireplace(' AS ', ' AS ', $val);
 
-				list($table, $alias) = explode(' AS ', $val);
+					list($table, $alias) = explode(' AS ', $val);
 
-				// Attach prefix to both sides of the AS
-				$this->from[] = $this->config['table_prefix'].$table.' AS '.$this->config['table_prefix'].$alias;
+					// Attach prefix to both sides of the AS
+					$val = $this->config['table_prefix'].$table.' AS '.$this->config['table_prefix'].$alias;
+				}
+				else
+				{
+					$val = $this->config['table_prefix'].$val;
+				}
 			}
-			else
-			{
-				$this->from[] = $this->config['table_prefix'].$val;
-			}
+
+			$this->from[] = $val;
 		}
 
 		return $this;
@@ -426,23 +431,34 @@ class Database_Core {
 			$cond[] = $this->driver->where($key, $value, 'AND ', count($cond), FALSE);
 		}
 
-		if( ! is_array($this->join)) { $this->join = array(); }
-
-		foreach ((array) $table as $t)
+		if ( ! is_array($this->join))
 		{
-			// TODO: Temporary solution, this should be moved to database driver (AS is checked for twice)
-			if (stripos($t, ' AS ') !== FALSE)
-			{
-				$t = str_ireplace(' AS ', ' AS ', $t);
+			$this->join = array();
+		}
 
-				list($table, $alias) = explode(' AS ', $t);
+		if ( ! is_array($table))
+		{
+			$table = array($table);
+		}
 
-				// Attach prefix to both sides of the AS
-				$t = $this->config['table_prefix'].$table.' AS '.$this->config['table_prefix'].$alias;
-			}
-			else
+		foreach ($table as $t)
+		{
+			if (is_string($t))
 			{
-				$t = $this->config['table_prefix'].$t;
+				// TODO: Temporary solution, this should be moved to database driver (AS is checked for twice)
+				if (stripos($t, ' AS ') !== FALSE)
+				{
+					$t = str_ireplace(' AS ', ' AS ', $t);
+
+					list($table, $alias) = explode(' AS ', $t);
+
+					// Attach prefix to both sides of the AS
+					$t = $this->config['table_prefix'].$table.' AS '.$this->config['table_prefix'].$alias;
+				}
+				else
+				{
+					$t = $this->config['table_prefix'].$t;
+				}
 			}
 
 			$join['tables'][] = $this->driver->escape_column($t);
