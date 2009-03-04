@@ -513,7 +513,7 @@ class ORM_Core {
 		$this->with_applied[$target_path] = TRUE;
 
 		// Use the keys of the empty object to determine the columns
-		$select = array_keys($target->as_array());
+		$select = array_keys($target->object);
 		foreach ($select as $i => $column)
 		{
 			// Add the prefix so that load_result can determine the relationship
@@ -523,7 +523,7 @@ class ORM_Core {
 
 		// Select all of the prefixed keys in the object
 		$this->db->select($select);
-		
+
 		if (in_array($target->object_name, $parent->belongs_to) OR ! isset($target->object[$parent->foreign_key($target_name)]))
 		{
 			// Parent belongs_to target, use target's primary key as join column
@@ -538,7 +538,7 @@ class ORM_Core {
 		}
 
 		// Join the related object into the result
-		$this->db->join($target->table_name.' AS '.$this->db->table_prefix().$target_path, $join_col1, $join_col2, 'LEFT');
+		$this->db->join($target->table_name.' AS '.$target_path, $join_col1, $join_col2, 'LEFT');
 
 		return $this;
 	}
