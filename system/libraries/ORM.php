@@ -22,7 +22,7 @@ class ORM_Core {
 	protected $belongs_to              = array();
 	protected $has_many                = array();
 	protected $has_and_belongs_to_many = array();
-	protected $has_many_through           = array();
+	protected $has_many_through        = array();
 
 	// Relationships that should always be joined
 	protected $load_with = array();
@@ -551,13 +551,12 @@ class ORM_Core {
 		$this->with_applied[$target_path] = TRUE;
 
 		// Use the keys of the empty object to determine the columns
-		$select = array_keys($target->as_array());
+		$select = array_keys($target->object);
 		foreach ($select as $i => $column)
 		{
 			// Add the prefix so that load_result can determine the relationship
 			$select[$i] = $target_path.'.'.$column.' AS '.$target_path.':'.$column;
 		}
-
 
 		// Select all of the prefixed keys in the object
 		$this->db->select($select);
@@ -576,7 +575,7 @@ class ORM_Core {
 		}
 
 		// Join the related object into the result
-		$this->db->join($target->table_name.' AS '.$this->db->table_prefix().$target_path, $join_col1, $join_col2, 'LEFT');
+		$this->db->join($target->table_name.' AS '.$target_path, $join_col1, $join_col2, 'LEFT');
 
 		return $this;
 	}
