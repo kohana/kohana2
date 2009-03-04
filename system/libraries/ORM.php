@@ -281,7 +281,7 @@ class ORM_Core {
 			if (in_array($model->object_name, $this->belongs_to) OR ! isset($model->object[$this->foreign_key($column)]))
 			{
 				// Foreign key lies in this table (this model belongs_to target model) OR an invalid has_one relationship
-				$where = array($model->table_name.'.'.$model->primary_key => $this->object[$model->foreign_key($column)]);
+				$where = array($model->table_name.'.'.$model->primary_key => $this->object[$this->foreign_key($column)]);
 			}
 			else
 			{
