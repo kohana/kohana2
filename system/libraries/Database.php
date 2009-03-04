@@ -365,7 +365,20 @@ class Database_Core {
 		{
 			if (($val = trim($val)) === '') continue;
 
-			$this->from[] = $this->config['table_prefix'].$val;
+			// TODO: Temporary solution, this should be moved to database driver (AS is checked for twice)
+			if (stripos($val, ' AS ') !== FALSE)
+			{
+				$val = str_ireplace(' AS ', ' AS ', $val);
+
+				list($table, $alias) = explode(' AS ', $val);
+
+				// Attach prefix to both sides of the AS
+				$this->from[] = $this->config['table_prefix'].$table.' AS '.$this->config['table_prefix'].$alias;
+			}
+			else
+			{
+				$this->from[] = $this->config['table_prefix'].$val;
+			}
 		}
 
 		return $this;
@@ -417,7 +430,22 @@ class Database_Core {
 
 		foreach ((array) $table as $t)
 		{
-			$join['tables'][] = $this->driver->escape_column($this->config['table_prefix'].$t);
+			// TODO: Temporary solution, this should be moved to database driver (AS is checked for twice)
+			if (stripos($t, ' AS ') !== FALSE)
+			{
+				$t = str_ireplace(' AS ', ' AS ', $t);
+
+				list($table, $alias) = explode(' AS ', $t);
+
+				// Attach prefix to both sides of the AS
+				$t = $this->config['table_prefix'].$table.' AS '.$this->config['table_prefix'].$alias;
+			}
+			else
+			{
+				$t = $this->config['table_prefix'].$t;
+			}
+
+			$join['tables'][] = $this->driver->escape_column($t);
 		}
 
 		$join['conditions'] = '('.trim(implode(' ', $cond)).')';
