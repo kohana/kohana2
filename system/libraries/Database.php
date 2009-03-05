@@ -212,7 +212,7 @@ class Database_Core {
 
 		if (is_string($this->config['cache']))
 		{
-			if ( ! class_exists($class, FALSE))
+			if ( ! class_exists('Cache_Result', FALSE))
 				require Kohana::find_file('libraries/drivers/Database', 'Cache');
 
 			// Initialize cached result object for cross-request cache
