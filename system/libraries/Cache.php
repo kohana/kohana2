@@ -28,12 +28,15 @@ class Cache_Core {
 	 * @param   array  configuration
 	 * @return  Cache_Core
 	 */
-	public static function instance($config = array())
+	public static function instance($config = FALSE)
 	{
 		static $obj;
 
-		// Create the Cache instance
-		($obj === NULL) and $obj = new Cache($config);
+		if ($obj === NULL)
+		{
+			// Create the Cache instance
+			$obj = new Cache($config);
+		}
 
 		return $obj;
 	}
@@ -85,7 +88,7 @@ class Cache_Core {
 
 		Kohana::log('debug', 'Cache Library initialized');
 
-		if (self::$loaded !== TRUE)
+		if (Cache::$loaded !== TRUE)
 		{
 			$this->config['requests'] = (int) $this->config['requests'];
 
@@ -98,33 +101,22 @@ class Cache_Core {
 			}
 
 			// Cache has been loaded once
-			self::$loaded = TRUE;
+			Cache::$loaded = TRUE;
 		}
 	}
 
 	/**
-	 * Fetches a cache by id. Non-string cache items are automatically
-	 * unserialized before the cache is returned. NULL is returned when
-	 * a cache item is not found.
+	 * Fetches a cache by id. NULL is returned when a cache item is not found.
 	 *
 	 * @param   string  cache id
 	 * @return  mixed   cached data or NULL
 	 */
 	public function get($id)
 	{
-		// Change slashes to colons
-		$id = str_replace(array('/', '\\'), '=', $id);
+		// Sanitize the ID
+		$id = $this->sanitize_id($id);
 
-		if ($data = $this->driver->get($id))
-		{
-			if (substr($data, 0, 14) === '<{serialized}>')
-			{
-				// Data has been serialized, unserialize now
-				$data = unserialize(substr($data, 14));
-			}
-		}
-
-		return $data;
+		return $this->driver->get($id);
 	}
 
 	/**
@@ -136,22 +128,7 @@ class Cache_Core {
 	 */
 	public function find($tag)
 	{
-		if ($ids = $this->driver->find($tag))
-		{
-			$data = array();
-			foreach ($ids as $id)
-			{
-				// Load each cache item and add it to the array
-				if (($cache = $this->get($id)) !== NULL)
-				{
-					$data[$id] = $cache;
-				}
-			}
-
-			return $data;
-		}
-
-		return array();
+		return $this->driver->find($tag);
 	}
 
 	/**
@@ -164,22 +141,13 @@ class Cache_Core {
 	 * @param   integer  number of seconds until the cache expires
 	 * @return  boolean
 	 */
-	function set($id, $data, $tags = NULL, $lifetime = NULL)
+	function set($id, $data, array $tags = NULL, $lifetime = NULL)
 	{
 		if (is_resource($data))
 			throw new Kohana_Exception('cache.resources');
 
-		// Change slashes to colons
-		$id = str_replace(array('/', '\\'), '=', $id);
-
-		if ( ! is_string($data))
-		{
-			// Serialize all non-string data, so that types can be preserved
-			$data = '<{serialized}>'.serialize($data);
-		}
-
-		// Make sure that tags is an array
-		$tags = empty($tags) ? array() : (array) $tags;
+		// Sanitize the ID
+		$id = $this->sanitize_id($id);
 
 		if ($lifetime === NULL)
 		{
@@ -198,8 +166,8 @@ class Cache_Core {
 	 */
 	public function delete($id)
 	{
-		// Change slashes to colons
-		$id = str_replace(array('/', '\\'), '=', $id);
+		// Sanitize the ID
+		$id = $this->sanitize_id($id);
 
 		return $this->driver->delete($id);
 	}
@@ -212,7 +180,7 @@ class Cache_Core {
 	 */
 	public function delete_tag($tag)
 	{
-		return $this->driver->delete(FALSE, $tag);
+		return $this->driver->delete($tag, TRUE);
 	}
 
 	/**
@@ -223,6 +191,18 @@ class Cache_Core {
 	public function delete_all()
 	{
 		return $this->driver->delete(TRUE);
+	}
+
+	/**
+	 * Replaces troublesome characters with underscores.
+	 *
+	 * @param   string   cache id
+	 * @return  string
+	 */
+	protected function sanitize_id($id)
+	{
+		// Change slashes and spaces to underscores
+		return str_replace(array('/', '\\', ' '), '_', $id);
 	}
 
 } // End Cache
