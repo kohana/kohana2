@@ -131,8 +131,6 @@ class Cache_Memcache_Driver implements Cache_Driver {
 		{
 			if (isset($this->tags[$id]))
 			{
-				echo Kohana::debug($this->tags[$id]);exit;
-				
 				foreach ($this->tags[$id] as $_id)
 				{
 					// Delete each id in the tag
