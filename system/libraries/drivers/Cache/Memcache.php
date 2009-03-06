@@ -17,8 +17,8 @@ class Cache_Memcache_Driver implements Cache_Driver {
 	protected $backend;
 	protected $flags;
 
-	// Length of one year, used to replace an expiration of 0
-	protected $one_year;
+	// The persistent lifetime value for expirations of 0
+	protected $persistent_lifetime;
 
 	// Tags array
 	protected $tags;
