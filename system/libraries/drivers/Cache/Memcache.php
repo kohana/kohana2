@@ -29,7 +29,7 @@ class Cache_Memcache_Driver implements Cache_Driver {
 			throw new Kohana_Exception('cache.extension_not_loaded', 'memcache');
 
 		$this->backend = new Memcache;
-		$this->flags = Kohana::config('cache_memcache.compression') ? MEMCACHE_COMPRESSED : 0;
+		$this->flags = Kohana::config('cache_memcache.compression') ? MEMCACHE_COMPRESSED : FALSE;
 
 		$servers = Kohana::config('cache_memcache.servers');
 
@@ -51,8 +51,8 @@ class Cache_Memcache_Driver implements Cache_Driver {
 			// Create a new tags array
 			$this->tags = array();
 
-			// Write the tags to the server now
-			$this->backend->set(self::TAGS_KEY, $this->tags, $this->flags, 0);
+			// Tags have been created
+			$this->tags_changed = TRUE;
 		}
 	}
 
@@ -61,7 +61,7 @@ class Cache_Memcache_Driver implements Cache_Driver {
 		if ($this->tags_changed === TRUE)
 		{
 			// Save the tags
-			$this->backend->replace(self::TAGS_KEY, $this->tags, $this->flags, 0);
+			$this->backend->set(self::TAGS_KEY, $this->tags, $this->flags, 0);
 		}
 	}
 
@@ -104,16 +104,8 @@ class Cache_Memcache_Driver implements Cache_Driver {
 			$lifetime += time();
 		}
 
-		if ($this->backend->get($id))
-		{
-			// Replace the existing value
-			return $this->backend->replace($id, $data, $this->flags, $lifetime);
-		}
-		else
-		{
-			// Set a new value
-			return $this->backend->set($id, $data, $this->flags, $lifetime);
-		}
+		// Set a new value
+		return $this->backend->set($id, $data, $this->flags, $lifetime);
 	}
 
 	public function delete($id, $tag = FALSE)
@@ -139,6 +131,8 @@ class Cache_Memcache_Driver implements Cache_Driver {
 		{
 			if (isset($this->tags[$id]))
 			{
+				echo Kohana::debug($this->tags[$id]);exit;
+				
 				foreach ($this->tags[$id] as $_id)
 				{
 					// Delete each id in the tag
