@@ -158,7 +158,7 @@ class Cache_Memcache_Driver implements Cache_Driver {
 				foreach ($_ids as $_id)
 				{
 					// Remove the id from the tags
-					unset($this->tags[$tag][$key]);
+					unset($this->tags[$tag][$_id]);
 				}
 			}
 
