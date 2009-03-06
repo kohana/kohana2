@@ -17,6 +17,9 @@ class Cache_Memcache_Driver implements Cache_Driver {
 	protected $backend;
 	protected $flags;
 
+	// The persistent lifetime value for expirations of 0
+	protected $persistent_lifetime;
+
 	// Tags array
 	protected $tags;
 
@@ -43,6 +46,9 @@ class Cache_Memcache_Driver implements Cache_Driver {
 				or Kohana::log('error', 'Cache: Connection failed: '.$server['host']);
 		}
 
+		// Set "persistent lifetime" value to one year
+		$this->persistent_lifetime = strtotime('now +1 year');
+
 		// Load tags
 		$this->tags = $this->backend->get(self::TAGS_KEY);
 
@@ -61,7 +67,7 @@ class Cache_Memcache_Driver implements Cache_Driver {
 		if ($this->tags_changed === TRUE)
 		{
 			// Save the tags
-			$this->backend->set(self::TAGS_KEY, $this->tags, $this->flags, 0);
+			$this->backend->set(self::TAGS_KEY, $this->tags, $this->flags, $this->persistent_lifetime);
 		}
 	}
 
@@ -98,9 +104,15 @@ class Cache_Memcache_Driver implements Cache_Driver {
 			}
 		}
 
-		// Memcache driver expects unix timestamp
-		if ($lifetime !== 0)
+		if ($lifetime === 0)
 		{
+			// Using an expiration of zero is unreliable, as memcache may delete
+			// it without warning. @see http://php.net/memcache_set
+			$lifetime = $this->persistent_lifetime;
+		}
+		else
+		{
+			// Memcache driver expects unix timestamp
 			$lifetime += time();
 		}
 
