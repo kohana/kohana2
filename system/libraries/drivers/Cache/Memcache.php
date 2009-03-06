@@ -159,10 +159,10 @@ class Cache_Memcache_Driver implements Cache_Driver {
 		{
 			foreach ($this->tags as $tag => $_ids)
 			{
-				foreach ($_ids as $_id)
+				if (isset($this->tags[$tag][$id]))
 				{
 					// Remove the id from the tags
-					unset($this->tags[$tag][$_id]);
+					unset($this->tags[$tag][$id]);
 				}
 			}
 
@@ -184,6 +184,12 @@ class Cache_Memcache_Driver implements Cache_Driver {
 					// This id has disappeared, delete it from the tags
 					unset($this->tags[$tag][$id]);
 				}
+			}
+
+			if (empty($this->tags[$tag]))
+			{
+				// The tag no longer has any valid ids
+				unset($this->tags[$tag]);
 			}
 		}
 
