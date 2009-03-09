@@ -1143,7 +1143,7 @@ class ORM_Core {
 		}
 		else
 		{
-			if ( ! is_string($table) OR ! isset($this->object[$table.'_'.$this->primary_key]))
+			if ( ! is_string($table) OR ! array_key_exists($table.'_'.$this->primary_key, $this->object))
 			{
 				// Use this table
 				$table = $this->table_name;
