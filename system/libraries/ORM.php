@@ -267,11 +267,7 @@ class ORM_Core {
 	 */
 	public function __get($column)
 	{
-		if (isset($this->ignored_columns[$column]))
-		{
-			return NULL;
-		}
-		elseif (array_key_exists($column, $this->object))
+		if (array_key_exists($column, $this->object))
 		{
 			if( ! $this->loaded AND ! $this->empty_primary_key())
 			{
@@ -369,6 +365,10 @@ class ORM_Core {
 					->where($model->foreign_key(TRUE), NULL)
 					->find_all();
 			}
+		}
+		elseif (isset($this->ignored_columns[$column]))
+		{
+			return NULL;
 		}
 		elseif (in_array($column, array
 			(
