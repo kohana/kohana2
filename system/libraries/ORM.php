@@ -258,11 +258,7 @@ class ORM_Core {
 	 */
 	public function __get($column)
 	{
-		if (isset($this->ignored_columns[$column]))
-		{
-			return NULL;
-		}
-		elseif (array_key_exists($column, $this->object))
+		if (array_key_exists($column, $this->object))
 		{
 			return $this->object[$column];
 		}
@@ -278,7 +274,7 @@ class ORM_Core {
 		{
 			// This handles the has_one and belongs_to relationships
 
-			if (in_array($model->object_name, $this->belongs_to) OR ! isset($model->object[$this->foreign_key($column)]))
+			if (in_array($model->object_name, $this->belongs_to) OR ! array_key_exists($this->foreign_key($column), $model->object))
 			{
 				// Foreign key lies in this table (this model belongs_to target model) OR an invalid has_one relationship
 				$where = array($model->table_name.'.'.$model->primary_key => $this->object[$this->foreign_key($column)]);
@@ -338,6 +334,10 @@ class ORM_Core {
 					->where($model->table_name.'.'.$model->primary_key, NULL)
 					->find_all();
 			}
+		}
+		elseif (isset($this->ignored_columns[$column]))
+		{
+			return NULL;
 		}
 		elseif (in_array($column, array
 			(
