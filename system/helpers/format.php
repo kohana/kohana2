@@ -63,4 +63,35 @@ class format_Core {
 		return $str;
 	}
 
+	/**
+	 * Normalizes a hexadecimal HTML color value. All values will be converted
+	 * to lowercase, have a "#" prepended and contain six characters.
+	 *
+	 * @param   string  hexadecimal HTML color value
+	 * @return  string
+	 */
+	public static function color($str = '')
+	{
+		// Reject invalid values
+		if ( ! valid::color($str))
+			return '';
+
+		// Convert to lowercase
+		$str = strtolower($str);
+
+		// Prepend "#"
+		if ($str[0] !== '#')
+		{
+			$str = '#'.$str;
+		}
+
+		// Expand short notation
+		if (strlen($str) === 4)
+		{
+			$str = '#'.$str[1].$str[1].$str[2].$str[2].$str[3].$str[3];
+		}
+
+		return $str;
+	}
+
 } // End format

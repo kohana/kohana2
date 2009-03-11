@@ -335,4 +335,18 @@ class valid_Core {
 		return (bool) preg_match($pattern, (string) $str);
 	}
 
+	/**
+	 * Checks if a string is a proper hexadecimal HTML color value. The validation
+	 * is quite flexible as it does not require an initial "#" and also allows for
+	 * the short notation using only three instead of six hexadecimal characters.
+	 * You may want to normalize these values with format::color().
+	 *
+	 * @param   string   input string
+	 * @return  boolean
+	 */
+	public static function color($str)
+	{
+		return (bool) preg_match('/^#?[0-9a-f]{3}(?:[0-9a-f]{3})?$/iD', $str);
+	}
+
 } // End valid
