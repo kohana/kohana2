@@ -281,6 +281,38 @@ class valid_Core {
 	}
 
 	/**
+	 * Tests if a number is within a range.
+	 *
+	 * @param   integer  number to check
+	 * @param   array    valid range of input
+	 * @return  boolean
+	 */
+	public function range($number, array $range)
+	{
+		// Invalid by default
+		$status = FALSE;
+
+		if (is_int($number) OR ctype_digit($number))
+		{
+			if (count($range) > 1)
+			{
+				if ($number >= $range[0] AND $number <= $range[1])
+				{
+					// Number is within the required range
+					$status = TRUE;
+				}
+			}
+			elseif ($number >= $range[0])
+			{
+				// Number is greater than the minimum
+				$status = TRUE;
+			}
+		}
+
+		return $status;
+	}
+
+	/**
 	 * Checks whether a string is a valid text. Letters, numbers, whitespace,
 	 * dashes, periods, and underscores are allowed.
 	 *
