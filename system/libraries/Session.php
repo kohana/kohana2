@@ -12,7 +12,7 @@
 class Session_Core {
 
 	// Session singleton
-	private static $instance;
+	protected static $instance;
 
 	// Protected key names (cannot be set by the user)
 	protected static $protect = array('session_id', 'user_agent', 'last_activity', 'ip_address', 'total_hits', '_kf_flash_');
