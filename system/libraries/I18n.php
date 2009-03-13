@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
- 
+
 /**
  * Loads the configured driver and validates it.
  *
@@ -38,36 +38,36 @@ class I18n_Core
 	public static function set_locale($locale)
 	{
 		// Reset the translations array
-		self::$translations = array();
+		I18n::$translations = array();
 
-		self::$locale = $locale;
+		I18n::$locale = $locale;
 	}
 
 	public static function get_locale()
 	{
-		return self::$locale;
+		return I18n::$locale;
 	}
 
 	public static function get_text($string)
 	{
-		$locale = explode('_', self::$locale);
-		if ( ! self::$translations)
+		$locale = explode('_', I18n::$locale);
+		if ( ! I18n::$translations)
 		{
-			if (self::$translations = Kohana::find_file('i18n', $locale[0]) AND isset(self::$translation[$string]))
+			if (I18n::$translations = Kohana::find_file('i18n', $locale[0]) AND isset(I18n::$translation[$string]))
 			{
 				// Merge the locale translations with the main language translation
 				if ($locale = Kohana::find_file('i18n', $locale[0].'/'.$locale[1]))
-					self::$translations = array_merge(self::$translations, $locale);
+					I18n::$translations = array_merge(I18n::$translations, $locale);
 
-				return self::$translations[$string];
+				return I18n::$translations[$string];
 			}
 			else
 				return $string;
 		}
 		else
 		{
-			if (isset(self::$translations[$string]))
-				return self::$translations[$string];
+			if (isset(I18n::$translations[$string]))
+				return I18n::$translations[$string];
 			else
 				return $string;
 		}
