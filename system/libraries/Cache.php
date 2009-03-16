@@ -13,6 +13,8 @@
  */
 class Cache_Core {
 
+	protected static $instances = array();
+
 	// For garbage collection
 	protected static $loaded;
 
@@ -25,20 +27,18 @@ class Cache_Core {
 	/**
 	 * Returns a singleton instance of Cache.
 	 *
-	 * @param   array  configuration
+	 * @param   string  configuration
 	 * @return  Cache_Core
 	 */
-	public static function instance($config = FALSE)
+	public static function & instance($config = FALSE)
 	{
-		static $obj;
-
-		if ($obj === NULL)
+		if ( ! isset(Cache::$instances[$config]))
 		{
-			// Create the Cache instance
-			$obj = new Cache($config);
+			// Create a new instance
+			Cache::$instances[$config] = new Cache($config);
 		}
 
-		return $obj;
+		return Cache::$instances[$config];
 	}
 
 	/**
