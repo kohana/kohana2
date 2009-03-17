@@ -306,7 +306,7 @@ class Image_Core {
 	 * @param   boolean  keep or discard image process actions
 	 * @return  object
 	 */
-	public function save($new_image = FALSE, $chmod = 0644, $keep_actions = FALSE)
+	public function save($new_image = FALSE, $chmod = 0644, $keep_actions = FALSE, $background = NULL)
 	{
 		// If no new image is defined, use the current image
 		empty($new_image) and $new_image = $this->image['file'];
@@ -321,7 +321,7 @@ class Image_Core {
 		if ( ! is_writable($dir))
 			throw new Kohana_Exception('image.directory_unwritable', $dir);
 
-		if ($status = $this->driver->process($this->image, $this->actions, $dir, $file))
+		if ($status = $this->driver->process($this->image, $this->actions, $dir, $file, FALSE, $background))
 		{
 			if ($chmod !== FALSE)
 			{
@@ -330,9 +330,11 @@ class Image_Core {
 			}
 		}
 
-		// Reset actions. Subsequent save() or render() will not apply previous actions.
-		if ($keep_actions === FALSE)
+		if ($keep_actions !== TRUE)
+		{
+			// Reset actions. Subsequent save() or render() will not apply previous actions.
 			$this->actions = array();
+		}
 
 		return $status;
 	}
@@ -343,7 +345,7 @@ class Image_Core {
 	 * @param   boolean  keep or discard image process actions
 	 * @return	object
 	 */
-	public function render($keep_actions = FALSE)
+	public function render($keep_actions = FALSE, $background = NULL)
 	{
 		$new_image = $this->image['file'];
 
@@ -355,11 +357,13 @@ class Image_Core {
 		$dir = str_replace('\\', '/', realpath($dir)).'/';
 
 		// Process the image with the driver
-		$status = $this->driver->process($this->image, $this->actions, $dir, $file, $render = TRUE);
+		$status = $this->driver->process($this->image, $this->actions, $dir, $file, TRUE, $background);
 
-		// Reset actions. Subsequent save() or render() will not apply previous actions.
-		if ($keep_actions === FALSE)
+		if ($keep_actions !== TRUE)
+		{
+			// Reset actions. Subsequent save() or render() will not apply previous actions.
 			$this->actions = array();
+		}
 
 		return $status;
 	}
