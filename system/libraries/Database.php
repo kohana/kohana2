@@ -299,7 +299,9 @@ class Database_Core {
 			{
 				if (preg_match('/^DISTINCT\s++(.+)$/i', $val, $matches))
 				{
-					$val            = $this->config['table_prefix'].$matches[1];
+					// Only prepend with table prefix if table name is specified
+					$val = (strpos($matches[1], '.') !== FALSE) ? $this->config['table_prefix'].$matches[1] : $matches[1];
+
 					$this->distinct = TRUE;
 				}
 				else
