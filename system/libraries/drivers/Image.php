@@ -102,9 +102,11 @@ abstract class Image_Driver {
 	 * @param   array    actions to execute
 	 * @param   string   destination directory path
 	 * @param   string   destination filename
+	 * @param   boolean  render the image
+	 * @param   string   background color
 	 * @return  boolean
 	 */
-	abstract public function process($image, $actions, $dir, $file);
+	abstract public function process($image, $actions, $dir, $file, $render = FALSE, $background = NULL);
 
 	/**
 	 * Flip an image. Valid directions are horizontal and vertical.
