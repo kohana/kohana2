@@ -1322,7 +1322,7 @@ class ORM_Core {
 	protected function load_type($column, $value)
 	{
 		$type = gettype($value);
-		if ($type == "object" OR $type == "array" OR ! isset($this->table_columns[$column]))
+		if ($type == 'object' OR $type == 'array' OR ! isset($this->table_columns[$column]))
 			return $value;
 
 		// Load column data
