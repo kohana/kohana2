@@ -62,6 +62,9 @@ class Cache_Memcache_Driver implements Cache_Driver {
 		{
 			// Save the tags
 			$this->backend->set(self::TAGS_KEY, self::$tags, $this->flags, 0);
+
+			// Tags are now unchanged
+			$this->tags_changed = FALSE;
 		}
 	}
 
