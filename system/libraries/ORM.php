@@ -201,7 +201,7 @@ class ORM_Core {
 		if (method_exists($this->db, $method))
 		{
 			if (in_array($method, array('query', 'get', 'insert', 'update', 'delete')))
-				throw new Kohana_Exception('orm.query_methods_not_allowed');
+				throw new Kohana_Exception('Query methods cannot be used through ORM');
 
 			// Method has been applied to the database
 			$this->db_applied[$method] = $method;
@@ -442,7 +442,8 @@ class ORM_Core {
 		}
 		else
 		{
-			throw new Kohana_Exception('core.invalid_property', $column, get_class($this));
+			throw new Kohana_Exception('The :property: property does not exist in the :class: class',
+				array(':property:' => $column, ':class:' => get_class($this)));
 		}
 	}
 
