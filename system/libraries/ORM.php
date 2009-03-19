@@ -1127,6 +1127,23 @@ class ORM_Core {
 	}
 
 	/**
+	 * Proxy method to Database field_data.
+	 *
+	 * @chainable
+	 * @param   string  SQL query to clear
+	 * @return  ORM
+	 */
+	public function clear_cache($sql = NULL)
+	{
+		// Proxy to database
+		$this->db->clear_cache($sql);
+
+		self::$column_cache = array();
+
+		return $this;
+	}
+
+	/**
 	 * Returns the unique key for a specific value. This method is expected
 	 * to be overloaded in models if the model has other unique columns.
 	 *
