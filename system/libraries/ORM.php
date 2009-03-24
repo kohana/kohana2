@@ -1011,41 +1011,6 @@ class ORM_Core {
 	}
 
 	/**
-	 * Count the number of records in the last query, without LIMIT or OFFSET applied.
-	 *
-	 * @return  integer
-	 */
-	public function count_last_query()
-	{
-		if ($sql = $this->db->last_query())
-		{
-			if (stripos($sql, 'LIMIT') !== FALSE)
-			{
-				// Remove LIMIT from the SQL
-				$sql = preg_replace('/\sLIMIT\s+[^a-z]+/i', ' ', $sql);
-			}
-
-			if (stripos($sql, 'OFFSET') !== FALSE)
-			{
-				// Remove OFFSET from the SQL
-				$sql = preg_replace('/\sOFFSET\s+\d+/i', '', $sql);
-			}
-
-			// Get the total rows from the last query executed
-			$result = $this->db->query
-			(
-				'SELECT COUNT(*) AS '.$this->db->escape_column('total_rows').' '.
-				'FROM ('.trim($sql).') AS '.$this->db->escape_table('counted_results')
-			);
-
-			// Return the total number of rows from the query
-			return (int) $result->current()->total_rows;
-		}
-
-		return FALSE;
-	}
-
-	/**
 	 * Proxy method to Database list_fields.
 	 *
 	 * @param   string  table name
