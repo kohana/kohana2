@@ -224,12 +224,16 @@ class ORM_Core {
 				switch ($num_args)
 				{
 					case 0:
-						if ( ! in_array($method, array('open_paren', 'close_paren')))
+						if (in_array($method, array('open_paren', 'close_paren', 'enable_cache', 'disable_cache')))
 						{
-							// Support for things like reset_select, reset_write, list_tables which return other data
+							// Should return ORM, not Database
+							$this->db->$method();
+						}
+						else
+						{
+							// Support for things like reset_select, reset_write, list_tables
 							return $this->db->$method();
 						}
-						$this->db->$method();
 					break;
 					case 1:
 						$this->db->$method($args[0]);
