@@ -220,8 +220,16 @@ class ORM_Core {
 				switch ($num_args)
 				{
 					case 0:
-						// Support for things like reset_select, reset_write, list_tables
-						return $this->db->$method();
+						if (in_array($method, array('open_paren', 'close_paren', 'enable_cache', 'disable_cache')))
+						{
+							// Should return ORM, not Database
+							$this->db->$method();
+						}
+						else
+						{
+							// Support for things like reset_select, reset_write, list_tables
+							return $this->db->$method();
+						}
 					break;
 					case 1:
 						$this->db->$method($args[0]);
@@ -1032,17 +1040,6 @@ class ORM_Core {
 	{
 		// Proxy to database
 		return $this->db->field_data($table);
-	}
-
-	/**
-	 * Proxy method to Database last_query.
-	 *
-	 * @return  string
-	 */
-	public function last_query()
-	{
-		// Proxy to database
-		return $this->db->last_query();
 	}
 
 	/**
