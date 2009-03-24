@@ -1061,35 +1061,23 @@ class ORM_Core {
 	/**
 	 * Proxy method to Database list_fields.
 	 *
-	 * @param   string  table name
 	 * @return  array
 	 */
-	public function list_fields($table = NULL)
+	public function list_fields()
 	{
-		if ($table === NULL)
-		{
-			$table = $this->table_name;
-		}
-
 		// Proxy to database
-		return $this->db->list_fields($table);
+		return $this->db->list_fields($this->table_name);
 	}
 
 	/**
 	 * Proxy method to Database field_data.
 	 *
-	 * @param   string  table name
 	 * @return  array
 	 */
-	public function field_data($table = NULL)
+	public function field_data()
 	{
-		if ($table === NULL)
-		{
-			$table = $this->table_name;
-		}
-
 		// Proxy to database
-		return $this->db->field_data($table);
+		return $this->db->field_data($this->table_name);
 	}
 
 	/**
