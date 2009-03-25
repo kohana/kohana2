@@ -379,7 +379,7 @@ class ORM_Core {
 				'object_name', 'object_plural', // Object
 				'primary_key', 'primary_val', 'table_name', 'table_columns', // Table
 				'loaded', 'saved', // Status
-				'has_one', 'belongs_to', 'has_many', 'has_and_belongs_to_many', 'load_with' // Relationships
+				'has_one', 'belongs_to', 'has_many', 'has_many_through', 'has_and_belongs_to_many', 'load_with' // Relationships
 			)))
 		{
 			if ($column === 'loaded' AND ! $this->loaded AND ! $this->empty_primary_key())
@@ -1439,6 +1439,12 @@ class ORM_Core {
 	{
 		// Save the current query chain (otherwise the next call will clash)
 		$this->db->push();
+
+		if ( ! $this->loaded AND ! $this->empty_primary_key())
+		{
+			// Load of the model if it hasn't been done yet
+			$this->find();
+		}
 
 		$query = $this->db
 			->select($model->foreign_key(NULL).' AS id')
