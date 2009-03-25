@@ -1172,11 +1172,15 @@ class Database_Core {
 	 * See if a table exists in the database.
 	 *
 	 * @param   string   table name
+	 * @param   boolean  True to attach table prefix
 	 * @return  boolean
 	 */
-	public function table_exists($table_name)
+	public function table_exists($table_name, $prefix = TRUE)
 	{
-		return in_array($this->config['table_prefix'].$table_name, $this->list_tables());
+		if ($prefix)
+			return in_array($this->config['table_prefix'].$table_name, $this->list_tables());
+		else
+			return in_array($table_name, $this->list_tables());
 	}
 
 	/**
