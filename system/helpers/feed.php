@@ -10,16 +10,27 @@
  * @license    http://kohanaphp.com/license.html
  */
 class feed_Core {
-
 	/**
 	 * Parses a remote feed into an array.
 	 *
 	 * @param   string   remote feed URL
 	 * @param   integer  item limit to fetch
 	 * @return  array
+	 *
+	 * Parameters:
+	 *  feed   - remote feed URL
+	 *  limit  - item limit to fetch
+	 *  format - feed format, RSS or Atom
+	 *
+	 * Returns:
+	 *  Array of feed items.
 	 */
 	public static function parse($feed, $limit = 0)
 	{
+		// Check if SimpleXML is installed
+		if(!function_exists('simplexml_load_file'))
+			throw new Kohana_User_Exception('Feed Error', 'SimpleXML must be installed!');
+		
 		// Make limit an integer
 		$limit = (int) $limit;
 
@@ -28,6 +39,9 @@ class feed_Core {
 
 		// Allow loading by filename or raw XML string
 		$load = (is_file($feed) OR valid::url($feed)) ? 'simplexml_load_file' : 'simplexml_load_string';
+
+		// Name of entry element, "entry" in Atom, "item" in RSS
+		$entry = (strtolower($format) == 'atom') ? 'entry' : 'item';
 
 		// Load the feed
 		$feed = $load($feed, 'SimpleXMLElement', LIBXML_NOCDATA);
