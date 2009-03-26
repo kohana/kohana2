@@ -332,6 +332,7 @@ class Mssql_Result extends Database_Result {
 			$this->current_row = 0;
 			$this->total_rows  = mssql_num_rows($this->result);
 			$this->fetch_type = ($object === TRUE) ? 'mssql_fetch_object' : 'mssql_fetch_array';
+			$this->cacheable = TRUE;
 		}
 		elseif (is_bool($result))
 		{

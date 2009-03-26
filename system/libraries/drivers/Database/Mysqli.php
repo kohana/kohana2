@@ -173,6 +173,7 @@ class Kohana_Mysqli_Result extends Database_Result {
 				$this->current_row = 0;
 				$this->total_rows  = $this->result->num_rows;
 				$this->fetch_type = ($object === TRUE) ? 'fetch_object' : 'fetch_array';
+				$this->cacheable = TRUE;
 			}
 			elseif ($this->link->error)
 			{

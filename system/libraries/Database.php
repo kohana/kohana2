@@ -1529,7 +1529,11 @@ class Database_Core {
 		{
 			// Not found, so run the query and cache the array of results
 			$result = $this->driver->query($sql);
-			$this->cache->set($hash, $result->result_array(FALSE), NULL, $this->cache_ttl);
+
+			if ($result->cacheable())
+			{
+				$this->cache->set($hash, $result->result_array(FALSE), NULL, $this->cache_ttl);
+			}
 		}
 
 		return $result;

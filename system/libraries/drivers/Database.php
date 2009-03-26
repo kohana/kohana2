@@ -474,6 +474,9 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	protected $fetch_type;
 	protected $return_type;
 
+	// Is result cacheable (only for SELECT, SHOW, DESCRIBE, etc.)
+	protected $cacheable = FALSE;
+
 	/**
 	 * Returns the SQL used to fetch the result.
 	 *
@@ -631,6 +634,16 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	public function valid()
 	{
 		return $this->offsetExists($this->current_row);
+	}
+
+	/**
+	 * Can this result be cached.
+	 *
+	 * @return bool
+	 */
+	public function cacheable()
+	{
+		return $this->cacheable;
 	}
 
 } // End Database Result Interface

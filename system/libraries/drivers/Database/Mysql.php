@@ -383,6 +383,7 @@ class Mysql_Result extends Database_Result {
 			$this->current_row = 0;
 			$this->total_rows  = mysql_num_rows($this->result);
 			$this->fetch_type = ($object === TRUE) ? 'mysql_fetch_object' : 'mysql_fetch_array';
+			$this->cacheable = TRUE;
 		}
 		elseif (is_bool($result))
 		{

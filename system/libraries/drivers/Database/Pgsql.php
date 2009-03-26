@@ -339,6 +339,7 @@ class Pgsql_Result extends Database_Result {
 				$this->current_row = 0;
 				$this->total_rows  = pg_num_rows($this->result);
 				$this->fetch_type = ($object === TRUE) ? 'pg_fetch_object' : 'pg_fetch_array';
+				$this->cacheable = TRUE;
 			}
 		}
 		else

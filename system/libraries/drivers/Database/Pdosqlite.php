@@ -312,6 +312,7 @@ class Pdosqlite_Result extends Database_Result {
 			{
 				$this->result = $result;
 				$this->current_row = 0;
+				$this->cacheable = TRUE;
 
 				$this->total_rows = $this->sqlite_row_count();
 
