@@ -288,17 +288,22 @@ class ORM_Core {
 		}
 		elseif ($column === 'primary_key_value')
 		{
+			if( ! $this->loaded AND ! $this->empty_primary_key() AND $this->unique_key($this->object[$this->primary_key]) !== $this->primary_key)
+			{
+				$this->db->push();
+
+				// Load if object hasn't been loaded and the key given isn't the primary_key
+				// that we need (i.e. passing an email address to ORM::factory rather than the id)
+				$this->find($this->object[$this->primary_key], TRUE);
+
+				$this->db->pop();
+			}
+
 			return $this->object[$this->primary_key];
 		}
 		elseif ($model = $this->related_object($column))
 		{
 			// This handles the has_one and belongs_to relationships
-
-			if( ! $this->loaded AND ! $this->empty_primary_key())
-			{
-				// Column asked for but object hasn't been loaded yet
-				$this->find($this->object[$this->primary_key], TRUE);
-			}
 
 			if (in_array($model->object_name, $this->belongs_to))
 			{
@@ -331,7 +336,7 @@ class ORM_Core {
 			// one<>alias:many relationship
 			return $this->related[$column] = $model
 				->join($join_table, $join_col1, $join_col2)
-				->where($through->foreign_key($this->object_name, $join_table), $this->object[$this->primary_key])
+				->where($through->foreign_key($this->object_name, $join_table), $this->primary_key_value)
 				->find_all();
 		}
 		elseif (isset($this->has_many[$column]))
@@ -340,14 +345,14 @@ class ORM_Core {
 			$model_name = $this->has_many[$column];
 
 			return $this->related[$column] = ORM::factory(inflector::singular($model_name))
-				->where($this->foreign_key($column, $model_name), $this->object[$this->primary_key])
+				->where($this->foreign_key($column, $model_name), $this->primary_key_value)
 				->find_all();
 		}
 		elseif (in_array($column, $this->has_many))
 		{
 			// one<>many relationship
 			return $this->related[$column] = ORM::factory(inflector::singular($column))
-				->where($this->foreign_key($column, $column), $this->object[$this->primary_key])
+				->where($this->foreign_key($column, $column), $this->primary_key_value)
 				->find_all();
 		}
 		elseif (in_array($column, $this->has_and_belongs_to_many))
@@ -480,7 +485,7 @@ class ORM_Core {
 	 */
 	public function __toString()
 	{
-		return (string) $this->object[$this->primary_key];
+		return (string) $this->primary_key_value;
 	}
 
 	/**
@@ -743,7 +748,7 @@ class ORM_Core {
 				// Primary key isn't empty so do an update
 
 				$query = $this->db
-					->where($this->primary_key, $this->object[$this->primary_key])
+					->where($this->primary_key, $this->primary_key_value)
 					->update($this->table_name, $data);
 
 				// Object has been saved
@@ -816,7 +821,7 @@ class ORM_Core {
 						// Insert the new relationship
 						$this->db->insert($join_table, array
 						(
-							$object_fk  => $this->object[$this->primary_key],
+							$object_fk  => $this->primary_key_value,
 							$related_fk => $id,
 						));
 					}
@@ -825,7 +830,7 @@ class ORM_Core {
 				if ( ! empty($removed))
 				{
 					$this->db
-						->where($object_fk, $this->object[$this->primary_key])
+						->where($object_fk, $this->primary_key_value)
 						->in($related_fk, $removed)
 						->delete($join_table);
 				}
@@ -1440,16 +1445,10 @@ class ORM_Core {
 		// Save the current query chain (otherwise the next call will clash)
 		$this->db->push();
 
-		if ( ! $this->loaded AND ! $this->empty_primary_key())
-		{
-			// Load of the model if it hasn't been done yet
-			$this->find();
-		}
-
 		$query = $this->db
 			->select($model->foreign_key(NULL).' AS id')
 			->from($table)
-			->where($this->foreign_key(NULL, $table), $this->object[$this->primary_key])
+			->where($this->foreign_key(NULL, $table), $this->primary_key_value)
 			->get()
 			->result(TRUE);
 
