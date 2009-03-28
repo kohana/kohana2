@@ -65,7 +65,7 @@ abstract class Database_Driver {
 	 */
 	public function set_charset($charset)
 	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+		throw new Kohana_Database_Exception('The method you called, :function:, is not supported by this driver.', array(':function:' => __FUNCTION__));
 	}
 
 	/**
@@ -204,7 +204,7 @@ abstract class Database_Driver {
 	 */
 	public function regex($field, $match, $type, $num_regexs)
 	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+		throw new Kohana_Database_Exception('The method you called, :function:, is not supported by this driver.', array(':function:' => __FUNCTION__));
 	}
 
 	/**
@@ -218,7 +218,7 @@ abstract class Database_Driver {
 	 */
 	public function notregex($field, $match, $type, $num_regexs)
 	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+		throw new Kohana_Database_Exception('The method you called, :function:, is not supported by this driver.', array(':function:' => __FUNCTION__));
 	}
 
 	/**
@@ -249,7 +249,7 @@ abstract class Database_Driver {
 	 */
 	public function merge($table, $keys, $values)
 	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+		throw new Kohana_Database_Exception('The method you called, :function:, is not supported by this driver.', array(':function:' => __FUNCTION__));
 	}
 
 	/**
@@ -269,7 +269,7 @@ abstract class Database_Driver {
 	 */
 	public function stmt_prepare($sql = '')
 	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+		throw new Kohana_Database_Exception('The method you called, :function:, is not supported by this driver.', array(':function:' => __FUNCTION__));
 	}
 
 	/**
@@ -572,7 +572,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	 */
 	final public function offsetSet($offset, $value)
 	{
-		throw new Kohana_Database_Exception('database.result_read_only');
+		throw new Kohana_Database_Exception('Query results are read only.');
 	}
 
 	/**
@@ -582,7 +582,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	 */
 	final public function offsetUnset($offset)
 	{
-		throw new Kohana_Database_Exception('database.result_read_only');
+		throw new Kohana_Database_Exception('Query results are read only.');
 	}
 
 	/**

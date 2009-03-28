@@ -93,7 +93,7 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 	public function set_charset($charset)
 	{
 		if ($this->link->set_charset($charset) === FALSE)
-			throw new Kohana_Database_Exception('database.error', $this->show_error());
+			throw new Kohana_Database_Exception('There was an SQL error: :error:', array(':error:' => $this->show_error()));
 	}
 
 	public function stmt_prepare($sql = '')
@@ -161,7 +161,7 @@ class Kohana_Mysqli_Result extends Database_Result {
 		if ( ! $this->link->multi_query($sql))
 		{
 			// SQL error
-			throw new Kohana_Database_Exception('database.error', $this->link->error.' - '.$sql);
+			throw new Kohana_Database_Exception('There was an SQL error: :error:', array(':error:' => $this->link->error.' - '.$sql));
 		}
 		else
 		{
@@ -178,7 +178,7 @@ class Kohana_Mysqli_Result extends Database_Result {
 			elseif ($this->link->error)
 			{
 				// SQL error
-				throw new Kohana_Database_Exception('database.error', $this->link->error.' - '.$sql);
+				throw new Kohana_Database_Exception('There was an SQL error: :error:', array(':error:' => $this->link->error.' - '.$sql));
 			}
 			else
 			{
