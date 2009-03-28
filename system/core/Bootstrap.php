@@ -11,7 +11,7 @@
  */
 
 define('KOHANA_VERSION',  '2.3.2');
-define('KOHANA_CODENAME', 'accipiter');
+define('KOHANA_CODENAME', 'aquila');
 
 // Test of Kohana is running in Windows
 define('KOHANA_IS_WIN', DIRECTORY_SEPARATOR === '\\');

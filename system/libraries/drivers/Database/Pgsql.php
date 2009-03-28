@@ -82,7 +82,8 @@ class Database_Pgsql_Driver extends Database_Driver {
 			return self::$query_cache[$hash];
 		}
 
-		return new Pgsql_Result(pg_query($this->link, $sql), $this->link, $this->db_config['object'], $sql);
+		// Suppress warning triggered when a database error occurs (e.g., a constraint violation)
+		return new Pgsql_Result(@pg_query($this->link, $sql), $this->link, $this->db_config['object'], $sql);
 	}
 
 	public function set_charset($charset)
