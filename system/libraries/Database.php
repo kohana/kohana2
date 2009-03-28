@@ -1317,17 +1317,6 @@ class Database_Core {
 	}
 
 	/**
-	 * Create a prepared statement (experimental).
-	 *
-	 * @param   string  SQL query
-	 * @return  object
-	 */
-	public function stmt_prepare($sql)
-	{
-		return $this->driver->stmt_prepare($sql, $this->config);
-	}
-
-	/**
 	 * Pushes existing query space onto the query stack.  Use push
 	 * and pop to prevent queries from clashing before they are
 	 * executed

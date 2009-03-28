@@ -161,12 +161,6 @@ class Database_Pgsql_Driver extends Database_Driver {
 		return 'LIMIT '.$limit.' OFFSET '.$offset;
 	}
 
-	public function stmt_prepare($sql = '')
-	{
-		is_object($this->link) or $this->connect();
-		return new Kohana_Mysqli_Statement($sql, $this->link);
-	}
-
 	public function compile_select($database)
 	{
 		$sql = ($database['distinct'] == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
