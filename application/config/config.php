@@ -33,6 +33,11 @@ $config['url_suffix'] = '';
 $config['internal_cache'] = FALSE;
 
 /**
+ * Internal cache directory.
+ */
+$config['internal_cache_path'] = APPPATH.'cache';
+
+/**
  * Enable or disable gzip output compression. This can dramatically decrease
  * server bandwidth usage, at the cost of slightly higher CPU usage. Set to
  * the compression level (1-9) that you want to use, or FALSE to disable.
