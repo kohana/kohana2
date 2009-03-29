@@ -462,7 +462,18 @@ class Database_Core {
 	public function where($key, $value = NULL, $quote = TRUE)
 	{
 		$quote = (func_num_args() < 2 AND ! is_array($key)) ? -1 : $quote;
-		$keys  = is_array($key) ? $key : array($key => $value);
+		if (is_object($key))
+		{
+			$keys = array((string) $key => '');
+		}
+		elseif ( ! is_array($key))
+		{
+			$keys = array($key => $value);
+		}
+		else
+		{
+			$keys = $key;
+		}
 
 		foreach ($keys as $key => $value)
 		{
@@ -484,7 +495,18 @@ class Database_Core {
 	public function orwhere($key, $value = NULL, $quote = TRUE)
 	{
 		$quote = (func_num_args() < 2 AND ! is_array($key)) ? -1 : $quote;
-		$keys  = is_array($key) ? $key : array($key => $value);
+		if (is_object($key))
+		{
+			$keys = array((string) $key => '');
+		}
+		elseif ( ! is_array($key))
+		{
+			$keys = array($key => $value);
+		}
+		else
+		{
+			$keys = $key;
+		}
 
 		foreach ($keys as $key => $value)
 		{
