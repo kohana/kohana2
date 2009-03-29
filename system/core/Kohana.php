@@ -53,6 +53,7 @@ final class Kohana {
 	// Internal caches and write status
 	private static $internal_cache = array();
 	private static $write_cache;
+	private static $internal_cache_path;
 
 	/**
 	 * Sets up the PHP environment. Adds error/exception handling, output
@@ -90,6 +91,12 @@ final class Kohana {
 
 		if (self::$cache_lifetime = self::config('core.internal_cache'))
 		{
+			// Set the directory to be used for the internal cache
+			if ( ! self::$internal_cache_path = self::config('core.internal_cache_path'))
+			{
+				self::$internal_cache_path = APPPATH.'cache/';
+			}
+
 			// Load cached configuration and language files
 			self::$internal_cache['configuration'] = self::cache('configuration', self::$cache_lifetime);
 			self::$internal_cache['language']      = self::cache('language', self::$cache_lifetime);
@@ -570,7 +577,7 @@ final class Kohana {
 	{
 		if ($lifetime > 0)
 		{
-			$path = APPPATH.'cache/kohana_'.$name;
+			$path = self::$internal_cache_path.'kohana_'.$name;
 
 			if (is_file($path))
 			{
@@ -606,7 +613,7 @@ final class Kohana {
 		if ($lifetime < 1)
 			return FALSE;
 
-		$path = APPPATH.'cache/kohana_'.$name;
+		$path = self::$internal_cache_path.'kohana_'.$name;
 
 		if ($data === NULL)
 		{
