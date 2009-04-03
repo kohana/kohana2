@@ -10,20 +10,13 @@
  * @license    http://kohanaphp.com/license.html
  */
 class feed_Core {
+
 	/**
 	 * Parses a remote feed into an array.
 	 *
 	 * @param   string   remote feed URL
 	 * @param   integer  item limit to fetch
 	 * @return  array
-	 *
-	 * Parameters:
-	 *  feed   - remote feed URL
-	 *  limit  - item limit to fetch
-	 *  format - feed format, RSS or Atom
-	 *
-	 * Returns:
-	 *  Array of feed items.
 	 */
 	public static function parse($feed, $limit = 0)
 	{
@@ -39,9 +32,6 @@ class feed_Core {
 
 		// Allow loading by filename or raw XML string
 		$load = (is_file($feed) OR valid::url($feed)) ? 'simplexml_load_file' : 'simplexml_load_string';
-
-		// Name of entry element, "entry" in Atom, "item" in RSS
-		$entry = (strtolower($format) == 'atom') ? 'entry' : 'item';
 
 		// Load the feed
 		$feed = $load($feed, 'SimpleXMLElement', LIBXML_NOCDATA);
@@ -75,13 +65,15 @@ class feed_Core {
 	 *
 	 * @param   array   feed information
 	 * @param   array   items to add to the feed
+	 * @param   string  define which format to use
+	 * @param   string  define which encoding to use
 	 * @return  string
 	 */
-	public static function create($info, $items, $format = 'rss2')
+	public static function create($info, $items, $format = 'rss2', $encoding = 'UTF-8')
 	{
 		$info += array('title' => 'Generated Feed', 'link' => '', 'generator' => 'KohanaPHP');
 
-		$feed = '<?xml version="1.0"?><rss version="2.0"><channel></channel></rss>';
+		$feed = '<?xml version="1.0" encoding="'.$encoding.'"?><rss version="2.0"><channel></channel></rss>';
 		$feed = simplexml_load_string($feed);
 
 		foreach ($info as $name => $value)
