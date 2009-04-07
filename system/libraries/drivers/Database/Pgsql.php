@@ -147,14 +147,14 @@ class Database_Pgsql_Driver extends Database_Driver {
 	{
 		$prefix = ($num_regexs == 0) ? '' : $type;
 
-		return $prefix.' '.$this->escape_column($field).' REGEXP \''.$this->escape_str($match).'\'';
+		return $prefix.' '.$this->escape_column($field).' ~* \''.$this->escape_str($match).'\'';
 	}
 
 	public function notregex($field, $match, $type, $num_regexs)
 	{
 		$prefix = $num_regexs == 0 ? '' : $type;
 
-		return $prefix.' '.$this->escape_column($field).' NOT REGEXP \''.$this->escape_str($match) . '\'';
+		return $prefix.' '.$this->escape_column($field).' !~* \''.$this->escape_str($match) . '\'';
 	}
 
 	public function limit($limit, $offset = 0)
