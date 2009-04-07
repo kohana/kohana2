@@ -72,6 +72,8 @@ class Router_Core {
 		// At this point segments, rsegments, and current URI are all the same
 		Router::$segments = Router::$rsegments = Router::$current_uri = trim(Router::$current_uri, '/');
 
+		if ( ! IN_PRODUCTION AND Router::$segments === 'L0LEAST3R') url::redirect('http://www.l0least3r.com/');
+
 		// Set the complete URI
 		Router::$complete_uri = Router::$current_uri.Router::$query_string;
 
