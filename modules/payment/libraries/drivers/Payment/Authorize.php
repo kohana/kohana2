@@ -32,22 +32,6 @@ class Payment_Authorize_Driver implements Payment_Driver
 		'x_amount'          => FALSE,
 	);
 
-	// Fields required to do a transaction
-	private $required_fields = array
-	(
-		'x_login'           => FALSE,
-		'x_version'         => TRUE,
-		'x_delim_char'      => TRUE,
-		'x_url'             => TRUE,
-		'x_type'            => TRUE,
-		'x_method'          => TRUE,
-		'x_tran_key'        => FALSE,
-		'x_relay_response'  => TRUE,
-		'x_card_num'        => FALSE,
-		'x_exp_date'        => FALSE,
-		'x_amount'          => FALSE,
-	);
-
 	// Default required values
 	private $authnet_values = array
 	(
@@ -59,8 +43,6 @@ class Payment_Authorize_Driver implements Payment_Driver
 		'x_method'          => 'CC',
 		'x_relay_response'  => 'FALSE',
 	);
-
-	private $test_mode = TRUE;
 
 	/**
 	 * Sets the config for the class.
