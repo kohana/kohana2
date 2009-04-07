@@ -638,10 +638,10 @@ class ORM_Core {
 	 */
 	public function validate(Validation $array, $save = FALSE)
 	{
+		$safe_array = $array->safe_array();
+
 		if ( ! $array->submitted())
 		{
-			$safe_array = $array->safe_array();
-
 			foreach ($safe_array as $key => $value)
 			{
 				// Get the value from this object
@@ -658,16 +658,19 @@ class ORM_Core {
 			}
 		}
 
-		// Grab only set fields (excludes missing data, unlike safe_array)
-		$fields = $array->as_array();
-
 		// Validate the array
 		if ($status = $array->validate())
 		{
+			// Grab only set fields (excludes missing data, unlike safe_array)
+			$fields = $array->as_array();
+
 			foreach ($fields as $key => $value)
 			{
-				// Set new data, ignoring any missing fields
-				$this->$key = $value;
+				if (isset($safe_array[$key]))
+				{
+					// Set new data, ignoring any missing fields or fields without rules
+					$this->$key = $value;
+				}
 			}
 
 			if ($save === TRUE OR is_string($save))
