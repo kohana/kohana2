@@ -418,9 +418,14 @@ class Pgsql_Result extends Database_Result {
 			}
 		}
 
-		while ($row = $fetch($this->result, NULL, $type))
+		if ($this->total_rows)
 		{
-			$rows[] = $row;
+			pg_result_seek($this->result, 0);
+
+			while ($row = $fetch($this->result, NULL, $type))
+			{
+				$rows[] = $row;
+			}
 		}
 
 		return $rows;
