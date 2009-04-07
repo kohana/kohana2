@@ -11,6 +11,27 @@
  */
 class Payment_Authorize_Driver implements Payment_Driver
 {
+	// Array containing any response codes set from the gateway
+	private $response        = Null;
+	
+	private $transaction     = False;
+
+	// Fields required to do a transaction
+	private $required_fields = array
+	(
+		'x_login'           => FALSE,
+		'x_version'         => TRUE,
+		'x_delim_char'      => TRUE,
+		'x_url'             => TRUE,
+		'x_type'            => TRUE,
+		'x_method'          => TRUE,
+		'x_tran_key'        => FALSE,
+		'x_relay_response'  => TRUE,
+		'x_card_num'        => FALSE,
+		'x_exp_date'        => FALSE,
+		'x_amount'          => FALSE,
+	);
+
 	// Fields required to do a transaction
 	private $required_fields = array
 	(
@@ -46,6 +67,13 @@ class Payment_Authorize_Driver implements Payment_Driver
 	 *
 	 * @param  array  config passed from the library
 	 */
+	private $test_mode = TRUE;
+
+	/**
+	 * Sets the config for the class.
+	 *
+	 * @param  array  config passed from the library
+	 */
 	public function __construct($config)
 	{
 		$this->authnet_values['x_login']    = $config['auth_net_login_id'];
@@ -68,7 +96,26 @@ class Payment_Authorize_Driver implements Payment_Driver
 			if (array_key_exists('x_'.$key, $this->required_fields) and !empty($value)) $this->required_fields['x_'.$key] = TRUE;
 		}
 	}
+	
+	/**
+	 * Retreives the response array from a successful
+	 * transaction.
+	 *
+	 * @return array or Null
+	 */
+	public function get_response()
+	{
+		if ($this->transaction)
+			return $this->response;
+		
+		return NULL;
+	}
 
+	/**
+	 * Process a given transaction.
+	 *
+	 * @return boolean
+	 */
 	public function process()
 	{
 		// Check for required fields
@@ -128,9 +175,15 @@ class Payment_Authorize_Driver implements Payment_Driver
 				switch ($i)
 				{
 					case 1:
-						return (($response_code == '1') ? explode('|', $response) : False); // Approved
+						$this->response    = (($response_code == '1') ? explode('|', $response) : False); // Approved
+						
+						$this->transaction = TRUE;
+						
+						return $this->transaction;
 					default:
-						return False;
+						$this->transaction = FALSE;
+						
+						return $this->transaction;
 				}
 			}
 		}
