@@ -638,10 +638,10 @@ class ORM_Core {
 	 */
 	public function validate(Validation $array, $save = FALSE)
 	{
+		$safe_array = $array->safe_array();
+
 		if ( ! $array->submitted())
 		{
-			$safe_array = $array->safe_array();
-
 			foreach ($safe_array as $key => $value)
 			{
 				// Get the value from this object
@@ -658,14 +658,15 @@ class ORM_Core {
 			}
 		}
 
+		// safe_array uses NULL for missing fields, as_array ignores them so they aren't saved
+		$fields = $array->as_array();
+
 		// Validate the array
 		if ($status = $array->validate())
 		{
-			$safe_array = $array->safe_array();
-
-			foreach ($safe_array as $key => $value)
+			foreach ($fields as $key => $value)
 			{
-				// Set new data
+				// Set new data, ignoring any missing fields
 				$this->$key = $value;
 			}
 
