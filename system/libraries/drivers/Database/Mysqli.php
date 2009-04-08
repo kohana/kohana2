@@ -306,12 +306,15 @@ class Kohana_Mysqli_Result extends Database_Result {
 
 	public function seek($offset)
 	{
-		if ( ! $this->offsetExists($offset))
-			return FALSE;
+		if ($this->offsetExists($offset) AND $this->result->data_seek($offset))
+		{
+			// Set the current row to the offset
+			$this->current_row = $offset;
 
-		$this->result->data_seek($offset);
+			return TRUE;
+		}
 
-		return TRUE;
+		return FALSE;
 	}
 
 	public function offsetGet($offset)

@@ -462,10 +462,15 @@ class Pgsql_Result extends Database_Result {
 
 	public function seek($offset)
 	{
-		if ( ! $this->offsetExists($offset))
-			return FALSE;
+		if ($this->offsetExists($offset) AND pg_result_seek($this->result, $offset))
+		{
+			// Set the current row to the offset
+			$this->current_row = $offset;
 
-		return pg_result_seek($this->result, $offset);
+			return TRUE;
+		}
+
+		return FALSE;
 	}
 
 	public function list_fields()
