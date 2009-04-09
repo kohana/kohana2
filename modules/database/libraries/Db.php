@@ -47,4 +47,9 @@ class DB_Core {
 		return new Database_Builder($database);
 	}
 
+	public static function exp($expression)
+	{
+		return new Database_Expression($expression);
+	}
+
 } // End DB

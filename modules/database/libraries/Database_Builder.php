@@ -4,9 +4,6 @@ class Database_Builder_Core {
 
 	protected $join_types = array('LEFT', 'RIGHT', 'INNER', 'OUTER', 'RIGHT OUTER', 'LEFT OUTER', 'FULL');
 
-	// Contains the last WHERE, LIKE, IN, or BETWEEN builder
-	protected $last_build;
-
 	protected $db;
 
 	protected $select   = array();
@@ -21,6 +18,9 @@ class Database_Builder_Core {
 
 	protected $type;
 
+	// The current section of clause we are in (HAVING, WHERE)
+	protected $in_clause = 'WHERE';
+
 	protected $order_directions = array('ASC', 'DESC', 'RAND()');
 
 	public function __construct($db = 'default')
@@ -32,11 +32,7 @@ class Database_Builder_Core {
 		}
 
 		$this->db = $db;
-	}
-
-	public function clause()
-	{
-		return new Database_Clause($this->db);
+		$this->last_where =& $this->where;
 	}
 
 	public function select($columns = NULL)
@@ -67,6 +63,14 @@ class Database_Builder_Core {
 		// SELECT columns FROM table
 		$sql = 'SELECT '.implode(', ', $this->flatten($this->select))."\n".
 		       'FROM '.implode(', ', $this->flatten($this->from));
+
+		if ( ! empty($this->join))
+		{
+			foreach ($this->join as $join)
+			{
+
+			}
+		}
 
 		if ( ! empty($this->where))
 		{
@@ -115,14 +119,7 @@ class Database_Builder_Core {
 
 	public function join($table, $keys, $value = NULL, $type = NULL)
 	{
-		// JOINs cannot be reused
-		$this->last_build = NULL;
-
-		if (is_string($table) AND stristr($table, ' AS ') !== FALSE)
-		{
-			// @todo: This should be in escape_table
-			$table = str_ireplace(' AS ', ' AS ', $table);
-		}
+		$table = $this->db->escape_table($table);
 
 		if ( ! is_array($keys))
 		{
@@ -173,25 +170,17 @@ class Database_Builder_Core {
 
 	public function and_having($columns, $op = '=', $value = NULL)
 	{
-		// Create a new HAVING statement and make it the last build
-		$this->last_build = new Database_Having($this->db);
+		$this->in_clause = 'HAVING';
 
-		$this->last_build->_and($columns, $op, $value);
-
-		$this->having[] = array('AND', $this->last_build);
-
+		$this->having[] = array('AND', $this->clause($columns, $op, $value));
 		return $this;
 	}
 
 	public function or_having($columns, $op = '=', $value = NULL)
 	{
-		// Create a new HAVING statement and make it the last build
-		$this->last_build = new Database_Having($this->db);
+		$this->in_clause = 'HAVING';
 
-		$this->last_build->_or($columns, $op, $value);
-
-		$this->having[] = array('OR', $this->last_build);
-
+		$this->having[] = array('OR', $this->clause($columns, $op, $value));
 		return $this;
 	}
 
@@ -262,29 +251,54 @@ class Database_Builder_Core {
 		return $this->join($table, $keys, $value, 'RIGHT INNER');
 	}
 
-	public function _and($column, $op = '=', $value = NULL)
+	public function open($clause = NULL)
 	{
-		if (is_object($this->last_build))
+		return $this->and_open($clause);
+	}
+
+	public function and_open($clause = NULL)
+	{
+		$clause = ($clause === NULL) ? $this->in_clause : strtoupper($clause);
+
+		if ($clause === 'WHERE')
 		{
-			$this->last_build->_and($column, $op, $value);
+			$this->where[] = array('AND', '(');
 		}
-		else
+		elseif ($clause === 'HAVING')
 		{
-			$this->where($column, $op, $value);
+			$this->having[] = array('AND', '(');
 		}
 
 		return $this;
 	}
 
-	public function _or($column, $op = '=', $value = NULL)
+	public function or_open($clause = 'WHERE')
 	{
-		if (is_object($this->last_build))
+		$clause = ($clause === NULL) ? $this->in_clause : strtoupper($clause);
+
+		if ($clause === 'WHERE')
 		{
-			$this->last_build->_or($column, $op, $value);
+			$this->where[] = array('OR', '(');
 		}
-		else
+		elseif ($clause === 'HAVING')
 		{
-			$this->where($column, $op, $value);
+			$this->having[] = array('OR', '(');
+		}
+
+		return $this;
+	}
+
+	public function close($clause = 'WHERE')
+	{
+		$clause = ($clause === NULL) ? $this->in_clause : strtoupper($clause);
+
+		if ($clause === 'WHERE')
+		{
+			$this->where[] = array(NULL, ')');
+		}
+		elseif ($clause === 'HAVING')
+		{
+			$this->having[] = array(NULL, ')');
 		}
 
 		return $this;
@@ -297,27 +311,57 @@ class Database_Builder_Core {
 
 	public function and_where($columns, $op = '=', $value = NULL)
 	{
-		// Create a new WHERE statement and make it the last build
-		$this->last_build = new Database_Clause($this->db);
-
-		$this->last_build->_and($columns, $op, $value);
-
-		$this->where[] = array('AND', $this->last_build);
-
+		$this->where[] = array('AND', $this->clause($columns, $op, $value));
 		return $this;
 	}
 
 	public function or_where($columns, $op = '=', $value = NULL)
 	{
-		// Create a new WHERE statement and make it the last build
-		$this->last_build = new Database_Clause($this->db);
-
-		$this->last_build->_or($columns, $op, $value);
-
-		$this->where[] = array('OR', $this->last_build);
-
+		$this->where[] = array('OR', $this->clause($columns, $op, $value));
 		return $this;
 	}
+
+	protected function clause($columns, $op = '=', $value = NULL)
+	{
+		if ($columns instanceof Database_Expression)
+		{
+			// Return the expression in unaltered form
+			return $columns;
+		}
+
+		if ( ! is_array($columns))
+		{
+			$columns = array($columns => $value);
+		}
+
+		$op = strtoupper($op);
+
+		$sql = '';
+		foreach ($columns as $column => $value)
+		{
+			if (is_array($value))
+			{
+				if ($op === 'BETWEEN')
+				{
+					$value = $this->db->escape($value[0]).' AND '.$this->db->escape($value[1]);
+				}
+				else
+				{
+					$value = array_map(array($this->db, 'escape'), $value);
+					$value = '('.implode(', ', $value).')';
+				}
+			}
+			else
+			{
+				$value = $this->db->escape($value);
+			}
+
+			$sql .= $this->db->escape_table($column).' '.$op.' '.$value;
+		}
+
+		return $sql;
+	}
+
 
 	protected function flatten(array $values)
 	{
@@ -331,17 +375,24 @@ class Database_Builder_Core {
 
 	protected function compile_clauses($clauses)
 	{
+		$last_clause = NULL;
+
 		$sql = '';
 		foreach ($clauses as $i => $clause)
 		{
 			if ($i > 0)
 			{
-				// Add the proper operator
-				$sql .= "\n".$clause[0].' ';
+				if ($clause[1] !== ')' AND $last_clause !== '(')
+				{
+					// Add the proper operator
+					$sql .= ' '.$clause[0].' ';
+				}
 			}
 
 			// Column = "value"
 			$sql .= (string) $clause[1];
+
+			$last_clause = $clause[1];
 		}
 
 		return $sql;

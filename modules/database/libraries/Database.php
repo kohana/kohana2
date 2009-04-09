@@ -86,6 +86,8 @@ abstract class Database_Core {
 
 	abstract public function escape($value);
 
+	abstract public function escape_table($table);
+
 	public function quote($value)
 	{
 		if ($value === NULL)

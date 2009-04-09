@@ -19,7 +19,7 @@ class Database_MySQL_Core extends Database {
 		extract($this->_config);
 
 		// Clear the configuration for security
-		$this->_config = array();
+		//$this->_config = array();
 
 		// Set the connection type
 		$connect = (isset($persistent) AND $persistent === TRUE) ? 'mysql_pconnect' : 'mysql_connect';
@@ -135,6 +135,18 @@ class Database_MySQL_Core extends Database {
 		}
 
 		return $value;
+	}
+
+	public function escape_table($table)
+	{
+		if (is_array($table))
+		{
+			return '`'.$this->_config['table_prefix'].key($table).'` AS `'.$this->_config['table_prefix'].current($table).'`';
+		}
+		else
+		{
+			return '`'.$this->_config['table_prefix'].str_replace('.', '`.`', $table).'`';
+		}
 	}
 
 } // End Database_Connection_MySQL
