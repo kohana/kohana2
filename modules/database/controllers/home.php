@@ -6,7 +6,7 @@ class Home_Controller
 	{
 		header('Content-type: text/plain');
 
-		echo DB::build()->select('*')->from('users')
+		echo DB::build()->select(array('t.id' => 'man.man', 'DISTINCT blah.*', '*', DB::exp('MAX(id1)')))->from(array('users', 'blah', 'crazy' => 'man'))
 			->open()
 				->where(DB::exp('MAX(`id1`) > 5'))
 				->where(array('id' => array(5,6)))
@@ -20,7 +20,8 @@ class Home_Controller
 			->having(array('test' => 5))
 			->open()
 				->having(array('blah'=>6))
-			->close();
+			->close()
+			->order_by(NULL, 'RAND()');
 
 	}
 }

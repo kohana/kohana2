@@ -48,6 +48,26 @@ class Database_Builder_Core {
 			$columns = func_get_args();
 		}
 
+		foreach ($columns as $name => &$alias)
+		{
+			if ( ! $alias instanceof Database_Expression)
+			{
+				if (is_string($name))
+				{
+					// Using AS format so escape both
+					$alias = $this->db->escape_table(array($name => $alias));
+				}
+				else
+				{
+					// Just using the table name itself
+					$alias = $this->db->escape_table($alias);
+				}
+
+				// Unquote all asterisks
+				$alias = preg_replace('/`[^\.]*\*`/', '*', $alias);
+			}
+		}
+
 		$this->select = array_merge($this->select, $columns);
 
 		return $this;
@@ -147,6 +167,20 @@ class Database_Builder_Core {
 		if ( ! is_array($tables))
 		{
 			$tables = func_get_args();
+		}
+
+		foreach ($tables as $name => &$alias)
+		{
+			if (is_string($name))
+			{
+				// Using AS format so escape both
+				$alias = $this->db->escape_table(array($name => $alias));
+			}
+			else
+			{
+				// Just using the table name itself
+				$alias = $this->db->escape_table($alias);
+			}
 		}
 
 		$this->from = array_merge($this->from, $tables);
@@ -272,7 +306,7 @@ class Database_Builder_Core {
 		return $this;
 	}
 
-	public function or_open($clause = 'WHERE')
+	public function or_open($clause = NULL)
 	{
 		$clause = ($clause === NULL) ? $this->in_clause : strtoupper($clause);
 
@@ -288,7 +322,7 @@ class Database_Builder_Core {
 		return $this;
 	}
 
-	public function close($clause = 'WHERE')
+	public function close($clause = NULL)
 	{
 		$clause = ($clause === NULL) ? $this->in_clause : strtoupper($clause);
 
@@ -347,6 +381,7 @@ class Database_Builder_Core {
 				}
 				else
 				{
+					// Return as list
 					$value = array_map(array($this->db, 'escape'), $value);
 					$value = '('.implode(', ', $value).')';
 				}

@@ -141,12 +141,14 @@ class Database_MySQL_Core extends Database {
 	{
 		if (is_array($table))
 		{
-			return '`'.$this->_config['table_prefix'].key($table).'` AS `'.$this->_config['table_prefix'].current($table).'`';
+			$table = '`'.$this->_config['table_prefix'].key($table).'` AS `'.$this->_config['table_prefix'].current($table).'`';
 		}
 		else
 		{
-			return '`'.$this->_config['table_prefix'].str_replace('.', '`.`', $table).'`';
+			$table = '`'.$this->_config['table_prefix'].$table.'`';
 		}
+
+		return str_replace('.', '`.`', $table);
 	}
 
 } // End Database_Connection_MySQL
