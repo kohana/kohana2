@@ -13,8 +13,6 @@ class Database_Query_Core {
 	protected $_sql;
 	protected $_params;
 
-	protected $_auto_params = 0;
-
 	public function __construct($type, $sql = NULL)
 	{
 		$this->_type = $type;
@@ -46,15 +44,6 @@ class Database_Query_Core {
 		$this->_params[$key] =& $value;
 
 		return $this;
-	}
-
-	public function auto_set($value)
-	{
-		$key = ':_auto_'.$this->_auto_params++;
-
-		$this->_params[$key] = $value;
-
-		return $key;
 	}
 
 	public function execute($db = 'default')

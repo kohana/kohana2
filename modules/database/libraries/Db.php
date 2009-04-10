@@ -47,7 +47,7 @@ class DB_Core {
 		return new Database_Builder($database);
 	}
 
-	public static function exp($expression)
+	public static function expr($expression)
 	{
 		return new Database_Expression($expression);
 	}

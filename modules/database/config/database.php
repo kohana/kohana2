@@ -31,6 +31,7 @@ $config['default'] = array
 	'password'     => 'password',
 	'type'         => 'mysql',
 	'table_prefix' => 'tbl_',
+	'persistent'   => TRUE,
 
 
 

@@ -66,6 +66,11 @@ class Database_Builder_Core {
 				// Unquote all asterisks
 				$alias = preg_replace('/`[^\.]*\*`/', '*', $alias);
 			}
+			else
+			{
+				// Parse Database_Expression
+				$alias->parse($this->db);
+			}
 		}
 
 		$this->select = array_merge($this->select, $columns);
@@ -141,7 +146,7 @@ class Database_Builder_Core {
 	{
 		$table = $this->db->escape_table($table);
 
-		if ( ! is_array($keys))
+		if (is_string($keys))
 		{
 			$keys = array($keys => $value);
 		}
@@ -190,7 +195,22 @@ class Database_Builder_Core {
 
 	public function group_by($columns)
 	{
-		$columns = func_get_args();
+		if ( ! is_array($columns))
+		{
+			$columns = func_get_args();
+		}
+
+		foreach ($columns as & $column)
+		{
+			if ($column instanceof Database_Expression)
+			{
+				$column = $column->parse($this->db);
+			}
+			else
+			{
+				$column = $this->db->escape_table($column);
+			}
+		}
 
 		$this->group_by = array_merge($this->group_by, $columns);
 
@@ -229,6 +249,11 @@ class Database_Builder_Core {
 				// Direction is invalid
 				$direction = NULL;
 			}
+		}
+
+		if ($column instanceof Database_Expression)
+		{
+			$column = $column->parse($this->db);
 		}
 
 		$this->order_by[$column] = $direction;
@@ -359,8 +384,8 @@ class Database_Builder_Core {
 	{
 		if ($columns instanceof Database_Expression)
 		{
-			// Return the expression in unaltered form
-			return $columns;
+			// Parse Database_Expression
+			return $columns->parse($this->db);
 		}
 
 		if ( ! is_array($columns))
@@ -377,7 +402,7 @@ class Database_Builder_Core {
 			{
 				if ($op === 'BETWEEN')
 				{
-					$value = $this->db->escape($value[0]).' AND '.$this->db->escape($value[1]);
+					$value = $this->db->quote($value[0]).' AND '.$this->db->quote($value[1]);
 				}
 				else
 				{
@@ -388,7 +413,7 @@ class Database_Builder_Core {
 			}
 			else
 			{
-				$value = $this->db->escape($value);
+				$value = $this->db->quote($value);
 			}
 
 			$sql .= $this->db->escape_table($column).' '.$op.' '.$value;
