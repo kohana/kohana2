@@ -429,36 +429,7 @@ class Validation_Core extends ArrayObject {
 			$object = $this;
 		}
 
-		// Get all field names
-		$fields = $this->field_names();
-
-		// Copy the array from the object, to optimize multiple sets
-		$array = $this->getArrayCopy();
-
-		foreach ($fields as $field)
-		{
-			if ($field === '*')
-			{
-				// Ignore wildcard
-				continue;
-			}
-
-			if ( ! isset($array[$field]))
-			{
-				if (isset($this->array_fields[$field]))
-				{
-					// This field must be an array
-					$array[$field] = array();
-				}
-				else
-				{
-					$array[$field] = NULL;
-				}
-			}
-		}
-
-		// Swap the array back into the object
-		$this->exchangeArray($array);
+		$array = $this->safe_array();
 
 		// Get all defined field names
 		$fields = array_keys($array);
@@ -471,12 +442,12 @@ class Validation_Core extends ArrayObject {
 				{
 					foreach ($fields as $f)
 					{
-						$this[$f] = is_array($this[$f]) ? array_map($callback, $this[$f]) : call_user_func($callback, $this[$f]);
+						$array[$f] = is_array($array[$f]) ? array_map($callback, $array[$f]) : call_user_func($callback, $array[$f]);
 					}
 				}
 				else
 				{
-					$this[$field] = is_array($this[$field]) ? array_map($callback, $this[$field]) : call_user_func($callback, $this[$field]);
+					$array[$field] = is_array($array[$field]) ? array_map($callback, $array[$field]) : call_user_func($callback, $array[$field]);
 				}
 			}
 		}
@@ -508,7 +479,7 @@ class Validation_Core extends ArrayObject {
 							continue;
 						}
 
-						if (empty($this[$f]) AND ! in_array($rule, $this->empty_rules))
+						if (empty($array[$f]) AND ! in_array($rule, $this->empty_rules))
 						{
 							// This rule does not need to be processed on empty fields
 							continue;
@@ -516,7 +487,7 @@ class Validation_Core extends ArrayObject {
 
 						if ($args === NULL)
 						{
-							if ( ! call_user_func($callback, $this[$f]))
+							if ( ! call_user_func($callback, $array[$f]))
 							{
 								$this->errors[$f] = $rule;
 
@@ -526,7 +497,7 @@ class Validation_Core extends ArrayObject {
 						}
 						else
 						{
-							if ( ! call_user_func($callback, $this[$f], $args))
+							if ( ! call_user_func($callback, $array[$f], $args))
 							{
 								$this->errors[$f] = $rule;
 
@@ -544,7 +515,7 @@ class Validation_Core extends ArrayObject {
 						break;
 					}
 
-					if ( ! in_array($rule, $this->empty_rules) AND ! $this->required($this[$field]))
+					if ( ! in_array($rule, $this->empty_rules) AND ! $this->required($array[$field]))
 					{
 						// This rule does not need to be processed on empty fields
 						continue;
@@ -552,7 +523,7 @@ class Validation_Core extends ArrayObject {
 
 					if ($args === NULL)
 					{
-						if ( ! call_user_func($callback, $this[$field]))
+						if ( ! call_user_func($callback, $array[$field]))
 						{
 							$this->errors[$field] = $rule;
 
@@ -562,7 +533,7 @@ class Validation_Core extends ArrayObject {
 					}
 					else
 					{
-						if ( ! call_user_func($callback, $this[$field], $args))
+						if ( ! call_user_func($callback, $array[$field], $args))
 						{
 							$this->errors[$field] = $rule;
 
@@ -616,12 +587,12 @@ class Validation_Core extends ArrayObject {
 				{
 					foreach ($fields as $f)
 					{
-						$this[$f] = is_array($this[$f]) ? array_map($callback, $this[$f]) : call_user_func($callback, $this[$f]);
+						$array[$f] = is_array($array[$f]) ? array_map($callback, $array[$f]) : call_user_func($callback, $array[$f]);
 					}
 				}
 				else
 				{
-					$this[$field] = is_array($this[$field]) ? array_map($callback, $this[$field]) : call_user_func($callback, $this[$field]);
+					$array[$field] = is_array($array[$field]) ? array_map($callback, $array[$field]) : call_user_func($callback, $array[$field]);
 				}
 			}
 		}
