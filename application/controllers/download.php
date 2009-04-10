@@ -22,9 +22,9 @@ class Download_Controller extends Website_Controller {
 			->bind('errors', $errors);
 
 		// Release version, codename, and date
-		$content->release_version = '2.3';
-		$content->release_codename = 'accipiter';
-		$content->release_date = strtotime('2008/12/19');
+		$content->release_version = '2.3.2';
+		$content->release_codename = 'aquila';
+		$content->release_date = strtotime('2009/03/27');
 
 		// Counter
 		$content->counter = file_get_contents(APPPATH.'cache/counter.txt');
