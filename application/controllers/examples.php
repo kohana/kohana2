@@ -183,7 +183,7 @@ class Examples_Controller extends Controller {
 	{
 		// Look at the counters for valid and invalid
 		// responses in the Session Profiler.
-		new Profiler;
+		Profiler::enable();
 
 		// Load Captcha library, you can supply the name
 		// of the config group you would like to use.
@@ -404,7 +404,7 @@ class Examples_Controller extends Controller {
 
 	function calendar()
 	{
-		$profiler = new Profiler;
+		Profiler::enable();
 
 		$calendar = new Calendar($this->input->get('month', date('m')), $this->input->get('year', date('Y')));
 		$calendar->attach($calendar->event()
