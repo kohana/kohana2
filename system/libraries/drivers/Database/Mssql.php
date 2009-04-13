@@ -251,7 +251,7 @@ class Database_Mssql_Driver extends Database_Driver
 		return preg_replace($characters, $replace, $str);
 	}
 
-	public function list_tables(Database $db)
+	public function list_tables()
 	{
 		$sql    = 'SHOW TABLES FROM ['.$this->db_config['connection']['database'].']';
 		$result = $this->query($sql)->result(FALSE, MSSQL_ASSOC);
