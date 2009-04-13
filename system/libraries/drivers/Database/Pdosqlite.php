@@ -205,12 +205,12 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 		return $res;
 	}
 
-	public function list_tables(Database $db)
+	public function list_tables()
 	{
 		$sql = "SELECT `name` FROM `sqlite_master` WHERE `type`='table' ORDER BY `name`;";
 		try
 		{
-			$result = $db->query($sql)->result(FALSE, PDO::FETCH_ASSOC);
+			$result = $this->query($sql)->result(FALSE, PDO::FETCH_ASSOC);
 			$tables = array();
 			foreach ($result as $row)
 			{

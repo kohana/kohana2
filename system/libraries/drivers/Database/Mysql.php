@@ -273,11 +273,11 @@ class Database_Mysql_Driver extends Database_Driver {
 		return mysql_real_escape_string($str, $this->link);
 	}
 
-	public function list_tables(Database $db)
+	public function list_tables()
 	{
 		$tables =& $this->tables_cache;
 
-		if (empty($tables) AND $query = $db->query('SHOW TABLES FROM '.$this->escape_table($this->db_config['connection']['database'])))
+		if (empty($tables) AND $query = $this->query('SHOW TABLES FROM '.$this->escape_table($this->db_config['connection']['database'])))
 		{
 			foreach ($query->result(FALSE) as $row)
 			{
