@@ -36,7 +36,7 @@ class Database_Expression_Core {
 		}
 
 		// Escape table names
-		$this->expression = preg_replace_callback('/{(.*?)}/', array($this, 'escape_table_callback'), $this->expression);
+		$this->expression = preg_replace_callback('/`(.*?)`/', array($this, 'escape_table_callback'), $this->expression);
 
 		return $this->expression;
 	}

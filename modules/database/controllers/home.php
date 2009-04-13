@@ -7,7 +7,7 @@ class Home_Controller
 		header('Content-type: text/plain');
 
 		// Shows how we can generate a raw expression and pass thru to the builder
-		$max = DB::expr('MAX({users.name}) = :val')->set(':val', 5);
+		$max = DB::expr('MAX(`users.name`) = :val')->set(':val', 5);
 
 		echo DB::build()
 			->join(array('bobtable' => 'tbl'), 'test')
@@ -17,7 +17,7 @@ class Home_Controller
 			->where('users.name', '=', 'bob')
 			->where($max)
 			->order_by(DB::expr('CHAR({users.name}, 1)'), 'DESC')
-			->group_by('users.id', DB::expr('MAX({id})'));
+			->group_by('users.id', DB::expr('MAX(`id`)'));
 
 
 		/*echo DB::build()->select(array('t.id' => 'man.man', 'blah.*', '*', DB::exp('MAX(id1)')))->from(array('users', 'blah', 'crazy' => 'man'))
