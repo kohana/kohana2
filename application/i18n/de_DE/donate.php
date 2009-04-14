@@ -17,3 +17,10 @@ $lang = array
 	'thanks'          => 'Danke für Ihre Spende!',
 	'confirm_payment' => 'Bezahlung bestätigen',
 );
+
+$lang['errors'] = array
+(
+	'name'   => array('default' => 'Geben Sie bitte Ihren Namen ein. Es sind nur Buchstaben und Leerzeichen erlaubt'),
+	'email'  => array('default' => 'Geben Sie bitte eine Gültige E-Mailadresse ein'),
+	'amount' => array('default' => 'Geben Sie bitte eine Spendensumme von über $0.50 ein'),
+);
