@@ -35,20 +35,8 @@ final class Kohana {
 	// Include paths
 	private static $include_paths;
 
-	// Logged messages
-	private static $log;
-
 	// Cache lifetime
 	private static $cache_lifetime;
-
-	// Log levels
-	private static $log_levels = array
-	(
-		'error' => 1,
-		'alert' => 2,
-		'info'  => 3,
-		'debug' => 4,
-	);
 
 	// Internal caches and write status
 	private static $internal_cache = array();
@@ -476,96 +464,6 @@ final class Kohana {
 			// Cache has changed
 			self::$write_cache['configuration'] = TRUE;
 		}
-	}
-
-	/**
-	 * Add a new message to the log.
-	 *
-	 * @param   string  type of message
-	 * @param   string  message text
-	 * @return  void
-	 */
-	public static function log($type, $message)
-	{
-		if (self::$log_levels[$type] <= self::$configuration['core']['log_threshold'])
-		{
-			$message = array(date('Y-m-d H:i:s P'), $type, $message);
-
-			// Run the system.log event
-			Event::run('system.log', $message);
-
-			self::$log[] = $message;
-		}
-	}
-
-	/**
-	 * Save all currently logged messages.
-	 *
-	 * @return  void
-	 */
-	public static function log_save()
-	{
-		if (empty(self::$log) OR self::$configuration['core']['log_threshold'] < 1)
-			return;
-
-		// Filename of the log
-		$filename = self::log_directory().date('Y-m-d').'.log'.EXT;
-
-		if ( ! is_file($filename))
-		{
-			// Write the SYSPATH checking header
-			file_put_contents($filename,
-				'<?php defined(\'SYSPATH\') or die(\'No direct script access.\'); ?>'.PHP_EOL.PHP_EOL);
-
-			// Prevent external writes
-			chmod($filename, 0644);
-		}
-
-		// Messages to write
-		$messages = array();
-
-		do
-		{
-			// Load the next mess
-			list ($date, $type, $text) = array_shift(self::$log);
-
-			// Add a new message line
-			$messages[] = $date.' --- '.$type.': '.$text;
-		}
-		while ( ! empty(self::$log));
-
-		// Write messages to log file
-		file_put_contents($filename, implode(PHP_EOL, $messages).PHP_EOL, FILE_APPEND);
-	}
-
-	/**
-	 * Get or set the logging directory.
-	 *
-	 * @param   string  new log directory
-	 * @return  string
-	 */
-	public static function log_directory($dir = NULL)
-	{
-		static $directory;
-
-		if ( ! empty($dir))
-		{
-			// Get the directory path
-			$dir = realpath($dir);
-
-			if (is_dir($dir) AND is_writable($dir))
-			{
-				// Change the log directory
-				$directory = str_replace('\\', '/', $dir).'/';
-			}
-			else
-			{
-				// Log directory is invalid
-				throw new Kohana_Exception('The log directory is not writable: %dir%', array('%dir%' => $dir));
-			}
-		}
-
-		return $directory;
 	}
 
 	/**
