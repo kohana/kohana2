@@ -46,7 +46,7 @@ class Database_Expression_Core {
 		return $this->db->escape_table($matches[1]);
 	}
 
-	public function set($key, $value)
+	public function value($key, $value)
 	{
 		$this->_params[$key] = $value;
 

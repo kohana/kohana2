@@ -1,17 +1,10 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
-/**
- * Database expression class to allow for explicit joins and where expressions.
- *
- * $Id: Database_Expression.php 4037 2009-03-04 23:35:53Z jheathco $
- *
- * @package    Core
- * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
- * @license    http://kohanaphp.com/license.html
- */
+<?php
+
 class Database_Expression_Core {
 
 	protected $expression;
+	protected $db;
+	protected $_params;
 
 	public function __construct($expression)
 	{
@@ -20,7 +13,50 @@ class Database_Expression_Core {
 
 	public function __toString()
 	{
-		return (string) $this->expression;
+		return $this->expression;
 	}
 
-} // End Database Expr Class
+	public function parse($db = 'default')
+	{
+		if ( ! is_object($db))
+		{
+			// Get the database instance
+			$this->db = Database::instance($db);
+		}
+
+		$this->db = $db;
+
+		if ( ! empty($this->_params))
+		{
+			// Quote all of the values
+			$params = array_map(array($this->db, 'quote'), $this->_params);
+
+			// Replace the values in the SQL
+			$this->expression = strtr($this->expression, $params);
+		}
+
+		// Escape table names
+		$this->expression = preg_replace_callback('/`(.*?)`/', array($this, 'escape_table_callback'), $this->expression);
+
+		return $this->expression;
+	}
+
+	protected function escape_table_callback($matches)
+	{
+		return $this->db->escape_table($matches[1]);
+	}
+
+	public function value($key, $value)
+	{
+		$this->_params[$key] = $value;
+
+		return $this;
+	}
+
+	public function bind($key, & $value)
+	{
+		$this->_params[$key] =& $value;
+
+		return $this;
+	}
+}
