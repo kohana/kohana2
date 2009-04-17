@@ -53,7 +53,7 @@ class Kohana_Log_Core {
 					throw new Kohana_Exception('Log Driver Not Found: %driver%', array('%driver%' => $driver);
 
 				// Initialize the driver
-				$driver = new $driver(Kohana::config('log'));
+				$driver = new $driver(array_merge(Kohana::config('log'), Kohana::config('log_'.$driver_name));
 
 				// Validate the driver
 				if ( ! (self::$driver instanceof Kohana_Log_Driver))
