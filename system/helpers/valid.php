@@ -378,7 +378,7 @@ class valid_Core {
 	 */
 	public static function color($str)
 	{
-		return (bool) preg_match('/^#?[0-9a-f]{3}(?:[0-9a-f]{3})?$/iD', $str);
+		return (bool) preg_match('/^#?+[0-9a-f]{3}(?:[0-9a-f]{3})?$/iD', $str);
 	}
 
 } // End valid
