@@ -7,7 +7,7 @@
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-abstract class Kohana_Log_Driver {
+abstract class Log_Driver {
 
 	protected $config = array();
 

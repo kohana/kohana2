@@ -10,11 +10,7 @@
 class Kohana_Log_Core {
 
 	// Configuration
-	protected static $config = array
-	(
-		'log_threshold' => 1,
-		'driver'        => 'file',
-	);
+	protected static $config;
 
 	// Drivers
 	protected static $drivers;
@@ -40,24 +36,29 @@ class Kohana_Log_Core {
 	 */
 	public function add($type, $message)
 	{
-		// Make sure the drivers are loaded
-		if ( ! is_array(self::$driver))
+		// Make sure the drivers and config are loaded
+		if ( ! is_array(self::$config))
 		{
-			foreach (Kohana::config('log.drivers') as $driver_name)
+			self::$config = Kohana::config('log');
+		}
+
+		if ( ! is_array(self::$drivers))
+		{
+			foreach ( (array) Kohana::config('log.drivers') as $driver_name)
 			{
 				// Set driver name
-				$driver = 'Kohana_Log_'.ucfirst($driver_name).'_Driver';
+				$driver = 'Log_'.ucfirst($driver_name).'_Driver';
 
 				// Load the driver
 				if ( ! Kohana::auto_load($driver))
-					throw new Kohana_Exception('Log Driver Not Found: %driver%', array('%driver%' => $driver);
+					throw new Kohana_Exception('Log Driver Not Found: %driver%', array('%driver%' => $driver));
 
 				// Initialize the driver
-				$driver = new $driver(array_merge(Kohana::config('log'), Kohana::config('log_'.$driver_name));
+				$driver = new $driver(array_merge(Kohana::config('log'), Kohana::config('log_'.$driver_name)));
 
 				// Validate the driver
-				if ( ! (self::$driver instanceof Kohana_Log_Driver))
-					throw new Kohana_Exception('%driver% does not implement the Log_Driver interface', array('%driver%' => $driver);
+				if ( ! ($driver instanceof Log_Driver))
+					throw new Kohana_Exception('%driver% does not implement the Log_Driver interface', array('%driver%' => $driver));
 
 				self::$drivers[] = $driver;
 			}
@@ -80,7 +81,7 @@ class Kohana_Log_Core {
 	 */
 	protected function save()
 	{
-		if (empty($this->$log) OR $this->$config['log_threshold'] < 1)
+		if (empty(self::$messages) OR self::$config['log_threshold'] < 1)
 			return;
 
 		foreach (self::$drivers as $driver)
@@ -90,37 +91,5 @@ class Kohana_Log_Core {
 
 		// Reset the messages
 		self::$messages = array();
-
-
-		// This all goes in the file driver...
-		/*
-		// Filename of the log
-		$filename = self::log_directory().date('Y-m-d').'.log'.EXT;
-
-		if ( ! is_file($filename))
-		{
-			// Write the SYSPATH checking header
-			file_put_contents($filename,
-				'<?php defined(\'SYSPATH\') or die(\'No direct script access.\'); ?>'.PHP_EOL.PHP_EOL);
-
-			// Prevent external writes
-			chmod($filename, 0644);
-		}
-
-		// Messages to write
-		$messages = array();
-
-		do
-		{
-			// Load the next mess
-			list ($date, $type, $text) = array_shift(self::$log);
-
-			// Add a new message line
-			$messages[] = $date.' --- '.$type.': '.$text;
-		}
-		while ( ! empty(self::$log));
-
-		// Write messages to log file
-		file_put_contents($filename, implode(PHP_EOL, $messages).PHP_EOL, FILE_APPEND);*/
 	}
 }

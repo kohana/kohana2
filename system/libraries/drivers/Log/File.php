@@ -7,7 +7,7 @@
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Kohana_Log_File_Driver extends Kohana_Log_Driver {
+class Log_File_Driver extends Log_Driver {
 
 	public function save(array $messages)
 	{
@@ -23,9 +23,6 @@ class Kohana_Log_File_Driver extends Kohana_Log_Driver {
 			// Prevent external writes
 			chmod($filename, $this->config['posix_permissions']);
 		}
-
-		// Messages to write
-		$messages = array();
 
 		do
 		{
