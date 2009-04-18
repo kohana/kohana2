@@ -151,4 +151,47 @@ class Database_MySQL_Core extends Database {
 		return str_replace('.', '`.`', $table);
 	}
 
+	public function list_fields($table)
+	{
+		$tables =& $this->fields_cache;
+
+		if (empty($tables[$table]))
+		{
+			foreach ($this->field_data($table) as $row)
+			{
+				// Make an associative array
+				$tables[$table][$row['Field']] = $this->sql_type($row['Type']);
+
+				if ($row->Key === 'PRI' AND $row->Extra === 'auto_increment')
+				{
+					// For sequenced (AUTO_INCREMENT) tables
+					$tables[$table][$row['Field']]['sequenced'] = TRUE;
+				}
+
+				if ($row['Null'] === 'YES')
+				{
+					// Set NULL status
+					$tables[$table][$row['Field']]['null'] = TRUE;
+				}
+			}
+		}
+
+		if ( ! isset($tables[$table]))
+			throw new Kohana_Database_Exception('database.table_not_found', $table);
+
+		return $tables[$table];
+	}
+
+	public function field_data($table)
+	{
+		$columns = array();
+
+		foreach($this->query(Database::SELECT, 'SHOW COLUMNS FROM '.$this->escape_table($table), $this->_connection) as $row)
+		{
+			$columns[] = $row;
+		}
+
+		return $columns;
+	}
+
 } // End Database_Connection_MySQL

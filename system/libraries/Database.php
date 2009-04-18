@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Database connection wrapper.
+ * Database wrapper.
  *
  * @package    Kohana
  * @author     Kohana Team
@@ -88,6 +88,8 @@ abstract class Database_Core {
 
 	abstract public function escape_table($table);
 
+	abstract public function list_fields($table);
+
 	public function quote($value)
 	{
 		if ($value === NULL)
@@ -118,4 +120,64 @@ abstract class Database_Core {
 			array(':method' => __FUNCTION__, ':class' => get_class($this)));
 	}
 
-} // End Database_Connection
+	/**
+	 * Fetches SQL type information about a field, in a generic format.
+	 *
+	 * @param   string  field datatype
+	 * @return  array
+	 */
+	protected function sql_type($str)
+	{
+		static $sql_types;
+
+		if ($sql_types === NULL)
+		{
+			// Load SQL data types
+			$sql_types = Kohana::config('sql_types');
+		}
+
+		$str = strtolower(trim($str));
+
+		if (($open = strpos($str, '(')) !== FALSE)
+		{
+			// Find closing bracket
+			$close = strpos($str, ')', $open) - 1;
+
+			// Find the type without the size
+			$type = substr($str, 0, $open);
+		}
+		else
+		{
+			// No length
+			$type = $str;
+		}
+
+		if (empty($sql_types[$type]))
+		{
+			throw new Database_Exception('Undefined field type :type in :method of :class',
+				array(':type' => $type, ':method' => __FUNCTION__, ':class' => get_class($this)));
+		}
+
+		// Fetch the field definition
+		$field = $sql_types[$type];
+
+		switch ($field['type'])
+		{
+			case 'string':
+			case 'float':
+				if (isset($close))
+				{
+					// Add the length to the field info
+					$field['length'] = substr($str, $open + 1, $close - $open);
+				}
+			break;
+			case 'int':
+				// Add unsigned value
+				$field['unsigned'] = (strpos($str, 'unsigned') !== FALSE);
+			break;
+		}
+
+		return $field;
+	}
+
+} // End Database

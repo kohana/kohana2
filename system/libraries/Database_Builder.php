@@ -34,7 +34,6 @@ class Database_Builder_Core {
 		}
 
 		$this->db = $db;
-		$this->last_where =& $this->where;
 	}
 
 	public function select($columns = NULL)
@@ -48,31 +47,6 @@ class Database_Builder_Core {
 		elseif ( ! is_array($columns))
 		{
 			$columns = func_get_args();
-		}
-
-		foreach ($columns as $name => &$alias)
-		{
-			if ( ! $alias instanceof Database_Expression)
-			{
-				if (is_string($name))
-				{
-					// Using AS format so escape both
-					$alias = $this->db->escape_table(array($name => $alias));
-				}
-				else
-				{
-					// Just using the table name itself
-					$alias = $this->db->escape_table($alias);
-				}
-
-				// Unquote all asterisks
-				$alias = preg_replace('/`[^\.]*\*`/', '*', $alias);
-			}
-			else
-			{
-				// Parse Database_Expression
-				$alias->parse($this->db);
-			}
 		}
 
 		$this->select = array_merge($this->select, $columns);
@@ -90,8 +64,7 @@ class Database_Builder_Core {
 		if ($this->type === Database::SELECT)
 		{
 			// SELECT columns FROM table
-			$sql = 'SELECT '.implode(', ', $this->flatten($this->select))."\n".
-			       'FROM '.implode(', ', $this->flatten($this->from));
+			$sql = 'SELECT '.$this->compile_select()."\n".'FROM '.$this->compile_from();
 		}
 		elseif ($this->type === Database::UPDATE)
 		{
@@ -110,7 +83,7 @@ class Database_Builder_Core {
 				}
 			}
 
-			$sql = 'UPDATE '.$this->from[0]."\n".'SET ('.implode(', ', $this->flatten($vals)).')';
+			$sql = 'UPDATE '.$this->compile_from()."\n".'SET ('.implode(', ', $this->flatten($vals)).')';
 		}
 		elseif ($this->type === Database::INSERT)
 		{
@@ -121,44 +94,7 @@ class Database_Builder_Core {
 
 		if ( ! empty($this->join))
 		{
-			foreach ($this->join as $join)
-			{
-				list($table, $keys, $type) = $join;
-
-				if ($type !== NULL)
-				{
-					// Join type
-					$sql .= ' '.$type;
-				}
-
-				$sql .= ' JOIN '.$table;
-
-				$condition = '';
-				if ($keys instanceof Database_Expression)
-				{
-					// ON conditions are a Database_Expression, so parse it
-					$condition = $keys->parse($this->db);
-				}
-				elseif (is_array($keys))
-				{
-					// ON condition is an array of table column matches
-					foreach ($keys as $key => $value)
-					{
-						if ( ! empty($condition))
-						{
-							$condition .= ' AND ';
-						}
-
-						$condition .= $this->db->escape_table($key).' = '.$this->db->escape_table($value);
-					}
-				}
-
-				if ( ! empty($condition))
-				{
-					// Add ON condition
-					$sql .= ' ON ('.$condition.')';
-				}
-			}
+			$sql .= $this->compile_join();
 		}
 
 		if ( ! empty($this->values))
@@ -168,17 +104,17 @@ class Database_Builder_Core {
 
 		if ( ! empty($this->where))
 		{
-			$sql .= "\n".'WHERE '.$this->compile_clauses($this->where);
+			$sql .= "\n".'WHERE '.$this->compile_conditions($this->where);
 		}
 
 		if ( ! empty($this->having))
 		{
-			$sql .= "\n".'HAVING '.$this->compile_clauses($this->having);
+			$sql .= "\n".'HAVING '.$this->compile_conditions($this->having);
 		}
 
 		if ( ! empty($this->group_by))
 		{
-			$sql .= "\n".'GROUP BY '.implode(', ', $this->flatten($this->group_by));
+			$sql .= "\n".'GROUP BY '.$this->compile_group_by();
 		}
 
 		if ( ! empty($this->order_by))
@@ -211,10 +147,127 @@ class Database_Builder_Core {
 		return $sql;
 	}
 
+	protected function compile_select()
+	{
+		foreach ($this->select as $name => $alias)
+		{
+			if ($alias instanceof Database_Expression)
+			{
+				// Parse Database_Expression
+				$alias->parse($this->db);
+			}
+			else
+			{
+				if (is_string($name))
+				{
+					// Using AS format so escape both
+					$alias = $this->db->escape_table(array($name => $alias));
+				}
+				else
+				{
+					// Just using the table name itself
+					$alias = $this->db->escape_table($alias);
+				}
+
+				// Unquote all asterisks
+				$alias = preg_replace('/`[^\.]*\*`/', '*', $alias);
+			}
+
+			$vals[] = $alias;
+		}
+
+		return implode(', ', $vals);
+	}
+
+	protected function compile_from()
+	{
+		foreach ($this->from as $name => $alias)
+		{
+			if (is_string($name))
+			{
+				// Using AS format so escape both
+				$alias = $this->db->escape_table(array($name => $alias));
+			}
+			else
+			{
+				// Just using the table name itself
+				$alias = $this->db->escape_table($alias);
+			}
+
+			$vals[] = $alias;
+		}
+
+		return implode(', ', $vals);
+	}
+
+	protected function compile_join()
+	{
+		$sql = '';
+		foreach ($this->join as $join)
+		{
+			list($table, $keys, $type) = $join;
+
+			$table = $this->db->escape_table($table);
+
+			if ($type !== NULL)
+			{
+				// Join type
+				$sql .= ' '.$type;
+			}
+
+			$sql .= ' JOIN '.$table;
+
+			$condition = '';
+			if ($keys instanceof Database_Expression)
+			{
+				// ON conditions are a Database_Expression, so parse it
+				$condition = $keys->parse($this->db);
+			}
+			elseif (is_array($keys))
+			{
+				// ON condition is an array of table column matches
+				foreach ($keys as $key => $value)
+				{
+					if ( ! empty($condition))
+					{
+						$condition .= ' AND ';
+					}
+
+					$condition .= $this->db->escape_table($key).' = '.$this->db->escape_table($value);
+				}
+			}
+
+			if ( ! empty($condition))
+			{
+				// Add ON condition
+				$sql .= ' ON ('.$condition.')';
+			}
+		}
+
+		return $sql;
+	}
+
+	public function compile_group_by()
+	{
+		foreach ($this->group_by as $column)
+		{
+			if ($column instanceof Database_Expression)
+			{
+				$column = $column->parse($this->db);
+			}
+			else
+			{
+				$column = $this->db->escape_table($column);
+			}
+
+			$vals[] = $column;
+		}
+
+		return implode(', ', $vals);
+	}
+
 	public function join($table, $keys, $value = NULL, $type = NULL)
 	{
-		$table = $this->db->escape_table($table);
-
 		if (is_string($keys))
 		{
 			$keys = array($keys => $value);
@@ -243,20 +296,6 @@ class Database_Builder_Core {
 			$tables = func_get_args();
 		}
 
-		foreach ($tables as $name => &$alias)
-		{
-			if (is_string($name))
-			{
-				// Using AS format so escape both
-				$alias = $this->db->escape_table(array($name => $alias));
-			}
-			else
-			{
-				// Just using the table name itself
-				$alias = $this->db->escape_table($alias);
-			}
-		}
-
 		$this->from = array_merge($this->from, $tables);
 
 		return $this;
@@ -267,18 +306,6 @@ class Database_Builder_Core {
 		if ( ! is_array($columns))
 		{
 			$columns = func_get_args();
-		}
-
-		foreach ($columns as & $column)
-		{
-			if ($column instanceof Database_Expression)
-			{
-				$column = $column->parse($this->db);
-			}
-			else
-			{
-				$column = $this->db->escape_table($column);
-			}
 		}
 
 		$this->group_by = array_merge($this->group_by, $columns);
@@ -293,17 +320,13 @@ class Database_Builder_Core {
 
 	public function and_having($columns, $op = '=', $value = NULL)
 	{
-		$this->in_clause = 'HAVING';
-
-		$this->having[] = array('AND', $this->clause($columns, $op, $value));
+		$this->having[] = array('AND' => array($columns, $op, $value));
 		return $this;
 	}
 
 	public function or_having($columns, $op = '=', $value = NULL)
 	{
-		$this->in_clause = 'HAVING';
-
-		$this->having[] = array('OR', $this->clause($columns, $op, $value));
+		$this->having[] = array('OR' => array($columns, $op, $value));
 		return $this;
 	}
 
@@ -379,54 +402,48 @@ class Database_Builder_Core {
 		return $this->join($table, $keys, $value, 'RIGHT INNER');
 	}
 
-	public function open($clause = NULL)
+	public function open($clause = 'WHERE')
 	{
 		return $this->and_open($clause);
 	}
 
-	public function and_open($clause = NULL)
+	public function and_open($clause = 'WHERE')
 	{
-		$clause = ($clause === NULL) ? $this->in_clause : strtoupper($clause);
-
 		if ($clause === 'WHERE')
 		{
-			$this->where[] = array('AND', '(');
+			$this->where[] = array('AND' => '(');
 		}
-		elseif ($clause === 'HAVING')
+		else
 		{
-			$this->having[] = array('AND', '(');
+			$this->having[] = array('AND' => '(');
 		}
 
 		return $this;
 	}
 
-	public function or_open($clause = NULL)
+	public function or_open($clause = 'WHERE')
 	{
-		$clause = ($clause === NULL) ? $this->in_clause : strtoupper($clause);
-
 		if ($clause === 'WHERE')
 		{
-			$this->where[] = array('OR', '(');
+			$this->where[] = array('OR' => '(');
 		}
-		elseif ($clause === 'HAVING')
+		else
 		{
-			$this->having[] = array('OR', '(');
+			$this->having[] = array('OR' => '(');
 		}
 
 		return $this;
 	}
 
-	public function close($clause = NULL)
+	public function close($clause = 'WHERE')
 	{
-		$clause = ($clause === NULL) ? $this->in_clause : strtoupper($clause);
-
 		if ($clause === 'WHERE')
 		{
-			$this->where[] = array(NULL, ')');
+			$this->where[] = array(')');
 		}
-		elseif ($clause === 'HAVING')
+		else
 		{
-			$this->having[] = array(NULL, ')');
+			$this->having[] = array(')');
 		}
 
 		return $this;
@@ -439,58 +456,15 @@ class Database_Builder_Core {
 
 	public function and_where($columns, $op = '=', $value = NULL)
 	{
-		$this->where[] = array('AND', $this->clause($columns, $op, $value));
+		$this->where[] = array('AND' => array($columns, $op, $value));
 		return $this;
 	}
 
 	public function or_where($columns, $op = '=', $value = NULL)
 	{
-		$this->where[] = array('OR', $this->clause($columns, $op, $value));
+		$this->where[] = array('OR' => array($columns, $op, $value));
 		return $this;
 	}
-
-	protected function clause($columns, $op = '=', $value = NULL)
-	{
-		if ($columns instanceof Database_Expression)
-		{
-			// Parse Database_Expression
-			return $columns->parse($this->db);
-		}
-
-		if ( ! is_array($columns))
-		{
-			$columns = array($columns => $value);
-		}
-
-		$op = strtoupper($op);
-
-		$sql = '';
-		foreach ($columns as $column => $value)
-		{
-			if (is_array($value))
-			{
-				if ($op === 'BETWEEN')
-				{
-					$value = $this->db->quote($value[0]).' AND '.$this->db->quote($value[1]);
-				}
-				else
-				{
-					// Return as list
-					$value = array_map(array($this->db, 'escape'), $value);
-					$value = '('.implode(', ', $value).')';
-				}
-			}
-			else
-			{
-				$value = $this->db->quote($value);
-			}
-
-			$sql .= $this->db->escape_table($column).' '.$op.' '.$value;
-		}
-
-		return $sql;
-	}
-
 
 	protected function flatten(array $values)
 	{
@@ -502,26 +476,89 @@ class Database_Builder_Core {
 		return $values;
 	}
 
-	protected function compile_clauses($clauses)
+	protected function compile_conditions($groups)
 	{
-		$last_clause = NULL;
+		$last_condition = NULL;
 
 		$sql = '';
-		foreach ($clauses as $i => $clause)
+		foreach ($groups as $group)
 		{
-			if ($i > 0)
+			// Process groups of conditions
+			foreach ($group as $logic => $condition)
 			{
-				if ($clause[1] !== ')' AND $last_clause !== '(')
+				if ($condition === '(')
 				{
-					// Add the proper operator
-					$sql .= ' '.$clause[0].' ';
+					if ( ! empty($sql) AND $last_condition !== '(')
+					{
+						// Include logic operator
+						$sql .= ' '.$logic.' ';
+					}
+
+					$sql .= '(';
 				}
+				elseif ($condition === ')')
+				{
+					$sql .= ')';
+				}
+				else
+				{
+					list($columns, $op, $value) = $condition;
+
+					// Stores each individual condition
+					$vals = array();
+
+					if ($columns instanceof Database_Expression)
+					{
+						// Parse Database_Expression and add to condition list
+						$vals[] = $columns->parse($this->db);
+					}
+					else
+					{
+						$op = strtoupper($op);
+
+						if ( ! is_array($columns))
+						{
+							$columns = array($columns => $value);
+						}
+
+						foreach ($columns as $column => $value)
+						{
+							if (is_array($value))
+							{
+								if ($op === 'BETWEEN')
+								{
+									// Falls between two values
+									$value = $this->db->quote($value[0]).' AND '.$this->db->quote($value[1]);
+								}
+								else
+								{
+									// Return as list
+									$value = array_map(array($this->db, 'escape'), $value);
+									$value = '('.implode(', ', $value).')';
+								}
+							}
+							else
+							{
+								$value = $this->db->quote($value);
+							}
+
+							// Add to condition list
+							$vals[] = $this->db->escape_table($column).' '.$op.' '.$value;
+						}
+					}
+
+					if ( ! empty($sql) AND $last_condition !== '(')
+					{
+						// Add the logic operator
+						$sql .= ' '.$logic.' ';
+					}
+
+					// Join the condition list items together by the given logic operator
+					$sql .= implode(' '.$logic.' ', $vals);
+				}
+
+				$last_condition = $condition;
 			}
-
-			// Column = "value"
-			$sql .= (string) $clause[1];
-
-			$last_clause = $clause[1];
 		}
 
 		return $sql;
@@ -566,7 +603,7 @@ class Database_Builder_Core {
 
 		if ($table !== NULL)
 		{
-			$this->from[0] = $this->db->escape_table($table);
+			$this->from($table);
 		}
 
 		return $this;
@@ -583,7 +620,7 @@ class Database_Builder_Core {
 
 		if ($table !== NULL)
 		{
-			$this->from[0] = $this->db->escape_table($table);
+			$this->from($table);
 		}
 
 		return $this;
