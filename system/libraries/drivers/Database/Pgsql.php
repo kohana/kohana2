@@ -318,6 +318,7 @@ class Pgsql_Result extends Database_Result {
 	 */
 	public function __construct($result, $link, $object = TRUE, $sql)
 	{
+		$this->link = $link;
 		$this->result = $result;
 
 		// If the query is a resource, it was a SELECT, SHOW, DESCRIBE, EXPLAIN query
