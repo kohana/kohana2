@@ -144,7 +144,7 @@ class Payment_Paypalpro_Driver implements Payment_Driver
 
 		$this->curl_config = $config['curl_config'];
 
-		Kohana::log('debug', 'Paypalpro Payment Driver Initialized');
+		Kohana_Log::add('debug', 'Paypalpro Payment Driver Initialized');
 	}
 
 	/**

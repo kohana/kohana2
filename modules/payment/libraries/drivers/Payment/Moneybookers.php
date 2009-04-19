@@ -69,7 +69,7 @@ class Payment_Moneybookers_Driver implements Payment_Driver
 		
 		$this->curl_config = $config['curl_config'];
 
-		Kohana::Log('debug', 'MoneyBookers Payment Driver Initialized');
+		Kohana_Log::add('debug', 'MoneyBookers Payment Driver Initialized');
 	}
 
 	public function set_fields($fields)

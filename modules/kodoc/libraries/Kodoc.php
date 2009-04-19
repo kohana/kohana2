@@ -541,7 +541,7 @@ class Kodoc_xCore {
 			}
 		}
 
-		Kohana::log('debug', 'Kodoc Library initialized');
+		Kohana_Log::add('debug', 'Kodoc Library initialized');
 	}
 
 	public function get_docs($format = 'html')

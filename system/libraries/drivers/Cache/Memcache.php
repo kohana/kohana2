@@ -40,7 +40,7 @@ class Cache_Memcache_Driver implements Cache_Driver {
 
 			// Add the server to the pool
 			$this->backend->addServer($server['host'], $server['port'], (bool) $server['persistent'])
-				or Kohana::log('error', 'Cache: Connection failed: '.$server['host']);
+				or Kohana_Log::add('error', 'Cache: Connection failed: '.$server['host']);
 		}
 
 		// Load tags

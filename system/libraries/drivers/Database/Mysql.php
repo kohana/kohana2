@@ -38,7 +38,7 @@ class Database_Mysql_Driver extends Database_Driver {
 		$this->tables_cache = array();
 		$this->fields_cache = array();
 
-		Kohana::log('debug', 'MySQL Database Driver Initialized');
+		Kohana_Log::add('debug', 'MySQL Database Driver Initialized');
 	}
 
 	/**

@@ -23,7 +23,7 @@ class Session_Cookie_Driver implements Session_Driver {
 			$this->encrypt = Encrypt::instance();
 		}
 
-		Kohana::log('debug', 'Session Cookie Driver Initialized');
+		Kohana_Log::add('debug', 'Session Cookie Driver Initialized');
 	}
 
 	public function open($path, $name)
@@ -52,7 +52,7 @@ class Session_Cookie_Driver implements Session_Driver {
 
 		if (strlen($data) > 4048)
 		{
-			Kohana::log('error', 'Session ('.$id.') data exceeds the 4KB limit, ignoring write.');
+			Kohana_Log::add('error', 'Session ('.$id.') data exceeds the 4KB limit, ignoring write.');
 			return FALSE;
 		}
 

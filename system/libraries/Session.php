@@ -87,7 +87,7 @@ class Session_Core {
 			Session::$instance = $this;
 		}
 
-		Kohana::log('debug', 'Session Library initialized');
+		Kohana_Log::add('debug', 'Session Library initialized');
 	}
 
 	/**

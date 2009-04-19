@@ -67,7 +67,7 @@ class Payment_Authorize_Driver implements Payment_Driver
 		$this->curl_config  = $config['curl_config'];
 		$this->test_mode    = $config['test_mode'];
 
-		Kohana::log('debug', 'Authorize.net Payment Driver Initialized');
+		Kohana_Log::add('debug', 'Authorize.net Payment Driver Initialized');
 	}
 
 	public function set_fields($fields)

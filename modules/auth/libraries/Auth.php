@@ -72,7 +72,7 @@ class Auth_Core {
 		// Load the driver for access
 		$this->driver = $driver;
 
-		Kohana::log('debug', 'Auth Library loaded');
+		Kohana_Log::add('debug', 'Auth Library loaded');
 	}
 
 	/**

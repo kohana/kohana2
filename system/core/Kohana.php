@@ -144,15 +144,6 @@ final class Kohana {
 		// Set locale information
 		self::$locale = setlocale(LC_ALL, $locales);
 
-		if (self::$configuration['core']['log_threshold'] > 0)
-		{
-			// Set the log directory
-			self::log_directory(self::$configuration['core']['log_directory']);
-
-			// Enable log writing at shutdown
-			register_shutdown_function(array(__CLASS__, 'log_save'));
-		}
-
 		// Enable Kohana routing
 		Event::add('system.routing', array('Router', 'find_uri'));
 		Event::add('system.routing', array('Router', 'setup'));
@@ -760,10 +751,10 @@ final class Kohana {
 		$file = str_replace('\\', '/', realpath($file));
 		$file = preg_replace('|^'.preg_quote(DOCROOT).'|', '', $file);
 
-		if ($level <= self::$configuration['core']['log_threshold'])
+		if ($level <= Kohana::config('log.log_threshold'))
 		{
 			// Log the error
-			self::log('error', __('Uncaught %type%: %message% in file %file% on line %line%',
+			Kohana_Log::add('error', __('Uncaught %type%: %message% in file %file% on line %line%',
 			                      array('%type%' => $type, '%message%' => $message, '%file%' => $file, '%line%' => $line)));
 		}
 
@@ -1111,7 +1102,7 @@ final class Kohana {
 
 		if ($line === NULL)
 		{
-			self::log('error', 'Missing messages entry '.$key.' for message '.$group);
+			Kohana_Log::add('error', 'Missing messages entry '.$key.' for message '.$group);
 
 			// Return the key string as fallback
 			return $key;

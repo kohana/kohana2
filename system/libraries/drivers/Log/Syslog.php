@@ -12,7 +12,7 @@ class Log_Syslog_Driver extends Log_Driver {
 	protected $syslog_levels = array('error' => LOG_ERR,
 	                                 'alert' => LOG_WARNING,
 	                                 'info'  => LOG_INFO,
-	                                 'debug' => LOG_DEBUG)
+	                                 'debug' => LOG_DEBUG);
 
 	public function save(array $messages)
 	{
@@ -24,7 +24,7 @@ class Log_Syslog_Driver extends Log_Driver {
 			// Load the next message
 			list ($date, $type, $text) = array_shift($messages);
 
-			syslog($this->syslog_levels[$type], $text)
+			syslog($this->syslog_levels[$type], $text);
 		}
 		while ( ! empty($messages));
 

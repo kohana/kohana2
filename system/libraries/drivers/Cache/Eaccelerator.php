@@ -24,7 +24,7 @@ class Cache_Eaccelerator_Driver implements Cache_Driver {
 
 	public function find($tag)
 	{
-		Kohana::log('error', 'tags are unsupported by the eAccelerator driver');
+		Kohana_Log::add('error', 'tags are unsupported by the eAccelerator driver');
 
 		return array();
 	}
@@ -33,7 +33,7 @@ class Cache_Eaccelerator_Driver implements Cache_Driver {
 	{
 		if ( ! empty($tags))
 		{
-			Kohana::log('error', 'tags are unsupported by the eAccelerator driver');
+			Kohana_Log::add('error', 'tags are unsupported by the eAccelerator driver');
 		}
 
 		return eaccelerator_put($id, $data, $lifetime);
@@ -43,7 +43,7 @@ class Cache_Eaccelerator_Driver implements Cache_Driver {
 	{
 		if ($tag === TRUE)
 		{
-			Kohana::log('error', 'tags are unsupported by the eAccelerator driver');
+			Kohana_Log::add('error', 'tags are unsupported by the eAccelerator driver');
 			return FALSE;
 		}
 		elseif ($id === TRUE)

@@ -84,7 +84,7 @@ class Encrypt_Core {
 		// Cache the config in the object
 		$this->config = $config;
 
-		Kohana::log('debug', 'Encrypt Library initialized');
+		Kohana_Log::add('debug', 'Encrypt Library initialized');
 	}
 
 	/**

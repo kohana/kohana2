@@ -56,7 +56,7 @@ class Payment_Googlecheckout_Driver implements Payment_Driver
 			
 		$this->xml_header = array("Authorization: Basic ".$base64encoding, "Content-Type: application/xml;charset=UTF-8", "Accept: application/xml;charset=UTF-8");
 
-		Kohana::Log('debug', 'Google Checkout Payment Driver Initialized');
+		Kohana_Log::add('debug', 'Google Checkout Payment Driver Initialized');
 	}
 
 	public function set_fields($fields)

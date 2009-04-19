@@ -29,7 +29,7 @@ class Cache_Xcache_Driver implements Cache_Driver {
 	{
 		if ( ! empty($tags))
 		{
-			Kohana::log('error', 'Cache: tags are unsupported by the Xcache driver');
+			Kohana_Log::add('error', 'Cache: tags are unsupported by the Xcache driver');
 		}
 
 		return xcache_set($id, $data, $lifetime);
@@ -37,7 +37,7 @@ class Cache_Xcache_Driver implements Cache_Driver {
 
 	public function find($tag)
 	{
-		Kohana::log('error', 'Cache: tags are unsupported by the Xcache driver');
+		Kohana_Log::add('error', 'Cache: tags are unsupported by the Xcache driver');
 		return FALSE;
 	}
 
@@ -45,7 +45,7 @@ class Cache_Xcache_Driver implements Cache_Driver {
 	{
 		if ($tag !== FALSE)
 		{
-			Kohana::log('error', 'Cache: tags are unsupported by the Xcache driver');
+			Kohana_Log::add('error', 'Cache: tags are unsupported by the Xcache driver');
 			return TRUE;
 		}
 		elseif ($id !== TRUE)

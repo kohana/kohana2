@@ -219,7 +219,7 @@ class Database_Core {
 			$this->cache = new Cache($this->config['cache']);
 		}
 
-		Kohana::log('debug', 'Database Library initialized');
+		Kohana_Log::add('debug', 'Database Library initialized');
 	}
 
 	/**

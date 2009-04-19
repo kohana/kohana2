@@ -26,7 +26,7 @@ class Cache_Apc_Driver implements Cache_Driver {
 	{
 		if ( ! empty($tags))
 		{
-			Kohana::log('error', 'Cache: tags are unsupported by the APC driver');
+			Kohana_Log::add('error', 'Cache: tags are unsupported by the APC driver');
 		}
 
 		return apc_store($id, $data, $lifetime);
@@ -34,7 +34,7 @@ class Cache_Apc_Driver implements Cache_Driver {
 
 	public function find($tag)
 	{
-		Kohana::log('error', 'Cache: tags are unsupported by the APC driver');
+		Kohana_Log::add('error', 'Cache: tags are unsupported by the APC driver');
 
 		return array();
 	}
@@ -43,7 +43,7 @@ class Cache_Apc_Driver implements Cache_Driver {
 	{
 		if ($tag === TRUE)
 		{
-			Kohana::log('error', 'Cache: tags are unsupported by the APC driver');
+			Kohana_Log::add('error', 'Cache: tags are unsupported by the APC driver');
 			return FALSE;
 		}
 		elseif ($id === TRUE)
