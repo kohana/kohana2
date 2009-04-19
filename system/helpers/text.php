@@ -304,9 +304,10 @@ class text_Core {
 	 * Automatically applies <p> and <br /> markup to text. Basically nl2br() on steroids.
 	 *
 	 * @param   string   subject
+	 * @param   boolean  convert single linebreaks to <br />
 	 * @return  string
 	 */
-	public static function auto_p($str)
+	public static function auto_p($str, $br = TRUE)
 	{
 		// Trim whitespace
 		if (($str = trim($str)) === '')
@@ -343,7 +344,10 @@ class text_Core {
 		}
 
 		// Convert single linebreaks to <br />
-		$str = preg_replace('~(?<!\n)\n(?!\n)~', "<br />\n", $str);
+		if ($br === TRUE)
+		{
+			$str = preg_replace('~(?<!\n)\n(?!\n)~', "<br />\n", $str);
+		}
 
 		return $str;
 	}
