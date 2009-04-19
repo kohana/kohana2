@@ -43,7 +43,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 				array(PDO::ATTR_PERSISTENT => $this->db_config['persistent']));
 
 			$this->link->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
-			$this->link->query('PRAGMA count_changes=1;');
+			//$this->link->query('PRAGMA count_changes=1;');
 
 			if ($charset = $this->db_config['character_set'])
 			{
@@ -63,7 +63,7 @@ class Database_Pdosqlite_Driver extends Database_Driver {
 
 	public function query($sql)
 	{
-		try
+        try
 		{
 			$sth = $this->link->prepare($sql);
 		}
@@ -298,15 +298,15 @@ class Pdosqlite_Result extends Database_Result {
 	{
 		if (is_object($result) OR $result = $link->prepare($sql))
 		{
-			// run the query
-			try
-			{
-				$result->execute();
+			// run the query. Return true if success, false otherwise
+            if(! $result->execute())
+            {
+                       
+                // Throw Kohana Exception with error message. See PDOStatement errorInfo() method
+                $arr_infos = $result->errorInfo();
+                throw new Kohana_Database_Exception('database.error', $arr_infos[2]);
 			}
-			catch (PDOException $e)
-			{
-				throw new Kohana_Database_Exception('database.error', $e->getMessage());
-			}
+
 
 			if (preg_match('/^SELECT|PRAGMA|EXPLAIN/i', $sql))
 			{
@@ -320,6 +320,9 @@ class Pdosqlite_Result extends Database_Result {
 			elseif (preg_match('/^DELETE|INSERT|UPDATE/i', $sql))
 			{
 				$this->insert_id  = $link->lastInsertId();
+                
+                $this->total_rows = $result->rowCount();
+                Kohana::log('debug', 'Affected rows for "' . $sql . '" : ' . $this->total_rows);
 			}
 		}
 		else
