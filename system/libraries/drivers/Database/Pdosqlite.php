@@ -299,14 +299,12 @@ class Pdosqlite_Result extends Database_Result {
 		if (is_object($result) OR $result = $link->prepare($sql))
 		{
 			// run the query. Return true if success, false otherwise
-            if(! $result->execute())
-            {
-                       
-                // Throw Kohana Exception with error message. See PDOStatement errorInfo() method
-                $arr_infos = $result->errorInfo();
-                throw new Kohana_Database_Exception('database.error', $arr_infos[2]);
+			if( ! $result->execute())
+			{
+				// Throw Kohana Exception with error message. See PDOStatement errorInfo() method
+				$arr_infos = $result->errorInfo();
+				throw new Kohana_Database_Exception('database.error', $arr_infos[2]);
 			}
-
 
 			if (preg_match('/^SELECT|PRAGMA|EXPLAIN/i', $sql))
 			{
@@ -320,9 +318,8 @@ class Pdosqlite_Result extends Database_Result {
 			elseif (preg_match('/^DELETE|INSERT|UPDATE/i', $sql))
 			{
 				$this->insert_id  = $link->lastInsertId();
-                
-                $this->total_rows = $result->rowCount();
-                Kohana::log('debug', 'Affected rows for "' . $sql . '" : ' . $this->total_rows);
+
+				$this->total_rows = $result->rowCount();
 			}
 		}
 		else
