@@ -217,8 +217,8 @@ class Database_Mysql_Driver extends Database_Driver {
 			{
 				$froms[] = $this->escape_column($from);
 			}
-			$sql .= "\nFROM ";
-			$sql .= implode(', ', $froms);
+			$sql .= "\nFROM (";
+			$sql .= implode(', ', $froms).")";
 		}
 
 		if (count($database['join']) > 0)
