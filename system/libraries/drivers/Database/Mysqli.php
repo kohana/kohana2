@@ -68,7 +68,7 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 	public function query($sql)
 	{
 		// Only cache if it's turned on, and only cache if it's not a write statement
-		if ($this->db_config['cache'] AND ! preg_match('#\b(?:INSERT|UPDATE|REPLACE|SET)\b#i', $sql))
+		if ($this->db_config['cache'] AND ! preg_match('#\b(?:INSERT|UPDATE|REPLACE|SET|DELETE|TRUNCATE)\b#i', $sql))
 		{
 			$hash = $this->query_hash($sql);
 
