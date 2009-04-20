@@ -34,7 +34,7 @@ class Kohana_Log_Core {
 	 * @param   string  message text
 	 * @return  void
 	 */
-	public function add($type, $message)
+	static public function add($type, $message)
 	{
 		// Make sure the drivers and config are loaded
 		if ( ! is_array(self::$config))
