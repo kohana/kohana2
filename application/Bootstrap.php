@@ -10,12 +10,6 @@
  * @license    http://kohanaphp.com/license.html
  */
 
-define('KOHANA_VERSION',  '2.4');
-define('KOHANA_CODENAME', 'no_codename');
-
-// Test of Kohana is running in Windows
-define('KOHANA_IS_WIN', DIRECTORY_SEPARATOR === '\\');
-
 // Kohana benchmarks are prefixed to prevent collisions
 define('SYSTEM_BENCHMARK', 'system_benchmark');
 

@@ -9,6 +9,13 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
+
+define('KOHANA_VERSION',  '2.4');
+define('KOHANA_CODENAME', 'no_codename');
+
+// Test of Kohana is running in Windows
+define('KOHANA_IS_WIN', DIRECTORY_SEPARATOR === '\\');
+
 abstract class Kohana_Core {
 
 	// The singleton instance of the controller
