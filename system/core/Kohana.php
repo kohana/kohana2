@@ -130,17 +130,17 @@ abstract class Kohana_Core {
 		// Set autoloader
 		spl_autoload_register(array('Kohana', 'auto_load'));
 
-		// Set error handler
-		set_error_handler(array('Kohana', 'exception_handler'));
-
-		// Set exception handler
-		set_exception_handler(array('Kohana', 'exception_handler'));
-
 		// Send default text/html UTF-8 header
 		header('Content-Type: text/html; charset=UTF-8');
 
 		// Load i18n
 		new I18n;
+
+		// Enable exception handling
+		Kohana_Exception::enable();
+
+		// Enable error handling
+		Kohana_PHP_Exception::enable();
 
 		// Load locales
 		$locales = self::config('locale.language');
@@ -159,7 +159,7 @@ abstract class Kohana_Core {
 		Event::add('system.execute', array('Kohana', 'instance'));
 
 		// Enable Kohana 404 pages
-		Event::add('system.404', array('Kohana', 'show_404'));
+		Event::add('system.404', array('Kohana_404_Exception', 'trigger'));
 
 		// Enable Kohana output handling
 		Event::add('system.shutdown', array('Kohana', 'shutdown'));
@@ -678,154 +678,6 @@ abstract class Kohana_Core {
 		}
 
 		echo $output;
-	}
-
-	/**
-	 * Displays a 404 page.
-	 *
-	 * @throws  Kohana_404_Exception
-	 * @param   string  URI of page
-	 * @param   string  custom template
-	 * @return  void
-	 */
-	public static function show_404($page = FALSE, $template = FALSE)
-	{
-		throw new Kohana_404_Exception($page, $template);
-	}
-
-	/**
-	 * Dual-purpose PHP error and exception handler. Uses the kohana_error_page
-	 * view to display the message.
-	 *
-	 * @param   integer|object  exception object or error code
-	 * @param   string          error message
-	 * @param   string          filename
-	 * @param   integer         line number
-	 * @return  void
-	 */
-	public static function exception_handler($exception, $message = NULL, $file = NULL, $line = NULL)
-	{
-		// PHP errors have 5 args, always
-		$PHP_ERROR = (func_num_args() === 5);
-
-		// Test to see if errors should be displayed
-		if ($PHP_ERROR AND (error_reporting() & $exception) === 0)
-			return;
-
-		// This is useful for hooks to determine if a page has an error
-		self::$has_error = TRUE;
-
-		// Error handling will use exactly 5 args, every time
-		if ($PHP_ERROR)
-		{
-			$code     = $exception;
-			$type     = 'PHP Error';
-			$template = 'kohana_error_page';
-		}
-		else
-		{
-			$code     = $exception->getCode();
-			$type     = get_class($exception);
-			$message  = $exception->getMessage();
-			$file     = $exception->getFile();
-			$line     = $exception->getLine();
-			$template = ($exception instanceof Kohana_Exception) ? $exception->getTemplate() : 'kohana_error_page';
-		}
-
-		if (is_numeric($code))
-		{
-			$codes = self::message('errors');
-			if ( ! empty($codes[$code]))
-			{
-				list($level, $error, $description) = $codes[$code];
-			}
-			else
-			{
-				$level = 1;
-				$error = $PHP_ERROR ? 'Unknown Error' : get_class($exception);
-				$description = '';
-			}
-		}
-		else
-		{
-			// Custom error message, this will never be logged
-			$level = 5;
-			$error = $code;
-			$description = '';
-		}
-
-		// Remove the DOCROOT from the path, as a security precaution
-		$file = str_replace('\\', '/', realpath($file));
-		$file = preg_replace('|^'.preg_quote(DOCROOT).'|', '', $file);
-
-		if ($level <= Kohana::config('log.log_threshold'))
-		{
-			// Log the error
-			Kohana_Log::add('error', __('Uncaught %type%: %message% in file %file% on line %line%',
-			                      array('%type%' => $type, '%message%' => $message, '%file%' => $file, '%line%' => $line)));
-		}
-
-		if ($PHP_ERROR)
-		{
-			$description = self::message('errors.'.E_RECOVERABLE_ERROR);
-			$description = is_array($description) ? $description[2] : '';
-
-			if ( ! headers_sent())
-			{
-				// Send the 500 header
-				header('HTTP/1.1 500 Internal Server Error');
-			}
-		}
-		else
-		{
-			if (method_exists($exception, 'sendHeaders') AND ! headers_sent())
-			{
-				// Send the headers if they have not already been sent
-				$exception->sendHeaders();
-			}
-		}
-
-		while (ob_get_level() > self::$buffer_level)
-		{
-			// Close open buffers
-			ob_end_clean();
-		}
-
-		// Test if display_errors is on
-		if (self::$configuration['core']['display_errors'] === TRUE)
-		{
-			if ( ! IN_PRODUCTION AND $line != FALSE)
-			{
-				// Remove the first entry of debug_backtrace(), it is the exception_handler call
-				$trace = $PHP_ERROR ? array_slice(debug_backtrace(), 1) : $exception->getTrace();
-
-				// Beautify backtrace
-				$trace = self::backtrace($trace);
-			}
-
-			// Load the error
-			require self::find_file('views', empty($template) ? 'kohana_error_page' : $template);
-		}
-		else
-		{
-			// Get the i18n messages
-			$error   = __('Unable to Complete Request');
-			$message = __('You can go to the <a href="%site%">home page</a> or <a href="%uri%">try again</a>.',
-			              array('%site%' => url::site(), '%uri%' => url::site(Router::$current_uri)));
-
-			// Load the errors_disabled view
-			require self::find_file('views', 'kohana_error_disabled');
-		}
-
-		if ( ! Event::has_run('system.shutdown'))
-		{
-			// Run the shutdown even to ensure a clean exit
-			Event::run('system.shutdown');
-		}
-
-		// Turn off error reporting
-		error_reporting(0);
-		exit;
 	}
 
 	/**
@@ -1383,67 +1235,186 @@ abstract class Kohana_Core {
 	}
 
 	/**
-	 * Displays nice backtrace information.
-	 * @see http://php.net/debug_backtrace
+	 * Simplifies [back trace][ref-btr] information.
+	 *
+	 * [ref-btr]: http://php.net/debug_backtrace
 	 *
 	 * @param   array   backtrace generated by an exception or debug_backtrace
 	 * @return  string
 	 */
-	public static function backtrace($trace)
+	public static function read_trace(array $trace_array)
 	{
-		if ( ! is_array($trace))
-			return;
+		$file = NULL;
 
-		// Final output
-		$output = array();
-
-		foreach ($trace as $entry)
+		$ouput = array();
+		foreach ($trace_array as $trace)
 		{
-			$temp = '<li>';
-
-			if (isset($entry['file']))
+			if (isset($trace['file']))
 			{
-				$temp .= __('<tt>:file: <strong>[:line:]:</strong></tt>', array(':file:' => preg_replace('!^'.preg_quote(DOCROOT).'!', '', $entry['file']), ':line:' => $entry['line']));
-			}
+				$line = '<strong>'.Kohana::debug_path($trace['file']).'</strong>';
 
-			$temp .= '<pre>';
-
-			if (isset($entry['class']))
-			{
-				// Add class and call type
-				$temp .= $entry['class'].$entry['type'];
-			}
-
-			// Add function
-			$temp .= $entry['function'].'( ';
-
-			// Add function args
-			if (isset($entry['args']) AND is_array($entry['args']))
-			{
-				// Separator starts as nothing
-				$sep = '';
-
-				while ($arg = array_shift($entry['args']))
+				if (isset($trace['line']))
 				{
-					if (is_string($arg) AND is_file($arg))
-					{
-						// Remove docroot from filename
-						$arg = preg_replace('!^'.preg_quote(DOCROOT).'!', '', $arg);
-					}
-
-					$temp .= $sep.html::specialchars(print_r($arg, TRUE));
-
-					// Change separator to a comma
-					$sep = ', ';
+					$line .= ', line <strong>'.$trace['line'].'</strong>';
 				}
+
+				$output[] = $line;
 			}
 
-			$temp .= ' )</pre></li>';
+			if (isset($trace['function']))
+			{
+				// Is this an inline function?
+				$inline = in_array($trace['function'], array('require', 'require_once', 'include', 'include_once', 'echo', 'print'));
 
-			$output[] = $temp;
+				$line = array();
+
+				if (isset($trace['class']))
+				{
+					$line[] = $trace['class'];
+
+					if (isset($trace['type']))
+					{
+						$line[] .= $trace['type'];
+					}
+				}
+
+				$line[] = $trace['function'].($inline ? ' ' : '(');
+
+				$args = array();
+
+				if ( ! empty($trace['args']))
+				{
+					foreach ($trace['args'] as $arg)
+					{
+						if (is_string($arg) AND file_exists($arg))
+						{
+							// Sanitize path
+							$arg = Kohana::debug_path($arg);
+						}
+
+						$args[] = '<code>'.text::limit_chars(html::specialchars(self::debug_var($arg)), 50, '...').'</code>';
+					}
+				}
+
+				$line[] = implode(', ', $args).($inline ? '' : ')');
+
+				$output[] = "\t".implode('', $line);
+			}
 		}
 
-		return '<ul class="backtrace">'.implode("\n", $output).'</ul>';
+		return $output;
+	}
+
+	/**
+	 * Removes APPPATH, SYSPATH, MODPATH, and DOCROOT from filenames, replacing
+	 * them with the plain text equivalents.
+	 *
+	 * @param   string  path to sanitize
+	 * @return  string
+	 */
+	public static function debug_path($file)
+	{
+		if (strpos($file, APPPATH) === 0)
+		{
+			$file = 'APPPATH/'.substr($file, strlen(APPPATH));
+		}
+		elseif (strpos($file, SYSPATH) === 0)
+		{
+			$file = 'SYSPATH/'.substr($file, strlen(SYSPATH));
+		}
+		elseif (strpos($file, MODPATH) === 0)
+		{
+			$file = 'MODPATH/'.substr($file, strlen(MODPATH));
+		}
+		elseif (strpos($file, DOCROOT) === 0)
+		{
+			$file = 'DOCROOT/'.substr($file, strlen(DOCROOT));
+		}
+
+		return $file;
+	}
+
+	/**
+	 * Similar to print_r or var_dump, generates a string representation of
+	 * any variable.
+	 *
+	 * @param   mixed    variable to dump
+	 * @param   boolean  internal recursion
+	 * @return  string
+	 */
+	public static function debug_var($var, $recursion = FALSE)
+	{
+		static $objects;
+
+		if ($recursion === FALSE)
+		{
+			$objects = array();
+		}
+
+		switch (gettype($var))
+		{
+			case 'object':
+				// Unique hash of the object
+				$hash = spl_object_hash($var);
+
+				$object = new ReflectionObject($var);
+				$more = FALSE;
+				$out = 'object '.$object->getName().' { ';
+
+				if ($recursion === TRUE AND in_array($hash, $objects))
+				{
+					$out .= '*RECURSION*';
+				}
+				else
+				{
+					// Add the hash to the objects, to detect later recursion
+					$objects[] = $hash;
+
+					foreach ($object->getProperties() as $property)
+					{
+						$out .= ($more === TRUE ? ', ' : '').$property->getName().' => ';
+						if ($property->isPublic())
+						{
+							$out .= self::debug_var($property->getValue($var), TRUE);
+						}
+						elseif ($property->isPrivate())
+						{
+							$out .= '*PRIVATE*';
+						}
+						else
+						{
+							$out .= '*PROTECTED*';
+						}
+						$more = TRUE;
+					}
+				}
+				return $out.' }';
+			case 'array':
+				$more = FALSE;
+				$out = 'array (';
+				foreach ((array) $var as $key => $val)
+				{
+					if ( ! is_int($key))
+					{
+						$key = self::debug_var($key, TRUE).' => ';
+					}
+					else
+					{
+						$key = '';
+					}
+					$out .= ($more ? ', ' : '').$key.self::debug_var($val, TRUE);
+					$more = TRUE;
+				}
+				return $out.')';
+			case 'string':
+				return "'$var'";
+			case 'float':
+				return number_format($var, 6).'&hellip;';
+			case 'boolean':
+				return $var === TRUE ? 'TRUE' : 'FALSE';
+			default:
+				return (string) $var;
+		}
 	}
 
 	/**
@@ -1479,43 +1450,238 @@ abstract class Kohana_Core {
 
 } // End Kohana
 
-/**
- * Creates a generic i18n exception.
- */
 class Kohana_Exception extends Exception {
 
-	// Template file
-	protected $template = 'kohana_error_page';
+	// Generate HTML errors
+	public static $html_output = TRUE;
 
-	// Header
-	protected $header = FALSE;
+	// Show stack traces in errors
+	public static $trace_output = TRUE;
+
+	// Show source code in errors
+	public static $source_output = TRUE;
+
+	// Error resources have not been loaded
+	protected static $error_resources = FALSE;
+
+	// To hold unique identifier to distinguish error output
+	protected $instance_identifier;
+
+	// Error template
+	public $template = 'kohana/error';
 
 	// Error code
 	protected $code = E_KOHANA;
 
 	/**
-	 * Set exception message.
+	 * Creates a new i18n Kohana_Exception using the passed error and arguments.
 	 *
-	 * @param  string  i18n language key for the message
-	 * @param  array   addition line parameters
+	 * @return  void
 	 */
-	public function __construct($error, array $args = NULL)
+	public function __construct($error)
 	{
+		$args = array_slice(func_get_args(), 1);
+		$args = isset($args[0]) ? $args[0] : array();
+
 		// Fetch the error message
 		$message = __($error, $args);
+
+		$this->instance_identifier = uniqid();
 
 		// Sets $this->message the proper way
 		parent::__construct($message);
 	}
 
 	/**
-	 * Magic method for converting an object to a string.
+	 * Enable Kohana exception handling.
 	 *
-	 * @return  string  i18n message
+	 * @return  void
+	 */
+	public static function enable()
+	{
+		set_exception_handler(array(__CLASS__, 'handle'));
+	}
+
+	/**
+	 * Disable Kohana exception handling.
+	 *
+	 * @return  void
+	 */
+	public static function disable()
+	{
+		restore_exception_handler();
+	}
+
+	/**
+	 * PHP exception handler.
+	 *
+	 * @param   object  Exception instance
+	 * @return  void
+	 */
+	public static function handle($exception)
+	{
+		// An error has beenw triggered
+		Kohana::$has_error = TRUE;
+
+		// Display (and log the error message)
+		echo $exception;
+
+		// Exceptions must halt execution
+		exit;
+	}
+
+	/**
+	 * Outputs an inline error message.
+	 *
+	 * @return  string
 	 */
 	public function __toString()
 	{
-		return (string) $this->message;
+		try
+		{
+			// Load the error message information
+			if (is_numeric($this->code))
+			{
+				$errors = Kohana::message('core.errors');
+				if ( ! empty($errors[$this->code]))
+				{
+					list($level, $type, $description) = $errors[$this->code];
+				}
+				else
+				{
+					$level = 1;
+					$type = 'Unknown Error';
+					$description = '';
+				}
+			}
+			else
+			{
+				// Custom error message, this will never be logged
+				$level = 5;
+				$type = $this->code;
+				$description = '';
+			}
+
+			if ($level <= Kohana::config('log.log_threshold'))
+			{
+				// Log the error
+				Kohana_Log::add('error', __('Uncaught :type: :message in file :file on line :line',
+				                         array(':type' => $type, ':message' => $this->message, ':file' => $this->file, ':line' => $this->line)));
+			}
+
+			if (Kohana::config('core.display_errors') === FALSE)
+			{
+				// Get the i18n messages
+				$this->error   = __('Unable to Complete Request');
+				$this->message = __('You can go to the <a href=":site">home page</a> or <a href=":uri">try again</a>.',
+				                     array(':site' => url::site(), ':uri' => url::site(Router::$current_uri)));
+
+				// Do not show the file or line
+				$this->file = $this->line = NULL;
+
+				require Kohana::find_file('views', 'kohana/error_disabled', TRUE);
+			}
+			else
+			{
+				$message = $this->message;
+				$file  = $this->file;
+				$line  = $this->line;
+				$instance_identifier = $this->instance_identifier;
+
+				if (Kohana_Exception::$html_output)
+				{
+					if ( ! empty($file))
+					{
+						// Source code
+						$source = '';
+
+						if (Kohana_Exception::$source_output)
+						{
+							// Lines to read from the source
+							$start_line = $line - 4;
+							$end_line   = $line + 3;
+
+							$file_source = fopen($file, 'r');
+							$file_line   = 1;
+
+							while ($read_line = fgets($file_source))
+							{
+								if ($file_line >= $start_line)
+								{
+									if ($file_line === $line)
+									{
+										// Wrap the text of this line in <span> tags, for highlighting
+										$read_line = '<span>'.html::specialchars($read_line).'</span>';
+									}
+									else
+									{
+										$read_line = html::specialchars($read_line);
+									}
+									$source .= $read_line;
+								}
+
+								if (++$file_line > $end_line)
+								{
+									// Stop reading lines
+									fclose($file_source);
+									break;
+								}
+							}
+						}
+
+						if (Kohana_Exception::$trace_output)
+						{
+							$trace = $this->getTrace();
+
+							// Read trace
+							$trace = Kohana::read_trace($trace);
+						}
+					}
+
+					if (method_exists($this, 'sendHeaders') AND ! headers_sent())
+					{
+						// Send the headers if they have not already been sent
+						$this->sendHeaders();
+					}
+
+					// Sanitize filepath for greater security
+					$file = Kohana::debug_path($file);
+				}
+				else
+				{
+					// Show only the error text
+					return $code.': '.$error.' [ '.$file.', '.$line.' ] '."\n";
+				}
+
+				ob_start();
+
+				if ( ! self::$error_resources)
+				{
+					// Include error style
+					echo '<style type="text/css">', "\n";
+					include Kohana::find_file('views', 'kohana/error_style', FALSE, 'css');
+					echo "\n", '</style>', "\n";
+
+					// Include error js
+					echo '<script type="text/javascript">', "\n";
+					include Kohana::find_file('views', 'kohana/error_script', FALSE, 'js');
+					echo "\n", '</script>', "\n";
+
+					// Error resources have been loaded
+					self::$error_resources = TRUE;
+				}
+
+				require Kohana::find_file('views', 'kohana/error', TRUE);
+			}
+
+			return ob_get_clean();
+		}
+		catch (Exception $e)
+		{
+			// This shouldn't happen unless Kohana files are missing
+			echo 'Exception thrown inside '.__CLASS__.': '.$e->getMessage();
+			die;
+		}
 	}
 
 	/**
@@ -1541,8 +1707,114 @@ class Kohana_Exception extends Exception {
 
 } // End Kohana Exception
 
+class Kohana_PHP_Exception extends Kohana_Exception {
+
+	/**
+	 * Enable Kohana PHP error handling.
+	 *
+	 * @return  void
+	 */
+	public static function enable()
+	{
+		set_error_handler(array(__CLASS__, 'handle'));
+	}
+
+	/**
+	 * Disable Kohana PHP error handling.
+	 *
+	 * @return  void
+	 */
+	public static function disable()
+	{
+		restore_error_handler();
+	}
+
+	/**
+	 * Create a new PHP error exception.
+	 *
+	 * @return  void
+	 */
+	public function __construct($code, $error, $file, $line, $context = NULL)
+	{
+		Exception::__construct($error);
+
+		// Set the error code, file, line, and context manually
+		$this->code = $code;
+		$this->file = $file;
+		$this->line = $line;
+
+		$this->instance_identifier = uniqid();
+	}
+
+	/**
+	 * PHP error handler.
+	 *
+	 * @throws  Kohana_PHP_Exception
+	 * @return  void
+	 */
+	public static function handle($code, $error, $file, $line, $context = NULL)
+	{
+		if ((error_reporting() & $code) === 0)
+		{
+			// Respect error_reporting settings
+			return;
+		}
+
+		// An error has been triggered
+		Kohana::$has_error = TRUE;
+
+		// Create an exception
+		$exception = new Kohana_PHP_Exception($code, $error, $file, $line, $context);
+
+		// Load the error message information
+		if (is_numeric($exception->code))
+		{
+			$errors = Kohana::message('core.errors');
+			if ( ! empty($errors[$exception->code]))
+			{
+				list($level, $error, $message) = $errors[$exception->code];
+			}
+			else
+			{
+				$level = 1;
+				$error = 'Unknown Error';
+				$message = '';
+			}
+		}
+		else
+		{
+			// Custom error message, this will never be logged
+			$level = 5;
+			$error = $code;
+			$message = '';
+		}
+
+		if ($level >= Kohana::config('log.threshold'))
+		{
+			// Log the error
+			Kohana_Log::add('error', __($level.' Uncaught :type :message in file :file on line :line',
+									array(':type' => $error.':', ':message' => $exception->message, ':file' => $exception->file, ':line' => $exception->line)));
+		}
+
+		echo $exception;
+
+		if (Kohana::config('core.display_errors') === FALSE)
+		{
+			// Execution must halt
+			exit;
+		}
+	}
+
+	public function sendHeaders()
+	{
+		// Send the 500 header
+		header('HTTP/1.1 500 Internal Server Error');
+	}
+
+} // End Kohana PHP Exception
+
 /**
- * Creates a custom exception.
+ * Creates a custom exception message.
  */
 class Kohana_User_Exception extends Kohana_Exception {
 
@@ -1555,46 +1827,65 @@ class Kohana_User_Exception extends Kohana_Exception {
 	 */
 	public function __construct($title, $message, $template = FALSE)
 	{
-		Exception::__construct($message);
+		parent::__construct($message);
 
-		$this->code = $title;
+		// Code is the error title
+		$this->error = $title;
 
 		if ($template !== FALSE)
 		{
+			// Override the default template
 			$this->template = $template;
 		}
+
+		$this->instance_identifier = uniqid();
 	}
 
 } // End Kohana PHP Exception
 
 /**
- * Creates a Page Not Found exception.
+ * Creates a "Page Not Found" exception.
  */
 class Kohana_404_Exception extends Kohana_Exception {
 
 	protected $code = E_PAGE_NOT_FOUND;
 
 	/**
-	 * Set internal properties.
+	 * Throws a new 404 exception.
 	 *
-	 * @param  string  URL of page
-	 * @param  string  custom error template
+	 * @throws  Kohana_404_Exception
+	 * @return  void
 	 */
-	public function __construct($page = FALSE, $template = FALSE)
+	public static function trigger($page = NULL, $template = NULL)
 	{
-		if ($page === FALSE)
-		{
-			// Construct the page URI using Router properties
-			$page = Router::$current_uri.Router::$url_suffix.Router::$query_string;
-		}
-
-		Exception::__construct(__('The page you requested, :page:, could not be found.', array(':page:' => $page)));
-
-		$this->template = $template;
+		throw new Kohana_404_Exception($page, $template);
 	}
 
 	/**
-	 * Sends "File Not Found" headers, to emulate server behavior.
+	 * Set internal properties.
+	 *
+	 * @param  string  URI of page
+	 * @param  string  custom error template
+	 */
+	public function __construct($page = NULL, $template = NULL)
+	{
+		if ($page === NULL)
+		{
+			// Use the complete URI
+			$page = Router::$complete_uri;
+		}
+
+		Exception::__construct(__('The page you requested, :page, could not be found.', array(':page' => $page)));
+
+		if ($template !== NULL)
+		{
+			// Override the default template
+			$this->template = $template;
+		}
+	}
+
+	/**
+	 * Sends 404 headers, to emulate server behavior.
 	 *
 	 * @return void
 	 */
