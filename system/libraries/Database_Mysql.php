@@ -108,7 +108,7 @@ class Database_MySQL_Core extends Database {
 		if ($type === Database::SELECT)
 		{
 			// Return an iterator of results
-			return new Database_MySQL_Result($result, $sql);
+			return new Database_MySQL_Result($result, $this->_config['object']);
 		}
 		elseif ($type === Database::INSERT)
 		{
@@ -162,7 +162,7 @@ class Database_MySQL_Core extends Database {
 				// Make an associative array
 				$tables[$table][$row['Field']] = $this->sql_type($row['Type']);
 
-				if ($row->Key === 'PRI' AND $row->Extra === 'auto_increment')
+				if ($row['Key'] === 'PRI' AND $row['Extra'] === 'auto_increment')
 				{
 					// For sequenced (AUTO_INCREMENT) tables
 					$tables[$table][$row['Field']]['sequenced'] = TRUE;
@@ -186,7 +186,7 @@ class Database_MySQL_Core extends Database {
 	{
 		$columns = array();
 
-		foreach($this->query(Database::SELECT, 'SHOW COLUMNS FROM '.$this->escape_table($table), $this->_connection) as $row)
+		foreach($this->query(Database::SELECT, 'SHOW COLUMNS FROM '.$this->escape_table($table), $this->_connection)->as_array() as $row)
 		{
 			$columns[] = $row;
 		}

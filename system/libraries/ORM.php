@@ -60,6 +60,7 @@ class ORM_Core {
 	// Database configuration
 	protected $db = 'default';
 	protected $db_applied = array();
+	protected $db_build;
 
 	// With calls already applied
 	protected $with_applied = array();
@@ -156,6 +157,8 @@ class ORM_Core {
 
 		// Load column information
 		$this->reload_columns();
+
+		$this->db_build = DB::build()->from($this->table_name);
 	}
 
 	/**
@@ -608,12 +611,12 @@ class ORM_Core {
 			if (is_array($id))
 			{
 				// Search for all clauses
-				$this->db->where($id);
+				$this->db_build->where($id);
 			}
 			else
 			{
 				// Search for a specific column
-				$this->db->where($this->table_name.'.'.$this->unique_key($id), $id);
+				$this->db_build->where($this->table_name.'.'.$this->unique_key($id), '=', $id);
 			}
 		}
 
@@ -1368,13 +1371,13 @@ class ORM_Core {
 		if ($array === FALSE)
 		{
 			// Only fetch 1 record
-			$this->db->limit(1);
+			$this->db_build->limit(1);
 		}
 
 		if ( ! isset($this->db_applied['select']))
 		{
 			// Select all columns by default
-			$this->db->select($this->table_name.'.*');
+			$this->db_build->select($this->table_name.'.*');
 		}
 
 		if ( ! empty($this->load_with))
@@ -1411,11 +1414,11 @@ class ORM_Core {
 			}
 
 			// Apply the user-defined sorting
-			$this->db->orderby($sorting);
+			$this->db_build->order_by($sorting);
 		}
 
 		// Load the result
-		$result = $this->db->get($this->table_name);
+		$result = $this->db_build->execute();
 
 		if ($array === TRUE)
 		{
@@ -1426,7 +1429,7 @@ class ORM_Core {
 		if ($result->count() === 1)
 		{
 			// Load object values
-			$this->load_values($result->result(FALSE)->current(), $ignore_changed);
+			$this->load_values($result->as_array()->current(), $ignore_changed);
 		}
 		else
 		{

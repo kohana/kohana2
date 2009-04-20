@@ -19,7 +19,7 @@ abstract class Database_Core {
 
 	public static $instances = array();
 
-	public static function instance($name)
+	public static function instance($name = 'default')
 	{
 		if ( ! isset(Database::$instances[$name]))
 		{

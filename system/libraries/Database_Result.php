@@ -14,14 +14,16 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	protected $_total_rows  = 0;
 	protected $_current_row = 0;
 
+	protected $_return_objects;
+
 	/**
 	 * Sets the total number of rows and stores the result locally.
 	 *
-	 * @param   mixed   query result
-	 * @param   string  SQL query
+	 * @param   mixed   $result query result
+	 * @param   boolean $return_objects True for results as objects, false for arrays
 	 * @return  void
 	 */
-	abstract public function __construct($result, $sql);
+	abstract public function __construct($result, $return_objects);
 
 	/**
 	 * Result destruction cleans up all open result sets.
@@ -29,9 +31,20 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	abstract public function __destruct();
 
 	/**
-	 * Return all of the results in an array.
+	 * Return arrays for reach result, or the entire set of results
+	 *
+	 * @param  boolean $return  True to return entire result array
+	 * @return Database_Result|array
 	 */
-	abstract public function as_array();
+	abstract public function as_array($return = FALSE);
+
+	/**
+	 * Returns objects for each result
+	 *
+	 * @param  string $class  Class name to return objects as or NULL for stdClass
+	 * @return Database_Result
+	 */
+	abstract public function as_object($class = NULL);
 
 	/**
 	 * Return the named column from the current row.

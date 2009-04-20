@@ -25,17 +25,6 @@ class Database_Builder_Core {
 
 	protected $order_directions = array('ASC', 'DESC', 'RAND()');
 
-	public function __construct($db = 'default')
-	{
-		if ( ! is_object($db))
-		{
-			// Get the database instance
-			$db = Database::instance($db);
-		}
-
-		$this->db = $db;
-	}
-
 	public function select($columns = NULL)
 	{
 		$this->type = Database::SELECT;
@@ -61,6 +50,12 @@ class Database_Builder_Core {
 
 	public function compile()
 	{
+		if ( ! is_object($this->db))
+		{
+			// Use default database for compiling to string if none is given
+			$this->db = Database::instance();
+		}
+
 		if ($this->type === Database::SELECT)
 		{
 			// SELECT columns FROM table
@@ -119,19 +114,7 @@ class Database_Builder_Core {
 
 		if ( ! empty($this->order_by))
 		{
-			$ordering = array();
-			foreach ($this->order_by as $column => $direction)
-			{
-				if ($direction !== NULL)
-				{
-					$direction = ' '.$direction;
-				}
-
-				$ordering[] = $column.$direction;
-			}
-
-			// ORDER BY column DIRECTION
-			$sql .= "\nORDER BY ".implode(', ', $ordering);
+			$sql .= "\nORDER BY ".$this->compile_order_by();
 		}
 
 		if (is_int($this->limit))
@@ -181,6 +164,8 @@ class Database_Builder_Core {
 
 	protected function compile_from()
 	{
+		$vals = array();
+
 		foreach ($this->from as $name => $alias)
 		{
 			if (is_string($name))
@@ -247,8 +232,10 @@ class Database_Builder_Core {
 		return $sql;
 	}
 
-	public function compile_group_by()
+	protected function compile_group_by()
 	{
+		$vals = array();
+
 		foreach ($this->group_by as $column)
 		{
 			if ($column instanceof Database_Expression)
@@ -264,6 +251,34 @@ class Database_Builder_Core {
 		}
 
 		return implode(', ', $vals);
+	}
+
+	public function compile_order_by()
+	{
+		$ordering = array();
+
+		foreach ($this->order_by as $order_by)
+		{
+			if ($order_by instanceof Database_Expression)
+			{
+				$column = $column->parse($this->db);
+				$direction = NULL;
+			}
+			else
+			{
+				$column = key($order_by);
+				$direction = current($order_by);
+
+				if ($direction !== NULL)
+				{
+					$direction = ' '.$direction;
+				}
+			}
+
+			$ordering[] = $column.$direction;
+		}
+
+		return implode(', ', $ordering);
 	}
 
 	public function join($table, $keys, $value = NULL, $type = NULL)
@@ -330,25 +345,14 @@ class Database_Builder_Core {
 		return $this;
 	}
 
-	public function order_by($column, $direction = NULL)
+	public function order_by($columns, $direction = NULL)
 	{
-		if ($direction !== NULL)
+		if ( ! is_array($columns) AND ! $columns instanceof Database_Expression)
 		{
-			$direction = strtoupper($direction);
-
-			if ( ! in_array($direction, $this->order_directions))
-			{
-				// Direction is invalid
-				$direction = NULL;
-			}
+			$columns = array($columns => $direction);
 		}
 
-		if ($column instanceof Database_Expression)
-		{
-			$column = $column->parse($this->db);
-		}
-
-		$this->order_by[$column] = $direction;
+		$this->order_by[] = $columns;
 
 		return $this;
 	}
@@ -626,8 +630,16 @@ class Database_Builder_Core {
 		return $this;
 	}
 
-	public function execute()
+	public function execute($db = 'default')
 	{
+		if ( ! is_object($db))
+		{
+			// Get the database instance
+			$db = Database::instance($db);
+		}
+
+		$this->db = $db;
+
 		return $this->db->query($this->type, (string) $this);
 	}
 
