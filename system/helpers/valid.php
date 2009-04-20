@@ -287,7 +287,7 @@ class valid_Core {
 	 * @param   array    valid range of input
 	 * @return  boolean
 	 */
-	public function range($number, array $range)
+	public static function range($number, array $range)
 	{
 		// Invalid by default
 		$status = FALSE;
