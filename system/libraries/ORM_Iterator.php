@@ -26,8 +26,8 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 		$this->primary_key = $model->primary_key;
 		$this->primary_val = $model->primary_val;
 
-		// Database result
-		$this->result = $result->result(TRUE);
+		// Database result (make sure rows are returned as arrays)
+		$this->result = $result->as_array();
 	}
 
 	/**
@@ -39,15 +39,12 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 	{
 		$array = array();
 
-		if ($results = $this->result->result_array())
-		{
-			// Import class name
-			$class = $this->class_name;
+		// Import class name
+		$class = $this->class_name;
 
-			foreach ($results as $obj)
-			{
-				$array[] = new $class($obj);
-			}
+		foreach ($this->result as $obj)
+		{
+			$array[] = new $class($obj);
 		}
 
 		return $array;
