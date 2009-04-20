@@ -10,13 +10,13 @@
  * @license    http://kohanaphp.com/license.html
  */
 
-define('KOHANA_VERSION',  '2.4');
-define('KOHANA_CODENAME', 'no_codename');
-
 // Test of Kohana is running in Windows
 define('KOHANA_IS_WIN', DIRECTORY_SEPARATOR === '\\');
 
 abstract class Kohana_Core {
+
+	const VERSION = '2.4';
+	const CODENAME = 'no_codename';
 
 	// The singleton instance of the controller
 	public static $instance;
