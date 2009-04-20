@@ -9,16 +9,33 @@
  */
 class Database_MySQL_Result_Core extends Database_Result {
 
-	public function __construct($result, $return_objects)
+	public function __construct($result, $sql, $link, $return_objects)
 	{
-		// True to return objects, false for arrays
-		$this->_return_objects = $return_objects;
+		if (is_resource($result))
+		{
+			// True to return objects, false for arrays
+			$this->_return_objects = $return_objects;
 
-		// Find the number of rows in the result
-		$this->_total_rows = mysql_num_rows($result);
+			$this->_total_rows = mysql_num_rows($result);
+		}
+		elseif (is_bool($result))
+		{
+			if ($result == FALSE)
+			{
+				throw new Database_Exception('There was an SQL error: :error', array(':error' => mysql_error($link).' - '.$sql));
+			}
+			else
+			{
+				// It's an DELETE, INSERT, REPLACE, or UPDATE query
+				$this->_insert_id = mysql_insert_id($link);
+				$this->_total_rows = mysql_affected_rows($link);
+			}
+		}
 
 		// Store the result locally
 		$this->_result = $result;
+
+		$this->_sql = $sql;
 	}
 
 	public function __destruct()

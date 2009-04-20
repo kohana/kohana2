@@ -88,7 +88,7 @@ class Database_MySQL_Core extends Database {
 		}
 	}
 
-	public function query($type, $sql)
+	public function query($sql)
 	{
 		// Make sure the database is connected
 		$this->_connection or $this->connect();
@@ -105,21 +105,7 @@ class Database_MySQL_Core extends Database {
 		// Set the last query
 		$this->last_query = $sql;
 
-		if ($type === Database::SELECT)
-		{
-			// Return an iterator of results
-			return new Database_MySQL_Result($result, $this->_config['object']);
-		}
-		elseif ($type === Database::INSERT)
-		{
-			// Return the insert id of the row
-			return mysql_insert_id($this->_connection);
-		}
-		else
-		{
-			// Return the number of rows affected
-			return mysql_affected_rows($this->_connection);
-		}
+		return new Database_MySQL_Result($result, $sql, $this->_connection, $this->_config['object']);
 	}
 
 	public function escape($value)
@@ -186,7 +172,7 @@ class Database_MySQL_Core extends Database {
 	{
 		$columns = array();
 
-		foreach($this->query(Database::SELECT, 'SHOW COLUMNS FROM '.$this->escape_table($table), $this->_connection)->as_array() as $row)
+		foreach($this->query('SHOW COLUMNS FROM '.$this->escape_table($table), $this->_connection)->as_array() as $row)
 		{
 			$columns[] = $row;
 		}

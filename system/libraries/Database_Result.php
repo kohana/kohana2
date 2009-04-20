@@ -13,6 +13,8 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 
 	protected $_total_rows  = 0;
 	protected $_current_row = 0;
+	protected $_insert_id;
+	protected $_affected_rows;
 
 	protected $_return_objects;
 
@@ -23,7 +25,7 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	 * @param   boolean $return_objects True for results as objects, false for arrays
 	 * @return  void
 	 */
-	abstract public function __construct($result, $return_objects);
+	abstract public function __construct($result, $sql, $link, $return_objects);
 
 	/**
 	 * Result destruction cleans up all open result sets.
@@ -45,6 +47,11 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	 * @return Database_Result
 	 */
 	abstract public function as_object($class = NULL);
+
+	public function insert_id()
+	{
+		return $this->_insert_id;
+	}
 
 	/**
 	 * Return the named column from the current row.

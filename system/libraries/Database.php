@@ -82,7 +82,7 @@ abstract class Database_Core {
 
 	abstract public function set_charset($charset);
 
-	abstract public function query($type, $sql);
+	abstract public function query($sql);
 
 	abstract public function escape($value);
 
@@ -118,6 +118,11 @@ abstract class Database_Core {
 	{
 		throw new Database_Exception('The :method is not implemented in :class',
 			array(':method' => __FUNCTION__, ':class' => get_class($this)));
+	}
+
+	public function table_prefix()
+	{
+		return $this->_config['table_prefix'];
 	}
 
 	/**

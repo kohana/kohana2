@@ -78,23 +78,20 @@ class Database_Builder_Core {
 				}
 			}
 
-			$sql = 'UPDATE '.$this->compile_from()."\n".'SET ('.implode(', ', $this->flatten($vals)).')';
+			$sql = 'UPDATE '.$this->compile_from()."\n".'SET '.implode(', ', $this->compile_set(Database::UPDATE));
 		}
 		elseif ($this->type === Database::INSERT)
 		{
+			$vals = $this->compile_set(Database::INSERT);
+
 			$sql = 'INSERT INTO '.$this->from[0]."\n".
-				   '('.implode(', ', $this->flatten(array_keys($this->set))).')'."\n".
-				   'VALUES ('.implode(', ', $this->flatten(array_values($this->set))).')';
+				   '('.implode(', ', array_keys($vals)).')'."\n".
+				   'VALUES ('.implode(', ', array_values($vals)).')';
 		}
 
 		if ( ! empty($this->join))
 		{
 			$sql .= $this->compile_join();
-		}
-
-		if ( ! empty($this->values))
-		{
-			$sql .= "\n".'SET ('.implode(', ', $this->flatten($this->values)).')';
 		}
 
 		if ( ! empty($this->where))
@@ -192,7 +189,10 @@ class Database_Builder_Core {
 		{
 			list($table, $keys, $type) = $join;
 
-			$table = $this->db->escape_table($table);
+			if ( ! $table instanceof Database_Expression)
+			{
+				$table = $this->db->escape_table($table);
+			}
 
 			if ($type !== NULL)
 			{
@@ -281,6 +281,34 @@ class Database_Builder_Core {
 		return implode(', ', $ordering);
 	}
 
+	public function compile_set($type)
+	{
+		$vals = array();
+		foreach ($this->set as $set)
+		{
+			if ($set instanceof Database_Expression)
+			{
+				$vals[] = $set->parse($this->db);
+			}
+			else
+			{
+				$key = $this->db->escape_table(key($set));
+				$value = $this->db->quote(current($set));
+
+				if ($type === Database::UPDATE)
+				{
+					$vals[] = $key.' = '.$value;
+				}
+				else
+				{
+					$vals[$key] = $value;
+				}
+			}
+		}
+
+		return $vals;
+	}
+
 	public function join($table, $keys, $value = NULL, $type = NULL)
 	{
 		if (is_string($keys))
@@ -347,7 +375,7 @@ class Database_Builder_Core {
 
 	public function order_by($columns, $direction = NULL)
 	{
-		if ( ! is_array($columns) AND ! $columns instanceof Database_Expression)
+		if (is_string($columns))
 		{
 			$columns = array($columns => $direction);
 		}
@@ -470,16 +498,6 @@ class Database_Builder_Core {
 		return $this;
 	}
 
-	protected function flatten(array $values)
-	{
-		foreach ($values as & $val)
-		{
-			$val = (string) $val;
-		}
-
-		return $values;
-	}
-
 	protected function compile_conditions($groups)
 	{
 		$last_condition = NULL;
@@ -570,23 +588,12 @@ class Database_Builder_Core {
 
 	public function set($keys, $value = NULL)
 	{
-		if ($keys instanceof Database_Expression)
-		{
-			$this->set[] = $keys->parse($this->db);
-			return $this;
-		}
-
 		if (is_string($keys))
 		{
 			$keys = array($keys => $value);
 		}
 
-		foreach ($keys as $key => $value)
-		{
-			$key = $this->db->escape_table($key);
-
-			$this->set[$key] = $this->db->quote($value);
-		}
+		$this->set[] = $keys;
 
 		return $this;
 	}
@@ -640,7 +647,7 @@ class Database_Builder_Core {
 
 		$this->db = $db;
 
-		return $this->db->query($this->type, (string) $this);
+		return $this->db->query((string) $this);
 	}
 
 } // End Database_Builder

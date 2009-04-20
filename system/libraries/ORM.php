@@ -60,7 +60,7 @@ class ORM_Core {
 	// Database configuration
 	protected $db = 'default';
 	protected $db_applied = array();
-	protected $db_build;
+	protected $db_builder;
 
 	// With calls already applied
 	protected $with_applied = array();
@@ -158,7 +158,7 @@ class ORM_Core {
 		// Load column information
 		$this->reload_columns();
 
-		$this->db_build = DB::build()->from($this->table_name);
+		$this->db_builder = DB::build()->from($this->table_name);
 	}
 
 	/**
@@ -201,7 +201,7 @@ class ORM_Core {
 	 */
 	public function __call($method, array $args)
 	{
-		if (method_exists($this->db, $method))
+		if (method_exists($this->db_builder, $method))
 		{
 			if (in_array($method, array('query', 'get', 'insert', 'update', 'delete')))
 				throw new Kohana_Exception('Query methods cannot be used through ORM');
@@ -215,7 +215,7 @@ class ORM_Core {
 			if ($method === 'select' AND $num_args > 3)
 			{
 				// Call select() manually to avoid call_user_func_array
-				$this->db->select($args);
+				$this->db_builder->select($args);
 			}
 			else
 			{
@@ -227,28 +227,28 @@ class ORM_Core {
 				switch ($num_args)
 				{
 					case 0:
-						if (in_array($method, array('open_paren', 'close_paren', 'enable_cache', 'disable_cache')))
+						if (in_array($method, array('open', 'close', 'enable_cache', 'disable_cache')))
 						{
 							// Should return ORM, not Database
-							$this->db->$method();
+							$this->db_builder->$method();
 						}
 						else
 						{
 							// Support for things like reset_select, reset_write, list_tables
-							return $this->db->$method();
+							return $this->db_builder->$method();
 						}
 					break;
 					case 1:
-						$this->db->$method($args[0]);
+						$this->db_builder->$method($args[0]);
 					break;
 					case 2:
-						$this->db->$method($args[0], $args[1]);
+						$this->db_builder->$method($args[0], $args[1]);
 					break;
 					case 3:
-						$this->db->$method($args[0], $args[1], $args[2]);
+						$this->db_builder->$method($args[0], $args[1], $args[2]);
 					break;
 					case 4:
-						$this->db->$method($args[0], $args[1], $args[2], $args[3]);
+						$this->db_builder->$method($args[0], $args[1], $args[2], $args[3]);
 					break;
 					default:
 						// Here comes the snail...
@@ -367,7 +367,7 @@ class ORM_Core {
 			{
 				// many<>many relationship
 				return $this->related[$column] = $model
-					->in($model->foreign_key(TRUE), $this->changed_relations[$column])
+					->where($model->foreign_key(TRUE), 'IN', $this->changed_relations[$column])
 					->find_all();
 			}
 			else
@@ -563,16 +563,17 @@ class ORM_Core {
 		// Add to with_applied to prevent duplicate joins
 		$this->with_applied[$target_path] = TRUE;
 
+		$select = array();
+
 		// Use the keys of the empty object to determine the columns
-		$select = array_keys($target->object);
-		foreach ($select as $i => $column)
+		foreach (array_keys($target->object) as $column)
 		{
 			// Add the prefix so that load_result can determine the relationship
-			$select[$i] = $target_path.'.'.$column.' AS '.$target_path.':'.$column;
+			$select[$target_path.'.'.$column] = $target_path.':'.$column;
 		}
 
 		// Select all of the prefixed keys in the object
-		$this->db->select($select);
+		$this->db_builder->select($select);
 
 		if (in_array($target->object_name, $parent->belongs_to))
 		{
@@ -588,10 +589,10 @@ class ORM_Core {
 		}
 
 		// This allows for models to use different table prefixes (sharing the same database)
-		$join_table = new Database_Expression($target->db->table_prefix().$target->table_name.' AS '.$this->db->table_prefix().$target_path);
+		$join_table = DB::expr('`'.$target->db->table_prefix().$target->table_name.'` AS `'.$this->db->table_prefix().$target_path.'`');
 
 		// Join the related object into the result
-		$this->db->join($join_table, $join_col1, $join_col2, 'LEFT');
+		$this->db_builder->join($join_table, $join_col1, $join_col2, 'LEFT');
 
 		return $this;
 	}
@@ -611,12 +612,12 @@ class ORM_Core {
 			if (is_array($id))
 			{
 				// Search for all clauses
-				$this->db_build->where($id);
+				$this->db_builder->where($id);
 			}
 			else
 			{
 				// Search for a specific column
-				$this->db_build->where($this->table_name.'.'.$this->unique_key($id), '=', $id);
+				$this->db_builder->where($this->table_name.'.'.$this->unique_key($id), '=', $id);
 			}
 		}
 
@@ -754,24 +755,26 @@ class ORM_Core {
 			{
 				// Primary key isn't empty so do an update
 
-				$query = $this->db
-					->where($this->primary_key, $this->primary_key_value)
-					->update($this->table_name, $data);
+				$query = DB::update($this->table_name)
+					->set($data)
+					->where($this->primary_key, '=', $this->primary_key_value)
+					->execute($this->db);
 
 				// Object has been saved
 				$this->saved = TRUE;
 			}
 			else
 			{
-				$query = $this->db
-					->insert($this->table_name, $data);
+				$result = DB::insert($this->table_name)
+					->set($data)
+					->execute($this->db);
 
-				if ($query->count() > 0)
+				if ($result->count() > 0)
 				{
 					if (empty($this->object[$this->primary_key]))
 					{
 						// Load the insert id as the primary key
-						$this->object[$this->primary_key] = $query->insert_id();
+						$this->object[$this->primary_key] = $result->insert_id();
 					}
 
 					// Object is now loaded and saved
@@ -826,11 +829,9 @@ class ORM_Core {
 					foreach ($added as $id)
 					{
 						// Insert the new relationship
-						$this->db->insert($join_table, array
-						(
-							$object_fk  => $this->primary_key_value,
-							$related_fk => $id,
-						));
+						DB::insert($join_table)
+							->set(array($object_fk  => $this->primary_key_value, $related_fk => $id))
+							->execut($this->db);
 					}
 				}
 
@@ -1371,13 +1372,13 @@ class ORM_Core {
 		if ($array === FALSE)
 		{
 			// Only fetch 1 record
-			$this->db_build->limit(1);
+			$this->db_builder->limit(1);
 		}
 
 		if ( ! isset($this->db_applied['select']))
 		{
 			// Select all columns by default
-			$this->db_build->select($this->table_name.'.*');
+			$this->db_builder->select($this->table_name.'.*');
 		}
 
 		if ( ! empty($this->load_with))
@@ -1414,11 +1415,11 @@ class ORM_Core {
 			}
 
 			// Apply the user-defined sorting
-			$this->db_build->order_by($sorting);
+			$this->db_builder->order_by($sorting);
 		}
 
 		// Load the result
-		$result = $this->db_build->execute();
+		$result = $this->db_builder->execute();
 
 		if ($array === TRUE)
 		{
@@ -1449,20 +1450,14 @@ class ORM_Core {
 	 */
 	protected function load_relations($table, ORM $model)
 	{
-		// Save the current query chain (otherwise the next call will clash)
-		$this->db->push();
-
-		$query = $this->db
-			->select($model->foreign_key(NULL).' AS id')
+		$result = DB::select(array($model->foreign_key(NULL) => 'id'))
 			->from($table)
-			->where($this->foreign_key(NULL, $table), $this->primary_key_value)
-			->get()
-			->result(TRUE);
-
-		$this->db->pop();
+			->where($this->foreign_key(NULL, $table), '=', $this->primary_key_value)
+			->execute($this->db)
+			->as_object();
 
 		$relations = array();
-		foreach ($query as $row)
+		foreach ($result as $row)
 		{
 			$relations[] = $row->id;
 		}

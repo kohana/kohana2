@@ -2,49 +2,34 @@
 
 class DB_Core {
 
-	public static function query($type, $sql)
+	public static function query($sql)
 	{
-		return new Database_Query($type, $sql);
-	}
-
-	public static function select($sql)
-	{
-		return new Database_Query(Database::SELECT, $sql);
-	}
-
-	public static function insert($sql)
-	{
-		return new Database_Insert($sql);
-	}
-
-	public static function update($sql)
-	{
-		return new Database_Update($sql);
-	}
-
-	public static function delete($sql)
-	{
-		return new Database_Delete($sql);
-	}
-
-	public static function create($database)
-	{
-		return new Database_Create($database);
-	}
-
-	public static function alter($table, array $params)
-	{
-		return new Database_Alter($table, $params);
-	}
-
-	public static function drop($database)
-	{
-		return new Database_Drop($database);
+		return new Database_Query($sql);
 	}
 
 	public static function build($database = 'default')
 	{
 		return new Database_Builder($database);
+	}
+
+	public static function select($columns = NULL)
+	{
+		return DB::build()->select($columns);
+	}
+
+	public static function insert($table = NULL, $set = NULL)
+	{
+		return DB::build()->insert($table, $set);
+	}
+
+	public static function update($table = NULL, $set = NULL, $where = NULL)
+	{
+		return DB::build()->update($table, $set, $where);
+	}
+
+	public static function delete($sql)
+	{
+		return new Database_Delete($sql);
 	}
 
 	public static function expr($expression)
