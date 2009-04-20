@@ -10,8 +10,8 @@
  * @license    http://kohanaphp.com/license.html
  */
 
-define('KOHANA_VERSION',  '2.3');
-define('KOHANA_CODENAME', 'accipiter');
+define('KOHANA_VERSION',  '2.4');
+define('KOHANA_CODENAME', 'no_codename');
 
 // Test of Kohana is running in Windows
 define('KOHANA_IS_WIN', DIRECTORY_SEPARATOR === '\\');
@@ -32,6 +32,8 @@ Benchmark::start(SYSTEM_BENCHMARK.'_kohana_loading');
 require SYSPATH.'core/utf8'.EXT;
 require SYSPATH.'core/Event'.EXT;
 require SYSPATH.'core/Kohana'.EXT;
+
+final class Kohana extends Kohana_Core {}
 
 // Prepare the environment
 Kohana::setup();

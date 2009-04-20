@@ -103,5 +103,5 @@ if (file_exists(DOCROOT.'install'.EXT))
 else
 {
 	// Initialize Kohana
-	require SYSPATH.'core/Bootstrap'.EXT;
+	require APPPATH.'Bootstrap'.EXT;
 }
