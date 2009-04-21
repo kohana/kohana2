@@ -607,11 +607,12 @@ class Validation_Core extends ArrayObject {
 	 * @chainable
 	 * @param   string  input name
 	 * @param   string  unique error name
+	 * @param   string  arguments to pass to lang file
 	 * @return  object
 	 */
-	public function add_error($field, $name)
+	public function add_error($field, $name, $args = NULL)
 	{
-		$this->errors[$field] = $name;
+		$this->errors[$field] = array($name, $args);
 
 		return $this;
 	}
@@ -666,7 +667,12 @@ class Validation_Core extends ArrayObject {
 	{
 		if ($file === NULL)
 		{
-			return $this->errors;
+			$errors = array();
+			foreach($this->errors as $field => $error)
+			{
+				$errors[$field] = $error[0];
+			}
+			return $errors;
 		}
 		else
 		{
@@ -675,9 +681,9 @@ class Validation_Core extends ArrayObject {
 			foreach ($this->errors as $input => $error)
 			{
 				// Key for this input error
-				$key = "$file.$input.$error";
+				$key = "$file.$input.$error[0]";
 
-				if (($errors[$input] = Kohana::message($key)) === $key)
+				if (($errors[$input] = Kohana::message('validation/'.$key, $error[1])) === $key)
 				{
 					// Get the default error message
 					$errors[$input] = Kohana::message("$file.$input.default");
