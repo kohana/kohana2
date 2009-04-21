@@ -1807,7 +1807,7 @@ class Kohana_404_Exception extends Kohana_Exception {
 			$page = Router::$complete_uri;
 		}
 
-		Exception::__construct(__('The page you requested, :page, could not be found.', array(':page' => $page)));
+		parent::__construct(__('The page you requested, :page, could not be found.', array(':page' => $page)));
 	}
 
 	/**
