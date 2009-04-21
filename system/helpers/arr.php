@@ -158,53 +158,6 @@ class arr_Core {
 	}
 
 	/**
-	 * Binary search algorithm.
-	 *
-	 * @param   mixed    the value to search for
-	 * @param   array    an array of values to search in
-	 * @param   boolean  return false, or the nearest value
-	 * @param   mixed    sort the array before searching it
-	 * @return  integer
-	 */
-	public static function binary_search($needle, $haystack, $nearest = FALSE, $sort = FALSE)
-	{
-		if ($sort === TRUE)
-		{
-			sort($haystack);
-		}
-
-		$high = count($haystack);
-		$low = 0;
-
-		while ($high - $low > 1)
-		{
-			$probe = ($high + $low) / 2;
-			if ($haystack[$probe] < $needle)
-			{
-				$low = $probe;
-			}
-			else
-			{
-				$high = $probe;
-			}
-		}
-
-		if ($high == count($haystack) OR $haystack[$high] != $needle)
-		{
-			if ($nearest === FALSE)
-				return FALSE;
-
-			// return the nearest value
-			$high_distance = $haystack[ceil($low)] - $needle;
-			$low_distance = $needle - $haystack[floor($low)];
-
-			return ($high_distance >= $low_distance) ? $haystack[ceil($low)] : $haystack[floor($low)];
-		}
-
-		return $high;
-	}
-
-	/**
 	 * Emulates array_merge_recursive, but appends numeric keys and replaces
 	 * associative keys, instead of appending all keys.
 	 *
