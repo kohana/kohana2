@@ -1467,29 +1467,25 @@ class Kohana_Exception extends Exception {
 	// To hold unique identifier to distinguish error output
 	protected $instance_identifier;
 
-	// Error template
-	public $template = 'kohana/error';
-
 	// Error code
 	protected $code = E_KOHANA;
 
 	/**
-	 * Creates a new i18n Kohana_Exception using the passed error and arguments.
+	 * Creates a new translated exception.
 	 *
-	 * @return  void
+	 * @param string error message
+	 * @param array translation variables
+	 * @return void
 	 */
-	public function __construct($error)
+	public function __construct($message, array $variables = NULL, $code = 0)
 	{
-		$args = array_slice(func_get_args(), 1);
-		$args = isset($args[0]) ? $args[0] : array();
-
-		// Fetch the error message
-		$message = __($error, $args);
-
 		$this->instance_identifier = uniqid();
 
+		// Translate the error message
+		$message = __($message, $variables);
+
 		// Sets $this->message the proper way
-		parent::__construct($message);
+		parent::__construct($message, $code);
 	}
 
 	/**
@@ -1520,7 +1516,7 @@ class Kohana_Exception extends Exception {
 	 */
 	public static function handle($exception)
 	{
-		// An error has beenw triggered
+		// An error has been triggered
 		Kohana::$has_error = TRUE;
 
 		// Display (and log the error message)
@@ -1565,16 +1561,16 @@ class Kohana_Exception extends Exception {
 			if ($level <= Kohana::config('log.log_threshold'))
 			{
 				// Log the error
-				Kohana_Log::add('error', __('Uncaught :type: :message in file :file on line :line',
-				                         array(':type' => $type, ':message' => $this->message, ':file' => $this->file, ':line' => $this->line)));
+				Kohana_Log::add('error', __('Uncaught %type %message% in file :file on line %line%',
+				                array('%type%' => $type, '%message%' => $this->message, '%file%' => $this->file, '%line%' => $this->line)));
 			}
 
 			if (Kohana::config('core.display_errors') === FALSE)
 			{
 				// Get the i18n messages
 				$this->error   = __('Unable to Complete Request');
-				$this->message = __('You can go to the <a href=":site">home page</a> or <a href=":uri">try again</a>.',
-				                     array(':site' => url::site(), ':uri' => url::site(Router::$current_uri)));
+				$this->message = __('You can go to the <a href="%site%">home page</a> or <a href="%uri%">try again</a>.',
+				                    array('%site%' => url::site(), '%uri%' => url::site(Router::$current_uri)));
 
 				// Do not show the file or line
 				$this->file = $this->line = NULL;
@@ -1584,13 +1580,14 @@ class Kohana_Exception extends Exception {
 			else
 			{
 				$message = $this->message;
-				$file  = $this->file;
+				// Sanitize filepath for greater security
+				$file  = Kohana::debug_path($this->file);
 				$line  = $this->line;
 				$instance_identifier = $this->instance_identifier;
 
 				if (Kohana_Exception::$html_output)
 				{
-					if ( ! empty($file))
+					if ( ! empty($this->file))
 					{
 						// Source code
 						$source = '';
@@ -1601,7 +1598,7 @@ class Kohana_Exception extends Exception {
 							$start_line = $line - 4;
 							$end_line   = $line + 3;
 
-							$file_source = fopen($file, 'r');
+							$file_source = fopen($this->file, 'r');
 							$file_line   = 1;
 
 							while ($read_line = fgets($file_source))
@@ -1643,14 +1640,11 @@ class Kohana_Exception extends Exception {
 						// Send the headers if they have not already been sent
 						$this->sendHeaders();
 					}
-
-					// Sanitize filepath for greater security
-					$file = Kohana::debug_path($file);
 				}
 				else
 				{
 					// Show only the error text
-					return $code.': '.$error.' [ '.$file.', '.$line.' ] '."\n";
+					return $type.': '.$this->message.' [ '.$file.', '.$line.' ] '."\n";
 				}
 
 				ob_start();
@@ -1679,19 +1673,15 @@ class Kohana_Exception extends Exception {
 		catch (Exception $e)
 		{
 			// This shouldn't happen unless Kohana files are missing
-			echo 'Exception thrown inside '.__CLASS__.': '.$e->getMessage();
-			die;
+			if ( ! IN_PRODUCTION)
+			{
+				die('Exception thrown inside '.__CLASS__.': '.$e->getMessage());
+			}
+			else
+			{
+				die('Unknown Error');
+			}
 		}
-	}
-
-	/**
-	 * Fetch the template name.
-	 *
-	 * @return  string
-	 */
-	public function getTemplate()
-	{
-		return $this->template;
 	}
 
 	/**
@@ -1736,14 +1726,12 @@ class Kohana_PHP_Exception extends Kohana_Exception {
 	 */
 	public function __construct($code, $error, $file, $line, $context = NULL)
 	{
-		Exception::__construct($error);
+		parent::__construct($error);
 
 		// Set the error code, file, line, and context manually
 		$this->code = $code;
 		$this->file = $file;
 		$this->line = $line;
-
-		$this->instance_identifier = uniqid();
 	}
 
 	/**
@@ -1766,36 +1754,6 @@ class Kohana_PHP_Exception extends Kohana_Exception {
 		// Create an exception
 		$exception = new Kohana_PHP_Exception($code, $error, $file, $line, $context);
 
-		// Load the error message information
-		if (is_numeric($exception->code))
-		{
-			$errors = Kohana::message('core.errors');
-			if ( ! empty($errors[$exception->code]))
-			{
-				list($level, $error, $message) = $errors[$exception->code];
-			}
-			else
-			{
-				$level = 1;
-				$error = 'Unknown Error';
-				$message = '';
-			}
-		}
-		else
-		{
-			// Custom error message, this will never be logged
-			$level = 5;
-			$error = $code;
-			$message = '';
-		}
-
-		if ($level >= Kohana::config('log.threshold'))
-		{
-			// Log the error
-			Kohana_Log::add('error', __($level.' Uncaught :type :message in file :file on line :line',
-									array(':type' => $error.':', ':message' => $exception->message, ':file' => $exception->file, ':line' => $exception->line)));
-		}
-
 		echo $exception;
 
 		if (Kohana::config('core.display_errors') === FALSE)
@@ -1804,13 +1762,6 @@ class Kohana_PHP_Exception extends Kohana_Exception {
 			exit;
 		}
 	}
-
-	public function sendHeaders()
-	{
-		// Send the 500 header
-		header('HTTP/1.1 500 Internal Server Error');
-	}
-
 } // End Kohana PHP Exception
 
 /**
@@ -1825,20 +1776,12 @@ class Kohana_User_Exception extends Kohana_Exception {
 	 * @param   string  exception message string
 	 * @param   string  custom error template
 	 */
-	public function __construct($title, $message, $template = FALSE)
+	public function __construct($title, $message, array $variables = NULL)
 	{
-		parent::__construct($message);
+		parent::__construct($message, $variables);
 
 		// Code is the error title
-		$this->error = $title;
-
-		if ($template !== FALSE)
-		{
-			// Override the default template
-			$this->template = $template;
-		}
-
-		$this->instance_identifier = uniqid();
+		$this->code = $title;
 	}
 
 } // End Kohana PHP Exception
@@ -1851,23 +1794,12 @@ class Kohana_404_Exception extends Kohana_Exception {
 	protected $code = E_PAGE_NOT_FOUND;
 
 	/**
-	 * Throws a new 404 exception.
-	 *
-	 * @throws  Kohana_404_Exception
-	 * @return  void
-	 */
-	public static function trigger($page = NULL, $template = NULL)
-	{
-		throw new Kohana_404_Exception($page, $template);
-	}
-
-	/**
 	 * Set internal properties.
 	 *
 	 * @param  string  URI of page
 	 * @param  string  custom error template
 	 */
-	public function __construct($page = NULL, $template = NULL)
+	public function __construct($page = NULL)
 	{
 		if ($page === NULL)
 		{
@@ -1876,12 +1808,17 @@ class Kohana_404_Exception extends Kohana_Exception {
 		}
 
 		Exception::__construct(__('The page you requested, :page, could not be found.', array(':page' => $page)));
+	}
 
-		if ($template !== NULL)
-		{
-			// Override the default template
-			$this->template = $template;
-		}
+	/**
+	 * Throws a new 404 exception.
+	 *
+	 * @throws  Kohana_404_Exception
+	 * @return  void
+	 */
+	public static function trigger($page = NULL)
+	{
+		throw new Kohana_404_Exception($page);
 	}
 
 	/**
