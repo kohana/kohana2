@@ -620,8 +620,8 @@ abstract class Kohana_Core {
 				),
 				array
 				(
-					KOHANA_VERSION,
-					KOHANA_CODENAME,
+					KOHANA::VERSION,
+					KOHANA::CODENAME,
 					$benchmark['time'],
 					number_format($memory, 2).'MB',
 					count(get_included_files()),
