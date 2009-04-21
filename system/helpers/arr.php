@@ -309,5 +309,21 @@ class arr_Core {
 
 		return $object;
 	}
-
+    
+	/**
+	 * Returns specific key/column from an array of objects.
+	 *
+	 * @param string|integer $key The key or column number to pluck from each object.
+	 * @param array $array        The array of objects to pluck from.
+	 * @return array
+	 */
+	public static function pluck($key, $array)
+	{
+		$result = array();
+		foreach ($array as $i => $object)
+		{
+			$result[$i] = isset($object[$key]) ? $object[$key] : NULL;
+		}
+		return $result;
+	}
 } // End arr
