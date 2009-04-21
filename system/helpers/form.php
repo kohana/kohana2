@@ -105,37 +105,23 @@ class form_Core {
 	}
 
 	/**
-	 * Generates hidden form fields.
-	 * You can pass a simple key/value string or an associative array with multiple values.
+	 * Creates a HTML form hidden input tag.
 	 *
-	 * @param   string|array  input name (string) or key/value pairs (array)
-	 * @param   string        input value, if using an input name
+	 * @param   string|array  input name or an array of HTML attributes
+	 * @param   string        input value, when using a name
+	 * @param   string        a string to be attached to the end of the attributes
 	 * @return  string
 	 */
-	public static function hidden($data, $value = '')
+	public static function hidden($data, $value = '', $extra = '')
 	{
 		if ( ! is_array($data))
 		{
-			$data = array
-			(
-				$data => $value
-			);
+			$data = array('name' => $data);
 		}
 
-		$input = '';
-		foreach ($data as $name => $value)
-		{
-			$attr = array
-			(
-				'type'  => 'hidden',
-				'name'  => $name,
-				'value' => $value
-			);
+		$data['type'] = 'hidden';
 
-			$input .= form::input($attr)."\n";
-		}
-
-		return $input;
+		return form::input($data, $value, $extra);
 	}
 
 	/**
