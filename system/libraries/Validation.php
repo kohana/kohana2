@@ -659,7 +659,7 @@ class Validation_Core extends ArrayObject {
 	/**
 	 * Return the errors array.
 	 *
-	 * @param   boolean  load errors from a lang file
+	 * @param   boolean  load errors from a message file
 	 * @return  array
 	 */
 	public function errors($file = NULL)
@@ -677,10 +677,10 @@ class Validation_Core extends ArrayObject {
 				// Key for this input error
 				$key = "$file.$input.$error";
 
-				if (($errors[$input] = Kohana::lang($key)) === $key)
+				if (($errors[$input] = Kohana::message($key)) === $key)
 				{
 					// Get the default error message
-					$errors[$input] = Kohana::lang("$file.$input.default");
+					$errors[$input] = Kohana::message("$file.$input.default");
 				}
 			}
 
