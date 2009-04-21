@@ -17,9 +17,10 @@ class form_Core {
 	 * @param   string  form action attribute
 	 * @param   array   extra attributes
 	 * @param   array   hidden fields to be created immediately after the form tag
+	 * @param   string  non-default protocol, eg: https
 	 * @return  string
 	 */
-	public static function open($action = NULL, $attr = array(), $hidden = NULL)
+	public static function open($action = NULL, $attr = array(), $hidden = NULL, $protocol = NULL)
 	{
 		// Make sure that the method is always set
 		empty($attr['method']) and $attr['method'] = 'post';
@@ -33,12 +34,12 @@ class form_Core {
 		if ($action === NULL)
 		{
 			// Use the current URL as the default action
-			$action = url::site(Router::$complete_uri);
+			$action = url::site(Router::$complete_uri, $protocol);
 		}
 		elseif (strpos($action, '://') === FALSE)
 		{
 			// Make the action URI into a URL
-			$action = url::site($action);
+			$action = url::site($action, $protocol);
 		}
 
 		// Set action
