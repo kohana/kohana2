@@ -313,24 +313,6 @@ class valid_Core {
 	}
 
 	/**
-	 * Checks whether a string is a valid text. Letters, numbers, whitespace,
-	 * dashes, periods, and underscores are allowed.
-	 *
-	 * @param   string   text to check
-	 * @return  boolean
-	 */
-	public static function standard_text($str)
-	{
-		// pL matches letters
-		// pN matches numbers
-		// pZ matches whitespace
-		// pPc matches underscores
-		// pPd matches dashes
-		// pPo matches normal puncuation
-		return (bool) preg_match('/^[\pL\pN\pZ\p{Pc}\p{Pd}\p{Po}]++$/uD', (string) $str);
-	}
-
-	/**
 	 * Checks if a string is a proper decimal format. The format array can be
 	 * used to specify a decimal length, or a number and decimal length, eg:
 	 * array(2) would force the number to have 2 decimal places, array(4,2)
