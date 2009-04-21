@@ -203,7 +203,7 @@ class ORM_Core {
 	{
 		if (method_exists($this->db_builder, $method))
 		{
-			if (in_array($method, array('query', 'get', 'insert', 'update', 'delete')))
+			if (in_array($method, array('execute', 'insert', 'update', 'delete')))
 				throw new Kohana_Exception('Query methods cannot be used through ORM');
 
 			// Method has been applied to the database
@@ -293,13 +293,9 @@ class ORM_Core {
 		{
 			if( ! $this->loaded AND ! $this->empty_primary_key() AND $this->unique_key($this->object[$this->primary_key]) !== $this->primary_key)
 			{
-				$this->db->push();
-
 				// Load if object hasn't been loaded and the key given isn't the primary_key
 				// that we need (i.e. passing an email address to ORM::factory rather than the id)
 				$this->find($this->object[$this->primary_key], TRUE);
-
-				$this->db->pop();
 			}
 
 			return $this->object[$this->primary_key];
@@ -310,6 +306,12 @@ class ORM_Core {
 
 			if (in_array($model->object_name, $this->belongs_to))
 			{
+				if ( ! $this->loaded AND ! $this->empty_primary_key())
+				{
+					// Load this object first so we know what id to look for in the foreign table
+					$this->find($this->object[$this->primary_key], TRUE);
+				}
+
 				// Foreign key lies in this table (this model belongs_to target model)
 				$where = array($model->foreign_key(TRUE) => $this->object[$this->foreign_key($column)]);
 			}
@@ -339,7 +341,7 @@ class ORM_Core {
 			// one<>alias:many relationship
 			return $this->related[$column] = $model
 				->join($join_table, $join_col1, $join_col2)
-				->where($through->foreign_key($this->object_name, $join_table), $this->primary_key_value)
+				->where($through->foreign_key($this->object_name, $join_table), '=', $this->primary_key_value)
 				->find_all();
 		}
 		elseif (isset($this->has_many[$column]))
@@ -348,14 +350,14 @@ class ORM_Core {
 			$model_name = $this->has_many[$column];
 
 			return $this->related[$column] = ORM::factory(inflector::singular($model_name))
-				->where($this->foreign_key($column, $model_name), $this->primary_key_value)
+				->where($this->foreign_key($column, $model_name), '=', $this->primary_key_value)
 				->find_all();
 		}
 		elseif (in_array($column, $this->has_many))
 		{
 			// one<>many relationship
 			return $this->related[$column] = ORM::factory(inflector::singular($column))
-				->where($this->foreign_key($column, $column), $this->primary_key_value)
+				->where($this->foreign_key($column, $column), '=', $this->primary_key_value)
 				->find_all();
 		}
 		elseif (in_array($column, $this->has_and_belongs_to_many))
@@ -374,7 +376,7 @@ class ORM_Core {
 			{
 				// empty many<>many relationship
 				return $this->related[$column] = $model
-					->where($model->foreign_key(TRUE), NULL)
+					->where($model->foreign_key(TRUE), 'IS NULL')
 					->find_all();
 			}
 		}
@@ -802,8 +804,8 @@ class ORM_Core {
 					{
 						// Insert the new relationship
 						DB::insert($join_table)
-							->set(array($object_fk  => $this->primary_key_value, $related_fk => $id))
-							->execut($this->db);
+							->set(array($object_fk => $this->primary_key_value, $related_fk => $id))
+							->execute($this->db);
 					}
 				}
 
@@ -833,14 +835,16 @@ class ORM_Core {
 	 */
 	public function delete($id = NULL)
 	{
-		if ($id === NULL AND $this->loaded)
+		if ($id === NULL)
 		{
 			// Use the the primary key value
-			$id = $this->object[$this->primary_key];
+			$id = $this->primary_key_value;
 		}
 
 		// Delete this object
-		$this->db->where($this->primary_key, $id)->delete($this->table_name);
+		DB::delete($this->table_name)
+			->where($this->primary_key, '=', $id)
+			->execute($this->db);
 
 		return $this->clear();
 	}
@@ -858,21 +862,21 @@ class ORM_Core {
 		if (is_array($ids))
 		{
 			// Delete only given ids
-			$this->db->in($this->primary_key, $ids);
+			DB::delete($this->table_name)
+				->where($this->primary_key, 'IN', $ids)
+				->execute($this->db);
 		}
-		elseif (is_null($ids))
+		elseif ($ids === NULL)
 		{
 			// Delete all records
-			$this->db->where(TRUE);
+			DB::delete($this->table_name)
+				->execute($this->db);
 		}
 		else
 		{
 			// Do nothing - safeguard
 			return $this;
 		}
-
-		// Delete all objects
-		$this->db->delete($this->table_name);
 
 		return $this->clear();
 	}

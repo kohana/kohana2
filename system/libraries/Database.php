@@ -19,6 +19,21 @@ abstract class Database_Core {
 
 	public static $instances = array();
 
+	// Last execute query
+	public $last_query;
+
+	// Configuration array
+	protected $_config;
+
+	// Required configuration keys
+	protected $_config_required = array();
+
+	// Raw server connection
+	protected $_connection;
+
+	protected $_cache;
+	protected $_cache_ttl;
+
 	public static function instance($name = 'default')
 	{
 		if ( ! isset(Database::$instances[$name]))
@@ -28,7 +43,7 @@ abstract class Database_Core {
 
 			if ( ! isset($config['type']))
 			{
-				throw new Kohana_Exception('Database type not defined in :name configuration',
+				throw new Database_Exception('Database type not defined in :name configuration',
 					array(':name' => $name));
 			}
 
@@ -41,20 +56,6 @@ abstract class Database_Core {
 
 		return Database::$instances[$name];
 	}
-
-	/**
-	 * @var  string  the last query executed
-	 */
-	public $last_query;
-
-	// Configuration array
-	protected $_config;
-
-	// Required configuration keys
-	protected $_config_required = array();
-
-	// Raw server connection
-	protected $_connection;
 
 	public function __construct(array $config)
 	{
@@ -69,6 +70,14 @@ abstract class Database_Core {
 
 		// Store the config locally
 		$this->_config = $config;
+
+		if ($this->_config['cache'] !== FALSE)
+		{
+			if (is_string($this->_config['cache']))
+			{
+				$this->_cache = new Cache($this->_config['cache']);
+			}
+		}
 	}
 
 	public function __destruct()
@@ -89,6 +98,44 @@ abstract class Database_Core {
 	abstract public function escape_table($table);
 
 	abstract public function list_fields($table);
+
+	/**
+	 * Performs the query on the cache (and caches it if it's not found)
+	 * Results are always returned as an array of arrays (rows)
+	 *
+	 * @param string $sql  Query
+	 * @param int    $ttl  Time-to-live (NULL for Cache default)
+	 */
+	public function query_cache($sql, $ttl)
+	{
+		if ( ! isset($this->_cache))
+		{
+			throw new Database_Exception('Database does not support caching.');
+		}
+
+		$hash = $this->query_hash($sql);
+
+		if (($data = $this->_cache->get($hash)) !== NULL)
+		{
+			// Found in cache, return it
+			return $data;
+		}
+		else
+		{
+			// Run the query and return the full array of rows
+			$data = $this->query($sql)->as_array(TRUE);
+
+			// Set the Cache
+			$this->_cache->set($hash, $data, NULL, $ttl);
+
+			return $data;
+		}
+	}
+
+	protected function query_hash($sql)
+	{
+		return sha1(str_replace("\n", ' ', trim($sql)));
+	}
 
 	public function quote($value)
 	{

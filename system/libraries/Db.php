@@ -27,9 +27,9 @@ class DB_Core {
 		return DB::build()->update($table, $set, $where);
 	}
 
-	public static function delete($sql)
+	public static function delete($table = NULL, $where = NULL)
 	{
-		return new Database_Delete($sql);
+		return DB::build()->delete($table, $where);
 	}
 
 	public static function expr($expression)

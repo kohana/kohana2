@@ -9,13 +9,12 @@
  */
 class Database_Query_Core {
 
-	protected $_type;
 	protected $_sql;
 	protected $_params;
+	protected $_ttl = FALSE;
 
-	public function __construct($type, $sql = NULL)
+	public function __construct($sql = NULL)
 	{
-		$this->_type = $type;
 		$this->_sql = $sql;
 	}
 
@@ -66,8 +65,29 @@ class Database_Query_Core {
 			$sql = strtr($sql, $params);
 		}
 
-		// Load the result
-		return $db->query($this->_type, $sql);
+		if ($this->_ttl !== FALSE)
+		{
+			// Load the result from the cache
+			return $db->query_cache($sql, $this->_ttl);
+		}
+		else
+		{
+			// Load the result (no caching)
+			return $db->query($sql);
+		}
+	}
+
+	/**
+	 * Set caching for the query
+	 *
+	 * @param  boolean|int     Time-to-live (false to disable, NULL for Cache default, seconds otherwise)
+	 * @return Database_Query
+	 */
+	public function cache($ttl = NULL)
+	{
+		$this->_ttl = $ttl;
+
+		return $this;
 	}
 
 } // End Database_Query
