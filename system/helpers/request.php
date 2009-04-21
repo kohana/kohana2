@@ -21,16 +21,17 @@ class request_Core {
 	 * Returns the HTTP referrer, or the default if the referrer is not set.
 	 *
 	 * @param   mixed   default to return
+	 * @param   bool    Remove base URL
 	 * @return  string
 	 */
-	public static function referrer($default = FALSE)
+	public static function referrer($default = FALSE, $remove_base = FALSE)
 	{
 		if ( ! empty($_SERVER['HTTP_REFERER']))
 		{
 			// Set referrer
 			$ref = $_SERVER['HTTP_REFERER'];
 
-			if (strpos($ref, url::base(FALSE)) === 0)
+			if ((strpos($ref, url::base(FALSE)) === 0) AND $remove_base === TRUE)
 			{
 				// Remove the base URL from the referrer
 				$ref = substr($ref, strlen(url::base(TRUE)));
