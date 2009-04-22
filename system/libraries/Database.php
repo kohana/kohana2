@@ -101,7 +101,6 @@ abstract class Database_Core {
 
 	/**
 	 * Performs the query on the cache (and caches it if it's not found)
-	 * Results are always returned as an array of arrays (rows)
 	 *
 	 * @param string $sql  Query
 	 * @param int    $ttl  Time-to-live (NULL for Cache default)
@@ -118,7 +117,7 @@ abstract class Database_Core {
 		if (($data = $this->_cache->get($hash)) !== NULL)
 		{
 			// Found in cache, return it
-			return $data;
+			return new Database_Cache_Result($data, $sql, $this->_config['object']);
 		}
 		else
 		{
@@ -128,7 +127,7 @@ abstract class Database_Core {
 			// Set the Cache
 			$this->_cache->set($hash, $data, NULL, $ttl);
 
-			return $data;
+			return new Database_Cache_Result($data, $sql, $this->_config['object']);
 		}
 	}
 
