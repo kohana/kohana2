@@ -15,8 +15,9 @@ define('KOHANA_IS_WIN', DIRECTORY_SEPARATOR === '\\');
 
 abstract class Kohana_Core {
 
-	const VERSION = '2.4';
+	const VERSION  = '2.4';
 	const CODENAME = 'no_codename';
+	const CHARSET  = 'UTF-8';
 
 	// The singleton instance of the controller
 	public static $instance;
@@ -131,7 +132,7 @@ abstract class Kohana_Core {
 		spl_autoload_register(array('Kohana', 'auto_load'));
 
 		// Send default text/html UTF-8 header
-		header('Content-Type: text/html; charset=UTF-8');
+		header('Content-Type: text/html; charset='.Kohana::CHARSET);
 
 		// Load i18n
 		new I18n;
