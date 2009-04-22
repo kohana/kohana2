@@ -349,16 +349,28 @@ class Validation_Core extends ArrayObject {
 			// Arguments for rule
 			$args = NULL;
 
+			// False rule
+			$false_rule = FALSE;
+
 			if (is_string($rule))
 			{
-				if (preg_match('/^([^\[]++)\[(.+)\]$/', $rule, $matches))
+				if (preg_match('/^(!?)([^\[]++)(:?\[(.+)\])?$/', $rule, $matches))
 				{
-					// Split the rule into the function and args
-					$rule = $matches[1];
-					$args = preg_split('/(?<!\\\\),\s*/', $matches[2]);
+					// False rule
+					$false_rule = empty($matches[1]) ? FALSE : TRUE;
 
-					// Replace escaped comma with comma
-					$args = str_replace('\,', ',', $args);
+					// Rule name
+					$rule = trim($matches[2]);
+
+					// Have arguments
+					if ( ! empty($matches[4]))
+					{
+						// Split the rule into the function and args
+						$args = preg_split('/(?<!\\\\),\s*/', $matches[4]);
+
+						// Replace escaped comma with comma
+						$args = str_replace('\,', ',', $args);
+					}
 				}
 			}
 
@@ -372,7 +384,7 @@ class Validation_Core extends ArrayObject {
 			$rule = $this->callback($rule);
 
 			// Add the rule, with args, to the field
-			$this->rules[$field][] = array($rule, $args);
+			$this->rules[$field][] = array($rule, $args, $false_rule);
 		}
 
 		return $this;
@@ -459,8 +471,8 @@ class Validation_Core extends ArrayObject {
 		{
 			foreach ($callbacks as $callback)
 			{
-				// Separate the callback and arguments
-				list ($callback, $args) = $callback;
+				// Separate the callback, arguments and is false bool
+				list ($callback, $args, $is_false) = $callback;
 
 				// Function or method name of the rule
 				$rule = is_array($callback) ? $callback[1] : $callback;
@@ -485,25 +497,14 @@ class Validation_Core extends ArrayObject {
 							continue;
 						}
 
-						if ($args === NULL)
-						{
-							if ( ! call_user_func($callback, $array[$f]))
-							{
-								$this->errors[$f] = $rule;
+						$result = ($args === NULL) ? call_user_func($callback, $array[$f]) : call_user_func($callback, $array[$f], $args);
 
-								// Stop validating this field when an error is found
-								continue;
-							}
-						}
-						else
+						if (($result == $is_false))
 						{
-							if ( ! call_user_func($callback, $array[$f], $args))
-							{
-								$this->errors[$f] = $rule;
+							$this->errors[$f] = $rule;
 
-								// Stop validating this field when an error is found
-								continue;
-							}
+							// Stop validating this field when an error is found
+							continue;
 						}
 					}
 				}
@@ -521,25 +522,15 @@ class Validation_Core extends ArrayObject {
 						continue;
 					}
 
-					if ($args === NULL)
-					{
-						if ( ! call_user_func($callback, $array[$field]))
-						{
-							$this->errors[$field] = $rule;
+					// Results of our test
+					$result = ($args === NULL) ? call_user_func($callback, $array[$field]) : call_user_func($callback, $array[$field], $args);
 
-							// Stop validating this field when an error is found
-							break;
-						}
-					}
-					else
+					if (($result == $is_false))
 					{
-						if ( ! call_user_func($callback, $array[$field], $args))
-						{
-							$this->errors[$field] = $rule;
+						$this->errors[$field] = $rule;
 
-							// Stop validating this field when an error is found
-							break;
-						}
+						// Stop validating this field when an error is found
+						break;
 					}
 				}
 			}
