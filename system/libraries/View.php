@@ -254,10 +254,11 @@ class View_Core {
 	 *
 	 * @param   boolean   set to TRUE to echo the output instead of returning it
 	 * @param   callback  special renderer to pass the output through
+	 * @param   callback  modifier to pass the data through before rendering
 	 * @return  string    if print is FALSE
 	 * @return  void      if print is TRUE
 	 */
-	public function render($print = FALSE, $renderer = FALSE)
+	public function render($print = FALSE, $renderer = FALSE, $modifier = FALSE)
 	{
 		if (empty($this->kohana_filename))
 			throw new Kohana_Exception('core.view_set_filename');
@@ -266,6 +267,12 @@ class View_Core {
 		{
 			// Merge global and local data, local overrides global with the same name
 			$data = array_merge(View::$kohana_global_data, $this->kohana_local_data);
+
+			if ($modifier !== FALSE AND is_callable($modifier, TRUE))
+			{
+				// Pass the data through the user defined modifier
+				$data = call_user_func($modifier, $data);
+			}
 
 			// Load the view in the controller for access to $this
 			$output = Kohana::$instance->_kohana_load_view($this->kohana_filename, $data);
