@@ -119,7 +119,7 @@ class Database_Builder_Core {
 			if ($alias instanceof Database_Expression)
 			{
 				// Parse Database_Expression
-				$alias->parse($this->_db);
+				$alias = $alias->parse($this->_db);
 			}
 			else
 			{
@@ -655,6 +655,29 @@ class Database_Builder_Core {
 		}
 
 		return $this;
+	}
+
+	public function count_records($table = FALSE, $where = NULL)
+	{
+		if (count($this->_from) < 1)
+		{
+			if ($table === FALSE)
+				throw new Database_Exception('Database count_records requires a table');
+
+			$this->from($table);
+		}
+
+		if ($where !== NULL)
+		{
+			$this->where($where);
+		}
+
+		// Grab the count AS records_found
+		$count = DB::expr(array('COUNT(*)' => 'records_found'));
+
+		$result = $this->select($count)->execute();
+
+		return $result->current()->records_found;
 	}
 
 	public function execute($db = 'default')
