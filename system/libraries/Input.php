@@ -302,7 +302,7 @@ class Input_Core {
 		{
 			$tool = 'default';
 		}
-		elseif ($tool ==! method_exists($this, 'xss_filter_'.$tool))
+		elseif ( ! method_exists($this, 'xss_filter_'.$tool))
 		{
 			Kohana_Log::add('error', 'Unable to use Input::xss_filter_'.$tool.'(), no such method exists');
 			$tool = 'default';
