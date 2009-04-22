@@ -483,7 +483,7 @@ class Database_Builder_Core {
 		return $this;
 	}
 
-	protected function compile_conditions($groups)
+	protected function _compile_conditions($groups)
 	{
 		$last_condition = NULL;
 
@@ -667,9 +667,9 @@ class Database_Builder_Core {
 
 		$this->_db = $db;
 
-		if ($this->_ttl !== FALSE)
+		if ($this->_ttl !== FALSE AND $this->_type === Database:SELECT)
 		{
-			// Return result from cache
+			// Return result from cache (only allowed with SELECT)
 			return $this->_db->query_cache((string) $this, $this->_ttl);
 		}
 		else
