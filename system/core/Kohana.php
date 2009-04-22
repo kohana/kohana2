@@ -1562,7 +1562,7 @@ class Kohana_Exception extends Exception {
 			if ($level <= Kohana::config('log.log_threshold'))
 			{
 				// Log the error
-				Kohana_Log::add('error', __('Uncaught %type %message% in file :file on line %line%',
+				Kohana_Log::add('error', __('Uncaught %type% %message% in file %file% on line %line%',
 				                array('%type%' => $type, '%message%' => $this->message, '%file%' => $this->file, '%line%' => $this->line)));
 			}
 
@@ -1808,7 +1808,7 @@ class Kohana_404_Exception extends Kohana_Exception {
 			$page = Router::$complete_uri;
 		}
 
-		parent::__construct(__('The page you requested, :page, could not be found.', array(':page' => $page)));
+		parent::__construct(__('The page you requested, %page%, could not be found.', array('%page%' => $page)));
 	}
 
 	/**
