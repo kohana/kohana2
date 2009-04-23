@@ -247,7 +247,7 @@ class Validation_Core extends ArrayObject {
 				$name = $callback;
 			}
 
-			throw new Kohana_Exception('validation.not_callable', $name);
+			throw new Kohana_Exception('Callback %name% used for Validation is not callable', array('%name%' => $name));
 		}
 
 		return $callback;
@@ -352,26 +352,33 @@ class Validation_Core extends ArrayObject {
 			// False rule
 			$false_rule = FALSE;
 
+			$rule_tmp = trim(is_string($rule) ? $rule : $rule[1]);
+
+			// Should the rule return false?
+			if ($rule_tmp !== ($rule_name = ltrim($rule_tmp, '! ')))
+			{
+				$false_rule = TRUE;
+			}
+
 			if (is_string($rule))
 			{
-				if (preg_match('/^(!?)([^\[]++)(:?\[(.+)\])?$/', $rule, $matches))
+				// Use the updated rule name
+				$rule = $rule_name;
+				
+				// Have arguments?
+				if (preg_match('/^([^\[]++)\[(.+)\]$/', $rule, $matches))
 				{
-					// False rule
-					$false_rule = empty($matches[1]) ? FALSE : TRUE;
+					// Split the rule into the function and args
+					$rule = $matches[1];
+					$args = preg_split('/(?<!\\\\),\s*/', $matches[2]);
 
-					// Rule name
-					$rule = trim($matches[2]);
-
-					// Have arguments
-					if ( ! empty($matches[4]))
-					{
-						// Split the rule into the function and args
-						$args = preg_split('/(?<!\\\\),\s*/', $matches[4]);
-
-						// Replace escaped comma with comma
-						$args = str_replace('\,', ',', $args);
-					}
+					// Replace escaped comma with comma
+					$args = str_replace('\,', ',', $args);
 				}
+			}
+			else
+			{
+				$rule[1] = $rule_name;
 			}
 
 			if ($rule === 'is_array')
