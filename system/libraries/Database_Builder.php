@@ -12,6 +12,9 @@ class Database_Builder_Core {
 	// Valid JOIN types
 	protected $_join_types = array('LEFT', 'RIGHT', 'INNER', 'OUTER', 'RIGHT OUTER', 'LEFT OUTER', 'FULL');
 
+	// Valid ORDER BY directions
+	protected $order_directions = array('ASC', 'DESC', 'RAND()');
+
 	// Database object
 	protected $_db;
 
@@ -28,11 +31,8 @@ class Database_Builder_Core {
 	protected $_set      = array();
 	protected $_type;
 
-	// TTL for caching
+	// TTL for caching (using Cache library)
 	protected $_ttl      = FALSE;
-
-	// Valid ORDER BY directions
-	protected $order_directions = array('ASC', 'DESC', 'RAND()');
 
 	public function __toString()
 	{
@@ -134,31 +134,18 @@ class Database_Builder_Core {
 	 */
 	protected function _compile_select()
 	{
+		$vals = array();
+
 		foreach ($this->_select as $name => $alias)
 		{
-			if ($alias instanceof Database_Expression)
+			if (is_string($name))
 			{
-				// Parse Database_Expression
-				$alias = $alias->parse($this->_db);
+				$vals[] = $this->_db->escape_table(array($name => $alias));
 			}
 			else
 			{
-				if (is_string($name))
-				{
-					// Using AS format so escape both
-					$alias = $this->_db->escape_table(array($name => $alias));
-				}
-				else
-				{
-					// Just using the table name itself
-					$alias = $this->_db->escape_table($alias);
-				}
-
-				// Unquote all asterisks
-				$alias = preg_replace('/`[^\.]*\*`/', '*', $alias);
+				$vals[] = $this->_db->escape_table($alias);
 			}
-
-			$vals[] = $alias;
 		}
 
 		return implode(', ', $vals);
@@ -178,15 +165,13 @@ class Database_Builder_Core {
 			if (is_string($name))
 			{
 				// Using AS format so escape both
-				$alias = $this->_db->escape_table(array($name => $alias));
+				$vals[] = $this->_db->escape_table(array($name => $alias));
 			}
 			else
 			{
 				// Just using the table name itself
-				$alias = $this->_db->escape_table($alias);
+				$vals[] = $this->_db->escape_table($alias);
 			}
-
-			$vals[] = $alias;
 		}
 
 		return implode(', ', $vals);
@@ -259,18 +244,8 @@ class Database_Builder_Core {
 
 		foreach ($this->_group_by as $column)
 		{
-			if ($column instanceof Database_Expression)
-			{
-				// Parse the Database_Expression
-				$column = $column->parse($this->_db);
-			}
-			else
-			{
-				// Escape the column
-				$column = $this->_db->escape_table($column);
-			}
-
-			$vals[] = $column;
+			// Escape the column
+			$vals[] = $this->_db->escape_table($column);
 		}
 
 		return implode(', ', $vals);
@@ -285,24 +260,17 @@ class Database_Builder_Core {
 	{
 		$ordering = array();
 
-		foreach ($this->_order_by as $order_by)
+		foreach ($this->_order_by as $column => $order_by)
 		{
-			if ($order_by instanceof Database_Expression)
-			{
-				// Parse the Database_Expression
-				$column = $column->parse($this->_db);
-				$direction = NULL;
-			}
-			else
-			{
-				// Column => Direction
-				$column = key($order_by);
-				$direction = current($order_by);
+			// Column => Direction
+			$column    = key($order_by);
+			$direction = current($order_by);
 
-				if ($direction !== NULL)
-				{
-					$direction = ' '.$direction;
-				}
+			$column = $this->_db->escape_table($column);
+
+			if ($direction !== NULL)
+			{
+				$direction = ' '.$direction;
 			}
 
 			$ordering[] = $column.$direction;
@@ -599,7 +567,7 @@ class Database_Builder_Core {
 						{
 							if (is_array($value))
 							{
-								if ($op === 'BETWEEN')
+								if ($op === 'BETWEEN' OR $op === 'NOT BETWEEN')
 								{
 									// Falls between two values
 									$value = $this->_db->quote($value[0]).' AND '.$this->_db->quote($value[1]);

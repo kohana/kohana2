@@ -258,6 +258,9 @@ abstract class Database_Core {
 	 */
 	public function quote($value)
 	{
+		if ( ! $this->_config['escape'])
+			return $value;
+
 		if ($value === NULL)
 		{
 			return 'NULL';
@@ -271,7 +274,7 @@ abstract class Database_Core {
 			return (int) $value;
 		}
 
-		return '"'.$this->escape($value).'"';
+		return '\''.$this->escape($value).'\'';
 	}
 
 	public function list_tables()

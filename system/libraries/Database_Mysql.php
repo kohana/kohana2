@@ -125,16 +125,48 @@ class Database_MySQL_Core extends Database {
 
 	public function escape_table($table)
 	{
+		$as = NULL;
+
 		if (is_array($table))
 		{
-			$table = '`'.$this->_config['table_prefix'].key($table).'` AS `'.$this->_config['table_prefix'].current($table).'`';
+			// Using AS
+
+			if ($this->_config['escape'])
+			{
+				$as = ' AS `'.current($table).'`';
+			}
+			else
+			{
+				$as = ' AS '.current($table);
+			}
+
+			$table = key($table);
+		}
+
+		if ($table === '*')
+			return $table;
+
+		if (strpos($table, '`') !== FALSE)
+		{
+			// Replace `table` occurrences with `[table_prefix]table` and `table`.`col` with `[table_prefix]table`.`col`
+			$table = preg_replace('/`(.*?)`(\.`(.*?)`)?/', '`'.$this->_config['table_prefix'].'$1`$2', $table);
 		}
 		else
 		{
-			$table = '`'.$this->_config['table_prefix'].$table.'`';
+			// Escape the table name and add the prefix
+			$table = $this->_config['table_prefix'].$table;
+
+			if ($this->_config['escape'])
+			{
+				// Escape it
+				$table = '`'.$table.'`';
+				$table = str_replace('.', '`.`', $table);
+			}
 		}
 
-		return str_replace('.', '`.`', $table);
+		$table = str_replace('`*`', '*', $table);
+
+		return $table.$as;
 	}
 
 	public function list_fields($table)
