@@ -708,9 +708,7 @@ class Database_Builder_Core {
 		}
 
 		// Grab the count AS records_found
-		$count = DB::expr(array('COUNT(*)' => 'records_found'));
-
-		$result = $this->select($count)->execute();
+		$result = $this->select(array('COUNT(*)' => 'records_found'))->execute();
 
 		return $result->current()->records_found;
 	}

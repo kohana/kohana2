@@ -146,7 +146,9 @@ class Database_MySQL_Core extends Database {
 		if ($table === '*')
 			return $table;
 
-		if (strpos($table, '`') !== FALSE)
+		// If the table name contains a ` or a *, we assume it has functions within
+
+		if (strpos($table, '`') !== FALSE OR strpos($table, '*') !== FALSE)
 		{
 			// Replace `table` occurrences with `[table_prefix]table` and `table`.`col` with `[table_prefix]table`.`col`
 			$table = preg_replace('/`(.*?)`(\.`(.*?)`)?/', '`'.$this->_config['table_prefix'].'$1`$2', $table);
