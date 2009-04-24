@@ -14,7 +14,6 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	protected $_total_rows  = 0;
 	protected $_current_row = 0;
 	protected $_insert_id;
-	protected $_affected_rows;
 
 	protected $_return_objects;
 

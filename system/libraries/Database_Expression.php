@@ -7,13 +7,18 @@ class Database_Expression_Core {
 	protected $_params;
 	protected $_as;
 
-	public function __construct($expression)
+	public function __construct($expression, $as = NULL)
 	{
 		if (is_array($expression))
 		{
 			// If key => val form is used, only do escaping/parsing on the key (it becomes 'key AS val')
 			$this->_expression = key($expression);
 			$this->_as = current($expression);
+		}
+		elseif ($as !== NULL)
+		{
+			$this->_expression = $expression;
+			$this->_as = $as;
 		}
 		else
 		{

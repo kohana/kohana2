@@ -13,11 +13,11 @@ abstract class Database_Core {
 	const INSERT =  2;
 	const UPDATE =  3;
 	const DELETE =  4;
-	const CREATE = -2;
-	const ALTER  = -3;
-	const DROP   = -4;
 
 	public static $instances = array();
+
+	// Global benchmarks
+	public static $benchmarks = array();
 
 	// Last execute query
 	public $last_query;
@@ -31,8 +31,8 @@ abstract class Database_Core {
 	// Raw server connection
 	protected $_connection;
 
+	// Cache (Cache object for cross-request, array for per-request)
 	protected $_cache;
-	protected $_cache_ttl;
 
 	public static function instance($name = 'default')
 	{
@@ -75,7 +75,13 @@ abstract class Database_Core {
 		{
 			if (is_string($this->_config['cache']))
 			{
+				// Use Cache library
 				$this->_cache = new Cache($this->_config['cache']);
+			}
+			elseif ($this->_config['cache'] === TRUE)
+			{
+				// Use array
+				$this->_cache = array();
 			}
 		}
 	}
@@ -91,7 +97,7 @@ abstract class Database_Core {
 
 	abstract public function set_charset($charset);
 
-	abstract public function query($sql);
+	abstract public function query_execute($sql);
 
 	abstract public function escape($value);
 
@@ -99,43 +105,157 @@ abstract class Database_Core {
 
 	abstract public function list_fields($table);
 
+	public function query($sql)
+	{
+		// Start the benchmark
+		$start = microtime(TRUE);
+
+		if (is_array($this->_cache))
+		{
+			$hash = $this->query_hash($sql);
+
+			if (isset($this->_cache[$hash]))
+			{
+				// Use cached result
+				$result = $this->_cache[$hash];
+
+				// It's from cache
+				$sql .= ' [CACHE]';
+			}
+			else
+			{
+				// No cache, execute query and store in cache
+				$result = $this->_cache[$hash] = $this->query_execute($sql);
+			}
+		}
+		else
+		{
+			// Execute the query, cache is off
+			$result = $this->query_execute($sql);
+		}
+
+		// Stop the benchmark
+		$stop = microtime(TRUE);
+
+		if ($this->_config['benchmark'] === TRUE)
+		{
+			// Benchmark the query
+			Database::$benchmarks[] = array('query' => $sql, 'time' => $stop - $start, 'rows' => count($result));
+		}
+
+		return $result;
+	}
+
 	/**
 	 * Performs the query on the cache (and caches it if it's not found)
 	 *
-	 * @param string $sql  Query
-	 * @param int    $ttl  Time-to-live (NULL for Cache default)
+	 * @param   string  query
+	 * @param   int     time-to-live (NULL for Cache default)
+	 * @return  Database_Cache_Result
 	 */
 	public function query_cache($sql, $ttl)
 	{
-		if ( ! isset($this->_cache))
+		if ( ! $this->_cache instanceof Cache)
 		{
-			throw new Database_Exception('Database does not support caching.');
+			throw new Database_Exception('Database :name has not been configured to use the Cache library.');
 		}
+
+		// Start the benchmark
+		$start = microtime(TRUE);
 
 		$hash = $this->query_hash($sql);
 
 		if (($data = $this->_cache->get($hash)) !== NULL)
 		{
-			// Found in cache, return it
-			return new Database_Cache_Result($data, $sql, $this->_config['object']);
+			// Found in cache, create result
+			$result = new Database_Cache_Result($data, $sql, $this->_config['object']);
+
+			// It's from the cache
+			$sql .= ' [CACHE]';
 		}
 		else
 		{
 			// Run the query and return the full array of rows
-			$data = $this->query($sql)->as_array(TRUE);
+			$data = $this->query_execute($sql)->as_array(TRUE);
 
 			// Set the Cache
 			$this->_cache->set($hash, $data, NULL, $ttl);
 
-			return new Database_Cache_Result($data, $sql, $this->_config['object']);
+			// Create result
+			$result = new Database_Cache_Result($data, $sql, $this->_config['object']);
 		}
+
+		// Stop the benchmark
+		$stop = microtime(TRUE);
+
+		if ($this->_config['benchmark'] === TRUE)
+		{
+			// Benchmark the query
+			Database::$benchmarks[] = array('query' => $sql, 'time' => $stop - $start, 'rows' => count($result));
+		}
+
+		return $result;
 	}
 
+	/**
+	 * Generates a hash for the given query
+	 *
+	 * @param   string  SQL query string
+	 * @return  string
+	 */
 	protected function query_hash($sql)
 	{
 		return sha1(str_replace("\n", ' ', trim($sql)));
 	}
 
+	/**
+	 * Clears the internal query cache.
+	 *
+	 * @param   string|boolean  clear cache by SQL statement, NULL for all, or TRUE for last query
+	 * @return  Database
+	 */
+	public function clear_cache($sql = NULL)
+	{
+		if (isset($this->_cache))
+		{
+			// Using cross-request Cache library
+			if ($sql === TRUE)
+			{
+				$this->_cache->delete($this->query_hash($this->_last_query));
+			}
+			elseif (is_string($sql))
+			{
+				$this->_cache->delete($this->query_hash($sql));
+			}
+			else
+			{
+				$this->_cache->delete_all();
+			}
+		}
+		else
+		{
+			// Using per-request memory cache
+			if ($sql === TRUE)
+			{
+				unset($this->_query_cache[$this->query_hash($this->last_query)]);
+			}
+			elseif (is_string($sql))
+			{
+				unset($this->_query_cache[$this->query_hash($sql)]);
+			}
+			else
+			{
+				$this->_query_cache = array();
+			}
+		}
+	}
+
+	/**
+	 * Quotes the given value
+	 *
+	 * @param   mixed  value
+	 * @return  mixed
+	 */
 	public function quote($value)
 	{
 		if ($value === NULL)

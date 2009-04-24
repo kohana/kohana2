@@ -88,7 +88,7 @@ class Database_MySQL_Core extends Database {
 		}
 	}
 
-	public function query($sql)
+	public function query_execute($sql)
 	{
 		// Make sure the database is connected
 		$this->_connection or $this->connect();
@@ -172,7 +172,7 @@ class Database_MySQL_Core extends Database {
 	{
 		$columns = array();
 
-		foreach($this->query('SHOW COLUMNS FROM '.$this->escape_table($table), $this->_connection)->as_array() as $row)
+		foreach($this->query_execute('SHOW COLUMNS FROM '.$this->escape_table($table), $this->_connection)->as_array() as $row)
 		{
 			$columns[] = $row;
 		}

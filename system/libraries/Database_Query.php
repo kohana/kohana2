@@ -31,7 +31,7 @@ class Database_Query_Core {
 		return $this;
 	}
 
-	public function set($key, $value)
+	public function value($key, $value)
 	{
 		$this->_params[$key] = $value;
 

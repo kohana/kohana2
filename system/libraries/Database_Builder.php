@@ -1,11 +1,21 @@
-<?php
-
+<?php defined('SYSPATH') or die('No direct script access.');
+/**
+ * Database builder
+ *
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  (c) 2008-2009 Kohana Team
+ * @license    http://kohanaphp.com/license.html
+ */
 class Database_Builder_Core {
 
+	// Valid JOIN types
 	protected $_join_types = array('LEFT', 'RIGHT', 'INNER', 'OUTER', 'RIGHT OUTER', 'LEFT OUTER', 'FULL');
 
+	// Database object
 	protected $_db;
 
+	// Builder members
 	protected $_select   = array();
 	protected $_from     = array();
 	protected $_join     = array();
@@ -16,12 +26,12 @@ class Database_Builder_Core {
 	protected $_limit    = NULL;
 	protected $_offset   = NULL;
 	protected $_set      = array();
-	protected $_ttl      = FALSE;
 	protected $_type;
 
-	// The current section of clause we are in (HAVING, WHERE)
-	protected $in_clause = 'WHERE';
+	// TTL for caching
+	protected $_ttl      = FALSE;
 
+	// Valid ORDER BY directions
 	protected $order_directions = array('ASC', 'DESC', 'RAND()');
 
 	public function __toString()
@@ -29,6 +39,11 @@ class Database_Builder_Core {
 		return $this->_compile();
 	}
 
+	/**
+	 * Compiles the builder object into a SQL query
+	 *
+	 * @return string  Compiled query
+	 */
 	protected function _compile()
 	{
 		if ( ! is_object($this->_db))
@@ -112,6 +127,11 @@ class Database_Builder_Core {
 		return $sql;
 	}
 
+	/**
+	 * Compiles the SELECT portion of the query
+	 *
+	 * @return string
+	 */
 	protected function _compile_select()
 	{
 		foreach ($this->_select as $name => $alias)
@@ -144,6 +164,11 @@ class Database_Builder_Core {
 		return implode(', ', $vals);
 	}
 
+	/**
+	 * Compiles the FROM portion of the query
+	 *
+	 * @return string
+	 */
 	protected function _compile_from()
 	{
 		$vals = array();
@@ -167,6 +192,11 @@ class Database_Builder_Core {
 		return implode(', ', $vals);
 	}
 
+	/**
+	 * Compiles the JOIN portion of the query
+	 *
+	 * @return string
+	 */
 	protected function _compile_join()
 	{
 		$sql = '';
@@ -176,6 +206,7 @@ class Database_Builder_Core {
 
 			if ( ! $table instanceof Database_Expression)
 			{
+				// Escape the table name (Database_Expressions are unaltered AND are not parsed)
 				$table = $this->_db->escape_table($table);
 			}
 
@@ -217,6 +248,11 @@ class Database_Builder_Core {
 		return $sql;
 	}
 
+	/**
+	 * Compiles the GROUP BY portion of the query
+	 *
+	 * @return string
+	 */
 	protected function _compile_group_by()
 	{
 		$vals = array();
@@ -225,10 +261,12 @@ class Database_Builder_Core {
 		{
 			if ($column instanceof Database_Expression)
 			{
+				// Parse the Database_Expression
 				$column = $column->parse($this->_db);
 			}
 			else
 			{
+				// Escape the column
 				$column = $this->_db->escape_table($column);
 			}
 
@@ -238,6 +276,11 @@ class Database_Builder_Core {
 		return implode(', ', $vals);
 	}
 
+	/**
+	 * Compiles the ORDER BY portion of the query
+	 *
+	 * @return string
+	 */
 	public function _compile_order_by()
 	{
 		$ordering = array();
@@ -246,11 +289,13 @@ class Database_Builder_Core {
 		{
 			if ($order_by instanceof Database_Expression)
 			{
+				// Parse the Database_Expression
 				$column = $column->parse($this->_db);
 				$direction = NULL;
 			}
 			else
 			{
+				// Column => Direction
 				$column = key($order_by);
 				$direction = current($order_by);
 
@@ -266,6 +311,11 @@ class Database_Builder_Core {
 		return implode(', ', $ordering);
 	}
 
+	/**
+	 * Compiles the SET portion of the query (UPDATEs and INSERTs)
+	 *
+	 * @return string
+	 */
 	public function _compile_set($type)
 	{
 		$vals = array();
@@ -273,10 +323,12 @@ class Database_Builder_Core {
 		{
 			if ($set instanceof Database_Expression)
 			{
+				// Parse any Database_Expressions
 				$vals[] = $set->parse($this->_db);
 			}
 			else
 			{
+				// Key => Value
 				$key = $this->_db->escape_table(key($set));
 				$value = $this->_db->quote(current($set));
 
@@ -294,6 +346,15 @@ class Database_Builder_Core {
 		return $vals;
 	}
 
+	/**
+	 * Join tables to the builder
+	 *
+	 * @param  mixed  $table  Table name or Database_Expression, or an array of them
+	 * @param  mixed  $keys   Key, or an array of key => value pair, for join condition (can be a Database_Expression)
+	 * @param  mixed  $value  Value if $keys is not an array or Database_Expression
+	 * @param  string $type   Join type (LEFT, RIGHT, INNER, etc.)
+	 * @return Database_Builder
+	 */
 	public function join($table, $keys, $value = NULL, $type = NULL)
 	{
 		if (is_string($keys))
@@ -317,6 +378,12 @@ class Database_Builder_Core {
 		return $this;
 	}
 
+	/**
+	 * Add tables to the FROM portion of the builder
+	 *
+	 * @param mixed  $tables  A table name or an array of tables (Key => Val results in 'Key AS Val')
+	 * @return Database_Builder
+	 */
 	public function from($tables)
 	{
 		if ( ! is_array($tables))

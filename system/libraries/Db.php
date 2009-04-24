@@ -32,9 +32,9 @@ class DB_Core {
 		return DB::build()->delete($table, $where);
 	}
 
-	public static function expr($expression)
+	public static function expr($expression, $as = NULL)
 	{
-		return new Database_Expression($expression);
+		return new Database_Expression($expression, $as);
 	}
 
 } // End DB
