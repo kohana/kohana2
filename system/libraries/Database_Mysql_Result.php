@@ -58,6 +58,9 @@ class Database_MySQL_Result_Core extends Database_Result {
 		}
 
 		// Return a nested array of all results
+		if (function_exists('mysqli_fetch_all'))
+			return mysqli_fetch_all($this->_result, MYSQLI_ASSOC);
+
 		$array = array();
 
 		if ($this->_total_rows > 0)
