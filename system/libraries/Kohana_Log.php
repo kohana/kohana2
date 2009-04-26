@@ -34,7 +34,7 @@ class Kohana_Log_Core {
 	 * @param   string  message text
 	 * @return  void
 	 */
-	static public function add($type, $message)
+	public static function add($type, $message)
 	{
 		// Make sure the drivers and config are loaded
 		if ( ! is_array(self::$config))
@@ -79,7 +79,7 @@ class Kohana_Log_Core {
 	 *
 	 * @return  void
 	 */
-	protected function save()
+	protected static function save()
 	{
 		if (empty(self::$messages) OR self::$config['log_threshold'] < 1)
 			return;
