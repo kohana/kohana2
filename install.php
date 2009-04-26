@@ -42,7 +42,7 @@ body { width: 42em; margin: 0 auto; font-family: sans-serif; font-size: 90%; }
 </tr>
 <tr>
 <th>System Directory</th>
-<?php if (is_dir(SYSPATH) AND is_file(SYSPATH.'core/Bootstrap'.EXT)): ?>
+<?php if (is_dir(SYSPATH) AND is_file(SYSPATH.'core/Kohana'.EXT)): ?>
 <td class="pass"><?php echo SYSPATH ?></td>
 <?php else: $failed = TRUE ?>
 <td class="fail">The configured <code>system</code> directory does not exist or does not contain required files.</td>
