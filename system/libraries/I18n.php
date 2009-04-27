@@ -19,7 +19,8 @@
  */
 function __($string, $args = NULL)
 {
-	if (I18n::get_locale() != Kohana::config('locale.language.0'))
+	// en_US is the default locale, in which all of Kohana's __() calls are written in
+	if (I18n::get_locale() != 'en_US')
 	{
 		$string = I18n::get_text($string);
 	}
@@ -32,9 +33,10 @@ function __($string, $args = NULL)
 
 class I18n_Core
 {
-	protected static $locale = 'en_US';
+	protected static $locale;
+	// All the translations will be cached in here, after the first call of get_text()
 	protected static $translations = array();
-
+	
 	public static function set_locale($locale)
 	{
 		// Reset the translations array
@@ -47,30 +49,42 @@ class I18n_Core
 	{
 		return I18n::$locale;
 	}
-
+	
+	
+	/**
+	 * 
+	 * Translates $string into language I18n::$locale and caches all found translations on the first call
+	 * 
+	 * @return 					The translated String
+	 * @param string $string	The String to translate
+	 */
 	public static function get_text($string)
 	{
-		$locale = explode('_', I18n::$locale);
 		if ( ! I18n::$translations)
 		{
-			if (I18n::$translations = Kohana::find_file('i18n', $locale[0]) AND isset(I18n::$translation[$string]))
+			$locale = explode('_', I18n::$locale);
+			
+			// Get the translation files
+			$translation_files = Kohana::find_file('i18n', $locale[0]);
+			
+			if($local_translation_files = Kohana::find_file('i18n', $locale[0].'/'.$locale[1]))
+				$translation_files = array_merge($translation_files, $local_translation_files);
+			
+			if ($translation_files)
 			{
-				// Merge the locale translations with the main language translation
-				if ($locale = Kohana::find_file('i18n', $locale[0].'/'.$locale[1]))
-					I18n::$translations = array_merge(I18n::$translations, $locale);
-
-				return I18n::$translations[$string];
+				// Merge the translations
+				foreach ($translation_files as $file)
+				{
+					include $file;
+					I18n::$translations = array_merge(I18n::$translations, $translations);
+				}
 			}
-			else
-				return $string;
 		}
+		
+		if (isset(I18n::$translations[$string]))
+			return I18n::$translations[$string];
 		else
-		{
-			if (isset(I18n::$translations[$string]))
-				return I18n::$translations[$string];
-			else
-				return $string;
-		}
+			return $string;
 	}
 
 }

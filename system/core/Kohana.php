@@ -151,6 +151,9 @@ abstract class Kohana_Core {
 
 		// Set locale information
 		self::$locale = setlocale(LC_ALL, $locales);
+		
+		// Set locale for the I18n system
+		I18n::set_locale(self::$locale);
 
 		// Enable Kohana routing
 		Event::add('system.routing', array('Router', 'find_uri'));
@@ -814,7 +817,7 @@ abstract class Kohana_Core {
 		// Nothing found, yet
 		$found = NULL;
 
-		if ($directory === 'config' OR $directory === 'messages')
+		if ($directory === 'config' OR $directory === 'messages' OR $directory === 'i18n')
 		{
 			// Search in reverse, for merging
 			$paths = array_reverse($paths);
