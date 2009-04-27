@@ -14,7 +14,7 @@ abstract class Database_Core {
 	const UPDATE =  3;
 	const DELETE =  4;
 
-	public static $instances = array();
+	protected static $instances = array();
 
 	// Global benchmarks
 	public static $benchmarks = array();
@@ -34,6 +34,12 @@ abstract class Database_Core {
 	// Cache (Cache object for cross-request, array for per-request)
 	protected $_cache;
 
+	/**
+	 * Returns a singleton instance of Database.
+	 *
+	 * @param   string  Database name
+	 * @return  Database_Core
+	 */
 	public static function instance($name = 'default')
 	{
 		if ( ! isset(Database::$instances[$name]))
@@ -51,6 +57,12 @@ abstract class Database_Core {
 		return Database::$instances[$name];
 	}
 
+	/**
+	 * Constructs a new Database object
+	 *
+	 * @param   array  Database config array
+	 * @return  Database_Core
+	 */
 	public function __construct(array $config)
 	{
 		// Store the config locally
@@ -76,14 +88,41 @@ abstract class Database_Core {
 		$this->disconnect();
 	}
 
+	/**
+	 * Connects to the database
+	 *
+	 * @return void
+	 */
 	abstract public function connect();
 
+	/**
+	 * Disconnects from the database
+	 *
+	 * @return void
+	 */
 	abstract public function disconnect();
 
+	/**
+	 * Sets the character set
+	 *
+	 * @return void
+	 */
 	abstract public function set_charset($charset);
 
+	/**
+	 * Executes the query
+	 *
+	 * @param  string  SQL
+	 * @return Database_Result
+	 */
 	abstract public function query_execute($sql);
 
+	/**
+	 * Escapes the given value
+	 *
+	 * @param  mixed  Value
+	 * @return mixed  Escaped value
+	 */
 	abstract public function escape($value);
 
 	/**
@@ -96,8 +135,20 @@ abstract class Database_Core {
 	 */
 	abstract public function escape_table($table, $prefix_alias = FALSE);
 
+	/**
+	 * List fields for the given table
+	 *
+	 * @param  string  Table name
+	 * @return array
+	 */
 	abstract public function list_fields($table);
 
+	/**
+	 * Executes the given query, returning the cached version if enabled
+	 *
+	 * @param  string  SQL query
+	 * @return Database_Result
+	 */
 	public function query($sql)
 	{
 		// Start the benchmark
@@ -204,7 +255,7 @@ abstract class Database_Core {
 	/**
 	 * Clears the internal query cache.
 	 *
-	 * @param   string|boolean  clear cache by SQL statement, NULL for all, or TRUE for last query
+	 * @param   mixed  clear cache by SQL statement, NULL for all, or TRUE for last query
 	 * @return  Database
 	 */
 	public function clear_cache($sql = NULL)
@@ -282,6 +333,11 @@ abstract class Database_Core {
 			array(':method' => __FUNCTION__, ':class' => get_class($this)));
 	}
 
+	/**
+	 * Get the table prefix
+	 *
+	 * @return string
+	 */
 	public function table_prefix()
 	{
 		return $this->_config['table_prefix'];

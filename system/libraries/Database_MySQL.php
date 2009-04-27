@@ -213,4 +213,4 @@ class Database_MySQL_Core extends Database {
 		return $columns;
 	}
 
-} // End Database_Connection_MySQL
+} // End Database_MySQL

@@ -196,7 +196,7 @@ class Database_Builder_Core {
 
 			if ( ! $table instanceof Database_Expression)
 			{
-				// Escape the table name (Database_Expressions are unaltered AND are not parsed)
+				// Escape the table name (Database_Expressions here are unaltered AND are not parsed)
 				$table = $this->_db->escape_table($table, TRUE);
 			}
 
@@ -328,7 +328,7 @@ class Database_Builder_Core {
 	 * @param  string  Join type (LEFT, RIGHT, INNER, etc.)
 	 * @return Database_Builder
 	 */
-	public function join($table, $keys, $value = NULL, $type = NULL, $prefix = TRUE)
+	public function join($table, $keys, $value = NULL, $type = NULL)
 	{
 		if (is_string($keys))
 		{
@@ -354,7 +354,7 @@ class Database_Builder_Core {
 	/**
 	 * Add tables to the FROM portion of the builder
 	 *
-	 * @param mixed  A table name or an array of tables (Key => Val results in 'Key AS Val')
+	 * @param  mixed  Table name or an array of tables (Key => Val results in 'Key AS Val')
 	 * @return Database_Builder
 	 */
 	public function from($tables)
@@ -369,6 +369,12 @@ class Database_Builder_Core {
 		return $this;
 	}
 
+	/**
+	 * Add fields to the GROUP BY portion
+	 *
+	 * @param  mixed  Field names or an array of fields
+	 * @return Database_Builder
+	 */
 	public function group_by($columns)
 	{
 		if ( ! is_array($columns))
@@ -381,23 +387,54 @@ class Database_Builder_Core {
 		return $this;
 	}
 
+	/**
+	 * Add conditions to the HAVING clause (AND)
+	 *
+	 * @param  mixed   Column name or array of columns => vals
+	 * @param  string  Operation to perform
+	 * @param  string  Value
+	 * @return Database_Builder
+	 */
 	public function having($columns, $op = '=', $value = NULL)
 	{
 		return $this->and_having($columns, $op, $value);
 	}
 
+	/**
+	 * Add conditions to the HAVING clause (AND)
+	 *
+	 * @param  mixed   Column name or array of columns => vals
+	 * @param  string  Operation to perform
+	 * @param  string  Value
+	 * @return Database_Builder
+	 */
 	public function and_having($columns, $op = '=', $value = NULL)
 	{
 		$this->_having[] = array('AND' => array($columns, $op, $value));
 		return $this;
 	}
 
+	/**
+	 * Add conditions to the HAVING clause (OR)
+	 *
+	 * @param  mixed   Column name or array of columns => vals
+	 * @param  string  Operation to perform
+	 * @param  string  Value
+	 * @return Database_Builder
+	 */
 	public function or_having($columns, $op = '=', $value = NULL)
 	{
 		$this->_having[] = array('OR' => array($columns, $op, $value));
 		return $this;
 	}
 
+	/**
+	 * Add fields to the ORDER BY portion
+	 *
+	 * @param  mixed   Field names or an array of fields (field => direction)
+	 * @param  string  Direction or NULL for ascending
+	 * @return Database_Builder
+	 */
 	public function order_by($columns, $direction = NULL)
 	{
 		if (is_string($columns))
@@ -410,6 +447,12 @@ class Database_Builder_Core {
 		return $this;
 	}
 
+	/**
+	 * Limit rows returned
+	 *
+	 * @param  int  Number of rows
+	 * @return Database_Builder
+	 */
 	public function limit($number)
 	{
 		$this->_limit = (int) $number;
@@ -417,6 +460,12 @@ class Database_Builder_Core {
 		return $this;
 	}
 
+	/**
+	 * Offset into result set
+	 *
+	 * @param  int  Offset
+	 * @return Database_Builder
+	 */
 	public function offset($number)
 	{
 		$this->_offset = (int) $number;
@@ -506,23 +555,53 @@ class Database_Builder_Core {
 		return $this;
 	}
 
+	/**
+	 * Add conditions to the WHERE clause (AND)
+	 *
+	 * @param  mixed   Column name or array of columns => vals
+	 * @param  string  Operation to perform
+	 * @param  string  Value
+	 * @return Database_Builder
+	 */
 	public function where($columns, $op = '=', $value = NULL)
 	{
 		return $this->and_where($columns, $op, $value);
 	}
 
+	/**
+	 * Add conditions to the WHERE clause (AND)
+	 *
+	 * @param  mixed   Column name or array of columns => vals
+	 * @param  string  Operation to perform
+	 * @param  string  Value
+	 * @return Database_Builder
+	 */
 	public function and_where($columns, $op = '=', $value = NULL)
 	{
 		$this->_where[] = array('AND' => array($columns, $op, $value));
 		return $this;
 	}
 
+	/**
+	 * Add conditions to the WHERE clause (OR)
+	 *
+	 * @param  mixed   Column name or array of columns => vals
+	 * @param  string  Operation to perform
+	 * @param  string  Value
+	 * @return Database_Builder
+	 */
 	public function or_where($columns, $op = '=', $value = NULL)
 	{
 		$this->_where[] = array('OR' => array($columns, $op, $value));
 		return $this;
 	}
 
+	/**
+	 * Compiles the given clause's conditions
+	 *
+	 * @param  array  Clause conditions
+	 * @return string
+	 */
 	protected function _compile_conditions($groups)
 	{
 		$last_condition = NULL;
@@ -611,6 +690,14 @@ class Database_Builder_Core {
 		return $sql;
 	}
 
+	/**
+	 * Set values for UPDATE or INSERT
+	 *
+	 * @param  mixed   Column name or array of columns => vals, or a Database_Expression
+	 * @param  string  Operation to perform
+	 * @param  string  Value
+	 * @return Database_Builder
+	 */
 	public function set($keys, $value = NULL)
 	{
 		if (is_string($keys))
@@ -623,6 +710,12 @@ class Database_Builder_Core {
 		return $this;
 	}
 
+	/**
+	 * Create a SELECT query and specify selected columns
+	 *
+	 * @param  mixed   Column name or array of columns (can be in form Column => Alias)
+	 * @return Database_Builder
+	 */
 	public function select($columns = NULL)
 	{
 		$this->_type = Database::SELECT;
@@ -641,6 +734,14 @@ class Database_Builder_Core {
 		return $this;
 	}
 
+	/**
+	 * Create an UPDATE query
+	 *
+	 * @param  string  Table name
+	 * @param  array   Array of Keys => Values
+	 * @param  array   WHERE conditions
+	 * @return Database_Builder
+	 */
 	public function update($table = NULL, $set = NULL, $where = NULL)
 	{
 		$this->_type = Database::UPDATE;
@@ -663,6 +764,13 @@ class Database_Builder_Core {
 		return $this;
 	}
 
+	/**
+	 * Create an INSERT query
+	 *
+	 * @param  string  Table name
+	 * @param  array   Array of Keys => Values
+	 * @return Database_Builder
+	 */
 	public function insert($table = NULL, $set = NULL)
 	{
 		$this->_type = Database::INSERT;
@@ -680,6 +788,13 @@ class Database_Builder_Core {
 		return $this;
 	}
 
+	/**
+	 * Create a DELETE query
+	 *
+	 * @param  string  Table name
+	 * @param  array   WHERE conditions
+	 * @return Database_Builder
+	 */
 	public function delete($table, $where = NULL)
 	{
 		$this->_type = Database::DELETE;
@@ -697,6 +812,13 @@ class Database_Builder_Core {
 		return $this;
 	}
 
+	/**
+	 * Count records for a given table
+	 *
+	 * @param  string  Table name
+	 * @param  array   WHERE conditions
+	 * @return int
+	 */
 	public function count_records($table = FALSE, $where = NULL)
 	{
 		if (count($this->_from) < 1)
@@ -718,6 +840,12 @@ class Database_Builder_Core {
 		return $result->current()->records_found;
 	}
 
+	/**
+	 * Executes the built query
+	 *
+	 * @param  mixed  Database name or object
+	 * @return Database_Result
+	 */
 	public function execute($db = NULL)
 	{
 		if ($db !== NULL)
@@ -746,8 +874,8 @@ class Database_Builder_Core {
 	/**
 	 * Set caching for the query
 	 *
-	 * @param  bool|int  Time-to-live (false to disable, NULL for Cache default, seconds otherwise)
-	 * @return Database_Query
+	 * @param  mixed  Time-to-live (FALSE to disable, NULL for Cache default, seconds otherwise)
+	 * @return Database_Builder
 	 */
 	public function cache($ttl = NULL)
 	{

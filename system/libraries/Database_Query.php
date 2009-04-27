@@ -80,7 +80,7 @@ class Database_Query_Core {
 	/**
 	 * Set caching for the query
 	 *
-	 * @param  boolean|int     Time-to-live (false to disable, NULL for Cache default, seconds otherwise)
+	 * @param  mixed  Time-to-live (FALSE to disable, NULL for Cache default, seconds otherwise)
 	 * @return Database_Query
 	 */
 	public function cache($ttl = NULL)

@@ -1395,7 +1395,7 @@ class ORM_Core {
 		}
 
 		// Load the result
-		$result = $this->db_builder->execute();
+		$result = $this->db_builder->execute($this->db);
 
 		if ($array === TRUE)
 		{
