@@ -9,25 +9,23 @@
  */
 class Database_MySQL_Core extends Database {
 
-	protected $_config_required = array('hostname', 'username', 'database');
-
 	public function connect()
 	{
 		if ($this->_connection)
 			return;
 
-		extract($this->_config);
-
-		// Clear the configuration for security
-		//$this->_config = array();
+		extract($this->_config['connection']);
 
 		// Set the connection type
-		$connect = (isset($persistent) AND $persistent === TRUE) ? 'mysql_pconnect' : 'mysql_connect';
+		$connect = ($this->_config['persistent'] === TRUE) ? 'mysql_pconnect' : 'mysql_connect';
+
+		$host = isset($host) ? $host : $socket;
+		$port = isset($port) ? ':'.$port : '';
 
 		try
 		{
 			// Connect to the database
-			$this->_connection = $connect($hostname, $username, $password);
+			$this->_connection = $connect($host.$port, $user, $pass, TRUE);
 		}
 		catch (ErrorException $e)
 		{
@@ -46,10 +44,10 @@ class Database_MySQL_Core extends Database {
 				mysql_errno($this->_connection));
 		}
 
-		if (isset($charset))
+		if (isset($this->_config['character_set']))
 		{
 			// Set the character set
-			$this->set_charset($charset);
+			$this->set_charset($this->_config['character_set']);
 		}
 	}
 
@@ -123,22 +121,23 @@ class Database_MySQL_Core extends Database {
 		return $value;
 	}
 
-	public function escape_table($table)
+	public function escape_table($table, $prefix_alias = FALSE)
 	{
 		$as = NULL;
 
 		if (is_array($table))
 		{
-			// Using AS
+			// Using Table AS Alias
+
+			// Add table prefix to right side of AS if necessary
+			$as = ($prefix_alias === TRUE) ? $this->_config['table_prefix'].current($table) : current($table);
 
 			if ($this->_config['escape'])
 			{
-				$as = ' AS `'.current($table).'`';
+				$as = '`'.$as.'`';
 			}
-			else
-			{
-				$as = ' AS '.current($table);
-			}
+
+			$as = ' AS '.$as;
 
 			$table = key($table);
 		}
@@ -146,12 +145,11 @@ class Database_MySQL_Core extends Database {
 		if ($table === '*')
 			return $table;
 
-		// If the table name contains a ` or a *, we assume it has functions within
-
-		if (strpos($table, '`') !== FALSE OR strpos($table, '*') !== FALSE)
+		// If the table name contains a `, we assume it has functions within (and the tables names/fields themselves are within backticks)
+		if (strpos($table, '`') !== FALSE)
 		{
-			// Replace `table` occurrences with `[table_prefix]table` and `table`.`col` with `[table_prefix]table`.`col`
-			$table = preg_replace('/`(.*?)`(\.`(.*?)`)?/', '`'.$this->_config['table_prefix'].'$1`$2', $table);
+			// Replace `table.col` occurrences with `[table_prefix]table.col` (if no . is found, leave it as is)
+			$table = preg_replace('/`(.*?)\.(.*?)`/', '`'.$this->_config['table_prefix'].'$1`.`$2`', $table);
 		}
 		else
 		{
@@ -166,6 +164,7 @@ class Database_MySQL_Core extends Database {
 			}
 		}
 
+		// Unescape any asterisks
 		$table = str_replace('`*`', '*', $table);
 
 		return $table.$as;

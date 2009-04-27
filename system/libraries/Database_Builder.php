@@ -34,6 +34,11 @@ class Database_Builder_Core {
 	// TTL for caching (using Cache library)
 	protected $_ttl      = FALSE;
 
+	public function __construct($db = 'default')
+	{
+		$this->_db = $db;
+	}
+
 	public function __toString()
 	{
 		return $this->_compile();
@@ -49,7 +54,7 @@ class Database_Builder_Core {
 		if ( ! is_object($this->_db))
 		{
 			// Use default database for compiling to string if none is given
-			$this->_db = Database::instance();
+			$this->_db = Database::instance($this->_db);
 		}
 
 		if ($this->_type === Database::SELECT)
@@ -165,12 +170,12 @@ class Database_Builder_Core {
 			if (is_string($name))
 			{
 				// Using AS format so escape both
-				$vals[] = $this->_db->escape_table(array($name => $alias));
+				$vals[] = $this->_db->escape_table(array($name => $alias), TRUE);
 			}
 			else
 			{
 				// Just using the table name itself
-				$vals[] = $this->_db->escape_table($alias);
+				$vals[] = $this->_db->escape_table($alias, TRUE);
 			}
 		}
 
@@ -192,7 +197,7 @@ class Database_Builder_Core {
 			if ( ! $table instanceof Database_Expression)
 			{
 				// Escape the table name (Database_Expressions are unaltered AND are not parsed)
-				$table = $this->_db->escape_table($table);
+				$table = $this->_db->escape_table($table, TRUE);
 			}
 
 			if ($type !== NULL)
@@ -317,13 +322,13 @@ class Database_Builder_Core {
 	/**
 	 * Join tables to the builder
 	 *
-	 * @param  mixed  $table  Table name or Database_Expression, or an array of them
-	 * @param  mixed  $keys   Key, or an array of key => value pair, for join condition (can be a Database_Expression)
-	 * @param  mixed  $value  Value if $keys is not an array or Database_Expression
-	 * @param  string $type   Join type (LEFT, RIGHT, INNER, etc.)
+	 * @param  mixed   Table name or Database_Expression, or an array of them
+	 * @param  mixed   Key, or an array of key => value pair, for join condition (can be a Database_Expression)
+	 * @param  mixed   Value if $keys is not an array or Database_Expression
+	 * @param  string  Join type (LEFT, RIGHT, INNER, etc.)
 	 * @return Database_Builder
 	 */
-	public function join($table, $keys, $value = NULL, $type = NULL)
+	public function join($table, $keys, $value = NULL, $type = NULL, $prefix = TRUE)
 	{
 		if (is_string($keys))
 		{
@@ -349,7 +354,7 @@ class Database_Builder_Core {
 	/**
 	 * Add tables to the FROM portion of the builder
 	 *
-	 * @param mixed  $tables  A table name or an array of tables (Key => Val results in 'Key AS Val')
+	 * @param mixed  A table name or an array of tables (Key => Val results in 'Key AS Val')
 	 * @return Database_Builder
 	 */
 	public function from($tables)
@@ -708,20 +713,23 @@ class Database_Builder_Core {
 		}
 
 		// Grab the count AS records_found
-		$result = $this->select(array('COUNT(*)' => 'records_found'))->execute();
+		$result = $this->select(array('COUNT(`*`)' => 'records_found'))->execute();
 
 		return $result->current()->records_found;
 	}
 
-	public function execute($db = 'default')
+	public function execute($db = NULL)
 	{
-		if ( ! is_object($db))
+		if ($db !== NULL)
 		{
-			// Get the database instance
-			$db = Database::instance($db);
+			$this->_db = $db;
 		}
 
-		$this->_db = $db;
+		if ( ! is_object($this->_db))
+		{
+			// Get the database instance
+			$this->_db = Database::instance($this->_db);
+		}
 
 		if ($this->_ttl !== FALSE AND $this->_type === Database::SELECT)
 		{
@@ -738,7 +746,7 @@ class Database_Builder_Core {
 	/**
 	 * Set caching for the query
 	 *
-	 * @param  boolean|int     Time-to-live (false to disable, NULL for Cache default, seconds otherwise)
+	 * @param  bool|int  Time-to-live (false to disable, NULL for Cache default, seconds otherwise)
 	 * @return Database_Query
 	 */
 	public function cache($ttl = NULL)

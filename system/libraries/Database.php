@@ -41,14 +41,8 @@ abstract class Database_Core {
 			// Load the configuration for this database group
 			$config = Kohana::config('database.'.$name);
 
-			if ( ! isset($config['type']))
-			{
-				throw new Database_Exception('Database type not defined in :name configuration',
-					array(':name' => $name));
-			}
-
 			// Set the driver class name
-			$driver = 'Database_'.ucfirst($config['type']);
+			$driver = 'Database_'.ucfirst($config['connection']['type']);
 
 			// Create the database connection instance
 			Database::$instances[$name] = new $driver($config);
@@ -59,15 +53,6 @@ abstract class Database_Core {
 
 	public function __construct(array $config)
 	{
-		foreach ($this->_config_required as $param)
-		{
-			if ( ! isset($config[$param]))
-			{
-				throw new Database_Exception('Required configuration parameter missing: :param',
-					array(':param', $param));
-			}
-		}
-
 		// Store the config locally
 		$this->_config = $config;
 
@@ -101,7 +86,15 @@ abstract class Database_Core {
 
 	abstract public function escape($value);
 
-	abstract public function escape_table($table);
+	/**
+	 * Escapes a table (and or field) and adds the table prefix
+	 * Reserved characters not allowed in table names for the builder are [`*.]
+	 *
+	 * @param  string|array  String of table/field name or array of Field=>Alias for 'Field AS Alias'
+	 * @param  bool          True to add the table prefix to the alias (if an array is used for $table)
+	 * @return string
+	 */
+	abstract public function escape_table($table, $prefix_alias = FALSE);
 
 	abstract public function list_fields($table);
 
