@@ -7,7 +7,7 @@
  * @copyright  (c) 2008-2009 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Database_MySQL_Core extends Database {
+class Database_Mysql_Core extends Database {
 
 	public function connect()
 	{
