@@ -73,7 +73,7 @@ echo html::script(array
 <div id="developer">
 <span><?php echo Kohana::lang('layout.developers');?></span>
 <ul>
-<li><?php echo html::anchor('http://dev.kohanaphp.com/', Kohana::lang('layout.menu_trac')) ?></li>
+<li><?php echo html::anchor('http://dev.kohanaphp.com/', Kohana::lang('layout.menu_redmine')) ?></li>
 <li><?php echo html::anchor('http://dev.kohanaphp.com/projects/kohana2/activity', Kohana::lang('layout.menu_timeline')) ?></li>
 <li><?php echo html::anchor('http://dev.kohanaphp.com/projects/kohana2/repository/browse/trunk', Kohana::lang('layout.menu_source')) ?></li>
 <li><?php echo html::anchor('http://dev.kohanaphp.com/projects/kohana2/issues', Kohana::lang('layout.menu_tickets')) ?></li>
