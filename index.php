@@ -5,6 +5,7 @@
  * PHP error_reporting level may also be changed.
  *
  * @see http://kohanaphp.com
+ *
  */
 
 /**
