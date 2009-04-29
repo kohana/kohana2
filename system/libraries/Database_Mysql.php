@@ -103,7 +103,7 @@ class Database_Mysql_Core extends Database {
 		// Set the last query
 		$this->last_query = $sql;
 
-		return new Database_MySQL_Result($result, $sql, $this->_connection, $this->_config['object']);
+		return new Database_Mysql_Result($result, $sql, $this->_connection, $this->_config['object']);
 	}
 
 	public function escape($value)
