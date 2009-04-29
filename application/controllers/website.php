@@ -26,7 +26,7 @@ class Website_Controller extends Template_Controller {
 		'trac' => array
 		(
 			'title' => 'layout.trac_title',
-			'url'   => 'http://dev.kohanaphp.com/timeline?milestone=on&ticket=on&changeset=on&max=20&daysback=90&format=rss',
+			'url'   => 'http://dev.kohanaphp.com/projects/kohana2/activity.atom?key=yMdCLZBLtWwV3uTVKahzgBpr0451AAiTr4prXhBr&show_changesets=1',
 			'items' => array()
 		)
 	);

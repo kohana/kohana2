@@ -6,9 +6,9 @@
 		<ul>
 		<?php
 			foreach($data['items'] as $item):
-				$date = date('M j, g:i:s A', strtotime($item['pubDate']));
+				$date = date('M j, g:i:s A', strtotime(isset($item['pubDate']) ? $item['pubDate'] : $item['updated']));
 		?>
-			<li><strong><?php echo html::specialchars($item['title']) ?></strong> &ndash; <?php echo $date ?> - <?php echo html::anchor($item['link'], Kohana::lang('sidebar.read_more'))?></li>
+			<li><strong><?php echo html::specialchars($item['title']) ?></strong> &ndash; <?php echo $date ?> - <?php echo html::anchor(isset($item['link']) ? $item['link'] : $item['id'], Kohana::lang('sidebar.read_more'))?></li>
 		<?php endforeach;?>
 		</ul>
 	<?php endforeach;?>
