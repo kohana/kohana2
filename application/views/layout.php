@@ -73,11 +73,11 @@ echo html::script(array
 <div id="developer">
 <span><?php echo Kohana::lang('layout.developers');?></span>
 <ul>
-<li><?php echo html::anchor('http://trac.kohanaphp.com/', Kohana::lang('layout.menu_trac')) ?></li>
-<li><?php echo html::anchor('http://trac.kohanaphp.com/timeline', Kohana::lang('layout.menu_timeline')) ?></li>
-<li><?php echo html::anchor('http://trac.kohanaphp.com/browser/trunk', Kohana::lang('layout.menu_source')) ?></li>
-<li><?php echo html::anchor('http://trac.kohanaphp.com/report/1', Kohana::lang('layout.menu_tickets')) ?></li>
-<li><?php echo html::anchor('http://trac.kohanaphp.com/wiki/BeADev', Kohana::lang('layout.menu_join')) ?></li>
+<li><?php echo html::anchor('http://dev.kohanaphp.com/', Kohana::lang('layout.menu_trac')) ?></li>
+<li><?php echo html::anchor('http://dev.kohanaphp.com/projects/kohana2/activity', Kohana::lang('layout.menu_timeline')) ?></li>
+<li><?php echo html::anchor('http://dev.kohanaphp.com/projects/kohana2/repository/browse/trunk', Kohana::lang('layout.menu_source')) ?></li>
+<li><?php echo html::anchor('http://dev.kohanaphp.com/projects/kohana2/issues', Kohana::lang('layout.menu_tickets')) ?></li>
+<li><?php echo html::anchor('http://dev.kohanaphp.com/wiki/kohana2/BeADev', Kohana::lang('layout.menu_join')) ?></li>
 <li><?php echo html::anchor('http://www.kohanajobs.com/', Kohana::lang('layout.menu_jobs')) ?></li>
 </ul>
 </div>

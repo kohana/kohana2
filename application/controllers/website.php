@@ -62,7 +62,7 @@ class Website_Controller extends Template_Controller {
 				'http://docs.kohanaphp.com/' => Kohana::lang('layout.menu_documentation'),
 				'http://learn.kohanaphp.com/' => Kohana::lang('layout.menu_tutorials'),
 				'http://forum.kohanaphp.com/' => Kohana::lang('layout.menu_forum'),
-				'http://projects.kohanaphp.com/' => Kohana::lang('layout.menu_projects'),
+				'http://dev.kohanaphp.com/projects/' => Kohana::lang('layout.menu_projects'),
 				// 'http://api.kohanaphp.com/'   => Kohana::lang('layout.menu_api'),
 			);
 
