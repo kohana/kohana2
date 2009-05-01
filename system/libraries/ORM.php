@@ -376,7 +376,7 @@ class ORM_Core {
 			{
 				// empty many<>many relationship
 				return $this->related[$column] = $model
-					->where($model->foreign_key(TRUE), 'IS NULL')
+					->where($model->foreign_key(TRUE), 'IS', NULL)
 					->find_all();
 			}
 		}
