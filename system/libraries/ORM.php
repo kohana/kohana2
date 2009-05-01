@@ -906,7 +906,7 @@ class ORM_Core {
 			else
 			{
 				// Load table columns
-				ORM::$column_cache[$this->object_name] = $this->table_columns = $this->db->list_fields($this->table_name, TRUE);
+				ORM::$column_cache[$this->object_name] = $this->table_columns = $this->list_fields();
 			}
 		}
 
@@ -1025,11 +1025,16 @@ class ORM_Core {
 	/**
 	 * Proxy method to Database list_fields.
 	 *
-	 * @param   string  table name
+	 * @param   string  table name or NULL to use this table
 	 * @return  array
 	 */
-	public function list_fields($table)
+	public function list_fields($table = NULL)
 	{
+		if ($table === NULL)
+		{
+			$table = $this->table_name;
+		}
+
 		// Proxy to database
 		return $this->db->list_fields($table);
 	}
