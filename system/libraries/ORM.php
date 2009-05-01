@@ -590,11 +590,17 @@ class ORM_Core {
 			$join_col1 = $parent->foreign_key($target_name, $target_path);
 		}
 
-		// This allows for models to use different table prefixes (sharing the same database)
-		$join_table = DB::expr('`'.$target->db->table_prefix().$target->table_name.'` AS `'.$this->db->table_prefix().$target_path.'`');
+		// This trick allows for models to use different table prefixes (sharing the same database)
+		$join_table = $target->db->table_prefix().$target->table_name.' '.$this->db->table_prefix().$target_path;
+
+		// Turn off prefixing temporarily
+		$prefix = $this->db->table_prefix('');
 
 		// Join the related object into the result
 		$this->db_builder->join($join_table, $join_col1, $join_col2, 'LEFT');
+
+		// Turn prefixing back on
+		$this->db->table_prefix($prefix);
 
 		return $this;
 	}

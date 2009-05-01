@@ -424,11 +424,20 @@ abstract class Database_Core {
 	/**
 	 * Get the table prefix
 	 *
+	 * @param  string  Optional new table prefix to set
 	 * @return string
 	 */
-	public function table_prefix()
+	public function table_prefix($new_prefix = NULL)
 	{
-		return $this->_config['table_prefix'];
+		$prefix = $this->_config['table_prefix'];
+
+		if ($new_prefix !== NULL)
+		{
+			// Set a new prefix
+			$this->_config['table_prefix'] = $new_prefix;
+		}
+
+		return $prefix;
 	}
 
 	/**

@@ -194,12 +194,6 @@ class Database_Builder_Core {
 		{
 			list($table, $keys, $type) = $join;
 
-			if ( ! $table instanceof Database_Expression)
-			{
-				// Escape the table name (Database_Expressions here are unaltered AND are not parsed)
-				$table = $this->_db->quote_table($table);
-			}
-
 			if ($type !== NULL)
 			{
 				// Join type
@@ -292,26 +286,30 @@ class Database_Builder_Core {
 		$vals = array();
 		foreach ($this->_set as $set)
 		{
-			if ($set instanceof Database_Expression)
+			list($key, $value) = each($set);
+
+			$key = $this->_db->quote_column($key);
+
+			if ($value instanceof Database_Expression)
 			{
-				// Parse any Database_Expressions
-				$vals[] = $set->parse($this->_db);
+				// Parse Database_Expressions
+				$value = $value->parse($this->_db);
 			}
 			else
 			{
-				list($key, $value) = each($set);
-
-				$key = $this->_db->quote_column($key);
+				// Just quote the value
 				$value = $this->_db->quote($value);
+			}
 
-				if ($type === Database::UPDATE)
-				{
-					$vals[] = $key.' = '.$value;
-				}
-				else
-				{
-					$vals[$key] = $value;
-				}
+			if ($type === Database::UPDATE)
+			{
+				// Using an UPDATE so Key = Val
+				$vals[] = $key.' = '.$value;
+			}
+			else
+			{
+				// An INSERT
+				$vals[$key] = $value;
 			}
 		}
 
