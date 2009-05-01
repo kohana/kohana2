@@ -23,7 +23,7 @@ $lang = array
 	'graphicsmagick' => array
 	(
 		'not_found' => 'El directorio de GraphicsMagick especificado, no contiene el programa requerido, %s.',
-	)
+	),
 
 	// GD specific messages
 	'gd' => array
