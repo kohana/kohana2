@@ -145,11 +145,11 @@ class Database_Builder_Core {
 		{
 			if (is_string($name))
 			{
-				$vals[] = $this->_db->escape_table(array($name => $alias));
+				$vals[] = $this->_db->quote_column(array($name => $alias));
 			}
 			else
 			{
-				$vals[] = $this->_db->escape_table($alias);
+				$vals[] = $this->_db->quote_column($alias);
 			}
 		}
 
@@ -170,12 +170,12 @@ class Database_Builder_Core {
 			if (is_string($name))
 			{
 				// Using AS format so escape both
-				$vals[] = $this->_db->escape_table(array($name => $alias), TRUE);
+				$vals[] = $this->_db->quote_table(array($name => $alias));
 			}
 			else
 			{
 				// Just using the table name itself
-				$vals[] = $this->_db->escape_table($alias, TRUE);
+				$vals[] = $this->_db->quote_table($alias);
 			}
 		}
 
@@ -197,7 +197,7 @@ class Database_Builder_Core {
 			if ( ! $table instanceof Database_Expression)
 			{
 				// Escape the table name (Database_Expressions here are unaltered AND are not parsed)
-				$table = $this->_db->escape_table($table, TRUE);
+				$table = $this->_db->quote_table($table);
 			}
 
 			if ($type !== NULL)
@@ -224,7 +224,7 @@ class Database_Builder_Core {
 						$condition .= ' AND ';
 					}
 
-					$condition .= $this->_db->escape_table($key).' = '.$this->_db->escape_table($value);
+					$condition .= $this->_db->quote_column($key).' = '.$this->_db->quote_column($value);
 				}
 			}
 
@@ -250,7 +250,7 @@ class Database_Builder_Core {
 		foreach ($this->_group_by as $column)
 		{
 			// Escape the column
-			$vals[] = $this->_db->escape_table($column);
+			$vals[] = $this->_db->quote_column($column);
 		}
 
 		return implode(', ', $vals);
@@ -267,11 +267,9 @@ class Database_Builder_Core {
 
 		foreach ($this->_order_by as $column => $order_by)
 		{
-			// Column => Direction
-			$column    = key($order_by);
-			$direction = current($order_by);
+			list($column, $direction) = each($order_by);
 
-			$column = $this->_db->escape_table($column);
+			$column = $this->_db->quote_column($column);
 
 			if ($direction !== NULL)
 			{
@@ -301,9 +299,10 @@ class Database_Builder_Core {
 			}
 			else
 			{
-				// Key => Value
-				$key = $this->_db->escape_table(key($set));
-				$value = $this->_db->quote(current($set));
+				list($key, $value) = each($set);
+
+				$key = $this->_db->quote_column($key);
+				$value = $this->_db->quote($value);
 
 				if ($type === Database::UPDATE)
 				{
@@ -392,7 +391,7 @@ class Database_Builder_Core {
 	 *
 	 * @param  mixed   Column name or array of columns => vals
 	 * @param  string  Operation to perform
-	 * @param  string  Value
+	 * @param  mixed   Value
 	 * @return Database_Builder
 	 */
 	public function having($columns, $op = '=', $value = NULL)
@@ -405,7 +404,7 @@ class Database_Builder_Core {
 	 *
 	 * @param  mixed   Column name or array of columns => vals
 	 * @param  string  Operation to perform
-	 * @param  string  Value
+	 * @param  mixed   Value
 	 * @return Database_Builder
 	 */
 	public function and_having($columns, $op = '=', $value = NULL)
@@ -419,7 +418,7 @@ class Database_Builder_Core {
 	 *
 	 * @param  mixed   Column name or array of columns => vals
 	 * @param  string  Operation to perform
-	 * @param  string  Value
+	 * @param  mixed   Value
 	 * @return Database_Builder
 	 */
 	public function or_having($columns, $op = '=', $value = NULL)
@@ -560,7 +559,7 @@ class Database_Builder_Core {
 	 *
 	 * @param  mixed   Column name or array of columns => vals
 	 * @param  string  Operation to perform
-	 * @param  string  Value
+	 * @param  mixed   Value
 	 * @return Database_Builder
 	 */
 	public function where($columns, $op = '=', $value = NULL)
@@ -573,7 +572,7 @@ class Database_Builder_Core {
 	 *
 	 * @param  mixed   Column name or array of columns => vals
 	 * @param  string  Operation to perform
-	 * @param  string  Value
+	 * @param  mixed   Value
 	 * @return Database_Builder
 	 */
 	public function and_where($columns, $op = '=', $value = NULL)
@@ -587,7 +586,7 @@ class Database_Builder_Core {
 	 *
 	 * @param  mixed   Column name or array of columns => vals
 	 * @param  string  Operation to perform
-	 * @param  string  Value
+	 * @param  mixed   Value
 	 * @return Database_Builder
 	 */
 	public function or_where($columns, $op = '=', $value = NULL)
@@ -649,7 +648,12 @@ class Database_Builder_Core {
 
 						foreach ($columns as $column => $value)
 						{
-							if (is_array($value))
+							if ($value instanceof Database_Expression)
+							{
+								// Parse Database_Expression for right side of operator
+								$value = $value->parse($this->_db);
+							}
+							elseif (is_array($value))
 							{
 								if ($op === 'BETWEEN' OR $op === 'NOT BETWEEN')
 								{
@@ -669,7 +673,7 @@ class Database_Builder_Core {
 							}
 
 							// Add to condition list
-							$vals[] = $this->_db->escape_table($column).' '.$op.' '.$value;
+							$vals[] = $this->_db->quote_column($column).' '.$op.' '.$value;
 						}
 					}
 
@@ -695,7 +699,7 @@ class Database_Builder_Core {
 	 *
 	 * @param  mixed   Column name or array of columns => vals, or a Database_Expression
 	 * @param  string  Operation to perform
-	 * @param  string  Value
+	 * @param  mixed   Value
 	 * @return Database_Builder
 	 */
 	public function set($keys, $value = NULL)
@@ -835,7 +839,7 @@ class Database_Builder_Core {
 		}
 
 		// Grab the count AS records_found
-		$result = $this->select(array('COUNT(`*`)' => 'records_found'))->execute();
+		$result = $this->select(array('COUNT("*")' => 'records_found'))->execute();
 
 		return $result->current()->records_found;
 	}

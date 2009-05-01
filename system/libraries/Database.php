@@ -14,7 +14,7 @@ abstract class Database_Core {
 	const UPDATE =  3;
 	const DELETE =  4;
 
-	protected static $instances = array();
+	public static $instances = array();
 
 	// Global benchmarks
 	public static $benchmarks = array();
@@ -124,16 +124,6 @@ abstract class Database_Core {
 	 * @return mixed  Escaped value
 	 */
 	abstract public function escape($value);
-
-	/**
-	 * Escapes a table (and or field) and adds the table prefix
-	 * Reserved characters not allowed in table names for the builder are [`*.]
-	 *
-	 * @param  string|array  String of table/field name or array of Field=>Alias for 'Field AS Alias'
-	 * @param  bool          True to add the table prefix to the alias (if an array is used for $table)
-	 * @return string
-	 */
-	abstract public function escape_table($table, $prefix_alias = FALSE);
 
 	/**
 	 * List fields for the given table
@@ -319,6 +309,104 @@ abstract class Database_Core {
 		}
 
 		return '\''.$this->escape($value).'\'';
+	}
+
+	/**
+	 * Quotes a table, adding the table prefix
+	 * Reserved characters not allowed in table names for the builder are [ .*] (space, dot, asterisk)
+	 *
+	 * @param  string|array  String of table name or array - 'users u' or array('users' => 'u') both valid
+	 * @return string
+	 */
+	public function quote_table($table)
+	{
+		if ( ! is_array($table))
+		{
+			// Using format 'user u'
+			list($table, $alias) = explode(' ', $table);
+		}
+		else
+		{
+			// Using array('user' => 'u')
+			list($table, $alias) = each($table);
+		}
+
+		$use_alias = ! empty($alias);
+
+		$table = $this->_config['table_prefix'].$table;
+		$alias = $this->_config['table_prefix'].$alias;
+
+		if ($this->_config['escape'])
+		{
+			$table = $this->_quote.$table.$this->_quote;
+			$alias = $this->_quote.$alias.$this->_quote;
+		}
+
+		if ($use_alias)
+			return $table.' AS '.$alias;
+		else
+			return $table;
+	}
+
+	/**
+	 * Quotes column or table.column, adding the table prefix if necessary
+	 * Reserved characters not allowed in table names for the builder are [ .*] (space, dot, asterisk)
+	 * Complex column names must have table/columns in double quotes, e.g. array('COUNT("users.id")' => 'mycount')
+	 *
+	 * @param  string|array  String of table name or array - array('COUNT("*")' => 'u')
+	 * @return string
+	 */
+	public function quote_column($column)
+	{
+		if ($column === '*')
+			return $column;
+
+		if (is_array($column))
+		{
+			list($column, $alias) = each($column);
+
+			$use_alias = ! empty($alias);
+
+			if ($this->_config['escape'])
+			{
+				// Quote the alias
+				$alias = $this->_quote.$alias.$this->_quote;
+			}
+		}
+		else
+		{
+			// No alias being used
+			$use_alias = FALSE;
+		}
+
+		if (strpos($column, '"') !== FALSE)
+		{
+			$quote = $this->_config['escape'] ? $this->_quote : '';
+
+			// Using a complex column name (e.g. COUNT("*")), so only treat what's within double quotes as a column
+			$column = preg_replace('/\"(.*?)\"/', $quote.$this->_config['table_prefix'].'$1'.$quote, $column);
+		}
+		else
+		{
+			$column = $this->_config['table_prefix'].$column;
+
+			if ($this->_config['escape'])
+			{
+				// Quote the column
+				$column = $this->_quote.$column.$this->_quote;
+			}
+		}
+
+		// Replace . with `.`
+		$column = str_replace('.', $this->_quote.'.'.$this->_quote, $column);
+
+		// Unescape any asterisks
+		$column = str_replace($this->_quote.'*'.$this->_quote, '*', $column);
+
+		if ($use_alias)
+			return $column.' AS '.$alias;
+		else
+			return $column;
 	}
 
 	public function list_tables()

@@ -22,15 +22,15 @@ class Database_Expression_Core {
 		if ( ! is_object($db))
 		{
 			// Get the database instance
-			$this->_db = Database::instance($db);
+			$db = Database::instance($db);
 		}
 
 		$this->_db = $db;
 
 		$expression = $this->_expression;
 
-		// Escape table names in the expression
-		$expression = $this->_db->escape_table($expression);
+		// Quote columns in the expression
+		$expression = $this->_db->quote_column($expression);
 
 		// Substitute any values
 		if ( ! empty($this->_params))

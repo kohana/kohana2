@@ -9,6 +9,9 @@
  */
 class Database_Mysql_Core extends Database {
 
+	// Quote character to use for identifiers (tables/columns/aliases)
+	protected $_quote = '`';
+
 	public function connect()
 	{
 		if ($this->_connection)
@@ -119,55 +122,6 @@ class Database_Mysql_Core extends Database {
 		}
 
 		return $value;
-	}
-
-	public function escape_table($table, $prefix_alias = FALSE)
-	{
-		$as = NULL;
-
-		if (is_array($table))
-		{
-			// Using Table AS Alias
-
-			// Add table prefix to right side of AS if necessary
-			$as = ($prefix_alias === TRUE) ? $this->_config['table_prefix'].current($table) : current($table);
-
-			if ($this->_config['escape'])
-			{
-				$as = '`'.$as.'`';
-			}
-
-			$as = ' AS '.$as;
-
-			$table = key($table);
-		}
-
-		if ($table === '*')
-			return $table;
-
-		// If the table name contains a `, we assume it has functions within (and the tables names/fields themselves are within backticks)
-		if (strpos($table, '`') !== FALSE)
-		{
-			// Replace `table.col` occurrences with `[table_prefix]table.col` (if no . is found, leave it as is)
-			$table = preg_replace('/`(.*?)\.(.*?)`/', '`'.$this->_config['table_prefix'].'$1`.`$2`', $table);
-		}
-		else
-		{
-			// Escape the table name and add the prefix
-			$table = $this->_config['table_prefix'].$table;
-
-			if ($this->_config['escape'])
-			{
-				// Escape it
-				$table = '`'.$table.'`';
-				$table = str_replace('.', '`.`', $table);
-			}
-		}
-
-		// Unescape any asterisks
-		$table = str_replace('`*`', '*', $table);
-
-		return $table.$as;
 	}
 
 	public function list_fields($table)
