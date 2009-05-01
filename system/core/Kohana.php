@@ -931,7 +931,14 @@ final class Kohana {
 		}
 		catch (Exception $e)
 		{
-			die('Fatal Error: '.$e->getMessage().' File: '.$e->getFile().' Line: '.$e->getLine());
+			if (IN_PRODUCTION)
+			{
+				die('Fatal Error');
+			}
+			else
+			{
+				die('Fatal Error: '.$e->getMessage().' File: '.$e->getFile().' Line: '.$e->getLine());
+			}
 		}
 	}
 
