@@ -935,7 +935,7 @@ class ORM_Core {
 			else
 			{
 				// Load table columns
-				ORM::$column_cache[$this->object_name] = $this->table_columns = $this->db->list_fields($this->table_name, TRUE);
+				ORM::$column_cache[$this->object_name] = $this->table_columns = $this->list_fields();
 			}
 		}
 
