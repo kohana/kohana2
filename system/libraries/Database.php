@@ -381,14 +381,25 @@ abstract class Database_Core {
 
 		if (strpos($column, '"') !== FALSE)
 		{
-			$quote = $this->_config['escape'] ? $this->_quote : '';
+			// Using a complex column name (e.g. COUNT("*")) - only treat what's in double quotes as a column
 
-			// Using a complex column name (e.g. COUNT("*")), so only treat what's within double quotes as a column
-			$column = preg_replace('/\"(.*?)\"/', $quote.$this->_config['table_prefix'].'$1'.$quote, $column);
+			// Find "table.column" and replace them with "[prefix]table.column"
+			$column = preg_replace('/\"(.*?)\.(.*?)\"/', '"'.$this->_config['table_prefix'].'$1.$2"', $column);
+
+			$replace = $this->_config['escape'] ? $this->_quote : '';
+
+			// Replace double quotes
+			$column = str_replace('"', $replace, $column);
 		}
 		else
 		{
-			$column = $this->_config['table_prefix'].$column;
+			// Using a simple table.colum or column
+
+			if (strpos($column, '.') !== FALSE)
+			{
+				// Attach table prefix if table.column format
+				$column = $this->_config['table_prefix'].$column;
+			}
 
 			if ($this->_config['escape'])
 			{
@@ -397,11 +408,14 @@ abstract class Database_Core {
 			}
 		}
 
-		// Replace . with `.`
-		$column = str_replace('.', $this->_quote.'.'.$this->_quote, $column);
+		if ($this->_config['escape'])
+		{
+			// Replace . with `.`
+			$column = str_replace('.', $this->_quote.'.'.$this->_quote, $column);
 
-		// Unescape any asterisks
-		$column = str_replace($this->_quote.'*'.$this->_quote, '*', $column);
+			// Unescape any asterisks
+			$column = str_replace($this->_quote.'*'.$this->_quote, '*', $column);
+		}
 
 		if ($use_alias)
 			return $column.' AS '.$alias;
