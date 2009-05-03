@@ -322,8 +322,16 @@ abstract class Database_Core {
 	{
 		if ( ! is_array($table))
 		{
-			// Using format 'user u'
-			list($table, $alias) = explode(' ', $table);
+			if (strpos(' ', $table) !== FALSE)
+			{
+				// Using format 'user u'
+				list($table, $alias) = explode(' ', $table);
+			}
+			else
+			{
+				// Ignore alias
+				$alias = '';
+			}
 		}
 		else
 		{
