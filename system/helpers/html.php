@@ -310,7 +310,7 @@ class html_Core {
 				$_type  = is_array($type) ? array_shift($type) : $type;
 				$_media = is_array($media) ? array_shift($media) : $media;
 
-				$compiled .= html::link($_href, $_rel, $_type, $suffix, $_media, $index);
+				$compiled .= html::link($_href, $_rel, $_type, $_media, $index);
 			}
 		}
 		else
