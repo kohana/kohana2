@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Cache driver interface.
+ * Cache driver abstract class.
  *
  * $Id$
  *
@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-interface Cache_Driver {
+abstract class Cache_Driver {
 
 	/**
 	 * Set a cache item.
@@ -39,7 +39,15 @@ interface Cache_Driver {
 
 	/**
 	 * Sanitize cache keys
+	 * Replaces troublesome characters
+	 *
+	 * @param   string   cache id
+	 * @return  string
 	 */
-	public function sanitize_id($id);
+	public function sanitize_id($id)
+	{
+		// Change slashes and spaces to underscores
+		return str_replace(array('/', '\\', ' '), '_', $id);
+	}
 
 } // End Cache Driver

@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Cache_Xcache_Driver implements Cache_Driver {
+class Cache_Xcache_Driver extends Cache_Driver {
 
 	public function __construct()
 	{
@@ -114,19 +114,6 @@ class Cache_Xcache_Driver implements Cache_Driver {
 				$_SERVER[$key] = Kohana::config('cache_xcache.'.$key);
 			}
 		}
-	}
-
-	/**
-	 * Sanitize cache keys
-	 * Replaces troublesome characters
-	 *
-	 * @param   string   cache id
-	 * @return  string
-	 */
-	public function sanitize_id($id)
-	{
-		// Change slashes and spaces to underscores
-		return str_replace(array('/', '\\', ' '), '_', $id);
 	}
 
 } // End Cache Xcache Driver

@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Cache_File_Driver implements Cache_Driver {
+class Cache_File_Driver extends Cache_Driver {
 
 	protected $directory = '';
 
@@ -256,19 +256,6 @@ class Cache_File_Driver implements Cache_Driver {
 
 		// Expirations of 0 are "never expire"
 		return ($expires !== 0 AND $expires <= time());
-	}
-
-	/**
-	 * Sanitize cache keys
-	 * Replaces troublesome characters
-	 *
-	 * @param   string   cache id
-	 * @return  string
-	 */
-	public function sanitize_id($id)
-	{
-		// Change slashes and spaces to underscores
-		return str_replace(array('/', '\\', ' '), '_', $id);
 	}
 
 } // End Cache File Driver
