@@ -384,6 +384,12 @@ class date_Core {
 				$span[] = ($name === $last ? ' and ' : ', ').$amount.' '.($amount === 1 ? inflector::singular($name) : $name);
 			}
 
+			// If the difference is less than 60 seconds, remove the preceding and.
+			if (count($span) === 1)
+			{
+				$span[0] = ltrim($span[0], 'and ');
+			}
+
 			// Replace difference by making the span into a string
 			$difference = trim(implode('', $span), ',');
 		}
