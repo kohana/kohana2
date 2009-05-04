@@ -374,7 +374,7 @@ class date_Core {
 			$span = array();
 			foreach ($difference as $name => $amount)
 			{
-				if ($name !== $last AND $amount === 0)
+				if ($amount === 0)
 				{
 					// Skip empty amounts
 					continue;
