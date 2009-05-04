@@ -61,4 +61,17 @@ class Cache_Apc_Driver implements Cache_Driver {
 		return TRUE;
 	}
 
+	/**
+	 * Sanitize cache keys
+	 * Replaces troublesome characters
+	 *
+	 * @param   string   cache id
+	 * @return  string
+	 */
+	public function sanitize_id($id)
+	{
+		// Change slashes and spaces to underscores
+		return str_replace(array('/', '\\', ' '), '_', $id);
+	}
+
 } // End Cache APC Driver

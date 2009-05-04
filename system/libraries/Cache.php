@@ -194,15 +194,14 @@ class Cache_Core {
 	}
 
 	/**
-	 * Replaces troublesome characters with underscores.
+	 * Sanitize cache keys
 	 *
 	 * @param   string   cache id
 	 * @return  string
 	 */
 	protected function sanitize_id($id)
 	{
-		// Change slashes and spaces to underscores
-		return str_replace(array('/', '\\', ' '), '_', $id);
+		return $this->driver->sanitize_id($id);
 	}
 
 } // End Cache

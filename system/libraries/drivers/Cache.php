@@ -37,4 +37,9 @@ interface Cache_Driver {
 	 */
 	public function delete_expired();
 
+	/**
+	 * Sanitize cache keys
+	 */
+	public function sanitize_id($id);
+
 } // End Cache Driver
