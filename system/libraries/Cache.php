@@ -146,11 +146,6 @@ class Cache_Core {
 		if (is_resource($data))
 			throw new Kohana_Exception('cache.resources');
 
-		if ( ! is_array($tags))
-		{
-			$tags = array($tags);
-		}
-
 		// Sanitize the ID
 		$id = $this->sanitize_id($id);
 
@@ -160,7 +155,7 @@ class Cache_Core {
 			$lifetime = $this->config['lifetime'];
 		}
 
-		return $this->driver->set($id, $data, $tags, $lifetime);
+		return $this->driver->set($id, $data, (array) $tags, $lifetime);
 	}
 
 	/**
