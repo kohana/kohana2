@@ -651,6 +651,12 @@ class Database_Builder_Core {
 								// Parse Database_Expression for right side of operator
 								$value = $value->parse($this->_db);
 							}
+							elseif ($value instanceof Database_Builder)
+							{
+								// Using a subquery
+								$value->_db = $this->_db;
+								$value = '('.(string) $value.')';
+							}
 							elseif (is_array($value))
 							{
 								if ($op === 'BETWEEN' OR $op === 'NOT BETWEEN')
@@ -670,8 +676,14 @@ class Database_Builder_Core {
 								$value = $this->_db->quote($value);
 							}
 
+							if ( ! empty($column))
+							{
+								// Ignore blank columns
+								$column = $this->_db->quote_column($column);
+							}
+
 							// Add to condition list
-							$vals[] = $this->_db->quote_column($column).' '.$op.' '.$value;
+							$vals[] = $column.' '.$op.' '.$value;
 						}
 					}
 
