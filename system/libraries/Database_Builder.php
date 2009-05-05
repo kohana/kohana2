@@ -284,10 +284,8 @@ class Database_Builder_Core {
 	public function _compile_set($type)
 	{
 		$vals = array();
-		foreach ($this->_set as $set)
+		foreach ($this->_set as $key => $value)
 		{
-			list($key, $value) = each($set);
-
 			$key = $this->_db->quote_column($key);
 
 			if ($value instanceof Database_Expression)
@@ -719,7 +717,7 @@ class Database_Builder_Core {
 			$keys = array($keys => $value);
 		}
 
-		$this->_set[] = $keys;
+		$this->_set = array_merge($keys, $this->_set);
 
 		return $this;
 	}
