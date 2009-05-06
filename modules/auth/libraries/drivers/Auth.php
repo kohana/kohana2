@@ -92,9 +92,10 @@ abstract class Auth_Driver {
 	 * Log a user out.
 	 *
 	 * @param   boolean  completely destroy the session
+	 * @param	boolean  remove all tokens for user
 	 * @return  boolean
 	 */
-	public function logout($destroy)
+	public function logout($destroy, $logout_all)
 	{
 		if ($destroy === TRUE)
 		{

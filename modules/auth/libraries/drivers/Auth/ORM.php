@@ -175,9 +175,10 @@ class Auth_ORM_Driver extends Auth_Driver {
 	 * Log a user out and remove any auto-login cookies.
 	 *
 	 * @param   boolean  completely destroy the session
+	 * @param	boolean  remove all tokens for user
 	 * @return  boolean
 	 */
-	public function logout($destroy)
+	public function logout($destroy, $logout_all)
 	{
 		if ($token = cookie::get('authautologin'))
 		{
@@ -187,7 +188,11 @@ class Auth_ORM_Driver extends Auth_Driver {
 			// Clear the autologin token from the database
 			$token = ORM::factory('user_token', $token);
 			
-			if ($token->loaded)
+			if ($token->loaded AND $logout_all)
+			{
+				ORM::factory('user_token')->where('user_id', $token->user_id)->delete_all();
+			}
+			elseif ($token->loaded)
 			{
 				$token->delete();
 			}

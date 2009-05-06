@@ -147,11 +147,12 @@ class Auth_Core {
 	 * Log out a user by removing the related session variables.
 	 *
 	 * @param   boolean  completely destroy the session
+	 * @param	boolean  remove all tokens for user
 	 * @return  boolean
 	 */
-	public function logout($destroy = FALSE)
+	public function logout($destroy = FALSE, $logout_all = FALSE)
 	{
-		return $this->driver->logout($destroy);
+		return $this->driver->logout($destroy, $logout_all = FALSE);
 	}
 
 	/**
