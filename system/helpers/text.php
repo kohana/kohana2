@@ -183,7 +183,7 @@ class text_Core {
 	 * @param   boolean  replace words across word boundries (space, period, etc)
 	 * @return  string
 	 */
-	public static function censor($str, $badwords, $replacement = '#', $replace_partial_words = FALSE)
+	public static function censor($str, $badwords, $replacement = '#', $replace_partial_words = TRUE)
 	{
 		foreach ((array) $badwords as $key => $badword)
 		{
@@ -192,7 +192,7 @@ class text_Core {
 
 		$regex = '('.implode('|', $badwords).')';
 
-		if ($replace_partial_words == TRUE)
+		if ($replace_partial_words === FALSE)
 		{
 			// Just using \b isn't sufficient when we need to replace a badword that already contains word boundaries itself
 			$regex = '(?<=\b|\s|^)'.$regex.'(?=\b|\s|$)';
