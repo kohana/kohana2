@@ -392,7 +392,7 @@ abstract class Database_Core {
 			// Using a complex column name (e.g. COUNT("*")) - only treat what's in double quotes as a column
 
 			// Find "table.column" and replace them with "[prefix]table.column"
-			$column = preg_replace('/\"([^.]++)\.([^\"]++)\"/', '"'.$this->_config['table_prefix'].'$1.$2"', $column);
+			$column = preg_replace('/"([^.]++)\.([^"]++)"/', '"'.$this->_config['table_prefix'].'$1.$2"', $column);
 
 			$replace = $this->_config['escape'] ? $this->_quote : '';
 
