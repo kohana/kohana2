@@ -349,15 +349,18 @@ class ORM_Core {
 			// one<>many aliased relationship
 			$model_name = $this->has_many[$column];
 
-			return $this->related[$column] = ORM::factory(inflector::singular($model_name))
-				->where($this->foreign_key($column, $model_name), '=', $this->primary_key_value)
+			$model = ORM::factory(inflector::singular($model_name));
+
+			return $this->related[$column] = $model
+				->where($this->foreign_key($column, $model->table_name), '=', $this->primary_key_value)
 				->find_all();
 		}
 		elseif (in_array($column, $this->has_many))
 		{
 			// one<>many relationship
-			return $this->related[$column] = ORM::factory(inflector::singular($column))
-				->where($this->foreign_key($column, $column), '=', $this->primary_key_value)
+			$model = ORM::factory(inflector::singular($column));
+			return $this->related[$column] = $model
+				->where($this->foreign_key($column, $model->table_name), '=', $this->primary_key_value)
 				->find_all();
 		}
 		elseif (in_array($column, $this->has_and_belongs_to_many))
