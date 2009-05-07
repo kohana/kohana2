@@ -124,7 +124,7 @@ abstract class Database_Driver {
 			}
 			else
 			{
-				if ( ! $this->has_operator($key))
+				if ( ! $this->has_operator($key) AND ! empty($key))
 				{
 					$key = $this->escape_column($key).' =';
 				}
