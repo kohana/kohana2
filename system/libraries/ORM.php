@@ -1116,7 +1116,6 @@ class ORM_Core {
 		}
 		else
 		{
-			echo $table.'_'.$this->primary_key.'<BR>';
 			if ( ! is_string($table) OR ! array_key_exists($table.'_'.$this->primary_key, $this->object))
 			{
 				// Use this table
