@@ -319,8 +319,9 @@ class ORM_Core {
 		elseif (in_array($column, $this->has_many))
 		{
 			// one<>many relationship
-			return $this->related[$column] = ORM::factory(inflector::singular($column))
-				->where($this->foreign_key($column, $column), $this->object[$this->primary_key])
+			$model = ORM::factory(inflector::singular($column));
+			return $this->related[$column] = $model
+				->where($this->foreign_key($column, $model->table_name), $this->object[$this->primary_key])
 				->find_all();
 		}
 		elseif (in_array($column, $this->has_and_belongs_to_many))
