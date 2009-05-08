@@ -11,7 +11,7 @@
  */
 abstract class Database_Driver {
 
-	static $query_cache;
+	protected $query_cache;
 
 	/**
 	 * Connect to our database.
@@ -431,11 +431,11 @@ abstract class Database_Driver {
 	{
 		if (empty($sql))
 		{
-			self::$query_cache = array();
+			$this->query_cache = array();
 		}
 		else
 		{
-			unset(self::$query_cache[$this->query_hash($sql)]);
+			unset($this->query_cache[$this->query_hash($sql)]);
 		}
 
 		Kohana::log('debug', 'Database cache cleared: '.get_class($this));

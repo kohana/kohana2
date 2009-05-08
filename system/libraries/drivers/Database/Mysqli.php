@@ -72,19 +72,19 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 		{
 			$hash = $this->query_hash($sql);
 
-			if ( ! isset(self::$query_cache[$hash]))
+			if ( ! isset($this->query_cache[$hash]))
 			{
 				// Set the cached object
-				self::$query_cache[$hash] = new Kohana_Mysqli_Result($this->link, $this->db_config['object'], $sql);
+				$this->query_cache[$hash] = new Kohana_Mysqli_Result($this->link, $this->db_config['object'], $sql);
 			}
 			else
 			{
 				// Rewind cached result
-				self::$query_cache[$hash]->rewind();
+				$this->query_cache[$hash]->rewind();
 			}
 
 			// Return the cached query
-			return self::$query_cache[$hash];
+			return $this->query_cache[$hash];
 		}
 
 		return new Kohana_Mysqli_Result($this->link, $this->db_config['object'], $sql);
