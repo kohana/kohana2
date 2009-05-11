@@ -22,12 +22,6 @@ class Database_Mysql_Driver extends Database_Driver {
 	protected $db_config;
 
 	/**
-	 * Performance caches.
-	 */
-	private $tables_cache;
-	private $fields_cache;
-
-	/**
 	 * Sets the config for the class.
 	 *
 	 * @param  array  database configuration
@@ -35,8 +29,6 @@ class Database_Mysql_Driver extends Database_Driver {
 	public function __construct($config)
 	{
 		$this->db_config = $config;
-		$this->tables_cache = array();
-		$this->fields_cache = array();
 
 		Kohana_Log::add('debug', 'MySQL Database Driver Initialized');
 	}
@@ -288,9 +280,9 @@ class Database_Mysql_Driver extends Database_Driver {
 
 	public function list_tables()
 	{
-		$tables =& $this->tables_cache;
+		$tables = array();
 
-		if (empty($tables) AND $query = $this->query('SHOW TABLES FROM '.$this->escape_table($this->db_config['connection']['database'])))
+		if ($query = $this->query('SHOW TABLES FROM '.$this->escape_table($this->db_config['connection']['database'])))
 		{
 			foreach ($query->result(FALSE) as $row)
 			{
@@ -308,63 +300,37 @@ class Database_Mysql_Driver extends Database_Driver {
 
 	public function list_fields($table)
 	{
-		$tables =& $this->fields_cache;
+		$result = NULL;
 
-		if (empty($tables[$table]))
+		foreach ($this->field_data($table) as $row)
 		{
-			foreach ($this->field_data($table) as $row)
+			// Make an associative array
+			$result[$row->Field] = $this->sql_type($row->Type);
+
+			if ($row->Key === 'PRI' AND $row->Extra === 'auto_increment')
 			{
-				// Make an associative array
-				$tables[$table][$row->Field] = $this->sql_type($row->Type);
+				// For sequenced (AUTO_INCREMENT) tables
+				$result[$row->Field]['sequenced'] = TRUE;
+			}
 
-				if ($row->Key === 'PRI' AND $row->Extra === 'auto_increment')
-				{
-					// For sequenced (AUTO_INCREMENT) tables
-					$tables[$table][$row->Field]['sequenced'] = TRUE;
-				}
-
-				if ($row->Null === 'YES')
-				{
-					// Set NULL status
-					$tables[$table][$row->Field]['null'] = TRUE;
-				}
+			if ($row->Null === 'YES')
+			{
+				// Set NULL status
+				$result[$row->Field]['null'] = TRUE;
 			}
 		}
 
-		if (!isset($tables[$table]))
+		if (!isset($result))
 			throw new Kohana_Database_Exception('database.table_not_found', $table);
 
-		return $tables[$table];
+		return $result;
 	}
 
 	public function field_data($table)
 	{
-		$columns = array();
+		$result = $this->query('SHOW COLUMNS FROM '.$this->escape_table($table));
 
-		if ($query = mysql_query('SHOW COLUMNS FROM '.$this->escape_table($table), $this->link))
-		{
-			if (mysql_num_rows($query))
-			{
-				while ($row = mysql_fetch_object($query))
-				{
-					$columns[] = $row;
-				}
-			}
-		}
-
-		return $columns;
-	}
-
-	/**
-	 * Clears the internal query cache.
-	 *
-	 * @param  string  SQL query
-	 */
-	public function clear_cache($sql = NULL)
-	{
-		parent::clear_cache($sql);
-		$this->tables_cache = array();
-		$this->fields_cache = array();
+		return $result->result_array(TRUE);
 	}
 
 } // End Database_Mysql_Driver Class
