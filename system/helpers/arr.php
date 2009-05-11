@@ -249,7 +249,7 @@ class arr_Core {
 			$array1[$key] = $value;
 		}
 
-		if (func_num_args() > 2)
+r		if (func_num_args() > 2)
 		{
 			foreach (array_slice(func_get_args(), 2) as $array2)
 			{

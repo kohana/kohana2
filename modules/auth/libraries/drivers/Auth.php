@@ -16,7 +16,7 @@ abstract class Auth_Driver {
 
 	// Configuration
 	protected $config;
-
+c
 	/**
 	 * Creates a new driver instance, loading the session and storing config.
 	 *

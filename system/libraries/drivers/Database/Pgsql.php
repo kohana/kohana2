@@ -259,39 +259,34 @@ class Database_Pgsql_Driver extends Database_Driver {
 
 	public function list_fields($table)
 	{
-		static $tables;
+		$result = NULL;
 
-		if (empty($tables[$table]))
+		foreach ($this->field_data($table) as $row)
 		{
-			foreach ($this->field_data($table) as $row)
+			// Make an associative array
+			$result[$row->column_name] = $this->sql_type($row->data_type);
+
+			if (!strncmp($row->column_default, 'nextval(', 8))
 			{
-				// Make an associative array
-				$tables[$table][$row->column_name] = $this->sql_type($row->data_type);
+				$result[$row->column_name]['sequenced'] = TRUE;
+			}
 
-				if (!strncmp($row->column_default, 'nextval(', 8))
-				{
-					$tables[$table][$row->column_name]['sequenced'] = TRUE;
-				}
-
-				if ($row->is_nullable === 'YES')
-				{
-					$tables[$table][$row->column_name]['null'] = TRUE;
-				}
+			if ($row->is_nullable === 'YES')
+			{
+				$result[$row->column_name]['null'] = TRUE;
 			}
 		}
 
-		if (!isset($tables[$table]))
+		if (!isset($result))
 			throw new Kohana_Database_Exception('database.table_not_found', $table);
 
-		return $tables[$table];
+		return $result;
 	}
 
 	public function field_data($table)
 	{
-		$columns = array();
-
 		// http://www.postgresql.org/docs/8.3/static/infoschema-columns.html
-		$result = pg_query($this->link, '
+		$result = $this->query('
 			SELECT column_name, column_default, is_nullable, data_type, udt_name,
 				character_maximum_length, numeric_precision, numeric_precision_radix, numeric_scale
 			FROM information_schema.columns
@@ -299,15 +294,7 @@ class Database_Pgsql_Driver extends Database_Driver {
 			ORDER BY ordinal_position
 		');
 
-		if ($result)
-		{
-			while ($row = pg_fetch_object($result))
-			{
-				$columns[] = $row;
-			}
-		}
-
-		return $columns;
+		return $result->result_array(TRUE);
 	}
 
 } // End Database_Pgsql_Driver Class

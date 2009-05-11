@@ -285,36 +285,22 @@ class Database_Mssql_Driver extends Database_Driver
 
 	public function list_fields($table)
 	{
-		static $tables;
+		$result = array();
 
-		if (empty($tables[$table]))
+		foreach ($this->field_data($table) as $row)
 		{
-			foreach ($this->field_data($table) as $row)
-			{
-				// Make an associative array
-				$tables[$table][$row->Field] = $this->sql_type($row->Type);
-			}
+			// Make an associative array
+			$result[$row->Field] = $this->sql_type($row->Type);
 		}
 
-		return $tables[$table];
+		return $result;
 	}
 
 	public function field_data($table)
 	{
-		$columns = array();
+		$query = $this->query('SHOW COLUMNS FROM '.$this->escape_table($table), $this->link);
 
-		if ($query = MSSQL_query('SHOW COLUMNS FROM '.$this->escape_table($table), $this->link))
-		{
-			if (MSSQL_num_rows($query) > 0)
-			{
-				while ($row = MSSQL_fetch_object($query))
-				{
-					$columns[] = $row;
-				}
-			}
-		}
-
-		return $columns;
+		return $query->result_array(TRUE);
 	}
 }
 

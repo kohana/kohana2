@@ -65,7 +65,7 @@ class Input_Core {
 			{
 				$this->magic_quotes_gpc = TRUE;
 				Kohana::log('debug', 'Disable magic_quotes_gpc! It is evil and deprecated: http://php.net/magic_quotes');
-			}
+			}c
 
 			// register_globals is enabled
 			if (ini_get('register_globals'))
