@@ -202,12 +202,6 @@ abstract class Kohana_Core {
 		{
 			Benchmark::start(SYSTEM_BENCHMARK.'_controller_setup');
 
-			if (Router::$method[0] === '_')
-			{
-				// Do not allow access to hidden methods
-				Event::run('system.404');
-			}
-
 			// Include the Controller file
 			require Router::$controller_path;
 
@@ -241,6 +235,13 @@ abstract class Kohana_Core {
 			{
 				// Load the controller method
 				$method = $class->getMethod(Router::$method);
+
+				// Method exists
+				if (Router::$method[0] === '_')
+				{
+					// Do not allow access to hidden methods
+					Event::run('system.404');
+				}
 
 				if ($method->isProtected() or $method->isPrivate())
 				{

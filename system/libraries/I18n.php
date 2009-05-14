@@ -55,8 +55,8 @@ class I18n_Core
 	 * 
 	 * Translates $string into language I18n::$locale and caches all found translations on the first call
 	 * 
-	 * @return 					The translated String
-	 * @param string $string	The String to translate
+	 * @return                 The translated String
+	 * @param string $string   The String to translate
 	 */
 	public static function get_text($string)
 	{
