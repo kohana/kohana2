@@ -14,28 +14,28 @@ abstract class Cache_Driver {
 	/**
 	 * Set a cache item.
 	 */
-	public function set($id, $data, array $tags = NULL, $lifetime);
+	abstract public function set($id, $data, array $tags = NULL, $lifetime);
 
 	/**
 	 * Find all of the cache ids for a given tag.
 	 */
-	public function find($tag);
+	abstract public function find($tag);
 
 	/**
 	 * Get a cache item.
 	 * Return NULL if the cache item is not found.
 	 */
-	public function get($id);
+	abstract public function get($id);
 
 	/**
 	 * Delete cache items by id or tag.
 	 */
-	public function delete($id, $tag = FALSE);
+	abstract public function delete($id, $tag = FALSE);
 
 	/**
 	 * Deletes all expired cache items.
 	 */
-	public function delete_expired();
+	abstract public function delete_expired();
 
 	/**
 	 * Sanitize cache keys
