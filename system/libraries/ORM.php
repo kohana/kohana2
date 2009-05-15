@@ -845,7 +845,7 @@ class ORM_Core {
 		elseif (is_null($ids))
 		{
 			// Delete all records
-			$this->db->where(TRUE);
+			$this->db->where('1=1');
 		}
 		else
 		{
