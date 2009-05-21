@@ -39,6 +39,23 @@ class Database_Builder_Core {
 		$this->_db = $db;
 	}
 
+	/**
+	 * Resets all query components
+	 */
+	public function reset()
+	{
+		$this->_select   = array();
+		$this->_from     = array();
+		$this->_join     = array();
+		$this->_where    = array();
+		$this->_group_by = array();
+		$this->_having   = array();
+		$this->_order_by = array();
+		$this->_limit    = NULL;
+		$this->_offset   = NULL;
+		$this->_set      = array();
+	}
+
 	public function __toString()
 	{
 		return $this->_compile();
@@ -871,15 +888,20 @@ class Database_Builder_Core {
 			$this->_db = Database::instance($this->_db);
 		}
 
+		$query = $this->_compile();
+
+		// Reset the query after executing
+		$this->reset();
+
 		if ($this->_ttl !== FALSE AND $this->_type === Database::SELECT)
 		{
 			// Return result from cache (only allowed with SELECT)
-			return $this->_db->query_cache((string) $this, $this->_ttl);
+			return $this->_db->query_cache($query, $this->_ttl);
 		}
 		else
 		{
 			// Load the result (no caching)
-			return $this->_db->query((string) $this);
+			return $this->_db->query($query);
 		}
 	}
 
