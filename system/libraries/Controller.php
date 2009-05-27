@@ -69,7 +69,15 @@ abstract class Controller_Core {
 		// Views are straight HTML pages with embedded PHP, so importing them
 		// this way insures that $this can be accessed as if the user was in
 		// the controller, which gives the easiest access to libraries in views
-		include $kohana_view_filename;
+		try
+		{
+			include $kohana_view_filename;
+		}
+		catch (Exception $e)
+		{
+			ob_end_clean();
+			throw $e;
+		}
 
 		// Fetch the output and close the buffer
 		return ob_get_clean();
