@@ -96,7 +96,7 @@ class html_Core {
 		// Attributes empty? Use an empty string
 		.(is_array($attributes) ? html::attributes($attributes) : '').'>'
 		// Title empty? Use the parsed URL
-		.(($title === NULL) ? $site_url : $title).'</a>';
+		.html::specialchars((($title === NULL) ? $site_url : $title), FALSE).'</a>';
 	}
 
 	/**
