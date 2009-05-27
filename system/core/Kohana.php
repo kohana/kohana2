@@ -629,29 +629,29 @@ final class Kohana {
 	}
 
 	/**
-	 * Kohana output handler.
+	 * Kohana output handler. Called during ob_clean, ob_flush, and their variants.
 	 *
 	 * @param   string  current output buffer
 	 * @return  string
 	 */
 	public static function output_buffer($output)
 	{
+		// Could be flushing, so send headers first
 		if ( ! Event::has_run('system.send_headers'))
 		{
-			// Run the send_headers event, specifically for cookies being set
+			// Run the send_headers event
 			Event::run('system.send_headers');
 		}
-
-		// Set final output
-		self::$output = $output;
-
+		
+		self::$output	= $output;
+		
 		// Set and return the final output
-		return $output;
+		return self::$output;
 	}
 
 	/**
-	 * Closes all open output buffers, either by flushing or cleaning all
-	 * open buffers, including the Kohana output buffer.
+	 * Closes all open output buffers, either by flushing or cleaning, and stores the Kohana
+	 * output buffer for display during shutdown.
 	 *
 	 * @param   boolean  disable to clear buffers, rather than flushing
 	 * @return  void
@@ -669,11 +669,8 @@ final class Kohana {
 				$close();
 			}
 
-			// This will flush the Kohana buffer, which sets self::$output
+			// Store the Kohana output buffer
 			ob_end_clean();
-
-			// Reset the buffer level
-			self::$buffer_level = ob_get_level();
 		}
 	}
 
@@ -889,9 +886,9 @@ final class Kohana {
 				}
 			}
 	
+			// Close all output buffers except for Kohana
 			while (ob_get_level() > self::$buffer_level)
 			{
-				// Close open buffers
 				ob_end_clean();
 			}
 	
