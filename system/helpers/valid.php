@@ -161,13 +161,13 @@ class valid_Core {
 		for ($i = $length - 1; $i >= 0; $i -= 2)
 		{
 			// Add up every 2nd digit, starting from the right
-			$checksum += substr($number, $i, 1);
+			$checksum += $number[$i];
 		}
 
 		for ($i = $length - 2; $i >= 0; $i -= 2)
 		{
 			// Add up every 2nd digit doubled, starting from the right
-			$double = substr($number, $i, 1) * 2;
+			$double = $number[$i] * 2;
 
 			// Subtract 9 from the double where value is greater than 10
 			$checksum += ($double >= 10) ? $double - 9 : $double;

@@ -81,7 +81,7 @@ class Captcha_Alpha_Driver extends Captcha_Driver {
 
 			// Draw "ghost" alphabetic character
 			$text_color = imagecolorallocatealpha($this->image, mt_rand($color_limit + 8, 255), mt_rand($color_limit + 8, 255), mt_rand($color_limit + 8, 255), mt_rand(70, 120));
-			$char = substr($chars, mt_rand(0, 14), 1);
+			$char = $chars[mt_rand(0, 14)];
 			imagettftext($this->image, $size * 2, mt_rand(-45, 45), ($x - (mt_rand(5, 10))), ($y + (mt_rand(5, 10))), $text_color, $font, $char);
 		}
 

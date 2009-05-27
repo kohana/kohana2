@@ -76,7 +76,7 @@ class Archive_Core {
 				while (($file = readdir($dir)) !== FALSE)
 				{
 					// Do not add hidden files or directories
-					if (substr($file, 0, 1) === '.')
+					if ($file[0] === '.')
 						continue;
 
 					// Add directory contents

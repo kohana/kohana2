@@ -65,7 +65,7 @@ class Unit_Test_Core {
 				$class = substr($path, strrpos($path, '/') + 1, -(strlen(EXT)));
 
 				// Skip hidden files
-				if (substr($class, 0, 1) === '.')
+				if ($class[0] === '.')
 					continue;
 
 				// Check for duplicate test class name
