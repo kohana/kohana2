@@ -35,7 +35,7 @@ $config['internal_cache'] = FALSE;
 /**
  * Internal cache directory.
  */
-$config['internal_cache_path'] = APPPATH.'cache';
+$config['internal_cache_path'] = APPPATH.'cache/';
 
 /**
  * Enable or disable gzip output compression. This can dramatically decrease
