@@ -54,6 +54,8 @@ final class Kohana {
 	private static $internal_cache = array();
 	private static $write_cache;
 	private static $internal_cache_path;
+	private static $internal_cache_key;
+	private static $internal_cache_encrypt;
 
 	/**
 	 * Sets up the PHP environment. Adds error/exception handling, output
@@ -91,6 +93,17 @@ final class Kohana {
 
 		if (self::$cache_lifetime = self::config('core.internal_cache'))
 		{
+			// Are we using encryption for caches?
+			self::$internal_cache_encrypt	= self::config('core.internal_cache_encrypt');
+			
+			if(self::$internal_cache_encrypt===TRUE)
+			{
+				self::$internal_cache_key = self::config('core.internal_cache_key');
+				
+				// Be sure the key is of acceptable length for the mcrypt algorithm used
+				self::$internal_cache_key = substr(self::$internal_cache_key, 0, 24);
+			}
+			
 			// Set the directory to be used for the internal cache
 			if ( ! self::$internal_cache_path = self::config('core.internal_cache_path'))
 			{
@@ -585,8 +598,29 @@ final class Kohana {
 				// Check the file modification time
 				if ((time() - filemtime($path)) < $lifetime)
 				{
-					// Cache is valid
-					return unserialize(file_get_contents($path));
+					// Cache is valid! Now, do we need to decrypt it?
+					if(self::$internal_cache_encrypt===TRUE)
+					{
+						$data		= file_get_contents($path);
+						
+						$iv_size	= mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+						$iv			= mcrypt_create_iv($iv_size, MCRYPT_RAND);
+						
+						$decrypted_text	= mcrypt_decrypt(MCRYPT_RIJNDAEL_256, self::$internal_cache_key, $data, MCRYPT_MODE_ECB, $iv);
+						
+						$cache	= unserialize($decrypted_text);
+						
+						// If the key changed, delete the cache file
+						if(!$cache)
+							unlink($path);
+
+						// If cache is false (as above) return NULL, otherwise, return the cache
+						return ($cache ? $cache : NULL);
+					}
+					else
+					{
+						return unserialize(file_get_contents($path));
+					}
 				}
 				else
 				{
@@ -623,8 +657,23 @@ final class Kohana {
 		}
 		else
 		{
-			// Write data to cache file
-			return (bool) file_put_contents($path, serialize($data));
+			// Using encryption? Encrypt the data when we write it
+			if(self::$internal_cache_encrypt===TRUE)
+			{
+				// Encrypt and write data to cache file
+				$iv_size	= mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+				$iv			= mcrypt_create_iv($iv_size, MCRYPT_RAND);
+				
+				// Serialize and encrypt!
+				$encrypted_text	= mcrypt_encrypt(MCRYPT_RIJNDAEL_256, self::$internal_cache_key, serialize($data), MCRYPT_MODE_ECB, $iv);
+				
+				return (bool) file_put_contents($path, $encrypted_text);
+			}
+			else
+			{
+				// Write data to cache file
+				return (bool) file_put_contents($path, serialize($data));
+			}
 		}
 	}
 
