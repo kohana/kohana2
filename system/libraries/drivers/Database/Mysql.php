@@ -73,9 +73,6 @@ class Database_Mysql_Driver extends Database_Driver {
 				$this->set_charset($charset);
 			}
 
-			// Clear password after successful connect
-			$this->db_config['connection']['pass'] = NULL;
-
 			return $this->link;
 		}
 
