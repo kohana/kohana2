@@ -68,9 +68,10 @@ class html_Core {
 	 * @param   string  link text
 	 * @param   array   HTML anchor attributes
 	 * @param   string  non-default protocol, eg: https
+	 * @param   boolean option to escape the title that is output
 	 * @return  string
 	 */
-	public static function anchor($uri, $title = NULL, $attributes = NULL, $protocol = NULL)
+	public static function anchor($uri, $title = NULL, $attributes = NULL, $protocol = NULL, $escape_title = FALSE)
 	{
 		if ($uri === '')
 		{
@@ -101,7 +102,7 @@ class html_Core {
 		// Attributes empty? Use an empty string
 		.(is_array($attributes) ? html::attributes($attributes) : '').'>'
 		// Title empty? Use the parsed URL
-		.html::specialchars((($title === NULL) ? $site_url : $title), FALSE).'</a>';
+		.($escape_title ? html::specialchars((($title === NULL) ? $site_url : $title), FALSE) : (($title === NULL) ? $site_url : $title)).'</a>';
 	}
 
 	/**
