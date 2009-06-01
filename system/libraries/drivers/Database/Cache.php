@@ -30,12 +30,6 @@ class Cache_Result extends Database_Result
 		$this->fetch_type  = array($this, 'offsetGet_object');
 	}
 
-	public function __get($name)
-	{
-		// Return the given data
-		return $this->data[$name];
-	}
-
 	public function result($object = TRUE, $type = FALSE)
 	{
 		if ($object)
@@ -96,7 +90,7 @@ class Cache_Result extends Database_Result
 	public function offsetGet_object($result, $return_type)
 	{
 		// Return a new result object with the given row
-		return new Cache_Result($this->data[$this->current_row]);
+		return (object) $this->data[$this->current_row];
 	}
 
 	public function offsetGet_array($result, $return_type)
