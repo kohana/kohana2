@@ -28,12 +28,6 @@ class Database_Cache_Result_Core extends Database_Result {
 		// Not used
 	}
 
-	public function __get($name)
-	{
-		// Fetch the given field from the current row
-		return $this->_data[$name];
-	}
-
 	public function as_array($return = FALSE)
 	{
 		// Return arrays rather than objects
@@ -78,7 +72,7 @@ class Database_Cache_Result_Core extends Database_Result {
 		if ($this->_return_objects)
 		{
 			// Return a new object with the current row of data
-			return new Database_Cache_Result($this->_data[$this->_current_row], $sql, $this->_return_objects);
+			return (object) $this->_data[$this->_current_row];
 		}
 		else
 		{
