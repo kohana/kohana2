@@ -303,7 +303,7 @@ abstract class Database_Core {
 		{
 			return $value ? 'TRUE' : 'FALSE';
 		}
-		elseif (is_int($value) OR (is_string($value) AND ctype_digit($value)))
+		elseif (is_int($value))
 		{
 			return (int) $value;
 		}
