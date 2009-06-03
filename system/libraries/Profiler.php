@@ -118,7 +118,7 @@ class Profiler_Core {
 		$view = new View('profiler/profiler', $data);
 
 		// Return rendered view if $return is TRUE
-		if ($return == TRUE)
+		if ($return === TRUE)
 			return $view->render();
 
 		// Add profiler data to the output
