@@ -45,6 +45,21 @@ $config['Yourpay'] = array
 );
 
 /**
+ * Realex Options:
+ *  merchant_id - Merchant ID
+ *  secret - Shared Secret
+ *  currency - Default Currency
+ *  auto_settle - 1=Settle payment at midnight, 0=Settle payment manually.
+ */
+$config['Realex'] = array
+(
+	'merchant_id' => '',
+	'secret' => '',
+	'currency' => 'EUR',
+	'auto_settle' => '1',
+);
+
+/**
  * TrustCommerce Options:
  *  custid - the customer ID assigned to you by TrustCommerce
  *  password - the password assigned to you by TrustCommerce
