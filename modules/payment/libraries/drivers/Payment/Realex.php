@@ -2,7 +2,7 @@
 /**
  * Realex Payment Driver
  *
- * $Id: Realex.php 3769 2008-12-15 00:48:56Z zombor $
+ * $Id$
  *
  * @package    Payment
  * @author     Kohana Team
