@@ -122,7 +122,7 @@ body { width: 42em; margin: 0 auto; font-family: sans-serif; font-size: 90%; }
 <?php else: // check for utf8_[en|de]code when mbstring is not available ?>
 <tr>
 <th>XML support</th>
-<?php if (!function_exists('utf8_encode') || !function_exists('utf8_decode')): $failed = TRUE ?>
+<?php if ( ! function_exists('utf8_encode')): $failed = TRUE ?>
 <td class="fail">PHP is compiled without <a href="http://php.net/xml">XML</a> support, thus lacking support for <code>utf8_encode()</code>/<code>utf8_decode()</code>.</td>
 <?php else: ?>
 <td class="pass">Pass</td>
