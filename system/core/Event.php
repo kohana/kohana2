@@ -206,7 +206,7 @@ final class Event {
 
 			foreach ($callbacks as $callback)
 			{
-				call_user_func_array($callback, array(&$data));
+				call_user_func($callback);
 			}
 
 			// Do this to prevent data from getting 'stuck'
