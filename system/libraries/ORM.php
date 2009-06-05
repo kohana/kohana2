@@ -158,7 +158,7 @@ class ORM_Core {
 		// Load column information
 		$this->reload_columns();
 
-		$this->db_builder = DB::build()->from($this->table_name);
+		$this->db_builder = db::build()->from($this->table_name);
 	}
 
 	/**
@@ -738,7 +738,7 @@ class ORM_Core {
 			{
 				// Primary key isn't empty so do an update
 
-				$query = DB::update($this->table_name)
+				$query = db::update($this->table_name)
 					->set($data)
 					->where($this->primary_key, '=', $this->primary_key_value)
 					->execute($this->db);
@@ -748,7 +748,7 @@ class ORM_Core {
 			}
 			else
 			{
-				$result = DB::insert($this->table_name)
+				$result = db::insert($this->table_name)
 					->set($data)
 					->execute($this->db);
 
@@ -812,7 +812,7 @@ class ORM_Core {
 					foreach ($added as $id)
 					{
 						// Insert the new relationship
-						DB::insert($join_table)
+						db::insert($join_table)
 							->set(array($object_fk => $this->primary_key_value, $related_fk => $id))
 							->execute($this->db);
 					}
@@ -851,7 +851,7 @@ class ORM_Core {
 		}
 
 		// Delete this object
-		DB::delete($this->table_name)
+		db::delete($this->table_name)
 			->where($this->primary_key, '=', $id)
 			->execute($this->db);
 
@@ -871,14 +871,14 @@ class ORM_Core {
 		if (is_array($ids))
 		{
 			// Delete only given ids
-			DB::delete($this->table_name)
+			db::delete($this->table_name)
 				->where($this->primary_key, 'IN', $ids)
 				->execute($this->db);
 		}
 		elseif ($ids === NULL)
 		{
 			// Delete all records
-			DB::delete($this->table_name)
+			db::delete($this->table_name)
 				->execute($this->db);
 		}
 		else
@@ -1435,7 +1435,7 @@ class ORM_Core {
 	 */
 	protected function load_relations($table, ORM $model)
 	{
-		$result = DB::select(array($model->foreign_key(NULL) => 'id'))
+		$result = db::select(array($model->foreign_key(NULL) => 'id'))
 			->from($table)
 			->where($this->foreign_key(NULL, $table), '=', $this->primary_key_value)
 			->execute($this->db)
