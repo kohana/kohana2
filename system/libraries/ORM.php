@@ -734,9 +734,9 @@ class ORM_Core {
 				$data[$column] = $this->object[$column];
 			}
 
-			if ( ! $this->empty_primary_key())
+			if ( ! $this->empty_primary_key() AND ! isset($this->changed[$this->primary_key]))
 			{
-				// Primary key isn't empty so do an update
+				// Primary key isn't empty and hasn't been changed so do an update
 
 				$query = db::update($this->table_name)
 					->set($data)
