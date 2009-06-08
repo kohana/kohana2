@@ -33,9 +33,10 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 	/**
 	 * Returns an array of the results as ORM objects.
 	 *
+	 * @param   string  key column to index on, NULL to ignore
 	 * @return  array
 	 */
-	public function as_array()
+	public function as_array($key = NULL)
 	{
 		$array = array();
 
@@ -44,7 +45,16 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 
 		foreach ($this->result as $obj)
 		{
-			$array[] = new $class($obj);
+			if ($key === NULL)
+			{
+				// No indexing
+				$array[] = new $class($obj);
+			}
+			else
+			{
+				// Index on the given key
+				$array[$obj->$key] = new $class($obj);
+			}
 		}
 
 		return $array;
