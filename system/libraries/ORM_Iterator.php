@@ -27,7 +27,7 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 		$this->primary_val = $model->primary_val;
 
 		// Database result (make sure rows are returned as arrays)
-		$this->result = $result->as_array();
+		$this->result = $result;
 	}
 
 	/**
@@ -87,7 +87,7 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 		}
 
 		$array = array();
-		foreach ($this->result->result_array() as $row)
+		foreach ($this->result as $row)
 		{
 			$array[$row->$key] = $row->$val;
 		}
