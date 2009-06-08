@@ -158,7 +158,8 @@ class ORM_Core {
 		// Load column information
 		$this->reload_columns();
 
-		$this->db_builder = db::build()->from($this->table_name);
+		// Initialize the builder
+		$this->db_builder = db::build();
 	}
 
 	/**
@@ -1354,6 +1355,8 @@ class ORM_Core {
 	 */
 	protected function load_result($array = FALSE, $ignore_changed = FALSE)
 	{
+		$this->db_builder->from($this->table_name);
+
 		if ($array === FALSE)
 		{
 			// Only fetch 1 record
