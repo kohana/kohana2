@@ -27,6 +27,12 @@ class ORM_Core {
 	// Relationships that should always be joined
 	protected $load_with = array();
 
+	// Binds that are pending (using 'with' method)
+	protected $pending_binds = array();
+
+	// Binds that have already been applied
+	protected $applied_binds = array();
+
 	// Current object
 	protected $object  = array();
 	protected $changed = array();
@@ -61,9 +67,6 @@ class ORM_Core {
 	protected $db = 'default';
 	protected $db_applied = array();
 	protected $db_builder;
-
-	// With calls already applied
-	protected $with_applied = array();
 
 	// Stores column information for ORM models
 	protected static $column_cache = array();
@@ -311,6 +314,12 @@ class ORM_Core {
 				{
 					// Load this object first so we know what id to look for in the foreign table
 					$this->find($this->object[$this->primary_key], TRUE);
+
+					if (isset($this->related[$column]))
+					{
+						// The 'find' method call above has already loaded this related model with load_with
+						return $this->related[$column];
+					}
 				}
 
 				// Foreign key lies in this table (this model belongs_to target model)
@@ -321,6 +330,8 @@ class ORM_Core {
 				// Foreign key lies in the target table (this model has_one target model)
 				$where = array($this->foreign_key($column, $model->table_name) => $this->primary_key_value);
 			}
+
+			$this->apply_binds($model);
 
 			// one<>alias:one relationship
 			return $this->related[$column] = $model->find($where);
@@ -339,10 +350,13 @@ class ORM_Core {
 			$join_col1  = $through->foreign_key($model->object_name, $join_table);
 			$join_col2  = $model->foreign_key(TRUE);
 
+			$this->apply_binds($model);
+
 			// one<>alias:many relationship
 			return $this->related[$column] = $model
 				->join($join_table, $join_col1, $join_col2)
 				->where($through->foreign_key($this->object_name, $join_table), '=', $this->primary_key_value)
+				->with($this->pending_binds)
 				->find_all();
 		}
 		elseif (isset($this->has_many[$column]))
@@ -352,6 +366,8 @@ class ORM_Core {
 
 			$model = ORM::factory(inflector::singular($model_name));
 
+			$this->apply_binds($model);
+
 			return $this->related[$column] = $model
 				->where($this->foreign_key($column, $model->table_name), '=', $this->primary_key_value)
 				->find_all();
@@ -360,6 +376,9 @@ class ORM_Core {
 		{
 			// one<>many relationship
 			$model = ORM::factory(inflector::singular($column));
+
+			$this->apply_binds($model);
+
 			return $this->related[$column] = $model
 				->where($this->foreign_key($column, $model->table_name), '=', $this->primary_key_value)
 				->find_all();
@@ -368,6 +387,8 @@ class ORM_Core {
 		{
 			// Load the remote model, always singular
 			$model = ORM::factory(inflector::singular($column));
+
+			$this->apply_binds($model);
 
 			if ($this->has($model, TRUE))
 			{
@@ -516,20 +537,58 @@ class ORM_Core {
 	}
 
 	/**
-	 * Binds another one-to-one object to this model.  One-to-one objects
-	 * can be nested using 'object1:object2' syntax
+	 * Binds another one-to-one object.  One-to-one objects
+	 * can be nested using 'object1:object2' syntax.  Binds do not occur until
+	 * load_result is called or a related object is retrieved
 	 *
-	 * @param string $target_path
-	 * @return void
+	 * @param   string  $target_path
+	 * @return  ORM
 	 */
 	public function with($target_path)
 	{
-		if (isset($this->with_applied[$target_path]))
+		// Add to pending binds
+		$this->pending_binds[] = $target_path;
+
+		return $this;
+	}
+
+	/**
+	 * Processes pending binds and attaches them to the given model
+	 *
+	 * @param   ORM  Model to attach to, or NULL for $this
+	 * @return  void
+	 */
+	protected function apply_binds($model = NULL)
+	{
+		if ($model === NULL)
 		{
-			// Don't join anything already joined
-			return $this;
+			// Bind to this model if no other is specified
+			$model = $this;
 		}
 
+		foreach ($this->pending_binds as $target_path)
+		{
+			if ( ! isset($model->applied_binds[$target_path]))
+			{
+				// Not yet applied, so do it now
+				$model->apply_bind($target_path, $model);
+			}
+		}
+
+		// Reset applied binds and pending binds
+		$this->pending_binds = array();
+		$this->applied_binds = array();
+	}
+
+	/**
+	 * Binds another one-to-one object to this model.  One-to-one objects
+	 * can be nested using 'object1:object2' syntax
+	 *
+	 * @param  string  $target_path
+	 * @return void
+	 */
+	protected function apply_bind($target_path)
+	{
 		// Split object parts
 		$objects = explode(':', $target_path);
 		$target	 = $this;
@@ -542,7 +601,7 @@ class ORM_Core {
 			if ( ! $target)
 			{
 				// Can't find related object
-				return $this;
+				return;
 			}
 		}
 
@@ -559,15 +618,15 @@ class ORM_Core {
 		}
 		else
 		{
-			if( ! isset($this->with_applied[$parent_path]))
+			if( ! isset($this->applied_binds[$parent_path]))
 			{
 				// If the parent object hasn't been joined yet, do it first (otherwise LEFT JOINs fail)
-				$this->with($parent_path);
+				$this->apply_bind($parent_path);
 			}
 		}
 
-		// Add to with_applied to prevent duplicate joins
-		$this->with_applied[$target_path] = TRUE;
+		// Add to applied binds to prevent duplicate joins
+		$this->applied_binds[$target_path] = TRUE;
 
 		$select = array();
 
@@ -605,8 +664,6 @@ class ORM_Core {
 
 		// Turn prefixing back on
 		$this->db->table_prefix($prefix);
-
-		return $this;
 	}
 
 	/**
@@ -1386,6 +1443,8 @@ class ORM_Core {
 				}
 			}
 		}
+
+		$this->apply_binds();
 
 		if ( ! isset($this->db_applied['orderby']) AND ! empty($this->sorting))
 		{
