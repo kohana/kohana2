@@ -356,7 +356,6 @@ class ORM_Core {
 			return $this->related[$column] = $model
 				->join($join_table, $join_col1, $join_col2)
 				->where($through->foreign_key($this->object_name, $join_table), '=', $this->primary_key_value)
-				->with($this->pending_binds)
 				->find_all();
 		}
 		elseif (isset($this->has_many[$column]))
