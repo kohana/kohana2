@@ -94,14 +94,7 @@ class Database_Mysql_Core extends Database {
 		// Make sure the database is connected
 		$this->_connection or $this->connect();
 
-		// Execute the query
-		if (($result = mysql_query($sql, $this->_connection)) === FALSE)
-		{
-			// Query failed
-			throw new Database_Exception(':error [ :query ]',
-				array(':error' => mysql_error($this->_connection), ':query' => $sql),
-				mysql_errno($this->_connection));
-		}
+		$result = mysql_query($sql, $this->_connection);
 
 		// Set the last query
 		$this->last_query = $sql;

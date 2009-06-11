@@ -22,12 +22,14 @@ class Database_Mysql_Result_Core extends Database_Result {
 		{
 			if ($result == FALSE)
 			{
-				throw new Database_Exception('There was an SQL error: :error', array(':error' => mysql_error($link).' - '.$sql));
+				throw new Database_Exception(':error [ :query ]',
+					array(':error' => mysql_error($link), ':query' => $sql),
+					mysql_errno($link));
 			}
 			else
 			{
-				// It's an DELETE, INSERT, REPLACE, or UPDATE query
-				$this->_insert_id = mysql_insert_id($link);
+				// It's a DELETE, INSERT, REPLACE, or UPDATE query
+				$this->_insert_id  = mysql_insert_id($link);
 				$this->_total_rows = mysql_affected_rows($link);
 			}
 		}
