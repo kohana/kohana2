@@ -134,6 +134,13 @@ abstract class Database_Core {
 	abstract public function list_fields($table);
 
 	/**
+	 * List tables for the given connection (checks for prefix)
+	 *
+	 * @return array
+	 */
+	abstract public function list_tables();
+
+	/**
 	 * Executes the given query, returning the cached version if enabled
 	 *
 	 * @param  string  SQL query
@@ -429,18 +436,6 @@ abstract class Database_Core {
 			return $column.' AS '.$alias;
 		else
 			return $column;
-	}
-
-	public function list_tables()
-	{
-		throw new Database_Exception('The :method is not implemented in :class',
-			array(':method' => __FUNCTION__, ':class' => get_class($this)));
-	}
-
-	public function list_columns($table)
-	{
-		throw new Database_Exception('The :method is not implemented in :class',
-			array(':method' => __FUNCTION__, ':class' => get_class($this)));
 	}
 
 	/**

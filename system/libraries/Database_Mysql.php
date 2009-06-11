@@ -150,14 +150,20 @@ class Database_Mysql_Core extends Database {
 
 	public function field_data($table)
 	{
-		$columns = array();
+		return $this->query('SHOW COLUMNS FROM '.$this->quote_table($table), $this->_connection)->as_array(TRUE);
+	}
 
-		foreach($this->query('SHOW COLUMNS FROM '.$this->quote_table($table), $this->_connection)->as_array() as $row)
+	public function list_tables()
+	{
+		$tables = array();
+
+		foreach ($this->query('SHOW TABLES FROM '.$this->escape($this->_config['connection']['database']).' LIKE '.$this->quote($this->table_prefix().'%'))->as_array() as $row)
 		{
-			$columns[] = $row;
+			// The value is the table name
+			$tables[] = current($row);
 		}
 
-		return $columns;
+		return $tables;
 	}
 
 } // End Database_MySQL
