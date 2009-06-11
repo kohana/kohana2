@@ -152,7 +152,7 @@ class Database_Mysql_Core extends Database {
 	{
 		$columns = array();
 
-		foreach($this->query_execute('SHOW COLUMNS FROM '.$this->quote_table($table), $this->_connection)->as_array() as $row)
+		foreach($this->query('SHOW COLUMNS FROM '.$this->quote_table($table), $this->_connection)->as_array() as $row)
 		{
 			$columns[] = $row;
 		}
