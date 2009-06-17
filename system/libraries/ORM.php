@@ -355,8 +355,7 @@ class ORM_Core {
 			// one<>alias:many relationship
 			return $this->related[$column] = $model
 				->join($join_table, $join_col1, $join_col2)
-				->where($through->foreign_key($this->object_name, $join_table), '=', $this->primary_key_value)
-				->find_all();
+				->where($through->foreign_key($this->object_name, $join_table), '=', $this->primary_key_value);
 		}
 		elseif (isset($this->has_many[$column]))
 		{
@@ -367,9 +366,7 @@ class ORM_Core {
 
 			$this->apply_binds($model);
 
-			return $this->related[$column] = $model
-				->where($this->foreign_key($column, $model->table_name), '=', $this->primary_key_value)
-				->find_all();
+			return $this->related[$column] = $model->where($this->foreign_key($column, $model->table_name), '=', $this->primary_key_value);
 		}
 		elseif (in_array($column, $this->has_many))
 		{
@@ -378,9 +375,7 @@ class ORM_Core {
 
 			$this->apply_binds($model);
 
-			return $this->related[$column] = $model
-				->where($this->foreign_key($column, $model->table_name), '=', $this->primary_key_value)
-				->find_all();
+			return $this->related[$column] = $model->where($this->foreign_key($column, $model->table_name), '=', $this->primary_key_value);
 		}
 		elseif (in_array($column, $this->has_and_belongs_to_many))
 		{
@@ -392,16 +387,12 @@ class ORM_Core {
 			if ($this->has($model, TRUE))
 			{
 				// many<>many relationship
-				return $this->related[$column] = $model
-					->where($model->foreign_key(TRUE), 'IN', $this->changed_relations[$column])
-					->find_all();
+				return $this->related[$column] = $model->where($model->foreign_key(TRUE), 'IN', $this->changed_relations[$column]);
 			}
 			else
 			{
 				// empty many<>many relationship
-				return $this->related[$column] = $model
-					->where($model->foreign_key(TRUE), 'IS', NULL)
-					->find_all();
+				return $this->related[$column] = $model->where($model->foreign_key(TRUE), 'IS', NULL);
 			}
 		}
 		elseif (isset($this->ignored_columns[$column]))
