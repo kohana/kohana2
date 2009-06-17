@@ -30,7 +30,7 @@ class Image_GD_Driver extends Image_Driver {
 			throw new Kohana_Exception('image.gd.requires_v2');
 	}
 
-	public function process($image, $actions, $dir, $file, $render = FALSE)
+	public function process($image, $actions, $dir, $file, $render = FALSE, $background = NULL)
 	{
 		// Set the "create" function
 		switch ($image['type'])
