@@ -461,6 +461,30 @@ class ORM_Core {
 	}
 
 	/**
+	 * Chainable set method
+	 *
+	 * @param   string  name of field or array of key => val
+	 * @param   mixed   value
+	 * @return  ORM
+	 */
+	public function set($name, $value = NULL)
+	{
+		if (is_array($name))
+		{
+			foreach ($name as $key => $value)
+			{
+				$this->__set($key, $value);
+			}
+		}
+		else
+		{
+			$this->__set($name, $value);
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Checks if object data is set.
 	 *
 	 * @param   string  column name
@@ -514,8 +538,8 @@ class ORM_Core {
 	 * Binds another one-to-one object to this model.  One-to-one objects
 	 * can be nested using 'object1:object2' syntax
 	 *
-	 * @param string $target_path
-	 * @return void
+	 * @param   string  target model to bind to
+	 * @return  void
 	 */
 	public function with($target_path)
 	{
