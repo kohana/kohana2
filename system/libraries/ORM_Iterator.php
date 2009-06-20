@@ -6,7 +6,7 @@
 *
 * @package    ORM
 * @author     Kohana Team
-* @copyright  (c) 2007-2008 Kohana Team
+* @copyright  (c) 2007-2009 Kohana Team
 * @license    http://kohanaphp.com/license.html
 */
 class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
@@ -31,29 +31,61 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 	}
 
 	/**
-	 * Returns an array of the results as ORM objects.
+	 * Returns an array of the results as ORM objects or a nested array
 	 *
+	 * @param   bool    TRUE to return an array of ORM objects, FALSE for an array of arrays
 	 * @param   string  key column to index on, NULL to ignore
 	 * @return  array
 	 */
-	public function as_array($key = NULL)
+	public function as_array($objects = TRUE, $key = NULL)
 	{
 		$array = array();
 
 		// Import class name
 		$class = $this->class_name;
 
-		foreach ($this->result as $obj)
+		if ($objects)
 		{
-			if ($key === NULL)
+			// Generate an array of objects
+			foreach ($this->result as $data)
 			{
-				// No indexing
-				$array[] = new $class($obj);
+				if ($key === NULL)
+				{
+					// No indexing
+					$array[] = new $class($data);
+				}
+				else
+				{
+					// Index on the given key
+					$array[$data->$key] = new $class($data);
+				}
 			}
-			else
+		}
+		else
+		{
+			// Generate an array of arrays (and the subarrays may be nested in the case of relationships
+			foreach ($this->result as $data)
 			{
-				// Index on the given key
-				$array[$obj->$key] = new $class($obj);
+				// Have to do a bit of magic here to handle any relationships and generate a nested array for them
+				$temp = array();
+
+				foreach ($data as $key => $val)
+				{
+					$ptr = & $temp;
+
+					foreach (explode(':', $key) as $subkey)
+					{
+						// Walk thru the relationships (separated in the key name by a ':')
+						// 'user:email:address' will be array['user']['email']['address']
+						$ptr = & $ptr[$subkey];
+					}
+
+					// Set the value
+					$ptr = $val;
+				}
+
+				// Append the result
+				$array[] = $temp;
 			}
 		}
 
