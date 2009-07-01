@@ -466,12 +466,14 @@ class Session_Core {
 
 	/**
 	 * Do not save this session.
+	 * This is a performance feature only, if using the native
+	 * session "driver" the save will NOT be aborted.
 	 * 
 	 * @return  void
 	 */
 	public function abort_save()
 	{
-		Session::$should_save = false;
+		Session::$should_save = FALSE;
 	}
 
 } // End Session Class

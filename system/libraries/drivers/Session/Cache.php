@@ -76,6 +76,9 @@ class Session_Cache_Driver implements Session_Driver {
 
 	public function write($id, $data)
 	{
+		if ( ! Session::$should_save)
+			return TRUE;
+
 		$id = 'session_'.$id;
 		$data = Kohana::config('session.encryption') ? $this->encrypt->encode($data) : $data;
 
