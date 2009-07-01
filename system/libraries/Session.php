@@ -27,6 +27,9 @@ class Session_Core {
 	// Input library
 	protected $input;
 
+	// Automatically save the session by default
+	public static $should_save = true;
+
 	/**
 	 * Singleton instance of Session.
 	 */
@@ -281,6 +284,12 @@ class Session_Core {
 	{
 		static $run;
 
+		if ( ! Session::$should_save)
+		{
+			$run = TRUE;
+			return;
+		}
+
 		if ($run === NULL)
 		{
 			$run = TRUE;
@@ -453,6 +462,16 @@ class Session_Core {
 			// Unset the key
 			unset($_SESSION[$key]);
 		}
+	}
+
+	/**
+	 * Do not save this session.
+	 * 
+	 * @return  void
+	 */
+	public function abort_save()
+	{
+		Session::$should_save = false;
 	}
 
 } // End Session Class
