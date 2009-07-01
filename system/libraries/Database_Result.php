@@ -85,15 +85,18 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	 */
 	public function offsetExists($offset)
 	{
-		if ($this->total_rows > 0)
-		{
-			$min = 0;
-			$max = $this->total_rows - 1;
+		return ($offset >= 0 AND $offset < $this->total_rows);
+	}
 
-			return ! ($offset < $min OR $offset > $max);
-		}
+	/**
+	 * ArrayAccess: offsetGet
+	 */
+	public function offsetGet($offset)
+	{
+		if ( ! $this->seek($offset))
+			return NULL;
 
-		return FALSE;
+		return $this->current();
 	}
 
 	/**
@@ -114,14 +117,6 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	final public function offsetUnset($offset)
 	{
 		throw new Kohana_Exception('Database results are read-only');
-	}
-
-	/**
-	 * Iterator: current
-	 */
-	public function current()
-	{
-		return $this->offsetGet($this->current_row);
 	}
 
 	/**

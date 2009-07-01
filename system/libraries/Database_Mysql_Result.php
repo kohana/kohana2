@@ -100,11 +100,8 @@ class Database_Mysql_Result_Core extends Database_Result {
 		}
 	}
 
-	public function offsetGet($offset)
+	public function current()
 	{
-		if ( ! $this->seek($offset))
-			return FALSE;
-
 		if ($this->return_objects)
 		{
 			if (is_string($this->return_objects))

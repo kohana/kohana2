@@ -64,11 +64,8 @@ class Database_Cache_Result_Core extends Database_Result {
 		return TRUE;
 	}
 
-	public function offsetGet($offset)
+	public function current()
 	{
-		if ( ! $this->seek($offset))
-			return FALSE;
-
 		if ($this->return_objects)
 		{
 			// Return a new object with the current row of data
