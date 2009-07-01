@@ -13,14 +13,14 @@ class Database_Cache_Result_Core extends Database_Result {
 	 * Result data (array of rows)
 	 * @var array
 	 */
-	protected $_data;
+	protected $data;
 
 	public function __construct($data, $sql, $return_objects)
 	{
-		$this->_data           = $data;
-		$this->_sql            = $sql;
-		$this->_total_rows     = count($data);
-		$this->_return_objects = $return_objects;
+		$this->data           = $data;
+		$this->sql            = $sql;
+		$this->total_rows     = count($data);
+		$this->return_objects = $return_objects;
 	}
 
 	public function __destruct()
@@ -31,7 +31,7 @@ class Database_Cache_Result_Core extends Database_Result {
 	public function as_array($return = FALSE)
 	{
 		// Return arrays rather than objects
-		$this->_return_objects = FALSE;
+		$this->return_objects = FALSE;
 
 		if ( ! $return )
 		{
@@ -40,7 +40,7 @@ class Database_Cache_Result_Core extends Database_Result {
 		}
 
 		// Return the entire array of rows
-		return $this->_data;
+		return $this->data;
 	}
 
 	public function as_object($class = NULL)
@@ -49,7 +49,7 @@ class Database_Cache_Result_Core extends Database_Result {
 			throw new Database_Exception('Database cache results do not support object casting');
 
 		// Return objects of type $class (or stdClass if none given)
-		$this->_return_objects = TRUE;
+		$this->return_objects = TRUE;
 
 		return $this;
 	}
@@ -59,7 +59,7 @@ class Database_Cache_Result_Core extends Database_Result {
 		if ( ! $this->offsetExists($offset))
 			return FALSE;
 
-		$this->_current_row = $offset;
+		$this->current_row = $offset;
 
 		return TRUE;
 	}
@@ -69,15 +69,15 @@ class Database_Cache_Result_Core extends Database_Result {
 		if ( ! $this->seek($offset))
 			return FALSE;
 
-		if ($this->_return_objects)
+		if ($this->return_objects)
 		{
 			// Return a new object with the current row of data
-			return (object) $this->_data[$this->_current_row];
+			return (object) $this->data[$this->current_row];
 		}
 		else
 		{
 			// Return an array of the row
-			return $this->_data[$this->_current_row];
+			return $this->data[$this->current_row];
 		}
 	}
 

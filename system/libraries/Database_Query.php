@@ -9,38 +9,38 @@
  */
 class Database_Query_Core {
 
-	protected $_sql;
-	protected $_params;
-	protected $_ttl = FALSE;
+	protected $sql;
+	protected $params;
+	protected $ttl = FALSE;
 
 	public function __construct($sql = NULL)
 	{
-		$this->_sql = $sql;
+		$this->sql = $sql;
 	}
 
 	public function __toString()
 	{
 		// Return the SQL of this query
-		return $this->_sql;
+		return $this->sql;
 	}
 
 	public function sql($sql)
 	{
-		$this->_sql = $sql;
+		$this->sql = $sql;
 
 		return $this;
 	}
 
 	public function value($key, $value)
 	{
-		$this->_params[$key] = $value;
+		$this->params[$key] = $value;
 
 		return $this;
 	}
 
 	public function bind($key, & $value)
 	{
-		$this->_params[$key] =& $value;
+		$this->params[$key] =& $value;
 
 		return $this;
 	}
@@ -54,21 +54,21 @@ class Database_Query_Core {
 		}
 
 		// Import the SQL locally
-		$sql = $this->_sql;
+		$sql = $this->sql;
 
-		if ( ! empty($this->_params))
+		if ( ! empty($this->params))
 		{
 			// Quote all of the values
-			$params = array_map(array($db, 'quote'), $this->_params);
+			$params = array_map(array($db, 'quote'), $this->params);
 
 			// Replace the values in the SQL
 			$sql = strtr($sql, $params);
 		}
 
-		if ($this->_ttl !== FALSE)
+		if ($this->ttl !== FALSE)
 		{
 			// Load the result from the cache
-			return $db->query_cache($sql, $this->_ttl);
+			return $db->query_cache($sql, $this->ttl);
 		}
 		else
 		{
@@ -85,7 +85,7 @@ class Database_Query_Core {
 	 */
 	public function cache($ttl = NULL)
 	{
-		$this->_ttl = $ttl;
+		$this->ttl = $ttl;
 
 		return $this;
 	}

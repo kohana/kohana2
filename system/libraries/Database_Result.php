@@ -9,14 +9,14 @@
  */
 abstract class Database_Result_Core implements Countable, Iterator, SeekableIterator, ArrayAccess {
 
-	protected $_result;
+	protected $result;
 
-	protected $_total_rows  = 0;
-	protected $_current_row = 0;
-	protected $_insert_id;
+	protected $total_rows  = 0;
+	protected $current_row = 0;
+	protected $insert_id;
 
 	// Return objects or arrays for each row
-	protected $_return_objects;
+	protected $return_objects;
 
 	/**
 	 * Sets the total number of rows and stores the result locally.
@@ -55,7 +55,7 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	 */
 	public function insert_id()
 	{
-		return $this->_insert_id;
+		return $this->insert_id;
 	}
 
 	/**
@@ -77,7 +77,7 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	 */
 	public function count()
 	{
-		return $this->_total_rows;
+		return $this->total_rows;
 	}
 
 	/**
@@ -85,10 +85,10 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	 */
 	public function offsetExists($offset)
 	{
-		if ($this->_total_rows > 0)
+		if ($this->total_rows > 0)
 		{
 			$min = 0;
-			$max = $this->_total_rows - 1;
+			$max = $this->total_rows - 1;
 
 			return ! ($offset < $min OR $offset > $max);
 		}
@@ -121,7 +121,7 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	 */
 	public function current()
 	{
-		return $this->offsetGet($this->_current_row);
+		return $this->offsetGet($this->current_row);
 	}
 
 	/**
@@ -129,7 +129,7 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	 */
 	public function key()
 	{
-		return $this->_current_row;
+		return $this->current_row;
 	}
 
 	/**
@@ -137,7 +137,7 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	 */
 	public function next()
 	{
-		++$this->_current_row;
+		++$this->current_row;
 		return $this;
 	}
 
@@ -146,7 +146,7 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	 */
 	public function prev()
 	{
-		--$this->_current_row;
+		--$this->current_row;
 		return $this;
 	}
 
@@ -155,7 +155,7 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	 */
 	public function rewind()
 	{
-		$this->_current_row = 0;
+		$this->current_row = 0;
 		return $this;
 	}
 
@@ -164,7 +164,7 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	 */
 	public function valid()
 	{
-		return $this->offsetExists($this->_current_row);
+		return $this->offsetExists($this->current_row);
 	}
 
 } // End Database_Result

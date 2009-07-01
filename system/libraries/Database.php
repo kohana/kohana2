@@ -20,19 +20,19 @@ abstract class Database_Core {
 	public static $benchmarks = array();
 
 	// Last execute query
-	public $last_query;
+	protected $last_query;
 
 	// Configuration array
-	protected $_config;
+	protected $config;
 
 	// Required configuration keys
-	protected $_config_required = array();
+	protected $config_required = array();
 
 	// Raw server connection
-	protected $_connection;
+	protected $connection;
 
 	// Cache (Cache object for cross-request, array for per-request)
-	protected $_cache;
+	protected $cache;
 
 	/**
 	 * Returns a singleton instance of Database.
@@ -66,24 +66,24 @@ abstract class Database_Core {
 	public function __construct(array $config)
 	{
 		// Store the config locally
-		$this->_config = $config;
+		$this->config = $config;
 
-		if ($this->_config['cache'] !== FALSE)
+		if ($this->config['cache'] !== FALSE)
 		{
-			if (is_string($this->_config['cache']))
+			if (is_string($this->config['cache']))
 			{
 				// Use Cache library
-				$this->_cache = new Cache($this->_config['cache']);
+				$this->cache = new Cache($this->config['cache']);
 			}
-			elseif ($this->_config['cache'] === TRUE)
+			elseif ($this->config['cache'] === TRUE)
 			{
 				// Use array
-				$this->_cache = array();
+				$this->cache = array();
 			}
 		}
 	}
 
-	public function __destruct()
+	public function _destruct()
 	{
 		$this->disconnect();
 	}
@@ -141,6 +141,16 @@ abstract class Database_Core {
 	abstract public function list_tables();
 
 	/**
+	 * Returns the last executed query for this database
+	 *
+	 * @return string
+	 */
+	public function last_query()
+	{
+		return $this->last_query;
+	}
+
+	/**
 	 * Executes the given query, returning the cached version if enabled
 	 *
 	 * @param  string  SQL query
@@ -151,14 +161,14 @@ abstract class Database_Core {
 		// Start the benchmark
 		$start = microtime(TRUE);
 
-		if (is_array($this->_cache))
+		if (is_array($this->cache))
 		{
 			$hash = $this->query_hash($sql);
 
-			if (isset($this->_cache[$hash]))
+			if (isset($this->cache[$hash]))
 			{
 				// Use cached result
-				$result = $this->_cache[$hash];
+				$result = $this->cache[$hash];
 
 				// It's from cache
 				$sql .= ' [CACHE]';
@@ -166,7 +176,7 @@ abstract class Database_Core {
 			else
 			{
 				// No cache, execute query and store in cache
-				$result = $this->_cache[$hash] = $this->query_execute($sql);
+				$result = $this->cache[$hash] = $this->query_execute($sql);
 			}
 		}
 		else
@@ -178,7 +188,7 @@ abstract class Database_Core {
 		// Stop the benchmark
 		$stop = microtime(TRUE);
 
-		if ($this->_config['benchmark'] === TRUE)
+		if ($this->config['benchmark'] === TRUE)
 		{
 			// Benchmark the query
 			Database::$benchmarks[] = array('query' => $sql, 'time' => $stop - $start, 'rows' => count($result));
@@ -196,7 +206,7 @@ abstract class Database_Core {
 	 */
 	public function query_cache($sql, $ttl)
 	{
-		if ( ! $this->_cache instanceof Cache)
+		if ( ! $this->cache instanceof Cache)
 		{
 			throw new Database_Exception('Database :name has not been configured to use the Cache library.');
 		}
@@ -206,10 +216,10 @@ abstract class Database_Core {
 
 		$hash = $this->query_hash($sql);
 
-		if (($data = $this->_cache->get($hash)) !== NULL)
+		if (($data = $this->cache->get($hash)) !== NULL)
 		{
 			// Found in cache, create result
-			$result = new Database_Cache_Result($data, $sql, $this->_config['object']);
+			$result = new Database_Cache_Result($data, $sql, $this->config['object']);
 
 			// It's from the cache
 			$sql .= ' [CACHE]';
@@ -220,16 +230,16 @@ abstract class Database_Core {
 			$data = $this->query_execute($sql)->as_array(TRUE);
 
 			// Set the Cache
-			$this->_cache->set($hash, $data, NULL, $ttl);
+			$this->cache->set($hash, $data, NULL, $ttl);
 
 			// Create result
-			$result = new Database_Cache_Result($data, $sql, $this->_config['object']);
+			$result = new Database_Cache_Result($data, $sql, $this->config['object']);
 		}
 
 		// Stop the benchmark
 		$stop = microtime(TRUE);
 
-		if ($this->_config['benchmark'] === TRUE)
+		if ($this->config['benchmark'] === TRUE)
 		{
 			// Benchmark the query
 			Database::$benchmarks[] = array('query' => $sql, 'time' => $stop - $start, 'rows' => count($result));
@@ -257,20 +267,20 @@ abstract class Database_Core {
 	 */
 	public function clear_cache($sql = NULL)
 	{
-		if (isset($this->_cache))
+		if (isset($this->cache))
 		{
 			// Using cross-request Cache library
 			if ($sql === TRUE)
 			{
-				$this->_cache->delete($this->query_hash($this->_last_query));
+				$this->cache->delete($this->query_hash($this->last_query));
 			}
 			elseif (is_string($sql))
 			{
-				$this->_cache->delete($this->query_hash($sql));
+				$this->cache->delete($this->query_hash($sql));
 			}
 			else
 			{
-				$this->_cache->delete_all();
+				$this->cache->delete_all();
 			}
 		}
 		else
@@ -278,15 +288,15 @@ abstract class Database_Core {
 			// Using per-request memory cache
 			if ($sql === TRUE)
 			{
-				unset($this->_query_cache[$this->query_hash($this->last_query)]);
+				unset($this->query_cache[$this->query_hash($this->last_query)]);
 			}
 			elseif (is_string($sql))
 			{
-				unset($this->_query_cache[$this->query_hash($sql)]);
+				unset($this->query_cache[$this->query_hash($sql)]);
 			}
 			else
 			{
-				$this->_query_cache = array();
+				$this->query_cache = array();
 			}
 		}
 	}
@@ -299,7 +309,7 @@ abstract class Database_Core {
 	 */
 	public function quote($value)
 	{
-		if ( ! $this->_config['escape'])
+		if ( ! $this->config['escape'])
 			return $value;
 
 		if ($value === NULL)
@@ -348,13 +358,13 @@ abstract class Database_Core {
 
 		$use_alias = ! empty($alias);
 
-		$table = $this->_config['table_prefix'].$table;
-		$alias = $this->_config['table_prefix'].$alias;
+		$table = $this->config['table_prefix'].$table;
+		$alias = $this->config['table_prefix'].$alias;
 
-		if ($this->_config['escape'])
+		if ($this->config['escape'])
 		{
-			$table = $this->_quote.$table.$this->_quote;
-			$alias = $this->_quote.$alias.$this->_quote;
+			$table = $this->quote.$table.$this->quote;
+			$alias = $this->quote.$alias.$this->quote;
 		}
 
 		if ($use_alias)
@@ -382,10 +392,10 @@ abstract class Database_Core {
 
 			$use_alias = ! empty($alias);
 
-			if ($this->_config['escape'])
+			if ($this->config['escape'])
 			{
 				// Quote the alias
-				$alias = $this->_quote.$alias.$this->_quote;
+				$alias = $this->quote.$alias.$this->quote;
 			}
 		}
 		else
@@ -399,9 +409,9 @@ abstract class Database_Core {
 			// Using a complex column name (e.g. COUNT("*")) - only treat what's in double quotes as a column
 
 			// Find "table.column" and replace them with "[prefix]table.column"
-			$column = preg_replace('/"([^.]++)\.([^"]++)"/', '"'.$this->_config['table_prefix'].'$1.$2"', $column);
+			$column = preg_replace('/"([^.]++)\.([^"]++)"/', '"'.$this->config['table_prefix'].'$1.$2"', $column);
 
-			$replace = $this->_config['escape'] ? $this->_quote : '';
+			$replace = $this->config['escape'] ? $this->quote : '';
 
 			// Replace double quotes
 			$column = str_replace('"', $replace, $column);
@@ -413,23 +423,23 @@ abstract class Database_Core {
 			if (strpos($column, '.') !== FALSE)
 			{
 				// Attach table prefix if table.column format
-				$column = $this->_config['table_prefix'].$column;
+				$column = $this->config['table_prefix'].$column;
 			}
 
-			if ($this->_config['escape'])
+			if ($this->config['escape'])
 			{
 				// Quote the column
-				$column = $this->_quote.$column.$this->_quote;
+				$column = $this->quote.$column.$this->quote;
 			}
 		}
 
-		if ($this->_config['escape'])
+		if ($this->config['escape'])
 		{
 			// Replace . with `.`
-			$column = str_replace('.', $this->_quote.'.'.$this->_quote, $column);
+			$column = str_replace('.', $this->quote.'.'.$this->quote, $column);
 
 			// Unescape any asterisks
-			$column = str_replace($this->_quote.'*'.$this->_quote, '*', $column);
+			$column = str_replace($this->quote.'*'.$this->quote, '*', $column);
 		}
 
 		if ($use_alias)
@@ -446,12 +456,12 @@ abstract class Database_Core {
 	 */
 	public function table_prefix($new_prefix = NULL)
 	{
-		$prefix = $this->_config['table_prefix'];
+		$prefix = $this->config['table_prefix'];
 
 		if ($new_prefix !== NULL)
 		{
 			// Set a new prefix
-			$this->_config['table_prefix'] = $new_prefix;
+			$this->config['table_prefix'] = $new_prefix;
 		}
 
 		return $prefix;
@@ -492,7 +502,7 @@ abstract class Database_Core {
 		if (empty($sql_types[$type]))
 		{
 			throw new Database_Exception('Undefined field type :type in :method of :class',
-				array(':type' => $type, ':method' => __FUNCTION__, ':class' => get_class($this)));
+				array(':type' => $type, ':method' => _FUNCTION__, ':class' => get_class($this)));
 		}
 
 		// Fetch the field definition

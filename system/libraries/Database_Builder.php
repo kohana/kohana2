@@ -10,33 +10,33 @@
 class Database_Builder_Core {
 
 	// Valid JOIN types
-	protected $_join_types = array('LEFT', 'RIGHT', 'INNER', 'OUTER', 'RIGHT OUTER', 'LEFT OUTER', 'FULL');
+	protected $join_types = array('LEFT', 'RIGHT', 'INNER', 'OUTER', 'RIGHT OUTER', 'LEFT OUTER', 'FULL');
 
 	// Valid ORDER BY directions
 	protected $order_directions = array('ASC', 'DESC', 'RAND()');
 
 	// Database object
-	protected $_db;
+	protected $db;
 
 	// Builder members
-	protected $_select   = array();
-	protected $_from     = array();
-	protected $_join     = array();
-	protected $_where    = array();
-	protected $_group_by = array();
-	protected $_having   = array();
-	protected $_order_by = array();
-	protected $_limit    = NULL;
-	protected $_offset   = NULL;
-	protected $_set      = array();
-	protected $_type;
+	protected $select   = array();
+	protected $from     = array();
+	protected $join     = array();
+	protected $where    = array();
+	protected $group_by = array();
+	protected $having   = array();
+	protected $order_by = array();
+	protected $limit    = NULL;
+	protected $offset   = NULL;
+	protected $set      = array();
+	protected $type;
 
 	// TTL for caching (using Cache library)
-	protected $_ttl      = FALSE;
+	protected $ttl      = FALSE;
 
 	public function __construct($db = 'default')
 	{
-		$this->_db = $db;
+		$this->db = $db;
 	}
 
 	/**
@@ -44,21 +44,21 @@ class Database_Builder_Core {
 	 */
 	public function reset()
 	{
-		$this->_select   = array();
-		$this->_from     = array();
-		$this->_join     = array();
-		$this->_where    = array();
-		$this->_group_by = array();
-		$this->_having   = array();
-		$this->_order_by = array();
-		$this->_limit    = NULL;
-		$this->_offset   = NULL;
-		$this->_set      = array();
+		$this->select   = array();
+		$this->from     = array();
+		$this->join     = array();
+		$this->where    = array();
+		$this->group_by = array();
+		$this->having   = array();
+		$this->order_by = array();
+		$this->limit    = NULL;
+		$this->offset   = NULL;
+		$this->set      = array();
 	}
 
-	public function __toString()
+	public function _toString()
 	{
-		return $this->_compile();
+		return $this->compile();
 	}
 
 	/**
@@ -66,23 +66,23 @@ class Database_Builder_Core {
 	 *
 	 * @return string  Compiled query
 	 */
-	protected function _compile()
+	protected function compile()
 	{
-		if ( ! is_object($this->_db))
+		if ( ! is_object($this->db))
 		{
 			// Use default database for compiling to string if none is given
-			$this->_db = Database::instance($this->_db);
+			$this->db = Database::instance($this->db);
 		}
 
-		if ($this->_type === Database::SELECT)
+		if ($this->type === Database::SELECT)
 		{
 			// SELECT columns FROM table
-			$sql = 'SELECT '.$this->_compile_select()."\n".'FROM '.$this->_compile_from();
+			$sql = 'SELECT '.$this->compile_select()."\n".'FROM '.$this->compile_from();
 		}
-		elseif ($this->_type === Database::UPDATE)
+		elseif ($this->type === Database::UPDATE)
 		{
 			$vals = array();
-			foreach ($this->_set as $key => $val)
+			foreach ($this->set as $key => $val)
 			{
 				if (is_string($key))
 				{
@@ -96,54 +96,54 @@ class Database_Builder_Core {
 				}
 			}
 
-			$sql = 'UPDATE '.$this->_compile_from()."\n".'SET '.implode(', ', $this->_compile_set(Database::UPDATE));
+			$sql = 'UPDATE '.$this->compile_from()."\n".'SET '.implode(', ', $this->compile_set(Database::UPDATE));
 		}
-		elseif ($this->_type === Database::INSERT)
+		elseif ($this->type === Database::INSERT)
 		{
-			$vals = $this->_compile_set(Database::INSERT);
+			$vals = $this->compile_set(Database::INSERT);
 
-			$sql = 'INSERT INTO '.$this->_compile_from()."\n".
+			$sql = 'INSERT INTO '.$this->compile_from()."\n".
 				   '('.implode(', ', array_keys($vals)).')'."\n".
 				   'VALUES ('.implode(', ', array_values($vals)).')';
 		}
-		elseif ($this->_type === Database::DELETE)
+		elseif ($this->type === Database::DELETE)
 		{
-			$sql = 'DELETE FROM '.$this->_compile_from();
+			$sql = 'DELETE FROM '.$this->compile_from();
 		}
 
-		if ( ! empty($this->_join))
+		if ( ! empty($this->join))
 		{
-			$sql .= $this->_compile_join();
+			$sql .= $this->compile_join();
 		}
 
-		if ( ! empty($this->_where))
+		if ( ! empty($this->where))
 		{
-			$sql .= "\n".'WHERE '.$this->_compile_conditions($this->_where);
+			$sql .= "\n".'WHERE '.$this->compile_conditions($this->where);
 		}
 
-		if ( ! empty($this->_having))
+		if ( ! empty($this->having))
 		{
-			$sql .= "\n".'HAVING '.$this->_compile_conditions($this->_having);
+			$sql .= "\n".'HAVING '.$this->compile_conditions($this->having);
 		}
 
-		if ( ! empty($this->_group_by))
+		if ( ! empty($this->group_by))
 		{
-			$sql .= "\n".'GROUP BY '.$this->_compile_group_by();
+			$sql .= "\n".'GROUP BY '.$this->compile_group_by();
 		}
 
-		if ( ! empty($this->_order_by))
+		if ( ! empty($this->order_by))
 		{
-			$sql .= "\nORDER BY ".$this->_compile_order_by();
+			$sql .= "\nORDER BY ".$this->compile_order_by();
 		}
 
-		if (is_int($this->_limit))
+		if (is_int($this->limit))
 		{
-			$sql .= "\nLIMIT ".$this->_limit;
+			$sql .= "\nLIMIT ".$this->limit;
 		}
 
-		if (is_int($this->_offset))
+		if (is_int($this->offset))
 		{
-			$sql .= "\nOFFSET ".$this->_offset;
+			$sql .= "\nOFFSET ".$this->offset;
 		}
 
 		return $sql;
@@ -154,19 +154,19 @@ class Database_Builder_Core {
 	 *
 	 * @return string
 	 */
-	protected function _compile_select()
+	protected function compile_select()
 	{
 		$vals = array();
 
-		foreach ($this->_select as $name => $alias)
+		foreach ($this->select as $name => $alias)
 		{
 			if (is_string($name))
 			{
-				$vals[] = $this->_db->quote_column(array($name => $alias));
+				$vals[] = $this->db->quote_column(array($name => $alias));
 			}
 			else
 			{
-				$vals[] = $this->_db->quote_column($alias);
+				$vals[] = $this->db->quote_column($alias);
 			}
 		}
 
@@ -178,21 +178,21 @@ class Database_Builder_Core {
 	 *
 	 * @return string
 	 */
-	protected function _compile_from()
+	protected function compile_from()
 	{
 		$vals = array();
 
-		foreach ($this->_from as $name => $alias)
+		foreach ($this->from as $name => $alias)
 		{
 			if (is_string($name))
 			{
 				// Using AS format so escape both
-				$vals[] = $this->_db->quote_table(array($name => $alias));
+				$vals[] = $this->db->quote_table(array($name => $alias));
 			}
 			else
 			{
 				// Just using the table name itself
-				$vals[] = $this->_db->quote_table($alias);
+				$vals[] = $this->db->quote_table($alias);
 			}
 		}
 
@@ -204,10 +204,10 @@ class Database_Builder_Core {
 	 *
 	 * @return string
 	 */
-	protected function _compile_join()
+	protected function compile_join()
 	{
 		$sql = '';
-		foreach ($this->_join as $join)
+		foreach ($this->join as $join)
 		{
 			list($table, $keys, $type) = $join;
 
@@ -223,7 +223,7 @@ class Database_Builder_Core {
 			if ($keys instanceof Database_Expression)
 			{
 				// ON conditions are a Database_Expression, so parse it
-				$condition = $keys->parse($this->_db);
+				$condition = $keys->parse($this->db);
 			}
 			elseif (is_array($keys))
 			{
@@ -235,7 +235,7 @@ class Database_Builder_Core {
 						$condition .= ' AND ';
 					}
 
-					$condition .= $this->_db->quote_column($key).' = '.$this->_db->quote_column($value);
+					$condition .= $this->db->quote_column($key).' = '.$this->db->quote_column($value);
 				}
 			}
 
@@ -254,14 +254,14 @@ class Database_Builder_Core {
 	 *
 	 * @return string
 	 */
-	protected function _compile_group_by()
+	protected function compile_group_by()
 	{
 		$vals = array();
 
-		foreach ($this->_group_by as $column)
+		foreach ($this->group_by as $column)
 		{
 			// Escape the column
-			$vals[] = $this->_db->quote_column($column);
+			$vals[] = $this->db->quote_column($column);
 		}
 
 		return implode(', ', $vals);
@@ -272,15 +272,15 @@ class Database_Builder_Core {
 	 *
 	 * @return string
 	 */
-	public function _compile_order_by()
+	public function compile_order_by()
 	{
 		$ordering = array();
 
-		foreach ($this->_order_by as $column => $order_by)
+		foreach ($this->order_by as $column => $order_by)
 		{
 			list($column, $direction) = each($order_by);
 
-			$column = $this->_db->quote_column($column);
+			$column = $this->db->quote_column($column);
 
 			if ($direction !== NULL)
 			{
@@ -298,22 +298,22 @@ class Database_Builder_Core {
 	 *
 	 * @return string
 	 */
-	public function _compile_set($type)
+	public function compile_set($type)
 	{
 		$vals = array();
-		foreach ($this->_set as $key => $value)
+		foreach ($this->set as $key => $value)
 		{
-			$key = $this->_db->quote_column($key);
+			$key = $this->db->quote_column($key);
 
 			if ($value instanceof Database_Expression)
 			{
 				// Parse Database_Expressions
-				$value = $value->parse($this->_db);
+				$value = $value->parse($this->db);
 			}
 			else
 			{
 				// Just quote the value
-				$value = $this->_db->quote($value);
+				$value = $this->db->quote($value);
 			}
 
 			if ($type === Database::UPDATE)
@@ -351,14 +351,14 @@ class Database_Builder_Core {
 		{
 			$type = strtoupper($type);
 
-			if ( ! in_array($type, $this->_join_types))
+			if ( ! in_array($type, $this->join_types))
 			{
 				// This join type is not supported
 				$type = NULL;
 			}
 		}
 
-		$this->_join[] = array($table, $keys, $type);
+		$this->join[] = array($table, $keys, $type);
 
 		return $this;
 	}
@@ -376,7 +376,7 @@ class Database_Builder_Core {
 			$tables = func_get_args();
 		}
 
-		$this->_from = array_merge($this->_from, $tables);
+		$this->from = array_merge($this->from, $tables);
 
 		return $this;
 	}
@@ -394,7 +394,7 @@ class Database_Builder_Core {
 			$columns = func_get_args();
 		}
 
-		$this->_group_by = array_merge($this->_group_by, $columns);
+		$this->group_by = array_merge($this->group_by, $columns);
 
 		return $this;
 	}
@@ -422,7 +422,7 @@ class Database_Builder_Core {
 	 */
 	public function and_having($columns, $op = '=', $value = NULL)
 	{
-		$this->_having[] = array('AND' => array($columns, $op, $value));
+		$this->having[] = array('AND' => array($columns, $op, $value));
 		return $this;
 	}
 
@@ -436,7 +436,7 @@ class Database_Builder_Core {
 	 */
 	public function or_having($columns, $op = '=', $value = NULL)
 	{
-		$this->_having[] = array('OR' => array($columns, $op, $value));
+		$this->having[] = array('OR' => array($columns, $op, $value));
 		return $this;
 	}
 
@@ -454,7 +454,7 @@ class Database_Builder_Core {
 			$columns = array($columns => $direction);
 		}
 
-		$this->_order_by[] = $columns;
+		$this->order_by[] = $columns;
 
 		return $this;
 	}
@@ -467,7 +467,7 @@ class Database_Builder_Core {
 	 */
 	public function limit($number)
 	{
-		$this->_limit = (int) $number;
+		$this->limit = (int) $number;
 
 		return $this;
 	}
@@ -480,7 +480,7 @@ class Database_Builder_Core {
 	 */
 	public function offset($number)
 	{
-		$this->_offset = (int) $number;
+		$this->offset = (int) $number;
 
 		return $this;
 	}
@@ -529,11 +529,11 @@ class Database_Builder_Core {
 	{
 		if ($clause === 'WHERE')
 		{
-			$this->_where[] = array('AND' => '(');
+			$this->where[] = array('AND' => '(');
 		}
 		else
 		{
-			$this->_having[] = array('AND' => '(');
+			$this->having[] = array('AND' => '(');
 		}
 
 		return $this;
@@ -543,11 +543,11 @@ class Database_Builder_Core {
 	{
 		if ($clause === 'WHERE')
 		{
-			$this->_where[] = array('OR' => '(');
+			$this->where[] = array('OR' => '(');
 		}
 		else
 		{
-			$this->_having[] = array('OR' => '(');
+			$this->having[] = array('OR' => '(');
 		}
 
 		return $this;
@@ -557,11 +557,11 @@ class Database_Builder_Core {
 	{
 		if ($clause === 'WHERE')
 		{
-			$this->_where[] = array(')');
+			$this->where[] = array(')');
 		}
 		else
 		{
-			$this->_having[] = array(')');
+			$this->having[] = array(')');
 		}
 
 		return $this;
@@ -590,7 +590,7 @@ class Database_Builder_Core {
 	 */
 	public function and_where($columns, $op = '=', $value = NULL)
 	{
-		$this->_where[] = array('AND' => array($columns, $op, $value));
+		$this->where[] = array('AND' => array($columns, $op, $value));
 		return $this;
 	}
 
@@ -604,7 +604,7 @@ class Database_Builder_Core {
 	 */
 	public function or_where($columns, $op = '=', $value = NULL)
 	{
-		$this->_where[] = array('OR' => array($columns, $op, $value));
+		$this->where[] = array('OR' => array($columns, $op, $value));
 		return $this;
 	}
 
@@ -614,7 +614,7 @@ class Database_Builder_Core {
 	 * @param  array  Clause conditions
 	 * @return string
 	 */
-	protected function _compile_conditions($groups)
+	protected function compile_conditions($groups)
 	{
 		$last_condition = NULL;
 
@@ -648,7 +648,7 @@ class Database_Builder_Core {
 					if ($columns instanceof Database_Expression)
 					{
 						// Parse Database_Expression and add to condition list
-						$vals[] = $columns->parse($this->_db);
+						$vals[] = $columns->parse($this->db);
 					}
 					else
 					{
@@ -664,12 +664,12 @@ class Database_Builder_Core {
 							if ($value instanceof Database_Expression)
 							{
 								// Parse Database_Expression for right side of operator
-								$value = $value->parse($this->_db);
+								$value = $value->parse($this->db);
 							}
 							elseif ($value instanceof Database_Builder)
 							{
 								// Using a subquery
-								$value->_db = $this->_db;
+								$value->db = $this->db;
 								$value = '('.(string) $value.')';
 							}
 							elseif (is_array($value))
@@ -677,24 +677,24 @@ class Database_Builder_Core {
 								if ($op === 'BETWEEN' OR $op === 'NOT BETWEEN')
 								{
 									// Falls between two values
-									$value = $this->_db->quote($value[0]).' AND '.$this->_db->quote($value[1]);
+									$value = $this->db->quote($value[0]).' AND '.$this->db->quote($value[1]);
 								}
 								else
 								{
 									// Return as list
-									$value = array_map(array($this->_db, 'escape'), $value);
+									$value = array_map(array($this->db, 'escape'), $value);
 									$value = '('.implode(', ', $value).')';
 								}
 							}
 							else
 							{
-								$value = $this->_db->quote($value);
+								$value = $this->db->quote($value);
 							}
 
 							if ( ! empty($column))
 							{
 								// Ignore blank columns
-								$column = $this->_db->quote_column($column);
+								$column = $this->db->quote_column($column);
 							}
 
 							// Add to condition list
@@ -734,7 +734,7 @@ class Database_Builder_Core {
 			$keys = array($keys => $value);
 		}
 
-		$this->_set = array_merge($keys, $this->_set);
+		$this->set = array_merge($keys, $this->set);
 
 		return $this;
 	}
@@ -747,7 +747,7 @@ class Database_Builder_Core {
 	 */
 	public function select($columns = NULL)
 	{
-		$this->_type = Database::SELECT;
+		$this->type = Database::SELECT;
 
 		if ($columns === NULL)
 		{
@@ -758,7 +758,7 @@ class Database_Builder_Core {
 			$columns = func_get_args();
 		}
 
-		$this->_select = array_merge($this->_select, $columns);
+		$this->select = array_merge($this->select, $columns);
 
 		return $this;
 	}
@@ -773,7 +773,7 @@ class Database_Builder_Core {
 	 */
 	public function update($table = NULL, $set = NULL, $where = NULL)
 	{
-		$this->_type = Database::UPDATE;
+		$this->type = Database::UPDATE;
 
 		if (is_array($set))
 		{
@@ -802,7 +802,7 @@ class Database_Builder_Core {
 	 */
 	public function insert($table = NULL, $set = NULL)
 	{
-		$this->_type = Database::INSERT;
+		$this->type = Database::INSERT;
 
 		if (is_array($set))
 		{
@@ -826,7 +826,7 @@ class Database_Builder_Core {
 	 */
 	public function delete($table, $where = NULL)
 	{
-		$this->_type = Database::DELETE;
+		$this->type = Database::DELETE;
 
 		if ($where !== NULL)
 		{
@@ -850,7 +850,7 @@ class Database_Builder_Core {
 	 */
 	public function count_records($table = FALSE, $where = NULL)
 	{
-		if (count($this->_from) < 1)
+		if (count($this->from) < 1)
 		{
 			if ($table === FALSE)
 				throw new Database_Exception('Database count_records requires a table');
@@ -879,29 +879,29 @@ class Database_Builder_Core {
 	{
 		if ($db !== NULL)
 		{
-			$this->_db = $db;
+			$this->db = $db;
 		}
 
-		if ( ! is_object($this->_db))
+		if ( ! is_object($this->db))
 		{
 			// Get the database instance
-			$this->_db = Database::instance($this->_db);
+			$this->db = Database::instance($this->db);
 		}
 
-		$query = $this->_compile();
+		$query = $this->compile();
 
 		// Reset the query after executing
 		$this->reset();
 
-		if ($this->_ttl !== FALSE AND $this->_type === Database::SELECT)
+		if ($this->ttl !== FALSE AND $this->type === Database::SELECT)
 		{
 			// Return result from cache (only allowed with SELECT)
-			return $this->_db->query_cache($query, $this->_ttl);
+			return $this->db->query_cache($query, $this->ttl);
 		}
 		else
 		{
 			// Load the result (no caching)
-			return $this->_db->query($query);
+			return $this->db->query($query);
 		}
 	}
 
@@ -913,7 +913,7 @@ class Database_Builder_Core {
 	 */
 	public function cache($ttl = NULL)
 	{
-		$this->_ttl = $ttl;
+		$this->ttl = $ttl;
 
 		return $this;
 	}
