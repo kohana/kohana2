@@ -48,6 +48,9 @@ class Session_Cookie_Driver implements Session_Driver {
 
 	public function write($id, $data)
 	{
+		if ( ! Session::$should_save)
+			return TRUE;
+
 		$data = empty($this->encrypt) ? base64_encode($data) : $this->encrypt->encode($data);
 
 		if (strlen($data) > 4048)

@@ -98,6 +98,9 @@ class Session_Database_Driver implements Session_Driver {
 
 	public function write($id, $data)
 	{
+		if ( ! Session::$should_save)
+			return TRUE;
+
 		$data = array
 		(
 			'session_id' => $id,
