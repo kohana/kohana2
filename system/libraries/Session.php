@@ -284,12 +284,6 @@ class Session_Core {
 	{
 		static $run;
 
-		if ( ! Session::$should_save)
-		{
-			$run = TRUE;
-			return;
-		}
-
 		if ($run === NULL)
 		{
 			$run = TRUE;
