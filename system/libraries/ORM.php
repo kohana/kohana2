@@ -1424,7 +1424,7 @@ class ORM_Core {
 			}
 		}
 
-		if ( ! isset($this->db_applied['orderby']) AND ! empty($this->sorting))
+		if ( ! isset($this->db_applied['order_by']) AND ! empty($this->sorting))
 		{
 			$sorting = array();
 			foreach ($this->sorting as $column => $direction)
