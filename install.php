@@ -80,7 +80,7 @@
 				</tr>
 				<tr>
 					<th>System Directory</th>
-					<?php if (is_dir(SYSPATH) AND is_file(SYSPATH.'core/Bootstrap'.EXT)): ?>
+					<?php if (is_dir(SYSPATH)): ?>
 					<td class="pass">
 						<?php echo SYSPATH?>
 					</td>
@@ -96,7 +96,7 @@
 				</tr>
 				<tr>
 					<th>Application Directory</th>
-					<?php if (is_dir(APPPATH) AND is_file(APPPATH.'config/config'.EXT)): ?>
+					<?php if (is_dir(APPPATH) AND is_file(APPPATH.'config/config'.EXT) AND is_file(APPPATH.'Bootstrap'.EXT)): ?>
 					<td class="pass">
 						<?php echo APPPATH?>
 					</td>
