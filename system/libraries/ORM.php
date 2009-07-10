@@ -531,6 +531,15 @@ class ORM_Core {
 			$object[$key] = $this->$key;
 		}
 
+		foreach ($this->with_applied as $model => $enabled)
+		{
+			// Generate arrays for relationships
+			if ($enabled)
+			{
+				$object[$model] = $this->$model->as_array();
+			}
+		}
+
 		return $object;
 	}
 

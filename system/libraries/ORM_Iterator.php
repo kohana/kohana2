@@ -63,7 +63,8 @@ class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 		}
 		else
 		{
-			// Generate an array of arrays (and the subarrays may be nested in the case of relationships
+			// Generate an array of arrays (and the subarrays may be nested in the case of relationships)
+			// This could be done by creating a new ORM object and calling as_array on it, but this is much faster
 			foreach ($this->result as $data)
 			{
 				// Have to do a bit of magic here to handle any relationships and generate a nested array for them
