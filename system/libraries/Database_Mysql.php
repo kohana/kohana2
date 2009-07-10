@@ -150,7 +150,7 @@ class Database_Mysql_Core extends Database {
 
 	public function field_data($table)
 	{
-		return $this->query('SHOW COLUMNS FROM '.$this->quote_table($table), $this->connection)->as_array(TRUE);
+		return $this->query('SHOW COLUMNS FROM '.$this->quote_table($table))->as_array(TRUE);
 	}
 
 	public function list_tables()
