@@ -858,10 +858,10 @@ class ORM_Core {
 
 				if ( ! empty($removed))
 				{
-					$this->db
+					db::delete($join_table)
 						->where($object_fk, $this->primary_key_value)
 						->in($related_fk, $removed)
-						->delete($join_table);
+						->execute($this->db);
 				}
 
 				// Clear all relations for this column
