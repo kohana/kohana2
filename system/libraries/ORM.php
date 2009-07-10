@@ -701,7 +701,7 @@ class ORM_Core {
 		}
 
 		// Return a select list from the results
-		return $this->select($key, $val)->find_all()->select_list($key, $val);
+		return $this->select($this->table_name.'.'.$key, $this->table_name.'.'.$val)->find_all()->select_list($key, $val);
 	}
 
 	/**
