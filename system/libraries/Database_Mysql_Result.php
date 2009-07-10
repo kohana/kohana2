@@ -9,6 +9,8 @@
  */
 class Database_Mysql_Result_Core extends Database_Result {
 
+	protected $internal_row = 0;
+
 	public function __construct($result, $sql, $link, $return_objects)
 	{
 		if (is_resource($result))
@@ -72,6 +74,8 @@ class Database_Mysql_Result_Core extends Database_Result {
 				// Add each row to the array
 				$array[] = $row;
 			}
+
+			$this->internal_row = $this->total_rows;
 		}
 
 		return $array;
@@ -85,12 +89,15 @@ class Database_Mysql_Result_Core extends Database_Result {
 		return $this;
 	}
 
+	/**
+	 * SeekableIterator: seek
+	 */
 	public function seek($offset)
 	{
 		if ($this->offsetExists($offset) AND mysql_data_seek($this->result, $offset))
 		{
 			// Set the current row to the offset
-			$this->current_row = $offset;
+			$this->current_row = $this->internal_row = $offset;
 
 			return TRUE;
 		}
@@ -100,8 +107,16 @@ class Database_Mysql_Result_Core extends Database_Result {
 		}
 	}
 
+	/**
+	 * Iterator: current
+	 */
 	public function current()
 	{
+		if ($this->current_row !== $this->internal_row AND ! $this->seek($this->current_row))
+			return NULL;
+
+		++$this->internal_row;
+
 		if ($this->return_objects)
 		{
 			if (is_string($this->return_objects))
