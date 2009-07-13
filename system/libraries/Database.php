@@ -340,40 +340,50 @@ abstract class Database_Core {
 	 */
 	public function quote_table($table)
 	{
-		if ( ! is_array($table))
-		{
-			if (strpos(' ', $table) !== FALSE)
-			{
-				// Using format 'user u'
-				list($table, $alias) = explode(' ', $table);
-			}
-			else
-			{
-				// Ignore alias
-				$alias = '';
-			}
-		}
-		else
+		if (is_array($table))
 		{
 			// Using array('user' => 'u')
 			list($table, $alias) = each($table);
 		}
+		elseif (strpos(' ', $table) !== FALSE)
+		{
+			// Using format 'user u'
+			list($table, $alias) = explode(' ', $table);
+		}
+		else
+		{
+			// Ignore alias
+			$alias = FALSE;
+		}
 
-		$use_alias = ! empty($alias);
+		if ($alias)
+		{
+			if ($this->config['table_prefix'])
+			{
+				$table = $this->config['table_prefix'].$table;
+				$alias = $this->config['table_prefix'].$alias;
+			}
 
-		$table = $this->config['table_prefix'].$table;
-		$alias = $this->config['table_prefix'].$alias;
+			if ($this->config['escape'])
+			{
+				$table = $this->quote.$table.$this->quote;
+				$alias = $this->quote.$alias.$this->quote;
+			}
+
+			return $table.' AS '.$alias;
+		}
+
+		if ($this->config['table_prefix'])
+		{
+			$table = $this->config['table_prefix'].$table;
+		}
 
 		if ($this->config['escape'])
 		{
 			$table = $this->quote.$table.$this->quote;
-			$alias = $this->quote.$alias.$this->quote;
 		}
 
-		if ($use_alias)
-			return $table.' AS '.$alias;
-		else
-			return $table;
+		return $table;
 	}
 
 	/**
@@ -392,63 +402,63 @@ abstract class Database_Core {
 		if (is_array($column))
 		{
 			list($column, $alias) = each($column);
+		}
+		else
+		{
+			$alias = FALSE;
+		}
 
-			$use_alias = ! empty($alias);
-
-			if ($this->config['escape'])
+		if ($this->config['table_prefix'] AND strpos($column, '.') !== FALSE)
+		{
+			if (strpos($column, '"') !== FALSE)
 			{
-				// Quote the alias
-				$alias = $this->quote.$alias.$this->quote;
+				// Find "table.column" and replace them with "[prefix]table.column"
+				$column = preg_replace('/"([^.]++)\.([^"]++)"/', '"'.$this->config['table_prefix'].'$1.$2"', $column);
 			}
-		}
-		else
-		{
-			// No alias being used
-			$use_alias = FALSE;
-		}
-
-		if (strpos($column, '"') !== FALSE)
-		{
-			// Using a complex column name (e.g. COUNT("*")) - only treat what's in double quotes as a column
-
-			// Find "table.column" and replace them with "[prefix]table.column"
-			$column = preg_replace('/"([^.]++)\.([^"]++)"/', '"'.$this->config['table_prefix'].'$1.$2"', $column);
-
-			$replace = $this->config['escape'] ? $this->quote : '';
-
-			// Replace double quotes
-			$column = str_replace('"', $replace, $column);
-		}
-		else
-		{
-			// Using a simple table.colum or column
-
-			if (strpos($column, '.') !== FALSE)
+			else
 			{
 				// Attach table prefix if table.column format
 				$column = $this->config['table_prefix'].$column;
-			}
-
-			if ($this->config['escape'])
-			{
-				// Quote the column
-				$column = $this->quote.$column.$this->quote;
 			}
 		}
 
 		if ($this->config['escape'])
 		{
-			// Replace . with `.`
+			if (strpos($column, '"') === FALSE)
+			{
+				// Quote the column
+				$column = $this->quote.$column.$this->quote;
+			}
+			elseif ($this->quote !== '"')
+			{
+				// Replace double quotes
+				$column = str_replace('"', $this->quote, $column);
+			}
+
+			// Replace . with "."
 			$column = str_replace('.', $this->quote.'.'.$this->quote, $column);
 
 			// Unescape any asterisks
 			$column = str_replace($this->quote.'*'.$this->quote, '*', $column);
-		}
 
-		if ($use_alias)
-			return $column.' AS '.$alias;
-		else
+			if ($alias)
+			{
+				// Quote the alias
+				return $column.' AS '.$this->quote.$alias.$this->quote;
+			}
+
 			return $column;
+		}
+		else
+		{
+			// Strip double quotes
+			$column = str_replace('"', '', $column);
+
+			if ($alias)
+				return $column.' AS '.$alias;
+			else
+				return $column;
+		}
 	}
 
 	/**
