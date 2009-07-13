@@ -34,6 +34,9 @@ abstract class Database_Core {
 	// Cache (Cache object for cross-request, array for per-request)
 	protected $cache;
 
+	// Quote character to use for identifiers (tables/columns/aliases)
+	protected $quote = '"';
+
 	/**
 	 * Returns a singleton instance of Database.
 	 *
