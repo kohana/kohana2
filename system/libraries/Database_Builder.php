@@ -9,9 +9,6 @@
  */
 class Database_Builder_Core {
 
-	// Valid JOIN types
-	protected $join_types = array('LEFT', 'RIGHT', 'INNER', 'OUTER', 'RIGHT OUTER', 'LEFT OUTER', 'FULL');
-
 	// Valid ORDER BY directions
 	protected $order_directions = array('ASC', 'DESC', 'RAND()');
 
@@ -29,6 +26,7 @@ class Database_Builder_Core {
 	protected $limit    = NULL;
 	protected $offset   = NULL;
 	protected $set      = array();
+	protected $values   = array();
 	protected $type;
 
 	// TTL for caching (using Cache library)
@@ -54,6 +52,7 @@ class Database_Builder_Core {
 		$this->limit    = NULL;
 		$this->offset   = NULL;
 		$this->set      = array();
+		$this->values   = array();
 	}
 
 	public function _toString()
@@ -96,15 +95,38 @@ class Database_Builder_Core {
 				}
 			}
 
-			$sql = 'UPDATE '.$this->compile_from()."\n".'SET '.implode(', ', $this->compile_set(Database::UPDATE));
+			$sql = 'UPDATE '.$this->compile_from()."\n".'SET '.$this->compile_set();
 		}
 		elseif ($this->type === Database::INSERT)
 		{
-			$vals = $this->compile_set(Database::INSERT);
+			if (empty($this->values))
+			{
+				// Using a single insert
+				$keys = array_keys($this->set);
+				$this->values[] = array_values($this->set);
+			}
+			else
+			{
+				// Using multiple INSERT, so the set method will be passed only column names rather than key => val
+				$keys = array_values($this->set);
+			}
+
+			$values = '';
+			foreach ($this->values as $group)
+			{
+				if ( ! empty($values))
+				{
+					$values .= ', ';
+				}
+
+				// Loop thru each set of values to be inserted
+				$group = array_map(array($this->db, 'quote'), $group);
+				$values .= '('.implode(', ', $group).')';
+			}
 
 			$sql = 'INSERT INTO '.$this->compile_from()."\n".
-				   '('.implode(', ', array_keys($vals)).')'."\n".
-				   'VALUES ('.implode(', ', array_values($vals)).')';
+				   '('.implode(', ', $keys).')'."\n".
+				   'VALUES '.$values;
 		}
 		elseif ($this->type === Database::DELETE)
 		{
@@ -294,7 +316,7 @@ class Database_Builder_Core {
 	}
 
 	/**
-	 * Compiles the SET portion of the query (UPDATEs and INSERTs)
+	 * Compiles the SET portion of the query for UPDATE
 	 *
 	 * @return string
 	 */
@@ -316,19 +338,11 @@ class Database_Builder_Core {
 				$value = $this->db->quote($value);
 			}
 
-			if ($type === Database::UPDATE)
-			{
-				// Using an UPDATE so Key = Val
-				$vals[] = $key.' = '.$value;
-			}
-			else
-			{
-				// An INSERT
-				$vals[$key] = $value;
-			}
+			// Using an UPDATE so Key = Val
+			$vals[] = $key.' = '.$value;
 		}
 
-		return $vals;
+		return implode(', ', $vals);
 	}
 
 	/**
@@ -350,12 +364,6 @@ class Database_Builder_Core {
 		if ($type !== NULL)
 		{
 			$type = strtoupper($type);
-
-			if ( ! in_array($type, $this->join_types))
-			{
-				// This join type is not supported
-				$type = NULL;
-			}
 		}
 
 		$this->join[] = array($table, $keys, $type);
@@ -720,11 +728,12 @@ class Database_Builder_Core {
 	}
 
 	/**
-	 * Set values for UPDATE or INSERT
+	 * Set values for UPDATE and INSERT.  When inserting multiple rows, $keys
+	 * should be an array of column names rather than columns => vals and data
+	 * is specified using 'values' method.
 	 *
-	 * @param  mixed   Column name or array of columns => vals, or a Database_Expression
-	 * @param  string  Operation to perform
-	 * @param  mixed   Value
+	 * @param  mixed   Column name or array of columns => vals
+	 * @param  mixed   Value (can be a Database_Expression)
 	 * @return Database_Builder
 	 */
 	public function set($keys, $value = NULL)
@@ -735,6 +744,19 @@ class Database_Builder_Core {
 		}
 
 		$this->set = array_merge($keys, $this->set);
+
+		return $this;
+	}
+
+	/**
+	 * Values used for multi-INSERT queries. Use 'set' method for single inserts
+	 *
+	 * @param  array  Values
+	 * @return Database_Builder
+	 */
+	public function values($values)
+	{
+		$this->values[] = $values;
 
 		return $this;
 	}
@@ -777,7 +799,7 @@ class Database_Builder_Core {
 
 		if (is_array($set))
 		{
-			$this->set($set);
+			$this->set(array_keys($set));
 		}
 
 		if ($where !== NULL)
@@ -794,10 +816,10 @@ class Database_Builder_Core {
 	}
 
 	/**
-	 * Create an INSERT query
+	 * Create an INSERT query.  Use 'values' method for multiple data sets
 	 *
 	 * @param  string  Table name
-	 * @param  array   Array of Keys => Values
+	 * @param  array   Array of Keys => Values for single insert
 	 * @return Database_Builder
 	 */
 	public function insert($table = NULL, $set = NULL)
