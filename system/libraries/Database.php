@@ -50,6 +50,12 @@ abstract class Database_Core {
 			// Load the configuration for this database group
 			$config = Kohana::config('database.'.$name);
 
+			if (is_string($config['connection']))
+			{
+				// Parse the DSN into connection array
+				$config['connection'] = Database::parse_dsn($config['connection']);
+			}
+
 			// Set the driver class name
 			$driver = 'Database_'.ucfirst($config['connection']['type']);
 
@@ -142,6 +148,79 @@ abstract class Database_Core {
 	 * @return array
 	 */
 	abstract public function list_tables();
+
+	/**
+	 * Converts the given DSN string to an array of database connection components
+	 *
+	 * @param  string  DSN string
+	 * @return array
+	 */
+	public static function parse_dsn($dsn)
+	{
+		$db = array
+		(
+			'type'     => FALSE,
+			'user'     => FALSE,
+			'pass'     => FALSE,
+			'host'     => FALSE,
+			'port'     => FALSE,
+			'socket'   => FALSE,
+			'database' => FALSE
+		);
+
+		// Get the protocol and arguments
+		list ($db['type'], $connection) = explode('://', $dsn, 2);
+
+		if (strpos($connection, '@') !== FALSE)
+		{
+			// Get the username and password
+			list ($db['pass'], $connection) = explode('@', $connection, 2);
+
+			// Check if a password is supplied
+			$logindata = explode(':', $db['pass'], 2);
+			$db['pass'] = (count($logindata) > 1) ? $logindata[1] : '';
+			$db['user'] = $logindata[0];
+
+			// Prepare for finding the database
+			$connection = explode('/', $connection);
+
+			// Find the database name
+			$db['database'] = array_pop($connection);
+
+			// Reset connection string
+			$connection = implode('/', $connection);
+
+			// Find the socket
+			if (preg_match('/^unix\([^)]++\)/', $connection))
+			{
+				// This one is a little hairy: we explode based on the end of
+				// the socket, removing the 'unix(' from the connection string
+				list ($db['socket'], $connection) = explode(')', substr($connection, 5), 2);
+			}
+			elseif (strpos($connection, ':') !== FALSE)
+			{
+				// Fetch the host and port name
+				list ($db['host'], $db['port']) = explode(':', $connection, 2);
+			}
+			else
+			{
+				$db['host'] = $connection;
+			}
+		}
+		else
+		{
+			// File connection
+			$connection = explode('/', $connection);
+
+			// Find database file name
+			$db['database'] = array_pop($connection);
+
+			// Find database directory name
+			$db['socket'] = implode('/', $connection).'/';
+		}
+
+		return $db;
+	}
 
 	/**
 	 * Returns the last executed query for this database
