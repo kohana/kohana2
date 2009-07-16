@@ -26,6 +26,7 @@ class Database_Builder_Core {
 	protected $limit    = NULL;
 	protected $offset   = NULL;
 	protected $set      = array();
+	protected $columns  = array();
 	protected $values   = array();
 	protected $type;
 
@@ -99,34 +100,16 @@ class Database_Builder_Core {
 		}
 		elseif ($this->type === Database::INSERT)
 		{
-			if (empty($this->values))
-			{
-				// Using a single insert
-				$keys = array_keys($this->set);
-				$this->values[] = array_values($this->set);
-			}
-			else
-			{
-				// Using multiple INSERT, so the set method will be passed only column names rather than key => val
-				$keys = array_values($this->set);
-			}
-
-			$values = '';
+			$values = array();
 			foreach ($this->values as $group)
 			{
-				if ( ! empty($values))
-				{
-					$values .= ', ';
-				}
-
 				// Loop thru each set of values to be inserted
-				$group = array_map(array($this->db, 'quote'), $group);
-				$values .= '('.implode(', ', $group).')';
+				$values[] = '('.implode(', ', array_map(array($this->db, 'quote'), $group)).')';
 			}
 
 			$sql = 'INSERT INTO '.$this->compile_from()."\n".
-				   '('.implode(', ', $keys).')'."\n".
-				   'VALUES '.$values;
+				   '('.implode(', ', $this->columns).')'."\n".
+				   'VALUES '.implode(', ', $values);
 		}
 		elseif ($this->type === Database::DELETE)
 		{
@@ -728,9 +711,7 @@ class Database_Builder_Core {
 	}
 
 	/**
-	 * Set values for UPDATE and INSERT.  When inserting multiple rows, $keys
-	 * should be an array of column names rather than columns => vals and data
-	 * is specified using 'values' method.
+	 * Set values for UPDATE
 	 *
 	 * @param  mixed   Column name or array of columns => vals
 	 * @param  mixed   Value (can be a Database_Expression)
@@ -749,13 +730,36 @@ class Database_Builder_Core {
 	}
 
 	/**
-	 * Values used for multi-INSERT queries. Use 'set' method for single inserts
+	 * Columns used for INSERT queries
+	 *
+	 * @param  array  Columns
+	 * @return Database_Builder
+	 */
+	public function columns($columns)
+	{
+		if ( ! is_array($columns))
+		{
+			$columns = func_get_args();
+		}
+
+		$this->columns = $columns;
+
+		return $this;
+	}
+
+	/**
+	 * Values used for INSERT queries
 	 *
 	 * @param  array  Values
 	 * @return Database_Builder
 	 */
 	public function values($values)
 	{
+		if ( ! is_array($values))
+		{
+			$values = func_get_args();
+		}
+
 		$this->values[] = $values;
 
 		return $this;
@@ -819,16 +823,22 @@ class Database_Builder_Core {
 	 * Create an INSERT query.  Use 'values' method for multiple data sets
 	 *
 	 * @param  string  Table name
-	 * @param  array   Array of Keys => Values for single insert
+	 * @param  array   Array of columns
+	 * @param  array   Array of values
 	 * @return Database_Builder
 	 */
-	public function insert($table = NULL, $set = NULL)
+	public function insert($table = NULL, $columns = NULL, $values = NULL)
 	{
 		$this->type = Database::INSERT;
 
-		if (is_array($set))
+		if (is_array($columns))
 		{
-			$this->set($set);
+			$this->columns($columns);
+		}
+
+		if (is_array($values))
+		{
+			$this->values($values);
 		}
 
 		if ($table !== NULL)
