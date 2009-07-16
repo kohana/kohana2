@@ -796,7 +796,8 @@ class ORM_Core {
 				}
 
 				$result = db::insert($this->table_name)
-					->set($data)
+					->columns(array_keys($data))
+					->values(array_values($data))
 					->execute($this->db);
 
 				if ($result->count() > 0)
@@ -860,7 +861,8 @@ class ORM_Core {
 					{
 						// Insert the new relationship
 						db::insert($join_table)
-							->set(array($object_fk => $this->primary_key_value, $related_fk => $id))
+							->columns($object_fk, $related_fk)
+							->values($this->primary_key_value, $id)
 							->execute($this->db);
 					}
 				}
