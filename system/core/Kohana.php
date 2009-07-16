@@ -159,8 +159,8 @@ abstract class Kohana_Core {
 		// Load locales
 		$locales = self::config('locale.language');
 
-		// Make first locale UTF-8
-		$locales[0] .= '.UTF-8';
+		// Make first locale the defined Kohana charset
+		$locales[0] .= '.'.Kohana::CHARSET;
 
 		// Set locale information
 		self::$locale = setlocale(LC_ALL, $locales);
