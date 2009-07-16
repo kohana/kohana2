@@ -92,7 +92,7 @@ abstract class Database_Core {
 		}
 	}
 
-	public function _destruct()
+	public function __destruct()
 	{
 		$this->disconnect();
 	}
