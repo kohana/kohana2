@@ -1,7 +1,7 @@
 <?php
 /**
  * This file acts as the "front controller" to your application. You can
- * configure your application, modules, and system directories here.
+ * configure your application, extensions, and system directories here.
  * PHP error_reporting level may also be changed.
  *
  * @see http://kohanaphp.com
@@ -9,7 +9,7 @@
 
 /**
  * Define the website environment status. When this flag is set to TRUE, some
- * module demonstration controllers will result in 404 errors. For more information
+ * extension demonstration controllers will result in 404 errors. For more information
  * about this option, read the documentation about deploying Kohana.
  *
  * @see http://docs.kohanaphp.com/installation/deployment
@@ -25,13 +25,13 @@ define('IN_PRODUCTION', FALSE);
 $kohana_application = 'application';
 
 /**
- * Kohana modules directory. This directory should contain all the modules used
- * by your application. Modules are enabled and disabled by the application
+ * Kohana extensions directory. This directory should contain all the extensions used
+ * by your application. Extensions are enabled and disabled by the application
  * configuration file.
  *
  * This path can be absolute or relative to this file.
  */
-$kohana_modules = 'modules';
+$kohana_extensions = 'extensions';
 
 /**
  * Kohana system directory. This directory should contain the core/ directory,
@@ -84,16 +84,16 @@ is_link(KOHANA) and chdir(dirname(realpath(__FILE__)));
 
 // If kohana folders are relative paths, make them absolute.
 $kohana_application = file_exists($kohana_application) ? $kohana_application : DOCROOT.$kohana_application;
-$kohana_modules = file_exists($kohana_modules) ? $kohana_modules : DOCROOT.$kohana_modules;
+$kohana_extensions = file_exists($kohana_extensions) ? $kohana_extensions : DOCROOT.$kohana_extensions;
 $kohana_system = file_exists($kohana_system) ? $kohana_system : DOCROOT.$kohana_system;
 
 // Define application and system paths
 define('APPPATH', str_replace('\\', '/', realpath($kohana_application)).'/');
-define('MODPATH', str_replace('\\', '/', realpath($kohana_modules)).'/');
+define('EXTPATH', str_replace('\\', '/', realpath($kohana_extensions)).'/');
 define('SYSPATH', str_replace('\\', '/', realpath($kohana_system)).'/');
 
 // Clean up
-unset($kohana_application, $kohana_modules, $kohana_system);
+unset($kohana_application, $kohana_extensions, $kohana_system);
 
 if (file_exists(DOCROOT.'install'.EXT))
 {

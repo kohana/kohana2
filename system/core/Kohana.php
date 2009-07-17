@@ -294,7 +294,7 @@ abstract class Kohana_Core {
 	}
 
 	/**
-	 * Get all include paths. APPPATH is the first path, followed by module
+	 * Get all include paths. APPPATH is the first path, followed by extension
 	 * paths in the order they are configured, follow by the SYSPATH.
 	 *
 	 * @param   boolean  re-process the include paths
@@ -307,7 +307,7 @@ abstract class Kohana_Core {
 			// Add APPPATH as the first path
 			self::$include_paths = array(APPPATH);
 
-			foreach (self::$configuration['core']['modules'] as $path)
+			foreach (self::$configuration['core']['extensions'] as $path)
 			{
 				if ($path = str_replace('\\', '/', realpath($path)))
 				{
@@ -403,7 +403,7 @@ abstract class Kohana_Core {
 			}
 		}
 
-		if ($key === 'core.modules')
+		if ($key === 'core.extensions')
 		{
 			// Reprocess the include paths
 			self::include_paths(TRUE);
