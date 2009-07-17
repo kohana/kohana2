@@ -1358,7 +1358,7 @@ abstract class Kohana_Core {
 	}
 
 	/**
-	 * Removes APPPATH, SYSPATH, MODPATH, and DOCROOT from filenames, replacing
+	 * Removes APPPATH, SYSPATH, EXTPATH, and DOCROOT from filenames, replacing
 	 * them with the plain text equivalents.
 	 *
 	 * @param   string  path to sanitize
@@ -1374,9 +1374,9 @@ abstract class Kohana_Core {
 		{
 			$file = 'SYSPATH/'.substr($file, strlen(SYSPATH));
 		}
-		elseif (strpos($file, MODPATH) === 0)
+		elseif (strpos($file, EXTPATH) === 0)
 		{
-			$file = 'MODPATH/'.substr($file, strlen(MODPATH));
+			$file = 'EXTPATH/'.substr($file, strlen(EXTPATH));
 		}
 		elseif (strpos($file, DOCROOT) === 0)
 		{
