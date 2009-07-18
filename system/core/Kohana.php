@@ -1338,7 +1338,7 @@ abstract class Kohana_Core {
 				{
 					foreach ($trace['args'] as $arg)
 					{
-						if (is_string($arg) AND file_exists($arg))
+						if (is_string($arg) AND strpos($arg, '://') === FALSE AND file_exists($arg))
 						{
 							// Sanitize path
 							$arg = Kohana::debug_path($arg);
