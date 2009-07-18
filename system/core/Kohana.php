@@ -1639,7 +1639,7 @@ class Kohana_Exception extends Exception {
 
 				if (Kohana_Exception::$html_output)
 				{
-					if ( ! empty($this->file))
+					if ( ! empty($this->file) AND $this->file !== 'Unknown')
 					{
 						// Source code
 						$source = '';
