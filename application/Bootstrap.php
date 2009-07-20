@@ -25,8 +25,9 @@ Benchmark::start(SYSTEM_BENCHMARK.'_kohana_loading');
 // Load core files
 require SYSPATH.'core/utf8'.EXT;
 require SYSPATH.'core/Event'.EXT;
-require SYSPATH.'core/Kohana'.EXT;
+final class Event extends Event_Core {}
 
+require SYSPATH.'core/Kohana'.EXT;
 final class Kohana extends Kohana_Core {}
 
 // Prepare the environment

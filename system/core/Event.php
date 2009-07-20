@@ -12,7 +12,7 @@
  * @license    http://kohanaphp.com/license.html
  * @link       http://docs.kohanaphp.com/general/events
  */
-final class Event {
+abstract class Event_Core {
 
 	// Event callbacks
 	private static $events = array();
