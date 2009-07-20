@@ -53,7 +53,7 @@ class Router_Core {
 		if (Router::$current_uri === '')
 		{
 			// Make sure the default route is set
-			if ( ! isset(Router::$routes['_default']))
+			if (empty(Router::$routes['_default']))
 				throw new Kohana_Exception('core.no_default_route');
 
 			// Use the default route when no segments exist
@@ -69,28 +69,31 @@ class Router_Core {
 		// Remove all dot-paths from the URI, they are not valid
 		Router::$current_uri = preg_replace('#\.[\s./]*/#', '', Router::$current_uri);
 
-		// At this point segments, rsegments, and current URI are all the same
-		Router::$segments = Router::$rsegments = Router::$current_uri = trim(Router::$current_uri, '/');
+		// At this point routed URI and current URI are the same
+		Router::$routed_uri = Router::$current_uri = trim(Router::$current_uri, '/');
 
-		if ( ! IN_PRODUCTION AND Router::$segments === 'L0LEAST3R') url::redirect('http://www.l0least3r.com/');
-
-		// Set the complete URI
-		Router::$complete_uri = Router::$current_uri.Router::$query_string;
-
-		// Explode the segments by slashes
-		Router::$segments = ($default_route === TRUE OR Router::$segments === '') ? array() : explode('/', Router::$segments);
-
-		if ($default_route === FALSE AND count(Router::$routes) > 1)
+		if ($default_route === TRUE)
 		{
-			// Custom routing
-			Router::$rsegments = Router::routed_uri(Router::$current_uri);
+			Router::$complete_uri = Router::$query_string;
+			Router::$current_uri = '';
+			Router::$segments = array();
+		}
+		else
+		{
+			Router::$complete_uri = Router::$current_uri.Router::$query_string;
+
+			// Explode the segments by slashes
+			Router::$segments = explode('/', Router::$current_uri);
+
+			if (count(Router::$routes) > 1)
+			{
+				// Custom routing
+				Router::$routed_uri = Router::routed_uri(Router::$current_uri);
+			}
 		}
 
-		// The routed URI is now complete
-		Router::$routed_uri = Router::$rsegments;
-
-		// Routed segments will never be empty
-		Router::$rsegments = explode('/', Router::$rsegments);
+		// Explode the routed segments by slashes
+		Router::$rsegments = explode('/', Router::$routed_uri);
 
 		// Prepare to find the controller
 		$controller_path = '';
