@@ -26,18 +26,19 @@ abstract class Event_Core {
 	/**
 	 * Add a callback to an event queue.
 	 *
-	 * @param   string   event name
-	 * @param   array    http://php.net/callback
+	 * @param   string  event name
+	 * @param   array   http://php.net/callback
+	 * @param   boolean prevent duplicates
 	 * @return  boolean
 	 */
-	public static function add($name, $callback)
+	public static function add($name, $callback, $unique = FALSE)
 	{
 		if ( ! isset(self::$events[$name]))
 		{
 			// Create an empty event if it is not yet defined
 			self::$events[$name] = array();
 		}
-		elseif (in_array($callback, self::$events[$name], TRUE))
+		elseif ($unique AND in_array($callback, self::$events[$name], TRUE))
 		{
 			// The event already exists
 			return FALSE;
