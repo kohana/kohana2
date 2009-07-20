@@ -820,25 +820,20 @@ class Database_Builder_Core {
 	}
 
 	/**
-	 * Create an INSERT query.  Use 'values' method for multiple data sets
+	 * Create an INSERT query.  Use 'columns' and 'values' methods for multi-row inserts
 	 *
 	 * @param  string  Table name
-	 * @param  array   Array of columns
-	 * @param  array   Array of values
+	 * @param  array   Array of Keys => Values
 	 * @return Database_Builder
 	 */
-	public function insert($table = NULL, $columns = NULL, $values = NULL)
+	public function insert($table = NULL, $set = NULL)
 	{
 		$this->type = Database::INSERT;
 
-		if (is_array($columns))
+		if (is_array($set))
 		{
-			$this->columns($columns);
-		}
-
-		if (is_array($values))
-		{
-			$this->values($values);
+			$this->columns(array_keys($set));
+			$this->values(array_values($set));
 		}
 
 		if ($table !== NULL)
