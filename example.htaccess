@@ -5,7 +5,8 @@ RewriteEngine On
 RewriteBase /kohana/
 
 # Protect application and system files from being viewed
-RewriteRule ^(application|extensions|system) - [F,L]
+# This is only necessary when these files are inside the webserver document root
+RewriteRule ^(application|extensions|system) - [R=404,L]
 
 # Allow any files or directories that exist to be displayed directly
 RewriteCond %{REQUEST_FILENAME} !-f
