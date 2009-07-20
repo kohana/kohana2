@@ -118,11 +118,8 @@ class upload_Core {
 		// Get the default extension of the file
 		$extension = strtolower(substr(strrchr($file['name'], '.'), 1));
 
-		// Get the mime types for the extension
-		$mime_types = Kohana::config('mimes.'.$extension);
-
-		// Make sure there is an extension, that the extension is allowed, and that mime types exist
-		return ( ! empty($extension) AND in_array($extension, $allowed_types) AND is_array($mime_types));
+		// Make sure there is an extension and that the extension is allowed
+		return ( ! empty($extension) AND in_array($extension, $allowed_types));
 	}
 
 	/**
