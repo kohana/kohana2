@@ -17,6 +17,9 @@ class request_Core {
 	// Content types from client's HTTP Accept request header (array)
 	protected static $accept_types;
 
+	// The current user agent and its parsed attributes
+	protected static $user_agent;
+
 	/**
 	 * Returns the HTTP referrer, or the default if the referrer is not set.
 	 *
@@ -88,7 +91,128 @@ class request_Core {
 			throw new Kohana_Exception('request.unknown_method', $method);
 
 		return $method;
-	 }
+	}
+
+	/**
+	 * Retrieves current user agent information:
+	 * keys:  browser, version, platform, mobile, robot, referrer, languages, charsets
+	 * tests: is_browser, is_mobile, is_robot, accept_lang, accept_charset
+	 *
+	 * @param   string   key or test name
+	 * @param   string   used with "accept" tests: user_agent(accept_lang, en)
+	 * @return  array    languages and charsets
+	 * @return  string   all other keys
+	 * @return  boolean  all tests
+	 */
+	public static function user_agent($key = 'agent', $compare = NULL)
+	{
+		// Retrieve raw user agent without parsing
+		if ($key === 'agent')
+		{
+			if (request::$user_agent === NULL)
+				return request::$user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : '';
+
+			if (is_array(request::$user_agent))
+				return request::$user_agent['agent'];
+
+			return request::$user_agent;
+		}
+
+		if ( ! is_array(request::$user_agent))
+		{
+			request::$user_agent['agent'] = isset($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : '';
+
+			// Parse the user agent and extract basic information
+			foreach (Kohana::config('user_agents') as $type => $data)
+			{
+				foreach ($data as $fragment => $name)
+				{
+					if (stripos(request::$user_agent['agent'], $fragment) !== FALSE)
+					{
+						if ($type === 'browser' AND preg_match('|'.preg_quote($fragment).'[^0-9.]*+([0-9.][0-9.a-z]*)|i', request::$user_agent['agent'], $match))
+						{
+							// Set the browser version
+							request::$user_agent['version'] = $match[1];
+						}
+
+						// Set the agent name
+						request::$user_agent[$type] = $name;
+						break;
+					}
+				}
+			}
+		}
+
+		if ( ! isset(request::$user_agent[$key]))
+		{
+			switch ($key)
+			{
+				case 'is_robot':
+				case 'is_browser':
+				case 'is_mobile':
+					// A boolean result
+					$return = ! empty(request::$user_agent[substr($key, 3)]);
+				break;
+				case 'languages':
+					$return = array();
+					if ( ! empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
+					{
+						if (preg_match_all('/[-a-z]{2,}/', strtolower(trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])), $matches))
+						{
+							// Found a result
+							$return = $matches[0];
+						}
+					}
+				break;
+				case 'charsets':
+					$return = array();
+					if ( ! empty($_SERVER['HTTP_ACCEPT_CHARSET']))
+					{
+						if (preg_match_all('/[-a-z0-9]{2,}/', strtolower(trim($_SERVER['HTTP_ACCEPT_CHARSET'])), $matches))
+						{
+							// Found a result
+							$return = $matches[0];
+						}
+					}
+				break;
+				case 'referrer':
+					if ( ! empty($_SERVER['HTTP_REFERER']))
+					{
+						// Found a result
+						$return = trim($_SERVER['HTTP_REFERER']);
+					}
+				break;
+			}
+
+			// Cache the return value
+			isset($return) and request::$user_agent[$key] = $return;
+		}
+
+		if ( ! empty($compare))
+		{
+			// The comparison must always be lowercase
+			$compare = strtolower($compare);
+
+			switch ($key)
+			{
+				case 'accept_lang':
+					// Check if the lange is accepted
+					return in_array($compare, request::user_agent('languages'));
+				break;
+				case 'accept_charset':
+					// Check if the charset is accepted
+					return in_array($compare, request::user_agent('charsets'));
+				break;
+				default:
+					// Invalid comparison
+					return FALSE;
+				break;
+			}
+		}
+
+		// Return the key, if set
+		return isset(request::$user_agent[$key]) ? request::$user_agent[$key] : NULL;
+	}
 
 	/**
 	 * Returns boolean of whether client accepts content type.
