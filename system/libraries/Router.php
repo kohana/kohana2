@@ -207,23 +207,32 @@ class Router_Core {
 			// Remove the URI from $_SERVER['QUERY_STRING']
 			$_SERVER['QUERY_STRING'] = preg_replace('~\bkohana_uri\b[^&]*+&?~', '', $_SERVER['QUERY_STRING']);
 		}
-		elseif (isset($_SERVER['PATH_INFO']) AND $_SERVER['PATH_INFO'])
+		else
 		{
-			Router::$current_uri = $_SERVER['PATH_INFO'];
-		}
-		elseif (isset($_SERVER['ORIG_PATH_INFO']) AND $_SERVER['ORIG_PATH_INFO'])
-		{
-			Router::$current_uri = $_SERVER['ORIG_PATH_INFO'];
-		}
-		elseif (isset($_SERVER['PHP_SELF']) AND $_SERVER['PHP_SELF'])
-		{
-			Router::$current_uri = $_SERVER['PHP_SELF'];
-		}
+			if (isset($_SERVER['PATH_INFO']) AND $_SERVER['PATH_INFO'])
+			{
+				Router::$current_uri = $_SERVER['PATH_INFO'];
+			}
+			elseif (isset($_SERVER['ORIG_PATH_INFO']) AND $_SERVER['ORIG_PATH_INFO'])
+			{
+				Router::$current_uri = $_SERVER['ORIG_PATH_INFO'];
+			}
+			elseif (isset($_SERVER['PHP_SELF']) AND $_SERVER['PHP_SELF'])
+			{
+				// PATH_INFO is empty during requests to the front controller
+				Router::$current_uri = $_SERVER['PHP_SELF'];
+			}
 		
-		if (($strpos_fc = strpos(Router::$current_uri, KOHANA)) !== FALSE)
-		{
-			// Remove the front controller from the current uri
-			Router::$current_uri = (string) substr(Router::$current_uri, $strpos_fc + strlen(KOHANA));
+			if (isset($_SERVER['SCRIPT_NAME']) AND $_SERVER['SCRIPT_NAME'])
+			{
+				// Clean up PATH_INFO fallbacks
+				// PATH_INFO may be formatted for ISAPI instead of CGI on IIS
+				if (strncmp(Router::$current_uri, $_SERVER['SCRIPT_NAME'], strlen($_SERVER['SCRIPT_NAME'])) === 0)
+				{
+					// Remove the front controller from the current uri
+					Router::$current_uri = (string) substr(Router::$current_uri, strlen($_SERVER['SCRIPT_NAME']));
+				}
+			}
 		}
 		
 		// Remove slashes from the start and end of the URI

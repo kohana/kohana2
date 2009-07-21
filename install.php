@@ -238,21 +238,13 @@
 				<?php endif?>
 				<tr>
 					<th>URI Determination</th>
-					<?php if (isset($_SERVER['REQUEST_URI']) OR isset($_SERVER['PHP_SELF'])): ?>
+					<?php if (isset($_SERVER['SCRIPT_NAME']) AND (isset($_SERVER['PATH_INFO']) OR isset($_SERVER['ORIG_PATH_INFO']) OR isset($_SERVER['PHP_SELF']))): ?>
 					<td class="pass">
 						Pass
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
-						Neither 
-						<code>
-							$_SERVER['REQUEST_URI']
-						</code>
-						or 
-						<code>
-							$_SERVER['PHP_SELF']
-						</code>
-						is available.
+						At least one of <code>$_SERVER['PATH_INFO']</code>, <code>$_SERVER['ORIG_PATH_INFO']</code>, or <code>$_SERVER['PHP_SELF']</code> must be available.
 					</td>
 					<?php endif?>
 				</tr>
