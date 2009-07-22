@@ -104,16 +104,15 @@ class request_Core {
 
 	/**
 	 * Retrieves current user agent information:
-	 * keys:  browser, version, platform, mobile, robot, referrer, languages, charsets
-	 * tests: is_browser, is_mobile, is_robot, accept_lang, accept_charset
+	 * keys:  browser, version, platform, mobile, robot
+	 * tests: is_browser, is_mobile, is_robot
 	 *
 	 * @param   string   key or test name
-	 * @param   string   used with "accept" tests: user_agent(accept_lang, en)
 	 * @return  array    languages and charsets
 	 * @return  string   all other keys
 	 * @return  boolean  all tests
 	 */
-	public static function user_agent($key = 'agent', $compare = NULL)
+	public static function user_agent($key = 'agent')
 	{
 		// Retrieve raw user agent without parsing
 		if ($key === 'agent')
@@ -162,61 +161,10 @@ class request_Core {
 					// A boolean result
 					$return = ! empty(request::$user_agent[substr($key, 3)]);
 				break;
-				case 'languages':
-					$return = array();
-					if ( ! empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
-					{
-						if (preg_match_all('/[-a-z]{2,}/', strtolower(trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])), $matches))
-						{
-							// Found a result
-							$return = $matches[0];
-						}
-					}
-				break;
-				case 'charsets':
-					$return = array();
-					if ( ! empty($_SERVER['HTTP_ACCEPT_CHARSET']))
-					{
-						if (preg_match_all('/[-a-z0-9]{2,}/', strtolower(trim($_SERVER['HTTP_ACCEPT_CHARSET'])), $matches))
-						{
-							// Found a result
-							$return = $matches[0];
-						}
-					}
-				break;
-				case 'referrer':
-					if ( ! empty($_SERVER['HTTP_REFERER']))
-					{
-						// Found a result
-						$return = trim($_SERVER['HTTP_REFERER']);
-					}
-				break;
 			}
 
 			// Cache the return value
 			isset($return) and request::$user_agent[$key] = $return;
-		}
-
-		if ( ! empty($compare))
-		{
-			// The comparison must always be lowercase
-			$compare = strtolower($compare);
-
-			switch ($key)
-			{
-				case 'accept_lang':
-					// Check if the lange is accepted
-					return in_array($compare, request::user_agent('languages'));
-				break;
-				case 'accept_charset':
-					// Check if the charset is accepted
-					return in_array($compare, request::user_agent('charsets'));
-				break;
-				default:
-					// Invalid comparison
-					return FALSE;
-				break;
-			}
 		}
 
 		// Return the key, if set
