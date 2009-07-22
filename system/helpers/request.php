@@ -14,6 +14,9 @@ class request_Core {
 	// Possible HTTP methods
 	protected static $http_methods = array('get', 'head', 'options', 'post', 'put', 'delete');
 
+	// Content codings from client's HTTP Accept-Encoding request header
+	protected static $accept_encodings;
+
 	// Language tags from client's HTTP Accept-Language request header
 	protected static $accept_languages;
 
@@ -235,6 +238,23 @@ class request_Core {
 	}
 
 	/**
+	 * Returns boolean indicating if the client accepts an encoding
+	 *
+	 * @param   string
+	 * @param   boolean set to TRUE to disable wildcard checking
+	 * @return  boolean
+	 */
+	public static function accepts_encoding($encoding = NULL, $explicit_check = FALSE)
+	{
+		request::parse_accept_encoding_header();
+
+		if ($encoding === NULL)
+			return request::$accept_encodings;
+
+		return (request::accepts_encoding_at_quality($encoding, $explicit_check) > 0);
+	}
+
+	/**
 	 * Returns boolean indicating if the client accepts a language tag
 	 *
 	 * @param   string  language tag
@@ -273,6 +293,35 @@ class request_Core {
 			{
 				$max_q = $q;
 				$preferred = $type;
+			}
+		}
+
+		return $preferred;
+	}
+
+	/**
+	 * Compare the q values for a given array of encodings and return the one with
+	 * the highest value. If items are found to have the same q value, the first
+	 * one encountered takes precedence. If all items in the given array have
+	 * a q value of 0, FALSE is returned.
+	 *
+	 * @param   array   encodings
+	 * @param   boolean set to TRUE to disable wildcard checking
+	 * @return  mixed
+	 */
+	public static function preferred_encoding($encodings, $explicit_check = FALSE)
+	{
+		$max_q = 0;
+		$preferred = FALSE;
+
+		foreach ($encodings as $encoding)
+		{
+			$q = request::accepts_encoding_at_quality($encoding, $explicit_check);
+
+			if ($q > $max_q)
+			{
+				$max_q = $q;
+				$preferred = $encoding;
 			}
 		}
 
@@ -361,9 +410,39 @@ class request_Core {
 	}
 
 	/**
-	 * Returns quality factor at which the client accepts a language
+	 * Returns quality factor at which the client accepts an encoding
 	 *
 	 * @param   string  encoding (e.g., "gzip", "deflate")
+	 * @param   boolean set to TRUE to disable wildcard checking
+	 * @return  integer|float
+	 */
+	public static function accepts_encoding_at_quality($encoding, $explicit_check = FALSE)
+	{
+		request::parse_accept_encoding_header();
+
+		// Normalize encoding
+		$encoding = strtolower($encoding);
+
+		// Exact match
+		if (isset(request::$accept_encodings[$encoding]))
+			return request::$accept_encodings[$encoding];
+
+		if ($explicit_check === FALSE)
+		{
+			if (isset(request::$accept_encodings['*']))
+				return request::$accept_encodings['*'];
+
+			if ($encoding === 'identity')
+				return 1;
+		}
+
+		return 0;
+	}
+
+	/**
+	 * Returns quality factor at which the client accepts a language
+	 *
+	 * @param   string  tag (e.g., "en", "en-us", "fr-ca")
 	 * @param   boolean set to TRUE to disable prefix and wildcard checking
 	 * @return  integer|float
 	 */
@@ -457,6 +536,32 @@ class request_Core {
 
 				request::$accept_types[$type[0]][$type[1]] = $q;
 			}
+		}
+	}
+
+	/**
+	 * Parses a client's HTTP Accept-Encoding header
+	 */
+	protected static function parse_accept_encoding_header()
+	{
+		// Run this function just once
+		if (request::$accept_encodings !== NULL)
+			return;
+
+		// No HTTP Accept-Encoding header found
+		if ( ! isset($_SERVER['HTTP_ACCEPT_ENCODING']))
+		{
+			// Accept everything
+			request::$accept_encodings['*'] = 1;
+		}
+		elseif ($_SERVER['HTTP_ACCEPT_ENCODING'] === '')
+		{
+			// Accept only identity
+			request::$accept_encodings['identity'] = 1;
+		}
+		else
+		{
+			request::$accept_encodings = request::parse_accept_header($_SERVER['HTTP_ACCEPT_ENCODING']);
 		}
 	}
 

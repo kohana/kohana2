@@ -678,48 +678,38 @@ abstract class Kohana_Core {
 
 		if ($level = self::config('core.output_compression') AND ini_get('output_handler') !== 'ob_gzhandler' AND (int) ini_get('zlib.output_compression') === 0)
 		{
-			if ($level < 1 OR $level > 9)
+			if ($compress = request::preferred_encoding(array('gzip','deflate'), TRUE))
 			{
-				// Normalize the level to be an integer between 1 and 9. This
-				// step must be done to prevent gzencode from triggering an error
-				$level = max(1, min($level, 9));
-			}
+				if ($level < 1 OR $level > 9)
+				{
+					// Normalize the level to be an integer between 1 and 9. This
+					// step must be done to prevent gzencode from triggering an error
+					$level = max(1, min($level, 9));
+				}
 
-			if (stripos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== FALSE)
-			{
-				$compress = 'gzip';
-			}
-			elseif (stripos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'deflate') !== FALSE)
-			{
-				$compress = 'deflate';
-			}
-		}
-
-		if (isset($compress) AND $level > 0)
-		{
-			switch ($compress)
-			{
-				case 'gzip':
+				if ($compress === 'gzip')
+				{
 					// Compress output using gzip
 					$output = gzencode($output, $level);
-				break;
-				case 'deflate':
+				}
+				elseif ($compress === 'deflate')
+				{
 					// Compress output using zlib (HTTP deflate)
 					$output = gzdeflate($output, $level);
-				break;
-			}
+				}
 
-			// This header must be sent with compressed content to prevent
-			// browser caches from breaking
-			header('Vary: Accept-Encoding');
+				// This header must be sent with compressed content to prevent
+				// browser caches from breaking
+				header('Vary: Accept-Encoding');
 
-			// Send the content encoding header
-			header('Content-Encoding: '.$compress);
+				// Send the content encoding header
+				header('Content-Encoding: '.$compress);
 
-			// Sending Content-Length in CGI can result in unexpected behavior
-			if (stripos(PHP_SAPI, 'cgi') === FALSE)
-			{
-				header('Content-Length: '.strlen($output));
+				// Sending Content-Length in CGI can result in unexpected behavior
+				if (stripos(PHP_SAPI, 'cgi') === FALSE)
+				{
+					header('Content-Length: '.strlen($output));
+				}
 			}
 		}
 
