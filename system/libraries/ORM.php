@@ -1106,7 +1106,7 @@ class ORM_Core {
 	public function count_all()
 	{
 		// Return the total number of records in a table
-		return $this->db->count_records($this->table_name);
+		return $this->db_builder->count_records($this->table_name);
 	}
 
 	/**
