@@ -303,7 +303,7 @@ class Database_Builder_Core {
 	 *
 	 * @return string
 	 */
-	public function compile_set($type)
+	public function compile_set()
 	{
 		$vals = array();
 		foreach ($this->set as $key => $value)
