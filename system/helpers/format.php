@@ -12,6 +12,23 @@
 class format_Core {
 
 	/**
+	 * Formats a number according to the current locale.
+	 *
+	 * @param   float
+	 * @param   int|boolean number of fractional digits or TRUE to use the locale default
+	 * @return  string
+	 */
+	public static function number($number, $decimals = 0)
+	{
+		$locale = localeconv();
+
+		if ($decimals === TRUE)
+			return number_format($number, $locale['frac_digits'], $locale['decimal_point'], $locale['thousands_sep']);
+
+		return number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
+	}
+
+	/**
 	 * Formats a phone number according to the specified format.
 	 *
 	 * @param   string  phone number
