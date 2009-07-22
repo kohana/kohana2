@@ -508,7 +508,7 @@ class Validation_Core extends ArrayObject {
 
 						if (($result == $is_false))
 						{
-							$this->errors[$f] = $rule;
+							$this->errors[$f] = array($rule, $args);
 
 							// Stop validating this field when an error is found
 							continue;
@@ -534,7 +534,7 @@ class Validation_Core extends ArrayObject {
 
 					if (($result == $is_false))
 					{
-						$this->errors[$field] = $rule;
+						$this->errors[$field] = array($rule, $args);
 
 						// Stop validating this field when an error is found
 						break;
