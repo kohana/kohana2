@@ -103,14 +103,11 @@ class request_Core {
 	}
 
 	/**
-	 * Retrieves current user agent information:
+	 * Retrieves current user agent information
 	 * keys:  browser, version, platform, mobile, robot
-	 * tests: is_browser, is_mobile, is_robot
 	 *
-	 * @param   string   key or test name
-	 * @return  array    languages and charsets
-	 * @return  string   all other keys
-	 * @return  boolean  all tests
+	 * @param   string  key
+	 * @return  mixed   NULL or the parsed value
 	 */
 	public static function user_agent($key = 'agent')
 	{
@@ -151,23 +148,6 @@ class request_Core {
 			}
 		}
 
-		if ( ! isset(request::$user_agent[$key]))
-		{
-			switch ($key)
-			{
-				case 'is_robot':
-				case 'is_browser':
-				case 'is_mobile':
-					// A boolean result
-					$return = ! empty(request::$user_agent[substr($key, 3)]);
-				break;
-			}
-
-			// Cache the return value
-			isset($return) and request::$user_agent[$key] = $return;
-		}
-
-		// Return the key, if set
 		return isset(request::$user_agent[$key]) ? request::$user_agent[$key] : NULL;
 	}
 
