@@ -14,12 +14,11 @@ $style = empty($row['style']) ? '' : ' style="'.$row['style'].'"';
 			$style = empty($column['style']) ? '' : ' style="'.$column['style'].'"';
 			$value = $row['data'][$index];
 			$value = (is_array($value) OR is_object($value)) ? '<pre>'.html::specialchars(print_r($value, TRUE)).'</pre>' : html::specialchars($value);
-			echo '<td', $style, $class, '>', wordwrap($value,100,"<br/>",true), '</td>';
+			echo '<td' . $style . $class . '>' . wordwrap($value, 100, '<br />', true) . '</td>';
 		}
 		?>
 	</tr>
 <?php
-
 endforeach;
 ?>
 </table>
