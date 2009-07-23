@@ -56,7 +56,7 @@ class Database_Builder_Core {
 		$this->values   = array();
 	}
 
-	public function _toString()
+	public function __toString()
 	{
 		return $this->compile();
 	}
