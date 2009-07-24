@@ -870,8 +870,8 @@ class ORM_Core {
 				if ( ! empty($removed))
 				{
 					db::delete($join_table)
-						->where($object_fk, $this->primary_key_value)
-						->in($related_fk, $removed)
+						->where($object_fk, '=', $this->primary_key_value)
+						->where($related_fk, 'IN', $removed)
 						->execute($this->db);
 				}
 
