@@ -137,6 +137,9 @@ abstract class Kohana_Core {
 
 		// Set autoloader
 		spl_autoload_register(array('Kohana', 'auto_load'));
+		
+		// Set Kohana 3 autoloader, allows for new and old file structure
+		spl_autoload_register(array('Kohana', 'auto_load_ko3'));
 
 		// Send default text/html UTF-8 header
 		header('Content-Type: text/html; charset='.Kohana::CHARSET);
@@ -806,6 +809,36 @@ abstract class Kohana_Core {
 		}
 
 		return TRUE;
+	}
+	
+	/**
+	 * Provides auto-loading support of Kohana3 classes.
+	 *
+	 * Class names are converted to file names by making the class name
+	 * lowercase and converting underscores to slashes:
+	 *
+	 *     // Loads classes/my/class/name.php
+	 *     Kohana::auto_load('My_Class_Name');
+	 *
+	 * @param   string   class name
+	 * @return  boolean
+	 */
+	public static function auto_load_ko3($class)
+	{
+		// Transform the class name into a path
+		$file = str_replace('_', '/', strtolower($class));
+
+		if ($path = Kohana::find_file('classes', $file))
+		{
+			// Load the class file
+			require $path;
+
+			// Class has been found
+			return TRUE;
+		}
+
+		// Class is not in the filesystem
+		return FALSE;
 	}
 
 	/**
