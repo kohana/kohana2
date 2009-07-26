@@ -372,13 +372,13 @@ class text_Core {
 		// IEC prefixes (binary)
 		if ($si == FALSE OR strpos($force_unit, 'i') !== FALSE)
 		{
-			$units = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB');
+			$units = array(__('B'), __('KiB'), __('MiB'), __('GiB'), __('TiB'), __('PiB'));
 			$mod   = 1024;
 		}
 		// SI prefixes (decimal)
 		else
 		{
-			$units = array('B', 'kB', 'MB', 'GB', 'TB', 'PB');
+			$units = array(__('B'), __('kB'), __('MB'), __('GB'), __('TB'), __('PB'));
 			$mod   = 1000;
 		}
 
