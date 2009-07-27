@@ -43,11 +43,16 @@ class Session_Core {
 
 		return Session::$instance;
 	}
+	
+	/**
+	 * Be sure to block the use of __clone.
+	 */
+	private function __clone(){}
 
 	/**
 	 * On first session instance creation, sets up the driver and creates session.
 	 */
-	public function __construct()
+	private function __construct()
 	{
 		$this->input = Input::instance();
 
