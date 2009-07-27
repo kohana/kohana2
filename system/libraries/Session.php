@@ -52,7 +52,7 @@ class Session_Core {
 	/**
 	 * On first session instance creation, sets up the driver and creates session.
 	 */
-	private function __construct()
+	protected function __construct()
 	{
 		$this->input = Input::instance();
 
