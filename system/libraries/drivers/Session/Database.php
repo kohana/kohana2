@@ -131,7 +131,7 @@ class Session_Database_Driver implements Session_Driver {
 			// Update the session and id
 			$query = db::update($this->table)
 				->set($data)
-				->where('session_id', '=', $this->session_id))
+				->where('session_id', '=', $this->session_id)
 				->execute($this->db);
 
 			// Set the new session id
