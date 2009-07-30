@@ -1705,16 +1705,8 @@ class Kohana_PHP_Exception extends Kohana_Exception {
 		// An error has been triggered
 		Kohana::$has_error = TRUE;
 
-		// Create an exception
-		$exception = new Kohana_PHP_Exception($code, $error, $file, $line, $context);
-
-		echo $exception;
-
-		if (Kohana::config('core.display_errors') === FALSE)
-		{
-			// Execution must halt
-			exit;
-		}
+		// Throw an exception
+		throw new Kohana_PHP_Exception($code, $error, $file, $line, $context);
 	}
 } // End Kohana PHP Exception
 
