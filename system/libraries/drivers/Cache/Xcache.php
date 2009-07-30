@@ -73,8 +73,6 @@ class Cache_Xcache_Driver extends Cache_Driver {
 			$this->auth(TRUE);
 			return $result;
 		}
-
-		return TRUE;
 	}
 
 	public function delete_expired()
