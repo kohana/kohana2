@@ -1600,7 +1600,7 @@ class Kohana_Exception extends Exception {
 
 				ob_start();
 
-				if ( ! Kohana::$error_resources)
+				if ( ! Kohana_Exception::$error_resources)
 				{
 					// Include error style
 					echo '<style type="text/css">', "\n";
@@ -1613,7 +1613,7 @@ class Kohana_Exception extends Exception {
 					echo "\n", '</script>', "\n";
 
 					// Error resources have been loaded
-					Kohana::$error_resources = TRUE;
+					Kohana_Exception::$error_resources = TRUE;
 				}
 
 				require Kohana::find_file('views', 'kohana/error', TRUE);
