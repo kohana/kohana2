@@ -35,7 +35,7 @@ class remote_Core {
 		$CRLF = "\r\n";
 
 		// Send request
-		fwrite($remote, 'HEAD '.$url['path'].' HTTP/1.0'.$CRLF);
+		fwrite($remote, 'HEAD '.$url['path'].(isset($url['query']) ? '?'.$url['query'] : '').' HTTP/1.0'.$CRLF);
 		fwrite($remote, 'Host: '.$url['host'].$CRLF);
 		fwrite($remote, 'Connection: close'.$CRLF);
 		fwrite($remote, 'User-Agent: Kohana Framework (+http://kohanaphp.com/)'.$CRLF);
