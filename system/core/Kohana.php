@@ -942,46 +942,42 @@ abstract class Kohana_Core {
 	 *
 	 * @param   string   directory to search
 	 * @param   boolean  list all files to the maximum depth?
+	 * @param   string   list all files having extension $ext
 	 * @param   string   full path to search (used for recursion, *never* set this manually)
 	 * @return  array    filenames and directories
 	 */
-	public static function list_files($directory, $recursive = FALSE, $path = FALSE)
+	public static function list_files($directory, $recursive = FALSE, $ext = EXT, $path = FALSE)
 	{
 		$files = array();
 
 		if ($path === FALSE)
 		{
-			$paths = array_reverse(Kohana::include_paths());
+			$paths = array_reverse(self::include_paths());
 
 			foreach ($paths as $path)
 			{
 				// Recursively get and merge all files
-				$files = array_merge($files, Kohana::list_files($directory, $recursive, $path.$directory));
+				$files = array_merge($files, self::list_files($directory, $recursive, $path.$directory, $ext));
 			}
 		}
 		else
 		{
 			$path = rtrim($path, '/').'/';
 
-			if (is_readable($path))
+			if (is_readable($path) AND $items = glob($path.'*'.$ext))
 			{
-				$items = (array) glob($path.'*');
-
-				if ( ! empty($items))
+				foreach ($items as $index => $item)
 				{
-					foreach ($items as $index => $item)
+					$files[] = $item = str_replace('\\', '/', $item);
+
+					// Handle recursion
+					if (is_dir($item) AND $recursive == TRUE)
 					{
-						$files[] = $item = str_replace('\\', '/', $item);
+						// Filename should only be the basename
+						$item = pathinfo($item, PATHINFO_BASENAME);
 
-						// Handle recursion
-						if (is_dir($item) AND $recursive == TRUE)
-						{
-							// Filename should only be the basename
-							$item = pathinfo($item, PATHINFO_BASENAME);
-
-							// Append sub-directory search
-							$files = array_merge($files, Kohana::list_files($directory, TRUE, $path.$item));
-						}
+						// Append sub-directory search
+						$files = array_merge($files, self::list_files($directory, TRUE, $path.$item, $ext));
 					}
 				}
 			}
@@ -989,6 +985,7 @@ abstract class Kohana_Core {
 
 		return $files;
 	}
+
 
 	/**
 	 * Fetch a message item.
