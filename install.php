@@ -111,16 +111,16 @@
 					<?php endif?>
 				</tr>
 				<tr>
-					<th>Extensions Directory</th>
-					<?php if (is_dir(EXTPATH)): ?>
+					<th>Modules Directory</th>
+					<?php if (is_dir(MODPATH)): ?>
 					<td class="pass">
-						<?php echo EXTPATH?>
+						<?php echo MODPATH?>
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
 						The configured 
 						<code>
-							extensions
+							modules
 						</code>
 						directory does not exist or does not contain required files.
 					</td>

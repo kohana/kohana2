@@ -291,7 +291,7 @@ abstract class Kohana_Core {
 	}
 
 	/**
-	 * Get all include paths. APPPATH is the first path, followed by extension
+	 * Get all include paths. APPPATH is the first path, followed by module
 	 * paths in the order they are configured, follow by the SYSPATH.
 	 *
 	 * @param   boolean  re-process the include paths
@@ -304,7 +304,7 @@ abstract class Kohana_Core {
 			// Add APPPATH as the first path
 			self::$include_paths = array(APPPATH);
 
-			foreach (self::$configuration['core']['extensions'] as $path)
+			foreach (self::$configuration['core']['modules'] as $path)
 			{
 				if ($path = str_replace('\\', '/', realpath($path)))
 				{
@@ -400,7 +400,7 @@ abstract class Kohana_Core {
 			}
 		}
 
-		if ($key === 'core.extensions')
+		if ($key === 'core.modules')
 		{
 			// Reprocess the include paths
 			self::include_paths(TRUE);
@@ -1260,7 +1260,7 @@ abstract class Kohana_Core {
 	}
 
 	/**
-	 * Removes APPPATH, SYSPATH, EXTPATH, and DOCROOT from filenames, replacing
+	 * Removes APPPATH, SYSPATH, MODPATH, and DOCROOT from filenames, replacing
 	 * them with the plain text equivalents.
 	 *
 	 * @param   string  path to sanitize
@@ -1276,9 +1276,9 @@ abstract class Kohana_Core {
 		{
 			$file = 'SYSPATH/'.substr($file, strlen(SYSPATH));
 		}
-		elseif (strpos($file, EXTPATH) === 0)
+		elseif (strpos($file, MODPATH) === 0)
 		{
-			$file = 'EXTPATH/'.substr($file, strlen(EXTPATH));
+			$file = 'MODPATH/'.substr($file, strlen(MODPATH));
 		}
 		elseif (strpos($file, DOCROOT) === 0)
 		{

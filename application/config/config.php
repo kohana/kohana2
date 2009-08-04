@@ -94,19 +94,19 @@ $config['render_stats'] = TRUE;
 $config['extension_prefix'] = 'MY_';
 
 /**
- * Additional resource paths, or "extensions". Each path can either be absolute
- * or relative to the docroot. Extensions can include any resource that can exist
+ * Additional resource paths, or "modules". Each path can either be absolute
+ * or relative to the docroot. Modules can include any resource that can exist
  * in your application directory, configuration files, controllers, views, etc.
  */
-$config['extensions'] = array
+$config['modules'] = array
 (
-	// EXTPATH.'auth',      // Authentication
-	// EXTPATH.'forge',     // Form generation
-	// EXTPATH.'kodoc',     // Self-generating documentation
-	// EXTPATH.'media',     // Media caching and compression
-	// EXTPATH.'gmaps',     // Google Maps integration
-	// EXTPATH.'archive',   // Archive utility
-	// EXTPATH.'payment',   // Online payments
-	// EXTPATH.'unit_test', // Unit testing
-	// EXTPATH.'object_db', // New OOP Database library (testing only!)
+	// MODPATH.'auth',      // Authentication
+	// MODPATH.'forge',     // Form generation
+	// MODPATH.'kodoc',     // Self-generating documentation
+	// MODPATH.'media',     // Media caching and compression
+	// MODPATH.'gmaps',     // Google Maps integration
+	// MODPATH.'archive',   // Archive utility
+	// MODPATH.'payment',   // Online payments
+	// MODPATH.'unit_test', // Unit testing
+	// MODPATH.'object_db', // New OOP Database library (testing only!)
 );
