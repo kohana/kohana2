@@ -17,9 +17,15 @@ class Image_Core {
 	const AUTO = 2;
 	const HEIGHT = 3;
 	const WIDTH = 4;
+
 	// Flip Directions
 	const HORIZONTAL = 5;
 	const VERTICAL = 6;
+
+	// Orientations
+	const PORTRAIT = 7;
+	const LANDSCAPE = 8;
+	const SQUARE    = 9;
 
 	// Allowed image types
 	public static $allowed_types = array
@@ -102,6 +108,8 @@ class Image_Core {
 			'mime' => $image_info['mime']
 		);
 
+		$this->determine_orientation();
+
 		// Load configuration
 		$this->config = (array) $config + Kohana::config('image');
 
@@ -118,6 +126,30 @@ class Image_Core {
 		// Validate the driver
 		if ( ! ($this->driver instanceof Image_Driver))
 			throw new Kohana_Exception('core.driver_implements', $this->config['driver'], get_class($this), 'Image_Driver');
+	}
+
+	/**
+	 * Works out the correct orientation for the image
+	 *
+	 * @return  void
+	 */
+	protected function determine_orientation()
+	{
+		switch (TRUE)
+		{
+			case $this->image['height'] > $this->image['width']:
+				$orientation = Image::PORTRAIT;
+			break;
+
+			case $this->image['height'] < $this->image['width']:
+				$orientation = Image::LANDSCAPE;
+			break;
+
+			default:
+				$orientation = Image::SQUARE;
+		}
+
+		$this->image['orientation'] = $orientation;
 	}
 
 	/**
@@ -176,6 +208,8 @@ class Image_Core {
 			'master' => $master,
 		);
 
+		$this->determine_orientation();
+
 		return $this;
 	}
 
@@ -215,6 +249,8 @@ class Image_Core {
 			'top'    => $top,
 			'left'   => $left,
 		);
+
+		$this->determine_orientation();
 
 		return $this;
 	}
