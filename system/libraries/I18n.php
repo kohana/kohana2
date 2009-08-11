@@ -19,8 +19,8 @@
  */
 function __($string, $args = NULL)
 {
-	// en_US is the default locale, in which all of Kohana's __() calls are written in
-	if (I18n::get_locale() != 'en_US')
+	// KOHANA_LOCALE is the default locale, in which all of Kohana's __() calls are written in
+	if (I18n::get_locale() != KOHANA_LOCALE)
 	{
 		$string = I18n::get_text($string);
 	}
@@ -44,10 +44,23 @@ class I18n_Core
 
 		I18n::$locale = $locale;
 	}
-
-	public static function get_locale()
+	
+	
+	/**
+	 * 
+	 * Returns the locale.
+	 * If $ext is true, the UTF8 extension gets returned as well, otherwise, just the language code.
+	 * Defaults to true.
+	 * 
+	 * @return 							The locale
+	 * @param boolean $ext[optional]	Get the Extension?
+	 */
+	public static function get_locale($ext = true)
 	{
-		return I18n::$locale;
+		if($ext)
+			return I18n::$locale;
+		else
+			return arr::get(explode('.', I18n::$locale), 0);
 	}
 	
 	
@@ -62,7 +75,7 @@ class I18n_Core
 	{
 		if ( ! I18n::$translations)
 		{
-			$locale = explode('_', I18n::$locale);
+			$locale = explode('_', I18n::get_locale(FALSE));
 			
 			// Get the translation files
 			$translation_files = Kohana::find_file('i18n', $locale[0]);
