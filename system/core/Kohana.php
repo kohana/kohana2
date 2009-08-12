@@ -18,7 +18,8 @@ abstract class Kohana_Core {
 	const VERSION  = '2.4';
 	const CODENAME = 'no_codename';
 	const CHARSET  = 'UTF-8';
-
+	const LOCALE = 'en_US';
+	
 	// The singleton instance of the controller
 	public static $instance;
 
@@ -144,9 +145,6 @@ abstract class Kohana_Core {
 		// Send default text/html UTF-8 header
 		header('Content-Type: text/html; charset='.Kohana::CHARSET);
 
-		// Define Kohana's default locale
-		define('KOHANA_LOCALE', 'en_US');
-
 		// Load i18n
 		new I18n;
 
@@ -166,7 +164,7 @@ abstract class Kohana_Core {
 		Kohana::$locale = setlocale(LC_ALL, $locales);
 		
 		// Default to the default locale when none of the user defined ones where accepted
-		Kohana::$locale = !Kohana::$locale ? KOHANA_LOCALE.'.'.Kohana::CHARSET : Kohana::$locale;
+		Kohana::$locale = !Kohana::$locale ? Kohana::LOCALE.'.'.Kohana::CHARSET : Kohana::$locale;
 		
 		// Set locale for the I18n system
 		I18n::set_locale(Kohana::$locale);

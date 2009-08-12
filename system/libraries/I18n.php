@@ -20,7 +20,7 @@
 function __($string, $args = NULL)
 {
 	// KOHANA_LOCALE is the default locale, in which all of Kohana's __() calls are written in
-	if (I18n::get_locale() != KOHANA_LOCALE)
+	if (I18n::get_locale() != Kohana::LOCALE)
 	{
 		$string = I18n::get_text($string);
 	}
