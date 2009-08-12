@@ -408,7 +408,7 @@ class Input_Core {
 		$config = HTMLPurifier_Config::createDefault();
 		$config->set('HTML', 'TidyLevel', 'none'); // Only XSS cleaning now
 		
-		$cache = Kohana::config('core.htmlpurifier_cache');
+		$cache = Kohana::config('html_purifier.cache');
 		
 		if ($cache AND is_string($cache)) 
 		{
