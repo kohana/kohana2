@@ -1,7 +1,6 @@
-<?php 
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 // Unique error identifier
 $error_id = uniqid('error');
-
 ?>
 <style type="text/css">
 	
