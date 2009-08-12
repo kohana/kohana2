@@ -164,7 +164,7 @@ abstract class Kohana_Core {
 		Kohana::$locale = setlocale(LC_ALL, $locales);
 		
 		// Default to the default locale when none of the user defined ones where accepted
-		Kohana::$locale = !Kohana::$locale ? Kohana::LOCALE.'.'.Kohana::CHARSET : Kohana::$locale;
+		Kohana::$locale = ! Kohana::$locale ? Kohana::LOCALE.'.'.Kohana::CHARSET : Kohana::$locale;
 		
 		// Set locale for the I18n system
 		I18n::set_locale(Kohana::$locale);
