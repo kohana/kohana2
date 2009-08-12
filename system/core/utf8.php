@@ -141,7 +141,7 @@ final class utf8 {
 	 */
 	public static function is_ascii($str)
 	{
-		return ! preg_match('/[^\x00-\x7F]/S', $str);
+		return is_string($str) AND ! preg_match('/[^\x00-\x7F]/S', $str);
 	}
 
 	/**
