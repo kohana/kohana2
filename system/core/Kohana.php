@@ -1984,7 +1984,7 @@ class Kohana_Exception extends Exception {
 	 */
 	public function __toString() 
 	{
-		return $this->text();		
+		return Kohana_Exception::text($this);		
 	}
 
 	/**

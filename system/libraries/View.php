@@ -245,7 +245,7 @@ class View_Core {
 		}
 		catch (Exception $e)
 		{
-			return (string) $e;
+			return Kohana_Exception::handle($e);
 		}
 	}
 
