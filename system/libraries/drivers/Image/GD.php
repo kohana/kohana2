@@ -368,6 +368,16 @@ class Image_GD_Driver extends Image_Driver {
 	 */
 	protected function imagecreatetransparent($width, $height)
 	{
+		if ($width < 1)
+		{
+			$width = 1;
+		}
+		
+    	if ($height < 1)
+    	{
+    		$height = 1;
+    	}
+		
 		if (self::$blank_png === NULL)
 		{
 			// Decode the blank PNG if it has not been done already
