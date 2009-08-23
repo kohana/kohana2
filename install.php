@@ -130,7 +130,7 @@
 					<th>Logs Directory</th>
 					<?php if (is_dir(APPPATH.'logs') AND is_writable(APPPATH.'logs')): ?>
 					<td class="pass">
-						<?php echo MODPATH?>
+						Pass
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
@@ -146,7 +146,7 @@
 					<th>Cache Directory</th>
 					<?php if (is_dir(APPPATH.'cache') AND is_writable(APPPATH.'cache')): ?>
 					<td class="pass">
-						<?php echo MODPATH?>
+						Pass
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
