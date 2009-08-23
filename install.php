@@ -127,6 +127,38 @@
 					<?php endif?>
 				</tr>
 				<tr>
+					<th>Logs Directory</th>
+					<?php if (is_dir(APPPATH.'logs') AND is_writable(APPPATH.'logs')): ?>
+					<td class="pass">
+						<?php echo MODPATH?>
+					</td>
+					<?php else : $failed = TRUE?>
+					<td class="fail">
+						The default 
+						<code>
+							logs
+						</code>
+						directory does not exist or is not writable. Depending on your log driver and config settings, this may not be a problem.
+					</td>
+					<?php endif?>
+				</tr>
+				<tr>
+					<th>Cache Directory</th>
+					<?php if (is_dir(APPPATH.'cache') AND is_writable(APPPATH.'cache')): ?>
+					<td class="pass">
+						<?php echo MODPATH?>
+					</td>
+					<?php else : $failed = TRUE?>
+					<td class="fail">
+						The default 
+						<code>
+							cache
+						</code>
+						directory does not exist or is not writable. Depending on your cache driver and config settings, this may not be a problem.
+					</td>
+					<?php endif?>
+				</tr>
+				<tr>
 					<th>PCRE UTF-8</th>
 					<?php if (!function_exists('preg_match')): $failed = TRUE?>
 					<td class="fail">
