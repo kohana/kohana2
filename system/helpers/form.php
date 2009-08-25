@@ -206,6 +206,16 @@ class form_Core {
 			$data = array('name' => $data);
 		}
 
+		if ( ! isset($data['rows']))
+		{
+			$data['rows'] = '';
+		}
+
+		if ( ! isset($data['cols']))
+		{
+			$data['cols'] = '';
+		}
+
 		// Use the value from $data if possible, or use $value
 		$value = isset($data['value']) ? $data['value'] : $value;
 
