@@ -1,20 +1,20 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Kohana_Config abstract driver to get and set
+ * KohanaConfig abstract driver to get and set
  * configuration options.
  * 
  * Specific drivers should implement caching and encryption
  * as they deem appropriate.
  *
- * $Id: KohanaConfig.php 4490 2009-07-27 18:13:12Z samsoir $
+ * $Id$
  *
- * @package    Kohana_Config
+ * @package    KohanaConfig
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license.html
  * @abstract
  */
-abstract class Config_Driver {
+abstract class KohanaConfig_Driver {
 
 	/**
 	 * Internal caching
@@ -28,7 +28,7 @@ abstract class Config_Driver {
 	 *
 	 * @var     string
 	 */
-	protected $cache_name = 'Kohana_Config_Cache';
+	protected $cache_name = 'KohanaConfig_Cache';
 
 	/**
 	 * The Encryption library
@@ -51,53 +51,6 @@ abstract class Config_Driver {
 	 * @var     bool
 	 */
 	protected $changed = FALSE;
-
-	/**
-	 * Array driver constructor. Sets up the PHP array
-	 * driver, including caching and encryption if
-	 * required
-	 *
-	 * @access  public
-	 */
-	public function __construct($config)
-	{
-		
-		if (($cache_setting = $config['internal_cache']) !== FALSE)
-		{
-			// Setup the cache configuration
-			$cache_config = array
-			(
-				'driver'      => 'file',
-				'params'      => $config['internal_cache_path'],
-				'lifetime'    => $cache_setting,
-			);
-
-			// Load a cache instance
-			$this->cache = Cache::instance();
-
-			// If encryption is required
-			if ($config['internal_cache_encrypt'])
-			{
-				$encryption_config = array
-				(
-					'key'    => $config['internal_cache_key'],
-					'mode'   => MCRYPT_MODE_ECB,
-					'cipher' => MCRYPT_RIJNDAEL_256
-				);
-
-				// Initialise encryption
-				$this->encrypt = Encrypt::instance($encryption_config);
-			}
-
-			// Restore the cached configuration
-			$this->config = $this->load_cache();
-
-			// Add the save cache method to system.shutshut event
-			Event::add('system.shutdown', array($this, 'save_cache'));
-
-		}
-
-	}
 
 	/**
 	 * Gets a value from config. If required is TRUE
@@ -128,10 +81,7 @@ abstract class Config_Driver {
 			// Force the value to end with "/"
 			$value = rtrim($value, '/').'/';
 		}
-		
-		if ($value === null) 
-			throw new Kohana_Config_Exception('Value not found in '.__CLASS__.'driver');
-		
+
 		return $value;
 	}
 
@@ -175,7 +125,7 @@ abstract class Config_Driver {
 			}
 		}
 
-		if ($key === 'core.modules')
+		if ($key === 'core.extensions')
 		{
 			// Reprocess the include paths
 			Kohana::include_paths(TRUE);
@@ -225,53 +175,4 @@ abstract class Config_Driver {
 	 */
 	abstract public function load($group, $required = FALSE);
 
-	/**
-	 * Loads the cached version of this configuration driver
-	 *
-	 * @return  array
-	 * @access  public
-	 */
-	public function load_cache()
-	{
-		// Load the cache for this configuration
-
-		$cached_config = $this->cache->get($this->cache_name);
-
-		// If the configuration was loaded from the cache
-		if ($cached_config !== NULL)
-		{
-			// If encryption is enabled
-			if ($this->encrypt instanceof Encrypt)
-				$cached_config = unserialize($this->encrypt->decode($cached_config));
-		}
-		else
-			$cached_config = array();
-
-		// Return the cached config
-		return $cached_config;
-	}
-	
-	/**
-	 * Saves a cached version of this configuration driver
-	 *
-	 * @return  bool
-	 * @access  public
-	 */
-	public function save_cache()
-	{
-		// If this configuration has changed
-		if ($this->get('core.internal_cache') !== FALSE AND $this->changed)
-		{
-			// Encrypt the config if required
-			if ($this->encrypt instanceof Encrypt)
-				$data = serialize($this->encrypt->encode($this->config));
-			else
-				$data = $this->config;
-
-			// Save the cache
-			return $this->cache->set($this->cache_name, $data);
-		}
-
-		return TRUE;
-	}
 } // End Kohana_Config_Driver

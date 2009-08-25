@@ -3,14 +3,14 @@
  * Provides a driver-based interface for setting and getting
  * configuration options for the Kohana environment
  *
- * $Id: Kohana_Config.php 4490 2009-07-27 18:13:12Z samsoir $
+ * $Id$
  *
  * @package    KohanaConfig
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Kohana_Config_Core implements ArrayAccess {
+class KohanaConfig_Core implements ArrayAccess {
 
 	/**
 	 * The default Kohana_Config driver
@@ -19,16 +19,16 @@ class Kohana_Config_Core implements ArrayAccess {
 	 * @var     string
 	 * @static
 	 */
-	public static $default_driver = 'array';
-	
+	public static $default_driver;
+
 	/**
-	 * Kohana_Config instance
+	 * Kohana_Config drivers initialised
 	 *
 	 * @var     array
 	 * @static
 	 */
-	protected static $instance;
-	
+	protected static $drivers = array();
+
 	/**
 	 * Returns a new instance of the Kohana_Config library
 	 * based on the singleton pattern
@@ -38,28 +38,28 @@ class Kohana_Config_Core implements ArrayAccess {
 	 * @access  public
 	 * @static
 	 */
-	public static function & instance()
+	public static function & instance($driver = FALSE)
 	{
+		// If there is no driver defined, use the default one
+		if ($driver === FALSE)
+			$driver = KohanaConfig::$default_driver;
+
 		// If the driver has not been initialised, intialise it
-		if ( empty(Kohana_Config::$instance)) 
-		{
-			//call a 1 time non singleton of Kohana_Config to get a list of drivers
-			$config = new Kohana_Config(array('config_drivers'=>array(),'internal_cache'=>FALSE));
-			$core_config = $config->get('core');
-			Kohana_Config::$instance = new Kohana_Config($core_config);
-		}
-		
+		if ( ! isset(KohanaConfig::$drivers[$driver]))
+			KohanaConfig::$drivers[$driver] = new KohanaConfig($driver);
+
 		// Return the Kohana_Config driver requested
-		return Kohana_Config::$instance;
+		return KohanaConfig::$drivers[$driver];
 	}
-	
+
+
 	/**
-	 * The drivers for this object
+	 * The driver for this object
 	 *
 	 * @var     Kohana_Config_Driver
 	 */
-	protected $drivers;
-	
+	protected $driver;
+
 	/**
 	 * Kohana_Config constructor to load the supplied driver.
 	 * Enforces the singleton pattern.
@@ -67,90 +67,57 @@ class Kohana_Config_Core implements ArrayAccess {
 	 * @param   string       driver
 	 * @access  protected
 	 */
-	protected function __construct(array $core_config)
+	protected function __construct($driver)
 	{
-		$drivers = $core_config['config_drivers'];
-		
-		//remove array if it's found in config
-		if (in_array('array', $drivers))
-			unset($drivers[array_search('array', $drivers)]);
-			
-		//add array at the very end
-		$this->drivers = $drivers = array_merge($drivers, array('array'));
-		
-		foreach ($this->drivers as & $driver)
-		{
-			// Create the driver name
-			$driver = 'Config_'.ucfirst($driver).'_Driver';
-			
-			// Ensure the driver loads correctly
-			if (!Kohana::auto_load($driver))
-				throw new Kohana_Exception('core.driver_not_found', array($driver, get_class($this)));
-				
-			// Load the new driver
-			$driver = new $driver($core_config);
-			
-			// Ensure the new driver is valid
-			if (!$driver instanceof Config_Driver)
-				throw new Kohana_Exception('core.driver_implements', array($driver, get_class($this), 'Config_Driver'));
-		}
+		// Create the driver name
+		$driver = 'KohanaConfig_'.ucfirst($driver).'_Driver';
+
+		// Ensure the driver loads correctly
+		if ( ! Kohana::auto_load($driver))
+			throw new Kohana_Exception('core.driver_not_found', array($driver, get_class($this)));
+
+		// Load the new driver
+		$this->driver = new $driver;
+
+		// Ensure the new driver is valid
+		if ( ! $this->driver instanceof KohanaConfig_Driver)
+			throw new Kohana_Exception('core.driver_implements', array($driver, get_class($this), 'KohanaConfig_Driver'));
+
 		// Log the event
-		Kohana_Log::add('debug', 'Kohana_Config initialized with drivers:'.implode(', ',$drivers));
+		Kohana_Log::add('debug', 'Kohana_Config initialized with '.$driver);
 	}
-	
+
 	/**
 	 * Gets a value from the configuration driver
 	 *
-	 * @param   string       key
-	 * @param   bool         slash
-	 * @param   bool         required
+	 * @param   string       key 
+	 * @param   bool         slash 
+	 * @param   bool         required 
 	 * @return  mixed
 	 * @access  public
 	 */
 	public function get($key, $slash = FALSE, $required = FALSE)
 	{
-		foreach ($this->drivers as $driver)
-		{
-			try
-			{
-				return $driver->get($key, $slash, $required);
-			}
-			catch (Kohana_Config_Exception $e)
-			{
-				//if it's the last driver in the list and it threw an exception, re throw it
-				if ($driver === $this->drivers[(count($this->drivers)-1)])
-					throw $e;
-			}
-		}
+		return $this->driver->get($key, $slash, $required);
 	}
-	
+
 	/**
 	 * Sets a value to the configuration driver
 	 *
-	 * @param   string       key
-	 * @param   mixed        value
+	 * @param   string       key 
+	 * @param   mixed        value 
 	 * @return  bool
 	 * @access  public
 	 */
 	public function set($key, $value)
 	{
-		foreach ($this->drivers as $driver)
-		{
-			try
-			{
-				$driver->set($key, $value);
-			}
-			catch (Kohana_Config_Exception $e)
-			{
-			
-			}
-		}
+		return $this->driver->set($key, $value);
 	}
-	
+
 	/**
 	 * Clears a group from configuration
 	 *
-	 * @param   string       group
+	 * @param   string       group 
 	 * @return  bool
 	 * @access  public
 	 */
@@ -158,12 +125,12 @@ class Kohana_Config_Core implements ArrayAccess {
 	{
 		return $this->driver->clear($group);
 	}
-	
+
 	/**
 	 * Loads a configuration group
 	 *
-	 * @param   string       group
-	 * @param   bool         required
+	 * @param   string       group 
+	 * @param   bool         required 
 	 * @return  array
 	 * @access  public
 	 */
@@ -171,19 +138,19 @@ class Kohana_Config_Core implements ArrayAccess {
 	{
 		return $this->driver->load($group, $required);
 	}
-	
+
 	/**
 	 * The following allows access using
 	 * array syntax.
-	 *
+	 * 
 	 * @example  $config['core.site_domain']
 	 */
-	 
-	 /**
+
+	/**
 	 * Allows access to configuration settings
 	 * using the ArrayAccess interface
 	 *
-	 * @param   string       key
+	 * @param   string       key 
 	 * @return  mixed
 	 * @access  public
 	 */
@@ -191,13 +158,13 @@ class Kohana_Config_Core implements ArrayAccess {
 	{
 		return $this->driver->get($key);
 	}
-	
+
 	/**
 	 * Allows access to configuration settings
 	 * using the ArrayAccess interface
 	 *
-	 * @param   string       key
-	 * @param   mixed        value
+	 * @param   string       key 
+	 * @param   mixed        value 
 	 * @return  bool
 	 * @access  public
 	 */
@@ -205,12 +172,12 @@ class Kohana_Config_Core implements ArrayAccess {
 	{
 		return $this->driver->set($key, $value);
 	}
-	
+
 	/**
 	 * Allows access to configuration settings
 	 * using the ArrayAccess interface
 	 *
-	 * @param   string       key
+	 * @param   string       key 
 	 * @return  bool
 	 * @access  public
 	 */
@@ -218,12 +185,12 @@ class Kohana_Config_Core implements ArrayAccess {
 	{
 		return $this->driver->setting_exists($key);
 	}
-	
+
 	/**
 	 * Allows access to configuration settings
 	 * using the ArrayAccess interface
 	 *
-	 * @param   string       key
+	 * @param   string       key 
 	 * @return  bool
 	 * @access  public
 	 */
@@ -232,5 +199,3 @@ class Kohana_Config_Core implements ArrayAccess {
 		return $this->driver->set($key, NULL);
 	}
 } // End KohanaConfig
-
-class Kohana_Config_Exception extends Kohana_Exception {}
