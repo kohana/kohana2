@@ -1952,16 +1952,14 @@ class Kohana_Exception extends Exception {
 					header('Content-Type: text/html; charset='.Kohana::CHARSET, TRUE, 500);
 				}
 	
-				// Start an output buffer
-				ob_start();
+				// Clean the output buffer if one exists
+				ob_get_level() and ob_clean();
 	
 				// Include the exception HTML
 				include Kohana::find_file('views', 'kohana/error');
 	
-				// Display the contents of the output buffer
-				echo ob_get_clean();
-	
-				return TRUE;
+				// Exit with an error status
+				exit(1);
 			}
 		}
 		catch (Exception $e)
