@@ -42,7 +42,7 @@ $config['internal_cache_path'] = APPPATH.'cache/';
  * is neglible when this is turned on. Can be turned off
  * if application directory is not in the webroot.
  */
-$config['internal_cache_encrypt'] = FALSE;
+$config['internal_cache_encrypt'] = TRUE;
 
 /**
  * Encryption key for the internal cache, only used
@@ -92,6 +92,12 @@ $config['render_stats'] = TRUE;
  * extension to the Controller class would be named MY_Controller.php.
  */
 $config['extension_prefix'] = 'MY_';
+
+/**
+ * An optional list of Config Drivers to use, they "fallback" to the one below them if they 
+ * dont work so the first driver is tried then so on until it hits the built in "array" driver and fails 
+ */
+$config['config_drivers'] = array();
 
 /**
  * Additional resource paths, or "modules". Each path can either be absolute

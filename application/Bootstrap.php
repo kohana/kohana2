@@ -29,6 +29,11 @@ final class Event extends Event_Core {}
 require SYSPATH.'core/Kohana'.EXT;
 final class Kohana extends Kohana_Core {}
 
+require SYSPATH.'core/Kohana_Config'.EXT;
+require SYSPATH.'libraries/drivers/Config'.EXT;
+require SYSPATH.'libraries/drivers/Config/Array'.EXT;
+final class Kohana_Config extends Kohana_Config_Core {}
+
 require SYSPATH.'core/utf8'.EXT;
 
 // Prepare the environment

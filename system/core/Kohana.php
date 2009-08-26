@@ -35,9 +35,6 @@ abstract class Kohana_Core {
 	// The current locale
 	public static $locale;
 
-	// Configuration
-	protected static $configuration;
-
 	// Include paths
 	protected static $include_paths;
 
@@ -84,7 +81,13 @@ abstract class Kohana_Core {
 
 		// Define database error constant
 		define('E_DATABASE_ERROR', 44);
-
+		
+		if (Kohana_Config::instance()->loaded() === FALSE)
+		{
+			// Re-parse the include paths
+			Kohana::include_paths(TRUE);
+		}
+		
 		if (Kohana::$cache_lifetime = Kohana::config('core.internal_cache'))
 		{
 			// Are we using encryption for caches?
@@ -139,9 +142,6 @@ abstract class Kohana_Core {
 		// Set autoloader
 		spl_autoload_register(array('Kohana', 'auto_load'));
 		
-		// Set Kohana 3 autoloader, allows for new and old file structure
-		spl_autoload_register(array('Kohana', 'auto_load_ko3'));
-
 		// Send default text/html UTF-8 header
 		header('Content-Type: text/html; charset='.Kohana::CHARSET);
 
@@ -311,7 +311,7 @@ abstract class Kohana_Core {
 			// Add APPPATH as the first path
 			Kohana::$include_paths = array(APPPATH);
 
-			foreach (Kohana::$configuration['core']['modules'] as $path)
+			foreach (Kohana::config('core.modules') as $path)
 			{
 				if ($path = str_replace('\\', '/', realpath($path)))
 				{
@@ -328,7 +328,7 @@ abstract class Kohana_Core {
 	}
 
 	/**
-	 * Get a config item or group.
+	 * Get a config item or group proxies Kohana_Config.
 	 *
 	 * @param   string   item name
 	 * @param   boolean  force a forward slash (/) at the end of the item
@@ -337,153 +337,7 @@ abstract class Kohana_Core {
 	 */
 	public static function config($key, $slash = FALSE, $required = TRUE)
 	{
-		if (Kohana::$configuration === NULL)
-		{
-			// Load core configuration
-			Kohana::$configuration['core'] = Kohana::config_load('core');
-
-			// Re-parse the include paths
-			Kohana::include_paths(TRUE);
-		}
-
-		// Get the group name from the key
-		$group = explode('.', $key, 2);
-		$group = $group[0];
-
-		if ( ! isset(Kohana::$configuration[$group]))
-		{
-			// Load the configuration group
-			Kohana::$configuration[$group] = Kohana::config_load($group, $required);
-		}
-
-		// Get the value of the key string
-		$value = Kohana::key_string(Kohana::$configuration, $key);
-
-		if ($slash === TRUE AND is_string($value) AND $value !== '')
-		{
-			// Force the value to end with "/"
-			$value = rtrim($value, '/').'/';
-		}
-
-		return $value;
-	}
-
-	/**
-	 * Sets a configuration item, if allowed.
-	 *
-	 * @param   string   config key string
-	 * @param   string   config value
-	 * @return  boolean
-	 */
-	public static function config_set($key, $value)
-	{
-		// Do this to make sure that the config array is already loaded
-		Kohana::config($key);
-
-		if (substr($key, 0, 7) === 'routes.')
-		{
-			// Routes cannot contain sub keys due to possible dots in regex
-			$keys = explode('.', $key, 2);
-		}
-		else
-		{
-			// Convert dot-noted key string to an array
-			$keys = explode('.', $key);
-		}
-
-		// Used for recursion
-		$conf =& Kohana::$configuration;
-		$last = count($keys) - 1;
-
-		foreach ($keys as $i => $k)
-		{
-			if ($i === $last)
-			{
-				$conf[$k] = $value;
-			}
-			else
-			{
-				$conf =& $conf[$k];
-			}
-		}
-
-		if ($key === 'core.modules')
-		{
-			// Reprocess the include paths
-			Kohana::include_paths(TRUE);
-		}
-
-		return TRUE;
-	}
-
-	/**
-	 * Load a config file.
-	 *
-	 * @param   string   config filename, without extension
-	 * @param   boolean  is the file required?
-	 * @return  array
-	 */
-	public static function config_load($name, $required = TRUE)
-	{
-		if ($name === 'core')
-		{
-			// Load the application configuration file
-			require APPPATH.'config/config'.EXT;
-
-			if ( ! isset($config['site_domain']))
-			{
-				// Invalid config file
-				die('Your Kohana application configuration file is not valid.');
-			}
-
-			return $config;
-		}
-
-		if (isset(Kohana::$internal_cache['configuration'][$name]))
-			return Kohana::$internal_cache['configuration'][$name];
-
-		// Load matching configs
-		$configuration = array();
-
-		if ($files = Kohana::find_file('config', $name, $required))
-		{
-			foreach ($files as $file)
-			{
-				require $file;
-
-				if (isset($config) AND is_array($config))
-				{
-					// Merge in configuration
-					$configuration = array_merge($configuration, $config);
-				}
-			}
-		}
-
-		if ( ! isset(Kohana::$write_cache['configuration']))
-		{
-			// Cache has changed
-			Kohana::$write_cache['configuration'] = TRUE;
-		}
-
-		return Kohana::$internal_cache['configuration'][$name] = $configuration;
-	}
-
-	/**
-	 * Clears a config group from the cached configuration.
-	 *
-	 * @param   string  config group
-	 * @return  void
-	 */
-	public static function config_clear($group)
-	{
-		// Remove the group from config
-		unset(Kohana::$configuration[$group], Kohana::$internal_cache['configuration'][$group]);
-
-		if ( ! isset(Kohana::$write_cache['configuration']))
-		{
-			// Cache has changed
-			Kohana::$write_cache['configuration'] = TRUE;
-		}
+		return Kohana_Config::instance()->get($key,$slash,$required);
 	}
 
 	/**
@@ -791,7 +645,7 @@ abstract class Kohana_Core {
 			return FALSE;
 		}
 
-		if ($filename = Kohana::find_file($type, Kohana::$configuration['core']['extension_prefix'].$class))
+		if ($filename = Kohana::find_file($type, Kohana::config('core.extension_prefix').$class))
 		{
 			// Load the class extension
 			require $filename;
@@ -816,36 +670,6 @@ abstract class Kohana_Core {
 		}
 
 		return TRUE;
-	}
-	
-	/**
-	 * Provides auto-loading support of Kohana3 classes.
-	 *
-	 * Class names are converted to file names by making the class name
-	 * lowercase and converting underscores to slashes:
-	 *
-	 *     // Loads classes/my/class/name.php
-	 *     Kohana::auto_load('My_Class_Name');
-	 *
-	 * @param   string   class name
-	 * @return  boolean
-	 */
-	public static function auto_load_ko3($class)
-	{
-		// Transform the class name into a path
-		$file = str_replace('_', '/', strtolower($class));
-
-		if ($path = Kohana::find_file('classes', $file))
-		{
-			// Load the class file
-			require $path;
-
-			// Class has been found
-			return TRUE;
-		}
-
-		// Class is not in the filesystem
-		return FALSE;
 	}
 
 	/**
@@ -1768,7 +1592,7 @@ abstract class Kohana_Core {
 			if (isset(Kohana::$internal_cache[$cache]))
 			{
 				// Write the cache file
-				Kohana::cache_save($cache, Kohana::$internal_cache[$cache], Kohana::$configuration['core']['internal_cache']);
+				Kohana::cache_save($cache, Kohana::$internal_cache[$cache], Kohana::config('core.internal_cache'));
 
 				// A cache has been written
 				$written = TRUE;

@@ -1,20 +1,20 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * KohanaConfig abstract driver to get and set
+ * Kohana_Config abstract driver to get and set
  * configuration options.
  * 
  * Specific drivers should implement caching and encryption
  * as they deem appropriate.
  *
- * $Id$
+ * $Id: KohanaConfig.php 4490 2009-07-27 18:13:12Z samsoir $
  *
- * @package    KohanaConfig
+ * @package    Kohana_Config
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license.html
  * @abstract
  */
-abstract class KohanaConfig_Driver {
+abstract class Config_Driver {
 
 	/**
 	 * Internal caching
@@ -28,7 +28,14 @@ abstract class KohanaConfig_Driver {
 	 *
 	 * @var     string
 	 */
-	protected $cache_name = 'KohanaConfig_Cache';
+	protected $cache_name = 'Kohana_Config_Cache';
+	
+	/**
+	 * Cache Lifetime
+	 * 
+	 * @var mixed
+	 */
+	protected $cache_lifetime = FALSE;
 
 	/**
 	 * The Encryption library
@@ -51,6 +58,36 @@ abstract class KohanaConfig_Driver {
 	 * @var     bool
 	 */
 	protected $changed = FALSE;
+	
+	/**
+	 * Determines if any config has been loaded yet
+	 */
+	public $loaded = FALSE;
+
+	/**
+	 * Array driver constructor. Sets up the PHP array
+	 * driver, including caching and encryption if
+	 * required
+	 *
+	 * @access  public
+	 */
+	public function __construct($config)
+	{
+		
+		if (($cache_setting = $config['internal_cache']) !== FALSE)
+		{
+			$this->cache_lifetime = $cache_setting;
+			// Restore the cached configuration
+			$this->config = $this->load_cache();
+			
+			if (count($this->config) > 0)
+				$this->loaded = TRUE;
+
+			// Add the save cache method to system.shutshut event
+			Event::add('system.shutdown', array($this, 'save_cache'));
+		}
+
+	}
 
 	/**
 	 * Gets a value from config. If required is TRUE
@@ -81,7 +118,11 @@ abstract class KohanaConfig_Driver {
 			// Force the value to end with "/"
 			$value = rtrim($value, '/').'/';
 		}
-
+		
+		if ($value === null) 
+			throw new Kohana_Config_Exception('Value not found in '.__CLASS__.'driver');
+		
+		$this->loaded = TRUE;
 		return $value;
 	}
 
@@ -125,7 +166,7 @@ abstract class KohanaConfig_Driver {
 			}
 		}
 
-		if ($key === 'core.extensions')
+		if ($key === 'core.modules')
 		{
 			// Reprocess the include paths
 			Kohana::include_paths(TRUE);
@@ -175,4 +216,42 @@ abstract class KohanaConfig_Driver {
 	 */
 	abstract public function load($group, $required = FALSE);
 
+	/**
+	 * Loads the cached version of this configuration driver
+	 *
+	 * @return  array
+	 * @access  public
+	 */
+	public function load_cache()
+	{
+		// Load the cache for this configuration
+		$cached_config = Kohana::cache($this->cache_name, $this->cache_lifetime);
+
+		// If the configuration wasn't loaded from the cache
+		if ($cached_config === NULL)
+			$cached_config = array();
+
+		// Return the cached config
+		return $cached_config;
+	}
+	
+	/**
+	 * Saves a cached version of this configuration driver
+	 *
+	 * @return  bool
+	 * @access  public
+	 */
+	public function save_cache()
+	{
+		// If this configuration has changed
+		if ($this->get('core.internal_cache') !== FALSE AND $this->changed)
+		{
+			$data = $this->config;
+
+			// Save the cache
+			return Kohana::cache_save($this->cache_name, $data, $this->cache_lifetime);
+		}
+
+		return TRUE;
+	}
 } // End Kohana_Config_Driver
