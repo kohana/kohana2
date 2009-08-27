@@ -1,7 +1,9 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Database wrapper.
- *
+ * 
+ * $Id$
+ * 
  * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2008-2009 Kohana Team
@@ -575,7 +577,7 @@ abstract class Database_Core {
 			$sql_types = Kohana::config('sql_types');
 		}
 
-		$str = strtolower(trim($str));
+		$str = trim($str);
 
 		if (($open = strpos($str, '(')) !== FALSE)
 		{

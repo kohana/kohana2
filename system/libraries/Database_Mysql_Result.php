@@ -1,7 +1,9 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
  * MySQL database result.
- *
+ * 
+ * $Id: Database_Mysql_Result.php 4366 2009-05-27 21:12:17Z samsoir $
+ * 
  * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2008-2009 Kohana Team
@@ -135,4 +137,4 @@ class Database_Mysql_Result_Core extends Database_Result {
 		}
 	}
 
-} // End Database_MySQL_Result_Select
+} // End Database_MySQL_Result
