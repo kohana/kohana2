@@ -335,7 +335,7 @@ abstract class Kohana_Core {
 	 * @param   boolean  is the item required?
 	 * @return  mixed
 	 */
-	public static function config($key, $slash = FALSE, $required = TRUE)
+	public static function config($key, $slash = FALSE, $required = FALSE)
 	{
 		return Kohana_Config::instance()->get($key,$slash,$required);
 	}

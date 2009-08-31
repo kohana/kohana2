@@ -119,8 +119,8 @@ abstract class Config_Driver {
 			$value = rtrim($value, '/').'/';
 		}
 		
-		if ($value === null) 
-			throw new Kohana_Config_Exception('Value not found in '.__CLASS__.'driver');
+		if (($required === TRUE) AND ($value === null))
+			throw new Kohana_Config_Exception('Value not found in '.__CLASS__.' driver');
 		
 		$this->loaded = TRUE;
 		return $value;
