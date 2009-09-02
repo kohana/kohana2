@@ -199,7 +199,7 @@ class valid_Core {
 
 	/**
 	 * Tests if a string is a valid date string.
-	 * 
+	 *
 	 * @param   string   date to check
 	 * @return  boolean
 	 */
@@ -269,7 +269,7 @@ class valid_Core {
 	 *
 	 * @see Uses locale conversion to allow decimal point to be locale specific.
 	 * @see http://www.php.net/manual/en/function.localeconv.php
-	 * 
+	 *
 	 * @param   string   input string
 	 * @return  boolean
 	 */
@@ -281,7 +281,7 @@ class valid_Core {
 	}
 
 	/**
-	 * Tests if a number is within a range.
+	 * Tests if an integer is within a range.
 	 *
 	 * @param   integer  number to check
 	 * @param   array    valid range of input
