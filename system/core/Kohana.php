@@ -19,7 +19,7 @@ abstract class Kohana_Core {
 	const CODENAME = 'no_codename';
 	const CHARSET  = 'UTF-8';
 	const LOCALE = 'en_US';
-	
+
 	// The singleton instance of the controller
 	public static $instance;
 
@@ -47,7 +47,7 @@ abstract class Kohana_Core {
 	protected static $internal_cache_path;
 	protected static $internal_cache_key;
 	protected static $internal_cache_encrypt;
-	
+
 	/**
 	 * Sets up the PHP environment. Adds error/exception handling, output
 	 * buffering, and adds an auto-loading method for loading classes.
@@ -81,26 +81,26 @@ abstract class Kohana_Core {
 
 		// Define database error constant
 		define('E_DATABASE_ERROR', 44);
-		
+
 		if (Kohana_Config::instance()->loaded() === FALSE)
 		{
 			// Re-parse the include paths
 			Kohana::include_paths(TRUE);
 		}
-		
+
 		if (Kohana::$cache_lifetime = Kohana::config('core.internal_cache'))
 		{
 			// Are we using encryption for caches?
 			Kohana::$internal_cache_encrypt	= Kohana::config('core.internal_cache_encrypt');
-			
+
 			if(Kohana::$internal_cache_encrypt===TRUE)
 			{
 				Kohana::$internal_cache_key = Kohana::config('core.internal_cache_key');
-				
+
 				// Be sure the key is of acceptable length for the mcrypt algorithm used
 				Kohana::$internal_cache_key = substr(Kohana::$internal_cache_key, 0, 24);
 			}
-			
+
 			// Set the directory to be used for the internal cache
 			if ( ! Kohana::$internal_cache_path = Kohana::config('core.internal_cache_path'))
 			{
@@ -141,7 +141,7 @@ abstract class Kohana_Core {
 
 		// Set autoloader
 		spl_autoload_register(array('Kohana', 'auto_load'));
-		
+
 		// Send default text/html UTF-8 header
 		header('Content-Type: text/html; charset='.Kohana::CHARSET);
 
@@ -165,10 +165,10 @@ abstract class Kohana_Core {
 
 		// Set locale information
 		Kohana::$locale = setlocale(LC_ALL, $locales);
-		
+
 		// Default to the default locale when none of the user defined ones where accepted
 		Kohana::$locale = ! Kohana::$locale ? Kohana::LOCALE.'.'.Kohana::CHARSET : Kohana::$locale;
-		
+
 		// Set locale for the I18n system
 		I18n::set_locale(Kohana::$locale);
 
@@ -363,14 +363,14 @@ abstract class Kohana_Core {
 					if(Kohana::$internal_cache_encrypt===TRUE)
 					{
 						$data		= file_get_contents($path);
-						
+
 						$iv_size	= mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
 						$iv			= mcrypt_create_iv($iv_size, MCRYPT_RAND);
-						
+
 						$decrypted_text	= mcrypt_decrypt(MCRYPT_RIJNDAEL_256, Kohana::$internal_cache_key, $data, MCRYPT_MODE_ECB, $iv);
-						
+
 						$cache	= unserialize($decrypted_text);
-						
+
 						// If the key changed, delete the cache file
 						if(!$cache)
 							unlink($path);
@@ -424,10 +424,10 @@ abstract class Kohana_Core {
 				// Encrypt and write data to cache file
 				$iv_size	= mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
 				$iv			= mcrypt_create_iv($iv_size, MCRYPT_RAND);
-				
+
 				// Serialize and encrypt!
 				$encrypted_text	= mcrypt_encrypt(MCRYPT_RIJNDAEL_256, Kohana::$internal_cache_key, serialize($data), MCRYPT_MODE_ECB, $iv);
-				
+
 				return (bool) file_put_contents($path, $encrypted_text);
 			}
 			else
@@ -1198,7 +1198,7 @@ abstract class Kohana_Core {
 				return (string) $var;
 		}
 	}
-	
+
 	/**
 	 * Returns an HTML string, highlighting a specific line of a file, with some
 	 * number of lines padded above and below.
@@ -1258,7 +1258,7 @@ abstract class Kohana_Core {
 
 		return '<pre class="source"><code>'.$source.'</code></pre>';
 	}
-	
+
 	/**
 	 * Returns an array of HTML strings that represent each step in the backtrace.
 	 *
@@ -1623,7 +1623,7 @@ class Kohana_Exception extends Exception {
 
 	// Error code
 	protected $code = E_KOHANA;
-	
+
 	/**
 	 * @var  array  PHP error code => human readable name
 	 */
@@ -1675,7 +1675,7 @@ class Kohana_Exception extends Exception {
 	{
 		restore_exception_handler();
 	}
-	
+
 	/**
 	 * Get a single line of text representing the exception:
 	 *
@@ -1689,7 +1689,7 @@ class Kohana_Exception extends Exception {
 		return sprintf('%s [ %s ]: %s ~ %s [ %d ]',
 			get_class($e), $e->getCode(), strip_tags($e->getMessage()), Kohana::debug_path($e->getFile()), $e->getLine());
 	}
-	
+
 	/**
 	 * exception handler, displays the error message, source of the
 	 * exception, and the stack trace of the error.
@@ -1703,7 +1703,7 @@ class Kohana_Exception extends Exception {
 	{
 		// An error has been triggered
 		Kohana::$has_error = TRUE;
-		
+
 		try
 		{
 			// Get the exception information
@@ -1743,7 +1743,7 @@ class Kohana_Exception extends Exception {
 			{
 				// Get the exception backtrace
 				$trace = $e->getTrace();
-	
+
 				if ($e instanceof ErrorException)
 				{
 					if (isset(self::$php_errors[$code]))
@@ -1751,7 +1751,7 @@ class Kohana_Exception extends Exception {
 						// Use the human-readable error name
 						$code = self::$php_errors[$code];
 					}
-	
+
 					if (version_compare(PHP_VERSION, '5.3', '<'))
 					{
 						// Workaround for a bug in ErrorException::getTrace() that exists in
@@ -1762,26 +1762,26 @@ class Kohana_Exception extends Exception {
 							{
 								// Re-position the args
 								$trace[$i]['args'] = $trace[$i - 1]['args'];
-	
+
 								// Remove the args
 								unset($trace[$i - 1]['args']);
 							}
 						}
 					}
 				}
-	
+
 				if ( ! headers_sent())
 				{
 					// Make sure the proper content type is sent with a 500 status
 					header('Content-Type: text/html; charset='.Kohana::CHARSET, TRUE, 500);
 				}
-	
+
 				// Clean the output buffer if one exists
 				ob_get_level() and ob_clean();
-	
+
 				// Include the exception HTML
 				include Kohana::find_file('views', 'kohana/error');
-	
+
 				// Exit with an error status
 				exit(1);
 			}
@@ -1804,9 +1804,9 @@ class Kohana_Exception extends Exception {
 	 *
 	 * @return  string
 	 */
-	public function __toString() 
+	public function __toString()
 	{
-		return Kohana_Exception::text($this);		
+		return Kohana_Exception::text($this);
 	}
 
 	/**
@@ -1831,7 +1831,7 @@ class Kohana_PHP_Exception extends Kohana_Exception {
 	 */
 	public static function enable()
 	{
-		set_error_handler(array(__CLASS__, 'handle'));
+		set_error_handler(array(__CLASS__, 'error_handler'));
 	}
 
 	/**
@@ -1865,7 +1865,7 @@ class Kohana_PHP_Exception extends Kohana_Exception {
 	 * @throws  Kohana_PHP_Exception
 	 * @return  void
 	 */
-	public static function handle($code, $error, $file, $line, $context = NULL)
+	public static function error_handler($code, $error, $file, $line, $context = NULL)
 	{
 		if ((error_reporting() & $code) === 0)
 		{
@@ -1878,7 +1878,7 @@ class Kohana_PHP_Exception extends Kohana_Exception {
 
 		// Throw an exception
 		throw new Kohana_PHP_Exception($code, $error, $file, $line, $context);
-		
+
 		// Do not execute the PHP error handler
 		return TRUE;
 	}
@@ -1959,7 +1959,7 @@ class Kohana_404_Exception extends Kohana_Exception {
  */
 class Kohana_Shutdown_Exception extends Kohana_Exception {
 	public static $disabled = false;
-	
+
 	/**
 	 * Enable Kohana Shudown error handling.
 	 *
@@ -1967,9 +1967,9 @@ class Kohana_Shutdown_Exception extends Kohana_Exception {
 	 */
 	public static function enable()
 	{
-		register_shutdown_function(array(__CLASS__, 'handle'));
+		register_shutdown_function(array(__CLASS__, 'shutdown_handler'));
 	}
-	
+
 	/**
 	 * Disable Kohana Shudown error handling.
 	 *
@@ -1979,14 +1979,14 @@ class Kohana_Shutdown_Exception extends Kohana_Exception {
 	{
 		self::$disabled = true;
 	}
-	
+
 	/**
 	 * Catches errors that are not caught by the error handler, such as E_PARSE.
 	 *
 	 * @uses    Kohana_Exception::handle()
 	 * @return  void
 	 */
-	public static function handle()
+	public static function shutdown_handler()
 	{
 		if (self::$disabled === true)
 		{
