@@ -31,9 +31,11 @@ class ORM_Core {
 	protected $object  = array();
 	protected $changed = array();
 	protected $related = array();
-	protected $loaded  = FALSE;
-	protected $saved   = FALSE;
+	protected $_valid  = FALSE;
+	protected $_loaded  = FALSE;
+	protected $_saved   = FALSE;
 	protected $sorting;
+	protected $rules = array();
 
 	// Related objects
 	protected $object_relations = array();
@@ -123,7 +125,7 @@ class ORM_Core {
 			$this->object[$this->primary_key] = $id;
 
 			// Object is considered saved until something is set
-			$this->saved = TRUE;
+			$this->_saved = TRUE;
 		}
 	}
 
@@ -281,7 +283,7 @@ class ORM_Core {
 	{
 		if (array_key_exists($column, $this->object))
 		{
-			if( ! $this->loaded AND ! $this->empty_primary_key())
+			if( ! $this->loaded() AND ! $this->empty_primary_key())
 			{
 				// Column asked for but the object hasn't been loaded yet, so do it now
 				// Ignore loading of any columns that have been changed
@@ -296,7 +298,7 @@ class ORM_Core {
 		}
 		elseif ($column === 'primary_key_value')
 		{
-			if( ! $this->loaded AND ! $this->empty_primary_key() AND $this->unique_key($this->object[$this->primary_key]) !== $this->primary_key)
+			if( ! $this->loaded() AND ! $this->empty_primary_key() AND $this->unique_key($this->object[$this->primary_key]) !== $this->primary_key)
 			{
 				// Load if object hasn't been loaded and the key given isn't the primary_key
 				// that we need (i.e. passing an email address to ORM::factory rather than the id)
@@ -311,7 +313,7 @@ class ORM_Core {
 
 			if (in_array($model->object_name, $this->belongs_to))
 			{
-				if ( ! $this->loaded AND ! $this->empty_primary_key())
+				if ( ! $this->loaded() AND ! $this->empty_primary_key())
 				{
 					// Load this object first so we know what id to look for in the foreign table
 					$this->find($this->object[$this->primary_key], TRUE);
@@ -385,18 +387,11 @@ class ORM_Core {
 		}
 		elseif (in_array($column, array
 			(
-				'object_name', 'object_plural', // Object
+				'object_name', 'object_plural','_valid', // Object
 				'primary_key', 'primary_val', 'table_name', 'table_columns', // Table
-				'loaded', 'saved', // Status
 				'has_one', 'belongs_to', 'has_many', 'has_many_through', 'has_and_belongs_to_many', 'load_with' // Relationships
 			)))
 		{
-			if ($column === 'loaded' AND ! $this->loaded AND ! $this->empty_primary_key())
-			{
-				// If returning the loaded member and no load has been attempted, do it now
-				$this->find($this->object[$this->primary_key], TRUE);
-			}
-
 			// Model meta information
 			return $this->$column;
 		}
@@ -405,6 +400,29 @@ class ORM_Core {
 			throw new Kohana_Exception('The :property property does not exist in the :class class',
 				array(':property' => $column, ':class' => get_class($this)));
 		}
+	}
+	
+	/**
+	 * Tells you if the Model has been loaded or not
+	 * 
+	 * @return bool 
+	 */
+	public function loaded() {
+		if ( ! $this->_loaded AND ! $this->empty_primary_key())
+		{
+			// If returning the loaded member and no load has been attempted, do it now
+			$this->find($this->object[$this->primary_key], TRUE);
+		}
+		return $this->_loaded;
+	}
+	
+	/**
+	 * Tells you if the model was saved successfully or not
+	 * 
+	 * @return bool
+	 */
+	public function saved() {
+		return $this->_saved;
 	}
 
 	/**
@@ -428,7 +446,7 @@ class ORM_Core {
 				$this->changed[$column] = $column;
 
 				// Object is no longer saved
-				$this->saved = FALSE;
+				$this->_saved = FALSE;
 			}
 
 			$this->object[$column] = $this->load_type($column, $value);
@@ -714,36 +732,48 @@ class ORM_Core {
 	}
 
 	/**
-	 * Validates the current object. This method should generally be called
-	 * via the model, after the $_POST Validation object has been created.
+	 * Validates the current object. This method requires that rules are set to be useful, if called with out
+	 * any rules set, or if a Validation object isn't passed, nothing happens.
 	 *
 	 * @param   object   Validation array
 	 * @param   boolean  Save on validate
-	 * @return  boolean
+	 * @return  ORM
+	 * @chainable
 	 */
-	public function validate(Validation $array, $save = FALSE)
+	public function validate(Validation $array = NULL)
 	{
-		if ( ! $array->submitted())
-			return FALSE;
+		if ($array === NULL)
+			$array = new Validation($this->object);
 
-		// Validate the array
-		if ($status = $array->validate())
+		if (count($this->rules) > 0) 
 		{
-			foreach ($array as $key => $value)
+			foreach ($this->rules as $field => $parameters)
 			{
-				// Set new data
-				$this->$key = $value;
+				foreach ($parameters as $type => $value) {
+					switch ($type) {
+						case 'pre_filter':
+							$array->pre_filter($value,$field);
+							break;
+						case 'rules':
+							$rules = array_merge(array($field),$value);
+							call_user_func_array(array($array,'add_rules'), $rules);
+							break;
+						case 'callbacks':
+							$callbacks = array_merge(array($field),$value);
+							call_user_func_array(array($array,'add_callbacks'), $callbacks);
+							break;
+					}
+				}
 			}
-
-			if ($save)
-			{
-				// Save this object
-				$this->save();
-			}
+		}
+		// Validate the array
+		if (($this->_valid = $array->validate()) === FALSE)
+		{
+			ORM_Validation_Exception::handle_validation($this->table_name, $array);
 		}
 
 		// Return validation status
-		return $status;
+		return $this;
 	}
 
 	/**
@@ -756,6 +786,10 @@ class ORM_Core {
 	{
 		if ( ! empty($this->changed))
 		{
+			// Require model validation before saving
+			if (!$this->_valid)
+				$this->validate();
+			
 			$data = array();
 			foreach ($this->changed as $column)
 			{
@@ -782,7 +816,7 @@ class ORM_Core {
 					->execute($this->db);
 
 				// Object has been saved
-				$this->saved = TRUE;
+				$this->_saved = TRUE;
 			}
 			else
 			{
@@ -809,18 +843,18 @@ class ORM_Core {
 					}
 
 					// Object is now loaded and saved
-					$this->loaded = $this->saved = TRUE;
+					$this->_loaded = $this->_saved = TRUE;
 				}
 			}
 
-			if ($this->saved === TRUE)
+			if ($this->saved() === TRUE)
 			{
 				// All changes have been saved
 				$this->changed = array();
 			}
 		}
 
-		if ($this->saved === TRUE AND ! empty($this->changed_relations))
+		if ($this->saved() === TRUE AND ! empty($this->changed_relations))
 		{
 			foreach ($this->changed_relations as $column => $values)
 			{
@@ -1021,7 +1055,7 @@ class ORM_Core {
 			$this->changed_relations[$related] = $this->object_relations[$related] = $this->load_relations($join_table, $model);
 		}
 
-		if( ! $model->loaded AND ! $model->empty_primary_key())
+		if( ! $model->loaded() AND ! $model->empty_primary_key())
 		{
 			// Load the related model if it hasn't already been
 			$model->find($model->object[$model->primary_key]);
@@ -1293,7 +1327,7 @@ class ORM_Core {
 			}
 
 			// Set the loaded and saved object status based on the primary key
-			$this->loaded = $this->saved = ($values[$this->primary_key] !== NULL);
+			$this->_loaded = $this->_saved = ($values[$this->primary_key] !== NULL);
 		}
 
 		// Related objects
@@ -1308,10 +1342,13 @@ class ORM_Core {
 					if (isset($this->table_columns[$column]))
 					{
 						// The type of the value can be determined, convert the value
-						$value = $this->load_type($column, $value);
+						$this->object[$column] = $this->load_type($column, $value);
+						// Data has changed
+						$this->changed[$column] = $column;
+		
+						// Object is no longer saved
+						$this->_saved = FALSE;
 					}
-
-					$this->object[$column] = $value;
 				}
 			}
 			else
@@ -1333,6 +1370,7 @@ class ORM_Core {
 
 		return $this;
 	}
+
 
 	/**
 	 * Loads a value according to the types defined by the column metadata.

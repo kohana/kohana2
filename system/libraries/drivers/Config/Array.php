@@ -6,7 +6,7 @@
  * This driver can cache and encrypt settings
  * if required.
  *
- * $Id: Array.php 4490 2009-07-27 18:13:12Z samsoir $
+ * $Id$
  *
  * @package    Kohana_Config
  * @author     Kohana Team

@@ -6,7 +6,7 @@
  * Specific drivers should implement caching and encryption
  * as they deem appropriate.
  *
- * $Id: KohanaConfig.php 4490 2009-07-27 18:13:12Z samsoir $
+ * $Id$
  *
  * @package    Kohana_Config
  * @author     Kohana Team

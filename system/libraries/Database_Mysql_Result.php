@@ -2,7 +2,7 @@
 /**
  * MySQL database result.
  * 
- * $Id: Database_Mysql_Result.php 4366 2009-05-27 21:12:17Z samsoir $
+ * $Id$
  * 
  * @package    Kohana
  * @author     Kohana Team

@@ -1,7 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Logging class.
- *
+ * 
+ * $Id$
+ * 
  * @package    Core
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team

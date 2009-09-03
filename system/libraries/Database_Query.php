@@ -2,7 +2,7 @@
 /**
  * Database query wrapper.
  * 
- * $Id: Database_Query.php 4366 2009-05-27 21:12:17Z samsoir $
+ * $Id$
  * 
  * @package    Kohana
  * @author     Kohana Team

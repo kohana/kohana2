@@ -1,10 +1,9 @@
-<?php 
-defined('SYSPATH') or die('No direct script access.');
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Provides a driver-based interface for setting and getting
  * configuration options for the Kohana environment
  *
- * $Id: Kohana_Config.php 4490 2009-07-27 18:13:12Z samsoir $
+ * $Id$
  *
  * @package    KohanaConfig
  * @author     Kohana Team
