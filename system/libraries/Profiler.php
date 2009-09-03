@@ -43,7 +43,7 @@ class Profiler_Core {
 		$db_groups = Kohana::config('database');
 		foreach ($db_groups as $group_name => $settings)
 		{
-			Kohana_Config::instance()->set('database.' . $group_name . '.benchmark',TRUE);			
+			Kohana_Config::instance()->set('database.' . $group_name . '.benchmark', TRUE);			
 		}
 	}
 
