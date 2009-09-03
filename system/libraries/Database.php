@@ -16,7 +16,7 @@ abstract class Database_Core {
 	const UPDATE =  3;
 	const DELETE =  4;
 
-	public static $instances = array();
+	protected static $instances = array();
 
 	// Global benchmarks
 	public static $benchmarks = array();
@@ -74,7 +74,7 @@ abstract class Database_Core {
 	 * @param   array  Database config array
 	 * @return  Database_Core
 	 */
-	public function __construct(array $config)
+	protected function __construct(array $config)
 	{
 		// Store the config locally
 		$this->config = $config;
