@@ -38,6 +38,13 @@ class Profiler_Core {
 		Event::add('system.display', array('Profiler', 'render'));
 
 		Kohana_Log::add('debug', 'Profiler library enabled');
+		
+		// Set the configured DB groups benchmarking to TRUE
+		$db_groups = Kohana::config('database');
+		foreach ($db_groups as $group_name => $settings)
+		{
+			Kohana_Config::instance()->set('database.' . $group_name . '.benchmark',TRUE);			
+		}
 	}
 
 	/**
