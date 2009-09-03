@@ -166,7 +166,7 @@ abstract class Config_Driver {
 			}
 		}
 
-		if ($key === 'core.modules')
+		if (substr($key,0,12) === 'core.modules')
 		{
 			// Reprocess the include paths
 			Kohana::include_paths(TRUE);
