@@ -173,52 +173,47 @@ abstract class Database_Core {
 		// Get the protocol and arguments
 		list ($db['type'], $connection) = explode('://', $dsn, 2);
 
-		if (strpos($connection, '@') !== FALSE)
+		if ($connection[0] === '/')
 		{
-			// Get the username and password
-			list ($db['pass'], $connection) = explode('@', $connection, 2);
-
-			// Check if a password is supplied
-			$logindata = explode(':', $db['pass'], 2);
-			$db['pass'] = (count($logindata) > 1) ? $logindata[1] : '';
-			$db['user'] = $logindata[0];
-
-			// Prepare for finding the database
-			$connection = explode('/', $connection);
-
-			// Find the database name
-			$db['database'] = array_pop($connection);
-
-			// Reset connection string
-			$connection = implode('/', $connection);
-
-			// Find the socket
-			if (preg_match('/^unix\([^)]++\)/', $connection))
-			{
-				// This one is a little hairy: we explode based on the end of
-				// the socket, removing the 'unix(' from the connection string
-				list ($db['socket'], $connection) = explode(')', substr($connection, 5), 2);
-			}
-			elseif (strpos($connection, ':') !== FALSE)
-			{
-				// Fetch the host and port name
-				list ($db['host'], $db['port']) = explode(':', $connection, 2);
-			}
-			else
-			{
-				$db['host'] = $connection;
-			}
+			// Strip leading slash
+			$db['database'] = substr($connection, 1);
 		}
 		else
 		{
-			// File connection
-			$connection = explode('/', $connection);
+			$connection = parse_url('http://'.$connection);
 
-			// Find database file name
-			$db['database'] = array_pop($connection);
+			if (isset($connection['user']))
+			{
+				$db['user'] = $connection['user'];
+			}
 
-			// Find database directory name
-			$db['socket'] = implode('/', $connection).'/';
+			if (isset($connection['pass']))
+			{
+				$db['pass'] = $connection['pass'];
+			}
+
+			if (isset($connection['port']))
+			{
+				$db['port'] = $connection['port'];
+			}
+
+			if (isset($connection['host']))
+			{
+				if ($connection['host'] === 'unix(')
+				{
+					list($db['socket'], $connection['path']) = explode(')', $connection['path'], 2);
+				}
+				else
+				{
+					$db['host'] = $connection['host'];
+				}
+			}
+
+			if (isset($connection['path']) AND $connection['path'])
+			{
+				// Strip leading slash
+				$db['database'] = substr($connection['path'], 1);
+			}
 		}
 
 		return $db;
