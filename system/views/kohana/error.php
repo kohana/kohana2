@@ -140,17 +140,17 @@ $error_id = uniqid('error');
 	<div id="<?php echo $error_id ?>" class="content">
 		<p>
 			<span class="file">
-<?php echo Kohana::debug_path($file)?>[ <?php echo $line?> ]
+<?php echo Kohana_Exception::debug_path($file)?>[ <?php echo $line?> ]
 			</span>
 		</p>
-		<?php echo Kohana::debug_source($file, $line)?>
+		<?php echo Kohana_Exception::debug_source($file, $line)?>
 		<ol class="trace">
-			<?php foreach (Kohana::trace($trace) as $i=>$step): ?>
+			<?php foreach (Kohana_Exception::trace($trace) as $i=>$step): ?>
 			<li>
 				<p>
 					<span class="file">
 						<?php if ($step['file']): $source_id = $error_id.'source'.$i; ?>
-						<a href="#<?php echo $source_id ?>" onclick="return koggle('<?php echo $source_id ?>')"><?php echo Kohana::debug_path($step['file'])?>[ <?php echo $step['line']?> ]</a>
+						<a href="#<?php echo $source_id ?>" onclick="return koggle('<?php echo $source_id ?>')"><?php echo Kohana_Exception::debug_path($step['file'])?>[ <?php echo $step['line']?> ]</a>
 						<?php else : ?>
 						{<?php echo __('PHP internal call')?>}
 						<?php endif?>
@@ -170,7 +170,7 @@ $error_id = uniqid('error');
 								</code>
 							</td>
 							<td>
-								<pre><?php echo Kohana::dump($arg) ?></pre>
+								<pre><?php echo Kohana_Exception::dump($arg) ?></pre>
 							</td>
 						</tr>
 						<?php endforeach?>
@@ -195,7 +195,7 @@ $error_id = uniqid('error');
 				<tr>
 					<td>
 						<code>
-<?php echo Kohana::debug_path($file)?>
+<?php echo Kohana_Exception::debug_path($file)?>
 						</code>
 					</td>
 				</tr>
@@ -210,7 +210,7 @@ $error_id = uniqid('error');
 				<tr>
 					<td>
 						<code>
-<?php echo Kohana::debug_path($file)?>
+<?php echo Kohana_Exception::debug_path($file)?>
 						</code>
 					</td>
 				</tr>
@@ -239,7 +239,7 @@ $error_id = uniqid('error');
 						</code>
 					</td>
 					<td>
-						<pre><?php echo Kohana::dump($value) ?></pre>
+						<pre><?php echo Kohana_Exception::dump($value) ?></pre>
 					</td>
 				</tr>
 				<?php endforeach?>
