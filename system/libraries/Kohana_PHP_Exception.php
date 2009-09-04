@@ -22,9 +22,9 @@ class Kohana_PHP_Exception_Core extends Kohana_Exception {
 	public static function enable()
 	{
 		// Register with non shutdown errors
-		set_error_handler(array(__CLASS__, 'error_handler'));
+		set_error_handler(array('Kohana_PHP_Exception', 'error_handler'));
 		// Register a shutdown function to handle fatal errors 
-		register_shutdown_function(array(__CLASS__, 'shutdown_handler'));
+		register_shutdown_function(array('Kohana_PHP_Exception', 'shutdown_handler'));
 	}
 
 	/**
