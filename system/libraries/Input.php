@@ -312,7 +312,7 @@ class Input_Core {
 
 		return $this->$method($data);
 	}
-	
+
 	/**
 	 * Default built-in cross site scripting filter.
 	 *
@@ -350,29 +350,29 @@ class Input_Core {
 		//   * Removed parentheses where possible
 		//   * Split up alternation alternatives
 		//   * Made some quantifiers possessive
-		
+
 		// Fix &entity\n;
 		$data = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $data);
 		$data = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $data);
 		$data = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $data);
 		$data = html_entity_decode($data, ENT_COMPAT, 'UTF-8');
-		
+
 		// Remove any attribute starting with "on" or xmlns
 		$data = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu', '$1>', $data);
-		
+
 		// Remove javascript: and vbscript: protocols
 		$data = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $data);
 		$data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2novbscript...', $data);
 		$data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u', '$1=$2nomozbinding...', $data);
-		
+
 		// Only works in IE: <span style="width: expression(alert('Ping!'));"></span>
 		$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
 		$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
 		$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu', '$1>', $data);
-		
+
 		// Remove namespaced elements (we do not need them)
 		$data = preg_replace('#</*\w+:\w[^>]*+>#i', '', $data);
-		
+
 		do
 		{
 			// Remove really unwanted tags
@@ -380,19 +380,19 @@ class Input_Core {
 			$data = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $data);
 		}
 		while ($old_data !== $data);
-		
+
 		return $data;
 	}
-	
+
 	/**
 	 * HTMLPurifier cross site scripting filter. This version assumes the
-	 * existence of the standard htmlpurifier library, and is set to not tidy
+	 * existence of the "Standalone Distribution" htmlpurifier library, and is set to not tidy
 	 * input.
 	 *
 	 * @param   string  data to clean
 	 * @return  string
 	 */
-	protected function xss_filter_htmlpurifier($data) 
+	protected function xss_filter_htmlpurifier($data)
 	{
 		/**
 		 * @todo License should go here, http://htmlpurifier.org/
@@ -400,24 +400,23 @@ class Input_Core {
 		if ( ! class_exists('HTMLPurifier_Config', FALSE))
 		{
 			// Load HTMLPurifier
-			require Kohana::find_file('vendor', 'htmlpurifier/HTMLPurifier.auto', TRUE);
-			require 'HTMLPurifier.func.php';
+			require Kohana::find_file('vendor', 'htmlpurifier/HTMLPurifier.standalone', TRUE);
 		}
-		
+
 		// Set configuration
 		$config = HTMLPurifier_Config::createDefault();
-		$config->set('HTML', 'TidyLevel', 'none'); // Only XSS cleaning now
-		
+		$config->set('HTML.TidyLevel', 'none'); // Only XSS cleaning now
+
 		$cache = Kohana::config('html_purifier.cache');
-		
-		if ($cache AND is_string($cache)) 
+
+		if ($cache AND is_string($cache))
 		{
-			$config->set('Cache', 'SerializerPath', $cache);
+			$config->set('Cache.SerializerPath', $cache);
 		}
-		
+
 		// Run HTMLPurifier
-		$data = HTMLPurifier($data, $config);
-		
+		$data = HTMLPurifier::instance($config)->purify($data);
+
 		return $data;
 	}
 
