@@ -281,14 +281,14 @@ class form_Core {
 					$inner_key = (string) $inner_key;
 
 					$sel = in_array($inner_key, $selected) ? ' selected="selected"' : '';
-					$input .= '<option value="'.$inner_key.'"'.$sel.'>'.$inner_val.'</option>'."\n";
+					$input .= '<option value="'.$inner_key.'"'.$sel.'>'.html::specialchars($inner_val).'</option>'."\n";
 				}
 				$input .= '</optgroup>'."\n";
 			}
 			else
 			{
 				$sel = in_array($key, $selected) ? ' selected="selected"' : '';
-				$input .= '<option value="'.$key.'"'.$sel.'>'.$val.'</option>'."\n";
+				$input .= '<option value="'.$key.'"'.$sel.'>'.html::specialchars($val).'</option>'."\n";
 			}
 		}
 		$input .= '</select>';
