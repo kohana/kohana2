@@ -37,6 +37,26 @@ class inflector_Core {
 
 		return isset(inflector::$uncountable[strtolower($str)]);
 	}
+	
+	/**
+	 * Makes a plural word singular.
+	 *
+	 * @param   string   word to singularize
+	 * @param   integer  number of things
+	 * @return  string
+	 */
+	public static function singular($str, $count = NULL) {
+		$parts = explode('_', $str);
+
+		$last = inflector::_singular(array_pop($parts), $count);
+
+		$pre = implode('_', $parts);
+		if (strlen($pre))
+			$pre .= '_';
+
+		return $pre.$last;
+	}
+
 
 	/**
 	 * Makes a plural word singular.
@@ -45,7 +65,7 @@ class inflector_Core {
 	 * @param   integer  number of things
 	 * @return  string
 	 */
-	public static function singular($str, $count = NULL)
+	public static function _singular($str, $count = NULL)
 	{
 		// Remove garbage
 		$str = strtolower(trim($str));
@@ -95,6 +115,25 @@ class inflector_Core {
 
 		return inflector::$cache[$key] = $str;
 	}
+	
+	/**
+	 * Makes a singular word plural.
+	 *
+	 * @param   string  word to pluralize
+	 * @return  string
+	 */
+	public static function plural($str, $count = NULL) {
+		$parts = explode('_', $str);
+
+		$last = inflector::_plural(array_pop($parts), $count);
+
+		$pre = implode('_', $parts);
+		if (strlen($pre)) 
+			$pre .= '_';
+
+		return $pre.$last;
+	}
+
 
 	/**
 	 * Makes a singular word plural.
@@ -102,7 +141,7 @@ class inflector_Core {
 	 * @param   string  word to pluralize
 	 * @return  string
 	 */
-	public static function plural($str, $count = NULL)
+	public static function _plural($str, $count = NULL)
 	{
 		// Remove garbage
 		$str = strtolower(trim($str));
