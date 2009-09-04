@@ -586,7 +586,7 @@ abstract class Kohana_Core {
 	 */
 	public static function auto_load($class)
 	{
-		if (class_exists($class, FALSE))
+		if (class_exists($class, FALSE) OR interface_exists($class, FALSE))
 			return TRUE;
 
 		if (($suffix = strrpos($class, '_')) > 0)
