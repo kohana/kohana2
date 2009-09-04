@@ -33,7 +33,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 		{
 			// Attempt to locate IM by using "which" (only works for *nix!)
 			if ( ! is_file($path = exec('which convert')))
-				throw new Kohana_Exception('image.imagemagick.not_found');
+				throw new Kohana_Exception('The ImageMagick directory specified does not contain a required program.');
 
 			$config['directory'] = dirname($path);
 		}
@@ -43,7 +43,7 @@ class Image_ImageMagick_Driver extends Image_Driver {
 
 		// Check to make sure the provided path is correct
 		if ( ! is_file(realpath($config['directory']).'/convert'.$this->ext))
-			throw new Kohana_Exception('image.imagemagick.not_found', 'convert'.$this->ext);
+			throw new Kohana_Exception('The ImageMagick directory specified does not contain a required program, :im:', array(':im:' => 'convert'.$this->ext));
 
 		// Set the installation directory
 		$this->dir = str_replace('\\', '/', realpath($config['directory'])).'/';

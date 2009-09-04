@@ -20,14 +20,14 @@ class Image_GD_Driver extends Image_Driver {
 	{
 		// Make sure that GD2 is available
 		if ( ! function_exists('gd_info'))
-			throw new Kohana_Exception('image.gd.requires_v2');
+			throw new Kohana_Exception('The Image library requires GD2. Please see http://php.net/gd_info for more information.');
 
 		// Get the GD information
 		$info = gd_info();
 
 		// Make sure that the GD2 is installed
 		if (strpos($info['GD Version'], '2.') === FALSE)
-			throw new Kohana_Exception('image.gd.requires_v2');
+			throw new Kohana_Exception('The Image library requires GD2. Please see http://php.net/gd_info for more information.');
 	}
 
 	public function process($image, $actions, $dir, $file, $render = FALSE, $background = NULL)
@@ -63,11 +63,11 @@ class Image_GD_Driver extends Image_Driver {
 
 		// Make sure the image type is supported for import
 		if (empty($create) OR ! function_exists($create))
-			throw new Kohana_Exception('image.type_not_allowed', $image['file']);
+			throw new Kohana_Exception('The specified image, :type:, is not an allowed image type.', array(':type:' => $image['file']));
 
 		// Make sure the image type is supported for saving
 		if (empty($save) OR ! function_exists($save))
-			throw new Kohana_Exception('image.type_not_allowed', $dir.$file);
+			throw new Kohana_Exception('The specified image, :type:, is not an allowed image type.', array(':type:' => $dir.$file));
 
 		// Load the image
 		$this->image = $image;
@@ -211,11 +211,11 @@ class Image_GD_Driver extends Image_Driver {
 			// Recalculate the percentage to a pixel size
 			$properties['height'] = round($height * (substr($properties['height'], 0, -1) / 100));
 		}
-		
+
 		// Recalculate the width and height, if they are missing
 		empty($properties['width'])  and $properties['width']  = round($width * $properties['height'] / $height);
 		empty($properties['height']) and $properties['height'] = round($height * $properties['width'] / $width);
-		
+
 		if ($properties['master'] === Image::AUTO)
 		{
 			// Change an automatic master dim to the correct type
@@ -314,7 +314,7 @@ class Image_GD_Driver extends Image_Driver {
 	{
 		// Make sure that the sharpening function is available
 		if ( ! function_exists('imageconvolution'))
-			throw new Kohana_Exception('image.unsupported_method', __FUNCTION__);
+			throw new Kohana_Exception('Your configured driver does not support the :method: image transformation.', array(':method:' => __FUNCTION__));
 
 		// Amount should be in the range of 18-10
 		$amount = round(abs(-18 + ($amount * 0.08)), 2);
@@ -372,12 +372,12 @@ class Image_GD_Driver extends Image_Driver {
 		{
 			$width = 1;
 		}
-		
+
     	if ($height < 1)
     	{
     		$height = 1;
     	}
-		
+
 		if (self::$blank_png === NULL)
 		{
 			// Decode the blank PNG if it has not been done already
