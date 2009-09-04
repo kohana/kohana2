@@ -22,6 +22,9 @@ final class Benchmark {
 	 */
 	public static function start($name)
 	{
+		if (isset(self::$marks[$name]) AND self::$marks[$name][0]['stop'] === FALSE)
+			throw new Kohana_Exception('A benchmark named :name is already running.', array(':name' => $name));
+
 		if ( ! isset(self::$marks[$name]))
 		{
 			self::$marks[$name] = array();
