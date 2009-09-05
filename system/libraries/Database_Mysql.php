@@ -32,7 +32,7 @@ class Database_Mysql_Core extends Database {
 			// Connect to the database
 			$this->connection = $connect($host.$port, $user, $pass, TRUE);
 		}
-		catch (ErrorException $e)
+		catch (Kohana_PHP_Exception $e)
 		{
 			// No connection exists
 			$this->connection = NULL;
