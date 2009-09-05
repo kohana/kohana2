@@ -178,7 +178,7 @@ class Session_Core {
 		{
 			session_id($session_id);
 		}
-		
+
 		// Start the session!
 		session_start();
 
