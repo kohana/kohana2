@@ -112,6 +112,12 @@ class Kohana_Exception_Core extends Exception {
 
 		try
 		{
+			// If HTML Output Or ajax request is disabled just return a text Exception
+			if ((Kohana_Exception::$html_output === FALSE) OR (request::is_ajax()))
+			{
+				echo Kohana_Exception::text($e);
+				exit(1);
+			}
 			// Get the exception information
 			$type    = get_class($e);
 			$code    = $e->getCode();
