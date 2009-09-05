@@ -123,13 +123,29 @@ class Cache_Core {
 	 * Fetches all of the caches for a given tag. An empty array will be
 	 * returned when no matching caches are found.
 	 *
-	 * @param   string  cache tag
-	 * @return  array   all cache items matching the tag
+	 * @param   mixed  cache tag or an array of cache tags
+	 * @return  array  all cache items matching the tag
 	 */
 	public function find($tag)
 	{
-		return $this->driver->find($tag);
-	}
+		if (is_array($tag))
+		{
+			$results = array();
+
+			foreach ($tag AS $name)
+			{
+				if (($item = $this->driver->find($name)) !== array())
+				{
+					$results += $item;
+				}
+			}
+			return $results;
+		}
+		else
+		{
+			return $this->driver->find($tag);
+		}
+}
 
 	/**
 	 * Set a cache item by id. Tags may also be added and a custom lifetime
