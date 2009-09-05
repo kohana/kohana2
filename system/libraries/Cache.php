@@ -145,7 +145,7 @@ class Cache_Core {
 		{
 			return $this->driver->find($tag);
 		}
-}
+	}
 
 	/**
 	 * Set a cache item by id. Tags may also be added and a custom lifetime
