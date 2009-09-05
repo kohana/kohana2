@@ -32,13 +32,19 @@ class Session_Core {
 
 	/**
 	 * Singleton instance of Session.
+	 * 
+	 * @param string Force a specific session_id
 	 */
-	public static function instance()
+	public static function instance($session_id = NULL)
 	{
 		if (Session::$instance == NULL)
 		{
 			// Create a new instance
-			new Session;
+			new Session($session_id);
+		}
+		elseif( ! is_null($session_id) AND $session_id != session_id() )
+		{
+			throw new Kohana_Exception('A session (SID: :session:) is already open, cannot open the specified session (SID: :new_session:).', array(':session:' => session_id(), ':new_session:' => $session_id));
 		}
 
 		return Session::$instance;
@@ -51,8 +57,10 @@ class Session_Core {
 
 	/**
 	 * On first session instance creation, sets up the driver and creates session.
+	 * 
+	 * @param string Force a specific session_id
 	 */
-	protected function __construct()
+	protected function __construct($session_id = NULL)
 	{
 		$this->input = Input::instance();
 
@@ -71,7 +79,7 @@ class Session_Core {
 			ini_set('session.gc_maxlifetime', (Session::$config['expiration'] == 0) ? 86400 : Session::$config['expiration']);
 
 			// Create a new session
-			$this->create();
+			$this->create(NULL, $session_id);
 
 			if (Session::$config['regenerate'] > 0 AND ($_SESSION['total_hits'] % Session::$config['regenerate']) === 0)
 			{
@@ -112,9 +120,10 @@ class Session_Core {
 	 * Create a new session.
 	 *
 	 * @param   array  variables to set after creation
+	 * @param   string Force a specific session_id
 	 * @return  void
 	 */
-	public function create($vars = NULL)
+	public function create($vars = NULL, $session_id = NULL)
 	{
 		// Destroy any current sessions
 		$this->destroy();
@@ -164,6 +173,12 @@ class Session_Core {
 			Kohana::config('cookie.httponly')
 		);
 
+		// Reopen an existing session if supplied
+		if ( ! is_null($session_id))
+		{
+			session_id($session_id);
+		}
+		
 		// Start the session!
 		session_start();
 
