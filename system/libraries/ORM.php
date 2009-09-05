@@ -181,7 +181,7 @@ class ORM_Core {
 	public function __sleep()
 	{
 		// Store only information about the object
-		return array('object_name', 'object', 'changed', 'loaded', 'saved', 'sorting');
+		return array('object_name', 'object', 'changed', '_loaded', '_saved', 'sorting');
 	}
 
 	/**
