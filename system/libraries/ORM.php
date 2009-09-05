@@ -118,6 +118,10 @@ class ORM_Core {
 		{
 			// Load an object
 			$this->load_values((array) $id);
+			// START: temporarty fix for #2070
+			$this->changed = array();
+			$this->_saved = TRUE;
+			// END
 		}
 		elseif (!empty($id))
 		{
@@ -1503,8 +1507,15 @@ class ORM_Core {
 
 		if ($result->count() === 1)
 		{
+			// START: temporarty fix for #2070
+			$changed = $this->changed;
+			// END
 			// Load object values
 			$this->load_values($result->as_array()->current(), $ignore_changed);
+			// START: temporarty fix for #2070
+			$this->changed = ($ignore_changed) ? $changed : array();
+			$this->_saved = (count($this->changed) > 0) ? FALSE : TRUE;
+			// END
 		}
 		else
 		{
