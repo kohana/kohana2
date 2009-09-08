@@ -235,6 +235,62 @@ class text_Core {
 	}
 
 	/**
+	 * An alternative to the php levenshtein() function that work out the
+	 * distance between 2 words using the Damerau–Levenshtein algorithm.
+	 * Credit: http://forums.devnetwork.net/viewtopic.php?f=50&t=89094
+	 *
+	 * @see http://en.wikipedia.org/wiki/Damerau–Levenshtein_distance
+	 * @param     string    first word
+	 * @param     string    second word
+	 * @return    int       distance between words
+	 */
+	public static function distance($string1, $string2)
+	{
+		$string1_length = strlen($string1);
+		$string2_length = strlen($string2);
+
+		// Here we start building the table of values
+		$matrix = array();
+
+		// String1 length + 1 = rows.
+		for ($i = 0; $i <= $string1_length; ++$i)
+		{
+			$matrix[$i][0] = $i;
+		}
+
+		// String2 length + 1 columns.
+		for ($j = 0; $j <= $string2_length; ++$j)
+		{
+			$matrix[0][$j] = $j;
+		}
+
+		for ($i = 1; $i <= $string1_length; ++$i)
+		{
+			for ($j = 1; $j <= $string2_length; ++$j)
+			{
+				$cost = substr($string1, $i - 1, 1) == substr($string2, $j - 1, 1) ? 0 : 1;
+
+				$matrix[$i][$j] = min(
+					$matrix[$i - 1][$j] + 1,		// deletion
+					$matrix[$i][$j - 1] + 1,		// insertion
+					$matrix[$i - 1][$j - 1] + $cost	// substitution
+				);
+
+				if ($i > 1 && $j > 1 &&	(substr($string1, $i - 1, 1) == substr($string2, $j - 2, 1))
+					&& (substr($string1, $i - 2, 1) == substr($string2, $j - 1, 1)))
+				{
+					$matrix[$i][$j] = min(
+						$matrix[$i][$j],
+						$matrix[$i - 2][$j - 2] + $cost	// transposition
+					);
+				}
+			}
+		}
+
+		return $matrix[$string1_length][$string2_length];
+	}
+
+	/**
 	 * Converts text anchors into links.
 	 *
 	 * @param   string   text to auto link
