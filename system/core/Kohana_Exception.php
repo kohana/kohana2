@@ -12,17 +12,14 @@
 
 class Kohana_Exception_Core extends Exception {
 
-	// Generate HTML errors
-	public static $html_output = TRUE;
+	// Template file
+	public static $template = NULL;
 
 	// Show stack traces in errors
 	public static $trace_output = TRUE;
 
 	// Show source code in errors
 	public static $source_output = TRUE;
-
-	// Error resources have not been loaded
-	protected static $error_resources = FALSE;
 
 	// To hold unique identifier to distinguish error output
 	protected $instance_identifier;
@@ -51,11 +48,18 @@ class Kohana_Exception_Core extends Exception {
 	/**
 	 * Enable Kohana exception handling.
 	 *
+	 * @uses    Kohana_Exception::$template
 	 * @return  void
 	 */
 	public static function enable()
 	{
 		set_exception_handler(array('Kohana_Exception', 'handle'));
+
+		if (Kohana_Exception::$template === NULL)
+		{
+			// Set the default template
+			Kohana_Exception::$template = (PHP_SAPI === 'cli') ? 'kohana/error_text' : 'kohana/error';
+		}
 	}
 
 	/**
@@ -89,7 +93,7 @@ class Kohana_Exception_Core extends Exception {
 	 * @uses    Kohana::message()
 	 * @uses    Kohana_Exception::text()
 	 * @param   object   exception object
-	 * @return  boolean
+	 * @return  void
 	 */
 	public static function handle(Exception $e)
 	{
@@ -98,18 +102,10 @@ class Kohana_Exception_Core extends Exception {
 
 		try
 		{
-			// If HTML Output Or ajax request is disabled just return a text Exception
-			if ((Kohana_Exception::$html_output === FALSE) OR (request::is_ajax()))
-			{
-				echo Kohana_Exception::text($e);
-				exit(1);
-			}
 			// Get the exception information
 			$type    = get_class($e);
 			$code    = $e->getCode();
 			$message = $e->getMessage();
-			$file    = $e->getFile();
-			$line    = $e->getLine();
 
 			// Create a text version of the exception
 			$error = Kohana_Exception::text($e);
@@ -117,56 +113,80 @@ class Kohana_Exception_Core extends Exception {
 			// Add this exception to the log
 			Kohana_Log::add('error', $error);
 
-			if (PHP_SAPI === 'cli')
-			{
-				// Just display the text of the exception
-				echo "\n{$error}\n";
-
-				return TRUE;
-			}
-
 			if (Kohana::config('core.display_errors') === FALSE)
 			{
-				// Get the i18n messages
 				$error   = __('Unable to Complete Request');
 				$message = __('You can go to the <a href="%site%">home page</a> or <a href="%uri%">try again</a>.',
-				                    array('%site%' => url::site(), '%uri%' => url::site(Router::$current_uri)));
+					array('%site%' => url::site(), '%uri%' => url::site(Router::$current_uri)));
 
-				// Do not show the file or line
+				// Do not show the details
 				$file = $line = NULL;
+				$trace = array();
 
-				require Kohana::find_file('views', 'kohana/error_disabled', TRUE);
+				$template = '_disabled';
 			}
 			else
 			{
-				// Get the exception backtrace
+				$file = $e->getFile();
+				$line = $e->getLine();
 				$trace = $e->getTrace();
+
+				$template = '';
+			}
+
+			if ($e instanceof Kohana_Exception)
+			{
+				$template = $e->getTemplate().$template;
+
+				if ( ! headers_sent())
+				{
+					$e->sendHeaders();
+				}
 
 				if ($e instanceof Kohana_PHP_Exception)
 				{
 					// Use the human-readable error name
 					$code = Kohana::message('core.errors.'.$code);
 				}
+			}
+			else
+			{
+				$template = Kohana_Exception::$template.$template;
 
 				if ( ! headers_sent())
 				{
-					if ($e instanceof Kohana_Exception)
-					{
-						$e->sendHeaders();
-					}
-
-					// Make sure the proper content type is sent
-					header('Content-Type: text/html; charset='.Kohana::CHARSET, TRUE);
+					header('HTTP/1.1 500 Internal Server Error');
 				}
 
-				// Clean the output buffer if one exists
-				ob_get_level() and ob_clean();
+				if ($e instanceof ErrorException)
+				{
+					// Use the human-readable error name
+					$code = Kohana::message('core.errors.'.$e->getSeverity());
 
-				// Include the exception HTML
-				include Kohana::find_file('views', 'kohana/error');
+					if (version_compare(PHP_VERSION, '5.3', '<'))
+					{
+						// Workaround for a bug in ErrorException::getTrace() that exists in
+						// all PHP 5.2 versions. @see http://bugs.php.net/45895
+						for ($i = count($trace) - 1; $i > 0; --$i)
+						{
+							if (isset($trace[$i - 1]['args']))
+							{
+								// Re-position the arguments
+								$trace[$i]['args'] = $trace[$i - 1]['args'];
 
-				// Exit with an error status
-				exit(1);
+								unset($trace[$i - 1]['args']);
+							}
+						}
+					}
+				}
+			}
+
+			// Clean the output buffer if one exists
+			ob_get_level() and ob_clean();
+
+			if ($template = Kohana::find_file('views', $template))
+			{
+				include $template;
 			}
 		}
 		catch (Exception $e)
@@ -176,20 +196,24 @@ class Kohana_Exception_Core extends Exception {
 
 			// Display the exception text
 			echo Kohana_Exception::text($e), "\n";
+		}
 
+		if (PHP_SAPI === 'cli')
+		{
 			// Exit with an error status
 			exit(1);
 		}
 	}
 
 	/**
-	 * Outputs an text error message.
+	 * Returns the template for this exception.
 	 *
+	 * @uses    Kohana_Exception::$template
 	 * @return  string
 	 */
-	public function __toString()
+	public function getTemplate()
 	{
-		return Kohana_Exception::text($this);
+		return Kohana_Exception::$template;
 	}
 
 	/**
