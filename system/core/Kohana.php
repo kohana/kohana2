@@ -780,12 +780,12 @@ abstract class Kohana_Core {
 
 		if ($path === FALSE)
 		{
-			$paths = array_reverse(self::include_paths());
+			$paths = array_reverse(Kohana::include_paths());
 
 			foreach ($paths as $path)
 			{
 				// Recursively get and merge all files
-				$files = array_merge($files, self::list_files($directory, $recursive, $ext, $path.$directory));
+				$files = array_merge($files, Kohana::list_files($directory, $recursive, $ext, $path.$directory));
 			}
 		}
 		else
@@ -809,7 +809,7 @@ abstract class Kohana_Core {
 							$item = pathinfo($item, PATHINFO_BASENAME);
 
 							// Append sub-directory search
-							$files = array_merge($files, self::list_files($directory, TRUE, $ext, $path.$item));
+							$files = array_merge($files, Kohana::list_files($directory, TRUE, $ext, $path.$item));
 						}
 					}
 					else
