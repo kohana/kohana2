@@ -12,8 +12,8 @@
 
 class Kohana_PHP_Exception_Core extends Kohana_Exception {
 
-	public static $disabled = false;
-	
+	public static $disabled = FALSE;
+
 	/**
 	 * Enable Kohana PHP error handling.
 	 *
@@ -23,7 +23,8 @@ class Kohana_PHP_Exception_Core extends Kohana_Exception {
 	{
 		// Register with non shutdown errors
 		set_error_handler(array('Kohana_PHP_Exception', 'error_handler'));
-		// Register a shutdown function to handle fatal errors 
+
+		// Register a shutdown function to handle errors which halt execution
 		register_shutdown_function(array('Kohana_PHP_Exception', 'shutdown_handler'));
 	}
 
@@ -34,7 +35,7 @@ class Kohana_PHP_Exception_Core extends Kohana_Exception {
 	 */
 	public static function disable()
 	{
-		self::$disabled = true;
+		self::$disabled = TRUE;
 		restore_error_handler();
 	}
 
@@ -61,22 +62,17 @@ class Kohana_PHP_Exception_Core extends Kohana_Exception {
 	 */
 	public static function error_handler($code, $error, $file, $line, $context = NULL)
 	{
-		if ((error_reporting() & $code) === 0)
+		// Respect error_reporting settings
+		if (error_reporting() & $code)
 		{
-			// Respect error_reporting settings
-			return;
+			// An error has been triggered
+			Kohana::$has_error = TRUE;
+
+			// Throw an exception
+			throw new Kohana_PHP_Exception($code, $error, $file, $line, $context);
 		}
-
-		// An error has been triggered
-		Kohana::$has_error = TRUE;
-
-		// Throw an exception
-		throw new Kohana_PHP_Exception($code, $error, $file, $line, $context);
-
-		// Do not execute the PHP error handler
-		return TRUE;
 	}
-	
+
 	/**
 	 * Catches errors that are not caught by the error handler, such as E_PARSE.
 	 *
@@ -85,16 +81,8 @@ class Kohana_PHP_Exception_Core extends Kohana_Exception {
 	 */
 	public static function shutdown_handler()
 	{
-		if (self::$disabled === true)
+		if ( ! self::$disabled AND $error = error_get_last())
 		{
-			//this will prevent any future exception handlers from running
-			exit();
-		}
-		if ($error = error_get_last())
-		{
-			// If an output buffer exists, clear it
-			ob_get_level() and ob_clean();
-
 			// Fake an exception for nice debugging
 			Kohana_Exception::handle(new Kohana_PHP_Exception($error['type'], $error['message'], $error['file'], $error['line']));
 		}
