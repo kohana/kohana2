@@ -167,8 +167,13 @@ class Kohana_Exception_Core extends Exception {
 
 				if ( ! headers_sent())
 				{
-					// Make sure the proper content type is sent with a 500 status
-					header('Content-Type: text/html; charset='.Kohana::CHARSET, TRUE, 500);
+					if ($e instanceof Kohana_Exception)
+					{
+						$e->sendHeaders();
+					}
+
+					// Make sure the proper content type is sent
+					header('Content-Type: text/html; charset='.Kohana::CHARSET, TRUE);
 				}
 
 				// Clean the output buffer if one exists
