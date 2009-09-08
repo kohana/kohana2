@@ -448,16 +448,15 @@ class Kohana_Exception_Core extends Exception {
 	}
 
 	/**
-	 * Returns an HTML string, highlighting a specific line of a file, with some
-	 * number of lines padded above and below.
+	 * Returns an array of lines from a file.
 	 *
-	 *     // Highlights the current line of the current file
+	 *     // Returns the current line of the current file
 	 *     echo Kohana_Exception::debug_source(__FILE__, __LINE__);
 	 *
 	 * @param   string   file to open
-	 * @param   integer  line number to highlight
+	 * @param   integer  line number to find
 	 * @param   integer  number of padding lines
-	 * @return  string
+	 * @return  array
 	 */
 	public static function debug_source($file, $line_number, $padding = 5)
 	{
@@ -471,7 +470,7 @@ class Kohana_Exception_Core extends Exception {
 		// Set the zero-padding amount for line numbers
 		$format = '% '.strlen($range['end']).'d';
 
-		$source = '';
+		$source = array();
 		while (($row = fgets($file)) !== FALSE)
 		{
 			// Increment the line number
@@ -480,43 +479,23 @@ class Kohana_Exception_Core extends Exception {
 
 			if ($line >= $range['start'])
 			{
-				// Make the row safe for output
-				$row = htmlspecialchars($row, ENT_NOQUOTES, Kohana::CHARSET);
-
-				// Trim whitespace and sanitize the row
-				$row = '<span class="number">'.sprintf($format, $line).'</span> '.$row;
-
-				if ($line === $line_number)
-				{
-					// Apply highlighting to this row
-					$row = '<span class="line highlight">'.$row.'</span>';
-				}
-				else
-				{
-					$row = '<span class="line">'.$row.'</span>';
-				}
-
-				// Add to the captured source
-				$source .= $row;
+				$source[sprintf($format, $line)] = $row;
 			}
 		}
 
 		// Close the file
 		fclose($file);
 
-		return '<pre class="source"><code>'.$source.'</code></pre>';
+		return $source;
 	}
 
 	/**
-	 * Returns an array of HTML strings that represent each step in the backtrace.
+	 * Returns an array of strings that represent each step in the backtrace.
 	 *
-	 *     // Displays the entire current backtrace
-	 *     echo implode('<br/>', Kohana_Exception::trace());
-	 *
-	 * @param   string  path to debug
-	 * @return  string
+	 * @param   array  trace to analyze
+	 * @return  array
 	 */
-	public static function trace(array $trace = NULL)
+	public static function trace($trace = NULL)
 	{
 		if ($trace === NULL)
 		{

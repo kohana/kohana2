@@ -143,7 +143,10 @@ $error_id = uniqid('error');
 <?php echo Kohana_Exception::debug_path($file)?>[ <?php echo $line?> ]
 			</span>
 		</p>
-		<?php if (Kohana_Exception::$source_output) echo Kohana_Exception::debug_source($file, $line)?>
+
+<?php if (Kohana_Exception::$source_output AND $source_code = Kohana_Exception::debug_source($file, $line)) : ?>
+		<pre class="source"><code><?php foreach ($source_code as $num => $row) : ?><span class="line <?php if ($num == $line) echo 'highlight' ?>"><span class="number"><?php echo $num ?></span><?php echo htmlspecialchars($row, ENT_NOQUOTES, Kohana::CHARSET) ?></span><?php endforeach ?></code></pre>
+<?php endif ?>
 
 <?php if (Kohana_Exception::$trace_output) : ?>
 		<ol class="trace">
@@ -152,7 +155,7 @@ $error_id = uniqid('error');
 				<p>
 					<span class="file">
 						<?php if ($step['file']): $source_id = $error_id.'source'.$i; ?>
-						<?php if (Kohana_Exception::$source_output) : ?>
+						<?php if (Kohana_Exception::$source_output AND $step['source']) : ?>
 						<a href="#<?php echo $source_id ?>" onclick="return koggle('<?php echo $source_id ?>')"><?php echo Kohana_Exception::debug_path($step['file'])?>[ <?php echo $step['line']?> ]</a>
 						<?php else : ?>
 						<span class="file"><?php echo Kohana_Exception::debug_path($step['file'])?>[ <?php echo $step['line']?> ]</span>
@@ -183,8 +186,8 @@ $error_id = uniqid('error');
 					</table>
 				</div>
 				<?php endif?>
-				<?php if (Kohana_Exception::$source_output AND isset($source_id)): ?>
-				<pre id="<?php echo $source_id ?>" class="source collapsed"><code><?php echo $step['source'] ?></code></pre>
+				<?php if (Kohana_Exception::$source_output AND $step['source'] AND isset($source_id)): ?>
+				<pre id="<?php echo $source_id ?>" class="source collapsed"><code><?php foreach ($step['source'] as $num => $row) : ?><span class="line <?php if ($num == $step['line']) echo 'highlight' ?>"><span class="number"><?php echo $num ?></span><?php echo htmlspecialchars($row, ENT_NOQUOTES, Kohana::CHARSET) ?></span><?php endforeach ?></code></pre>
 				<?php endif?>
 			</li>
 			<?php unset($args_id, $source_id); ?>
