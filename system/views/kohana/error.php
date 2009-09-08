@@ -143,14 +143,20 @@ $error_id = uniqid('error');
 <?php echo Kohana_Exception::debug_path($file)?>[ <?php echo $line?> ]
 			</span>
 		</p>
-		<?php echo Kohana_Exception::debug_source($file, $line)?>
+		<?php if (Kohana_Exception::$source_output) echo Kohana_Exception::debug_source($file, $line)?>
+
+<?php if (Kohana_Exception::$trace_output) : ?>
 		<ol class="trace">
 			<?php foreach (Kohana_Exception::trace($trace) as $i=>$step): ?>
 			<li>
 				<p>
 					<span class="file">
 						<?php if ($step['file']): $source_id = $error_id.'source'.$i; ?>
+						<?php if (Kohana_Exception::$source_output) : ?>
 						<a href="#<?php echo $source_id ?>" onclick="return koggle('<?php echo $source_id ?>')"><?php echo Kohana_Exception::debug_path($step['file'])?>[ <?php echo $step['line']?> ]</a>
+						<?php else : ?>
+						<span class="file"><?php echo Kohana_Exception::debug_path($step['file'])?>[ <?php echo $step['line']?> ]</span>
+						<?php endif ?>
 						<?php else : ?>
 						{<?php echo __('PHP internal call')?>}
 						<?php endif?>
@@ -177,13 +183,15 @@ $error_id = uniqid('error');
 					</table>
 				</div>
 				<?php endif?>
-				<?php if (isset($source_id)): ?>
+				<?php if (Kohana_Exception::$source_output AND isset($source_id)): ?>
 				<pre id="<?php echo $source_id ?>" class="source collapsed"><code><?php echo $step['source'] ?></code></pre>
 				<?php endif?>
 			</li>
 			<?php unset($args_id, $source_id); ?>
 			<?php endforeach?>
 		</ol>
+<?php endif ?>
+
 	</div>
 	<h2><a href="#<?php echo $env_id = $error_id.'environment' ?>" onclick="return koggle('<?php echo $env_id ?>')"><?php echo __('Environment')?></a></h2>
 	<div id="<?php echo $env_id ?>" class="content collapsed">
