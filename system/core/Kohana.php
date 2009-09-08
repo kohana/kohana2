@@ -792,20 +792,33 @@ abstract class Kohana_Core {
 		{
 			$path = rtrim($path, '/').'/';
 
-			if (is_readable($path) AND $items = glob($path.'*'.$ext))
+			if (is_readable($path) AND $items = glob($path.'*'))
 			{
+				$ext_pos = 0 - strlen($ext);
+
 				foreach ($items as $index => $item)
 				{
-					$files[] = $item = str_replace('\\', '/', $item);
+					$item = str_replace('\\', '/', $item);
 
-					// Handle recursion
-					if (is_dir($item) AND $recursive == TRUE)
+					if (is_dir($item))
 					{
-						// Filename should only be the basename
-						$item = pathinfo($item, PATHINFO_BASENAME);
+						// Handle recursion
+						if ($recursive === TRUE)
+						{
+							// Filename should only be the basename
+							$item = pathinfo($item, PATHINFO_BASENAME);
 
-						// Append sub-directory search
-						$files = array_merge($files, self::list_files($directory, TRUE, $ext, $path.$item));
+							// Append sub-directory search
+							$files = array_merge($files, self::list_files($directory, TRUE, $ext, $path.$item));
+						}
+					}
+					else
+					{
+						// File extension must match
+						if ($ext_pos === 0 OR substr($item, $ext_pos) === $ext)
+						{
+							$files[] = $item;
+						}
 					}
 				}
 			}
