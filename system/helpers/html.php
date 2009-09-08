@@ -51,7 +51,7 @@ class html_Core {
 
 	/**
 	 * Perform a html::specialchars() with additional URL specific encoding.
-	 *  
+	 *
 	 * @param   string   string to convert
 	 * @param   boolean  encode existing entities
 	 * @return  string
@@ -60,7 +60,7 @@ class html_Core {
 	{
 		return str_replace(' ', '%20', html::specialchars($str, $double_encode));
 	}
-	
+
 	/**
 	 * Create HTML link anchors.
 	 *
@@ -123,37 +123,6 @@ class html_Core {
 		.(is_array($attributes) ? html::attributes($attributes) : '').'>'
 		// Title empty? Use the filename part of the URI
 		.(($title === NULL) ? end(explode('/', $file)) : $title) .'</a>';
-	}
-
-	/**
-	 * Similar to anchor, but with the protocol parameter first.
-	 *
-	 * @param   string  link protocol
-	 * @param   string  URI or URL to link to
-	 * @param   string  link text
-	 * @param   array   HTML anchor attributes
-	 * @return  string
-	 */
-	public static function panchor($protocol, $uri, $title = NULL, $attributes = FALSE)
-	{
-		return html::anchor($uri, $title, $attributes, $protocol);
-	}
-
-	/**
-	 * Create an array of anchors from an array of link/title pairs.
-	 *
-	 * @param   array  link/title pairs
-	 * @return  array
-	 */
-	public static function anchor_array(array $array)
-	{
-		$anchors = array();
-		foreach ($array as $link => $title)
-		{
-			// Create list of anchors
-			$anchors[] = html::anchor($link, $title);
-		}
-		return $anchors;
 	}
 
 	/**

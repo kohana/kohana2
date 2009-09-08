@@ -71,41 +71,6 @@ class form_Core {
 	}
 
 	/**
-	 * Generates a fieldset opening tag.
-	 *
-	 * @param   array   html attributes
-	 * @param   string  a string to be attached to the end of the attributes
-	 * @return  string
-	 */
-	public static function open_fieldset($data = NULL, $extra = '')
-	{
-		return '<fieldset'.html::attributes((array) $data).' '.$extra.'>'."\n";
-	}
-
-	/**
-	 * Generates a fieldset closing tag.
-	 *
-	 * @return  string
-	 */
-	public static function close_fieldset()
-	{
-		return '</fieldset>'."\n";
-	}
-
-	/**
-	 * Generates a legend tag for use with a fieldset.
-	 *
-	 * @param   string  legend text
-	 * @param   array   HTML attributes
-	 * @param   string  a string to be attached to the end of the attributes
-	 * @return  string
-	 */
-	public static function legend($text = '', $data = NULL, $extra = '')
-	{
-		return '<legend'.form::attributes((array) $data).' '.$extra.'>'.$text.'</legend>'."\n";
-	}
-
-	/**
 	 * Creates a HTML form hidden input tag.
 	 *
 	 * @param   string|array  input name or an array of HTML attributes
@@ -409,17 +374,6 @@ class form_Core {
 		}
 
 		return '<button'.form::attributes($data, 'button').' '.$extra.'>'.$value.'</button>';
-	}
-
-	/**
-	 * Closes an open form tag.
-	 *
-	 * @param   string  string to be attached after the closing tag
-	 * @return  string
-	 */
-	public static function close($extra = '')
-	{
-		return '</form>'."\n".$extra;
 	}
 
 	/**

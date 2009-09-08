@@ -235,18 +235,6 @@ class text_Core {
 	}
 
 	/**
-	 * Converts text email addresses and anchors into links.
-	 *
-	 * @param   string   text to auto link
-	 * @return  string
-	 */
-	public static function auto_link($text)
-	{
-		// Auto link emails first to prevent problems with "www.domain.com@example.com"
-		return text::auto_link_urls(text::auto_link_emails($text));
-	}
-
-	/**
 	 * Converts text anchors into links.
 	 *
 	 * @param   string   text to auto link
