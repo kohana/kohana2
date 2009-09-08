@@ -15,11 +15,12 @@ class security_Core {
 	 * Sanitize a string with the xss_clean method.
 	 *
 	 * @param   string  string to sanitize
+	 * @param   string  xss_clean method to use ('htmlpurifier' or defaults to built-in method)
 	 * @return  string
 	 */
-	public static function xss_clean($str)
+	public static function xss_clean($str, $tool = NULL)
 	{
-		return Input::instance()->xss_clean($str);
+		return Input::instance()->xss_clean($str, $tool);
 	}
 
 	/**
