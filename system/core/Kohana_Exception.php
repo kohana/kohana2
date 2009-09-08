@@ -31,20 +31,6 @@ class Kohana_Exception_Core extends Exception {
 	protected $code = E_KOHANA;
 
 	/**
-	 * @var  array  PHP error code => human readable name
-	 */
-	public static $php_errors = array(
-		E_ERROR              => 'Fatal Error',
-		E_USER_ERROR         => 'User Error',
-		E_PARSE              => 'Parse Error',
-		E_WARNING            => 'Warning',
-		E_USER_WARNING       => 'User Warning',
-		E_STRICT             => 'Strict',
-		E_NOTICE             => 'Notice',
-		E_RECOVERABLE_ERROR  => 'Recoverable Error',
-	);
-
-	/**
 	 * Creates a new translated exception.
 	 *
 	 * @param string error message
@@ -100,8 +86,8 @@ class Kohana_Exception_Core extends Exception {
 	 * exception handler, displays the error message, source of the
 	 * exception, and the stack trace of the error.
 	 *
-	 * @uses    Kohana::$php_errors
-	 * @uses    Kohana::exception_text()
+	 * @uses    Kohana::message()
+	 * @uses    Kohana_Exception::text()
 	 * @param   object   exception object
 	 * @return  boolean
 	 */
@@ -158,11 +144,8 @@ class Kohana_Exception_Core extends Exception {
 
 				if ($e instanceof Kohana_PHP_Exception)
 				{
-					if (isset(self::$php_errors[$code]))
-					{
-						// Use the human-readable error name
-						$code = self::$php_errors[$code];
-					}
+					// Use the human-readable error name
+					$code = Kohana::message('core.errors.'.$code);
 				}
 
 				if ( ! headers_sent())
