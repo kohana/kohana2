@@ -236,10 +236,10 @@ class text_Core {
 
 	/**
 	 * An alternative to the php levenshtein() function that work out the
-	 * distance between 2 words using the Damerau–Levenshtein algorithm.
+	 * distance between 2 words using the Damerauâ€“Levenshtein algorithm.
 	 * Credit: http://forums.devnetwork.net/viewtopic.php?f=50&t=89094
 	 *
-	 * @see http://en.wikipedia.org/wiki/Damerau–Levenshtein_distance
+	 * @see http://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance
 	 * @param     string    first word
 	 * @param     string    second word
 	 * @return    int       distance between words
