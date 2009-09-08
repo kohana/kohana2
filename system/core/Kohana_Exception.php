@@ -143,11 +143,8 @@ class Kohana_Exception_Core extends Exception {
 					$e->sendHeaders();
 				}
 
-				if ($e instanceof Kohana_PHP_Exception)
-				{
-					// Use the human-readable error name
-					$code = Kohana::message('core.errors.'.$code);
-				}
+				// Use the human-readable error name
+				$code = Kohana::message('core.errors.'.$code);
 			}
 			else
 			{
