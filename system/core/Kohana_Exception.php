@@ -13,7 +13,7 @@
 class Kohana_Exception_Core extends Exception {
 
 	// Template file
-	public static $template = NULL;
+	public static $template = 'kohana/error';
 
 	// Show stack traces in errors
 	public static $trace_output = TRUE;
@@ -54,12 +54,6 @@ class Kohana_Exception_Core extends Exception {
 	public static function enable()
 	{
 		set_exception_handler(array('Kohana_Exception', 'handle'));
-
-		if (Kohana_Exception::$template === NULL)
-		{
-			// Set the default template
-			Kohana_Exception::$template = (PHP_SAPI === 'cli') ? 'kohana/error_text' : 'kohana/error';
-		}
 	}
 
 	/**
