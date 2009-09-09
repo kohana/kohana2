@@ -63,9 +63,6 @@ class Router_Core {
 			$default_route = TRUE;
 		}
 
-		// Make sure the URL is not tainted with HTML characters
-		Router::$current_uri = html::specialchars(Router::$current_uri, FALSE);
-
 		// Remove all dot-paths from the URI, they are not valid
 		Router::$current_uri = preg_replace('#\.[\s./]*/#', '', Router::$current_uri);
 
