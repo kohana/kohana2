@@ -109,10 +109,6 @@ class Kohana_Exception_Core extends Exception {
 
 			if (Kohana::config('core.display_errors') === FALSE)
 			{
-				$error   = __('Unable to Complete Request');
-				$message = __('You can go to the <a href="%site%">home page</a> or <a href="%uri%">try again</a>.',
-					array('%site%' => url::site(), '%uri%' => url::site(Router::$current_uri)));
-
 				// Do not show the details
 				$file = $line = NULL;
 				$trace = array();

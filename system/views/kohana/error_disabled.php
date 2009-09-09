@@ -3,13 +3,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-		<title><?php echo $error?></title>
+		<title><?php echo html::specialchars(__('Unable to Complete Request')) ?></title>
 	</head>
 	<body>
 		<div id="framework_error" style="width:24em;margin:50px auto;">
-			<h3 style="text-align:center"><?php echo html::specialchars($error)?></h3>
+			<h3 style="text-align:center"><?php echo html::specialchars(__('Unable to Complete Request')) ?></h3>
 			<p style="text-align:center">
-<?php echo $message?>
+<?php
+	echo __('You can go to the <a href="%site%">home page</a> or <a href="%uri%">try again</a>.',
+		array('%site%' => html::specialchars(url::site()), '%uri%' => html::specialchars(url::site(Router::$current_uri))));
+?>
 			</p>
 		</div>
 	</body>
