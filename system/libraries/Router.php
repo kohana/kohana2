@@ -38,7 +38,7 @@ class Router_Core {
 		if ( ! empty($_SERVER['QUERY_STRING']))
 		{
 			// Set the query string to the current query string
-			Router::$query_string = '?'.trim($_SERVER['QUERY_STRING'], '&/');
+			Router::$query_string = '?'.trim(urldecode($_SERVER['QUERY_STRING']), '&/');
 		}
 
 		if (Router::$routes === NULL)
