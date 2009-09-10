@@ -2,7 +2,7 @@
 /**
  * Log API driver.
  *
- * $Id: Kohana_Log.php 4536 2009-09-03 20:10:01Z nodren $
+ * $Id$
  *
  * @package    Kohana_Log
  * @author     Kohana Team
