@@ -119,7 +119,7 @@ abstract class Kohana_Core {
 		}
 
 		// Start output buffering
-		ob_start(array(__CLASS__, 'output_buffer'));
+		ob_start(array('Kohana', 'output_buffer'));
 
 		// Save buffering level
 		Kohana::$buffer_level = ob_get_level();
@@ -132,13 +132,13 @@ abstract class Kohana_Core {
 
 		// Load i18n
 		new I18n;
-		
+
 		// Enable exception handling
 		Kohana_Exception::enable();
-		
+
 		// Enable error handling
 		Kohana_PHP_Exception::enable();
-		
+
 		// Disable notices and "strict" errors
 		$ER = error_reporting(~E_NOTICE & ~E_STRICT);
 

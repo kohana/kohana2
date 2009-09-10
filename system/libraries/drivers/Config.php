@@ -2,7 +2,7 @@
 /**
  * Kohana_Config abstract driver to get and set
  * configuration options.
- * 
+ *
  * Specific drivers should implement caching and encryption
  * as they deem appropriate.
  *
@@ -29,10 +29,10 @@ abstract class Config_Driver {
 	 * @var     string
 	 */
 	protected $cache_name = 'Kohana_Config_Cache';
-	
+
 	/**
 	 * Cache Lifetime
-	 * 
+	 *
 	 * @var mixed
 	 */
 	protected $cache_lifetime = FALSE;
@@ -58,7 +58,7 @@ abstract class Config_Driver {
 	 * @var     bool
 	 */
 	protected $changed = FALSE;
-	
+
 	/**
 	 * Determines if any config has been loaded yet
 	 */
@@ -73,13 +73,13 @@ abstract class Config_Driver {
 	 */
 	public function __construct($config)
 	{
-		
+
 		if (($cache_setting = $config['internal_cache']) !== FALSE)
 		{
 			$this->cache_lifetime = $cache_setting;
 			// Restore the cached configuration
 			$this->config = $this->load_cache();
-			
+
 			if (count($this->config) > 0)
 				$this->loaded = TRUE;
 
@@ -118,10 +118,10 @@ abstract class Config_Driver {
 			// Force the value to end with "/"
 			$value = rtrim($value, '/').'/';
 		}
-		
+
 		if (($required === TRUE) AND ($value === null))
-			throw new Kohana_Config_Exception('Value not found in '.__CLASS__.' driver');
-		
+			throw new Kohana_Config_Exception('Value not found in config driver');
+
 		$this->loaded = TRUE;
 		return $value;
 	}
@@ -129,8 +129,8 @@ abstract class Config_Driver {
 	/**
 	 * Sets a new value to the configuration
 	 *
-	 * @param   string       key 
-	 * @param   mixed        value 
+	 * @param   string       key
+	 * @param   mixed        value
 	 * @return  bool
 	 * @access  public
 	 */
@@ -179,7 +179,7 @@ abstract class Config_Driver {
 	/**
 	 * Clear the configuration
 	 *
-	 * @param   string       group 
+	 * @param   string       group
 	 * @return  bool
 	 * @access  public
 	 */
@@ -196,7 +196,7 @@ abstract class Config_Driver {
 	 * Checks whether the setting exists in
 	 * config
 	 *
-	 * @param   string $key 
+	 * @param   string $key
 	 * @return  bool
 	 * @access  public
 	 */
@@ -208,8 +208,8 @@ abstract class Config_Driver {
 	/**
 	 * Loads a configuration group based on the setting
 	 *
-	 * @param   string       group 
-	 * @param   bool         required 
+	 * @param   string       group
+	 * @param   bool         required
 	 * @return  array
 	 * @access  public
 	 * @abstract
@@ -234,7 +234,7 @@ abstract class Config_Driver {
 		// Return the cached config
 		return $cached_config;
 	}
-	
+
 	/**
 	 * Saves a cached version of this configuration driver
 	 *
