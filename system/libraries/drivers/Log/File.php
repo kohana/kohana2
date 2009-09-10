@@ -2,6 +2,8 @@
 /**
  * Log API driver.
  *
+ * $Id: Kohana_Log.php 4536 2009-09-03 20:10:01Z nodren $
+ *
  * @package    Kohana_Log
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
@@ -24,17 +26,19 @@ class Log_File_Driver extends Log_Driver {
 			chmod($filename, $this->config['posix_permissions']);
 		}
 
-		do
+		foreach ($messages AS $message)
 		{
-			// Load the next message
-			list ($date, $type, $text) = array_shift($messages);
-
-			// Add a new message line
-			$messages_to_write[] = $date.' --- '.$type.': '.$text;
+			if ($this->config['log_levels'][$message['type']] <= $this->config['log_threshold'])
+			{
+				// Add a new message line
+				$messages_to_write[] = date($this->config['date_format'], $message['date']).' --- '.$message['type'].': '.$message['message'];
+			}
 		}
-		while ( ! empty($messages));
 
-		// Write messages to log file
-		file_put_contents($filename, implode(PHP_EOL, $messages_to_write).PHP_EOL, FILE_APPEND);
+		if ( ! empty($messages_to_write))
+		{
+			// Write messages to log file
+			file_put_contents($filename, implode(PHP_EOL, $messages_to_write).PHP_EOL, FILE_APPEND);
+		}
 	}
 }

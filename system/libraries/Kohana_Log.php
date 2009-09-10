@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Logging class.
- * 
+ *
  * $Id$
- * 
+ *
  * @package    Core
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
@@ -20,15 +20,6 @@ class Kohana_Log_Core {
 	// Logged messages
 	protected static $messages;
 
-	// Log levels
-	protected static $log_levels = array
-	(
-		'error' => 1,
-		'alert' => 2,
-		'info'  => 3,
-		'debug' => 4,
-	);
-
 	/**
 	 * Add a new message to the log.
 	 *
@@ -39,12 +30,12 @@ class Kohana_Log_Core {
 	public static function add($type, $message)
 	{
 		// Make sure the drivers and config are loaded
-		if ( ! is_array(self::$config))
+		if ( ! is_array(Kohana_Log::$config))
 		{
-			self::$config = Kohana::config('log');
+			Kohana_Log::$config = Kohana::config('log');
 		}
 
-		if ( ! is_array(self::$drivers))
+		if ( ! is_array(Kohana_Log::$drivers))
 		{
 			foreach ( (array) Kohana::config('log.drivers') as $driver_name)
 			{
@@ -62,18 +53,14 @@ class Kohana_Log_Core {
 				if ( ! ($driver instanceof Log_Driver))
 					throw new Kohana_Exception('%driver% does not implement the Log_Driver interface', array('%driver%' => $driver));
 
-				self::$drivers[] = $driver;
+				Kohana_Log::$drivers[] = $driver;
 			}
+
+			// Always save logs on shutdown
+			Event::add('system.shutdown', array('Kohana_Log', 'save'));
 		}
 
-		if (self::$log_levels[$type] <= Kohana::config('log.log_threshold'))
-		{
-			$message = array(date(Kohana::config('log.date_format')), $type, $message);
-
-			self::$messages[] = $message;
-
-			self::save();
-		}
+		Kohana_Log::$messages[] = array('date' => time(), 'type' => $type, 'message' => $message);
 	}
 
 	/**
@@ -81,17 +68,17 @@ class Kohana_Log_Core {
 	 *
 	 * @return  void
 	 */
-	protected static function save()
+	public static function save()
 	{
-		if (empty(self::$messages) OR self::$config['log_threshold'] < 1)
+		if (empty(Kohana_Log::$messages))
 			return;
 
-		foreach (self::$drivers as $driver)
+		foreach (Kohana_Log::$drivers as $driver)
 		{
-			$driver->save(self::$messages);
+			$driver->save(Kohana_Log::$messages);
 		}
 
 		// Reset the messages
-		self::$messages = array();
+		Kohana_Log::$messages = array();
 	}
 }
