@@ -107,6 +107,9 @@ class Kohana_Exception_Core extends Exception {
 			// Add this exception to the log
 			Kohana_Log::add('error', $error);
 
+			// Manually save logs after exceptions
+			Kohana_Log::save();
+
 			if (Kohana::config('core.display_errors') === FALSE)
 			{
 				// Do not show the details
@@ -213,7 +216,7 @@ class Kohana_Exception_Core extends Exception {
 		// Send the 500 header
 		header('HTTP/1.1 500 Internal Server Error');
 	}
-	
+
 	/**
 	 * Returns an HTML string of information about a single variable.
 	 *

@@ -115,7 +115,7 @@ abstract class Kohana_Core {
 			Kohana::$internal_cache['find_file_paths'] = Kohana::cache('find_file_paths', Kohana::$cache_lifetime);
 
 			// Enable cache saving
-			Event::add('system.shutdown', array(__CLASS__, 'internal_cache_save'));
+			Event::add('system.shutdown', array('Kohana', 'internal_cache_save'));
 		}
 
 		// Start output buffering
@@ -126,6 +126,9 @@ abstract class Kohana_Core {
 
 		// Set autoloader
 		spl_autoload_register(array('Kohana', 'auto_load'));
+
+		// Register a shutdown function to handle system.shutdown events
+		register_shutdown_function(array('Kohana', 'shutdown'));
 
 		// Send default text/html UTF-8 header
 		header('Content-Type: text/html; charset='.Kohana::CHARSET);
@@ -178,9 +181,6 @@ abstract class Kohana_Core {
 
 		// Enable Kohana 404 pages
 		Event::add('system.404', array('Kohana_404_Exception', 'trigger'));
-
-		// Enable Kohana output handling
-		Event::add('system.shutdown', array('Kohana', 'shutdown'));
 
 		if (Kohana::config('core.enable_hooks') === TRUE)
 		{
@@ -489,6 +489,9 @@ abstract class Kohana_Core {
 	 */
 	public static function shutdown()
 	{
+		// Run system.shutdown event
+		Event::run('system.shutdown');
+
 		// Close output buffers
 		Kohana::close_buffers(TRUE);
 

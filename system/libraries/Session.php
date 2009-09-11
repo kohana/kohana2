@@ -32,7 +32,7 @@ class Session_Core {
 
 	/**
 	 * Singleton instance of Session.
-	 * 
+	 *
 	 * @param string Force a specific session_id
 	 */
 	public static function instance($session_id = NULL)
@@ -49,7 +49,7 @@ class Session_Core {
 
 		return Session::$instance;
 	}
-	
+
 	/**
 	 * Be sure to block the use of __clone.
 	 */
@@ -57,7 +57,7 @@ class Session_Core {
 
 	/**
 	 * On first session instance creation, sets up the driver and creates session.
-	 * 
+	 *
 	 * @param string Force a specific session_id
 	 */
 	protected function __construct($session_id = NULL)
@@ -92,12 +92,9 @@ class Session_Core {
 				cookie::set(Session::$config['name'], $_SESSION['session_id'], Session::$config['expiration']);
 			}
 
-			// Close the session just before sending the headers, so that
+			// Close the session on system shutdown (run before sending the headers), so that
 			// the session cookie(s) can be written.
-			Event::add('system.send_headers', array($this, 'write_close'));
-
-			// Make sure that sessions are closed before exiting
-			register_shutdown_function(array($this, 'write_close'));
+			Event::add('system.shutdown', array($this, 'write_close'));
 
 			// Singleton instance
 			Session::$instance = $this;
@@ -482,7 +479,7 @@ class Session_Core {
 	 * Do not save this session.
 	 * This is a performance feature only, if using the native
 	 * session "driver" the save will NOT be aborted.
-	 * 
+	 *
 	 * @return  void
 	 */
 	public function abort_save()

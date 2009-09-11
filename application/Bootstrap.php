@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Kohana process control file, loaded by the front controller.
- * 
+ *
  * $Id$
  *
  * @package    Core
@@ -59,6 +59,3 @@ Benchmark::stop(SYSTEM_BENCHMARK.'_system_initialization');
 
 // Make the magic happen!
 Event::run('system.execute');
-
-// Clean up and exit
-Event::run('system.shutdown');
