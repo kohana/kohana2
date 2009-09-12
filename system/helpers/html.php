@@ -50,18 +50,6 @@ class html_Core {
 	}
 
 	/**
-	 * Perform a html::specialchars() with additional URL specific encoding.
-	 *
-	 * @param   string   string to convert
-	 * @param   boolean  encode existing entities
-	 * @return  string
-	 */
-	public static function specialurlencode($str, $double_encode = TRUE)
-	{
-		return str_replace(' ', '%20', html::specialchars($str, $double_encode));
-	}
-
-	/**
 	 * Create HTML link anchors.
 	 *
 	 * @param   string  URL or URI string
@@ -98,7 +86,7 @@ class html_Core {
 
 		return
 		// Parsed URL
-		'<a href="'.html::specialurlencode($site_url, FALSE).'"'
+		'<a href="'.html::specialchars($site_url, FALSE).'"'
 		// Attributes empty? Use an empty string
 		.(is_array($attributes) ? html::attributes($attributes) : '').'>'
 		// Title empty? Use the parsed URL
@@ -118,7 +106,7 @@ class html_Core {
 	{
 		return
 		// Base URL + URI = full URL
-		'<a href="'.html::specialurlencode(url::base(FALSE, $protocol).$file, FALSE).'"'
+		'<a href="'.html::specialchars(url::base(FALSE, $protocol).$file, FALSE).'"'
 		// Attributes empty? Use an empty string
 		.(is_array($attributes) ? html::attributes($attributes) : '').'>'
 		// Title empty? Use the filename part of the URI
