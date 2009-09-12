@@ -187,7 +187,7 @@ class form_Core {
 		// Value is not part of the attributes
 		unset($data['value']);
 
-		return '<textarea'.form::attributes($data, 'textarea').' '.$extra.'>'.html::specialchars($value, $double_encode).'</textarea>';
+		return '<textarea'.form::attributes($data, 'textarea').' '.$extra.'>'.htmlspecialchars($value, ENT_QUOTES, Kohana::CHARSET, $double_encode).'</textarea>';
 	}
 
 	/**
@@ -246,14 +246,14 @@ class form_Core {
 					$inner_key = (string) $inner_key;
 
 					$sel = in_array($inner_key, $selected) ? ' selected="selected"' : '';
-					$input .= '<option value="'.$inner_key.'"'.$sel.'>'.html::specialchars($inner_val).'</option>'."\n";
+					$input .= '<option value="'.$inner_key.'"'.$sel.'>'.htmlspecialchars($inner_val, ENT_QUOTES, Kohana::CHARSET).'</option>'."\n";
 				}
 				$input .= '</optgroup>'."\n";
 			}
 			else
 			{
 				$sel = in_array($key, $selected) ? ' selected="selected"' : '';
-				$input .= '<option value="'.$key.'"'.$sel.'>'.html::specialchars($val).'</option>'."\n";
+				$input .= '<option value="'.$key.'"'.$sel.'>'.htmlspecialchars($val, ENT_QUOTES, Kohana::CHARSET).'</option>'."\n";
 			}
 		}
 		$input .= '</select>';

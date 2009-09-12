@@ -1024,7 +1024,7 @@ abstract class Kohana_Core {
 		foreach ($params as $var)
 		{
 			$value = is_bool($var) ? ($var ? 'true' : 'false') : print_r($var, TRUE);
-			$output[] = '<pre>('.gettype($var).') '.html::specialchars($value).'</pre>';
+			$output[] = '<pre>('.gettype($var).') '.htmlspecialchars($value, ENT_QUOTES, Kohana::CHARSET).'</pre>';
 		}
 
 		return implode("\n", $output);

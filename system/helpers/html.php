@@ -21,7 +21,7 @@ class html_Core {
 	 * @param   boolean  encode existing entities
 	 * @return  string
 	 */
-	public static function specialchars($str, $double_encode = TRUE)
+	public static function chars($str, $double_encode = TRUE)
 	{
 		// Return HTML entities using the Kohana charset
 		return htmlspecialchars($str, ENT_QUOTES, Kohana::CHARSET, $double_encode);
@@ -64,11 +64,11 @@ class html_Core {
 
 		return
 		// Parsed URL
-		'<a href="'.html::specialchars($site_url, FALSE).'"'
+		'<a href="'.htmlspecialchars($site_url, ENT_QUOTES, Kohana::CHARSET, FALSE).'"'
 		// Attributes empty? Use an empty string
 		.(is_array($attributes) ? html::attributes($attributes) : '').'>'
 		// Title empty? Use the parsed URL
-		.($escape_title ? html::specialchars((($title === NULL) ? $site_url : $title), FALSE) : (($title === NULL) ? $site_url : $title)).'</a>';
+		.($escape_title ? htmlspecialchars((($title === NULL) ? $site_url : $title), ENT_QUOTES, Kohana::CHARSET, FALSE) : (($title === NULL) ? $site_url : $title)).'</a>';
 	}
 
 	/**
@@ -84,7 +84,7 @@ class html_Core {
 	{
 		return
 		// Base URL + URI = full URL
-		'<a href="'.html::specialchars(url::base(FALSE, $protocol).$file, FALSE).'"'
+		'<a href="'.htmlspecialchars(url::base(FALSE, $protocol).$file, ENT_QUOTES, Kohana::CHARSET, FALSE).'"'
 		// Attributes empty? Use an empty string
 		.(is_array($attributes) ? html::attributes($attributes) : '').'>'
 		// Title empty? Use the filename part of the URI
@@ -357,7 +357,7 @@ class html_Core {
 		$compiled = '';
 		foreach ($attrs as $key => $val)
 		{
-			$compiled .= ' '.$key.'="'.html::specialchars($val).'"';
+			$compiled .= ' '.$key.'="'.htmlspecialchars($val, ENT_QUOTES, Kohana::CHARSET).'"';
 		}
 
 		return $compiled;
