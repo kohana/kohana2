@@ -117,11 +117,7 @@ class ORM_Core {
 		if (is_object($id))
 		{
 			// Load an object
-			$this->load_values((array) $id);
-			// START: temporarty fix for #2070
-			$this->changed = array();
-			$this->_saved = TRUE;
-			// END
+			$this->_load_values((array) $id);
 		}
 		elseif (!empty($id))
 		{
@@ -990,7 +986,7 @@ class ORM_Core {
 		$values  = array_combine($columns, array_fill(0, count($columns), NULL));
 
 		// Replace the current object with an empty one
-		$this->load_values($values);
+		$this->_load_values($values);
 
 		return $this;
 	}
@@ -1311,16 +1307,61 @@ class ORM_Core {
 
 		return $object;
 	}
-
+	
 	/**
 	 * Loads an array of values into into the current object.
+	 *
+	 * @chainable
+	 * @param   array  values to load
+	 * @return  ORM
+	 */
+	public function load_values(array $values)
+	{
+		// Related objects
+		$related = array();
+
+		foreach ($values as $column => $value)
+		{
+			if (strpos($column, ':') === FALSE)
+			{
+				if ( ! isset($this->changed[$column]))
+				{
+					if (isset($this->table_columns[$column]))
+					{
+						//Update the column, respects __get()
+						$this->$column = $value;
+					}
+				}
+			}
+			else
+			{
+				list ($prefix, $column) = explode(':', $column, 2);
+
+				$related[$prefix][$column] = $value;
+			}
+		}
+
+		if ( ! empty($related))
+		{
+			foreach ($related as $object => $values)
+			{
+				// Load the related objects with the values in the result
+				$this->related[$object] = $this->related_object($object)->load_values($values);
+			}
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Loads an array of values into into the current object.  Only used internally
 	 *
 	 * @chainable
 	 * @param   array  values to load
 	 * @param   bool   ignore loading of columns that have been modified
 	 * @return  ORM
 	 */
-	public function load_values(array $values, $ignore_changed = FALSE)
+	public function _load_values(array $values, $ignore_changed = FALSE)
 	{
 		if (array_key_exists($this->primary_key, $values))
 		{
@@ -1346,13 +1387,10 @@ class ORM_Core {
 					if (isset($this->table_columns[$column]))
 					{
 						// The type of the value can be determined, convert the value
-						$this->object[$column] = $this->load_type($column, $value);
-						// Data has changed
-						$this->changed[$column] = $column;
-		
-						// Object is no longer saved
-						$this->_saved = FALSE;
+						$value = $this->load_type($column, $value);
 					}
+
+					$this->object[$column] = $value;
 				}
 			}
 			else
@@ -1368,7 +1406,7 @@ class ORM_Core {
 			foreach ($related as $object => $values)
 			{
 				// Load the related objects with the values in the result
-				$this->related[$object] = $this->related_object($object)->load_values($values);
+				$this->related[$object] = $this->related_object($object)->_load_values($values);
 			}
 		}
 
@@ -1507,15 +1545,8 @@ class ORM_Core {
 
 		if ($result->count() === 1)
 		{
-			// START: temporarty fix for #2070
-			$changed = $this->changed;
-			// END
 			// Load object values
-			$this->load_values($result->as_array()->current(), $ignore_changed);
-			// START: temporarty fix for #2070
-			$this->changed = ($ignore_changed) ? $changed : array();
-			$this->_saved = (count($this->changed) > 0) ? FALSE : TRUE;
-			// END
+			$this->_load_values($result->as_array()->current(), $ignore_changed);
 		}
 		else
 		{
