@@ -8,6 +8,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
+
 class Welcome_Controller extends Template_Controller {
 
 	// Disable this controller when Kohana is set to production mode.
