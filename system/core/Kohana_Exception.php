@@ -12,6 +12,8 @@
 
 class Kohana_Exception_Core extends Exception {
 
+	public static $enabled = FALSE;
+
 	// Template file
 	public static $template = 'kohana/error';
 
@@ -53,7 +55,12 @@ class Kohana_Exception_Core extends Exception {
 	 */
 	public static function enable()
 	{
-		set_exception_handler(array('Kohana_Exception', 'handle'));
+		if ( ! Kohana_Exception::$enabled)
+		{
+			set_exception_handler(array('Kohana_Exception', 'handle'));
+
+			Kohana_Exception::$enabled = TRUE;
+		}
 	}
 
 	/**
@@ -63,7 +70,12 @@ class Kohana_Exception_Core extends Exception {
 	 */
 	public static function disable()
 	{
-		restore_exception_handler();
+		if (Kohana_Exception::$enabled)
+		{
+			restore_exception_handler();
+
+			Kohana_Exception::$enabled = FALSE;
+		}
 	}
 
 	/**
