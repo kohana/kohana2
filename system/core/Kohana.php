@@ -66,9 +66,11 @@ abstract class Kohana_Core {
 	{
 		static $run;
 
-		// This function can only be run once
+		// Only run this function once
 		if ($run === TRUE)
 			return;
+
+		$run = TRUE;
 
 		// Start the environment setup benchmark
 		Benchmark::start(SYSTEM_BENCHMARK.'_environment_setup');
@@ -194,9 +196,6 @@ abstract class Kohana_Core {
 			}
 		}
 
-		// Setup is complete, prevent it from being run again
-		$run = TRUE;
-
 		// Stop the environment setup routine
 		Benchmark::stop(SYSTEM_BENCHMARK.'_environment_setup');
 	}
@@ -212,6 +211,14 @@ abstract class Kohana_Core {
 	 */
 	public static function cleanup()
 	{
+		static $run;
+
+		// Only run this function once
+		if ($run === TRUE)
+			return;
+
+		$run = TRUE;
+
 		Kohana_Exception::disable();
 
 		Kohana_PHP_Exception::disable();
@@ -509,6 +516,14 @@ abstract class Kohana_Core {
 	 */
 	public static function shutdown()
 	{
+		static $run;
+
+		// Only run this function once
+		if ($run === TRUE)
+			return;
+
+		$run = TRUE;
+
 		// Run system.shutdown event
 		Event::run('system.shutdown');
 
