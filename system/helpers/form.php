@@ -440,6 +440,7 @@ class form_Core {
 				case 'image':
 				case 'button':
 				case 'submit':
+				case 'hidden':
 					// Only specific types of inputs use name to id matching
 					$attr['id'] = $attr['name'];
 				break;
