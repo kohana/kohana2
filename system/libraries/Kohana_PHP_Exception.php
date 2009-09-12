@@ -12,6 +12,8 @@
 
 class Kohana_PHP_Exception_Core extends Kohana_Exception {
 
+	public static $enabled = FALSE;
+
 	/**
 	 * Enable Kohana PHP error handling.
 	 *
@@ -19,11 +21,16 @@ class Kohana_PHP_Exception_Core extends Kohana_Exception {
 	 */
 	public static function enable()
 	{
-		// Register with non shutdown errors
-		set_error_handler(array('Kohana_PHP_Exception', 'error_handler'));
+		if ( ! Kohana_PHP_Exception::$enabled)
+		{
+			// Handle runtime errors
+			set_error_handler(array('Kohana_PHP_Exception', 'error_handler'));
 
-		// Handle errors which halt execution
-		Event::add('system.shutdown', array('Kohana_PHP_Exception', 'shutdown_handler'), TRUE);
+			// Handle errors which halt execution
+			Event::add('system.shutdown', array('Kohana_PHP_Exception', 'shutdown_handler'));
+
+			Kohana_PHP_Exception::$enabled = TRUE;
+		}
 	}
 
 	/**
@@ -33,9 +40,14 @@ class Kohana_PHP_Exception_Core extends Kohana_Exception {
 	 */
 	public static function disable()
 	{
-		restore_error_handler();
+		if (Kohana_PHP_Exception::$enabled)
+		{
+			restore_error_handler();
 
-		Event::clear('system.shutdown', array('Kohana_PHP_Exception', 'shutdown_handler'));
+			Event::clear('system.shutdown', array('Kohana_PHP_Exception', 'shutdown_handler'));
+
+			Kohana_PHP_Exception::$enabled = FALSE;
+		}
 	}
 
 	/**
@@ -80,10 +92,11 @@ class Kohana_PHP_Exception_Core extends Kohana_Exception {
 	 */
 	public static function shutdown_handler()
 	{
-		if ($error = error_get_last())
+		if (Kohana_PHP_Exception::$enabled AND $error = error_get_last())
 		{
 			// Fake an exception for nice debugging
 			Kohana_Exception::handle(new Kohana_PHP_Exception($error['type'], $error['message'], $error['file'], $error['line']));
 		}
 	}
+
 } // End Kohana PHP Exception
