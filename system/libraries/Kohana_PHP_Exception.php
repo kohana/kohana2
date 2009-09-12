@@ -12,8 +12,6 @@
 
 class Kohana_PHP_Exception_Core extends Kohana_Exception {
 
-	public static $disabled = FALSE;
-
 	/**
 	 * Enable Kohana PHP error handling.
 	 *
@@ -35,7 +33,6 @@ class Kohana_PHP_Exception_Core extends Kohana_Exception {
 	 */
 	public static function disable()
 	{
-		Kohana_PHP_Exception::$disabled = TRUE;
 		restore_error_handler();
 
 		Event::clear('system.shutdown', array('Kohana_PHP_Exception', 'shutdown_handler'));
@@ -83,7 +80,7 @@ class Kohana_PHP_Exception_Core extends Kohana_Exception {
 	 */
 	public static function shutdown_handler()
 	{
-		if ( ! Kohana_PHP_Exception::$disabled AND $error = error_get_last())
+		if ($error = error_get_last())
 		{
 			// Fake an exception for nice debugging
 			Kohana_Exception::handle(new Kohana_PHP_Exception($error['type'], $error['message'], $error['file'], $error['line']));
