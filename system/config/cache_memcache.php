@@ -11,6 +11,9 @@ $config['servers'] = array
 		'host' => '127.0.0.1',
 		'port' => 11211,
 		'persistent' => FALSE,
+		'weight' => 1,
+		'timeout' => 1,
+		'retry_interval' => 15
 	)
 );
 
@@ -18,3 +21,9 @@ $config['servers'] = array
  * Enable cache data compression.
  */
 $config['compression'] = FALSE;
+
+/**
+ * Enable memcahe failover
+ * This is a BAD idea. Leave as FALSE unless you know what your doing. 
+ */
+$config['allow_failover'] = FALSE;

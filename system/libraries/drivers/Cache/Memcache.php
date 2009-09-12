@@ -27,7 +27,9 @@ class Cache_Memcache_Driver extends Cache_Driver {
 	{
 		if ( ! extension_loaded('memcache'))
 			throw new Kohana_Exception('cache.extension_not_loaded', 'memcache');
-
+		
+		ini_set('memcache.allow_failover', (int) Kohana::config('cache_memcache.allow_failover'));
+		
 		$this->backend = new Memcache;
 		$this->flags = Kohana::config('cache_memcache.compression') ? MEMCACHE_COMPRESSED : FALSE;
 
@@ -36,15 +38,20 @@ class Cache_Memcache_Driver extends Cache_Driver {
 		foreach ($servers as $server)
 		{
 			// Make sure all required keys are set
-			$server += array('host' => '127.0.0.1', 'port' => 11211, 'persistent' => FALSE);
+			$server += array('host' => '127.0.0.1',
+			                 'port' => 11211,
+			                 'persistent' => FALSE,
+			                 'weight' => 1,
+			                 'timeout' => 1,
+			                 'retry_interval' => 15
+			);
 
 			// Add the server to the pool
-			$this->backend->addServer($server['host'], $server['port'], (bool) $server['persistent'])
-				or Kohana_Log::add('error', 'Cache: Connection failed: '.$server['host']);
+			$this->backend->addServer($server['host'], $server['port'], (bool) $server['persistent'], (int) $server['weight'], (int) $server['timeout'], (int) $server['retry_interval'], TRUE, array($this,'_memcache_failure_callback'));
 		}
 
 		// Load tags
-		self::$tags = $this->backend->get(self::TAGS_KEY);
+		self::$tags = $this->get(self::TAGS_KEY);
 
 		if ( ! is_array(self::$tags))
 		{
@@ -68,6 +75,12 @@ class Cache_Memcache_Driver extends Cache_Driver {
 		}
 	}
 
+	public function _memcache_failure_callback($host, $port)
+	{
+		$this->backend->setServerParams($host, $port, 1, -1, FALSE);
+		Kohana_Log::add('error', __('Cache: Memcahe server down: :host:::port:',array(':host:' => $host,':port:' => $port)));
+	}
+
 	public function find($tag)
 	{
 		if (isset(self::$tags[$tag]) AND $results = $this->backend->get(self::$tags[$tag]))
@@ -84,7 +97,7 @@ class Cache_Memcache_Driver extends Cache_Driver {
 
 	public function get($id)
 	{
-		return (($return = $this->backend->get($id)) === FALSE) ? NULL : $return;
+		return (($return = $this->backend->get($id)) === FALSE) ? NULL : $return;		
 	}
 
 	public function set($id, $data, array $tags = NULL, $lifetime)
