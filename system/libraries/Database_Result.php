@@ -48,7 +48,7 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	 * @param  string $class  Class name to return objects as or NULL for stdClass
 	 * @return Database_Result
 	 */
-	abstract public function as_object($class = NULL);
+	abstract public function as_object($class = NULL, $return = FALSE);
 
 	/**
 	 * Returns the insert id

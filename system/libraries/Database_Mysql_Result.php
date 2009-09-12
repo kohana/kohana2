@@ -83,12 +83,46 @@ class Database_Mysql_Result_Core extends Database_Result {
 		return $array;
 	}
 
-	public function as_object($class = NULL)
+	public function as_object($class = NULL, $return = FALSE)
 	{
 		// Return objects of type $class (or stdClass if none given)
 		$this->return_objects = ($class !== NULL) ? $class : TRUE;
 
-		return $this;
+		if ( ! $return )
+		{
+			// Return this result object
+			return $this;
+		}
+		
+		// Return a nested array of all results
+		$array = array();
+
+		if ($this->total_rows > 0)
+		{
+			// Seek to the beginning of the result
+			mysql_data_seek($this->result, 0);
+			
+			if (is_string($this->return_objects))
+			{
+				while ($row = mysql_fetch_object($this->result, $this->return_objects))
+				{
+					// Add each row to the array
+					$array[] = $row;
+				}
+			}
+			else
+			{
+				while ($row = mysql_fetch_object($this->result))
+				{
+					// Add each row to the array
+					$array[] = $row;
+				}
+			}
+
+			$this->internal_row = $this->total_rows;
+		}
+
+		return $array;
 	}
 
 	/**
