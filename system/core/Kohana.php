@@ -202,6 +202,26 @@ abstract class Kohana_Core {
 	}
 
 	/**
+	 * Cleans up the PHP environment. Disables error/exception handling and the
+	 * auto-loading method and closes the output buffer.
+	 *
+	 * This method does not need to be called during normal system execution,
+	 * however in some advanced situations it can be helpful. @see #1781
+	 *
+	 * @return  void
+	 */
+	public static function cleanup()
+	{
+		Kohana_Exception::disable();
+
+		Kohana_PHP_Exception::disable();
+
+		spl_autoload_unregister(array('Kohana', 'auto_load'));
+
+		Kohana::close_buffers();
+	}
+
+	/**
 	 * Loads the controller and initializes it. Runs the pre_controller,
 	 * post_controller_constructor, and post_controller events. Triggers
 	 * a system.404 event when the route cannot be mapped to a controller.
