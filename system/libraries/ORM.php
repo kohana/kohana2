@@ -346,7 +346,7 @@ class ORM_Core {
 			$join_col2  = $model->foreign_key(TRUE);
 
 			// one<>alias:many relationship
-			return $this->related[$column] = $model
+			return $model
 				->join($join_table, $join_col1, $join_col2)
 				->where($through->foreign_key($this->object_name, $join_table), '=', $this->primary_key_value);
 		}
@@ -357,13 +357,13 @@ class ORM_Core {
 
 			$model = ORM::factory(inflector::singular($model_name));
 
-			return $this->related[$column] = $model->where($this->foreign_key($column, $model->table_name), '=', $this->primary_key_value);
+			return $model->where($this->foreign_key($column, $model->table_name), '=', $this->primary_key_value);
 		}
 		elseif (in_array($column, $this->has_many))
 		{
 			// one<>many relationship
 			$model = ORM::factory(inflector::singular($column));
-			return $this->related[$column] = $model->where($this->foreign_key($column, $model->table_name), '=', $this->primary_key_value);
+			return $model->where($this->foreign_key($column, $model->table_name), '=', $this->primary_key_value);
 		}
 		elseif (in_array($column, $this->has_and_belongs_to_many))
 		{
@@ -373,12 +373,12 @@ class ORM_Core {
 			if ($this->has($model, TRUE))
 			{
 				// many<>many relationship
-				return $this->related[$column] = $model->where($model->foreign_key(TRUE), 'IN', $this->changed_relations[$column]);
+				return $model->where($model->foreign_key(TRUE), 'IN', $this->changed_relations[$column]);
 			}
 			else
 			{
 				// empty many<>many relationship
-				return $this->related[$column] = $model->where($model->foreign_key(TRUE), 'IS', NULL);
+				return $model->where($model->foreign_key(TRUE), 'IS', NULL);
 			}
 		}
 		elseif (isset($this->ignored_columns[$column]))
