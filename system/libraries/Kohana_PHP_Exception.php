@@ -25,7 +25,7 @@ class Kohana_PHP_Exception_Core extends Kohana_Exception {
 		set_error_handler(array('Kohana_PHP_Exception', 'error_handler'));
 
 		// Handle errors which halt execution
-		Event::add('system.shutdown', array('Kohana_PHP_Exception', 'shutdown_handler'));
+		Event::add('system.shutdown', array('Kohana_PHP_Exception', 'shutdown_handler'), TRUE);
 	}
 
 	/**
@@ -37,6 +37,8 @@ class Kohana_PHP_Exception_Core extends Kohana_Exception {
 	{
 		Kohana_PHP_Exception::$disabled = TRUE;
 		restore_error_handler();
+
+		Event::clear('system.shutdown', array('Kohana_PHP_Exception', 'shutdown_handler'));
 	}
 
 	/**
