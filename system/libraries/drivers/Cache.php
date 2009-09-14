@@ -10,44 +10,33 @@
  * @license    http://kohanaphp.com/license.html
  */
 abstract class Cache_Driver {
+	/**
+	 * Set cache items  
+	 */
+	abstract public function set($items, $tags = NULL, $lifetime = NULL);
 
 	/**
-	 * Set a cache item.
+	 * Get a cache items by key 
 	 */
-	abstract public function set($id, $data, array $tags = NULL, $lifetime);
+	abstract public function get($keys, $single = FALSE);
 
 	/**
-	 * Find all of the cache ids for a given tag.
+	 * Get cache items by tag 
 	 */
-	abstract public function find($tag);
+	abstract public function get_tag($tags);
 
 	/**
-	 * Get a cache item.
-	 * Return NULL if the cache item is not found.
+	 * Delete cache item by key 
 	 */
-	abstract public function get($id);
+	abstract public function delete($keys);
 
 	/**
-	 * Delete cache items by id or tag.
+	 * Delete cache items by tag 
 	 */
-	abstract public function delete($id, $tag = FALSE);
-
+	abstract public function delete_tag($tags);
+	
 	/**
-	 * Deletes all expired cache items.
+	 * Empty the cache
 	 */
-	abstract public function delete_expired();
-
-	/**
-	 * Sanitize cache keys
-	 * Replaces troublesome characters
-	 *
-	 * @param   string   cache id
-	 * @return  string
-	 */
-	public function sanitize_id($id)
-	{
-		// Change slashes and spaces to underscores
-		return str_replace(array('/', '\\', ' '), '_', $id);
-	}
-
+	abstract public function delete_all();
 } // End Cache Driver
