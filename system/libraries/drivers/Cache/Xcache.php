@@ -8,6 +8,7 @@
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license.html
+ * @TODO       Check if XCache cleans its own keys.
  */
 class Cache_Xcache_Driver extends Cache_Driver {
 	protected $config;
@@ -15,7 +16,7 @@ class Cache_Xcache_Driver extends Cache_Driver {
 	public function __construct($config)
 	{
 		if ( ! extension_loaded('xcache'))
-			throw new Kohana_Exception('cache.extension_not_loaded', 'xcache');
+			throw new Kohana_Exception(__('The xcache PHP extension must be loaded to use this driver.'));
 
 		$this->config = $config;
 	}
@@ -29,6 +30,9 @@ class Cache_Xcache_Driver extends Cache_Driver {
 		
 		foreach ($items as $key => $value)
 		{
+			if (is_resource($value))
+				throw new Cache_Exception(__('Caching of resources is impossible, because resources cannot be serialised.'));
+
 			if ( ! xcache_set($key, $value, $lifetime))
 			{
 				return FALSE;
@@ -56,11 +60,11 @@ class Cache_Xcache_Driver extends Cache_Driver {
 		
 		if ($single)
 		{
-			return ($items = FALSE OR count($items) > 0) ? current($items) : NULL;
+			return ($items === FALSE OR count($items) > 0) ? current($items) : NULL;
 		}
 		else
 		{
-			return ($items = FALSE) ? $items : NULL;
+			return ($items === FALSE) ? array() : $items;
 		}
 	}
 	

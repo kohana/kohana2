@@ -19,7 +19,7 @@ class Cache_File_Driver extends Cache_Driver {
 		$this->config['directory'] = str_replace('\\', '/', realpath($this->config['directory'])).'/';
 		
 		if ( ! is_dir($this->config['directory']) OR ! is_writable($this->config['directory']))
-			throw new Kohana_Exception('cache.unwritable', $this->config['directory']);
+			throw new Cache_Exception(__('The configured cache directory, :directory:, is not writable.'), array(':directory:' => $this->config['directory']));
 	}
 
 	/**
@@ -108,7 +108,7 @@ class Cache_File_Driver extends Cache_Driver {
 		foreach ($items as $key => $value)
 		{
 			if (is_resource($value))
-				throw new Kohana_Exception('cache.resources');
+				throw new Cache_Exception(__('Caching of resources is impossible, because resources cannot be serialised.'));
 
 			// Remove old cache file
 			$this->delete($key);
@@ -126,7 +126,7 @@ class Cache_File_Driver extends Cache_Driver {
 	{
 		if ($files = $this->exists($keys))
 		{
-						$items = array();
+			$items = array();
 			
 			// Turn off errors while reading the files
 			$ER = error_reporting(0);

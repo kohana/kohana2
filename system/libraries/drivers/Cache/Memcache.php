@@ -17,14 +17,14 @@ class Cache_Memcache_Driver extends Cache_Driver {
 	public function __construct($config)
 	{
 		if ( ! extension_loaded('memcache'))
-			throw new Kohana_Exception('cache.extension_not_loaded', 'memcache');
+			throw new Kohana_Exception(__('The memcache PHP extension must be loaded to use this driver.'));
 		
-		ini_set('memcache.allow_failover', (int) $config['allow_failover']);
+		ini_set('memcache.allow_failover', (isset($config['allow_failover'])) ? (int) $config['allow_failover'] : TRUE);
 		
 		$this->config = $config;
 		$this->backend = new Memcache;
 				
-		$this->flags = $config['compression'] ? MEMCACHE_COMPRESSED : FALSE;
+		$this->flags = (isset($config['compression']) AND $config['compression']) ? MEMCACHE_COMPRESSED : FALSE;
 
 		foreach ($config['servers'] as $server)
 		{
@@ -57,32 +57,33 @@ class Cache_Memcache_Driver extends Cache_Driver {
 		}
 		
 		if ($tags !== NULL)
-		{
-			Kohana_Log::add('debug', __('Cache: Memcache driver does not support tags'));
-		}
+			throw new Cache_Exception(__('Memcache driver does not support tags'));
 
 		foreach ($items as $key => $value)
 		{
+			if (is_resource($value))
+				throw new Cache_Exception(__('Caching of resources is impossible, because resources cannot be serialised.'));
+			
 			if ( ! $this->backend->set($key, $value, $this->flags, $lifetime))
 			{
 				return FALSE;
 			}
 		}
-		
+
 		return TRUE;
 	}
-	
+
 	public function get($keys, $single = FALSE)
 	{
 		$items = $this->backend->get($keys);
 		
 		if ($single)
 		{
-			return ($items = FALSE OR count($items) > 0) ? current($items) : NULL;
+			return ($items === FALSE OR count($items) > 0) ? current($items) : NULL;
 		}
 		else
 		{
-			return ($items = FALSE) ? $items : NULL;
+			return ($items === FALSE) ? array() : $items;
 		}
 	}
 	
@@ -91,8 +92,7 @@ class Cache_Memcache_Driver extends Cache_Driver {
 	 */
 	public function get_tag($tags)
 	{
-		Kohana_Log::add('debug', __('Cache: Memcache driver does not support tags'));
-		return NULL;
+		throw new Cache_Exception(__('Memcache driver does not support tags'));
 	}
 
 	/**
@@ -116,8 +116,7 @@ class Cache_Memcache_Driver extends Cache_Driver {
 	 */
 	public function delete_tag($tags)
 	{
-		Kohana_Log::add('debug', __('Cache: Memcache driver does not support tags'));
-		return NULL;
+		throw new Cache_Exception(__('Memcache driver does not support tags'));
 	}
 	
 	/**
