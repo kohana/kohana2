@@ -2,7 +2,7 @@
 /**
  * Memcache-based Cache driver.
  *
- * $Id$
+ * $Id: File.php 4605 2009-09-14 17:22:21Z kiall $
  *
  * @package    Cache
  * @author     Kohana Team
@@ -126,16 +126,17 @@ class Cache_File_Driver extends Cache_Driver {
 	{
 		if ($files = $this->exists($keys))
 		{
-			// Validate that the items have not expired
-//			$this->expire($files)
-
-			$items = array();
+						$items = array();
 			
 			// Turn off errors while reading the files
 			$ER = error_reporting(0);
 			
 			foreach ($files as $file)
 			{
+				// Validate that the item has not expired
+				if ($this->expired($file))
+					continue;
+				
 				list($key, $junk) = explode('~', basename($file), 2);
 				
 				if (($data = file_get_contents($file)) !== FALSE)
@@ -235,5 +236,20 @@ class Cache_File_Driver extends Cache_Driver {
 	public function delete_all()
 	{
 		return $this->delete(TRUE);
+	}
+	
+	/**
+	 * Check if a cache file has expired by filename.
+	 *
+	 * @param  string|array   array of filenames
+	 * @return bool
+	 */
+	protected function expired($file)
+	{
+		// Get the expiration time
+		$expires = (int) substr($file, strrpos($file, '~') + 1);
+
+		// Expirations of 0 are "never expire"
+		return ($expires !== 0 AND $expires <= time());
 	}
 } // End Cache Memcache Driver
