@@ -102,9 +102,11 @@ abstract class Image_Driver {
 	 * @param   array    actions to execute
 	 * @param   string   destination directory path
 	 * @param   string   destination filename
+	 * @param   boolean  render the image
+	 * @param   string   background color
 	 * @return  boolean
 	 */
-	abstract public function process($image, $actions, $dir, $file);
+	abstract public function process($image, $actions, $dir, $file, $render = FALSE, $background = NULL);
 
 	/**
 	 * Flip an image. Valid directions are horizontal and vertical.
@@ -145,5 +147,12 @@ abstract class Image_Driver {
 	 * @return  boolean
 	 */
 	abstract public function sharpen($amount);
+
+	/**
+	 * Overlay a second image. Valid properties are: overlay_file, mime, x, y and transparency.
+	 *
+	 * @return  boolean
+	 */
+	abstract public function composite($properties);
 
 } // End Image Driver

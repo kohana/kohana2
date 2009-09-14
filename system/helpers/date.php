@@ -57,36 +57,28 @@ class date_Core {
 	 * Returns the offset (in seconds) between two time zones.
 	 * @see     http://php.net/timezones
 	 *
-	 * @param   string          timezone that to find the offset of
+	 * @param   string          timezone to find the offset of
 	 * @param   string|boolean  timezone used as the baseline
+	 * @param   string          time at which to calculate
 	 * @return  integer
 	 */
-	public static function offset($remote, $local = TRUE)
+	public static function offset($remote, $local = TRUE, $when = 'now')
 	{
-		static $offsets;
-
-		// Default values
-		$remote = (string) $remote;
-		$local  = ($local === TRUE) ? date_default_timezone_get() : (string) $local;
-
-		// Cache key name
-		$cache = $remote.$local;
-
-		if (empty($offsets[$cache]))
+		if ($local === TRUE)
 		{
-			// Create timezone objects
-			$remote = new DateTimeZone($remote);
-			$local  = new DateTimeZone($local);
-
-			// Create date objects from timezones
-			$time_there = new DateTime('now', $remote);
-			$time_here  = new DateTime('now', $local);
-
-			// Find the offset
-			$offsets[$cache] = $remote->getOffset($time_there) - $local->getOffset($time_here);
+			$local = date_default_timezone_get();
 		}
 
-		return $offsets[$cache];
+		// Create timezone objects
+		$remote = new DateTimeZone($remote);
+		$local  = new DateTimeZone($local);
+
+		// Create date objects from timezones
+		$time_there = new DateTime($when, $remote);
+		$time_here  = new DateTime($when, $local);
+
+		// Find the offset
+		return $remote->getOffset($time_there) - $local->getOffset($time_here);
 	}
 
 	/**

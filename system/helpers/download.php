@@ -69,7 +69,7 @@ class download_Core {
 		// More caching prevention
 		header('Expires: 0');
 
-		if (Kohana::user_agent('browser') === 'Internet Explorer')
+		if (request::user_agent('browser') === 'Internet Explorer')
 		{
 			// Send IE headers
 			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');

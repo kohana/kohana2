@@ -183,7 +183,7 @@ class text_Core {
 	 * @param   boolean  replace words across word boundries (space, period, etc)
 	 * @return  string
 	 */
-	public static function censor($str, $badwords, $replacement = '#', $replace_partial_words = FALSE)
+	public static function censor($str, $badwords, $replacement = '#', $replace_partial_words = TRUE)
 	{
 		foreach ((array) $badwords as $key => $badword)
 		{
@@ -192,7 +192,7 @@ class text_Core {
 
 		$regex = '('.implode('|', $badwords).')';
 
-		if ($replace_partial_words == TRUE)
+		if ($replace_partial_words === FALSE)
 		{
 			// Just using \b isn't sufficient when we need to replace a badword that already contains word boundaries itself
 			$regex = '(?<=\b|\s|^)'.$regex.'(?=\b|\s|$)';
@@ -235,15 +235,59 @@ class text_Core {
 	}
 
 	/**
-	 * Converts text email addresses and anchors into links.
+	 * An alternative to the php levenshtein() function that work out the
+	 * distance between 2 words using the Damerau–Levenshtein algorithm.
+	 * Credit: http://forums.devnetwork.net/viewtopic.php?f=50&t=89094
 	 *
-	 * @param   string   text to auto link
-	 * @return  string
+	 * @see http://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance
+	 * @param     string    first word
+	 * @param     string    second word
+	 * @return    int       distance between words
 	 */
-	public static function auto_link($text)
+	public static function distance($string1, $string2)
 	{
-		// Auto link emails first to prevent problems with "www.domain.com@example.com"
-		return text::auto_link_urls(text::auto_link_emails($text));
+		$string1_length = strlen($string1);
+		$string2_length = strlen($string2);
+
+		// Here we start building the table of values
+		$matrix = array();
+
+		// String1 length + 1 = rows.
+		for ($i = 0; $i <= $string1_length; ++$i)
+		{
+			$matrix[$i][0] = $i;
+		}
+
+		// String2 length + 1 columns.
+		for ($j = 0; $j <= $string2_length; ++$j)
+		{
+			$matrix[0][$j] = $j;
+		}
+
+		for ($i = 1; $i <= $string1_length; ++$i)
+		{
+			for ($j = 1; $j <= $string2_length; ++$j)
+			{
+				$cost = substr($string1, $i - 1, 1) == substr($string2, $j - 1, 1) ? 0 : 1;
+
+				$matrix[$i][$j] = min(
+					$matrix[$i - 1][$j] + 1,		// deletion
+					$matrix[$i][$j - 1] + 1,		// insertion
+					$matrix[$i - 1][$j - 1] + $cost	// substitution
+				);
+
+				if ($i > 1 && $j > 1 &&	(substr($string1, $i - 1, 1) == substr($string2, $j - 2, 1))
+					&& (substr($string1, $i - 2, 1) == substr($string2, $j - 1, 1)))
+				{
+					$matrix[$i][$j] = min(
+						$matrix[$i][$j],
+						$matrix[$i - 2][$j - 2] + $cost	// transposition
+					);
+				}
+			}
+		}
+
+		return $matrix[$string1_length][$string2_length];
 	}
 
 	/**
@@ -304,9 +348,10 @@ class text_Core {
 	 * Automatically applies <p> and <br /> markup to text. Basically nl2br() on steroids.
 	 *
 	 * @param   string   subject
+	 * @param   boolean  convert single linebreaks to <br />
 	 * @return  string
 	 */
-	public static function auto_p($str)
+	public static function auto_p($str, $br = TRUE)
 	{
 		// Trim whitespace
 		if (($str = trim($str)) === '')
@@ -343,7 +388,10 @@ class text_Core {
 		}
 
 		// Convert single linebreaks to <br />
-		$str = preg_replace('~(?<!\n)\n(?!\n)~', "<br />\n", $str);
+		if ($br === TRUE)
+		{
+			$str = preg_replace('~(?<!\n)\n(?!\n)~', "<br />\n", $str);
+		}
 
 		return $str;
 	}
@@ -368,13 +416,13 @@ class text_Core {
 		// IEC prefixes (binary)
 		if ($si == FALSE OR strpos($force_unit, 'i') !== FALSE)
 		{
-			$units = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB');
+			$units = array(__('B'), __('KiB'), __('MiB'), __('GiB'), __('TiB'), __('PiB'));
 			$mod   = 1024;
 		}
 		// SI prefixes (decimal)
 		else
 		{
-			$units = array('B', 'kB', 'MB', 'GB', 'TB', 'PB');
+			$units = array(__('B'), __('kB'), __('MB'), __('GB'), __('TB'), __('PB'));
 			$mod   = 1000;
 		}
 

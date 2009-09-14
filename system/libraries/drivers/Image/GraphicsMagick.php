@@ -31,7 +31,7 @@ class Image_GraphicsMagick_Driver extends Image_Driver {
 		{
 			// Attempt to locate GM by using "which" (only works for *nix!)
 			if ( ! is_file($path = exec('which gm')))
-				throw new Kohana_Exception('image.graphicsmagick.not_found');
+				throw new Kohana_Exception('The GraphicsMagick directory specified does not contain a required program.');
 
 			$config['directory'] = dirname($path);
 		}
@@ -41,7 +41,7 @@ class Image_GraphicsMagick_Driver extends Image_Driver {
 
 		// Check to make sure the provided path is correct
 		if ( ! is_file(realpath($config['directory']).'/gm'.$this->ext))
-			throw new Kohana_Exception('image.graphicsmagick.not_found', 'gm'.$this->ext);
+			throw new Kohana_Exception('The GraphicsMagick directory specified does not contain a required program, :gm:.', array(':gm:' => 'gm'.$this->ext));
 
 
 		// Set the installation directory
@@ -200,6 +200,16 @@ class Image_GraphicsMagick_Driver extends Image_Driver {
 			return FALSE;
 		}
 
+		return TRUE;
+	}
+
+	public function composite($properties)
+	{
+		if ($error = exec(escapeshellcmd($this->dir.'gm'.$this->ext.' composite').' -geometry ' . escapeshellarg('+'.$properties['x'].'+'.$properties['y']).' -dissolve '.escapeshellarg($properties['transparency']).' '.escapeshellarg($properties['overlay_file']).' '.$this->cmd_image.' '.$this->cmd_image))
+		{
+			$this->errors[] = $error;
+			return FALSE;
+		}
 		return TRUE;
 	}
 

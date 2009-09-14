@@ -4,8 +4,6 @@ $lang = array
 (
 	// Class errors
 	'invalid_rule'  => 'Użyto niepoprawnej reguły walidacji: %s',
-	'i18n_array'    => 'Klucz %s z i18n musi być tablicą do użycia z zasadami in_lang.',
-	'not_callable'  => 'Funkcja callback %s uzyta w walidacji nie może zostać wywołana.',
 
 	// General errors
 	'unknown_error' => 'Nieznany błąd walidacji podczas walidowania pola %s.',

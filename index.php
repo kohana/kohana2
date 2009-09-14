@@ -95,7 +95,7 @@ define('SYSPATH', str_replace('\\', '/', realpath($kohana_system)).'/');
 // Clean up
 unset($kohana_application, $kohana_modules, $kohana_system);
 
-if (file_exists(DOCROOT.'install'.EXT))
+if (file_exists(DOCROOT.'install'.EXT) AND is_readable(DOCROOT.'install'.EXT))
 {
 	// Load the installation tests
 	include DOCROOT.'install'.EXT;
@@ -103,5 +103,5 @@ if (file_exists(DOCROOT.'install'.EXT))
 else
 {
 	// Initialize Kohana
-	require SYSPATH.'core/Bootstrap'.EXT;
+	require APPPATH.'Bootstrap'.EXT;
 }
