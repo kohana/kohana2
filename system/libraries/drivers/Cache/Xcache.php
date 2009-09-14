@@ -27,7 +27,7 @@ class Cache_Xcache_Driver extends Cache_Driver {
 		{
 			Kohana_Log::add('debug', __('Cache: XCache driver does not support tags'));
 		}
-		
+
 		foreach ($items as $key => $value)
 		{
 			if (is_resource($value))
@@ -38,7 +38,7 @@ class Cache_Xcache_Driver extends Cache_Driver {
 				return FALSE;
 			}
 		}
-		
+
 		return TRUE;
 	}
 	
@@ -57,7 +57,7 @@ class Cache_Xcache_Driver extends Cache_Driver {
 				$items[$key] = NULL;
 			}
 		}
-		
+
 		if ($single)
 		{
 			return ($items === FALSE OR count($items) > 0) ? current($items) : NULL;
@@ -67,7 +67,7 @@ class Cache_Xcache_Driver extends Cache_Driver {
 			return ($items === FALSE) ? array() : $items;
 		}
 	}
-	
+
 	/**
 	 * Get cache items by tag 
 	 */
@@ -101,7 +101,7 @@ class Cache_Xcache_Driver extends Cache_Driver {
 		Kohana_Log::add('debug', __('Cache: XCache driver does not support tags'));
 		return NULL;
 	}
-	
+
 	/**
 	 * Empty the cache
 	 */
@@ -109,7 +109,7 @@ class Cache_Xcache_Driver extends Cache_Driver {
 	{
 		$this->auth();
 		$result = TRUE;
-		
+
 		for ($i = 0, $max = xcache_count(XC_TYPE_VAR); $i < $max; $i++)
 		{
 			if (xcache_clear_cache(XC_TYPE_VAR, $i) !== NULL)
@@ -121,10 +121,10 @@ class Cache_Xcache_Driver extends Cache_Driver {
 
 		// Undo the login
 		$this->auth(TRUE);
-		
+
 		return $result;
 	}
-	
+
 	private function auth($reverse = FALSE)
 	{
 		static $backup = array();

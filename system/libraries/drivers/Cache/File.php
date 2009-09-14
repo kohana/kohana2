@@ -48,7 +48,7 @@ class Cache_File_Driver extends Cache_Driver {
 
 			// Find all tags matching the given tag
 			$files = array();
-			
+
 			foreach ($paths as $path)
 			{
 				// Split the files
@@ -60,7 +60,7 @@ class Cache_File_Driver extends Cache_Driver {
 
 				// Split the tags by plus signs, used to separate tags
 				$item_tags = explode('+', $tags[1]);
-				
+
 				// Check each supplied tag, and match aginst the tags on each item.
 				foreach ($keys as $tag)
 				{
@@ -95,16 +95,16 @@ class Cache_File_Driver extends Cache_Driver {
 			// File driver expects unix timestamp
 			$lifetime += time();
 		}
-		
-		
+
+
 		if ( ! is_null($tags) AND ! empty($tags))
 		{
 			// Convert the tags into a string list
 			$tags = implode('+', (array) $tags);
 		}
-		
+
 		$success = TRUE;
-		
+
 		foreach ($items as $key => $value)
 		{
 			if (is_resource($value))
@@ -118,25 +118,25 @@ class Cache_File_Driver extends Cache_Driver {
 				$success = FALSE;
 			}
 		}
-		
+
 		return $success;
 	}
-	
+
 	public function get($keys, $single = FALSE)
 	{
 		if ($files = $this->exists($keys))
 		{
 			$items = array();
-			
+
 			// Turn off errors while reading the files
 			$ER = error_reporting(0);
-			
+
 			foreach ($files as $file)
 			{
 				// Validate that the item has not expired
 				if ($this->expired($file))
 					continue;
-				
+
 				list($key, $junk) = explode('~', basename($file), 2);
 				
 				if (($data = file_get_contents($file)) !== FALSE)
@@ -148,14 +148,14 @@ class Cache_File_Driver extends Cache_Driver {
 				{
 					$data = NULL;
 				}
-				
+
 				$items[$key] = $data;
 			}
-			
+
 			// Turn errors back on
 			error_reporting($ER);
 		}
-		
+
 		// Reutrn a single item if only one key was requested
 		if ($single)
 		{
@@ -166,7 +166,7 @@ class Cache_File_Driver extends Cache_Driver {
 			return $items;
 		}
 	}
-	
+
 	/**
 	 * Get cache items by tag 
 	 */
@@ -229,7 +229,7 @@ class Cache_File_Driver extends Cache_Driver {
 	{
 		return $this->delete($tags, TRUE);
 	}
-	
+
 	/**
 	 * Empty the cache
 	 */
@@ -237,7 +237,7 @@ class Cache_File_Driver extends Cache_Driver {
 	{
 		return $this->delete(TRUE);
 	}
-	
+
 	/**
 	 * Check if a cache file has expired by filename.
 	 *

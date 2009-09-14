@@ -18,12 +18,12 @@ class Cache_Memcache_Driver extends Cache_Driver {
 	{
 		if ( ! extension_loaded('memcache'))
 			throw new Kohana_Exception(__('The memcache PHP extension must be loaded to use this driver.'));
-		
-		ini_set('memcache.allow_failover', (isset($config['allow_failover'])) ? (int) $config['allow_failover'] : TRUE);
-		
+
+		ini_set('memcache.allow_failover', (isset($config['allow_failover']) AND $config['allow_failover']) ? TRUE : FALSE);
+
 		$this->config = $config;
 		$this->backend = new Memcache;
-				
+
 		$this->flags = (isset($config['compression']) AND $config['compression']) ? MEMCACHE_COMPRESSED : FALSE;
 
 		foreach ($config['servers'] as $server)
@@ -47,7 +47,7 @@ class Cache_Memcache_Driver extends Cache_Driver {
 		$this->backend->setServerParams($host, $port, 1, -1, FALSE);
 		Kohana_Log::add('error', __('Cache: Memcache server down: :host:::port:',array(':host:' => $host,':port:' => $port)));
 	}
-	
+
 	public function set($items, $tags = NULL, $lifetime = NULL)
 	{
 		if ($lifetime !== 0)
@@ -55,7 +55,7 @@ class Cache_Memcache_Driver extends Cache_Driver {
 			// Memcache driver expects unix timestamp
 			$lifetime += time();
 		}
-		
+
 		if ($tags !== NULL)
 			throw new Cache_Exception(__('Memcache driver does not support tags'));
 
@@ -76,7 +76,7 @@ class Cache_Memcache_Driver extends Cache_Driver {
 	public function get($keys, $single = FALSE)
 	{
 		$items = $this->backend->get($keys);
-		
+
 		if ($single)
 		{
 			return ($items === FALSE OR count($items) > 0) ? current($items) : NULL;
@@ -86,7 +86,7 @@ class Cache_Memcache_Driver extends Cache_Driver {
 			return ($items === FALSE) ? array() : $items;
 		}
 	}
-	
+
 	/**
 	 * Get cache items by tag 
 	 */
@@ -118,7 +118,7 @@ class Cache_Memcache_Driver extends Cache_Driver {
 	{
 		throw new Cache_Exception(__('Memcache driver does not support tags'));
 	}
-	
+
 	/**
 	 * Empty the cache
 	 */

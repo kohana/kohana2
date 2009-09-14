@@ -34,7 +34,7 @@ abstract class Cache_Driver {
 	 * Delete cache items by tag 
 	 */
 	abstract public function delete_tag($tags);
-	
+
 	/**
 	 * Empty the cache
 	 */

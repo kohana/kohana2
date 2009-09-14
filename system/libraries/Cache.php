@@ -100,7 +100,7 @@ class Cache_Core {
 		{
 			$key = array($key => $value);
 		}
-		
+
 		return $this->driver->set($key, $tags, $lifetime);
 	}
 
@@ -110,7 +110,7 @@ class Cache_Core {
 	public function get($keys)
 	{
 		$single = FALSE;
-		
+
 		if ( ! is_array($keys))
 		{
 			$keys = array($keys);
@@ -158,7 +158,7 @@ class Cache_Core {
 
 		return $this->driver->delete_tag($tags);
 	}
-	
+
 	/**
 	 * Empty the cache
 	 */
