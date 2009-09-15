@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
  * MySQL database connection.
- * 
+ *
  * $Id$
- * 
+ *
  * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2008-2009 Kohana Team
@@ -38,15 +38,17 @@ class Database_Mysql_Core extends Database {
 			$this->connection = NULL;
 
 			// Unable to connect to the database
-			throw new Database_Exception(mysql_errno(), mysql_error());
+			throw new Database_Exception('#:errno: :error',
+				array(':error' => mysql_error(),
+				':errno' => mysql_errno()));
 		}
 
 		if ( ! mysql_select_db($database, $this->connection))
 		{
 			// Unable to select database
-			throw new Database_Exception(':error',
-				array(':error' => mysql_error($this->connection)),
-				mysql_errno($this->connection));
+			throw new Database_Exception('#:errno: :error',
+				array(':error' => mysql_error($this->connection),
+				':errno' => mysql_errno($this->connection)));
 		}
 
 		if (isset($this->config['character_set']))
@@ -85,9 +87,9 @@ class Database_Mysql_Core extends Database {
 		if ( ! mysql_set_charset($charset, $this->connection))
 		{
 			// Unable to set charset
-			throw new Database_Exception(':error',
-				array(':error' => mysql_error($this->connection)),
-				mysql_errno($this->connection));
+			throw new Database_Exception('#:errno: :error',
+				array(':error' => mysql_error($this->connection),
+				':errno' => mysql_errno($this->connection)));
 		}
 	}
 
@@ -111,9 +113,9 @@ class Database_Mysql_Core extends Database {
 
 		if (($value = mysql_real_escape_string($value, $this->connection)) === FALSE)
 		{
-			throw new Database_Exception(':error',
-				array(':error' => mysql_errno($this->connection)),
-				mysql_error($this->connection));
+			throw new Database_Exception('#:errno: :error',
+				array(':error' => mysql_error($this->connection),
+				':errno' => mysql_errno($this->connection)));
 		}
 
 		return $value;

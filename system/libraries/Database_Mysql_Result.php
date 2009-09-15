@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
  * MySQL database result.
- * 
+ *
  * $Id$
- * 
+ *
  * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2008-2009 Kohana Team
@@ -26,9 +26,11 @@ class Database_Mysql_Result_Core extends Database_Result {
 		{
 			if ($result == FALSE)
 			{
-				throw new Database_Exception(':error [ :query ]',
-					array(':error' => mysql_error($link), ':query' => $sql),
-					mysql_errno($link));
+				throw new Database_Exception('#:errno: :error [ :query ]',
+					array(':error' => mysql_error($link),
+					':query' => $sql,
+					':errno' => mysql_errno($link)));
+
 			}
 			else
 			{
@@ -93,7 +95,7 @@ class Database_Mysql_Result_Core extends Database_Result {
 			// Return this result object
 			return $this;
 		}
-		
+
 		// Return a nested array of all results
 		$array = array();
 
@@ -101,7 +103,7 @@ class Database_Mysql_Result_Core extends Database_Result {
 		{
 			// Seek to the beginning of the result
 			mysql_data_seek($this->result, 0);
-			
+
 			if (is_string($this->return_objects))
 			{
 				while ($row = mysql_fetch_object($this->result, $this->return_objects))
