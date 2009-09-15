@@ -52,7 +52,7 @@ class Cache_Core {
 
 			// Test the config group name
 			if (($config = Kohana::config('cache.'.$config)) === NULL)
-				throw new Kohana_Exception('cache.undefined_group', $name);
+				throw new Kohana_Exception('The :group: group is not defined in your configuration.', array(':group:' => $name));
 		}
 
 		if (is_array($config))
@@ -74,20 +74,22 @@ class Cache_Core {
 
 		// Load the driver
 		if ( ! Kohana::auto_load($driver))
-			throw new Kohana_Exception('core.driver_not_found', $this->config['driver'], get_class($this));
+			throw new Kohana_Exception('The :driver: driver for the :class: library could not be found',
+									   array(':driver:' => $this->config['driver'], ':class:' => get_class($this)));
 
 		// Initialize the driver
 		$this->driver = new $driver($this->config['params']);
 
 		// Validate the driver
 		if ( ! ($this->driver instanceof Cache_Driver))
-			throw new Kohana_Exception('core.driver_implements', $this->config['driver'], get_class($this), 'Cache_Driver');
+			throw new Kohana_Exception('The :driver: driver for the :library: library must implement the :interface: interface',
+									   array(':driver:' => $this->config['driver'], ':library:' => get_class($this), ':interface:' => 'Cache_Driver'));
 
 		Kohana_Log::add('debug', 'Cache Library initialized');
 	}
 
 	/**
-	 * Set cache items  
+	 * Set cache items
 	 */
 	public function set($key, $value = NULL, $tags = NULL, $lifetime = NULL)
 	{
@@ -95,7 +97,7 @@ class Cache_Core {
 		{
 			$lifetime = $this->config['lifetime'];
 		}
-		
+
 		if ( ! is_array($key))
 		{
 			$key = array($key => $value);
@@ -105,7 +107,7 @@ class Cache_Core {
 	}
 
 	/**
-	 * Get a cache items by key 
+	 * Get a cache items by key
 	 */
 	public function get($keys)
 	{
@@ -134,7 +136,7 @@ class Cache_Core {
 	}
 
 	/**
-	 * Delete cache item by key 
+	 * Delete cache item by key
 	 */
 	public function delete($keys)
 	{
@@ -147,7 +149,7 @@ class Cache_Core {
 	}
 
 	/**
-	 * Delete cache items by tag 
+	 * Delete cache items by tag
 	 */
 	public function delete_tag($tags)
 	{

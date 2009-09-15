@@ -20,7 +20,7 @@ class Kohana_Config_Core implements ArrayAccess {
 	 * @static
 	 */
 	public static $default_driver = 'array';
-	
+
 	/**
 	 * Kohana_Config instance
 	 *
@@ -28,7 +28,7 @@ class Kohana_Config_Core implements ArrayAccess {
 	 * @static
 	 */
 	protected static $instance;
-	
+
 	/**
 	 * Returns a new instance of the Kohana_Config library
 	 * based on the singleton pattern
@@ -51,18 +51,18 @@ class Kohana_Config_Core implements ArrayAccess {
 			$core_config = $config->get('core');
 			Kohana_Config::$instance = new Kohana_Config($core_config);
 		}
-		
+
 		// Return the Kohana_Config driver requested
 		return Kohana_Config::$instance;
 	}
-	
+
 	/**
 	 * The drivers for this object
 	 *
 	 * @var     Kohana_Config_Driver
 	 */
 	protected $drivers;
-	
+
 	/**
 	 * Kohana_Config constructor to load the supplied driver.
 	 * Enforces the singleton pattern.
@@ -73,38 +73,38 @@ class Kohana_Config_Core implements ArrayAccess {
 	protected function __construct(array $core_config)
 	{
 		$drivers = $core_config['config_drivers'];
-		
+
 		//remove array if it's found in config
 		if (in_array('array', $drivers))
 			unset($drivers[array_search('array', $drivers)]);
-			
+
 		//add array at the very end
 		$this->drivers = $drivers = array_merge($drivers, array(
 			'array'
 		));
-		
+
 		foreach ($this->drivers as & $driver)
 		{
 			// Create the driver name
 			$driver = 'Config_'.ucfirst($driver).'_Driver';
-			
+
 			// Ensure the driver loads correctly
 			if (!Kohana::auto_load($driver))
-				throw new Kohana_Exception('core.driver_not_found', array(
-					$driver, get_class($this)
+				throw new Kohana_Exception('The :driver: driver for the :library: library could not be found.', array(
+					':driver:' => $driver, ':library:' => get_class($this)
 				));
-				
+
 			// Load the new driver
 			$driver = new $driver($core_config);
-			
+
 			// Ensure the new driver is valid
 			if (!$driver instanceof Config_Driver)
-				throw new Kohana_Exception('core.driver_implements', array(
-					$driver, get_class($this), 'Config_Driver'
+				throw new Kohana_Exception('The :driver: driver for the :library: library must implement the :interface: interface', array(
+					':driver:' => $driver, ':library:' => get_class($this), ':interface:' => 'Config_Driver'
 				));
 		}
 	}
-	
+
 	/**
 	 * Gets a value from the configuration driver
 	 *
@@ -130,7 +130,7 @@ class Kohana_Config_Core implements ArrayAccess {
 			}
 		}
 	}
-	
+
 	/**
 	 * Sets a value to the configuration drivers
 	 *
@@ -156,7 +156,7 @@ class Kohana_Config_Core implements ArrayAccess {
 		}
 		return TRUE;
 	}
-	
+
 	/**
 	 * Clears a group from configuration
 	 *
@@ -181,7 +181,7 @@ class Kohana_Config_Core implements ArrayAccess {
 		}
 		return TRUE;
 	}
-	
+
 	/**
 	 * Loads a configuration group
 	 *
@@ -206,7 +206,7 @@ class Kohana_Config_Core implements ArrayAccess {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns true or false if any config has been loaded(either manually or from cache)
 	 *
@@ -216,14 +216,14 @@ class Kohana_Config_Core implements ArrayAccess {
 	{
 		return $this->drivers[(count($this->drivers) - 1)]->loaded;
 	}
-	
+
 	/**
 	 * The following allows access using
 	 * array syntax.
 	 *
 	 * @example  $config['core.site_domain']
 	 */
-	 
+
 	 /**
 	 * Allows access to configuration settings
 	 * using the ArrayAccess interface
@@ -248,7 +248,7 @@ class Kohana_Config_Core implements ArrayAccess {
 			}
 		}
 	}
-	
+
 	/**
 	 * Allows access to configuration settings
 	 * using the ArrayAccess interface
@@ -275,7 +275,7 @@ class Kohana_Config_Core implements ArrayAccess {
 		}
 		return TRUE;
 	}
-	
+
 	/**
 	 * Allows access to configuration settings
 	 * using the ArrayAccess interface
@@ -300,7 +300,7 @@ class Kohana_Config_Core implements ArrayAccess {
 			}
 		}
 	}
-	
+
 	/**
 	 * Allows access to configuration settings
 	 * using the ArrayAccess interface

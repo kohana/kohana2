@@ -88,7 +88,7 @@ class View_Core {
 		{
 			// Check if the filetype is allowed by the configuration
 			if ( ! in_array($type, Kohana::config('view.allowed_filetypes')))
-				throw new Kohana_Exception('core.invalid_filetype', $type);
+				throw new Kohana_Exception('The requested filetype, .:type:, is not allowed in your view configuration file', array(':type:' => $type));
 
 			// Load the filename and set the content type
 			$this->kohana_filename = Kohana::find_file('views', $name, TRUE, $type);
@@ -262,7 +262,7 @@ class View_Core {
 	public function render($print = FALSE, $renderer = FALSE, $modifier = FALSE)
 	{
 		if (empty($this->kohana_filename))
-			throw new Kohana_Exception('core.view_set_filename');
+			throw new Kohana_Exception('You must set the the view filename before calling render');
 
 		if (is_string($this->kohana_filetype))
 		{

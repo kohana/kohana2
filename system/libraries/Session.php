@@ -132,14 +132,16 @@ class Session_Core {
 
 			// Load the driver
 			if ( ! Kohana::auto_load($driver))
-				throw new Kohana_Exception('core.driver_not_found', Session::$config['driver'], get_class($this));
+				throw new Kohana_Exception('The :driver: driver for the :library: library could not be found',
+										   array(':driver:' => Session::$config['driver'], ':library:' => get_class($this)));
 
 			// Initialize the driver
 			Session::$driver = new $driver();
 
 			// Validate the driver
 			if ( ! (Session::$driver instanceof Session_Driver))
-				throw new Kohana_Exception('core.driver_implements', Session::$config['driver'], get_class($this), 'Session_Driver');
+				throw new Kohana_Exception('The :driver: driver for the :library: library must implement the :interface: interface',
+										   array(':driver:' => Session::$config['driver'], ':library:' => get_class($this), ':interface:' => 'Session_Driver'));
 
 			// Register non-native driver as the session handler
 			session_set_save_handler
@@ -155,7 +157,7 @@ class Session_Core {
 
 		// Validate the session name
 		if ( ! preg_match('~^(?=.*[a-z])[a-z0-9_]++$~iD', Session::$config['name']))
-			throw new Kohana_Exception('session.invalid_session_name', Session::$config['name']);
+			throw new Kohana_Exception('The session_name, :session:, is invalid. It must contain only alphanumeric characters and underscores. Also at least one letter must be present.', array(':session:' => Session::$config['name']));
 
 		// Name the session, this will also be the name of the cookie
 		session_name(Session::$config['name']);

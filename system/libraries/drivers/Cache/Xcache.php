@@ -16,7 +16,7 @@ class Cache_Xcache_Driver extends Cache_Driver {
 	public function __construct($config)
 	{
 		if ( ! extension_loaded('xcache'))
-			throw new Kohana_Exception(__('The xcache PHP extension must be loaded to use this driver.'));
+			throw new Kohana_Exception('The xcache PHP extension must be loaded to use this driver.');
 
 		$this->config = $config;
 	}
@@ -41,11 +41,11 @@ class Cache_Xcache_Driver extends Cache_Driver {
 
 		return TRUE;
 	}
-	
+
 	public function get($keys, $single = FALSE)
 	{
 		$items = array();
-		 
+
 		foreach ($keys as $key)
 		{
 			if (xcache_isset($id))
@@ -69,7 +69,7 @@ class Cache_Xcache_Driver extends Cache_Driver {
 	}
 
 	/**
-	 * Get cache items by tag 
+	 * Get cache items by tag
 	 */
 	public function get_tag($tags)
 	{
@@ -78,7 +78,7 @@ class Cache_Xcache_Driver extends Cache_Driver {
 	}
 
 	/**
-	 * Delete cache item by key 
+	 * Delete cache item by key
 	 */
 	public function delete($keys)
 	{
@@ -94,7 +94,7 @@ class Cache_Xcache_Driver extends Cache_Driver {
 	}
 
 	/**
-	 * Delete cache items by tag 
+	 * Delete cache items by tag
 	 */
 	public function delete_tag($tags)
 	{

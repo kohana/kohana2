@@ -97,7 +97,7 @@ class request_Core {
 		$method = strtolower($_SERVER['REQUEST_METHOD']);
 
 		if ( ! in_array($method, request::$http_methods))
-			throw new Kohana_Exception('request.unknown_method', $method);
+			throw new Kohana_Exception('Invalid request method :method:', array(':method:' => $method));
 
 		return $method;
 	}

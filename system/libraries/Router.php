@@ -54,7 +54,7 @@ class Router_Core {
 		{
 			// Make sure the default route is set
 			if (empty(Router::$routes['_default']))
-				throw new Kohana_Exception('core.no_default_route');
+				throw new Kohana_Exception('Please set a default route in config/routes.php.');
 
 			// Use the default route when no segments exist
 			Router::$current_uri = Router::$routes['_default'];
@@ -219,7 +219,7 @@ class Router_Core {
 				// PATH_INFO is empty during requests to the front controller
 				Router::$current_uri = $_SERVER['PHP_SELF'];
 			}
-		
+
 			if (isset($_SERVER['SCRIPT_NAME']) AND $_SERVER['SCRIPT_NAME'])
 			{
 				// Clean up PATH_INFO fallbacks
@@ -231,10 +231,10 @@ class Router_Core {
 				}
 			}
 		}
-		
+
 		// Remove slashes from the start and end of the URI
 		Router::$current_uri = trim(Router::$current_uri, '/');
-		
+
 		if (Router::$current_uri !== '')
 		{
 			if ($suffix = Kohana::config('core.url_suffix') AND strpos(Router::$current_uri, $suffix) !== FALSE)
