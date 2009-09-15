@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Cache_File_Driver extends Cache_Driver {	
+class Cache_File_Driver extends Cache_Driver {
 	protected $config;
 	protected $backend;
 
@@ -17,9 +17,9 @@ class Cache_File_Driver extends Cache_Driver {
 	{
 		$this->config = $config;
 		$this->config['directory'] = str_replace('\\', '/', realpath($this->config['directory'])).'/';
-		
+
 		if ( ! is_dir($this->config['directory']) OR ! is_writable($this->config['directory']))
-			throw new Cache_Exception(__('The configured cache directory, :directory:, is not writable.'), array(':directory:' => $this->config['directory']));
+			throw new Cache_Exception('The configured cache directory, :directory:, is not writable.', array(':directory:' => $this->config['directory']));
 	}
 
 	/**
@@ -40,7 +40,7 @@ class Cache_File_Driver extends Cache_Driver {
 		{
 			// Find all the files that have the tag name
 			$paths = array();
-			
+
 			foreach ( (array) $keys as $tag)
 			{
 				$paths = array_merge($paths, glob($this->config['directory'].'*~*'.$tag.'*~*'));
@@ -87,7 +87,7 @@ class Cache_File_Driver extends Cache_Driver {
 			return $paths;
 		}
 	}
-	
+
 	public function set($items, $tags = NULL, $lifetime = NULL)
 	{
 		if ($lifetime !== 0)
@@ -108,7 +108,7 @@ class Cache_File_Driver extends Cache_Driver {
 		foreach ($items as $key => $value)
 		{
 			if (is_resource($value))
-				throw new Cache_Exception(__('Caching of resources is impossible, because resources cannot be serialised.'));
+				throw new Cache_Exception('Caching of resources is impossible, because resources cannot be serialised.');
 
 			// Remove old cache file
 			$this->delete($key);
@@ -138,7 +138,7 @@ class Cache_File_Driver extends Cache_Driver {
 					continue;
 
 				list($key, $junk) = explode('~', basename($file), 2);
-				
+
 				if (($data = file_get_contents($file)) !== FALSE)
 				{
 					// Unserialize the data
@@ -168,7 +168,7 @@ class Cache_File_Driver extends Cache_Driver {
 	}
 
 	/**
-	 * Get cache items by tag 
+	 * Get cache items by tag
 	 */
 	public function get_tag($tags)
 	{
@@ -202,7 +202,7 @@ class Cache_File_Driver extends Cache_Driver {
 		$success = TRUE;
 
 		$paths = $this->exists($keys, $tag);
-		
+
 		// Disable all error reporting while deleting
 		$ER = error_reporting(0);
 
@@ -223,7 +223,7 @@ class Cache_File_Driver extends Cache_Driver {
 	}
 
 	/**
-	 * Delete cache items by tag 
+	 * Delete cache items by tag
 	 */
 	public function delete_tag($tags)
 	{

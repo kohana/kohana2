@@ -31,7 +31,7 @@ class Cache_Xcache_Driver extends Cache_Driver {
 		foreach ($items as $key => $value)
 		{
 			if (is_resource($value))
-				throw new Cache_Exception(__('Caching of resources is impossible, because resources cannot be serialised.'));
+				throw new Cache_Exception('Caching of resources is impossible, because resources cannot be serialised.');
 
 			if ( ! xcache_set($key, $value, $lifetime))
 			{

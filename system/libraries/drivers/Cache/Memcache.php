@@ -57,12 +57,12 @@ class Cache_Memcache_Driver extends Cache_Driver {
 		}
 
 		if ($tags !== NULL)
-			throw new Cache_Exception(__('Memcache driver does not support tags'));
+			throw new Cache_Exception('Memcache driver does not support tags');
 
 		foreach ($items as $key => $value)
 		{
 			if (is_resource($value))
-				throw new Cache_Exception(__('Caching of resources is impossible, because resources cannot be serialised.'));
+				throw new Cache_Exception('Caching of resources is impossible, because resources cannot be serialised.');
 
 			if ( ! $this->backend->set($key, $value, $this->flags, $lifetime))
 			{
@@ -92,7 +92,7 @@ class Cache_Memcache_Driver extends Cache_Driver {
 	 */
 	public function get_tag($tags)
 	{
-		throw new Cache_Exception(__('Memcache driver does not support tags'));
+		throw new Cache_Exception('Memcache driver does not support tags');
 	}
 
 	/**
@@ -116,7 +116,7 @@ class Cache_Memcache_Driver extends Cache_Driver {
 	 */
 	public function delete_tag($tags)
 	{
-		throw new Cache_Exception(__('Memcache driver does not support tags'));
+		throw new Cache_Exception('Memcache driver does not support tags');
 	}
 
 	/**
