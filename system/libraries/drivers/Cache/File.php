@@ -124,10 +124,10 @@ class Cache_File_Driver extends Cache_Driver {
 
 	public function get($keys, $single = FALSE)
 	{
+		$items = array();
+
 		if ($files = $this->exists($keys))
 		{
-			$items = array();
-
 			// Turn off errors while reading the files
 			$ER = error_reporting(0);
 
