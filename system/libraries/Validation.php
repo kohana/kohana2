@@ -364,7 +364,7 @@ class Validation_Core extends ArrayObject {
 			{
 				// Use the updated rule name
 				$rule = $rule_name;
-				
+
 				// Have arguments?
 				if (preg_match('/^([^\[]++)\[(.+)\]$/', $rule, $matches))
 				{
@@ -594,6 +594,9 @@ class Validation_Core extends ArrayObject {
 				}
 			}
 		}
+
+		// Swap the array back into the object
+		$this->exchangeArray($array);
 
 		// Return TRUE if there are no errors
 		return $this->errors === array();
