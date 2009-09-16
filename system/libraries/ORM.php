@@ -401,11 +401,11 @@ class ORM_Core {
 				array(':property' => $column, ':class' => get_class($this)));
 		}
 	}
-	
+
 	/**
 	 * Tells you if the Model has been loaded or not
-	 * 
-	 * @return bool 
+	 *
+	 * @return bool
 	 */
 	public function loaded() {
 		if ( ! $this->_loaded AND ! $this->empty_primary_key())
@@ -415,10 +415,10 @@ class ORM_Core {
 		}
 		return $this->_loaded;
 	}
-	
+
 	/**
 	 * Tells you if the model was saved successfully or not
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function saved() {
@@ -641,7 +641,7 @@ class ORM_Core {
 		}
 
 		// This trick allows for models to use different table prefixes (sharing the same database)
-		$join_table = $target->db->table_prefix().$target->table_name.' '.$this->db->table_prefix().$target_path;
+		$join_table = $this->db->quote_column($target->db->table_prefix().$target->table_name).' '.$this->db->quote_column($this->db->table_prefix().$target_path);
 
 		// Turn off prefixing temporarily
 		$prefix = $this->db->table_prefix('');
@@ -745,7 +745,7 @@ class ORM_Core {
 		if ($array === NULL)
 			$array = new Validation($this->object);
 
-		if (count($this->rules) > 0) 
+		if (count($this->rules) > 0)
 		{
 			foreach ($this->rules as $field => $parameters)
 			{
@@ -789,7 +789,7 @@ class ORM_Core {
 			// Require model validation before saving
 			if (!$this->_valid)
 				$this->validate();
-			
+
 			$data = array();
 			foreach ($this->changed as $column)
 			{
@@ -1307,7 +1307,7 @@ class ORM_Core {
 
 		return $object;
 	}
-	
+
 	/**
 	 * Loads an array of values into into the current object.
 	 *
