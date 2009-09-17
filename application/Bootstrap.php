@@ -37,8 +37,6 @@ require SYSPATH.'libraries/drivers/Config'.EXT;
 require SYSPATH.'libraries/drivers/Config/Array'.EXT;
 final class Kohana_Config extends Kohana_Config_Core {}
 
-require SYSPATH.'core/utf8'.EXT;
-
 // Prepare the environment
 Kohana::setup();
 

@@ -48,6 +48,18 @@ class Input_Core {
 	 */
 	public function __construct()
 	{
+		// Convert all global variables to Kohana charset
+		$_GET    = Input::clean($_GET);
+		$_POST   = Input::clean($_POST);
+		$_COOKIE = Input::clean($_COOKIE);
+		$_SERVER = Input::clean($_SERVER);
+
+		if (PHP_SAPI == 'cli')
+		{
+			// Convert command line arguments
+			$_SERVER['argv'] = Input::clean($_SERVER['argv']);
+		}
+
 		// Use XSS clean?
 		$this->use_xss_clean = (bool) Kohana::config('core.global_xss_filtering');
 
@@ -474,6 +486,45 @@ class Input_Core {
 		{
 			// Standardize newlines
 			$str = str_replace(array("\r\n", "\r"), "\n", $str);
+		}
+
+		return $str;
+	}
+
+	/**
+	 * Recursively cleans arrays, objects, and strings. Removes ASCII control
+	 * codes and converts to UTF-8 while silently discarding incompatible
+	 * UTF-8 characters.
+	 *
+	 * @param   string  string to clean
+	 * @return  string
+	 */
+	public static function clean($str)
+	{
+		if (is_array($str) OR is_object($str))
+		{
+			foreach ($str as $key => $val)
+			{
+				// Recursion!
+				$str[Input::clean($key)] = Input::clean($val);
+			}
+		}
+		elseif (is_string($str) AND $str !== '')
+		{
+			// Remove control characters
+			$str = text::strip_ascii_ctrl($str);
+
+			if ( ! text::is_ascii($str))
+			{
+				// Disable notices
+				$ER = error_reporting(~E_NOTICE);
+
+				// iconv is expensive, so it is only used when needed
+				$str = iconv(Kohana::CHARSET, Kohana::CHARSET.'//IGNORE', $str);
+
+				// Turn notices back on
+				error_reporting($ER);
+			}
 		}
 
 		return $str;

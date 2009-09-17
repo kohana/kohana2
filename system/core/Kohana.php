@@ -84,6 +84,14 @@ abstract class Kohana_Core {
 		// Define database error constant
 		define('E_DATABASE_ERROR', 44);
 
+		// Check PCRE support for Unicode properties such as \p and \X.
+		$ER = error_reporting(0);
+		define('PCRE_UNICODE_PROPERTIES', (bool) preg_match('/^\pL$/u', 'ñ'));
+		error_reporting($ER);
+
+		// Set the default charset for mb_* functions
+		mb_internal_encoding(Kohana::CHARSET);
+
 		if (Kohana_Config::instance()->loaded() === FALSE)
 		{
 			// Re-parse the include paths
