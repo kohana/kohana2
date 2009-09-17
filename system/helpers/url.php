@@ -15,7 +15,7 @@ class url_Core {
 	 * Fetches the current URI.
 	 *
 	 * @param   boolean  include the query string
-	 * @param   boolean  include the suffix  
+	 * @param   boolean  include the suffix
 	 * @return  string
 	 */
 	public static function current($qs = FALSE, $suffix = FALSE)
@@ -167,7 +167,7 @@ class url_Core {
 		$separator = ($separator === '-') ? '-' : '_';
 
 		// Replace accented characters by their unaccented equivalents
-		$title = utf8::transliterate_to_ascii($title);
+		$title = text::transliterate_to_ascii($title);
 
 		// Remove all characters that are not the separator, a-z, 0-9, or whitespace
 		$title = preg_replace('/[^'.$separator.'a-z0-9\s]+/', '', strtolower($title));

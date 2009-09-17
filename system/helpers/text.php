@@ -52,7 +52,7 @@ class text_Core {
 
 		$limit = (int) $limit;
 
-		if (trim($str) === '' OR utf8::strlen($str) <= $limit)
+		if (trim($str) === '' OR mb_strlen($str) <= $limit)
 			return $str;
 
 		if ($limit <= 0)
@@ -60,7 +60,7 @@ class text_Core {
 
 		if ($preserve_words == FALSE)
 		{
-			return rtrim(utf8::substr($str, 0, $limit)).$end_char;
+			return rtrim(mb_substr($str, 0, $limit)).$end_char;
 		}
 
 		preg_match('/^.{'.($limit - 1).'}\S*/us', $str, $matches);
@@ -128,7 +128,7 @@ class text_Core {
 			break;
 			default:
 				$pool = (string) $type;
-				$utf8 = ! utf8::is_ascii($pool);
+				$utf8 = ! text::is_ascii($pool);
 			break;
 		}
 
@@ -200,10 +200,10 @@ class text_Core {
 
 		$regex = '!'.$regex.'!ui';
 
-		if (utf8::strlen($replacement) == 1)
+		if (mb_strlen($replacement) == 1)
 		{
 			$regex .= 'e';
-			return preg_replace($regex, 'str_repeat($replacement, utf8::strlen(\'$1\'))', $str);
+			return preg_replace($regex, 'str_repeat($replacement, mb_strlen(\'$1\'))', $str);
 		}
 
 		return preg_replace($regex, $replacement, $str);

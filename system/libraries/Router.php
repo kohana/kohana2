@@ -189,7 +189,7 @@ class Router_Core {
 					parse_str($query, $_GET);
 
 					// Convert $_GET to UTF-8
-					$_GET = utf8::clean($_GET);
+					$_GET = Input::clean($_GET);
 				}
 			}
 		}
