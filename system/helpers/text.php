@@ -6,7 +6,7 @@
  *
  * @package    Core
  * @author     Kohana Team
- * @copyright  (c) 2007-2008 Kohana Team
+ * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
 class text_Core {
@@ -459,6 +459,11 @@ class text_Core {
 	 * Tests whether a string contains only 7bit ASCII bytes. This is used to
 	 * determine when to use native functions or UTF-8 functions.
 	 *
+	 * @see http://sourceforge.net/projects/phputf8/
+	 * @copyright  (c) 2007-2009 Kohana Team
+	 * @copyright  (c) 2005 Harry Fuecks
+	 * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
+	 *
 	 * @param   string  string to check
 	 * @return  bool
 	 */
@@ -470,6 +475,11 @@ class text_Core {
 	/**
 	 * Strips out device control codes in the ASCII range.
 	 *
+	 * @see http://sourceforge.net/projects/phputf8/
+	 * @copyright  (c) 2007-2009 Kohana Team
+	 * @copyright  (c) 2005 Harry Fuecks
+	 * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
+	 *
 	 * @param   string  string to clean
 	 * @return  string
 	 */
@@ -480,6 +490,11 @@ class text_Core {
 
 	/**
 	 * Strips out all non-7bit ASCII bytes.
+	 *
+	 * @see http://sourceforge.net/projects/phputf8/
+	 * @copyright  (c) 2007-2009 Kohana Team
+	 * @copyright  (c) 2005 Harry Fuecks
+	 * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
 	 *
 	 * @param   string  string to clean
 	 * @return  string
@@ -493,6 +508,10 @@ class text_Core {
 	 * Replaces special/accented UTF-8 characters by ASCII-7 'equivalents'.
 	 *
 	 * @author  Andreas Gohr <andi@splitbrain.org>
+	 * @see http://sourceforge.net/projects/phputf8/
+	 * @copyright  (c) 2007-2009 Kohana Team
+	 * @copyright  (c) 2005 Harry Fuecks
+	 * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
 	 *
 	 * @param   string   string to transliterate
 	 * @param   integer  -1 lowercase only, +1 uppercase only, 0 both cases
