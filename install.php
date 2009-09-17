@@ -10,49 +10,49 @@
 				margin: 0 auto;
 				font-family: sans-serif;
 				font-size: 90%;
-			} 
-			
+			}
+
 			#tests table {
 				border-collapse: collapse;
 				width: 100%;
-			} 
-			
+			}
+
 			#tests table th, #tests table td {
 				padding: 0.2em 0.4em;
 				text-align: left;
 				vertical-align: top;
-			} 
-			
+			}
+
 			#tests table th {
 				width: 12em;
 				font-weight: normal;
 				font-size: 1.2em;
-			} 
-			
+			}
+
 			#tests table tr:nth-child(odd) {
 				background:	#eee;
-			} 
-			
+			}
+
 			#tests table td.pass {
 				color: #191;
-			} 
-			
+			}
+
 			#tests table td.fail {
 				color: #911;
-			} 
-			
+			}
+
 			#tests #results {
 				color: #fff;
-			} 
-			
+			}
+
 			#tests #results p {
 				padding: 0.8em 0.4em;
-			} 
-			
+			}
+
 			#tests #results p.pass {
 				background: #191;
-			} 
-			
+			}
+
 			#tests #results p.fail {
 				background: #911;
 			}
@@ -87,7 +87,7 @@
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
-						The configured 
+						The configured
 						<code>
 							system
 						</code>
@@ -103,7 +103,7 @@
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
-						The configured 
+						The configured
 						<code>
 							application
 						</code>
@@ -119,7 +119,7 @@
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
-						The configured 
+						The configured
 						<code>
 							modules
 						</code>
@@ -135,7 +135,7 @@
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
-						The default 
+						The default
 						<code>
 							logs
 						</code>
@@ -151,7 +151,7 @@
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
-						The default 
+						The default
 						<code>
 							cache
 						</code>
@@ -234,6 +234,15 @@
 					</td>
 					<?php endif?>
 				</tr>
+				<tr>
+					<th>Multibyte String Enabled</th>
+					<?php if (function_exists('mb_strlen')): ?>
+					<td class="pass">Pass</td>
+					<?php else: $failed = TRUE; ?>
+					<td class="fail">The <a href="http://php.net/mbstring">mbstring</a>
+						extension is not loaded.</td>
+					<?php endif ?>
+				</tr>
 				<?php if (extension_loaded('mbstring')): ?>
 				<tr>
 					<th>Mbstring Not Overloaded</th>
@@ -254,7 +263,7 @@
 					<?php if (!function_exists('utf8_encode')): $failed = TRUE?>
 					<td class="fail">
 						PHP is compiled without <a href="http://php.net/xml">XML</a>
-						support, thus lacking support for 
+						support, thus lacking support for
 						<code>
 							utf8_encode()
 						</code>/
@@ -289,7 +298,7 @@
 				</p>
 				<?php else : ?>
 				<p class="pass">
-					Your environment passed all requirements. Remove or rename the 
+					Your environment passed all requirements. Remove or rename the
 					<code>
 						install<?php echo EXT?>
 					</code>
