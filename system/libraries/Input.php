@@ -441,9 +441,7 @@ class Input_Core {
 	 */
 	public function clean_input_keys($str)
 	{
-		$chars = PCRE_UNICODE_PROPERTIES ? '\pL' : 'a-zA-Z';
-
-		if ( ! preg_match('#^['.$chars.'0-9:_.-]++$#uD', $str))
+		if ( ! preg_match('#^[\pL0-9:_.-]++$#uD', $str))
 		{
 			exit('Disallowed key characters in global data.');
 		}
