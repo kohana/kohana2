@@ -71,10 +71,10 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 		// Get the current row
 		$row = $this->current();
 
-		if (is_array($row))
+		if ( ! $this->return_objects)
 			return $row[$name];
-		else
-			return $row->$name;
+
+		return $row->$name;
 	}
 
 	/**
