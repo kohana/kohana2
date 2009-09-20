@@ -6,7 +6,7 @@
  *
  * @package    Core
  * @author     Kohana Team
- * @copyright  (c) 2007-2008 Kohana Team
+ * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
 class expires_Core {
@@ -21,14 +21,15 @@ class expires_Core {
 	{
 		if (expires::check_headers())
 		{
-			$now = $expires = time();
+			$now = time();
+			$expires = $now + $seconds;
 
-			// Set the expiration timestamp
-			$expires += $seconds;
-
-			// Send headers
 			header('Last-Modified: '.gmdate('D, d M Y H:i:s T', $now));
+
+			// HTTP 1.0
 			header('Expires: '.gmdate('D, d M Y H:i:s T', $expires));
+
+			// HTTP 1.1
 			header('Cache-Control: max-age='.$seconds);
 
 			return $expires;
@@ -38,18 +39,17 @@ class expires_Core {
 	}
 
 	/**
-	 * Checks to see if a page should be updated or send Not Modified status
+	 * Parses the If-Modified-Since header
 	 *
-	 * @param   integer  Seconds added to the modified time received to calculate what should be sent
-	 * @return  bool     FALSE when the request needs to be updated
+	 * @return  integer|boolean Timestamp or FALSE when header is lacking or malformed
 	 */
-	public static function check($seconds = 60)
+	public static function get()
 	{
-		if ( ! empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) AND expires::check_headers())
+		if ( ! empty($_SERVER['HTTP_IF_MODIFIED_SINCE']))
 		{
+			// Some versions of IE6 append "; length=####"
 			if (($strpos = strpos($_SERVER['HTTP_IF_MODIFIED_SINCE'], ';')) !== FALSE)
 			{
-				// IE6 and perhaps other IE versions send length too, compensate here
 				$mod_time = substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 0, $strpos);
 			}
 			else
@@ -57,26 +57,49 @@ class expires_Core {
 				$mod_time = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
 			}
 
-			$mod_time = strtotime($mod_time);
-			$mod_time_diff = $mod_time + $seconds - time();
+			return strtotime($mod_time);
+		}
 
-			if ($mod_time_diff > 0)
+		return FALSE;
+	}
+
+	/**
+	 * Checks to see if content should be updated otherwise sends Not Modified status
+	 * and exits.
+	 *
+	 * @uses    exit()
+	 * @uses    expires::get()
+	 *
+	 * @param   integer         Maximum age of the content in seconds
+	 * @return  integer|boolean Timestamp of the If-Modified-Since header or FALSE when header is lacking or malformed
+	 */
+	public static function check($seconds = 60)
+	{
+		if ($last_modified = expires::get() AND expires::check_headers())
+		{
+			$expires = $last_modified + $seconds;
+			$max_age = $expires - time();
+
+			if ($max_age > 0)
 			{
-				// Re-send headers
-				header('Last-Modified: '.gmdate('D, d M Y H:i:s T', $mod_time));
-				header('Expires: '.gmdate('D, d M Y H:i:s T', time() + $mod_time_diff));
-				header('Cache-Control: max-age='.$mod_time_diff);
-				header('Status: 304 Not Modified', TRUE, 304);
+				// Content has not expired
+				header($_SERVER['SERVER_PROTOCOL'].' 304 Not Modified');
+				header('Last-Modified: '.gmdate('D, d M Y H:i:s T', $last_modified));
 
-				// Prevent any output
-				Event::add('system.display', array('expires', 'prevent_output'));
+				// HTTP 1.0
+				header('Expires: '.gmdate('D, d M Y H:i:s T', $expires));
 
-				// Exit to prevent other output
+				// HTTP 1.1
+				header('Cache-Control: max-age='.$max_age);
+
+				// Clear any output
+				Event::add('system.display', create_function('', 'Kohana::$output = "";'));
+
 				exit;
 			}
 		}
 
-		return FALSE;
+		return $last_modified;
 	}
 
 	/**
@@ -96,16 +119,6 @@ class expires_Core {
 		}
 
 		return TRUE;
-	}
-
-	/**
-	 * Prevent any output from being displayed. Executed during system.display.
-	 *
-	 * @return  void
-	 */
-	public static function prevent_output()
-	{
-		Kohana::$output = '';
 	}
 
 } // End expires
