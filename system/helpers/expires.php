@@ -12,30 +12,25 @@
 class expires_Core {
 
 	/**
-	 * Sets the amount of time before a page expires
+	 * Sets the amount of time before content expires
 	 *
-	 * @param  integer Seconds before the page expires 
-	 * @return boolean
+	 * @param   integer Seconds before the content expires
+	 * @return  integer Timestamp when the content expires
 	 */
 	public static function set($seconds = 60)
 	{
-		if (expires::check_headers())
-		{
-			$now = time();
-			$expires = $now + $seconds;
+		$now = time();
+		$expires = $now + $seconds;
 
-			header('Last-Modified: '.gmdate('D, d M Y H:i:s T', $now));
+		header('Last-Modified: '.gmdate('D, d M Y H:i:s T', $now));
 
-			// HTTP 1.0
-			header('Expires: '.gmdate('D, d M Y H:i:s T', $expires));
+		// HTTP 1.0
+		header('Expires: '.gmdate('D, d M Y H:i:s T', $expires));
 
-			// HTTP 1.1
-			header('Cache-Control: max-age='.$seconds);
+		// HTTP 1.1
+		header('Cache-Control: max-age='.$seconds);
 
-			return $expires;
-		}
-
-		return FALSE;
+		return $expires;
 	}
 
 	/**
@@ -75,7 +70,7 @@ class expires_Core {
 	 */
 	public static function check($seconds = 60)
 	{
-		if ($last_modified = expires::get() AND expires::check_headers())
+		if ($last_modified = expires::get())
 		{
 			$expires = $last_modified + $seconds;
 			$max_age = $expires - time();
@@ -103,22 +98,23 @@ class expires_Core {
 	}
 
 	/**
-	 * Check headers already created to not step on download or Img_lib's feet
+	 * Check if expiration headers are already set
 	 *
 	 * @return boolean
 	 */
-	public static function check_headers()
+	public static function headers_set()
 	{
 		foreach (headers_list() as $header)
 		{
-			if ((session_cache_limiter() == '' AND stripos($header, 'Last-Modified:') === 0)
-			    OR stripos($header, 'Expires:') === 0)
+			if (strncasecmp($header, 'Expires:', 8) === 0
+				OR strncasecmp($header, 'Cache-Control:', 14) === 0
+				OR strncasecmp($header, 'Last-Modified:', 14) === 0)
 			{
-				return FALSE;
+				return TRUE;
 			}
 		}
 
-		return TRUE;
+		return FALSE;
 	}
 
 } // End expires
