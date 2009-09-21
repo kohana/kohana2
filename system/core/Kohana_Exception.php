@@ -103,9 +103,6 @@ class Kohana_Exception_Core extends Exception {
 	 */
 	public static function handle(Exception $e)
 	{
-		// An error has been triggered
-		Kohana::$has_error = TRUE;
-
 		try
 		{
 			// Get the exception information

@@ -26,9 +26,6 @@ abstract class Kohana_Core {
 	// Output buffering level
 	protected static $buffer_level;
 
-	// Will be set to TRUE when an exception is caught
-	public static $has_error = FALSE;
-
 	// The final output that will displayed by Kohana
 	public static $output = '';
 

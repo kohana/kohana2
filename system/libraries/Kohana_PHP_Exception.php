@@ -76,9 +76,6 @@ class Kohana_PHP_Exception_Core extends Kohana_Exception {
 		// Respect error_reporting settings
 		if (error_reporting() & $code)
 		{
-			// An error has been triggered
-			Kohana::$has_error = TRUE;
-
 			// Throw an exception
 			throw new Kohana_PHP_Exception($code, $error, $file, $line, $context);
 		}
