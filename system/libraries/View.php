@@ -18,7 +18,6 @@ class View_Core {
 
 	// View variable storage
 	protected $kohana_local_data = array();
-	protected static $kohana_global_data = array();
 
 	/**
 	 * Creates a new View using the given parameters.
@@ -180,28 +179,6 @@ class View_Core {
 	}
 
 	/**
-	 * Sets a view global variable.
-	 *
-	 * @param   string|array  name of variable or an array of variables
-	 * @param   mixed         value when using a named variable
-	 * @return  void
-	 */
-	public static function set_global($name, $value = NULL)
-	{
-		if (is_array($name))
-		{
-			foreach ($name as $key => $value)
-			{
-				View::$kohana_global_data[$key] = $value;
-			}
-		}
-		else
-		{
-			View::$kohana_global_data[$name] = $value;
-		}
-	}
-
-	/**
 	 * Magically sets a view variable.
 	 *
 	 * @param   string   variable key
@@ -267,7 +244,7 @@ class View_Core {
 		if (is_string($this->kohana_filetype))
 		{
 			// Merge global and local data, local overrides global with the same name
-			$data = array_merge(View::$kohana_global_data, $this->kohana_local_data);
+			$data = $this->kohana_local_data;
 
 			if ($modifier !== FALSE AND is_callable($modifier, TRUE))
 			{
@@ -275,8 +252,7 @@ class View_Core {
 				$data = call_user_func($modifier, $data);
 			}
 
-			// Load the view in the controller for access to $this
-			$output = Kohana::$instance->_kohana_load_view($this->kohana_filename, $data);
+			$output = $this->load_view($this->kohana_filename, $data);
 
 			if ($renderer !== FALSE AND is_callable($renderer, TRUE))
 			{
@@ -312,5 +288,37 @@ class View_Core {
 		}
 
 		return $output;
+	}
+	
+	/**
+	 * Includes a View within the controller scope.
+	 *
+	 * @param   string  view filename
+	 * @param   array   array of view variables
+	 * @return  string
+	 */
+	public function load_view($kohana_view_filename, $kohana_input_data)
+	{
+		if ($kohana_view_filename == '')
+			return;
+
+		// Buffering on
+		ob_start();
+
+		// Import the view variables to local namespace
+		extract($kohana_input_data, EXTR_SKIP);
+
+		try
+		{
+			include $kohana_view_filename;
+		}
+		catch (Exception $e)
+		{
+			ob_end_clean();
+			throw $e;
+		}
+
+		// Fetch the output and close the buffer
+		return ob_get_clean();
 	}
 } // End View
