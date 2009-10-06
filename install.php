@@ -161,17 +161,17 @@
 				</tr>
 				<tr>
 					<th>PCRE UTF-8</th>
-					<?php if (!function_exists('preg_match')): $failed = TRUE?>
+					<?php if ( ! function_exists('preg_match')): $failed = TRUE?>
 					<td class="fail">
 						<a href="http://php.net/pcre">PCRE</a>
 						support is missing.
 					</td>
-					<?php elseif (!@preg_match('/^.$/u', 'ñ')): $failed = TRUE?>
+					<?php elseif ( ! @preg_match('/^.$/u', 'ñ')): $failed = TRUE?>
 					<td class="fail">
 						<a href="http://php.net/pcre">PCRE</a>
 						has not been compiled with UTF-8 support.
 					</td>
-					<?php elseif (!@preg_match('/^\pL$/u', 'ñ')): $failed = TRUE?>
+					<?php elseif ( ! @preg_match('/^\pL$/u', 'ñ')): $failed = TRUE?>
 					<td class="fail">
 						<a href="http://php.net/pcre">PCRE</a>
 						has not been compiled with Unicode property support.
@@ -236,7 +236,7 @@
 				</tr>
 				<tr>
 					<th>Multibyte String Enabled</th>
-					<?php if (function_exists('mb_strlen')): ?>
+					<?php if (extension_loaded('mbstring')): ?>
 					<td class="pass">Pass</td>
 					<?php else: $failed = TRUE; ?>
 					<td class="fail">The <a href="http://php.net/mbstring">mbstring</a>
@@ -255,12 +255,12 @@
 					<td class="pass">
 						Pass
 					</td>
+					<?php endif?>
 				</tr>
 				<?php endif?>
-				<?php else : // check for utf8_[en|de]code when mbstring is not available ?>
 				<tr>
 					<th>XML support</th>
-					<?php if (!function_exists('utf8_encode')): $failed = TRUE?>
+					<?php if ( ! function_exists('utf8_encode')): $failed = TRUE?>
 					<td class="fail">
 						PHP is compiled without <a href="http://php.net/xml">XML</a>
 						support, thus lacking support for
@@ -277,7 +277,6 @@
 					</td>
 					<?php endif?>
 				</tr>
-				<?php endif?>
 				<tr>
 					<th>URI Determination</th>
 					<?php if (isset($_SERVER['SCRIPT_NAME']) AND (isset($_SERVER['PATH_INFO']) OR isset($_SERVER['ORIG_PATH_INFO']) OR isset($_SERVER['PHP_SELF']))): ?>
