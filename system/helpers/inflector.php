@@ -37,7 +37,7 @@ class inflector_Core {
 
 		return isset(inflector::$uncountable[strtolower($str)]);
 	}
-	
+
 	/**
 	 * Makes a plural word singular.
 	 *
@@ -115,7 +115,7 @@ class inflector_Core {
 
 		return inflector::$cache[$key] = $str;
 	}
-	
+
 	/**
 	 * Makes a singular word plural.
 	 *
@@ -128,7 +128,7 @@ class inflector_Core {
 		$last = inflector::_plural(array_pop($parts), $count);
 
 		$pre = implode('_', $parts);
-		if (strlen($pre)) 
+		if (strlen($pre))
 			$pre .= '_';
 
 		return $pre.$last;
@@ -191,6 +191,24 @@ class inflector_Core {
 
 		// Set the cache and return
 		return inflector::$cache[$key] = $str;
+	}
+
+	/**
+	 * Makes a word possessive.
+	 *
+	 * @param   string  word to to make possessive
+	 * @return  string
+	 */
+	public static function possessive($string)
+	{
+		$length = strlen($string);
+
+		if (substr($string, $length - 1, $length) == 's')
+		{
+			return $string.'\'';
+		}
+
+		return $string.'\'s';
 	}
 
 	/**
