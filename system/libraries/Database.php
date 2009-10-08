@@ -346,7 +346,7 @@ abstract class Database_Core {
 	 */
 	public function clear_cache($sql = NULL)
 	{
-		if (isset($this->cache))
+		if ($this->cache instanceof Cache)
 		{
 			// Using cross-request Cache library
 			if ($sql === TRUE)
@@ -362,20 +362,20 @@ abstract class Database_Core {
 				$this->cache->delete_all();
 			}
 		}
-		else
+		elseif (is_array($this->cache))
 		{
 			// Using per-request memory cache
 			if ($sql === TRUE)
 			{
-				unset($this->query_cache[$this->query_hash($this->last_query)]);
+				unset($this->cache[$this->query_hash($this->last_query)]);
 			}
 			elseif (is_string($sql))
 			{
-				unset($this->query_cache[$this->query_hash($sql)]);
+				unset($this->cache[$this->query_hash($sql)]);
 			}
 			else
 			{
-				$this->query_cache = array();
+				$this->cache = array();
 			}
 		}
 	}
