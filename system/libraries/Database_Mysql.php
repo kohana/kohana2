@@ -153,12 +153,13 @@ class Database_Mysql_Core extends Database {
 
 	public function list_tables()
 	{
+		$prefix = strlen($this->table_prefix());
 		$tables = array();
 
 		foreach ($this->query('SHOW TABLES FROM '.$this->escape($this->config['connection']['database']).' LIKE '.$this->quote($this->table_prefix().'%'))->as_array() as $row)
 		{
 			// The value is the table name
-			$tables[] = current($row);
+			$tables[] = substr(current($row), $prefix);
 		}
 
 		return $tables;
