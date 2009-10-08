@@ -123,33 +123,27 @@ class Database_Mysql_Core extends Database {
 
 	public function list_fields($table)
 	{
-		$tables =& $this->fields_cache;
+		$result = array();
 
-		if (empty($tables[$table]))
+		foreach ($this->field_data($table) as $row)
 		{
-			foreach ($this->field_data($table) as $row)
+			// Make an associative array
+			$result[$row['Field']] = $this->sql_type($row['Type']);
+
+			if ($row['Key'] === 'PRI' AND $row['Extra'] === 'auto_increment')
 			{
-				// Make an associative array
-				$tables[$table][$row['Field']] = $this->sql_type($row['Type']);
+				// For sequenced (AUTO_INCREMENT) tables
+				$result[$row['Field']]['sequenced'] = TRUE;
+			}
 
-				if ($row['Key'] === 'PRI' AND $row['Extra'] === 'auto_increment')
-				{
-					// For sequenced (AUTO_INCREMENT) tables
-					$tables[$table][$row['Field']]['sequenced'] = TRUE;
-				}
-
-				if ($row['Null'] === 'YES')
-				{
-					// Set NULL status
-					$tables[$table][$row['Field']]['null'] = TRUE;
-				}
+			if ($row['Null'] === 'YES')
+			{
+				// Set NULL status
+				$result[$row['Field']]['null'] = TRUE;
 			}
 		}
 
-		if ( ! isset($tables[$table]))
-			throw new Kohana_Database_Exception('database.table_not_found', $table);
-
-		return $tables[$table];
+		return $result;
 	}
 
 	public function field_data($table)
