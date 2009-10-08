@@ -12,10 +12,7 @@
 
 define('RUNS_MYSQLND', function_exists('mysqli_fetch_all'));
 
-class Database_Mysqli_Core extends Database {
-
-	// Quote character to use for identifiers (tables/columns/aliases)
-	protected $quote = '`';
+class Database_Mysqli_Core extends Database_Mysql {
 
 	public function connect()
 	{
@@ -90,55 +87,6 @@ class Database_Mysqli_Core extends Database {
 		is_object($this->connection) or $this->connect();
 
 		return $this->connection->real_escape_string($value);
-	}
-
-	public function list_fields($table)
-	{
-		$tables =& $this->fields_cache;
-
-		if (empty($tables[$table]))
-		{
-			foreach ($this->field_data($table) as $row)
-			{
-				// Make an associative array
-				$tables[$table][$row['Field']] = $this->sql_type($row['Type']);
-
-				if ($row['Key'] === 'PRI' AND $row['Extra'] === 'auto_increment')
-				{
-					// For sequenced (AUTO_INCREMENT) tables
-					$tables[$table][$row['Field']]['sequenced'] = TRUE;
-				}
-
-				if ($row['Null'] === 'YES')
-				{
-					// Set NULL status
-					$tables[$table][$row['Field']]['null'] = TRUE;
-				}
-			}
-		}
-
-		if ( ! isset($tables[$table]))
-			throw new Database_Exception('Table :table does not exist in your database.', array(':table' => $table));
-
-		return $tables[$table];
-	}
-
-	public function field_data($table)
-	{
-		return $this->query('SHOW COLUMNS FROM '.$this->quote_table($table), $this->connection)->as_array(TRUE);
-	}
-
-	public function list_tables()
-	{
-		$tables = array();
-
-		foreach ($this->query('SHOW TABLES FROM '.$this->escape($this->config['connection']['database']).' LIKE '.$this->quote($this->table_prefix().'%'))->as_array() as $row)
-		{
-			// The value is the table name
-			$tables[] = current($row);
-		}
-
-		return $tables;
 	}
 
 } // End Database_MySQLi
