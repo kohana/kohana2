@@ -576,11 +576,14 @@ abstract class Database_Core {
 
 		if (($open = strpos($str, '(')) !== FALSE)
 		{
-			// Find closing bracket
-			$close = strpos($str, ')', $open) - 1;
+			// Closing bracket
+			$close = strpos($str, ')', $open);
 
-			// Find the type without the size
-			$type = substr($str, 0, $open);
+			// Length without brackets
+			$length = substr($str, $open + 1, $close - 1 - $open);
+
+			// Type without the length
+			$type = substr($str, 0, $open).substr($str, $close + 1);
 		}
 		else
 		{
@@ -589,28 +592,17 @@ abstract class Database_Core {
 		}
 
 		if (empty($sql_types[$type]))
-		{
-			throw new Database_Exception('Undefined field type :type in :method of :class',
-				array(':type' => $type, ':method' => _FUNCTION__, ':class' => get_class($this)));
-		}
+			throw new Database_Exception('Undefined field type :type', array(':type' => $str));
 
 		// Fetch the field definition
 		$field = $sql_types[$type];
 
-		switch ($field['type'])
+		$field['sql_type'] = $type;
+
+		if (isset($length))
 		{
-			case 'string':
-			case 'float':
-				if (isset($close))
-				{
-					// Add the length to the field info
-					$field['length'] = substr($str, $open + 1, $close - $open);
-				}
-			break;
-			case 'int':
-				// Add unsigned value
-				$field['unsigned'] = (strpos($str, 'unsigned') !== FALSE);
-			break;
+			// Add the length to the field info
+			$field['length'] = $length;
 		}
 
 		return $field;
