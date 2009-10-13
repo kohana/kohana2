@@ -127,20 +127,27 @@ class Database_Mysql_Core extends Database {
 
 		foreach ($this->field_data($table) as $row)
 		{
-			// Make an associative array
-			$result[$row['Field']] = $this->sql_type($row['Type']);
+			$column = $this->sql_type($row['Type']);
 
-			if ($row['Key'] === 'PRI' AND $row['Extra'] === 'auto_increment')
+			$column['default'] = $row['Default'];
+			$column['nullable'] = $row['Null'] === 'YES';
+			$column['sequenced'] = $row['Extra'] === 'auto_increment';
+
+			if (isset($column['length']) AND $column['type'] === 'float')
 			{
-				// For sequenced (AUTO_INCREMENT) tables
-				$result[$row['Field']]['sequenced'] = TRUE;
+				list($column['precision'], $column['scale']) = explode(',', $column['length']);
 			}
 
-			if ($row['Null'] === 'YES')
+			if ($row['Key'] === 'PRI')
 			{
-				// Set NULL status
-				$result[$row['Field']]['null'] = TRUE;
+				$column['constraints'][] = 'PRIMARY KEY';
 			}
+			elseif ($row['Key'] === 'UNI')
+			{
+				$column['constraints'][] = 'UNIQUE';
+			}
+
+			$result[$row['Field']] = $column;
 		}
 
 		return $result;

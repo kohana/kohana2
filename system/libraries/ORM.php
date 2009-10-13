@@ -1430,7 +1430,7 @@ class ORM_Core {
 		// Load column data
 		$column = $this->table_columns[$column];
 
-		if ($value === NULL AND ! empty($column['null']))
+		if ($value === NULL AND ! empty($column['nullable']))
 			return $value;
 
 		if ( ! empty($column['binary']) AND ! empty($column['exact']) AND (int) $column['length'] === 1)
@@ -1442,7 +1442,7 @@ class ORM_Core {
 		switch ($column['type'])
 		{
 			case 'int':
-				if ($value === '' AND ! empty($column['null']))
+				if ($value === '' AND ! empty($column['nullable']))
 				{
 					// Forms will only submit strings, so empty integer values must be null
 					$value = NULL;
