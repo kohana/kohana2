@@ -137,6 +137,14 @@ abstract class Database_Core {
 	abstract public function escape($value);
 
 	/**
+	 * List constraints for the given table
+	 *
+	 * @param  string  Table name
+	 * @return array
+	 */
+	abstract public function list_constraints($table);
+
+	/**
 	 * List fields for the given table
 	 *
 	 * @param  string  Table name

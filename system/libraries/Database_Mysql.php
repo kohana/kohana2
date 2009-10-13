@@ -121,6 +121,53 @@ class Database_Mysql_Core extends Database {
 		return $value;
 	}
 
+	public function list_constraints($table)
+	{
+		$prefix = strlen($this->table_prefix());
+		$result = array();
+
+		$constraints = $this->query('
+			SELECT c.constraint_name, c.constraint_type, k.column_name, k.referenced_table_name, k.referenced_column_name
+			FROM information_schema.table_constraints c
+			JOIN information_schema.key_column_usage k ON (k.table_schema = c.table_schema AND k.table_name = c.table_name AND k.constraint_name = c.constraint_name)
+			WHERE c.table_schema = '.$this->quote($this->config['connection']['database']).'
+				AND c.table_name = '.$this->quote($this->table_prefix().$table).'
+				AND (k.referenced_table_schema IS NULL OR k.referenced_table_schema ='.$this->quote($this->config['connection']['database']).')
+			ORDER BY k.ordinal_position
+		');
+
+		foreach ($constraints->as_array() as $row)
+		{
+			switch ($row['constraint_type'])
+			{
+				case 'FOREIGN KEY':
+					if (isset($result[$row['constraint_name']]))
+					{
+						$result[$row['constraint_name']][1][] = $row['column_name'];
+						$result[$row['constraint_name']][3][] = $row['referenced_column_name'];
+					}
+					else
+					{
+						$result[$row['constraint_name']] = array($row['constraint_type'], array($row['column_name']), substr($row['referenced_table_name'], $prefix), array($row['referenced_column_name']));
+					}
+				break;
+				case 'PRIMARY KEY':
+				case 'UNIQUE':
+					if (isset($result[$row['constraint_name']]))
+					{
+						$result[$row['constraint_name']][1][] = $row['column_name'];
+					}
+					else
+					{
+						$result[$row['constraint_name']] = array($row['constraint_type'], array($row['column_name']));
+					}
+				break;
+			}
+		}
+
+		return $result;
+	}
+
 	public function list_fields($table)
 	{
 		$result = array();
@@ -136,15 +183,6 @@ class Database_Mysql_Core extends Database {
 			if (isset($column['length']) AND $column['type'] === 'float')
 			{
 				list($column['precision'], $column['scale']) = explode(',', $column['length']);
-			}
-
-			if ($row['Key'] === 'PRI')
-			{
-				$column['constraints'][] = 'PRIMARY KEY';
-			}
-			elseif ($row['Key'] === 'UNI')
-			{
-				$column['constraints'][] = 'UNIQUE';
 			}
 
 			$result[$row['Field']] = $column;
