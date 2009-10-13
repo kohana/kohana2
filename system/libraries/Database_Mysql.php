@@ -125,7 +125,7 @@ class Database_Mysql_Core extends Database {
 	{
 		$result = array();
 
-		foreach ($this->field_data($table) as $row)
+		foreach ($this->query('SHOW COLUMNS FROM '.$this->quote_table($table))->as_array() as $row)
 		{
 			$column = $this->sql_type($row['Type']);
 
@@ -151,11 +151,6 @@ class Database_Mysql_Core extends Database {
 		}
 
 		return $result;
-	}
-
-	public function field_data($table)
-	{
-		return $this->query('SHOW COLUMNS FROM '.$this->quote_table($table))->as_array(TRUE);
 	}
 
 	public function list_tables()

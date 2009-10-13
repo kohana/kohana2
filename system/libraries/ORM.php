@@ -1155,18 +1155,7 @@ class ORM_Core {
 	}
 
 	/**
-	 * Proxy method to Database field_data.
-	 *
-	 * @return  array
-	 */
-	public function field_data()
-	{
-		// Proxy to database
-		return $this->db->field_data($this->table_name);
-	}
-
-	/**
-	 * Proxy method to Database field_data.
+	 * Proxy method to Database clear_cache.
 	 *
 	 * @chainable
 	 * @param   string  SQL query to clear
