@@ -403,9 +403,13 @@ abstract class Database_Core {
 		{
 			return 'NULL';
 		}
-		elseif ($value === TRUE OR $value === FALSE)
+		elseif ($value === TRUE)
 		{
-			return $value ? 'TRUE' : 'FALSE';
+			return 'TRUE';
+		}
+		elseif ($value === FALSE)
+		{
+			return 'FALSE';
 		}
 		elseif (is_int($value))
 		{
