@@ -415,6 +415,10 @@ abstract class Database_Core {
 		{
 			return (int) $value;
 		}
+		elseif ($value instanceof Database_Expression)
+		{
+			return (string) $value;
+		}
 
 		return '\''.$this->escape($value).'\'';
 	}
@@ -438,6 +442,21 @@ abstract class Database_Core {
 		{
 			// Using format 'user u'
 			list($table, $alias) = explode(' ', $table);
+		}
+
+		if ($table instanceof Database_Expression)
+		{
+			if ($alias)
+			{
+				if ($this->config['escape'])
+				{
+					$alias = $this->quote.$alias.$this->quote;
+				}
+
+				return $table.' AS '.$alias;
+			}
+
+			return (string) $table;
 		}
 
 		if ($this->config['table_prefix'])
@@ -481,6 +500,21 @@ abstract class Database_Core {
 		if (is_array($column))
 		{
 			list($alias, $column) = each($column);
+		}
+
+		if ($column instanceof Database_Expression)
+		{
+			if ($alias)
+			{
+				if ($this->config['escape'])
+				{
+					$alias = $this->quote.$alias.$this->quote;
+				}
+
+				return $column.' AS '.$alias;
+			}
+
+			return (string) $column;
 		}
 
 		if ($this->config['table_prefix'] AND strpos($column, '.') !== FALSE)

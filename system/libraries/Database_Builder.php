@@ -227,12 +227,11 @@ class Database_Builder_Core {
 			$condition = '';
 			if ($keys instanceof Database_Expression)
 			{
-				// ON conditions are a Database_Expression, so parse it
-				$condition = $keys->parse($this->db);
+				$condition = (string) $keys;
 			}
 			elseif (is_array($keys))
 			{
-				// ON condition is an array of table column matches
+				// ON condition is an array of matches
 				foreach ($keys as $key => $value)
 				{
 					if ( ! empty($condition))
@@ -306,23 +305,11 @@ class Database_Builder_Core {
 	public function compile_set()
 	{
 		$vals = array();
+
 		foreach ($this->set as $key => $value)
 		{
-			$key = $this->db->quote_column($key);
-
-			if ($value instanceof Database_Expression)
-			{
-				// Parse Database_Expressions
-				$value = $value->parse($this->db);
-			}
-			else
-			{
-				// Just quote the value
-				$value = $this->db->quote($value);
-			}
-
 			// Using an UPDATE so Key = Val
-			$vals[] = $key.' = '.$value;
+			$vals[] = $this->db->quote_column($key).' = '.$this->db->quote($value);
 		}
 
 		return implode(', ', $vals);
@@ -331,7 +318,7 @@ class Database_Builder_Core {
 	/**
 	 * Join tables to the builder
 	 *
-	 * @param  mixed   Table name or Database_Expression, or an array of them
+	 * @param  mixed   Table name
 	 * @param  mixed   Key, or an array of key => value pair, for join condition (can be a Database_Expression)
 	 * @param  mixed   Value if $keys is not an array or Database_Expression
 	 * @param  string  Join type (LEFT, RIGHT, INNER, etc.)
@@ -638,8 +625,8 @@ class Database_Builder_Core {
 
 					if ($columns instanceof Database_Expression)
 					{
-						// Parse Database_Expression and add to condition list
-						$vals[] = $columns->parse($this->db);
+						// Add directly to condition list
+						$vals[] = (string) $columns;
 					}
 					else
 					{
@@ -652,12 +639,7 @@ class Database_Builder_Core {
 
 						foreach ($columns as $column => $value)
 						{
-							if ($value instanceof Database_Expression)
-							{
-								// Parse Database_Expression for right side of operator
-								$value = $value->parse($this->db);
-							}
-							elseif ($value instanceof Database_Builder)
+							if ($value instanceof Database_Builder)
 							{
 								// Using a subquery
 								$value->db = $this->db;
@@ -673,7 +655,7 @@ class Database_Builder_Core {
 								else
 								{
 									// Return as list
-									$value = array_map(array($this->db, 'escape'), $value);
+									$value = array_map(array($this->db, 'quote'), $value);
 									$value = '('.implode(', ', $value).')';
 								}
 							}

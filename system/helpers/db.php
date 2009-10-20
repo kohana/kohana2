@@ -41,9 +41,9 @@
 		return db::build()->delete($table, $where);
 	}
 
-	public static function expr($expression, $as = NULL)
+	public static function expr($expression)
 	{
-		return new Database_Expression($expression, $as);
+		return new Database_Expression($expression);
 	}
 
 } // End db
