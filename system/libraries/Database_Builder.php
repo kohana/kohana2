@@ -77,7 +77,12 @@ class Database_Builder_Core {
 		if ($this->type === Database::SELECT)
 		{
 			// SELECT columns FROM table
-			$sql = 'SELECT '.$this->compile_select()."\n".'FROM '.$this->compile_from();
+			$sql = 'SELECT '.$this->compile_select();
+
+			if ( ! empty($this->from))
+			{
+				$sql .= "\nFROM ".$this->compile_from();
+			}
 		}
 		elseif ($this->type === Database::UPDATE)
 		{
@@ -222,7 +227,7 @@ class Database_Builder_Core {
 				$sql .= ' '.$type;
 			}
 
-			$sql .= ' JOIN '.$table;
+			$sql .= ' JOIN '.$this->db->quote_table($table);
 
 			$condition = '';
 			if ($keys instanceof Database_Expression)
