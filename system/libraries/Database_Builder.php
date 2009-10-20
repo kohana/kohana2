@@ -163,15 +163,15 @@ class Database_Builder_Core {
 	{
 		$vals = array();
 
-		foreach ($this->select as $name => $alias)
+		foreach ($this->select as $alias => $name)
 		{
-			if (is_string($name))
+			if (is_string($alias))
 			{
-				$vals[] = $this->db->quote_column(array($name => $alias));
+				$vals[] = $this->db->quote_column($name, $alias);
 			}
 			else
 			{
-				$vals[] = $this->db->quote_column($alias);
+				$vals[] = $this->db->quote_column($name);
 			}
 		}
 
@@ -768,8 +768,8 @@ class Database_Builder_Core {
 	/**
 	 * Create a SELECT query and specify selected columns
 	 *
-	 * @param  mixed   Column name or array of columns (can be in form Column => Alias)
-	 * @return Database_Builder
+	 * @param   string|array    column name or array(alias => column)
+	 * @return  Database_Builder
 	 */
 	public function select($columns = NULL)
 	{

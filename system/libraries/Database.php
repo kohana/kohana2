@@ -467,23 +467,20 @@ abstract class Database_Core {
 	/**
 	 * Quotes column or table.column, adding the table prefix if necessary
 	 * Reserved characters not allowed in table names for the builder are [ .*] (space, dot, asterisk)
-	 * Complex column names must have table/columns in double quotes, e.g. array('COUNT("users.id")' => 'mycount')
+	 * Complex column names must have table/columns in double quotes, e.g. array('mycount' => 'COUNT("users.id")')
 	 *
-	 * @param  string|array  String of table name or array - array('COUNT("*")' => 'u')
-	 * @return string
+	 * @param   string|array    column name or array('u' => 'COUNT("*")')
+	 * @param   string          column alias
+	 * @return  string
 	 */
-	public function quote_column($column)
+	public function quote_column($column, $alias = NULL)
 	{
 		if ($column === '*')
 			return $column;
 
 		if (is_array($column))
 		{
-			list($column, $alias) = each($column);
-		}
-		else
-		{
-			$alias = FALSE;
+			list($alias, $column) = each($column);
 		}
 
 		if ($this->config['table_prefix'] AND strpos($column, '.') !== FALSE)
@@ -527,16 +524,14 @@ abstract class Database_Core {
 
 			return $column;
 		}
-		else
-		{
-			// Strip double quotes
-			$column = str_replace('"', '', $column);
 
-			if ($alias)
-				return $column.' AS '.$alias;
-			else
-				return $column;
-		}
+		// Strip double quotes
+		$column = str_replace('"', '', $column);
+
+		if ($alias)
+			return $column.' AS '.$alias;
+
+		return $column;
 	}
 
 	/**
