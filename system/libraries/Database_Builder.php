@@ -187,17 +187,17 @@ class Database_Builder_Core {
 	{
 		$vals = array();
 
-		foreach ($this->from as $name => $alias)
+		foreach ($this->from as $alias => $name)
 		{
-			if (is_string($name))
+			if (is_string($alias))
 			{
 				// Using AS format so escape both
-				$vals[] = $this->db->quote_table(array($name => $alias));
+				$vals[] = $this->db->quote_table($name, $alias);
 			}
 			else
 			{
 				// Just using the table name itself
-				$vals[] = $this->db->quote_table($alias);
+				$vals[] = $this->db->quote_table($name);
 			}
 		}
 
@@ -357,8 +357,8 @@ class Database_Builder_Core {
 	/**
 	 * Add tables to the FROM portion of the builder
 	 *
-	 * @param  mixed  Table name or an array of tables (Key => Val results in 'Key AS Val')
-	 * @return Database_Builder
+	 * @param   string|array    table name or array(alias => table)
+	 * @return  Database_Builder
 	 */
 	public function from($tables)
 	{

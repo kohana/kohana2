@@ -423,35 +423,30 @@ abstract class Database_Core {
 	 * Quotes a table, adding the table prefix
 	 * Reserved characters not allowed in table names for the builder are [ .*] (space, dot, asterisk)
 	 *
-	 * @param  string|array  String of table name or array - 'users u' or array('users' => 'u') both valid
-	 * @return string
+	 * @param   string|array    table name or array - 'users u' or array('u' => 'users') both valid
+	 * @param   string          table alias
+	 * @return  string
 	 */
-	public function quote_table($table)
+	public function quote_table($table, $alias = NULL)
 	{
 		if (is_array($table))
 		{
-			// Using array('user' => 'u')
-			list($table, $alias) = each($table);
+			// Using array('u' => 'user')
+			list($alias, $table) = each($table);
 		}
 		elseif (strpos(' ', $table) !== FALSE)
 		{
 			// Using format 'user u'
 			list($table, $alias) = explode(' ', $table);
 		}
-		else
+
+		if ($this->config['table_prefix'])
 		{
-			// Ignore alias
-			$alias = FALSE;
+			$table = $this->config['table_prefix'].$table;
 		}
 
 		if ($alias)
 		{
-			if ($this->config['table_prefix'])
-			{
-				$table = $this->config['table_prefix'].$table;
-				$alias = $this->config['table_prefix'].$alias;
-			}
-
 			if ($this->config['escape'])
 			{
 				$table = $this->quote.$table.$this->quote;
@@ -459,11 +454,6 @@ abstract class Database_Core {
 			}
 
 			return $table.' AS '.$alias;
-		}
-
-		if ($this->config['table_prefix'])
-		{
-			$table = $this->config['table_prefix'].$table;
 		}
 
 		if ($this->config['escape'])
