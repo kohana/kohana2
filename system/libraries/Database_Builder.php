@@ -878,7 +878,7 @@ class Database_Builder_Core {
 		}
 
 		// Grab the count AS records_found
-		$result = $this->select(array('COUNT("*")' => 'records_found'))->execute();
+		$result = $this->select(array('records_found' => 'COUNT("*")'))->execute();
 
 		return $result->get('records_found');
 	}
