@@ -86,21 +86,6 @@ class Database_Builder_Core {
 		}
 		elseif ($this->type === Database::UPDATE)
 		{
-			$vals = array();
-			foreach ($this->set as $key => $val)
-			{
-				if (is_string($key))
-				{
-					// Column = Value
-					$vals[] = $key.' = '.$val;
-				}
-				else
-				{
-					// Database_Expression
-					$vals[] = $val;
-				}
-			}
-
 			$sql = 'UPDATE '.$this->compile_from()."\n".'SET '.$this->compile_set();
 		}
 		elseif ($this->type === Database::INSERT)
@@ -790,7 +775,7 @@ class Database_Builder_Core {
 
 		if (is_array($set))
 		{
-			$this->set(array_keys($set));
+			$this->set($set);
 		}
 
 		if ($where !== NULL)
