@@ -90,16 +90,7 @@ class Database_Builder_Core {
 		}
 		elseif ($this->type === Database::INSERT)
 		{
-			$values = array();
-			foreach ($this->values as $group)
-			{
-				// Loop thru each set of values to be inserted
-				$values[] = '('.implode(', ', array_map(array($this->db, 'quote'), $group)).')';
-			}
-
-			$sql = 'INSERT INTO '.$this->compile_from()."\n".
-				   '('.implode(', ', $this->columns).')'."\n".
-				   'VALUES '.implode(', ', $values);
+			$sql = 'INSERT INTO '.$this->compile_from()."\n".$this->compile_columns()."\nVALUES ".$this->compile_values();
 		}
 		elseif ($this->type === Database::DELETE)
 		{
@@ -720,6 +711,16 @@ class Database_Builder_Core {
 	}
 
 	/**
+	 * Compiles the columns portion of the query for INSERT
+	 *
+	 * @return string
+	 */
+	protected function compile_columns()
+	{
+		return '('.implode(', ', array_map(array($this->db, 'quote_column'), $this->columns)).')';
+	}
+
+	/**
 	 * Values used for INSERT queries
 	 *
 	 * @param  array  Values
@@ -735,6 +736,23 @@ class Database_Builder_Core {
 		$this->values[] = $values;
 
 		return $this;
+	}
+
+	/**
+	 * Compiles the VALUES portion of the query for INSERT
+	 *
+	 * @return string
+	 */
+	protected function compile_values()
+	{
+		$values = array();
+		foreach ($this->values as $group)
+		{
+			// Each set of values to be inserted
+			$values[] = '('.implode(', ', array_map(array($this->db, 'quote'), $group)).')';
+		}
+
+		return implode(', ', $values);
 	}
 
 	/**
