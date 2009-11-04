@@ -459,6 +459,10 @@ class Kohana_Exception_Core extends Exception {
 	 */
 	public static function debug_source($file, $line_number, $padding = 5)
 	{
+		// Make sure we can read the source file
+		if ( ! is_readable($file))
+			return array();
+		
 		// Open the file and set the line position
 		$file = fopen($file, 'r');
 		$line = 0;
