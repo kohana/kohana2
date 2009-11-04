@@ -122,7 +122,11 @@ class inflector_Core {
 	 * @param   string  word to pluralize
 	 * @return  string
 	 */
-	public static function plural($str, $count = NULL) {
+	public static function plural($str, $count = NULL)
+	{
+		if ( ! $str)
+			return $str;
+
 		$parts = explode('_', $str);
 
 		$last = inflector::_plural(array_pop($parts), $count);
@@ -233,7 +237,7 @@ class inflector_Core {
 	 */
 	public static function underscore($str)
 	{
-		return preg_replace('/\s+/', '_', trim($str));
+		return trim(preg_replace('/[\s_]+/', '_', $str), '_');
 	}
 
 	/**
@@ -244,7 +248,7 @@ class inflector_Core {
 	 */
 	public static function humanize($str)
 	{
-		return preg_replace('/[_-]+/', ' ', trim($str));
+		return trim(preg_replace('/[_-\s]+/', ' ', $str));
 	}
 
 } // End inflector
