@@ -277,6 +277,16 @@
 					</td>
 					<?php endif?>
 				</tr>
+					<th>Timezone</th>
+					<?php try { new DateTimeZone(ini_get('date.timezone')); ?>
+					<td class="pass">Pass</td>
+					<?php } catch (Exception $e) { $failed = TRUE ?>
+					<td class="fail">
+						The current timezone, <code>'<?php echo ini_get('date.timezone') ?>'</code>, is not valid.
+						You must configure it in <code>php.ini</code> or <code>config/locale.php</code>.
+					</td>
+					<?php } ?>
+				</tr>
 				<tr>
 					<th>URI Determination</th>
 					<?php if (isset($_SERVER['SCRIPT_NAME']) AND (isset($_SERVER['PATH_INFO']) OR isset($_SERVER['ORIG_PATH_INFO']) OR isset($_SERVER['PHP_SELF']))): ?>
