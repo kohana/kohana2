@@ -334,6 +334,15 @@ abstract class Kohana_Core {
 
 			// Add SYSPATH as the last path
 			Kohana::$include_paths[] = SYSPATH;
+
+			// Clear cached include paths
+			self::$internal_cache['find_file_paths'] = array();
+			if ( ! isset(self::$write_cache['find_file_paths']))
+			{
+				// Write cache at shutdown
+				self::$write_cache['find_file_paths'] = TRUE;
+			}
+
 		}
 
 		return Kohana::$include_paths;
