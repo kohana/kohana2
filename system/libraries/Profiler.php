@@ -166,7 +166,7 @@ class Profiler_Core {
 			$data = array(__($name), $benchmark['count'], number_format($benchmark['time'], 3), number_format($benchmark['memory'] / 1024 / 1024, 2).'MB');
 			$class = text::alternate('', 'kp-altrow');
 
-			if ($name == __('Total Execution'))
+			if ($name == 'Total Execution')
 			{
 				// Clear the count column
 				$data[1] = '';
