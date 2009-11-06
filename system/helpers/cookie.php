@@ -61,8 +61,20 @@ class cookie_Core {
 	 * @param   boolean  use XSS cleaning on the value
 	 * @return  string
 	 */
-	public static function get($name, $default = NULL, $xss_clean = FALSE)
+	public static function get($name = NULL, $default = NULL, $xss_clean = FALSE)
 	{
+		// Return an array of all the cookies if we don't have a name
+		if ($name === NULL)
+		{
+			$cookies = array();
+
+			foreach($_COOKIE AS $key => $value)
+			{
+				$cookies[$key] = cookie::get($key, $default, $xss_clean);
+			}
+			return $cookies;
+		}
+
 		if ( ! isset($_COOKIE[$name]))
 		{
 			return $default;

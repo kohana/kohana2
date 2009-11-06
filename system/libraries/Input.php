@@ -185,7 +185,8 @@ class Input_Core {
 	}
 
 	/**
-	 * Fetch an item from the $_COOKIE array.
+	 * Fetch an item from the cookie::get() ($_COOKIE won't work with signed
+	 * cookies.)
 	 *
 	 * @param   string   key to find
 	 * @param   mixed    default value
@@ -194,7 +195,7 @@ class Input_Core {
 	 */
 	public function cookie($key = array(), $default = NULL, $xss_clean = FALSE)
 	{
-		return $this->search_array($_COOKIE, $key, $default, $xss_clean);
+		return $this->search_array(cookie::get(), $key, $default, $xss_clean);
 	}
 
 	/**
