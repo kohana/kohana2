@@ -462,7 +462,7 @@ class Kohana_Exception_Core extends Exception {
 		// Make sure we can read the source file
 		if ( ! is_readable($file))
 			return array();
-		
+
 		// Open the file and set the line position
 		$file = fopen($file, 'r');
 		$line = 0;
@@ -552,24 +552,32 @@ class Kohana_Exception_Core extends Exception {
 			}
 			elseif (isset($step['args']))
 			{
-				if (isset($step['class']))
+				if ($step['function'] === '{closure}')
 				{
-					if (method_exists($step['class'], $step['function']))
-					{
-						$reflection = new ReflectionMethod($step['class'], $step['function']);
-					}
-					else
-					{
-						$reflection = new ReflectionMethod($step['class'], '__call');
-					}
+					// Introspection on closures in a stack trace is impossible
+					$params = NULL;
 				}
 				else
 				{
-					$reflection = new ReflectionFunction($step['function']);
-				}
+					if (isset($step['class']))
+					{
+						if (method_exists($step['class'], $step['function']))
+						{
+							$reflection = new ReflectionMethod($step['class'], $step['function']);
+						}
+						else
+						{
+							$reflection = new ReflectionMethod($step['class'], '__call');
+						}
+					}
+					else
+					{
+						$reflection = new ReflectionFunction($step['function']);
+					}
 
-				// Get the function parameters
-				$params = $reflection->getParameters();
+					// Get the function parameters
+					$params = $reflection->getParameters();
+				}
 
 				$args = array();
 
