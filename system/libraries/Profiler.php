@@ -38,7 +38,7 @@ class Profiler_Core {
 		Event::add('system.display', array('Profiler', 'render'));
 
 		Kohana_Log::add('debug', 'Profiler library enabled');
-		
+
 	}
 
 	/**
@@ -150,7 +150,7 @@ class Profiler_Core {
 		$table->add_column('kp-column kp-data');
 		$table->add_column('kp-column kp-data');
 		$table->add_column('kp-column kp-data');
-		$table->add_row(array('Benchmarks', 'Count', 'Time', 'Memory'), 'kp-title', 'background-color: #FFE0E0');
+		$table->add_row(array(__('Benchmarks'), __('Count'), __('Time'), __('Memory')), 'kp-title', 'background-color: #FFE0E0');
 
 		$benchmarks = Benchmark::get(TRUE);
 
@@ -163,10 +163,10 @@ class Profiler_Core {
 			// Clean unique id from system benchmark names
 			$name = ucwords(str_replace(array('_', '-'), ' ', str_replace(SYSTEM_BENCHMARK.'_', '', $name)));
 
-			$data = array($name, $benchmark['count'], number_format($benchmark['time'], 3), number_format($benchmark['memory'] / 1024 / 1024, 2).'MB');
+			$data = array(__($name), $benchmark['count'], number_format($benchmark['time'], 3), number_format($benchmark['memory'] / 1024 / 1024, 2).'MB');
 			$class = text::alternate('', 'kp-altrow');
 
-			if ($name == 'Total Execution')
+			if ($name == __('Total Execution'))
 			{
 				// Clear the count column
 				$data[1] = '';
@@ -198,7 +198,7 @@ class Profiler_Core {
 		$table->add_column();
 		$table->add_column('kp-column kp-data');
 		$table->add_column('kp-column kp-data');
-		$table->add_row(array('Queries', 'Time', 'Rows'), 'kp-title', 'background-color: #E0FFE0');
+		$table->add_row(array(_('Queries'), __('Time'), __('Rows')), 'kp-title', 'background-color: #E0FFE0');
 
 		text::alternate();
 		$total_time = $total_rows = 0;
@@ -211,7 +211,7 @@ class Profiler_Core {
 			$total_rows += $query['rows'];
 		}
 
-		$data = array('Total: ' . count($queries), number_format($total_time, 3), $total_rows);
+		$data = array(__('Total: ') . count($queries), number_format($total_time, 3), $total_rows);
 		$table->add_row($data, 'kp-totalrow');
 
 		Profiler::add($table);
@@ -232,7 +232,7 @@ class Profiler_Core {
 		$table = new Profiler_Table();
 		$table->add_column('kp-name');
 		$table->add_column();
-		$table->add_row(array('Session', 'Value'), 'kp-title', 'background-color: #CCE8FB');
+		$table->add_row(array(__('Session'), __('Value')), 'kp-title', 'background-color: #CCE8FB');
 
 		text::alternate();
 		foreach($_SESSION as $name => $value)
@@ -265,7 +265,7 @@ class Profiler_Core {
 		$table = new Profiler_Table();
 		$table->add_column('kp-name');
 		$table->add_column();
-		$table->add_row(array('POST', 'Value'), 'kp-title', 'background-color: #E0E0FF');
+		$table->add_row(array(__('POST'), __('Value')), 'kp-title', 'background-color: #E0E0FF');
 
 		text::alternate();
 		foreach($_POST as $name => $value)
@@ -293,7 +293,7 @@ class Profiler_Core {
 		$table = new Profiler_Table();
 		$table->add_column('kp-name');
 		$table->add_column();
-		$table->add_row(array('Cookies', 'Value'), 'kp-title', 'background-color: #FFF4D7');
+		$table->add_row(array(__('Cookies'), __('Value')), 'kp-title', 'background-color: #FFF4D7');
 
 		text::alternate();
 		foreach($_COOKIE as $name => $value)
