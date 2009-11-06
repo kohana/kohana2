@@ -198,7 +198,7 @@ class Profiler_Core {
 		$table->add_column();
 		$table->add_column('kp-column kp-data');
 		$table->add_column('kp-column kp-data');
-		$table->add_row(array(_('Queries'), __('Time'), __('Rows')), 'kp-title', 'background-color: #E0FFE0');
+		$table->add_row(array(__('Queries'), __('Time'), __('Rows')), 'kp-title', 'background-color: #E0FFE0');
 
 		text::alternate();
 		$total_time = $total_rows = 0;
