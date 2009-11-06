@@ -75,7 +75,13 @@ class Kohana_Log_Core {
 
 		foreach (Kohana_Log::$drivers as $driver)
 		{
-			$driver->save(Kohana_Log::$messages);
+			// We can't throw exceptions here or else we will get a
+			// Exception thrown without a stack frame error
+			try
+			{
+				$driver->save(Kohana_Log::$messages);
+			}
+			catch(Exception $e){}
 		}
 
 		// Reset the messages

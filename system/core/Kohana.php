@@ -144,21 +144,6 @@ abstract class Kohana_Core {
 		// Enable error handling
 		Kohana_PHP_Exception::enable();
 
-		// Disable notices and "strict" errors
-		$ER = error_reporting(~E_NOTICE & ~E_STRICT);
-
-		if (function_exists('date_default_timezone_set'))
-		{
-			$timezone = Kohana::config('locale.timezone');
-
-			// Set default timezone, due to increased validation of date settings
-			// which cause massive amounts of E_NOTICEs to be generated in PHP 5.2+
-			date_default_timezone_set(empty($timezone) ? date_default_timezone_get() : $timezone);
-		}
-
-		// Restore error reporting
-		error_reporting($ER);
-
 		// Load locales
 		$locales = Kohana::config('locale.language');
 
@@ -173,6 +158,9 @@ abstract class Kohana_Core {
 
 		// Set locale for the I18n system
 		I18n::set_locale(Kohana::$locale);
+
+		// Set and validate the timezone
+		date_default_timezone_set(Kohana::config('locale.timezone'));
 
 		// Enable Kohana routing
 		Event::add('system.routing', array('Router', 'find_uri'));
