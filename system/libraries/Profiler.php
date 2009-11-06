@@ -163,7 +163,7 @@ class Profiler_Core {
 			// Clean unique id from system benchmark names
 			$name = ucwords(str_replace(array('_', '-'), ' ', str_replace(SYSTEM_BENCHMARK.'_', '', $name)));
 
-			$data = array(__($name), $benchmark['count'], number_format($benchmark['time'], 3), number_format($benchmark['memory'] / 1024 / 1024, 2).'MB');
+			$data = array(__($name), $benchmark['count'], number_format($benchmark['time'], Kohana::config('profiler.time_decimals')), number_format($benchmark['memory'] / 1024 / 1024, Kohana::config('profiler.memory_decimals')).'MB');
 			$class = text::alternate('', 'kp-altrow');
 
 			if ($name == 'Total Execution')
@@ -204,14 +204,14 @@ class Profiler_Core {
 		$total_time = $total_rows = 0;
 		foreach ($queries as $query)
 		{
-			$data = array($query['query'], number_format($query['time'], 3), $query['rows']);
+			$data = array($query['query'], number_format($query['time'], Kohana::config('profiler.time_decimals')), $query['rows']);
 			$class = text::alternate('', 'kp-altrow');
 			$table->add_row($data, $class);
 			$total_time += $query['time'];
 			$total_rows += $query['rows'];
 		}
 
-		$data = array(__('Total: ') . count($queries), number_format($total_time, 3), $total_rows);
+		$data = array(__('Total: ') . count($queries), number_format($total_time, Kohana::config('profiler.time_decimals')), $total_rows);
 		$table->add_row($data, 'kp-totalrow');
 
 		Profiler::add($table);
