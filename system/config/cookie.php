@@ -30,3 +30,9 @@ $config['secure'] = FALSE;
  * secure protocol. This option is only available in PHP 5.2 and above.
  */
 $config['httponly'] = FALSE;
+
+/**
+ * Cookie salt for signed cookies.
+ * Make sure you change this to a unique value.
+ */
+$config['salt'] = 'K0hAN4 15 Th3 B357';

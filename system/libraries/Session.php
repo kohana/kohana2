@@ -172,6 +172,14 @@ class Session_Core {
 			Kohana::config('cookie.httponly')
 		);
 
+		$cookie = cookie::get(Session::$config['name']);
+		
+		if ($session_id === NULL)
+		{
+			// Reopen session from signed cookie value.
+			$session_id = $cookie;
+		}
+
 		// Reopen an existing session if supplied
 		if ( ! is_null($session_id))
 		{
@@ -267,7 +275,7 @@ class Session_Core {
 		if (isset($_COOKIE[$name]))
 		{
 			// Change the cookie value to match the new session id to prevent "lag"
-			$_COOKIE[$name] = $_SESSION['session_id'];
+			cookie::set($name, $_SESSION['session_id']);
 		}
 	}
 

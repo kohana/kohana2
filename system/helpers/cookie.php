@@ -42,8 +42,13 @@ class cookie_Core {
 			}
 		}
 
-		// Expiration timestamp
-		$expire = ($expire == 0) ? 0 : time() + (int) $expire;
+		if ($expire !== 0)
+		{
+			 // The expiration is expected to be a UNIX timestamp
+			$expire += time();
+		}
+
+		$value = cookie::salt($name, $value).'~'.$value;
 
 		return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
 	}
@@ -58,7 +63,37 @@ class cookie_Core {
 	 */
 	public static function get($name, $default = NULL, $xss_clean = FALSE)
 	{
-		return Input::instance()->cookie($name, $default, $xss_clean);
+		if ( ! isset($_COOKIE[$name]))
+		{
+			return $default;
+		}
+
+		// Get the cookie value
+		$cookie = $_COOKIE[$name];
+
+		// Find the position of the split between salt and contents
+		$split = strlen(cookie::salt($name, NULL));
+
+		if (isset($cookie[$split]) AND $cookie[$split] === '~')
+		{
+			 // Separate the salt and the value
+			list ($hash, $value) = explode('~', $cookie, 2);
+
+			if (cookie::salt($name, $value) === $hash)
+			{
+				if ($xss_clean === TRUE AND Kohana::config('core.global_xss_filtering') === FALSE)
+				{
+					return Input::instance()->xss_clean($value);
+				}
+				// Cookie signature is valid
+				return $value;
+			}
+
+			 // The cookie signature is invalid, delete it
+			cookie::delete($name);
+		}
+
+		return $default;
 	}
 
 	/**
@@ -71,14 +106,34 @@ class cookie_Core {
 	 */
 	public static function delete($name, $path = NULL, $domain = NULL)
 	{
-		if ( ! isset($_COOKIE[$name]))
-			return FALSE;
-
 		// Delete the cookie from globals
 		unset($_COOKIE[$name]);
 
 		// Sets the cookie value to an empty string, and the expiration to 24 hours ago
 		return cookie::set($name, '', -86400, $path, $domain, FALSE, FALSE);
+	}
+
+	/**
+	 * Generates a salt string for a cookie based on the name and value.
+	 *
+	 * @param	string $name name of cookie
+	 * @param	string $value value of cookie
+	 * @return	string sha1 hash
+	 */
+	public static function salt($name, $value)
+	{
+		// Determine the user agent
+		$agent = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : 'unknown';
+
+		// Cookie salt.
+		$salt = Kohana::config('cookie.salt');
+
+		return sha1($agent.$name.$value.$salt);
+	}
+
+	final private function __construct()
+ 	{
+		// Static class.
 	}
 
 } // End cookie
