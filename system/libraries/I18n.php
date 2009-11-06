@@ -36,7 +36,7 @@ class I18n_Core
 	protected static $locale;
 	// All the translations will be cached in here, after the first call of get_text()
 	protected static $translations = array();
-	
+
 	public static function set_locale($locale)
 	{
 		// Reset the translations array
@@ -44,14 +44,14 @@ class I18n_Core
 
 		I18n::$locale = $locale;
 	}
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 * Returns the locale.
 	 * If $ext is true, the UTF8 extension gets returned as well, otherwise, just the language code.
 	 * Defaults to true.
-	 * 
+	 *
 	 * @return 							The locale
 	 * @param boolean $ext[optional]	Get the Extension?
 	 */
@@ -62,12 +62,12 @@ class I18n_Core
 		else
 			return arr::get(explode('.', I18n::$locale), 0);
 	}
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 * Translates $string into language I18n::$locale and caches all found translations on the first call
-	 * 
+	 *
 	 * @return                 The translated String
 	 * @param string $string   The String to translate
 	 */
@@ -76,13 +76,13 @@ class I18n_Core
 		if ( ! I18n::$translations)
 		{
 			$locale = explode('_', I18n::get_locale(FALSE));
-			
+
 			// Get the translation files
 			$translation_files = Kohana::find_file('i18n', $locale[0]);
-			
+
 			if($local_translation_files = Kohana::find_file('i18n', $locale[0].'/'.$locale[1]))
 				$translation_files = array_merge($translation_files, $local_translation_files);
-			
+
 			if ($translation_files)
 			{
 				// Merge the translations
@@ -93,7 +93,7 @@ class I18n_Core
 				}
 			}
 		}
-		
+
 		if (isset(I18n::$translations[$string]))
 			return I18n::$translations[$string];
 		else
