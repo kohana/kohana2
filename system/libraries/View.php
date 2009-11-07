@@ -200,10 +200,18 @@ class View_Core {
 	public function &__get($key)
 	{
 		if (isset($this->kohana_local_data[$key]))
+		{
 			return $this->kohana_local_data[$key];
-
-		if (isset($this->$key))
+		}
+		elseif (isset($this->$key))
+		{
 			return $this->$key;
+		}
+		else
+		{
+			throw new Kohana_Exception('Undefined view variable: :var',
+				array(':var' => $key));
+		}
 	}
 
 	/**
@@ -220,7 +228,7 @@ class View_Core {
 		catch (Exception $e)
 		{
 			Kohana_Exception::handle($e);
-			return (string)$e;
+			return (string) '';
 		}
 	}
 
@@ -286,7 +294,7 @@ class View_Core {
 
 		return $output;
 	}
-	
+
 	/**
 	 * Includes a View within the controller scope.
 	 *
