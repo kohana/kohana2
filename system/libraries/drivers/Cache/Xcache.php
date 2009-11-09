@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * XCache-based Cache driver.
- *
+ * 
  * $Id: Memcache.php 4605 2009-09-14 17:22:21Z kiall $
  *
  * @package    Cache
