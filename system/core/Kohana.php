@@ -232,7 +232,7 @@ abstract class Kohana_Core {
 			Benchmark::start(SYSTEM_BENCHMARK.'_controller_setup');
 
 			// Include the Controller file
-			require Router::$controller_path;
+			require_once Router::$controller_path;
 
 			try
 			{
