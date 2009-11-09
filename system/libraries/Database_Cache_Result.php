@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Cached database result.
- * 
+ *
  * $Id$
- * 
+ *
  * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2008-2009 Kohana Team
@@ -45,7 +45,7 @@ class Database_Cache_Result_Core extends Database_Result {
 		return $this->data;
 	}
 
-	public function as_object($class = NULL)
+	public function as_object($class = NULL, $return = FALSE)
 	{
 		if ($class !== NULL)
 			throw new Database_Exception('Database cache results do not support object casting');
