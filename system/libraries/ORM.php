@@ -621,7 +621,7 @@ class ORM_Core {
 		foreach (array_keys($target->object) as $column)
 		{
 			// Add the prefix so that load_result can determine the relationship
-			$select[$target_path.'.'.$column] = $target_path.':'.$column;
+			$select[$target_path.':'.$column] = $target_path.'.'.$column;
 		}
 
 		// Select all of the prefixed keys in the object
@@ -641,16 +641,11 @@ class ORM_Core {
 		}
 
 		// This trick allows for models to use different table prefixes (sharing the same database)
-		$join_table = $this->db->quote_column($target->db->table_prefix().$target->table_name).' '.$this->db->quote_column($this->db->table_prefix().$target_path);
-
-		// Turn off prefixing temporarily
-		$prefix = $this->db->table_prefix('');
+		$join_table = array($this->db->quote_table($target_path) => $target->db->quote_table($target->table_name));
 
 		// Join the related object into the result
-		$this->db_builder->join($join_table, $join_col1, $join_col2, 'LEFT');
-
-		// Turn prefixing back on
-		$this->db->table_prefix($prefix);
+		// Use Database_Expression to disable prefixing
+		$this->db_builder->join(new Database_Expression($join_table), $join_col1, $join_col2, 'LEFT');
 
 		return $this;
 	}
