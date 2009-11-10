@@ -52,12 +52,8 @@ class Image_GraphicsMagick_Driver extends Image_Driver {
 	 * Creates a temporary image and executes the given actions. By creating a
 	 * temporary copy of the image before manipulating it, this process is atomic.
 	 */
-	public function process($image, $actions, $dir, $file, $render = FALSE, $background = NULL)
+	public function process($image, $actions, $dir, $file, $render = FALSE)
 	{
-		// Need to implement $background support
-		if ($background !== NULL)
-			throw new Kohana_Exception('The GraphicsMagick driver does not support setting a background color');
-
 		// We only need the filename
 		$image = $image['file'];
 

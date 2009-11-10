@@ -102,9 +102,9 @@ class arr_Core {
 		$found = array();
 		foreach ($keys as $key)
 		{
-			$found[$key] = isset($search[$key]) ? 'test' : NULL; //$search[$key] : NULL;
+			$found[$key] = isset($search[$key]) ? $search[$key] : NULL;
 		}
-		
+
 		return $found;
 	}
 
