@@ -7,7 +7,7 @@
  * @package    Kohana_Log
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
- * @license    http://kohanaphp.com/license.html
+ * @license    http://kohanaphp.com/license
  */
 class Log_File_Driver extends Log_Driver {
 

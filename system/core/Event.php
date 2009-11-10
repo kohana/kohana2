@@ -8,8 +8,8 @@
  *
  * @package    Core
  * @author     Kohana Team
- * @copyright  (c) 2007 Kohana Team
- * @license    http://kohanaphp.com/license.html
+ * @copyright  (c) 2007-2009 Kohana Team
+ * @license    http://kohanaphp.com/license
  * @link       http://docs.kohanaphp.com/general/events
  */
 abstract class Event_Core {

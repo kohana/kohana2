@@ -9,7 +9,7 @@
  * @package    Cache
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
- * @license    http://kohanaphp.com/license.html
+ * @license    http://kohanaphp.com/license
  */
 class Cache_Core {
 

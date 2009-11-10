@@ -6,8 +6,8 @@
  *
  * @package    Core
  * @author     Kohana Team
- * @copyright  (c) 2007 Kohana Team
- * @license    http://kohanaphp.com/license.html
+ * @copyright  (c) 2007-2009 Kohana Team
+ * @license    http://kohanaphp.com/license
  */
 
 // Kohana benchmarks are prefixed to prevent collisions

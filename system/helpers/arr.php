@@ -6,8 +6,8 @@
  *
  * @package    Core
  * @author     Kohana Team
- * @copyright  (c) 2007-2008 Kohana Team
- * @license    http://kohanaphp.com/license.html
+ * @copyright  (c) 2007-2009 Kohana Team
+ * @license    http://kohanaphp.com/license
  */
 class arr_Core {
 
@@ -102,20 +102,20 @@ class arr_Core {
 		$found = array();
 		foreach ($keys as $key)
 		{
-			$found[$key] = isset($search[$key]) ? $search[$key] : NULL;
+			$found[$key] = isset($search[$key]) ? 'test' : NULL; //$search[$key] : NULL;
 		}
-
+		
 		return $found;
 	}
 
-	/** 
-	 * Get the value of array[key]. If it doesn't exist, return default. 
-	 * 
-	 * @param   array   array to search 
-	 * @param   string  key name 
-	 * @param   mixed   default value 
-	 * @return  mixed 
-	 */ 
+	/**
+	 * Get the value of array[key]. If it doesn't exist, return default.
+	 *
+	 * @param   array   array to search
+	 * @param   string  key name
+	 * @param   mixed   default value
+	 * @return  mixed
+	 */
 	public static function get(array $array, $key, $default = NULL)
 	{
 		return isset($array[$key]) ? $array[$key] : $default;
@@ -255,7 +255,7 @@ class arr_Core {
 
 		return $object;
 	}
-    
+
 	/**
 	 * Returns specific key/column from an array of objects.
 	 *

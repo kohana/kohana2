@@ -7,7 +7,7 @@
  * @package    Cache
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
- * @license    http://kohanaphp.com/license.html
+ * @license    http://kohanaphp.com/license
  * @TODO       Check if XCache cleans its own keys.
  */
 class Cache_Xcache_Driver extends Cache_Driver {

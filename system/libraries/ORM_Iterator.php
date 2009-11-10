@@ -7,7 +7,7 @@
 * @package    ORM
 * @author     Kohana Team
 * @copyright  (c) 2007-2009 Kohana Team
-* @license    http://kohanaphp.com/license.html
+* @license    http://kohanaphp.com/license
 */
 class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 
