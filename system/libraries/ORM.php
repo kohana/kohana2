@@ -1550,7 +1550,7 @@ class ORM_Core {
 	 */
 	protected function load_relations($table, ORM $model)
 	{
-		$result = db::select(array($model->foreign_key(NULL) => 'id'))
+		$result = db::select(array('id' => $model->foreign_key(NULL)))
 			->from($table)
 			->where($this->foreign_key(NULL, $table), '=', $this->primary_key_value)
 			->execute($this->db)
