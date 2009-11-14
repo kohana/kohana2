@@ -144,15 +144,27 @@ class Encrypt_Core {
 	 * Decrypts an encoded string back to its original value.
 	 *
 	 * @param   string  encoded string to be decrypted
-	 * @return  string  decrypted data
+	 * @return  string  decrypted data or FALSE if decryption fails
 	 */
 	public function decode($data)
 	{
 		// Convert the data back to binary
-		$data = base64_decode($data);
+		$data = base64_decode($data, TRUE);
+
+		if ( ! $data)
+		{
+			// Invalid base64 data
+			return FALSE;
+		}
 
 		// Extract the initialization vector from the data
 		$iv = substr($data, 0, $this->config['iv_size']);
+
+		if ($this->config['iv_size'] !== strlen($iv))
+		{
+			// The iv is not the correct size
+			return FALSE;
+		}
 
 		// Remove the iv from the data
 		$data = substr($data, $this->config['iv_size']);
