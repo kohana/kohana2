@@ -14,10 +14,20 @@ class Database_Mysql_Core extends Database {
 	// Quote character to use for identifiers (tables/columns/aliases)
 	protected $quote = '`';
 
+	// Use SET NAMES to set the character set
+	protected static $set_names;
+
 	public function connect()
 	{
 		if ($this->connection)
 			return;
+
+		if (Database_Mysql::$set_names === NULL)
+		{
+			// Determine if we can use mysql_set_charset(), which is only
+			// available on PHP 5.2.3+ when compiled against MySQL 5.0+
+			Database_Mysql::$set_names = ! function_exists('mysql_set_charset');
+		}
 
 		extract($this->config['connection']);
 
@@ -84,7 +94,18 @@ class Database_Mysql_Core extends Database {
 		// Make sure the database is connected
 		$this->connection or $this->connect();
 
-		if ( ! mysql_set_charset($charset, $this->connection))
+		if (Database_Mysql::$set_names === TRUE)
+		{
+			// PHP is compiled against MySQL 4.x
+			$status = (bool) mysql_query('SET NAMES '.$this->quote($charset), $this->connection);
+		}
+		else
+		{
+			// PHP is compiled against MySQL 5.x
+			$status = mysql_set_charset($charset, $this->connection);
+		}
+
+		if ($status === FALSE)
 		{
 			// Unable to set charset
 			throw new Database_Exception('#:errno: :error',
