@@ -160,17 +160,26 @@ class url_Core {
 	 *
 	 * @param   string  phrase to convert
 	 * @param   string  word separator (- or _)
+	 * @param   boolean  transliterate to ASCII
 	 * @return  string
 	 */
-	public static function title($title, $separator = '-')
+	public static function title($title, $separator = '-', $ascii_only = FALSE)
 	{
 		$separator = ($separator === '-') ? '-' : '_';
 
-		// Replace accented characters by their unaccented equivalents
-		$title = text::transliterate_to_ascii($title);
+		if ($ascii_only === TRUE)
+		{
+			// Replace accented characters by their unaccented equivalents
+			$title = text::transliterate_to_ascii($title);
 
-		// Remove all characters that are not the separator, a-z, 0-9, or whitespace
-		$title = preg_replace('/[^'.$separator.'a-z0-9\s]+/', '', strtolower($title));
+			// Remove all characters that are not the separator, a-z, 0-9, or whitespace
+			$title = preg_replace('/[^'.$separator.'a-z0-9\s]+/', '', strtolower($title));
+		}
+		else
+		{
+			// Remove all characters that are not the separator, letters, numbers, or whitespace
+			$title = preg_replace('/[^'.$separator.'\pL\pN\s]+/u', '', mb_strtolower($title));
+		}
 
 		// Replace all separator characters and whitespace by a single separator
 		$title = preg_replace('/['.$separator.'\s]+/', $separator, $title);
