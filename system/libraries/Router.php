@@ -38,7 +38,7 @@ class Router_Core {
 		if ( ! empty($_SERVER['QUERY_STRING']))
 		{
 			// Set the query string to the current query string
-			Router::$query_string = '?'.trim(urldecode($_SERVER['QUERY_STRING']), '&/');
+			Router::$query_string = '?'.urldecode(trim($_SERVER['QUERY_STRING'], '&'));
 		}
 
 		if (Router::$routes === NULL)
@@ -181,9 +181,9 @@ class Router_Core {
 				Router::$current_uri = $_SERVER['argv'][1];
 
 				// Remove GET string from segments
-				if (($query = strpos(Router::$current_uri, '?')) !== FALSE)
+				if (strpos(Router::$current_uri, '?') !== FALSE)
 				{
-					list (Router::$current_uri, $query) = explode('?', Router::$current_uri, 2);
+					list(Router::$current_uri, $query) = explode('?', Router::$current_uri, 2);
 
 					// Parse the query string into $_GET
 					parse_str($query, $_GET);
