@@ -61,7 +61,7 @@ class request_Core {
 	 */
 	public static function protocol()
 	{
-		if (PHP_SAPI === 'cli')
+		if (Kohana::$server_api === 'cli')
 		{
 			return NULL;
 		}

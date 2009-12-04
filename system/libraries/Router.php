@@ -173,7 +173,7 @@ class Router_Core {
 	 */
 	public static function find_uri()
 	{
-		if (PHP_SAPI === 'cli')
+		if (Kohana::$server_api === 'cli')
 		{
 			// Command line requires a bit of hacking
 			if (isset($_SERVER['argv'][1]))

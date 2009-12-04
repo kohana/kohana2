@@ -45,6 +45,9 @@ abstract class Kohana_Core {
 	protected static $internal_cache_key;
 	protected static $internal_cache_encrypt;
 
+	// Server API that PHP is using. Allows testing of different APIs.
+	public static $server_api = PHP_SAPI;
+
 	/**
 	 * Sets up the PHP environment. Adds error/exception handling, output
 	 * buffering, and adds an auto-loading method for loading classes.
@@ -602,7 +605,7 @@ abstract class Kohana_Core {
 				header('Content-Encoding: '.$compress);
 
 				// Sending Content-Length in CGI can result in unexpected behavior
-				if (stripos(PHP_SAPI, 'cgi') === FALSE)
+				if (stripos(Kohana::$server_api, 'cgi') === FALSE)
 				{
 					header('Content-Length: '.strlen($output));
 				}

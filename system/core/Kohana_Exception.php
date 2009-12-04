@@ -197,7 +197,7 @@ class Kohana_Exception_Core extends Exception {
 			echo Kohana_Exception::text($e), "\n";
 		}
 
-		if (PHP_SAPI === 'cli')
+		if (Kohana::$server_api === 'cli')
 		{
 			// Exit with an error status
 			exit(1);

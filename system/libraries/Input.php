@@ -54,7 +54,7 @@ class Input_Core {
 		$_COOKIE = Input::clean($_COOKIE);
 		$_SERVER = Input::clean($_SERVER);
 
-		if (PHP_SAPI == 'cli')
+		if (Kohana::$server_api === 'cli')
 		{
 			// Convert command line arguments
 			$_SERVER['argv'] = Input::clean($_SERVER['argv']);
