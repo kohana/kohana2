@@ -26,6 +26,9 @@ class Validation_Core extends ArrayObject {
 	protected $errors = array();
 	protected $messages = array();
 
+	// Field labels
+	protected $labels = array();
+
 	// Fields that are expected to be arrays
 	protected $array_fields = array();
 
@@ -197,6 +200,42 @@ class Validation_Core extends ArrayObject {
 	}
 
 	/**
+	* Sets or overwrites the label name for a field.
+	*
+	* @param string field name
+	* @param string label
+	* @return $this
+	*/
+	public function label($field, $label = NULL)
+	{
+		if ($label === NULL AND ($field !== TRUE OR $field !== '*') AND ! isset($this->labels[$field]))
+		{
+			// Set the field label to the field name
+			$this->labels[$field] = ucfirst(preg_replace('/[^\pL]+/u', ' ', $field));
+		}
+		elseif ($label !== NULL)
+		{
+			// Set the label for this field
+			$this->labels[$field] = $label;
+		}
+
+		return $this;
+	}
+
+	/**
+	* Sets labels using an array.
+	*
+	* @param array list of field => label names
+	* @return $this
+	*/
+	public function labels(array $labels)
+	{
+		$this->labels = $labels + $this->labels;
+
+		return $this;
+	}
+
+	/**
 	 * Converts a filter, rule, or callback into a fully-qualified callback array.
 	 *
 	 * @return  mixed
@@ -338,6 +377,9 @@ class Validation_Core extends ArrayObject {
 		$rules = func_get_args();
 		$rules = array_slice($rules, 1);
 
+		// Set a default field label
+		$this->label($field);
+
 		if ($field === TRUE)
 		{
 			// Use wildcard
@@ -411,6 +453,9 @@ class Validation_Core extends ArrayObject {
 		// Get all callbacks as an array
 		$callbacks = func_get_args();
 		$callbacks = array_slice($callbacks, 1);
+
+		// Set a default field label
+		$this->label($field);
 
 		if ($field === TRUE)
 		{
@@ -619,46 +664,6 @@ class Validation_Core extends ArrayObject {
 	}
 
 	/**
-	 * Sets or returns the message for an input.
-	 *
-	 * @chainable
-	 * @param   string   input key
-	 * @param   string   message to set
-	 * @return  string|object
-	 */
-	public function message($input = NULL, $message = NULL)
-	{
-		if ($message === NULL)
-		{
-			if ($input === NULL)
-			{
-				$messages = array();
-				$keys     = array_keys($this->messages);
-
-				foreach ($keys as $input)
-				{
-					$messages[] = $this->message($input);
-				}
-
-				return implode("\n", $messages);
-			}
-
-			// Return nothing if no message exists
-			if (empty($this->messages[$input]))
-				return '';
-
-			// Return the HTML message string
-			return $this->messages[$input];
-		}
-		else
-		{
-			$this->messages[$input] = $message;
-		}
-
-		return $this;
-	}
-
-	/**
 	 * Return the errors array.
 	 *
 	 * @param   boolean  load errors from a message file
@@ -677,18 +682,49 @@ class Validation_Core extends ArrayObject {
 		}
 		else
 		{
-
 			$errors = array();
 			foreach ($this->errors as $input => $error)
 			{
-				// Key for this input error
-				$key = "$file.$input.$error[0]";
+				// Locations to check for error messages
+				$error_locations = array
+				(
+					"validation/{$file}.{$input}.{$error[0]}",
+					"validation/{$file}.{$input}.default",
+					"validation/default.{$error[0]}"
+				);
 
-				if (($errors[$input] = Kohana::message('validation/'.$key, $error[1])) === $key)
+				if (($message = Kohana::message($error_locations[0])) !== $error_locations[0])
 				{
-					// Get the default error message
-					$errors[$input] = Kohana::message("$file.$input.default");
+					// Found a message for this field and error
 				}
+				elseif (($message = Kohana::message($error_locations[1])) !== $error_locations[1])
+				{
+					// Found a default message for this field
+				}
+				elseif (($message = Kohana::message($error_locations[2])) !== $error_locations[2])
+				{
+					// Found a default message for this error
+				}
+				else
+				{
+					// No message exists, display the path expected
+					$message = "validation/{$file}.{$input}.{$error[0]}";
+				}
+
+				// Start the translation values list
+				$values = array(':field' => __($this->labels[$input]));
+
+				if ( ! empty($error[1]))
+				{
+					foreach ($error[1] as $key => $value)
+					{
+						// Add each parameter as a numbered value, starting from 1
+						$values[':param'.($key + 1)] = __($value);
+					}
+				}
+
+				// Translate the message using the default language
+				$errors[$input] = __($message, $values);
 			}
 
 			return $errors;
