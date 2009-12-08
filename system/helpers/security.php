@@ -34,15 +34,4 @@ class security_Core {
 		return preg_replace('#<img\s.*?(?:src\s*=\s*["\']?([^"\'<>\s]*)["\']?[^>]*)?>#is', '$1', $str);
 	}
 
-	/**
-	 * Remove PHP tags from a string.
-	 *
-	 * @param   string  string to sanitize
-	 * @return  string
-	 */
-	public static function encode_php_tags($str)
-	{
-		return str_replace(array('<?', '?>'), array('&lt;?', '?&gt;'), $str);
-	}
-
 } // End security
