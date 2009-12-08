@@ -421,32 +421,6 @@ class form_Core {
 		if (empty($attr))
 			return '';
 
-		if (isset($attr['name']) AND empty($attr['id']) AND strpos($attr['name'], '[') === FALSE)
-		{
-			if ($type === NULL AND ! empty($attr['type']))
-			{
-				// Set the type by the attributes
-				$type = $attr['type'];
-			}
-
-			switch ($type)
-			{
-				case 'text':
-				case 'textarea':
-				case 'password':
-				case 'select':
-				case 'checkbox':
-				case 'file':
-				case 'image':
-				case 'button':
-				case 'submit':
-				case 'hidden':
-					// Only specific types of inputs use name to id matching
-					$attr['id'] = $attr['name'];
-				break;
-			}
-		}
-
 		$order = array
 		(
 			'action',
