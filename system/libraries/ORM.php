@@ -525,16 +525,6 @@ class ORM_Core {
 	}
 
 	/**
-	 * Displays the primary key of a model when it is converted to a string.
-	 *
-	 * @return  string
-	 */
-	public function __toString()
-	{
-		return (string) $this->primary_key_value;
-	}
-
-	/**
 	 * Returns the values of this object as an array.
 	 *
 	 * @return  array
