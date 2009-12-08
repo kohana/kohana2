@@ -879,9 +879,6 @@ abstract class Kohana_Core {
 		$group = explode('.', $key, 2);
 		$group = $group[0];
 
-		// Get locale name
-		$locale = Kohana::config('locale.language.0');
-
 		if ( ! isset(Kohana::$internal_cache['messages'][$group]))
 		{
 			// Messages for this group
