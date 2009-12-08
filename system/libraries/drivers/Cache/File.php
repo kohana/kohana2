@@ -211,7 +211,7 @@ class Cache_File_Driver extends Cache_Driver {
 			// Remove the cache file
 			if ( ! unlink($path))
 			{
-				Kohana::log('error', 'Cache: Unable to delete cache file: '.$path);
+				Kohana_Log::add('error', 'Cache: Unable to delete cache file: '.$path);
 				$success = FALSE;
 			}
 		}
