@@ -29,6 +29,7 @@ class Database_Builder_Core {
 	protected $columns  = array();
 	protected $values   = array();
 	protected $type;
+	protected $distinct = FALSE;
 
 	// TTL for caching (using Cache library)
 	protected $ttl      = FALSE;
@@ -77,7 +78,8 @@ class Database_Builder_Core {
 		if ($this->type === Database::SELECT)
 		{
 			// SELECT columns FROM table
-			$sql = 'SELECT '.$this->compile_select();
+			$sql = $this->distinct ? 'SELECT DISTINCT ' : 'SELECT ';
+			$sql .= $this->compile_select();
 
 			if ( ! empty($this->from))
 			{
@@ -828,6 +830,19 @@ class Database_Builder_Core {
 
 		$this->select = array_merge($this->select, $columns);
 
+		return $this;
+	}
+
+	/**
+	 * Create a SELECT query and specify selected columns
+	 *
+	 * @param   string|array    column name or array(alias => column)
+	 * @return  Database_Builder
+	 */
+	public function select_distinct($columns = NULL)
+	{
+		$this->select($columns);
+		$this->distinct = TRUE;
 		return $this;
 	}
 
