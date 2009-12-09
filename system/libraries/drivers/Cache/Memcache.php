@@ -79,7 +79,10 @@ class Cache_Memcache_Driver extends Cache_Driver {
 
 		if ($single)
 		{
-			return ($items === FALSE OR count($items) > 0) ? current($items) : NULL;
+			if ($items === FALSE)
+			    return NULL;
+
+			return (count($items) > 0) ? current($items) : NULL;
 		}
 		else
 		{
