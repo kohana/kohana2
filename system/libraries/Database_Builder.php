@@ -374,28 +374,48 @@ class Database_Builder_Core {
 	/**
 	 * Add conditions to the HAVING clause (AND)
 	 *
-	 * @param  mixed   Column name or array of columns => vals
+	 * @param  mixed   Column name or array of triplets
 	 * @param  string  Operation to perform
 	 * @param  mixed   Value
 	 * @return Database_Builder
 	 */
 	public function and_having($columns, $op = '=', $value = NULL)
 	{
-		$this->having[] = array('AND' => array($columns, $op, $value));
+		if (is_array($columns))
+		{
+			foreach ($columns as $column)
+			{
+				$this->having[] = array('AND' => $column);
+			}
+		}
+		else
+		{
+			$this->having[] = array('AND' => array($columns, $op, $value));
+		}
 		return $this;
 	}
 
 	/**
 	 * Add conditions to the HAVING clause (OR)
 	 *
-	 * @param  mixed   Column name or array of columns => vals
+	 * @param  mixed   Column name or array of triplets
 	 * @param  string  Operation to perform
 	 * @param  mixed   Value
 	 * @return Database_Builder
 	 */
 	public function or_having($columns, $op = '=', $value = NULL)
 	{
-		$this->having[] = array('OR' => array($columns, $op, $value));
+		if (is_array($columns))
+		{
+			foreach ($columns as $column)
+			{
+				$this->having[] = array('OR' => $column);
+			}
+		}
+		else
+		{
+			$this->having[] = array('OR' => array($columns, $op, $value));
+		}
 		return $this;
 	}
 
@@ -542,28 +562,48 @@ class Database_Builder_Core {
 	/**
 	 * Add conditions to the WHERE clause (AND)
 	 *
-	 * @param  mixed   Column name or array of columns => vals
+	 * @param  mixed   Column name or array of triplets
 	 * @param  string  Operation to perform
 	 * @param  mixed   Value
 	 * @return Database_Builder
 	 */
 	public function and_where($columns, $op = '=', $value = NULL)
 	{
-		$this->where[] = array('AND' => array($columns, $op, $value));
+		if (is_array($columns))
+		{
+			foreach ($columns as $column)
+			{
+				$this->where[] = array('AND' => $column);
+			}
+		}
+		else
+		{
+			$this->where[] = array('AND' => array($columns, $op, $value));
+		}
 		return $this;
 	}
 
 	/**
 	 * Add conditions to the WHERE clause (OR)
 	 *
-	 * @param  mixed   Column name or array of columns => vals
+	 * @param  mixed   Column name or array of triplets
 	 * @param  string  Operation to perform
 	 * @param  mixed   Value
 	 * @return Database_Builder
 	 */
 	public function or_where($columns, $op = '=', $value = NULL)
 	{
-		$this->where[] = array('OR' => array($columns, $op, $value));
+		if (is_array($columns))
+		{
+			foreach ($columns as $column)
+			{
+				$this->where[] = array('OR' => $column);
+			}
+		}
+		else
+		{
+			$this->where[] = array('OR' => array($columns, $op, $value));
+		}
 		return $this;
 	}
 
