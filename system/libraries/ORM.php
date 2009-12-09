@@ -234,7 +234,7 @@ class ORM_Core {
 				switch ($num_args)
 				{
 					case 0:
-						if (in_array($method, array('open', 'close', 'cache')))
+						if (in_array($method, array('open', 'and_open', 'or_open', 'close', 'cache')))
 						{
 							// Should return ORM, not Database
 							$this->db_builder->$method();
