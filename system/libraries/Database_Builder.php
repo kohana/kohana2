@@ -428,13 +428,25 @@ class Database_Builder_Core {
 	 */
 	public function order_by($columns, $direction = NULL)
 	{
-		if (is_string($columns))
+		if (is_array($columns))
 		{
-			$columns = array($columns => $direction);
+			foreach ($columns as $column => $direction)
+			{
+				if (is_string($column))
+				{
+					$this->order_by[] = array($column => $direction);
+				}
+				else
+				{
+					// $direction is the column name when the array key is numeric
+					$this->order_by[] = array($direction => NULL);
+				}
+			}
 		}
-
-		$this->order_by[] = $columns;
-
+		else
+		{
+			$this->order_by[] = array($columns => $direction);
+		}
 		return $this;
 	}
 
