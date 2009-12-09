@@ -183,7 +183,7 @@ class Cache_File_Driver extends Cache_Driver {
 				// Get the id from the filename
 				list($key, $junk) = explode('~', basename($path), 2);
 
-				if (($data = $this->get($key)) !== FALSE)
+				if (($data = $this->get($key, TRUE)) !== FALSE)
 				{
 					// Add the result to the array
 					$result[$key] = $data;
