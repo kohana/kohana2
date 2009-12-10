@@ -32,9 +32,6 @@ class Validation_Core extends ArrayObject {
 	// Fields that are expected to be arrays
 	protected $array_fields = array();
 
-	// Checks if there is data to validate.
-	protected $submitted;
-
 	/**
 	 * Creates a new Validation instance.
 	 *
@@ -55,9 +52,6 @@ class Validation_Core extends ArrayObject {
 	 */
 	public function __construct(array $array)
 	{
-		// The array is submitted if the array is not empty
-		$this->submitted = ! empty($array);
-
 		parent::__construct($array, ArrayObject::ARRAY_AS_PROPS | ArrayObject::STD_PROP_LIST);
 	}
 
@@ -86,21 +80,6 @@ class Validation_Core extends ArrayObject {
 		$copy->exchangeArray($array);
 
 		return $copy;
-	}
-
-	/**
-	 * Test if the data has been submitted.
-	 *
-	 * @return  boolean
-	 */
-	public function submitted($value = NULL)
-	{
-		if (is_bool($value))
-		{
-			$this->submitted = $value;
-		}
-
-		return $this->submitted;
 	}
 
 	/**
@@ -515,9 +494,6 @@ class Validation_Core extends ArrayObject {
 				}
 			}
 		}
-
-		if ($this->submitted === FALSE)
-			return FALSE;
 
 		foreach ($this->rules as $field => $callbacks)
 		{
