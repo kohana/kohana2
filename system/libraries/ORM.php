@@ -102,7 +102,7 @@ class ORM_Core {
 		$this->object_name   = strtolower(substr(get_class($this), 0, -6));
 		$this->object_plural = inflector::plural($this->object_name);
 
-		if (!isset($this->sorting))
+		if ( ! isset($this->sorting))
 		{
 			// Default sorting
 			$this->sorting = array($this->primary_key => 'asc');
@@ -119,7 +119,7 @@ class ORM_Core {
 			// Load an object
 			$this->_load_values((array) $id);
 		}
-		elseif (!empty($id))
+		elseif ( ! empty($id))
 		{
 			// Set the object's primary key, but don't load it until needed
 			$this->object[$this->primary_key] = $id;
@@ -320,12 +320,12 @@ class ORM_Core {
 				}
 
 				// Foreign key lies in this table (this model belongs_to target model)
-				$where = array($model->foreign_key(TRUE) => $this->object[$this->foreign_key($column)]);
+				$where = array($model->foreign_key(TRUE), '=', $this->object[$this->foreign_key($column)]);
 			}
 			else
 			{
 				// Foreign key lies in the target table (this model has_one target model)
-				$where = array($this->foreign_key($column, $model->table_name) => $this->primary_key_value);
+				$where = array($this->foreign_key($column, $model->table_name), '=', $this->primary_key_value);
 			}
 
 			// one<>alias:one relationship
@@ -655,7 +655,7 @@ class ORM_Core {
 			if (is_array($id))
 			{
 				// Search for all clauses
-				$this->db_builder->where($id);
+				$this->db_builder->where(array($id));
 			}
 			else
 			{
@@ -772,8 +772,10 @@ class ORM_Core {
 		if ( ! empty($this->changed))
 		{
 			// Require model validation before saving
-			if (!$this->_valid)
+			if ( ! $this->_valid)
+			{
 				$this->validate();
+			}
 
 			$data = array();
 			foreach ($this->changed as $column)
