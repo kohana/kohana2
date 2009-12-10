@@ -901,6 +901,12 @@ class ORM_Core {
 			}
 		}
 
+		if ($this->saved() === TRUE)
+		{
+			// Clear the per-request database cache
+			$this->db->clear_cache(NULL, Database::PER_REQUEST);
+		}
+
 		return $this;
 	}
 
@@ -924,6 +930,9 @@ class ORM_Core {
 		db::delete($this->table_name)
 			->where($this->primary_key, '=', $id)
 			->execute($this->db);
+
+		// Clear the per-request database cache
+		$this->db->clear_cache(NULL, Database::PER_REQUEST);
 
 		return $this->clear();
 	}
@@ -956,6 +965,9 @@ class ORM_Core {
 			// Do nothing - safeguard
 			return $this;
 		}
+
+		// Clear the per-request database cache
+		$this->db->clear_cache(NULL, Database::PER_REQUEST);
 
 		return $this->clear();
 	}
@@ -1148,10 +1160,10 @@ class ORM_Core {
 	 * @param   string  SQL query to clear
 	 * @return  ORM
 	 */
-	public function clear_cache($sql = NULL)
+	public function clear_cache($sql = NULL, $type = NULL)
 	{
 		// Proxy to database
-		$this->db->clear_cache($sql);
+		$this->db->clear_cache($sql, $type);
 
 		ORM::$column_cache = array();
 

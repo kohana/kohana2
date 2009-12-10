@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Database wrapper.
- * 
+ *
  * $Id$
- * 
+ *
  * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2008-2009 Kohana Team
@@ -11,10 +11,12 @@
  */
 abstract class Database_Core {
 
-	const SELECT =  1;
-	const INSERT =  2;
-	const UPDATE =  3;
-	const DELETE =  4;
+	const SELECT          =  1;
+	const INSERT          =  2;
+	const UPDATE          =  3;
+	const DELETE          =  4;
+	const CROSS_REQUEST   =  5;
+	const PER_REQUEST     =  6;
 
 	protected static $instances = array();
 
@@ -352,9 +354,9 @@ abstract class Database_Core {
 	 * @param   mixed  clear cache by SQL statement, NULL for all, or TRUE for last query
 	 * @return  Database
 	 */
-	public function clear_cache($sql = NULL)
+	public function clear_cache($sql = NULL, $type = NULL)
 	{
-		if ($this->cache instanceof Cache)
+		if ($this->cache instanceof Cache AND ($type == NULL OR $type == Database::CROSS_REQUEST))
 		{
 			// Using cross-request Cache library
 			if ($sql === TRUE)
@@ -370,7 +372,7 @@ abstract class Database_Core {
 				$this->cache->delete_all();
 			}
 		}
-		elseif (is_array($this->cache))
+		elseif (is_array($this->cache) AND ($type == NULL OR $type == Database::PER_REQUEST))
 		{
 			// Using per-request memory cache
 			if ($sql === TRUE)
