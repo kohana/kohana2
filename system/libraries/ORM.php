@@ -873,8 +873,8 @@ class ORM_Core {
 				}
 
 				// Foreign keys for the join table
-				$object_fk  = $this->foreign_key(NULL);
-				$related_fk = $model->foreign_key(NULL);
+				$object_fk  = $this->foreign_key($join_table);
+				$related_fk = $model->foreign_key($join_table);
 
 				if ( ! empty($added))
 				{
@@ -1542,9 +1542,9 @@ class ORM_Core {
 	 */
 	protected function load_relations($table, ORM $model)
 	{
-		$result = db::select(array('id' => $model->foreign_key(NULL)))
+		$result = db::select(array('id' => $model->foreign_key($table)))
 			->from($table)
-			->where($this->foreign_key(NULL, $table), '=', $this->primary_key_value)
+			->where($this->foreign_key($table, $table), '=', $this->primary_key_value)
 			->execute($this->db)
 			->as_object();
 
