@@ -352,6 +352,7 @@ abstract class Database_Core {
 	 * Clears the internal query cache.
 	 *
 	 * @param   mixed  clear cache by SQL statement, NULL for all, or TRUE for last query
+	 * @param   integer  Type of cache to clear, Database::CROSS_REQUEST or Database::PER_REQUEST
 	 * @return  Database
 	 */
 	public function clear_cache($sql = NULL, $type = NULL)

@@ -1158,6 +1158,7 @@ class ORM_Core {
 	 *
 	 * @chainable
 	 * @param   string  SQL query to clear
+	 * @param   integer  Type of cache to clear, Database::CROSS_REQUEST or Database::PER_REQUEST
 	 * @return  ORM
 	 */
 	public function clear_cache($sql = NULL, $type = NULL)
