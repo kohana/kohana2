@@ -555,6 +555,7 @@ class Validation_Core extends ArrayObject {
 
 					if (($result == $is_false))
 					{
+						$rule = $is_false ? '!'.$rule : $rule;
 						$this->add_error($field, $rule, $args);
 
 						// Stop validating this field when an error is found
