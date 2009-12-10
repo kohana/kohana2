@@ -757,6 +757,9 @@ class ORM_Core {
 			ORM_Validation_Exception::handle_validation($this->table_name, $array);
 		}
 
+		// Fields may have been modified by filters
+		$this->object = array_merge($this->object, $array->getArrayCopy());
+
 		// Return validation status
 		return $this;
 	}
