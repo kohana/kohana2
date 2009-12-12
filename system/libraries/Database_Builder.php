@@ -148,7 +148,13 @@ class Database_Builder_Core {
 
 		foreach ($this->select as $alias => $name)
 		{
-			if (is_string($alias))
+			if ($name instanceof Database_Builder)
+			{
+				// Using a subquery
+				$name->db = $this->db;
+				$vals[] = '('.(string) $name.') AS '.$alias;
+			}
+			elseif (is_string($alias))
 			{
 				$vals[] = $this->db->quote_column($name, $alias);
 			}
