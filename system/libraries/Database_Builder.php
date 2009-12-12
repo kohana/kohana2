@@ -152,7 +152,7 @@ class Database_Builder_Core {
 			{
 				// Using a subquery
 				$name->db = $this->db;
-				$vals[] = '('.(string) $name.') AS '.$alias;
+				$vals[] = '('.(string) $name.') AS '.$this->db->quote_column($alias);
 			}
 			elseif (is_string($alias))
 			{
