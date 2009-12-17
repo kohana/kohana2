@@ -27,12 +27,6 @@ abstract class Controller_Core {
 			// Set the instance to the first controller loaded
 			Kohana::$instance = $this;
 		}
-
-		// URI should always be available
-		$this->uri = URI::instance();
-
-		// Input should always be available
-		$this->input = Input::instance();
 	}
 
 	/**
