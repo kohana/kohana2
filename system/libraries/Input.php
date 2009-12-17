@@ -311,7 +311,7 @@ class Input_Core {
 		if (trim($data) === '')
 			return $data;
 
-		if ($tool === TRUE)
+		if (is_bool($tool))
 		{
 			$tool = 'default';
 		}
