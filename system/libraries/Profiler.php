@@ -101,7 +101,7 @@ class Profiler_Core {
 
 		// Don't display if there's no profiles
 		if (empty(Profiler::$profiles))
-			return $output;
+			return Kohana::$output;
 
 		$styles = '';
 		foreach (Profiler::$profiles as $profile)
