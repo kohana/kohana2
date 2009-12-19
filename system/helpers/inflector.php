@@ -241,9 +241,9 @@ class inflector_Core {
 	}
 
 	/**
-	 * Makes an underscored or dashed phrase human-reable.
+	 * Makes an underscored or dashed phrase human-readable.
 	 *
-	 * @param   string  phrase to make human-reable
+	 * @param   string  phrase to make human-readable
 	 * @return  string
 	 */
 	public static function humanize($str)
