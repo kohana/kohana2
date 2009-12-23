@@ -810,11 +810,8 @@ abstract class Kohana_Core {
 		{
 			if ($required === TRUE)
 			{
-				// Directory i18n key
-				$directory = 'core.'.inflector::singular($directory);
-
 				// If the file is required, throw an exception
-				throw new Kohana_Exception('The requested :resource:, :file:, could not be found', array(':resource:' => Kohana::message($directory), ':file:' =>$filename));
+				throw new Kohana_Exception('The requested :resource:, :file:, could not be found', array(':resource:' => __($directory), ':file:' =>$filename));
 			}
 			else
 			{
