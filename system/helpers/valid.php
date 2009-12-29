@@ -40,7 +40,7 @@ class valid_Core {
 	/**
 	 * Validate an email address. This method is more strict than valid::email_rfc();
 	 *
-	 * ###### Examples:
+	 * ###### Example:
 	 *     $email = 'bill@gates.com';
 	 *     if (valid::email($email))
 	 *     {
@@ -63,8 +63,7 @@ class valid_Core {
 	 * Validate the domain of an email address by checking if the domain has a
 	 * valid MX record.
 	 *
-	 * Note: This function will return true if the checkdnsrr() function isn't
-	 * avaliable (All Windows platforms before php 5.3)
+	 * [!!] This function will always return `TRUE` if the checkdnsrr() function isn't avaliable (All Windows platforms before php 5.3)
 	 *
 	 * @param   string   email address
 	 * @return  boolean
@@ -81,8 +80,7 @@ class valid_Core {
 	}
 
 	/**
-	 * Validate email, RFC compliant version
-	 * Note: This function is LESS strict than valid_email. Choose carefully.
+	 * RFC compliant email validation. This function is __LESS__ strict than [valid::email]. Choose carefully.
 	 *
 	 * @see  Originally by Cal Henderson, modified to fit Kohana syntax standards:
 	 * @see  http://www.iamcal.com/publish/articles/php/parsing_email/
@@ -110,7 +108,18 @@ class valid_Core {
 	}
 
 	/**
-	 * Validate URL
+	 * Basic URL validation.
+	 *
+	 * ###### Example:
+	 *     $url = 'http://www.kohanaphp.com';
+	 *     if (valid::url($url))
+	 *     {
+	 *         echo "Valid url";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid url";
+	 *     }
 	 *
 	 * @param   string   URL
 	 * @return  boolean
@@ -121,7 +130,9 @@ class valid_Core {
 	}
 
 	/**
-	 * Validate IP
+	 * Validates an IP Address. This only tests to see if the ip address is valid,
+	 * it doesn't check to see if the ip address is actually in use. Has optional support for
+	 * IPv6, and private ip address ranges.
 	 *
 	 * @param   string   IP address
 	 * @param   boolean  allow IPv6 addresses
@@ -142,8 +153,19 @@ class valid_Core {
 	}
 
 	/**
-	 * Validates a credit card number using the Luhn (mod10) formula.
-	 * @see http://en.wikipedia.org/wiki/Luhn_algorithm
+	 * Validates a credit card number using the [Luhn (mod10)](http://en.wikipedia.org/wiki/Luhn_algorithm)
+	 * formula.
+	 *
+	 * ###### Example:
+	 *     $cc_number = '4111111111111111';
+	 *     if (valid::credit_card($cc_number, array('visa', 'mastercard')))
+	 *     {
+	 *         echo "Valid number";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid number";
+	 *     }
 	 *
 	 * @param   integer       credit card number
 	 * @param   string|array  card type, or an array of card types
@@ -218,7 +240,19 @@ class valid_Core {
 	}
 
 	/**
-	 * Checks if a phone number is valid.
+	 * Checks if a phone number is valid. This function will strip all non-digit
+	 * characters from the phone number for testing.
+	 *
+	 * ###### Example:
+	 *     $phone_number = '(201) 664-0274';
+	 *     if (valid::phone($phone_number))
+	 *     {
+	 *         echo "Valid phone number";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid phone number";
+	 *     }
 	 *
 	 * @param   string   phone number to check
 	 * @return  boolean
@@ -238,7 +272,8 @@ class valid_Core {
 	}
 
 	/**
-	 * Tests if a string is a valid date string.
+	 * Tests if a string is a valid date using the php
+	 * [strtotime()](http://php.net/strtotime) function
 	 *
 	 * @param   string   date to check
 	 * @return  boolean
@@ -306,9 +341,8 @@ class valid_Core {
 
 	/**
 	 * Checks whether a string is a valid number (negative and decimal numbers allowed).
-	 *
-	 * @see Uses locale conversion to allow decimal point to be locale specific.
-	 * @see http://www.php.net/manual/en/function.localeconv.php
+	 * This function uses [localeconv()](http://www.php.net/manual/en/function.localeconv.php)
+	 * to support international number formats.
 	 *
 	 * @param   string   input string
 	 * @return  boolean
@@ -357,6 +391,19 @@ class valid_Core {
 	 * used to specify a decimal length, or a number and decimal length, eg:
 	 * array(2) would force the number to have 2 decimal places, array(4,2)
 	 * would force the number to have 4 digits and 2 decimal places.
+	 *
+	 * ###### Example:
+	 *     $decimal = '4.5';
+	 *     if (valid::decimal($decimal, array(2,1)))
+	 *     {
+	 *         echo "Valid decimal";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid decimal";
+	 *     }
+	 *     
+	 *     Output: Invalid decimal
 	 *
 	 * @param   string   input string
 	 * @param   array    decimal format: y or x,y
