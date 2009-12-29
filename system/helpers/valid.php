@@ -1,10 +1,36 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Validation helper class.
+ * The Valid Helper provides functions to help validate data. They can be used as standalone static functions or
+ * as rules for the Validation Library.
  *
- * $Id$
+ * ###### Validation Library Example:
+ *     $data = new Validation($_POST);
+ *     $data->add_rules('phone', 'required', 'valid::phone[7, 10, 11, 14]')
  *
- * @package    Core
+ *     if ($data->validate())
+ *     {
+ *         echo 'The phone number is valid';
+ *     }
+ *     else
+ *     {
+ *         echo Kohana::debug($data->errors());
+ *     }
+ *
+ * [!!] The *valid::* part of the rule is optional, but is recommended to avoid conflicts with php functions.
+ *
+ * For more informaiton see the [Validation] Library.
+ *
+ * ###### Standalone Example:
+ *     if (valid::phone($_POST['phone'], array(7, 10, 11, 14))
+ *     {
+ *         echo 'The phone number is valid';
+ *     }
+ *     else
+ *     {
+ *         echo 'Not valid';
+ *     }
+ *
+ * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license
@@ -12,9 +38,20 @@
 class valid_Core {
 
 	/**
-	 * Validate email, commonly used characters only
+	 * Validate an email address. This method is more strict than valid::email_rfc();
 	 *
-	 * @param   string   email address
+	 * ###### Examples:
+	 *     $email = 'bill@gates.com';
+	 *     if (valid::email($email))
+	 *     {
+	 *         echo "Valid email";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid email";
+	 *     }
+	 *
+	 * @param   string   A email address
 	 * @return  boolean
 	 */
 	public static function email($email)
@@ -25,6 +62,9 @@ class valid_Core {
 	/**
 	 * Validate the domain of an email address by checking if the domain has a
 	 * valid MX record.
+	 *
+	 * Note: This function will return true if the checkdnsrr() function isn't
+	 * avaliable (All Windows platforms before php 5.3)
 	 *
 	 * @param   string   email address
 	 * @return  boolean

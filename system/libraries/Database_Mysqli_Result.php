@@ -2,8 +2,6 @@
 /**
  * MySQL database result.
  *
- * $Id$
- *
  * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2008-2009 Kohana Team
@@ -29,7 +27,7 @@ class Database_Mysqli_Result_Core extends Database_Result {
 				throw new Database_Exception('#:errno: :error [ :query ]',
 					array(':error' => $link->error,
 					':query' => $sql,
-					':errno' => $link->errno));				
+					':errno' => $link->errno));
 			}
 			else
 			{

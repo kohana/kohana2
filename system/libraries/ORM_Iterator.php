@@ -1,14 +1,12 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
-* Object Relational Mapping (ORM) result iterator.
-*
-* $Id$
-*
-* @package    ORM
-* @author     Kohana Team
-* @copyright  (c) 2007-2009 Kohana Team
-* @license    http://kohanaphp.com/license
-*/
+ * Object Relational Mapping (ORM) result iterator.
+ *
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2009 Kohana Team
+ * @license    http://kohanaphp.com/license
+ */
 class ORM_Iterator_Core implements Iterator, ArrayAccess, Countable {
 
 	// Class attributes

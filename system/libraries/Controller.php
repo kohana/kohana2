@@ -3,9 +3,8 @@
  * Kohana Controller class. The controller class must be extended to work
  * properly, so this class is defined as abstract.
  *
- * $Id$
  *
- * @package    Core
+ * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license

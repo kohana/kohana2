@@ -2,8 +2,6 @@
 /**
  * Database wrapper.
  *
- * $Id$
- *
  * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2008-2009 Kohana Team

@@ -1,9 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Database expression.
- * 
- * $Id$
- * 
+ *
  * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2008-2009 Kohana Team

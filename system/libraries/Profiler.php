@@ -8,9 +8,7 @@
  * POST Data    - The name and values of any POST data submitted to the current page.
  * Cookie Data  - All cookies sent for the current request.
  *
- * $Id$
- *
- * @package    Profiler
+ * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license
