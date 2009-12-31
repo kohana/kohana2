@@ -426,6 +426,9 @@ class Kohana_Exception_Core extends Exception {
 	 */
 	public static function debug_path($file)
 	{
+		// Normalize directory separator
+		$file = str_replace('\\', '/', $file);
+
 		if (strpos($file, APPPATH) === 0)
 		{
 			$file = 'APPPATH/'.substr($file, strlen(APPPATH));
