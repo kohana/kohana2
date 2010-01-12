@@ -1230,6 +1230,12 @@ class Database_Builder_Core {
 		$this->order_by = array();
 		$this->limit    = NULL;
 		$this->offset   = NULL;
+		$this->set      = array();
+		$this->values   = array();
+		$this->type     = NULL;
+		$this->distinct = FALSE;
+		$this->reset    = TRUE;
+		$this->ttl      = FALSE;
 	}
 
 } // End Database_Builder
