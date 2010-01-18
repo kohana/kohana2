@@ -38,7 +38,7 @@ class Database_Builder_Core {
 	protected $set      = array();
 	protected $columns  = array();
 	protected $values   = array();
-	protected $type;
+	protected $type     = Database::SELECT;
 	protected $distinct = FALSE;
 	protected $reset    = TRUE;
 
@@ -1086,6 +1086,11 @@ class Database_Builder_Core {
 	{
 		$vals = array();
 
+		if (empty($this->select))
+		{
+			$this->select = array('*');
+		}
+
 		foreach ($this->select as $alias => $name)
 		{
 			if ($name instanceof Database_Builder)
@@ -1260,7 +1265,7 @@ class Database_Builder_Core {
 		$this->offset   = NULL;
 		$this->set      = array();
 		$this->values   = array();
-		$this->type     = NULL;
+		$this->type    = Database::SELECT;
 		$this->distinct = FALSE;
 		$this->reset    = TRUE;
 		$this->ttl      = FALSE;
