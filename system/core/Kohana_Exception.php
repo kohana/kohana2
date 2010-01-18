@@ -619,4 +619,9 @@ class Kohana_Exception_Core extends Exception {
 		return $output;
 	}
 
+	public function __toString()
+	{
+		return $this->getMessage();
+	}
+
 } // End Kohana Exception
