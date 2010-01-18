@@ -443,8 +443,8 @@ class ORM_Core {
 				// Data has changed
 				$this->changed[$column] = $column;
 
-				// Object is no longer saved
-				$this->_saved = FALSE;
+				// Object is no longer saved or valid
+				$this->_saved = $this->_valid = FALSE;
 			}
 
 			$this->object[$column] = $value;
@@ -904,6 +904,9 @@ class ORM_Core {
 
 		if ($this->saved() === TRUE)
 		{
+			// Always force revalidation after saving
+			$this->_valid = FALSE;
+
 			// Clear the per-request database cache
 			$this->db->clear_cache(NULL, Database::PER_REQUEST);
 		}
