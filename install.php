@@ -81,7 +81,7 @@
 				</tr>
 				<tr>
 					<th>System Directory</th>
-					<?php if (is_dir(SYSPATH)): ?>
+					<?php if (is_dir(SYSPATH) AND is_readable(SYSPATH)): ?>
 					<td class="pass">
 						<?php echo SYSPATH?>
 					</td>
@@ -91,7 +91,7 @@
 						<code>
 							system
 						</code>
-						directory does not exist or does not contain required files.
+						directory does not exist or is not readable.
 					</td>
 					<?php endif?>
 				</tr>
@@ -113,7 +113,7 @@
 				</tr>
 				<tr>
 					<th>Modules Directory</th>
-					<?php if (is_dir(MODPATH)): ?>
+					<?php if (is_dir(MODPATH) AND is_readable(MODPATH)): ?>
 					<td class="pass">
 						<?php echo MODPATH?>
 					</td>
@@ -123,7 +123,7 @@
 						<code>
 							modules
 						</code>
-						directory does not exist or does not contain required files.
+						directory does not exist or is not readable.
 					</td>
 					<?php endif?>
 				</tr>
