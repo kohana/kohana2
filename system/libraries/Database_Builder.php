@@ -186,8 +186,9 @@ class Database_Builder_Core {
 	 */
 	public function and_where($columns, $op = '=', $value = NULL)
 	{
-		if (is_array($columns))
+		if (is_array($columns[0]))
 		{
+			// We have an array of arrays
 			foreach ($columns as $column)
 			{
 				$this->where[] = array('AND' => $column);
@@ -195,6 +196,12 @@ class Database_Builder_Core {
 		}
 		else
 		{
+			// Support just one array as well
+			if (is_array($columns))
+			{
+				list($columns, $op, $value) = $columns;
+			}
+
 			$this->where[] = array('AND' => array($columns, $op, $value));
 		}
 		return $this;
@@ -212,8 +219,9 @@ class Database_Builder_Core {
 	 */
 	public function or_where($columns, $op = '=', $value = NULL)
 	{
-		if (is_array($columns))
+		if (is_array($columns[0]))
 		{
+			// We have an array of arrays
 			foreach ($columns as $column)
 			{
 				$this->where[] = array('OR' => $column);
@@ -221,6 +229,12 @@ class Database_Builder_Core {
 		}
 		else
 		{
+			// Support just one array as well
+			if (is_array($columns))
+			{
+				list($columns, $op, $value) = $columns;
+			}
+
 			$this->where[] = array('OR' => array($columns, $op, $value));
 		}
 		return $this;
@@ -418,8 +432,9 @@ class Database_Builder_Core {
 	 */
 	public function and_having($columns, $op = '=', $value = NULL)
 	{
-		if (is_array($columns))
+		if (is_array($columns[0]))
 		{
+			// We have an array of arrays
 			foreach ($columns as $column)
 			{
 				$this->having[] = array('AND' => $column);
@@ -427,6 +442,12 @@ class Database_Builder_Core {
 		}
 		else
 		{
+			// Support just one array as well
+			if (is_array($columns))
+			{
+				list($columns, $op, $value) = $columns;
+			}
+
 			$this->having[] = array('AND' => array($columns, $op, $value));
 		}
 		return $this;
@@ -443,8 +464,9 @@ class Database_Builder_Core {
 	 */
 	public function or_having($columns, $op = '=', $value = NULL)
 	{
-		if (is_array($columns))
+		if (is_array($columns[0]))
 		{
+			// We have an array of arrays
 			foreach ($columns as $column)
 			{
 				$this->having[] = array('OR' => $column);
@@ -452,6 +474,12 @@ class Database_Builder_Core {
 		}
 		else
 		{
+			// Support just one array as well
+			if (is_array($columns))
+			{
+				list($columns, $op, $value) = $columns;
+			}
+
 			$this->having[] = array('OR' => array($columns, $op, $value));
 		}
 		return $this;
