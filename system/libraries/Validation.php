@@ -2,6 +2,20 @@
 /**
  * Validation library.
  *
+ * ##### Loading the Library and POST values
+ *
+ *     // Create a new Validation object using the $_POST global array
+ *     $post = new Validation($_POST);
+ * 
+ *     // Combine multiple arrays for validation
+ *     $post = new Validation(array_merge($_POST, $_FILES));
+ * 
+ *     // Using the factory enables method chaining
+ *     $post = Validation::factory($_POST)->add_rules('field_name', 'required');
+ * 
+ *     // You can also use the $_POST array directly (not recommended)
+ *     $_POST = new Validation($_POST);
+ *
  * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
@@ -32,6 +46,11 @@ class Validation_Core extends ArrayObject {
 
 	/**
 	 * Creates a new Validation instance.
+	 *
+	 * ##### Example
+	 *
+     *     // Using the factory enables method chaining
+     *     $post = Validation::factory($_POST);
 	 *
 	 * @param   array   array to use for validation
 	 * @return  object
@@ -67,6 +86,14 @@ class Validation_Core extends ArrayObject {
 	/**
 	 * Create a copy of the current validation rules and change the array.
 	 *
+	 * ##### Example
+	 *     
+	 *     // Initialize the validation library on the $_POST array with the rule 'required' applied to 'field_name'
+     *     $post = Validation::factory($_POST)->add_rules('field_name', 'required');
+	 *
+     *     // Here we copy the rule 'required' for 'field_name' and apply it to a new array (field names need to be the same)
+     *     $new_post = $post->copy($new_array);
+	 *
 	 * @chainable
 	 * @param   array  new array to validate
 	 * @return  Validation
@@ -82,6 +109,11 @@ class Validation_Core extends ArrayObject {
 
 	/**
 	 * Returns an array of all the field names that have filters, rules, or callbacks.
+	 *
+	 * ##### Example
+	 *
+     *     $fields	= $post->field_names();
+	 *     // Outputs an array with the names of all fields that have filters, rules, or callbacks.
 	 *
 	 * @return  array
 	 */
@@ -105,6 +137,15 @@ class Validation_Core extends ArrayObject {
 	/**
 	 * Returns the array values of the current object.
 	 *
+	 * ##### Example
+	 *
+	 *     // Assume $form mirrors the html form
+	 *     $form    = array('form_field_name1' => '',
+     *                      'form_field_name2' => '');
+	 *
+	 *     // Overwrite the empty values of $form with the values returned from as_array() to get a qualified array
+	 *     $form	= arr::overwrite($form, $this->validation->as_array());
+	 *
 	 * @return  array
 	 */
 	public function as_array()
@@ -115,6 +156,24 @@ class Validation_Core extends ArrayObject {
 	/**
 	 * Returns the ArrayObject values, removing all inputs without rules.
 	 * To choose specific inputs, list the field name as arguments.
+	 *
+	 * ##### Example
+	 *
+	 *     // Similar to as_array() but only returns array values that have had rules, filters, and/or callbacks assigned.
+	 *     $input = array('form_field1' => '5',
+     *                    'form_field2' => '10',
+     *                    'form_field3' => '15');
+	 *
+     *     $post  = Validation::factory($input)->add_rules('form_field1', 'required')->add_rules('form_field2', 'digit');
+	 *     echo print_r($post->safe_array());
+	 *
+	 *     // Output: Array ( [form_field1] => 5 [form_field2] => 10 )
+	 *
+	 *     // Same as above but here we specify (using the field name) which ones we want to recieve back.
+     *     $post  = Validation::factory($input)->add_rules('form_field1', 'required')->add_rules('form_field2', 'digit');
+	 *     echo print_r($post->safe_array('form_field2'));
+	 *
+	 *     // Output: Array ( [form_field2] => 10 )
 	 *
 	 * @param   boolean  return only fields with filters, rules, and callbacks
 	 * @return  array
@@ -159,7 +218,13 @@ class Validation_Core extends ArrayObject {
 
 	/**
 	 * Add additional rules that will forced, even for empty fields. All arguments
-	 * passed will be appended to the list.
+	 * passed will be appended to the list. Note: required and matches are an example
+	 * of rules that can run on empty fields.
+	 *
+	 * ##### Example
+	 *
+	 *     // Note: required and matches are already set by default, this is used only as an example.
+	 *     $post->allow_empty_rules('required', 'matches');
 	 *
 	 * @chainable
 	 * @param   string   rule name
@@ -177,12 +242,12 @@ class Validation_Core extends ArrayObject {
 	}
 
 	/**
-	* Sets or overwrites the label name for a field.
-	*
-	* @param string field name
-	* @param string label
-	* @return $this
-	*/
+	 * Sets or overwrites the label name for a field.
+	 *
+	 * @param string field name
+	 * @param string label
+	 * @return $this
+	 */
 	public function label($field, $label = NULL)
 	{
 		if ($label === NULL AND ($field !== TRUE OR $field !== '*') AND ! isset($this->labels[$field]))
@@ -200,11 +265,11 @@ class Validation_Core extends ArrayObject {
 	}
 
 	/**
-	* Sets labels using an array.
-	*
-	* @param array list of field => label names
-	* @return $this
-	*/
+	 * Sets labels using an array.
+	 *
+	 * @param array list of field => label names
+	 * @return $this
+	 */
 	public function labels(array $labels)
 	{
 		$this->labels = $labels + $this->labels;
