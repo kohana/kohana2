@@ -326,6 +326,20 @@ class valid_Core {
 	}
 
 	/**
+	 * Checks whether a string consists of alphabetical characters and spaces only.
+	 *
+	 * @param   string   input string
+	 * @param   boolean  trigger UTF-8 compatibility
+	 * @return  boolean
+	 */
+	public static function alpha_space($str, $utf8 = FALSE)
+	{
+		return ($utf8 === TRUE)
+			? (bool) preg_match('/^[\pL\s]++$/uD', (string) $str)
+			: (bool) preg_match('/^[a-z\s]++$/iD', (string) $str);
+	}
+
+	/**
 	 * Checks whether a string consists of digits only (no dots or dashes).
 	 *
 	 * @param   string   input string
