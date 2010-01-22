@@ -49,8 +49,8 @@ class Validation_Core extends ArrayObject {
 	 *
 	 * ##### Example
 	 *
-     *     // Using the factory enables method chaining
-     *     $post = Validation::factory($_POST);
+	 *     // Using the factory enables method chaining
+	 *     $post = Validation::factory($_POST);
 	 *
 	 * @param   array   array to use for validation
 	 * @return  object
@@ -89,10 +89,10 @@ class Validation_Core extends ArrayObject {
 	 * ##### Example
 	 *     
 	 *     // Initialize the validation library on the $_POST array with the rule 'required' applied to 'field_name'
-     *     $post = Validation::factory($_POST)->add_rules('field_name', 'required');
+	 *     $post = Validation::factory($_POST)->add_rules('field_name', 'required');
 	 *
-     *     // Here we copy the rule 'required' for 'field_name' and apply it to a new array (field names need to be the same)
-     *     $new_post = $post->copy($new_array);
+	 *     // Here we copy the rule 'required' for 'field_name' and apply it to a new array (field names need to be the same)
+	 *     $new_post = $post->copy($new_array);
 	 *
 	 * @chainable
 	 * @param   array  new array to validate
@@ -112,7 +112,7 @@ class Validation_Core extends ArrayObject {
 	 *
 	 * ##### Example
 	 *
-     *     $fields	= $post->field_names();
+	 *     $fields	= $post->field_names();
 	 *     // Outputs an array with the names of all fields that have filters, rules, or callbacks.
 	 *
 	 * @return  array
@@ -141,7 +141,7 @@ class Validation_Core extends ArrayObject {
 	 *
 	 *     // Assume $form mirrors the html form
 	 *     $form    = array('form_field_name1' => '',
-     *                      'form_field_name2' => '');
+	 *                      'form_field_name2' => '');
 	 *
 	 *     // Overwrite the empty values of $form with the values returned from as_array() to get a qualified array
 	 *     $form	= arr::overwrite($form, $this->validation->as_array());
@@ -161,16 +161,16 @@ class Validation_Core extends ArrayObject {
 	 *
 	 *     // Similar to as_array() but only returns array values that have had rules, filters, and/or callbacks assigned.
 	 *     $input = array('form_field1' => '5',
-     *                    'form_field2' => '10',
-     *                    'form_field3' => '15');
+	 *                    'form_field2' => '10',
+	 *                    'form_field3' => '15');
 	 *
-     *     $post  = Validation::factory($input)->add_rules('form_field1', 'required')->add_rules('form_field2', 'digit');
+	 *     $post  = Validation::factory($input)->add_rules('form_field1', 'required')->add_rules('form_field2', 'digit');
 	 *     echo print_r($post->safe_array());
 	 *
 	 *     // Output: Array ( [form_field1] => 5 [form_field2] => 10 )
 	 *
 	 *     // Same as above but here we specify (using the field name) which ones we want to recieve back.
-     *     $post  = Validation::factory($input)->add_rules('form_field1', 'required')->add_rules('form_field2', 'digit');
+	 *     $post  = Validation::factory($input)->add_rules('form_field1', 'required')->add_rules('form_field2', 'digit');
 	 *     echo print_r($post->safe_array('form_field2'));
 	 *
 	 *     // Output: Array ( [form_field2] => 10 )
