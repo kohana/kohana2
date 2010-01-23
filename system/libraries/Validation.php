@@ -244,6 +244,14 @@ class Validation_Core extends ArrayObject {
 	/**
 	 * Sets or overwrites the label name for a field.
 	 *
+	 * ##### Example
+	 *
+	 *     // Set a default label, the error array would look something like so: array('form_field1' => 'Some error')
+	 *     $post->label('form_field1');
+	 *
+	 *     // Set an alternative label, the error array would look something like so: array('my_label1' => 'Some error')
+	 *     $post->label('form_field1', 'my_label1');
+	 *
 	 * @param string field name
 	 * @param string label
 	 * @return $this
@@ -266,6 +274,11 @@ class Validation_Core extends ArrayObject {
 
 	/**
 	 * Sets labels using an array.
+	 *
+	 * ##### Example
+	 *
+	 *     // Very similar to label() except an array of values is provided
+	 *     $post->labels(array('my_field1' => 'my_label1', 'my_field2' => 'my_label2'));
 	 *
 	 * @param array list of field => label names
 	 * @return $this
@@ -338,6 +351,19 @@ class Validation_Core extends ArrayObject {
 	 * Add a pre-filter to one or more inputs. Pre-filters are applied before
 	 * rules or callbacks are executed.
 	 *
+	 * ##### Example
+	 *
+	 *     // Pre-filters can be used to format/filter field values before they are validated
+	 *     // in this example the trim function will be applied to the field to trim any
+	 *     // extraneous whitespace.
+	 *     $post->pre_filter('trim', 'form_field1');
+	 *
+	 *     // Multiple fields can be passed in...
+	 *     $post->pre_filter('trim', 'form_field1', 'form_field2');
+	 *
+	 *     // All fields can be pre_filter'ed
+	 *     $post->pre_filter('trim', TRUE);
+	 *
 	 * @chainable
 	 * @param   callback  filter
 	 * @param   string    fields to apply filter to, use TRUE for all fields
@@ -373,6 +399,18 @@ class Validation_Core extends ArrayObject {
 	 * Add a post-filter to one or more inputs. Post-filters are applied after
 	 * rules and callbacks have been executed.
 	 *
+	 * ##### Example
+	 *
+	 *     // Post-filters do what pre-filters do but after validation, in this
+	 *     // example we apply ucfirst.
+	 *     $post->post_filter('ucfirst', 'form_field1');
+	 *
+	 *     // Multiple fields can be passed in...
+	 *     $post->post_filter('ucfirst', 'form_field1', 'form_field2');
+	 *
+	 *     // All fields can be post_filter'ed
+	 *     $post->post_filter('ucfirst', TRUE);
+	 *
 	 * @chainable
 	 * @param   callback  filter
 	 * @param   string    fields to apply filter to, use TRUE for all fields
@@ -407,6 +445,24 @@ class Validation_Core extends ArrayObject {
 	/**
 	 * Add rules to a field. Validation rules may only return TRUE or FALSE and
 	 * can not manipulate the value of a field.
+	 *
+	 * ##### Example
+	 *
+	 *     $input = array('form_field1' => '5',
+	 *                    'form_field2' => '10',
+	 *                    'form_field3' => '15');
+	 *
+	 *     $post  = new Validation($input);
+	 *     
+	 *     // Add rules to the fields of our form (these can be chained)
+	 *     $post->add_rules('form_field1', 'required', 'alpha_dash', 'length[1,5]')
+	 *          ->add_rules('form_field2', 'matches[form_field1]')
+	 *          ->add_rules('form_field3', 'digit');
+	 *
+	 *     // In case you may have custom validation helpers...
+	 *     $post->add_rules('form_field1', 'myhelper::func', 'digit');
+	 *
+	 *     // Commas in rule arguments can be escaped with a backslash: 'matches[some\,val]'
 	 *
 	 * @chainable
 	 * @param   string    field name
@@ -485,6 +541,27 @@ class Validation_Core extends ArrayObject {
 	 * Add callbacks to a field. Callbacks must accept the Validation object
 	 * and the input name. Callback returns are not processed.
 	 *
+	 * ##### Example
+	 *
+	 *     // Because add_rules() arguments may take as its argument any single
+	 *     // argument php function (such as trim), there is one particular idiomatic
+	 *     // use of add_callbacks().
+	 *     $post->add_callbacks('form_field1', array($object, 'email_exists'));
+	 *
+	 *     // The above example takes the form field name and a two member array
+	 *     // of an object reference and a string containing the name of the method
+	 *     // in the object.
+	 *
+	 *     // Here is an example of a callback function that checks if an email already exists
+	 *     public function email_exists(Validation $aArray, $sField)
+	 *     {
+	 *			$query	= (bool) $this->db->count_records('user', array('user_email' => $aArray[$sField]));
+	 *
+	 *			// If true, set an error
+	 *			if($query)
+	 *				$aArray->add_error($sField, 'email_exists');
+	 *     }
+	 *
 	 * @chainable
 	 * @param   string     field name
 	 * @param   callbacks  callbacks (unlimited number)
@@ -522,6 +599,24 @@ class Validation_Core extends ArrayObject {
 	 * All fields that have filters, rules, or callbacks will be initialized if
 	 * they are undefined. Validation will only be run if there is data already
 	 * in the array.
+	 *
+	 * ##### Example
+	 *
+	 *     $input = array('form_field1' => '5',
+	 *                    'form_field2' => '10',
+	 *                    'form_field3' => '15');
+	 *
+	 *     $post  = Validation::factory($input)->add_rules('form_field1', 'required')->add_rules('form_field2', 'digit');
+	 *
+	 *     // Validate the input array!
+	 *     if($post->validate())
+	 *     {
+	 *			// Validation succeeded
+	 *     }
+	 *     else
+	 *     {
+	 *			// Validation failed
+	 *     }
 	 *
 	 * @param   object  Validation object, used only for recursion
 	 * @param   object  name of field for errors
@@ -690,6 +785,14 @@ class Validation_Core extends ArrayObject {
 	/**
 	 * Add an error to an input.
 	 *
+	 * ##### Example
+	 *
+	 *     $post->add_array('form_field1', 'email_exists');
+	 *
+	 *     print_r($post->errors());
+	 *
+	 *     // Output: Array ( [form_field1] => email_exists )
+	 *
 	 * @chainable
 	 * @param   string  input name
 	 * @param   string  unique error name
@@ -705,6 +808,14 @@ class Validation_Core extends ArrayObject {
 
 	/**
 	 * Return the errors array.
+	 *
+	 * ##### Example
+	 *
+	 *     $post->add_array('form_field1', 'email_exists');
+	 *
+	 *     print_r($post->errors());
+	 *
+	 *     // Output: Array ( [form_field1] => email_exists )
 	 *
 	 * @param   boolean  load errors from a message file
 	 * @return  array
@@ -774,6 +885,10 @@ class Validation_Core extends ArrayObject {
 	/**
 	 * Rule: required. Generates an error if the field has an empty value.
 	 *
+	 * ##### Example
+	 *
+	 *     $post->add_rules('form_field1', 'required');
+     *
 	 * @param   mixed   input value
 	 * @return  bool
 	 */
@@ -799,6 +914,10 @@ class Validation_Core extends ArrayObject {
 	 * Rule: matches. Generates an error if the field does not match one or more
 	 * other fields.
 	 *
+	 * ##### Example
+	 *
+	 *     $post->add_rules('form_field1', 'matches');
+     *
 	 * @param   mixed   input value
 	 * @param   array   input names to match against
 	 * @return  bool
@@ -817,6 +936,14 @@ class Validation_Core extends ArrayObject {
 	/**
 	 * Rule: length. Generates an error if the field is too long or too short.
 	 *
+	 * ##### Example
+	 *
+	 *     // For a minimum of 1 to a maximum of 5 characters
+	 *     $post->add_rules('form_field1', 'length[1,5]');
+	 *
+	 *     // For an exact length of 5
+	 *     $post->add_rules('form_field1', 'length[5]');
+     *
 	 * @param   mixed   input value
 	 * @param   array   minimum, maximum, or exact length to match
 	 * @return  bool
@@ -850,6 +977,11 @@ class Validation_Core extends ArrayObject {
 	 * Rule: depends_on. Generates an error if the field does not depend on one
 	 * or more other fields.
 	 *
+	 * ##### Example
+	 *
+	 *     // (separated by commas for more than one)
+	 *     $post->add_rules('form_field2', 'depends_on[form_field1]');
+     *
 	 * @param   mixed   field name
 	 * @param   array   field names to check dependency
 	 * @return  bool
@@ -868,6 +1000,10 @@ class Validation_Core extends ArrayObject {
 	/**
 	 * Rule: chars. Generates an error if the field contains characters outside of the list.
 	 *
+	 * ##### Example
+	 *
+	 *     $post->add_rules('form_field1', 'chars[a,b,c,d]');
+     *
 	 * @param   string  field value
 	 * @param   array   allowed characters
 	 * @return  bool
