@@ -148,7 +148,7 @@ class Input_Core {
 	 *
 	 *    // URL is http://www.example.com/index.php?articleId=123&file=text.txt
 	 *    // Note that print statements are for documentation purpose only
-     *
+	 *
 	 *    print Kohana::debug($this->input->get());
 	 *    print Kohana::debug($this->input->get('file'));
 	 *
@@ -158,7 +158,7 @@ class Input_Core {
 	 *        [articleId] => 123
 	 *        [file] => text.txt
 	 *    )
-     *
+	 *
 	 *    text.txt
 	 *
 	 *    // You can also pass a default value if the key doesn't exist and manually XSS clean the request:
@@ -181,7 +181,7 @@ class Input_Core {
 	 *
 	 *    // POST variables are articleId=123 and file=text.txt
 	 *    // Note that print statements are for documentation purpose only
-     *
+	 *
 	 *    print Kohana::debug($this->input->post());
 	 *    print Kohana::debug($this->input->post('file'));
 	 *
@@ -191,7 +191,7 @@ class Input_Core {
 	 *        [articleId] => 123
 	 *        [file] => text.txt
 	 *    )
-     *
+	 *
 	 *    text.txt
 	 *
 	 *    // You can also pass a default value if the key doesn't exist and manually XSS clean the request:
@@ -215,7 +215,7 @@ class Input_Core {
 	 *
 	 *    // COOKIE name is "username" and the contents of this cookie is "aart-jan".
 	 *    // Note that print statements are for documentation purpose only
-     *
+	 *
 	 *    print Kohana::debug($this->input->cookie());
 	 *    print Kohana::debug($this->input->cookie('username'));
 	 *
