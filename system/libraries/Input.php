@@ -2,6 +2,14 @@
 /**
  * Input library.
  *
+ * ##### Loading the Library
+ *
+ *     // The input library is loaded automatically by the controller
+ *     // and can be accessed by $this->input in the controller scope.
+ *
+ *     // For use outside of controller scope, this is idiomatic:
+ *     $input = Input::instance();
+ *
  * $Id$
  *
  * @package    Kohana
@@ -26,6 +34,10 @@ class Input_Core {
 	/**
 	 * Retrieve a singleton instance of Input. This will always be the first
 	 * created instance of this class.
+	 *
+	 * ##### Example
+	 *
+	 *    $input = Input::instance();
 	 *
 	 * @return  object
 	 */
@@ -132,6 +144,26 @@ class Input_Core {
 	/**
 	 * Fetch an item from the $_GET array.
 	 *
+	 * ##### Example
+	 *
+	 *    // URL is http://www.example.com/index.php?articleId=123&file=text.txt
+	 *    // Note that print statements are for documentation purpose only
+     *
+	 *    print Kohana::debug($this->input->get());
+	 *    print Kohana::debug($this->input->get('file'));
+	 *
+	 *    // Output:
+	 *    Array
+	 *    (
+	 *        [articleId] => 123
+	 *        [file] => text.txt
+	 *    )
+     *
+	 *    text.txt
+	 *
+	 *    // You can also pass a default value if the key doesn't exist and manually XSS clean the request:
+	 *    $this->input->get('file', 'default_value', TRUE);
+	 *
 	 * @param   string   key to find
 	 * @param   mixed    default value
 	 * @param   boolean  XSS clean the value
@@ -144,6 +176,26 @@ class Input_Core {
 
 	/**
 	 * Fetch an item from the $_POST array.
+	 *
+	 * ##### Example
+	 *
+	 *    // POST variables are articleId=123 and file=text.txt
+	 *    // Note that print statements are for documentation purpose only
+     *
+	 *    print Kohana::debug($this->input->post());
+	 *    print Kohana::debug($this->input->post('file'));
+	 *
+	 *    // Output:
+	 *    Array
+	 *    (
+	 *        [articleId] => 123
+	 *        [file] => text.txt
+	 *    )
+     *
+	 *    text.txt
+	 *
+	 *    // You can also pass a default value if the key doesn't exist and manually XSS clean the request:
+	 *    $this->input->post('file', 'default_value', TRUE);
 	 *
 	 * @param   string   key to find
 	 * @param   mixed    default value
@@ -159,6 +211,25 @@ class Input_Core {
 	 * Fetch an item from the cookie::get() ($_COOKIE won't work with signed
 	 * cookies.)
 	 *
+	 * ##### Example
+	 *
+	 *    // COOKIE name is "username" and the contents of this cookie is "aart-jan".
+	 *    // Note that print statements are for documentation purpose only
+     *
+	 *    print Kohana::debug($this->input->cookie());
+	 *    print Kohana::debug($this->input->cookie('username'));
+	 *
+	 *    // Output:
+	 *    Array
+	 *    (
+	 *        [username] => aart-jan
+	 *    )
+	 *
+	 *    aart-jan
+	 *
+	 *    // You can also pass a default value if the key doesn't exist and manually XSS clean the request:
+	 *    $this->input->cookie('username', 'default_value', TRUE);
+	 *
 	 * @param   string   key to find
 	 * @param   mixed    default value
 	 * @param   boolean  XSS clean the value
@@ -171,6 +242,16 @@ class Input_Core {
 
 	/**
 	 * Fetch an item from the $_SERVER array.
+	 *
+	 * ##### Example
+	 * 
+	 *    print Kohana::debug($this->input->server('HTTP_HOST'));
+	 *
+	 *    // Output:
+	 *    localhost
+	 *
+	 *    // You can also pass a default value if the key doesn't exist and manually XSS clean the request:
+	 *    $this->input->server('HTTP_HOST', 'default_value', TRUE);
 	 *
 	 * @param   string   key to find
 	 * @param   mixed    default value
@@ -214,6 +295,13 @@ class Input_Core {
 	/**
 	 * Fetch the IP Address.
 	 *
+	 * ##### Example
+	 * 
+	 *    print $this->input->ip_address();
+	 *
+	 *    // Output:
+	 *    127.0.0.1
+	 *
 	 * @return string
 	 */
 	public function ip_address()
@@ -256,6 +344,14 @@ class Input_Core {
 	 * It's not something that should be used for general runtime processing
 	 * since it requires a fair amount of processing overhead.
 	 *
+	 * ##### Example
+	 *
+	 *    // Clean the input variable with the default tool
+	 *    echo $this->input->xss_clean($suspect_input);
+	 *
+	 *    // Clean the input variable with the specified tool
+	 *    echo $this->input->xss_clean($suspect_input, 'htmlpurifier');
+	 * 
 	 * @param   string  data to clean
 	 * @param   string  xss_clean method to use ('htmlpurifier' or defaults to built-in method)
 	 * @return  string
@@ -408,6 +504,10 @@ class Input_Core {
 	 * This is a helper method. It enforces W3C specifications for allowed
 	 * key name strings, to prevent malicious exploitation.
 	 *
+	 * ##### Example
+	 *
+	 *    $clean = $this->input->clean_input_keys($input);
+	 *
 	 * @param   string  string to clean
 	 * @return  string
 	 */
@@ -424,6 +524,10 @@ class Input_Core {
 	/**
 	 * This is a helper method. It escapes data and forces all newline
 	 * characters to "\n".
+	 *
+	 * ##### Example
+	 *
+	 *    $clean = $this->input->clean_input_data($input);
 	 *
 	 * @param   unknown_type  string to clean
 	 * @return  string
@@ -465,6 +569,11 @@ class Input_Core {
 	 * Recursively cleans arrays, objects, and strings. Removes ASCII control
 	 * codes and converts to UTF-8 while silently discarding incompatible
 	 * UTF-8 characters.
+	 *
+	 * ##### Example
+	 *
+	 *    // Takes a string, array, or object
+	 *    $clean = $this->input->clean($_POST);
 	 *
 	 * @param   string  string to clean
 	 * @return  string
