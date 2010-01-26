@@ -4,10 +4,8 @@
  *
  * ##### Loading the Library
  *
- *     // The input library is loaded automatically by the controller
- *     // and can be accessed by $this->input in the controller scope.
- *
- *     // For use outside of controller scope, this is idiomatic:
+ *     // The input library is no longer loaded automatically by the controller,
+ *     // to use it, load it as a singleton instance:
  *     $input = Input::instance();
  *
  * $Id$
