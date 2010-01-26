@@ -2,6 +2,9 @@
 /**
  * Input library.
  *
+ * Note: The Input library must be loaded if global xss filtering
+ * is to be used.
+ *
  * ##### Loading the Library
  *
  *     // The input library is no longer loaded automatically by the controller,
