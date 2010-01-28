@@ -104,7 +104,7 @@ class Encrypt_Core {
 	/**
 	 * Encrypts a string and returns an encrypted string that can be decoded.
 	 *
-	 * ##### Loading the encryption library
+	 * ##### Example
 	 *
 	 *     // Encrypt a string
 	 *     $encrypted_text	= $encrypt->encode('Whos yo daddy? Kohana is.');
@@ -162,7 +162,7 @@ class Encrypt_Core {
 	/**
 	 * Decrypts an encoded string back to its original value.
 	 *
-	 * ##### Loading the encryption library
+	 * ##### Example
 	 *
 	 *     // Encode it
 	 *     $encrypted_text	= $encrypt->encode('Whos yo daddy? Kohana is.');
