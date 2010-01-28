@@ -4,6 +4,20 @@
  * using the MCrypt extension.
  * @see http://php.net/mcrypt
  *
+ * ##### Loading the encryption library
+ *
+ *     // Use the Kohana idiom singleton - you can optionally pass in a configuration array to the instance method
+ *     $encrypt	= Encrypt::instance();
+ *
+ *     // You may also instantiate it in the normal manner and pass an optional configuration array to the constructor
+ *     $encrypt = new Encrypt;
+ *
+ *     // Configuration is done in "application/config/encryption.php"
+ *     // if it's not there, copy the same file from "system/config".
+ *     $config['key'] = 'YOUR CYPHER KEY'; // Make this as unguesable as possible (preferrably random)
+ *     $config['mode'] = MCRYPT_MODE_NOFB;
+ *     $config['cipher'] = MCRYPT_RIJNDAEL_128;
+ *
  * $Id$
  *
  * @package    Kohana
@@ -90,6 +104,11 @@ class Encrypt_Core {
 	/**
 	 * Encrypts a string and returns an encrypted string that can be decoded.
 	 *
+	 * ##### Loading the encryption library
+	 *
+	 *     // Encrypt a string
+	 *     $encrypted_text	= $encrypt->encode('Whos yo daddy? Kohana is.');
+	 * 
 	 * @param   string  data to be encrypted
 	 * @return  string  encrypted data
 	 */
@@ -142,6 +161,17 @@ class Encrypt_Core {
 
 	/**
 	 * Decrypts an encoded string back to its original value.
+	 *
+	 * ##### Loading the encryption library
+	 *
+	 *     // Encode it
+	 *     $encrypted_text	= $encrypt->encode('Whos yo daddy? Kohana is.');
+	 *
+	 *     // Decode it
+	 *     echo $encrypt->decode($encrypted_text);
+	 *
+	 *     // Output:
+	 *     Whos yo daddy? Kohana is.
 	 *
 	 * @param   string  encoded string to be decrypted
 	 * @return  string  decrypted data or FALSE if decryption fails
