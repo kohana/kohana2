@@ -2,6 +2,86 @@
 /**
  * Session library.
  *
+ * ##### Starting a session and loading the library
+ *
+ *     // This is the idiomatic and preferred method of starting a session
+ *     $session = Session::instance();
+ *
+ *     // If any current session data exists, it will become available. If 
+ *     // no session data exists, a new session is automatically started.
+ *
+ *     //----------Storage
+ *
+ *     // By default, session data is stored in a cookie. You can change 
+ *     // this in the file "config/session.php".
+ *
+ *     // Note: the cookie driver limits session data to 4KB, while the database 
+ *     // driver limits session data to 64KB.
+ *
+ *     //----------Storage: The Database Driver
+ *
+ *     // When using the database session driver, a session table must exist. The
+ *     // session library will, by default, use the database you have configured
+ *     // in your default database group.
+ *     // The name of the session table can be configured in the config file.
+ *
+ *     // Example configuration for using the database:
+ *     $config['driver']  = 'database';
+ *     $config['storage'] =  array(
+ *         'group' => 'default',  // or use 'default'
+ *         'table' => 'sessions'  // or use 'sessions'
+ *     );
+ *
+ *     // A recommended MySQL CREATE TABLE statement:
+ *     CREATE TABLE sessions
+ *     (
+ *         session_id VARCHAR(127) NOT NULL,
+ *         last_activity INT(10) UNSIGNED NOT NULL,
+ *         DATA TEXT NOT NULL,
+ *         PRIMARY KEY (session_id)
+ *     );
+ *
+ *     // A recommended PostgreSQL CREATE TABLE statement:
+ *     // Note: in 2.4 the PostgreSQL db driver is not supported natively, it is however, available as a module.
+ *     CREATE TABLE session (
+ *       session_id varchar(127) NOT NULL,
+ *       last_activity integer NOT NULL,
+ *       "data" text NOT NULL,
+ *       CONSTRAINT session_id_pkey PRIMARY KEY (session_id),
+ *       CONSTRAINT last_activity_check CHECK (last_activity >= 0)
+ *     );
+ *
+ *     //----------Storage: The Cache Driver
+ *
+ *     // Example configuration for using the cache driver:
+ *     $config['driver']  = 'cache';
+ *     $config['storage'] = array(
+ *        'driver'   => 'apc',
+ *        'requests' => 10000
+ *     );
+ *
+ *     // The available cache storage containers are:
+ *     // APC, eAccelerator, File, Memcache, Sqlite,
+ *     // and Xcache.
+ *
+ *     //----------Storage: The Native Driver
+ *
+ *     // You may use the native PHP sessions which stores session data
+ *     // on the filesystem using PHP's default facilities.
+ *
+ *     // Note: if you are using Debian/Ubuntu and default storage directory /var/lib/php5, then set gc_probability 
+ *     // to 0 and let the Debian/Ubuntu cron job clean the directory.
+ *
+ *     //----------AJAX
+ *
+ *     // A note on making AJAX calls and the session library: special care must be taken in regards to the 
+ *     // “regenerate” option, which is set to 3 by default (as of Kohana 2.3).
+ *     // What can happen is, since AJAX calls are asynchronous, Kohana will consider certain AJAX requests 
+ *     // that come “out of order” to have expired sessions, since a new session ID is generated every 3 calls.
+ *
+ *     // To avoid this, include the following line in your application's config/sessions.php:
+ *     $config['regenerate'] = 0;
+ *
  * $Id$
  *
  * @package    Kohana
@@ -32,6 +112,11 @@ class Session_Core {
 
 	/**
 	 * Singleton instance of Session.
+	 *
+	 * ##### Example
+	 *
+	 *     // This is the idiomatic and preferred method of starting a session
+	 *     $session = Session::instance();
 	 *
 	 * @param string Force a specific session_id
 	 */
@@ -106,6 +191,11 @@ class Session_Core {
 	/**
 	 * Get the session id.
 	 *
+	 * ##### Example
+	 *
+	 *     // Retrieve the current session id
+	 *     $session_id	= $session->id(); // Alternatively, you may use Session::instance()->id();
+	 *
 	 * @return  string
 	 */
 	public function id()
@@ -115,6 +205,14 @@ class Session_Core {
 
 	/**
 	 * Create a new session.
+	 *
+	 * ##### Example
+	 *
+	 *     // Use this method to create a new session. It also destroys any current session data.
+	 *     $session->create(); // Alternatively, you may use (preferred method) Session::instance();
+	 *
+	 *     // Note: you do not need to call this method to enable sessions. Simply loading the Session 
+	 *     // library is enough to create a new session, or retrieve data from an existing session.
 	 *
 	 * @param   array  variables to set after creation
 	 * @param   string Force a specific session_id
@@ -250,6 +348,18 @@ class Session_Core {
 	/**
 	 * Regenerates the global session id.
 	 *
+	 * ##### Example
+	 *
+	 *     // The session ID to be regenerated whilst keeping all the current session data intact with:
+	 *     $session->regenerate(); // Alternatively, you may use Session::instance()->regenerate();
+	 *
+	 *     // This can be done automatically by setting the session.regenerate config value to an integer 
+	 *     // greater than 0 (default value is 0). However, automatic session regeneration isn't recommended 
+	 *     // because it can cause a race condition when you have multiple session requests while regenerating 
+	 *     // the session id (most commonly noticed with ajax requests). For security reasons it's recommended 
+	 *     // that you manually call regenerate() whenever a visitor's session privileges are escalated 
+	 *     // (e.g. they logged in, accessed a restricted area, etc).
+	 *
 	 * @return  void
 	 */
 	public function regenerate()
@@ -282,6 +392,11 @@ class Session_Core {
 	/**
 	 * Destroys the current session.
 	 *
+	 * ##### Example
+	 *
+	 *     // To destroy all session data, including the browser cookie that is used to identify the session, use:
+	 *     $session->destroy(); // Alternatively, you may use Session::instance()->destroy();
+	 * 
 	 * @return  void
 	 */
 	public function destroy()
@@ -304,6 +419,11 @@ class Session_Core {
 
 	/**
 	 * Runs the system.session_write event, then calls session_write_close.
+	 *
+	 * ##### Example
+	 *
+	 *     // This method is only be useful in special cases
+	 *     $session->write_close(); // Alternatively, you may use Session::instance()->write_close();
 	 *
 	 * @return  void
 	 */
@@ -328,6 +448,16 @@ class Session_Core {
 
 	/**
 	 * Set a session variable.
+	 *
+	 * ##### Example
+	 *
+	 *     // This method can be used to set a session key with a value, however it is *not* idiomatic nor preferred
+	 *     $session->set('username', 'zombocom'); // Alternatively, you may use Session::instance()->set('username', 'zombocom');
+	 *
+	 *     // The preferred method is to make use of the native $_SESSION global; the Kohana Session library uses
+	 *     // the session_set_save_handler() function to enable the use of the $_SESSION global with database storage,
+	 *     // cache, cookies, and native.
+	 *     $_SESSION['username'] = 'zombocom'; // If using the database storage driver, Kohana will transparently set and retrieve this data from the DB
 	 *
 	 * @param   string|array  key, or array of values
 	 * @param   mixed         value (if keys is not an array)
@@ -356,6 +486,17 @@ class Session_Core {
 	/**
 	 * Set a flash variable.
 	 *
+	 * ##### Example
+	 *
+	 *     // “Flash” session data is data that persists only until the next request. It could, for example, be used to show a message to a user only once.
+	 *     // As with other session data, you retrieve flash data using the $_SESSION global or Session::instance()->get().
+	 *
+	 *     // set user_message flash session data
+	 *     $session->set_flash('user_message', 'Hello, how are you?'); // Alternatively, you may use Session::instance()->set_flash();
+	 *
+	 *     // set several pieces of flash session data at once by passing an array
+     *     $session->set_flash(array('user_message' => 'How are you?', 'fish' => 5));
+	 * 
 	 * @param   string|array  key, or array of values
 	 * @param   mixed         value (if keys is not an array)
 	 * @return  void
@@ -383,6 +524,22 @@ class Session_Core {
 	/**
 	 * Freshen one, multiple or all flash variables.
 	 *
+	 * ##### Example
+	 *
+     *     // Usually, flash data is automatically deleted after the next request. Sometimes this 
+	 *     // behaviour is not desired, though. For example, the next request might be an AJAX 
+	 *     // request for some data. In this case, you wouldn't want to delete your user_message 
+	 *     // in the example above because it wouldn't have been shown to the user by the AJAX request.
+	 *
+     *     // Don't delete the user_message this request
+     *     $session->keep_flash('user_message'); // Alternatively, you may use Session::instance()->keep_flash();
+	 *
+	 *     // Don't delete messages 1-3
+     *     $session->keep_flash('message1', 'message2', 'message3');
+	 *
+	 *     // Don't delete any flash variable
+     *     $this->session->keep_flash();
+	 *
 	 * @param   string  variable key(s)
 	 * @return  void
 	 */
@@ -401,6 +558,11 @@ class Session_Core {
 
 	/**
 	 * Expires old flash data and removes it from the session.
+	 *
+	 * ##### Example
+	 *
+     *     // This method can be used to artificially expire flash data.
+	 *     $session->expire_flash(); // Alternatively, you may use Session::instance()->expire_flash();
 	 *
 	 * @return  void
 	 */
@@ -436,6 +598,28 @@ class Session_Core {
 	/**
 	 * Get a variable. Access to sub-arrays is supported with key.subkey.
 	 *
+	 * ##### Example
+	 *
+	 *     // This method can be used to get a session value by its key, however it is *not* idiomatic nor preferred
+	 *     echo $session->get('username'); // Alternatively, you may use Session::instance()->get('username');
+	 *
+	 *     // Outputs:
+	 *     zombocom
+	 *
+	 *     // You may also specify a default value to be returned if the provided session key is not set
+	 *     echo $session->get('username', 'default_value');
+	 *
+	 *     // Outputs (if "username" is not set):
+	 *     default_value
+	 *
+	 *     // The preferred method is to make use of the native $_SESSION global; the Kohana Session library uses
+	 *     // the session_set_save_handler() function to enable the use of the $_SESSION global with database storage,
+	 *     // cache, cookies, and native.
+	 *     echo $_SESSION['username']; // If using the database storage driver, Kohana will transparently set and retrieve this data from the DB
+	 *
+	 *     // Outputs:
+	 *     zombocom
+	 *
 	 * @param   string  variable key
 	 * @param   mixed   default value returned if variable does not exist
 	 * @return  mixed   Variable data if key specified, otherwise array containing all session data.
@@ -453,6 +637,20 @@ class Session_Core {
 	/**
 	 * Get a variable, and delete it.
 	 *
+	 * ##### Example
+	 *
+	 *     // Retrieve a value from the session using a key and remove it immediately
+	 *     echo $session->get_once('username'); // Alternatively, you may use Session::get_once();
+	 *
+	 *     // Outputs:
+	 *     zombocom
+	 *
+	 *     // Like get(), you may specify a default value to be returned
+	 *     echo $session->get_once('username', 'default_value');
+	 *
+	 *     // Outputs (if "username" is not set):
+	 *     default_value
+	 *
 	 * @param   string  variable key
 	 * @param   mixed   default value returned if variable does not exist
 	 * @return  mixed
@@ -467,6 +665,14 @@ class Session_Core {
 
 	/**
 	 * Delete one or more variables.
+	 *
+	 * ##### Example
+	 *
+	 *     // Delete an item from the session (not recommended). A variable number of arguments may be provided to delete multiple items.
+	 *     $session->delete('username'); // Alternatively, you may use Session::delete()
+	 *
+	 *     // It is idiomatic and preferred to use the native $_SESSION global array and unset()
+	 *     unset($_SESSION['username']);
 	 *
 	 * @param   string  variable key(s)
 	 * @return  void
@@ -489,6 +695,11 @@ class Session_Core {
 	 * Do not save this session.
 	 * This is a performance feature only, if using the native
 	 * session "driver" the save will NOT be aborted.
+	 *
+	 * ##### Example
+	 *
+	 *     // This method is only be useful in special cases
+	 *     $session->abort_save(); // Alternatively, you may use Session::abort_save();
 	 *
 	 * @return  void
 	 */
