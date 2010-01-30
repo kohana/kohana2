@@ -3,6 +3,42 @@
  * Manipulate images using standard methods such as resize, crop, rotate, etc.
  * This class must be re-initialized for every image you wish to manipulate.
  *
+ * For file uploading, please refer to the upload helper.
+ *
+ * ##### Loading the Image library
+ *
+ *     // When loading the library, a path to the image file, (relative or absolute) must be passed to the constructor.
+ *     $image = new Image('./photo.jpg');
+ *
+ *     // Alternatively, you may use the factory method (allows method chaining)
+ *     $image = Image::factory('./photo.jpg');
+ *
+ *     //----------Configuration
+ *
+ *     // To change default settings, edit "application/config/image.php", or copy from "system/config/image.php"
+ *     // Available drivers are: GD (requires GD2), ImageMagick, and GraphicsMagick. Windows users for the latter two must specify a path to the binary.
+ *     $config['driver'] = 'GD';
+ *     
+ *     // For Windows
+ *     $config['params'] = array('directory' => 'C:/ImageMagick');
+ *
+ *     // For Unix if the binary is not in your $PATH environment variable
+ *     $config['params'] = array('directory' => '/usr/local/bin');
+ *
+ *     //----------Complete Example
+ *
+ *     // The original image is located in the folder "/application/upload".
+ *     $dir   = str_replace('\\', '/', realpath(dirname(__FILE__).'/../upload')).'/';
+ *
+ *     $image = Image::factory($dir.'moo.jpg')->resize(400, NULL)
+ *                                            ->crop(400, 350, 'top')
+ *                                            ->sharpen(20)
+ *                                            ->quality(75)
+ *                                            ->save($dir.'super-cow-crop.jpg');
+ *
+ *     // Output some useful information about the operation *for debug purposes only*.
+ *     echo Kohana::debug($image);
+ *
  * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
@@ -45,7 +81,13 @@ class Image_Core {
 	protected $image = '';
 
 	/**
-	 * Creates a new Image instance and returns it.
+	 * Creates a new Image instance and returns it. Methods may be chained off of this method.
+	 *
+	 * ##### Example
+	 * 
+	 *     // Instantiate using the factory method, pass the filename and optional configuration array as parameters.
+	 *     // The benefit of this method of instantiation is the ability to chain methods.
+	 *     $image = Image::factory('./photo.jpg');
 	 *
 	 * @param   string   filename of image
 	 * @param   array    non-default configurations
@@ -58,6 +100,11 @@ class Image_Core {
 
 	/**
 	 * Creates a new image editor instance.
+	 *
+	 * ##### Example
+	 * 
+	 *     // Instantiate normally, pass the filename and optional configuration array as parameters.
+	 *     $image = new Image('./photo.jpg');
 	 *
 	 * @throws  Kohana_Exception
 	 * @param   string   filename of image
@@ -153,7 +200,18 @@ class Image_Core {
 	}
 
 	/**
-	 * Handles retrieval of pre-save image properties
+	 * Retrieves pre-save image properties.
+	 *
+	 * @see http://php.net/manual/en/language.oop5.overloading.php
+	 *
+	 * ##### Example
+	 *
+	 *     // __get() is used to handle retrieval of pre-save image properties. Properties available are:
+	 *     // file, width, height, type, ext, and mime.
+	 *     echo $image->type;
+	 *
+	 *     // Outputs:
+	 *     .jpg
 	 *
 	 * @param   string  property name
 	 * @return  mixed
@@ -176,6 +234,20 @@ class Image_Core {
 	 * maintain the aspect ratio using the width as the master dimension. If you
 	 * wish to use height as master dim, set $image->master_dim = Image::HEIGHT
 	 * This method is chainable.
+	 *
+	 * ##### Example
+	 *
+	 *     // Resize original image to width of 400 and height of 200 pixels without maintaining the aspect ratio.
+	 *     $image->resize(400, 200, Image::NONE)
+	 *     //Note: The output image is resized to width of 400 and height of 200, without maintaining the aspect ratio
+	 *      
+	 *     // Resize original image to Height of 200 pixels, using height to maintain aspect ratio.
+	 *     $image->resize(400, 200, Image::HEIGHT)
+	 *     // Note: Passing width = 400 has no effect on the resized width, which is controlled by the 3rd argument, maintain aspect ratio on height
+	 *      
+	 *     // Resize original image (800x600) using automatic aspect ratio calculation
+	 *     $image->resize(740,400,Image::AUTO)
+	 *     // the resulting resized image is 533x400 because Kohana determines the master dimension to be height 800/740 < 600/400
 	 *
 	 * @throws  Kohana_Exception
 	 * @param   integer  width
@@ -217,7 +289,14 @@ class Image_Core {
 	/**
 	 * Crop an image to a specific width and height. You may also set the top
 	 * and left offset.
+	 *
 	 * This method is chainable.
+	 *
+	 * ##### Example
+	 *
+	 *     // Crop from the original image, starting from the 'center' of the image from the 'top' and the 'center' of the image from the 'left'
+	 *     // to a width of 400 and height of 350.
+	 *     $image->crop(400, 350)
 	 *
 	 * @throws  Kohana_Exception
 	 * @param   integer  width
@@ -259,6 +338,11 @@ class Image_Core {
 	/**
 	 * Allows rotation of an image by 180 degrees clockwise or counter clockwise.
 	 *
+	 * ##### Example
+	 *
+	 *     // Rotate the image by 45 degrees to the 'left' or anti-clockwise.
+	 *     $image->rotate(-45)
+	 *
 	 * @param   integer  degrees
 	 * @return  object
 	 */
@@ -292,14 +376,21 @@ class Image_Core {
 	}
 
 	/**
-         * Overlay a second image on top of this one.
-         *
-         * @throws Kohana_Exception
-         * @param  string  $overlay_file          path to an image file
-         * @param  integer $x                     x offset for the overlay
-         * @param  integer $y                     y offset for the overlay
-         * @param  integer $transparency          transparency percent
-         */
+	 * Overlay a second image on top of this one. Useful for CAPTCHAs and normalizing disparate image sizes (even when cropped)
+	 * onto a canvas.
+	 *
+	 * ##### Example
+	 *
+	 *     // Overlay an image onto the loaded one with an x and y offset of 0 and a transparency of 10% (used in generating CAPTCHAs, for example)
+	 *     $image->composite('./words.jpg', 0, 0, 10);
+	 *
+	 *
+	 * @throws Kohana_Exception
+	 * @param  string  $overlay_file          path to an image file
+	 * @param  integer $x                     x offset for the overlay
+	 * @param  integer $y                     y offset for the overlay
+	 * @param  integer $transparency          transparency percent
+	 */
 	public function composite($overlay_file, $x, $y, $transparency)
 	{
 		$image_info = getimagesize($overlay_file);
@@ -323,6 +414,11 @@ class Image_Core {
 	/**
 	 * Flip an image horizontally or vertically.
 	 *
+	 * ##### Example
+	 *
+	 *     // Rotate the image along the vertical access.
+	 *     $image->flip(6);
+	 *
 	 * @throws  Kohana_Exception
 	 * @param   integer  direction
 	 * @return  object
@@ -340,6 +436,11 @@ class Image_Core {
 	/**
 	 * Change the quality of an image.
 	 *
+	 * ##### Example
+	 *     
+	 *     // Reduce image quality to 75 percent of original
+	 *     $image->quality(75);
+	 *
 	 * @param   integer  quality as a percentage
 	 * @return  object
 	 */
@@ -353,6 +454,11 @@ class Image_Core {
 	/**
 	 * Sharpen an image.
 	 *
+	 * ##### Example
+	 *
+	 *     // Sharpen the image by an amount of 15.
+	 *     $image->sharpen(15);
+	 *
 	 * @param   integer  amount to sharpen, usually ~20 is ideal
 	 * @return  object
 	 */
@@ -364,12 +470,23 @@ class Image_Core {
 	}
 
 	/**
-	 * Save the image to a new image or overwrite this image.
+	 * Save the image to a new file or overwrite the current file. Depending on permissions,
+	 * a different bitmask for permissions may be set and retain the set actions for subsequent
+	 * saves or renders (useful for multiple image processing).
+	 *
+	 * ##### Example
+	 *
+	 *     // Save image and overwrite the input image file
+	 *     $image->save();
+	 *
+	 *     // Save image to a new file.
+	 *     $image->save('./new-image.jpg');
 	 *
 	 * @throws  Kohana_Exception
 	 * @param   string   new image filename
 	 * @param   integer  permissions for new image
 	 * @param   boolean  keep or discard image process actions
+	 * @param	null     the background color is not currently supported in any of the drivers
 	 * @return  object
 	 */
 	public function save($new_image = FALSE, $chmod = 0644, $keep_actions = FALSE, $background = NULL)
@@ -406,7 +523,15 @@ class Image_Core {
 	}
 
 	/**
-	 * Output the image to the browser.
+	 * Output the image to the browser. This method is NOT chainable. It means that the headers 
+	 * corresponding to the image format are sent and the raw image stream with manipulation 
+	 * applied will be outputted directly to the browser. Returns TRUE on success or FALSE on failure.
+	 *
+	 * ##### Example
+	 *
+	 *     // Output the image directly to the browser w/ headers.
+	 *     // Note: this method is *not* chainable!
+	 *     $image->render();
 	 *
 	 * @param   boolean  keep or discard image process actions
 	 * @return	object
