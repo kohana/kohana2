@@ -285,7 +285,7 @@ class arr_Core {
 	}
 
 	/**
-	 * Replace the value of an association by it's key in an associated array.
+	 * Replace the value of an association by it's key in an associative array.
 	 *
 	 * ##### Example
 	 *
