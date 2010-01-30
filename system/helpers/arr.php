@@ -1,6 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Array helper class.
+ * Array helper class assists in transforming arrays.
+ * 
+ * *In order to use it, the class name is 'arr' instead of 'array'*
  *
  * @package    Kohana
  * @author     Kohana Team
@@ -12,6 +14,13 @@ class arr_Core {
 	/**
 	 * Return a callback array from a string, eg: limit[10,20] would become
 	 * array('limit', array('10', '20'))
+	 *
+	 * ##### Example
+	 *
+	 *     print_r(arr::callback_string('limit[10,20]'));
+	 *
+	 *     // Outputs:
+	 *     array('limit', array('10', '20'))
 	 *
 	 * @param   string  callback string
 	 * @return  array
@@ -44,6 +53,57 @@ class arr_Core {
 	 * Rotates a 2D array clockwise.
 	 * Example, turns a 2x3 array into a 3x2 array.
 	 *
+	 * ##### Example
+	 *
+	 *     // Please note that the echo statements are for display only
+	 *     $optical_discs = array
+	 *     	(
+	 *     	  'CD'  => array('700', '780'),
+	 *     	  'DVD' => array('4700','650'),
+	 *     	  'BD'  => array('25000','405')
+	 *      );
+	 *
+	 *     echo Kohana::debug($optical_discs);
+	 *     $optical_discs = arr::rotate(&$optical_discs, FALSE);
+	 *
+	 *     echo '<br /><br />';
+	 *     echo Kohana::debug($optical_discs);
+	 *
+	 *     // Output:
+	 *     Array
+	 *     (
+	 *         [CD] => Array
+	 *             (
+	 *                 [0] => 700
+	 *                 [1] => 780
+	 *             )
+	 *         [DVD] => Array
+	 *             (
+	 *                 [0] => 4700
+	 *                 [1] => 650
+	 *             )
+	 *         [BD] => Array
+	 *             (
+	 *                 [0] => 25000
+	 *                 [1] => 405
+	 *             )
+	 *     )
+	 *     Array
+	 *     (
+	 *         [0] => Array
+	 *             (
+	 *                 [CD] => 700
+	 *                 [DVD] => 4700
+	 *                 [BD] => 25000
+	 *             )
+	 *         [1] => Array
+	 *             (
+	 *                 [CD] => 780
+	 *                 [DVD] => 650
+	 *                 [BD] => 405
+	 *             )
+	 *     )
+	 *
 	 * @param   array    array to rotate
 	 * @param   boolean  keep the keys in the final rotated array. the sub arrays of the source array need to have the same key values.
 	 *                   if your subkeys might not match, you need to pass FALSE here!
@@ -67,6 +127,65 @@ class arr_Core {
 	/**
 	 * Removes a key from an array and returns the value.
 	 *
+	 * ##### Example
+	 *
+	 *     // Please note that the echo statements are for display only
+	 *     $optical_discs = array
+	 *     	(
+	 *     	  'CD'  => array('700', '780'),
+	 *     	  'DVD' => array('4700','650'),
+	 *     	  'BD'  => array('25000','405')
+	 *      );
+	 *
+	 *     echo Kohana::debug($optical_discs);
+	 *     $cd = arr::remove('CD', $optical_discs);
+	 *
+	 *     echo '<br /><br />';
+	 *     echo '<br />';
+	 *     echo  Kohana::debug($cd);
+	 *     echo  '<br />';
+	 *     echo  Kohana::debug($optical_discs);
+	 *
+	 *     // Output:
+	 *     Array
+	 *     (
+	 *         [CD] => Array
+	 *             (
+	 *                 [0] => 700
+	 *                 [1] => 780
+	 *             )
+	 *         [DVD] => Array
+	 *             (
+	 *                 [0] => 4700
+	 *                 [1] => 650
+	 *             )
+	 *         [BD] => Array
+	 *             (
+	 *                 [0] => 25000
+	 *                 [1] => 405
+	 *             )
+	 *     )
+	 *
+	 *     Array
+	 *     (
+	 *         [0] => 700
+	 *         [1] => 780
+	 *     )
+	 *      
+	 *     Array
+	 *     (
+	 *         [DVD] => Array
+	 *             (
+	 *                 [0] => 4700
+	 *                 [1] => 650
+	 *             )
+	 *         [BD] => Array
+	 *             (
+	 *                 [0] => 25000
+	 *                 [1] => 405
+	 *             )
+	 *     )
+	 *
 	 * @param   string  key to return
 	 * @param   array   array to work on
 	 * @return  mixed   value of the requested array key
@@ -87,6 +206,30 @@ class arr_Core {
 	 * Extract one or more keys from an array. Each key given after the first
 	 * argument (the array) will be extracted. Keys that do not exist in the
 	 * search array will be NULL in the extracted data.
+	 *
+	 * ##### Example
+	 *
+	 *     // Please note that the echo statements are for display only
+	 *     $optical_discs = array
+	 *     	(
+	 *     	  'CD'  => array('700', '780'),
+	 *     	  'DVD' => array('4700','650'),
+	 *     	  'BD'  => array('25000','405')
+	 *      );
+	 *
+	 *      $optical_discs = arr::extract($optical_discs, 'DVD', 'Bluray');
+	 *      echo Kohana::debug($optical_discs);
+	 *
+	 *      // Output:
+	 *      (array) Array
+	 *      (
+	 *          [DVD] => Array
+	 *              (
+	 *                  [0] => 4700
+	 *                  [1] => 650
+	 *              )
+	 *          [Bluray] => NULL
+	 *      )
 	 *
 	 * @param   array   array to search
 	 * @param   string  key name
@@ -109,6 +252,28 @@ class arr_Core {
 	/**
 	 * Get the value of array[key]. If it doesn't exist, return default.
 	 *
+	 * ##### Example
+	 *
+	 *     $optical_discs = array
+	 *     	(
+	 *     	  'CD'  => array('700', '780'),
+	 *     	  'DVD' => array('4700','650'),
+	 *     	  'BD'  => array('25000','405')
+	 *      );
+	 *
+	 *      // Extract a key or return a default value (NULL if default is not passed a parameter)
+	 *      echo Kohana::debug(arr::get($optical_discs, 'CD', 'Not-existent!'));
+	 *      echo Kohana::debug(arr::get($optical_discs, 'BLRY', 'Non-existent!'));
+	 *
+	 *      // Output:
+	 *      (array) Array
+	 *      (
+	 *          [0] => 700
+	 *          [1] => 780
+	 *      )
+	 *
+	 *      Non-existent!
+	 * 
 	 * @param   array   array to search
 	 * @param   string  key name
 	 * @param   mixed   default value
@@ -120,12 +285,28 @@ class arr_Core {
 	}
 
 	/**
-	 * Because PHP does not have this function.
+	 * Replace the value of an association by it's key in an associated array.
+	 *
+	 * ##### Example
+	 *
+	 *      $fruits = array('fruit1' => 'apple', 'fruit2' => 'mango', 'fruit3' => 'pineapple');
+	 *      arr::unshift_assoc($fruits, 'fruit1', 'starwberry');
+	 *      echo Kohana::debug($fruits);
+	 *
+	 *      // Output:
+	 *      (array) Array
+	 *      (
+	 *          [fruit1] => strawberry
+	 *          [fruit2] => mango
+	 *          [fruit3] => pineapple
+	 *      )
 	 *
 	 * @param   array   array to unshift
 	 * @param   string  key to unshift
 	 * @param   mixed   value to unshift
 	 * @return  array
+	 * @todo This function is badly named, IMHO, and none of the other array helper methods pass by reference!
+	 *       I didn't change it because the API is locked.
 	 */
 	public static function unshift_assoc( array & $array, $key, $val)
 	{
@@ -139,6 +320,35 @@ class arr_Core {
 	/**
 	 * Because PHP does not have this function, and array_walk_recursive creates
 	 * references in arrays and is not truly recursive.
+	 *
+	 * ##### Example
+	 *
+	 *      // Pre PHP 5.3
+	 *      function plus_one($value)
+	 *      {
+	 *          return $value + 1;
+	 *      }
+	 *
+	 *      echo Kohana::debug(arr::map_recursive(array($this, 'plus_one'), array('a' => 1, 'b' => 2, 'c' => array(3, 4), 'd' => array('e' => 5))));
+	 *
+	 *      // Or, you can use the lambda function syntax of PHP 5.3
+	 *      echo Kohana::debug(arr::map_recursive(function($value){return $value+1;}, array('a' => 1, 'b' => 2, 'c' => array(3, 4), 'd' => array('e' => 5))));
+	 *
+	 *      // Output:
+	 *      (array) Array
+	 *      (
+	 *          [a] => 2
+	 *          [b] => 3
+	 *          [c] => Array
+	 *              (
+	 *                  [0] => 4
+	 *                  [1] => 5
+	 *              )
+	 *          [d] => Array
+	 *              (
+	 *                  [e] => 6
+	 *              )
+	 *      )
 	 *
 	 * @param   mixed  callback to apply to each member of the array
 	 * @param   array  array to map to
@@ -158,6 +368,24 @@ class arr_Core {
 	/**
 	 * Emulates array_merge_recursive, but appends numeric keys and replaces
 	 * associative keys, instead of appending all keys.
+	 *
+	 * ##### Example
+	 *
+	 *      echo Kohana::debug(arr::merge(array('a', 'b'), array('c', 'd'), array('e' => array('f', 'g'))));
+	 *
+	 *      // Output:
+	 *      (array) Array
+	 *      (
+	 *          [0] => a
+	 *          [1] => b
+	 *          [2] => c
+	 *          [3] => d
+	 *          [e] => Array
+	 *              (
+	 *                  [0] => f
+	 *                  [1] => g
+	 *              )
+	 *      )
 	 *
 	 * @param   array  any number of arrays
 	 * @return  array
@@ -204,6 +432,20 @@ class arr_Core {
 	 * Overwrites an array with values from input array(s).
 	 * Non-existing keys will not be appended!
 	 *
+	 * ##### Example
+	 *
+	 *      $array1 = array('fruit1' => 'apple', 'fruit2' => 'mango', 'fruit3' => 'pineapple');
+	 *      $array2 = array('fruit1' => 'strawberry', 'fruit4' => 'coconut');
+	 *      echo Kohana::debug(arr::overwrite($array1, $array2));
+	 *
+	 *      // Output:
+	 *      (array) Array
+	 *      (
+	 *          [fruit1] => strawberry
+	 *          [fruit2] => mango
+	 *          [fruit3] => pineapple
+	 *      )
+	 *
 	 * @param   array   key array
 	 * @param   array   input array(s) that will overwrite key array values
 	 * @return  array
@@ -232,6 +474,19 @@ class arr_Core {
 	/**
 	 * Recursively convert an array to an object.
 	 *
+	 * ##### Example
+	 *
+	 *      $array = arr::to_object(array('test' => 13));
+	 *      echo $array ->test;
+	 *      echo Kohana::debug($array);
+	 *
+	 *      // Output:
+	 *      13
+	 *      (object) stdClass Object
+	 *      (
+	 *          [test] => 13
+	 *      )
+	 *
 	 * @param   array   array to convert
 	 * @return  object
 	 */
@@ -257,6 +512,18 @@ class arr_Core {
 	/**
 	 * Returns specific key/column from an array of objects.
 	 *
+	 * ##### Example
+	 *
+	 *      $arr1	= array('reptile' => array('one' => 'snake'), 'mammal' => array('one' => 'dog'));
+	 *      echo Kohana::debug(arr::pluck('one', $arr1));
+	 *
+	 *      // Output:
+	 *      (array) Array
+	 *      (
+	 *          [reptile] => snake
+	 *          [mammal] => dog
+	 *      )
+	 *      
 	 * @param string|integer $key The key or column number to pluck from each object.
 	 * @param array $array        The array of objects to pluck from.
 	 * @return array
