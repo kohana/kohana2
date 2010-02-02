@@ -733,7 +733,8 @@ class ORM_Core {
 			foreach ($this->rules as $field => $parameters)
 			{
 				foreach ($parameters as $type => $value) {
-					switch ($type) {
+					switch ($type)
+					{
 						case 'pre_filter':
 							$array->pre_filter($value,$field);
 							break;
@@ -756,7 +757,7 @@ class ORM_Core {
 		}
 
 		// Fields may have been modified by filters
-		$this->object = array_merge($this->object, $array->getArrayCopy());
+		ORM::load_values($array->getArrayCopy());
 
 		// Return validation status
 		return $this;
