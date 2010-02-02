@@ -44,7 +44,6 @@ class ORM_Core {
 	protected $object_plural;
 	protected $table_name;
 	protected $table_columns;
-	protected $ignored_columns;
 
 	// Auto-update columns for creation and updates
 	protected $updated_column = NULL;
@@ -151,12 +150,6 @@ class ORM_Core {
 				// Make the table name plural
 				$this->table_name = inflector::plural($this->table_name);
 			}
-		}
-
-		if (is_array($this->ignored_columns))
-		{
-			// Make the ignored columns mirrored = mirrored
-			$this->ignored_columns = array_combine($this->ignored_columns, $this->ignored_columns);
 		}
 
 		// Load column information
@@ -379,10 +372,6 @@ class ORM_Core {
 				return $model->where($model->foreign_key(TRUE), 'IS', NULL);
 			}
 		}
-		elseif (isset($this->ignored_columns[$column]))
-		{
-			return NULL;
-		}
 		elseif (in_array($column, array
 			(
 				'object_name', 'object_plural','_valid', // Object
@@ -405,7 +394,8 @@ class ORM_Core {
 	 *
 	 * @return bool
 	 */
-	public function loaded() {
+	public function loaded()
+	{
 		if ( ! $this->_loaded AND ! $this->empty_primary_key())
 		{
 			// If returning the loaded member and no load has been attempted, do it now
@@ -419,7 +409,8 @@ class ORM_Core {
 	 *
 	 * @return bool
 	 */
-	public function saved() {
+	public function saved()
+	{
 		return $this->_saved;
 	}
 
@@ -432,11 +423,7 @@ class ORM_Core {
 	 */
 	public function __set($column, $value)
 	{
-		if (isset($this->ignored_columns[$column]))
-		{
-			return NULL;
-		}
-		elseif (isset($this->object[$column]) OR array_key_exists($column, $this->object))
+		if (isset($this->object[$column]) OR array_key_exists($column, $this->object))
 		{
 			if (isset($this->table_columns[$column]))
 			{
@@ -732,7 +719,8 @@ class ORM_Core {
 		{
 			foreach ($this->rules as $field => $parameters)
 			{
-				foreach ($parameters as $type => $value) {
+				foreach ($parameters as $type => $value)
+				{
 					switch ($type)
 					{
 						case 'pre_filter':
