@@ -726,13 +726,15 @@ class ORM_Core {
 						case 'pre_filter':
 							$array->pre_filter($value,$field);
 							break;
+
 						case 'rules':
-							$rules = array_merge(array($field),$value);
-							call_user_func_array(array($array,'add_rules'), $rules);
+							$rules = array_merge(array($field), $value);
+							call_user_func_array(array($array, 'add_rules'), $rules);
 							break;
+
 						case 'callbacks':
-							$callbacks = array_merge(array($field),$value);
-							call_user_func_array(array($array,'add_callbacks'), $callbacks);
+							$callbacks = array_merge(array($field), $value);
+							call_user_func_array(array($array, 'add_callbacks'), $callbacks);
 							break;
 					}
 				}
