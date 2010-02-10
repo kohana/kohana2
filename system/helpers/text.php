@@ -1,6 +1,14 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Text helper class.
+ * Text helper class. 
+ *
+ * ###### Using the text helper:
+ * 
+ *     // Using the text helper is simple:
+ *     echo text::limit_words('limit this text to four words', 4);
+ *
+ *     // Output:
+ *     limit this text to...
  *
  * @package    Kohana
  * @author     Kohana Team
@@ -10,7 +18,16 @@
 class text_Core {
 
 	/**
-	 * Limits a phrase to a given number of words.
+	 * Limits a phrase to a given number of words. The third argument
+	 * is an end character (it is preferred to use a numeric html entity for special
+	 * characters); the default ending character is the ellipsis: "...".
+	 *
+	 * ##### Example
+	 *
+	 *     echo text::limit_words('cakephp wishes it were pie', 2);
+	 *
+	 *     // Output:
+	 *     cakephp wishes...
 	 *
 	 * @param   string   phrase to limit words of
 	 * @param   integer  number of words to limit to
@@ -36,7 +53,19 @@ class text_Core {
 	}
 
 	/**
-	 * Limits a phrase to a given number of characters.
+	 * Limits a phrase to a given number of characters. The third argument
+	 * is an end character (it is preferred to use a numeric html entity for special
+	 * characters); the default ending character is the ellipsis: "...".
+	 *
+	 * Setting the fourth argument to (bool) TRUE will preserve words (if you want to
+	 * limit *per* word, use limit_words() as both methods use different algorithms).
+	 *
+	 * ##### Example
+	 *
+	 *     echo text::limit_chars('cakephp wishes it were pie', 4);
+	 *
+	 *     // Output:
+	 *     cake
 	 *
 	 * @param   string   phrase to limit characters of
 	 * @param   integer  number of characters to limit to
@@ -67,7 +96,37 @@ class text_Core {
 	}
 
 	/**
-	 * Alternates between two or more strings.
+	 * Alternates between two or more strings. This is useful for alternating
+	 * the class attribute of rows in a table listing users.
+	 *
+	 * This method accepts a variable number of arguments.
+	 *
+	 * ##### Example
+	 *
+	 *     echo '<table>';
+	 *
+	 *     for($i=0; $i<4;$i++)
+	 *     {
+	 *         echo '<tr class="'.text::alternate('even', 'odd').'"><td>user'.$i.'</td></tr>';
+	 *     }
+	 *
+	 *     echo '</table>';
+	 *
+	 *     // Output:
+	 *     <table>
+	 *       <tr class="even">
+	 *         <td>user0</td>
+	 *       </tr>
+	 *       <tr class="odd">
+	 *         <td>user1</td>
+	 *       </tr>
+	 *       <tr class="even">
+	 *         <td>user2</td>
+	 *       </tr>
+	 *       <tr class="odd">
+	 *         <td>user3</td>
+	 *       </tr>
+	 *     </table>
 	 *
 	 * @param   string  strings to alternate between
 	 * @return  string
@@ -87,7 +146,30 @@ class text_Core {
 	}
 
 	/**
-	 * Generates a random string of a given type and length.
+	 * Generates a random string of a given type and length. Possible
+	 * values for the first argument ($type) are:
+	 *
+	 * alnum    - alpha-numeric characters (including capitals)
+	 * alpha    - alphabetical characters (including capitals)
+	 * hexdec   - hexadecimal characters, 0-9 plus a-f
+	 * numeric  - digit characters, 0-9
+	 * nozero   - digit characters, 1-9
+	 * distinct - clearly distinct alpha-numeric characters.
+	 * 
+	 * For values that do not match any of the above, the characters passed
+	 * in will be used.
+	 *
+	 * ##### Example
+	 *
+	 *     echo text::random('alpha', 20);
+	 *
+	 *     // Output:
+	 *     DdyQFCddSKeTkfjCewPa
+	 *
+	 *     echo text::random('distinct', 20);
+	 *
+	 *     // Output:
+	 *     XCDDVXV7FUSYAVXFFKSL
 	 *
 	 * @param   string   a type of pool, or a string of characters to use as the pool
 	 * @param   integer  length of string to return
@@ -164,6 +246,14 @@ class text_Core {
 	/**
 	 * Reduces multiple slashes in a string to single slashes.
 	 *
+	 * ##### Example
+	 *
+	 *     $str = 'path/to//something';
+	 *     echo text::reduce_slashes($str);
+	 *
+	 *     // Output:
+	 *     path/to/something
+	 *
 	 * @param   string  string to reduce slashes of
 	 * @return  string
 	 */
@@ -173,7 +263,20 @@ class text_Core {
 	}
 
 	/**
-	 * Replaces the given words with a string.
+	 * Replaces the given words with a string. The second argument must be
+	 * an array of words and the third argument is the character to use to
+	 * replace the letters of the naughty word.
+	 *
+	 * ##### Example
+	 *
+	 *     $str         = 'The income tax is a three letter word, but telemarketers are dirtbags! No cookie for you!';
+	 *     $replacement = '*';
+	 *     $badwords    = array('tax', 'dirtbags');
+	 *
+	 *     echo text::censor($str, $badwords, $replacement, FALSE);
+	 *
+	 *     // Output:
+	 *     The income *** is a three letter word, but telemarketers are *******. No cookie for you!
 	 *
 	 * @param   string   phrase to replace words in
 	 * @param   array    words to replace
@@ -208,7 +311,14 @@ class text_Core {
 	}
 
 	/**
-	 * Finds the text that is similar between a set of words.
+	 * Finds the intersecting word obetween a set of words.
+	 *
+	 * ##### Example
+	 *
+	 *     echo text::similar(array('cookies', 'cook'));
+	 *
+	 *     // Output:
+	 *     cook
 	 *
 	 * @param   array   words to find similar text of
 	 * @return  string
@@ -236,6 +346,16 @@ class text_Core {
 	 * An alternative to the php levenshtein() function that work out the
 	 * distance between 2 words using the Damerau–Levenshtein algorithm.
 	 * Credit: http://forums.devnetwork.net/viewtopic.php?f=50&t=89094
+	 *
+	 * ##### Example
+	 *
+	 *     $str_uno = 'baby';
+	 *     $str_dos = 'cries';
+	 * 
+	 *     echo text::distance($str_uno, $str_dos);
+	 *
+	 *     // Output:
+	 *     5
 	 *
 	 * @see http://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance
 	 * @param     string    first word
@@ -291,6 +411,13 @@ class text_Core {
 	/**
 	 * Converts text anchors into links.
 	 *
+	 * ##### Example
+	 *
+	 *     echo text::auto_link_urls('http://example.com');
+	 *
+	 *     // Output:
+	 *     <a href="http://example.com">http://example.com</a>
+	 *
 	 * @param   string   text to auto link
 	 * @return  string
 	 */
@@ -332,6 +459,16 @@ class text_Core {
 	/**
 	 * Converts text email addresses into links.
 	 *
+	 * Note: this method uses html::mailto() to generate
+	 * the link - mailto() produces an encoded mailto string!
+	 *
+	 * ##### Example
+	 *
+	 *     echo text::auto_link_emails('cyberspace_is_kewl@example.com');
+	 *
+	 *     // Output (friendly):
+	 *     <a href="mailto:cyberspace_is_kewl@example.com">cyberspace_is_kewl@example.com</a>
+	 *
 	 * @param   string   text to auto link
 	 * @return  string
 	 */
@@ -354,6 +491,17 @@ class text_Core {
 
 	/**
 	 * Automatically applies <p> and <br /> markup to text. Basically nl2br() on steroids.
+	 *
+	 * ##### Example
+	 *
+	 *     $str = "This is just one break \n This deserves a paragragh \n\n Hookay, this is the...";
+	 *     echo text::auto_link_emails('cyberspace_is_kewl@example.com');
+	 *
+	 *     // Output:
+	 *     <p>This is just one break<br /> 
+     *     This deserves a paragragh</p> 
+     *
+     *     <p>Hookay, this is the...</p>
 	 *
 	 * @param   string   subject
 	 * @param   boolean  convert single linebreaks to <br />
@@ -406,6 +554,32 @@ class text_Core {
 
 	/**
 	 * Returns human readable sizes.
+	 * 
+	 * Note: this is similar to the -h option in many Unix
+	 * utilities (like "ls").
+	 *
+	 * ##### Example
+	 *
+	 *     echo text::bytes('2048');
+	 *     
+	 *     // Output:
+	 *     2.05 kB
+	 *
+	 *     echo text::bytes('4194304', 'kB');
+	 *     
+	 *     // Output:
+	 *     4194.30 kB
+	 *
+	 *     echo text::bytes('4194304', 'GiB');
+	 *     
+	 *     // Output:
+	 *     0.00 GiB
+	 *
+	 *     echo text::bytes('4194304', NULL, NULL, FALSE);
+	 *     
+	 *     // Output:
+	 *     4.00 MiB
+	 * 
 	 * @see  Based on original functions written by:
 	 * @see  Aidan Lister: http://aidanlister.com/repos/v/function.size_readable.php
 	 * @see  Quentin Zervaas: http://www.phpriot.com/d/code/strings/filesize-format/
@@ -447,6 +621,13 @@ class text_Core {
 	 * Prevents widow words by inserting a non-breaking space between the last two words.
 	 * @see  http://www.shauninman.com/archive/2006/08/22/widont_wordpress_plugin
 	 *
+	 * ##### Example
+	 *
+	 *     $str = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Cras id dolor. Donec ...";
+	 *
+	 *     // Output:
+	 *     Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Cras id dolor. Donec&nbsp;...
+	 *
 	 * @param   string  string to remove widows from
 	 * @return  string
 	 */
@@ -466,6 +647,14 @@ class text_Core {
 	/**
 	 * Tests whether a string contains only 7bit ASCII bytes. This is used to
 	 * determine when to use native functions or UTF-8 functions.
+	 *
+	 * ##### Example
+	 *
+	 *     $str = 'abcd';
+	 *     var_export(text::is_ascii($str));
+	 *
+	 *     // Output:
+	 *     true
 	 *
 	 * @see http://sourceforge.net/projects/phputf8/
 	 * @copyright  (c) 2007-2009 Kohana Team
