@@ -672,6 +672,10 @@ class text_Core {
 	/**
 	 * Strips out device control codes in the ASCII range.
 	 *
+	 * ##### Example
+	 *
+	 *     $result = text::strip_ascii_ctrl($str_containing_control_codes);
+	 *
 	 * @see http://sourceforge.net/projects/phputf8/
 	 * @copyright  (c) 2007-2009 Kohana Team
 	 * @copyright  (c) 2005 Harry Fuecks
@@ -687,6 +691,15 @@ class text_Core {
 
 	/**
 	 * Strips out all non-7bit ASCII bytes.
+	 *
+	 * For a description of the difference between 7bit and
+	 * extended (8bit) ASCII:
+	 *
+	 * @see http://en.wikipedia.org/wiki/ASCII
+	 *
+	 * ##### Example
+	 *
+	 *     $result = text::strip_non_ascii($str_with_8bit_ascii);
 	 *
 	 * @see http://sourceforge.net/projects/phputf8/
 	 * @copyright  (c) 2007-2009 Kohana Team
@@ -704,6 +717,13 @@ class text_Core {
 	/**
 	 * Replaces special/accented UTF-8 characters by ASCII-7 'equivalents'.
 	 *
+	 * ##### Example
+	 *
+	 *     echo text::transliterate_to_ascii("Útgarðar");
+	 *
+	 *     // Output:
+	 *     Utgardhar
+	 * 
 	 * @author  Andreas Gohr <andi@splitbrain.org>
 	 * @see http://sourceforge.net/projects/phputf8/
 	 * @copyright  (c) 2007-2009 Kohana Team
