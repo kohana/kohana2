@@ -1,7 +1,20 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Simple benchmarking.
- *
+ * 
+ * ##### Basic Usage
+ * 	//Start tracking time
+ * 	Benchmark::start('My Code Section');
+ * 	
+ * 	//call some function that takes time
+ * 	do_something_cpu_intensive();
+ * 	
+ * 	//Stop the benchmark, results can be viewed with the profiler see profiler class for details
+ * 	Benchmark::stop('My Code Section');
+ * 
+ * 	//Get results
+ * 	$time = Benchmark::get('My Code Section');
+ * 
  * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
@@ -14,8 +27,11 @@ final class Benchmark {
 
 	/**
 	 * Set a benchmark start point.
-	 *
-	 * @param   string  benchmark name
+	 * 
+	 * ##### Example
+	 * 	Benchmark::start('Name of Section');
+	 * 
+	 * @param   string $name benchmark name
 	 * @return  void
 	 */
 	public static function start($name)
@@ -41,8 +57,11 @@ final class Benchmark {
 
 	/**
 	 * Set a benchmark stop point.
-	 *
-	 * @param   string  benchmark name
+	 * 
+	 * ##### Example
+	 * 	Benchmark::stop('Name of Section');
+	 * 
+	 * @param   string $name benchmark name
 	 * @return  void
 	 */
 	public static function stop($name)
@@ -56,9 +75,16 @@ final class Benchmark {
 
 	/**
 	 * Get the elapsed time between a start and stop.
-	 *
-	 * @param   string   benchmark name, TRUE for all
-	 * @param   integer  number of decimal places to count to
+	 * 
+	 * ##### Examples
+	 * 	//get time in default format
+	 * 	$time = Benchmark::get('Name of Section');
+	 * 
+	 * 	//get time to 6 decimal places
+	 * 	$time = Benchmark::get('Name of Section', 6);
+	 * 
+	 * @param   string $name  benchmark name, TRUE for all
+	 * @param   integer $decimals [optional] number of decimal places to count to
 	 * @return  array
 	 */
 	public static function get($name, $decimals = 4)
