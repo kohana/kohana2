@@ -3,7 +3,22 @@
  * Provides a driver-based interface for finding, creating, and deleting cached
  * resources. Caches are identified by a unique string. Tagging of caches is
  * also supported, and caches can be found and deleted by id or tag.
- *
+ * 
+ * ##### Basic usage
+ * 	//get the cache instance
+ * 	$cache = Cache::instance();
+ * 	
+ * 	//set data to cache with the key
+ * 	$cache->set('key', $data);
+ * 	
+ * 	//get result by the key
+ * 	$result = $cache->get('key');
+ * 	
+ * 	//delete result by key
+ * 	$cache->delete('key');
+ * 
+ * 	
+ * 
  * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
@@ -11,18 +26,34 @@
  */
 class Cache_Core {
 
+	/**
+	 * a static array of Cache instances
+	 * 
+	 * @var array
+	 */
 	protected static $instances = array();
 
-	// Configuration
+	/**
+	 * Configuration information for Cache to use
+	 * 
+	 * @var array
+	 */
 	protected $config;
 
-	// Driver object
+	/**
+	 * Loaded Cache driver object
+	 * 
+	 * @var object
+	 */
 	protected $driver;
 
 	/**
 	 * Returns a singleton instance of Cache.
-	 *
-	 * @param   string  configuration
+	 * 
+	 * ##### Example
+	 * 	//loads the default configuration block for cache
+	 * 	$cache = Cache::instance('default')
+	 * @param  array|string $config custom configuration or config group name
 	 * @return  Cache_Core
 	 */
 	public static function & instance($config = FALSE)
@@ -38,8 +69,10 @@ class Cache_Core {
 
 	/**
 	 * Loads the configured driver and validates it.
-	 *
-	 * @param   array|string  custom configuration or config group name
+	 * ##### Example
+	 * 	//create a new Cache instance using the custom config block
+	 * 	$cache = new Cache('custom');
+	 * @param  array|string $config custom configuration or config group name
 	 * @return  void
 	 */
 	public function __construct($config = FALSE)
@@ -88,6 +121,32 @@ class Cache_Core {
 
 	/**
 	 * Set cache items
+	 * 
+	 * ##### Examples
+	 * 	//example data set
+	 * 	$data = array('foo' => 'bar');
+	 * 
+	 * 	//Basic Set
+	 * 	$cache->set('cache-key', $data);
+	 * 
+	 * 	//Specify a lifetime
+	 * 	$cache->set('cache-key', $data, NULL, 300);
+	 * 
+	 * 	//Specify Tags
+	 * 	$cache->set('cache-key', $data, array('tag1,'tag2'));
+	 * 	
+	 * 	//Specify Tags and lifetime
+	 * 	$cache->set('cache-key', $data, array('tag1','tag2'), 300);
+	 * 
+	 * 	//Alternative Syntax
+	 *	//sets key foo to bar
+	 * 	$cache->set($data);
+	 * 
+	 * @param string|array $key The unique Key for the cache item can also pass a key/value array to store items
+	 * @param mixed $value [optional] The data to be cached
+	 * @param array $tags [optional] An array of tags to associate with the cache item
+	 * @param int $lifetime [optional] Lifetime in seconds for cache item, defaults to configuration setting
+	 * @return boolean
 	 */
 	public function set($key, $value = NULL, $tags = NULL, $lifetime = NULL)
 	{
@@ -115,7 +174,17 @@ class Cache_Core {
 	}
 
 	/**
-	 * Get a cache items by key
+	 * Get cache items by key
+	 * 
+	 * ##### Examples
+	 * 	//Get item by single key
+	 * 	$result = $cache->get('cache-key');
+	 * 	
+	 * 	//Get multiple items by array of keys
+	 * 	$results = $cache->get(array('cache-key1', 'cache-key2', 'some_other_key'));
+	 * 
+	 * @param string|array $keys single key or array of keys
+	 * @return mixed
 	 */
 	public function get($keys)
 	{
@@ -143,6 +212,16 @@ class Cache_Core {
 
 	/**
 	 * Get cache items by tags
+	 * 
+	 * ##### Examples
+	 * 	//Get multiple items by single tag
+	 * 	$results = $cache->get_tag('tag1');
+	 * 	
+	 * 	//Get multiple items by array of tags
+	 * 	$results = $cache->get_tag(array('tag1', 'tag2'));
+	 * 
+	 * @param string|array $keys single tag or array of tag
+	 * @return mixed
 	 */
 	public function get_tag($tags)
 	{
@@ -164,6 +243,16 @@ class Cache_Core {
 
 	/**
 	 * Delete cache item by key
+	 * 
+	 * ##### Examples
+	 * 	//Delete item by single key
+	 * 	$results = $cache->delete('cache-key');
+	 * 	
+	 * 	//Delete multiple items by array of keys
+	 * 	$results = $cache->delete(array('cache-key1', 'cache-key2', 'some_other_key'));
+	 * 
+	 * @param string|array $keys
+	 * @return boolean 
 	 */
 	public function delete($keys)
 	{
@@ -181,7 +270,17 @@ class Cache_Core {
 	}
 
 	/**
-	 * Delete cache items by tag
+	 * Delete cache items by tags
+	 * 
+	 * ##### Examples
+	 * 	//Delete multiple items by single tag
+	 * 	$results = $cache->delete_tag('tag1');
+	 * 	
+	 * 	//Delete multiple items by array of tags
+	 * 	$results = $cache->delete_tag(array('tag1', 'tag2'));
+	 * 
+	 * @param string|array $keys single tag or array of tag
+	 * @return boolean
 	 */
 	public function delete_tag($tags)
 	{
@@ -200,6 +299,12 @@ class Cache_Core {
 
 	/**
 	 * Empty the cache
+	 * 
+	 * ##### Examplese
+	 * 	//Delete all cache items
+	 * 	$cache->delete_all();
+	 * 
+	 * @return boolean
 	 */
 	public function delete_all()
 	{

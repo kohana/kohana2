@@ -2,8 +2,14 @@
 /**
  * The Database Query Builder provides methods for creating database agnostic queries and
  * data manipulation.
- *
+ * 
  * ##### A basic select query
+ * 	$result = db::select()
+ * 				->where('name', '=', 'Kohana')
+ * 				->from('frameworks')
+ * 				->execute();
+ * 
+ * ##### An alternative select query
  *
  *     $builder = new Database_Builder;
  *     $kohana = $builder
@@ -55,7 +61,7 @@ class Database_Builder_Core {
 	 *
 	 * ##### Example
 	 *
-	 *     echo $builder->select()->from('products');
+	 *     echo db::select()->from('products');
 	 *     // Output: SELECT * FROM `products`
 	 *
 	 * @return  string Compiled query
@@ -72,13 +78,13 @@ class Database_Builder_Core {
 	 * ##### Examples
 	 *
 	 *     // Simple select
-	 *     echo $builder->select()->from('products');
+	 *     echo db::select()->from('products');
 	 *
 	 *     // Select with database function
-	 *     echo $builder->select(array('records_found' => 'COUNT("*")'))->from('products');
+	 *     echo db::select(array('records_found' => 'COUNT("*")'))->from('products');
 	 *
 	 *     // Select with sub query
-	 *     echo $builder->select(array('field', 'test' => db::select('test')->from('table')))->from('products');
+	 *     echo db::select(array('field', 'test' => db::select('test')->from('table')))->from('products');
 	 *
 	 * @chainable
 	 * @param   string|array    column name or array(alias => column)
@@ -121,7 +127,7 @@ class Database_Builder_Core {
 	 *
 	 * ##### Example
 	 *
-	 *     $builder->select()->from('products')
+	 *     db::select()->from('products')
 	 *             ->from(array('other' => 'other_table'));
 	 *     // Output: SELECT * FROM `products`, `other_table` AS `other`
 	 *
