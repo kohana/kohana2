@@ -134,7 +134,7 @@ class Database_Mysqli_Result_Core extends Database_Result {
 		if ($this->offsetExists($offset) AND $this->result->data_seek($offset))
 		{
 			// Set the current row to the offset
-			$this->current_row = $offset;
+			$this->current_row = $this->internal_row = $offset;
 
 			return TRUE;
 		}
