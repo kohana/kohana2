@@ -48,17 +48,10 @@ class valid_Core {
 	 *
 	 *     $email = 'bill@gates.com';
 	 *
-	 *     if (valid::email($email))
-	 *     {
-	 *         echo "Valid email";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid email";
-	 *     }
+	 *     Kohana::debug(valid::email($email));
 	 *
 	 *     // Output:
-	 *     Valid email
+	 *     (boolean) true
 	 *
 	 * @param   string   A email address
 	 * @return  boolean
@@ -78,17 +71,10 @@ class valid_Core {
 	 *
 	 *     $email = 'bill@gates.com';
 	 *
-	 *     if (valid::email_domain($email))
-	 *     {
-	 *         echo "Valid email domain";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid email domain";
-	 *     }
+	 *     Kohana::debug(valid::email_domain($email));
 	 *
 	 *     // Output:
-	 *     Valid email domain
+	 *     (boolean) true
 	 *
 	 * @param   string   email address
 	 * @return  boolean
@@ -111,17 +97,10 @@ class valid_Core {
 	 *
 	 *     $email = 'bill@gates.com';
 	 *
-	 *     if (valid::email_rfc($email))
-	 *     {
-	 *         echo "Valid email";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid email";
-	 *     }
+	 *     Kohana::debug(valid::email_rfc($email));
 	 *
 	 *     // Output:
-	 *     Valid email
+	 *     (boolean) true
 	 *
 	 * @see  Originally by Cal Henderson, modified to fit Kohana syntax standards:
 	 * @see  http://www.iamcal.com/publish/articles/php/parsing_email/
@@ -155,17 +134,10 @@ class valid_Core {
 	 *
 	 *     $url = 'http://www.kohanaphp.com';
 	 *
-	 *     if (valid::url($url))
-	 *     {
-	 *         echo "Valid url";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid url";
-	 *     }
+	 *     Kohana::debug(valid::url($url));
 	 *
 	 *     // Output:
-	 *     Valid url
+	 *     (boolean) true
 	 *
 	 * @param   string   URL
 	 * @return  boolean
@@ -184,17 +156,10 @@ class valid_Core {
 	 *
 	 *     $ip_address = '127.0.0.1';
 	 *
-	 *     if (valid::ip($ip_address))
-	 *     {
-	 *         echo "Valid IP";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid IP";
-	 *     }
+	 *     Kohana::debug(valid::ip($ip_address));
 	 *
 	 *     // Output:
-	 *     Valid IP
+	 *     (boolean) true
 	 *
 	 * @param   string   IP address
 	 * @param   boolean  allow IPv6 addresses
@@ -223,17 +188,10 @@ class valid_Core {
 	 *     // This is the standard Visa/Mastercard/AMEX test credit card number...
 	 *     $cc_number = '4111111111111111';
 	 *
-	 *     if (valid::credit_card($cc_number, array('visa', 'mastercard')))
-	 *     {
-	 *         echo "Valid credit card number";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid credit card number";
-	 *     }
+	 *     Kohana::debug(valid::credit_card($cc_num, array('visa', 'mastercard')));
 	 *
 	 *     // Output:
-	 *     Valid credit card number
+	 *     (boolean) true
 	 *
 	 * @param   integer       credit card number
 	 * @param   string|array  card type, or an array of card types
@@ -315,17 +273,10 @@ class valid_Core {
 	 *
 	 *     $phone_number = '(201) 664-0274';
 	 *
-	 *     if (valid::phone($phone_number))
-	 *     {
-	 *         echo "Valid phone number";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid phone number";
-	 *     }
+	 *     Kohana::debug(valid::phone($phone_number));
 	 *
 	 *     // Output:
-	 *     Valid phone number
+	 *     (boolean) true
 	 *
 	 * @param   string   phone number to check
 	 * @return  boolean
@@ -352,17 +303,10 @@ class valid_Core {
 	 *
 	 *     $date = '12/12/12';
 	 *
-	 *     if (valid::date($date))
-	 *     {
-	 *         echo "Valid date";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid date";
-	 *     }
+	 *     Kohana::debug(valid::date($date));
 	 *
 	 *     // Output:
-	 *     Valid date
+	 *     (boolean) true
 	 *
 	 * @param   string   date to check
 	 * @return  boolean
@@ -379,17 +323,10 @@ class valid_Core {
 	 *
 	 *     $str = 'abcdefghijklmnopqrstuvwxyz';
 	 *
-	 *     if (valid::alpha($str))
-	 *     {
-	 *         echo "Valid alphabetical string";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid alphabetical string";
-	 *     }
+	 *     Kohana::debug(valid::alpha($str));
 	 *
 	 *     // Output:
-	 *     Valid alphabetical string
+	 *     (boolean) true
 	 *
 	 * @param   string   input string
 	 * @param   boolean  trigger UTF-8 compatibility
@@ -409,17 +346,10 @@ class valid_Core {
 	 *
 	 *     $str = 'abcdefghijklmnopqrstuvwxyz1234567890*****';
 	 *
-	 *     if (valid::alpha_numeric($str))
-	 *     {
-	 *         echo "Valid alpha numeric string";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid alpha numeric string";
-	 *     }
+	 *     Kohana::debug(valid::alpha_numeric($str));
 	 *
 	 *     // Output:
-	 *     Invalid alpha numeric string
+	 *     (boolean) false
 	 *
 	 * @param   string   input string
 	 * @param   boolean  trigger UTF-8 compatibility
@@ -439,17 +369,10 @@ class valid_Core {
 	 *
 	 *     $str = 'abcdefghijklmnopqrstuvwxyz_-';
 	 *
-	 *     if (valid::alpha_dash($str))
-	 *     {
-	 *         echo "Valid alpha dash string";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid alpha dash string";
-	 *     }
+	 *     Kohana::debug(valid::alpha_dash($str));
 	 *     
 	 *     // Output:
-	 *     Valid alpha dash string
+	 *     (boolean) true
 	 *
 	 * @param   string   input string
 	 * @param   boolean  trigger UTF-8 compatibility
@@ -469,17 +392,10 @@ class valid_Core {
 	 *
 	 *     $str = 'abc defghijkl mnopqrstuv wxyz';
 	 *
-	 *     if (valid::alpha_space($str))
-	 *     {
-	 *         echo "Valid alpha space string";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid alpha space string";
-	 *     }
+	 *     Kohana::debug(valid::alpha_space($str));
 	 *     
 	 *     // Output:
-	 *     Valid alpha space string
+	 *     (boolean) true
 	 *
 	 * @param   string   input string
 	 * @param   boolean  trigger UTF-8 compatibility
@@ -499,17 +415,10 @@ class valid_Core {
 	 *
 	 *     $str = '23';
 	 *
-	 *     if (valid::digit($str))
-	 *     {
-	 *         echo "Valid digit";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid digit";
-	 *     }
+	 *     Kohana::debug(valid::digit('23'));
 	 *     
 	 *     // Output:
-	 *     Valid digit
+	 *     (boolean) true
 	 *
 	 * @param   string   input string
 	 * @param   boolean  trigger UTF-8 compatibility
@@ -529,19 +438,10 @@ class valid_Core {
 	 *
 	 * ###### Example:
 	 *
-	 *     $str = '2.3';
-	 *
-	 *     if (valid::numeric($str))
-	 *     {
-	 *         echo "Valid numeric string";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid numeric string";
-	 *     }
+	 *     Kohana::debug(valid::numeric('2.3));
 	 *     
 	 *     // Output:
-	 *     Valid numeric string
+	 *     (boolean) true
 	 *
 	 * @param   string   input string
 	 * @return  boolean
@@ -560,17 +460,10 @@ class valid_Core {
 	 *
 	 *     $num = '5';
 	 *
-	 *     if (valid::range($num, array(1, 10)))
-	 *     {
-	 *         echo "Valid integer range";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid integer range";
-	 *     }
+	 *     Kohana::debug(valid::range('5', array(1, 10)));
 	 *     
 	 *     // Output:
-	 *     Valid integer range
+	 *     (boolean) true
 	 *
 	 * @param   integer  number to check
 	 * @param   array    valid range of input
@@ -609,19 +502,10 @@ class valid_Core {
 	 *
 	 * ###### Example:
 	 *
-	 *     $decimal = '4.5';
-	 *
-	 *     if (valid::decimal($decimal, array(2,1)))
-	 *     {
-	 *         echo "Valid decimal";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid decimal";
-	 *     }
+	 *     Kohana::debug(valid::decimal('4.5', array(2,1)));
 	 *     
 	 *     // Output:
-	 *     Invalid decimal
+	 *     (boolean) false
 	 *
 	 * @param   string   input string
 	 * @param   array    decimal format: y or x,y
@@ -662,19 +546,10 @@ class valid_Core {
 	 *
 	 * ###### Example:
 	 *
-	 *     $hex = '#CCCCCC';
-	 *
-	 *     if (valid::color($hex))
-	 *     {
-	 *         echo "Valid color hex";
-	 *     }
-	 *     else
-	 *     {
-	 *         echo "Invalid color hex";
-	 *     }
+	 *     Kohana::debug(valid::color('#CCCCCC));
 	 *     
 	 *     // Output:
-	 *     Valid color hex
+	 *     (boolean) true
 	 *
 	 * @param   string   input string
 	 * @return  boolean
