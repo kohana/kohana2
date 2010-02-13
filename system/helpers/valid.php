@@ -3,8 +3,11 @@
  * The Valid Helper provides functions to help validate data. They can be used as standalone static functions or
  * as rules for the Validation Library.
  *
- * ###### Validation Library Example:
+ * ###### Using the Validation Helper:
+ *
+ *     // This example is done with the Validation library
  *     $data = new Validation($_POST);
+ *
  *     $data->add_rules('phone', 'required', 'valid::phone[7, 10, 11, 14]')
  *
  *     if ($data->validate())
@@ -21,6 +24,7 @@
  * For more informaiton see the [Validation] Library.
  *
  * ###### Standalone Example:
+ *
  *     if (valid::phone($_POST['phone'], array(7, 10, 11, 14))
  *     {
  *         echo 'The phone number is valid';
@@ -41,7 +45,9 @@ class valid_Core {
 	 * Validate an email address. This method is more strict than valid::email_rfc();
 	 *
 	 * ###### Example:
+	 *
 	 *     $email = 'bill@gates.com';
+	 *
 	 *     if (valid::email($email))
 	 *     {
 	 *         echo "Valid email";
@@ -50,6 +56,9 @@ class valid_Core {
 	 *     {
 	 *         echo "Invalid email";
 	 *     }
+	 *
+	 *     // Output:
+	 *     Valid email
 	 *
 	 * @param   string   A email address
 	 * @return  boolean
@@ -64,6 +73,22 @@ class valid_Core {
 	 * valid MX record.
 	 *
 	 * [!!] This function will always return `TRUE` if the checkdnsrr() function isn't avaliable (All Windows platforms before php 5.3)
+	 *
+	 * ###### Example:
+	 *
+	 *     $email = 'bill@gates.com';
+	 *
+	 *     if (valid::email_domain($email))
+	 *     {
+	 *         echo "Valid email domain";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid email domain";
+	 *     }
+	 *
+	 *     // Output:
+	 *     Valid email domain
 	 *
 	 * @param   string   email address
 	 * @return  boolean
@@ -81,6 +106,22 @@ class valid_Core {
 
 	/**
 	 * RFC compliant email validation. This function is __LESS__ strict than [valid::email]. Choose carefully.
+	 *
+	 * ###### Example:
+	 *
+	 *     $email = 'bill@gates.com';
+	 *
+	 *     if (valid::email_rfc($email))
+	 *     {
+	 *         echo "Valid email";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid email";
+	 *     }
+	 *
+	 *     // Output:
+	 *     Valid email
 	 *
 	 * @see  Originally by Cal Henderson, modified to fit Kohana syntax standards:
 	 * @see  http://www.iamcal.com/publish/articles/php/parsing_email/
@@ -111,7 +152,9 @@ class valid_Core {
 	 * Basic URL validation.
 	 *
 	 * ###### Example:
+	 *
 	 *     $url = 'http://www.kohanaphp.com';
+	 *
 	 *     if (valid::url($url))
 	 *     {
 	 *         echo "Valid url";
@@ -120,6 +163,9 @@ class valid_Core {
 	 *     {
 	 *         echo "Invalid url";
 	 *     }
+	 *
+	 *     // Output:
+	 *     Valid url
 	 *
 	 * @param   string   URL
 	 * @return  boolean
@@ -133,6 +179,22 @@ class valid_Core {
 	 * Validates an IP Address. This only tests to see if the ip address is valid,
 	 * it doesn't check to see if the ip address is actually in use. Has optional support for
 	 * IPv6, and private ip address ranges.
+	 *
+	 * ###### Example:
+	 *
+	 *     $ip_address = '127.0.0.1';
+	 *
+	 *     if (valid::ip($ip_address))
+	 *     {
+	 *         echo "Valid IP";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid IP";
+	 *     }
+	 *
+	 *     // Output:
+	 *     Valid IP
 	 *
 	 * @param   string   IP address
 	 * @param   boolean  allow IPv6 addresses
@@ -157,15 +219,21 @@ class valid_Core {
 	 * formula.
 	 *
 	 * ###### Example:
+	 *
+	 *     // This is the standard Visa/Mastercard/AMEX test credit card number...
 	 *     $cc_number = '4111111111111111';
+	 *
 	 *     if (valid::credit_card($cc_number, array('visa', 'mastercard')))
 	 *     {
-	 *         echo "Valid number";
+	 *         echo "Valid credit card number";
 	 *     }
 	 *     else
 	 *     {
-	 *         echo "Invalid number";
+	 *         echo "Invalid credit card number";
 	 *     }
+	 *
+	 *     // Output:
+	 *     Valid credit card number
 	 *
 	 * @param   integer       credit card number
 	 * @param   string|array  card type, or an array of card types
@@ -244,7 +312,9 @@ class valid_Core {
 	 * characters from the phone number for testing.
 	 *
 	 * ###### Example:
+	 *
 	 *     $phone_number = '(201) 664-0274';
+	 *
 	 *     if (valid::phone($phone_number))
 	 *     {
 	 *         echo "Valid phone number";
@@ -253,6 +323,9 @@ class valid_Core {
 	 *     {
 	 *         echo "Invalid phone number";
 	 *     }
+	 *
+	 *     // Output:
+	 *     Valid phone number
 	 *
 	 * @param   string   phone number to check
 	 * @return  boolean
@@ -273,7 +346,23 @@ class valid_Core {
 
 	/**
 	 * Tests if a string is a valid date using the php
-	 * [strtotime()](http://php.net/strtotime) function
+	 * [strtotime()](http://php.net/strtotime) function.
+	 *
+	 * ###### Example:
+	 *
+	 *     $date = '12/12/12';
+	 *
+	 *     if (valid::date($date))
+	 *     {
+	 *         echo "Valid date";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid date";
+	 *     }
+	 *
+	 *     // Output:
+	 *     Valid date
 	 *
 	 * @param   string   date to check
 	 * @return  boolean
@@ -285,6 +374,22 @@ class valid_Core {
 
 	/**
 	 * Checks whether a string consists of alphabetical characters only.
+	 *
+	 * ###### Example:
+	 *
+	 *     $str = 'abcdefghijklmnopqrstuvwxyz';
+	 *
+	 *     if (valid::alpha($str))
+	 *     {
+	 *         echo "Valid alphabetical string";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid alphabetical string";
+	 *     }
+	 *
+	 *     // Output:
+	 *     Valid alphabetical string
 	 *
 	 * @param   string   input string
 	 * @param   boolean  trigger UTF-8 compatibility
@@ -300,6 +405,22 @@ class valid_Core {
 	/**
 	 * Checks whether a string consists of alphabetical characters and numbers only.
 	 *
+	 * ###### Example:
+	 *
+	 *     $str = 'abcdefghijklmnopqrstuvwxyz1234567890*****';
+	 *
+	 *     if (valid::alpha_numeric($str))
+	 *     {
+	 *         echo "Valid alpha numeric string";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid alpha numeric string";
+	 *     }
+	 *
+	 *     // Output:
+	 *     Invalid alpha numeric string
+	 *
 	 * @param   string   input string
 	 * @param   boolean  trigger UTF-8 compatibility
 	 * @return  boolean
@@ -313,6 +434,22 @@ class valid_Core {
 
 	/**
 	 * Checks whether a string consists of alphabetical characters, numbers, underscores and dashes only.
+	 *
+	 * ###### Example:
+	 *
+	 *     $str = 'abcdefghijklmnopqrstuvwxyz_-';
+	 *
+	 *     if (valid::alpha_dash($str))
+	 *     {
+	 *         echo "Valid alpha dash string";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid alpha dash string";
+	 *     }
+	 *     
+	 *     // Output:
+	 *     Valid alpha dash string
 	 *
 	 * @param   string   input string
 	 * @param   boolean  trigger UTF-8 compatibility
@@ -328,6 +465,22 @@ class valid_Core {
 	/**
 	 * Checks whether a string consists of alphabetical characters and spaces only.
 	 *
+	 * ###### Example:
+	 *
+	 *     $str = 'abc defghijkl mnopqrstuv wxyz';
+	 *
+	 *     if (valid::alpha_space($str))
+	 *     {
+	 *         echo "Valid alpha space string";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid alpha space string";
+	 *     }
+	 *     
+	 *     // Output:
+	 *     Valid alpha space string
+	 *
 	 * @param   string   input string
 	 * @param   boolean  trigger UTF-8 compatibility
 	 * @return  boolean
@@ -341,6 +494,22 @@ class valid_Core {
 
 	/**
 	 * Checks whether a string consists of digits only (no dots or dashes).
+	 *
+	 * ###### Example:
+	 *
+	 *     $str = '23';
+	 *
+	 *     if (valid::digit($str))
+	 *     {
+	 *         echo "Valid digit";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid digit";
+	 *     }
+	 *     
+	 *     // Output:
+	 *     Valid digit
 	 *
 	 * @param   string   input string
 	 * @param   boolean  trigger UTF-8 compatibility
@@ -358,6 +527,22 @@ class valid_Core {
 	 * This function uses [localeconv()](http://www.php.net/manual/en/function.localeconv.php)
 	 * to support international number formats.
 	 *
+	 * ###### Example:
+	 *
+	 *     $str = '2.3';
+	 *
+	 *     if (valid::numeric($str))
+	 *     {
+	 *         echo "Valid numeric string";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid numeric string";
+	 *     }
+	 *     
+	 *     // Output:
+	 *     Valid numeric string
+	 *
 	 * @param   string   input string
 	 * @return  boolean
 	 */
@@ -370,6 +555,22 @@ class valid_Core {
 
 	/**
 	 * Tests if an integer is within a range.
+	 *
+	 * ###### Example:
+	 *
+	 *     $num = '5';
+	 *
+	 *     if (valid::range($num, array(1, 10)))
+	 *     {
+	 *         echo "Valid integer range";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid integer range";
+	 *     }
+	 *     
+	 *     // Output:
+	 *     Valid integer range
 	 *
 	 * @param   integer  number to check
 	 * @param   array    valid range of input
@@ -407,7 +608,9 @@ class valid_Core {
 	 * would force the number to have 4 digits and 2 decimal places.
 	 *
 	 * ###### Example:
+	 *
 	 *     $decimal = '4.5';
+	 *
 	 *     if (valid::decimal($decimal, array(2,1)))
 	 *     {
 	 *         echo "Valid decimal";
@@ -417,7 +620,8 @@ class valid_Core {
 	 *         echo "Invalid decimal";
 	 *     }
 	 *     
-	 *     Output: Invalid decimal
+	 *     // Output:
+	 *     Invalid decimal
 	 *
 	 * @param   string   input string
 	 * @param   array    decimal format: y or x,y
@@ -456,12 +660,52 @@ class valid_Core {
 	 * the short notation using only three instead of six hexadecimal characters.
 	 * You may want to normalize these values with format::color().
 	 *
+	 * ###### Example:
+	 *
+	 *     $hex = '#CCCCCC';
+	 *
+	 *     if (valid::color($hex))
+	 *     {
+	 *         echo "Valid color hex";
+	 *     }
+	 *     else
+	 *     {
+	 *         echo "Invalid color hex";
+	 *     }
+	 *     
+	 *     // Output:
+	 *     Valid color hex
+	 *
 	 * @param   string   input string
 	 * @return  boolean
 	 */
 	public static function color($str)
 	{
 		return (bool) preg_match('/^#?+[0-9a-f]{3}(?:[0-9a-f]{3})?$/iD', $str);
+	}
+	
+	/**
+	 * Performs a simple test using the modulo operator to see if a given
+	 * divisor is a multiple of the given dividend.
+	 *
+	 * [!!] Due to the need for an extra argument, this method does not play nice
+	 * with the Validation library.
+	 *
+	 * ###### Example:
+	 *
+	 *     Kohana::debug(valid::multiple(200, 50));
+	 *
+	 *     // Output:
+	 *     (boolean) true
+	 *
+	 * @param	integer	dividend
+	 * @param	integer	divisor
+	 * @return	boolean
+	 */
+	public static function multiple($dividend, $divisor)
+	{
+		// Note: this needs to be reversed because modulo returns a zero remainder for a true multiple
+		return ! (bool) ((int) $dividend % (int) $divisor);
 	}
 
 } // End valid
