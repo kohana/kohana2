@@ -2,6 +2,14 @@
 /**
  * Request helper class.
  *
+ * ###### Using the request helper:
+ * 
+ *     // Using the request helper is simple:
+ *     echo request::protocol();
+ *
+ *     // Output:
+ *     http
+ *
  * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
@@ -12,23 +20,34 @@ class request_Core {
 	// Possible HTTP methods
 	protected static $http_methods = array('get', 'head', 'options', 'post', 'put', 'delete');
 
-	// Character sets from client's HTTP Accept-Charset request header
+	// Character sets from the client's HTTP Accept-Charset request header
 	protected static $accept_charsets;
 
-	// Content codings from client's HTTP Accept-Encoding request header
+	// Content codings from the client's HTTP Accept-Encoding request header
 	protected static $accept_encodings;
 
-	// Language tags from client's HTTP Accept-Language request header
+	// Language tags from the client's HTTP Accept-Language request header
 	protected static $accept_languages;
 
-	// Content types from client's HTTP Accept request header
+	// Content types from the client's HTTP Accept request header
 	protected static $accept_types;
 
 	// The current user agent and its parsed attributes
 	protected static $user_agent;
 
 	/**
-	 * Returns the HTTP referrer, or the default if the referrer is not set.
+	 * Returns the HTTP referrer, or a default if the referrer is not set and the
+	 * first function argument is provided.
+	 *
+	 * The second function argument is used to remove the base URL from the
+	 * referrer returned.
+	 *
+	 * ###### Example
+	 * 
+	 *     echo request::referrer();
+	 *
+	 *     // Output:
+	 *     http://referring.website.com
 	 *
 	 * @param   mixed   default to return
 	 * @param   bool    Remove base URL
@@ -55,6 +74,13 @@ class request_Core {
 	 * Returns the current request protocol, based on $_SERVER['https']. In CLI
 	 * mode, NULL will be returned.
 	 *
+	 * ###### Example
+	 * 
+	 *     echo request::protocol();
+	 *
+	 *     // Output:
+	 *     http
+	 *
 	 * @return  string
 	 */
 	public static function protocol()
@@ -77,6 +103,13 @@ class request_Core {
 	 * Tests if the current request is an AJAX request by checking the X-Requested-With HTTP
 	 * request header that most popular JS frameworks now set for AJAX calls.
 	 *
+	 * ###### Example
+	 * 
+	 *     Kohana::debug(request::is_ajax());
+	 *
+	 *     // Output:
+	 *     (boolean) false
+	 *
 	 * @return  boolean
 	 */
 	public static function is_ajax()
@@ -85,7 +118,15 @@ class request_Core {
 	}
 
 	/**
-	 * Returns current request method.
+	 * Returns current request method. This method will return one of the following
+	 * methods: get, head, options, post, put, or delete.
+	 *
+	 * ###### Example
+	 * 
+	 *     echo request::method();
+	 *
+	 *     // Output:
+	 *     get
 	 *
 	 * @throws  Kohana_Exception in case of an unknown request method
 	 * @return  string
@@ -101,8 +142,16 @@ class request_Core {
 	}
 
 	/**
-	 * Retrieves current user agent information
-	 * keys:  browser, version, platform, mobile, robot
+	 * Retrieves current user agent information.
+	 * 
+	 * The first argument is a key and may be one of the following:  browser, version, platform, mobile, or robot.
+	 *
+	 * ###### Example
+	 * 
+	 *     echo request::user_agent();
+	 *
+	 *     // Output:
+	 *     Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_2; en-US) AppleWebKit/532.9 (KHTML, like Gecko) Chrome/5.0.307.7 Safari/532.9
 	 *
 	 * @param   string  key
 	 * @return  mixed   NULL or the parsed value
@@ -150,8 +199,47 @@ class request_Core {
 	}
 
 	/**
-	 * Returns boolean of whether client accepts content type.
+	 * Returns a boolean if the first function argument is provided and is
+	 * a content type either accepted or not by the client. If no argument is provided 
+	 * an array of content types from client's HTTP Accept request header is
+	 * returned.
 	 *
+	 * The second function argument enables/disables wildcard checking.
+	 *
+	 * ###### Example
+	 * 
+	 *     // With a type specified
+	 *     Kohana::debug(request::accepts('application/xhtml+xml'));
+	 *
+	 *     // Output:
+	 *     (boolean) true
+	 *
+	 *     // With no type specified
+	 *     Kohana::debug(request::accepts());
+	 *
+	 *     // Output:
+	 *     (array) Array
+	 *     (
+	 *         [application] => Array
+	 *             (
+	 *                 [xml] => 1
+	 *                 [xhtml+xml] => 1
+	 *             )
+	 *         [text] => Array
+	 *             (
+	 *                 [html] => 0.9
+	 *                 [plain] => 0.8
+	 *             )
+	 *         [image] => Array
+	 *             (
+	 *                 [png] => 1
+	 *             )
+	 *         [*] => Array
+	 *             (
+	 *                 [*] => 0.5
+	 *             )
+	 *     )
+	 * 
 	 * @param   string   content type
 	 * @param   boolean  set to TRUE to disable wildcard checking
 	 * @return  boolean
@@ -167,7 +255,29 @@ class request_Core {
 	}
 
 	/**
-	 * Returns boolean indicating if the client accepts a charset
+	 * Returns a boolean if the first function argument is provided and is a character
+	 * set either accepted or not by the client. If no function agrument is supplied an array
+	 * of the character sets from the client's HTTP Accept-Charset request header
+	 * will be returned.
+	 *
+	 * ###### Example
+	 * 
+	 *     // With a character set specified
+	 *     Kohana::debug(request::accepts_charset('UTF-8'));
+	 *
+	 *     // Output:
+	 *     (boolean) true
+	 *
+	 *     // With no function argument
+	 *     Kohana::debug(request::accepts_charset());
+	 *
+	 *     // Output:
+	 *     (array) Array
+	 *     (
+	 *         [iso-8859-1] => 1
+	 *         [utf-8] => 0.7
+	 *         [*] => 0.3
+	 *     )
 	 *
 	 * @param   string
 	 * @return  boolean
@@ -183,7 +293,31 @@ class request_Core {
 	}
 
 	/**
-	 * Returns boolean indicating if the client accepts an encoding
+	 * Returns a boolean if the first function argument is provided and is an encoding
+	 * either accepted or not by the client. If no function agrument is supplied an array
+	 * of the content encodings from the client's HTTP Accept-Encoding request header
+	 * will be returned.
+	 *
+	 * The second function argument enables/disables wildcard checking.
+	 *
+	 * ###### Example
+	 * 
+	 *     // With an encoding specified
+	 *     Kohana::debug(request::accepts_encoding('gzip'));
+	 *
+	 *     // Output:
+	 *     (boolean) true
+	 *
+	 *     // With no function argument
+	 *     Kohana::debug(request::accepts_encoding());
+	 *
+	 *     // Output:
+	 *     (array) Array
+	 *     (
+	 *         [gzip] => 1
+	 *         [deflate] => 1
+	 *         [sdch] => 1
+	 *     )
 	 *
 	 * @param   string
 	 * @param   boolean set to TRUE to disable wildcard checking
@@ -200,7 +334,31 @@ class request_Core {
 	}
 
 	/**
-	 * Returns boolean indicating if the client accepts a language tag
+	 * Returns a boolean if the first function argument is provided and is a language
+	 * tag either accepted or not by the client. If no function agrument is supplied an array
+	 * of the language tags from the client's HTTP Accept-Language request header will be returned.
+	 *
+	 * The second function argument enables/disables wildcard checking.
+	 *
+	 * ###### Example
+	 * 
+	 *     // With a language tag specified
+	 *     Kohana::debug(request::accepts_language('en'));
+	 *
+	 *     // Output:
+	 *     (boolean) true
+	 *
+	 *     // With no function argument
+	 *     Kohana::debug(request::accepts_language());
+	 *
+	 *     // Output:(array) Array
+	 *     (
+	 *         [en] => Array
+	 *             (
+	 *                 [us] => 1
+	 *                 [*] => 0.8
+	 *             )
+	 *     )
 	 *
 	 * @param   string  language tag
 	 * @param   boolean set to TRUE to disable prefix and wildcard checking
@@ -217,9 +375,18 @@ class request_Core {
 	}
 
 	/**
-	 * Compare the q values for given array of content types and return the one with the highest value.
-	 * If items are found to have the same q value, the first one encountered in the given array wins.
-	 * If all items in the given array have a q value of 0, FALSE is returned.
+	 * Compare the q values for a given array of content types and return the one with the highest value. If 
+	 * items are found to have the same q value, the first one encountered in the given array wins. If all 
+	 * items in the given array have a q value of 0, FALSE is returned.
+	 *
+	 * The second function argument enables/disables wildcard checking.
+	 *
+	 * ###### Example
+	 * 
+	 *     echo request::preferred_accept(array('text/html', 'application/xhtml+xml'));
+	 *
+	 *     // Output:
+	 *     application/xhtml+xml
 	 *
 	 * @param   array    content types
 	 * @param   boolean  set to TRUE to disable wildcard checking
@@ -245,10 +412,16 @@ class request_Core {
 	}
 
 	/**
-	 * Compare the q values for a given array of character sets and return the
-	 * one with the highest value. If items are found to have the same q value,
-	 * the first one encountered takes precedence. If all items in the given
-	 * array have a q value of 0, FALSE is returned.
+	 * Compare the q values for a given array of character sets and return the one with the highest value. If 
+	 * items are found to have the same q value, the first one encountered takes precedence. If all items in 
+	 * the given array have a q value of 0, FALSE is returned.
+	 *
+	 * ###### Example
+	 * 
+	 *     echo request::preferred_charset(array('iso-8859-1', 'utf-8'));
+	 *
+	 *     // Output:
+	 *     utf-8
 	 *
 	 * @param   array   character sets
 	 * @return  mixed
@@ -273,10 +446,18 @@ class request_Core {
 	}
 
 	/**
-	 * Compare the q values for a given array of encodings and return the one with
-	 * the highest value. If items are found to have the same q value, the first
-	 * one encountered takes precedence. If all items in the given array have
-	 * a q value of 0, FALSE is returned.
+	 * Compare the q values for a given array of encodings and return the one with the highest value. If 
+	 * items are found to have the same q value, the first one encountered takes precedence. If all items 
+	 * in the given array have a q value of 0, FALSE is returned.
+	 *
+	 * The second function argument enables/disables wildcard checking.
+	 *
+	 * ###### Example
+	 * 
+	 *     echo request::preferred_encoding(array('gzip', 'deflate'));
+	 *
+	 *     // Output:
+	 *     gzip
 	 *
 	 * @param   array   encodings
 	 * @param   boolean set to TRUE to disable wildcard checking
@@ -302,10 +483,18 @@ class request_Core {
 	}
 
 	/**
-	 * Compare the q values for a given array of language tags and return the
-	 * one with the highest value. If items are found to have the same q value,
-	 * the first one encountered takes precedence. If all items in the given
-	 * array have a q value of 0, FALSE is returned.
+	 * Compare the q values for a given array of language tags and return the one with the highest value. If 
+	 * items are found to have the same q value, the first one encountered takes precedence. If all items in 
+	 * the given array have a q value of 0, FALSE is returned.
+	 *
+	 * The second function argument enables/disables wildcard checking.
+	 *
+	 * ###### Example
+	 * 
+	 *     echo request::preferred_language(array('en', 'dn'));
+	 *
+	 *     // Output:
+	 *     en
 	 *
 	 * @param   array   language tags
 	 * @param   boolean set to TRUE to disable prefix and wildcard checking
@@ -331,7 +520,21 @@ class request_Core {
 	}
 
 	/**
-	 * Returns quality factor at which the client accepts content type
+	 * Returns the quality factor at which the client accepts a content type.
+	 *
+	 * The second function argument enables/disables wildcard checking.
+	 *
+	 * ###### Example
+	 * 
+	 *     Kohana::debug(request::accepts_at_quality('application/xhtml+xml));
+	 *
+	 *     // Output:
+	 *     (integer) 1
+	 * 
+	 *     Kohana::debug(request::accepts_at_quality('text/html'));
+	 *
+	 *     // Output:
+	 *     (double) 0.9
 	 *
 	 * @param   string   content type (e.g. "image/jpg", "jpg")
 	 * @param   boolean  set to TRUE to disable wildcard checking
@@ -383,7 +586,19 @@ class request_Core {
 	}
 
 	/**
-	 * Returns quality factor at which the client accepts a charset
+	 * Returns the quality factor at which the client accepts a character set.
+	 *
+	 * ###### Example
+	 * 
+	 *     Kohana::debug(request::accepts_charset_at_quality('utf-8'));
+	 *
+	 *     // Output:
+	 *     (integer) 0.7
+	 * 
+	 *     Kohana::debug(request::accepts_charset_at_quality('iso-8859-1'));
+	 *
+	 *     // Output:
+	 *     (integer) 1
 	 *
 	 * @param   string  charset (e.g., "ISO-8859-1", "utf-8")
 	 * @return  integer|float
@@ -409,7 +624,19 @@ class request_Core {
 	}
 
 	/**
-	 * Returns quality factor at which the client accepts an encoding
+	 * Returns the quality factor at which the client accepts an encoding.
+	 *
+	 * ###### Example
+	 * 
+	 *     Kohana::debug(request::accepts_encoding_at_quality('gzip'));
+	 *
+	 *     // Output:
+	 *     (integer) 1
+	 * 
+	 *     Kohana::debug(request::accepts_encoding_at_quality('deflate'));
+	 *
+	 *     // Output:
+	 *     (integer) 1
 	 *
 	 * @param   string  encoding (e.g., "gzip", "deflate")
 	 * @param   boolean set to TRUE to disable wildcard checking
@@ -439,7 +666,16 @@ class request_Core {
 	}
 
 	/**
-	 * Returns quality factor at which the client accepts a language
+	 * Returns the quality factor at which the client accepts a language tag.
+	 *
+	 * The second function argument enables/disables wildcard checking.
+	 *
+	 * ###### Example
+	 * 
+	 *     Kohana::debug(request::accepts_language_at_quality('en'));
+	 *
+	 *     // Output:
+	 *     (integer) 0.8
 	 *
 	 * @param   string  tag (e.g., "en", "en-us", "fr-ca")
 	 * @param   boolean set to TRUE to disable prefix and wildcard checking
