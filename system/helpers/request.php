@@ -142,16 +142,25 @@ class request_Core {
 	}
 
 	/**
-	 * Retrieves current user agent information.
+	 * Retrieves current user agent information. If no function argument is supplied, the default 'agent'
+	 * key will be used, returning the full user agent string.
 	 * 
-	 * The first argument is a key and may be one of the following:  browser, version, platform, mobile, or robot.
+	 * The first argument is a key and may be one of the following:  browser, version, platform, mobile, 
+	 * or robot.
 	 *
 	 * ###### Example
 	 * 
+	 *     // To return the full user agent string
 	 *     echo request::user_agent();
 	 *
 	 *     // Output:
 	 *     Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_2; en-US) AppleWebKit/532.9 (KHTML, like Gecko) Chrome/5.0.307.7 Safari/532.9
+	 *
+	 *     // Specifying the "browser" key
+	 *     echo request::user_agent('browser');
+	 *
+	 *     // Output:
+	 *     Chrome
 	 *
 	 * @param   string  key
 	 * @return  mixed   NULL or the parsed value
