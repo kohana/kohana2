@@ -608,6 +608,8 @@ class arr_Core {
 		// This part is easy
 		$slice	= array_slice($array, $offset, $limit);
 		
+		// Figure out what we are doing with the index and slice n'
+		// dice accordingly
 		if ($offset > 0)
 		{
 			$arr	= array_slice($array, 0, $offset);
@@ -622,6 +624,7 @@ class arr_Core {
 			$arr	= array_slice($array, $limit, null);
 		}
 		
+		// Assign our left over array to the reference variable
 		$array	= $arr;
 		
 		return $slice;
