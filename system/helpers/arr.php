@@ -537,4 +537,93 @@ class arr_Core {
 		}
 		return $result;
 	}
+
+	/**
+	 * Returns a slice of the array (like array_slice()) but resets
+	 * the original array to the rest of the array that wasn't in the
+	 * slice.
+	 *
+	 * ##### Example
+	 *
+	 *      $arr1	= array('cat', 'dog', 'horse', 'cow', 'llama', 'giraffe');
+	 *      $arr2	= array('cat', 'dog', 'horse', 'cow', 'llama', 'giraffe');
+	 
+	 *      // Returning the slice
+	 *      echo Kohana::debug(arr::slice($arr1, 0, 2));
+	 *
+	 *      // Output:
+	 *      (array) Array
+	 *      (
+	 *          [0] => cat
+	 *          [1] => dog
+	 *      )
+	 *
+	 *      // Rest of the array has been shortened
+	 *      echo Kohana::debug($arr1);
+	 *
+	 *      // Output:
+	 *      (array) Array
+	 *      (
+	 *          [0] => horse
+	 *          [1] => cow
+	 *          [2] => llama
+	 *          [3] => giraffe
+	 *      )
+	 *
+	 *      // It's also intelligent and preserves arrays
+	 *      echo Kohana::debug(arr::slice($arr2, 2, 2));
+	 *
+	 *      // Output:
+	 *      (array) Array
+	 *      (
+	 *          [0] => horse
+	 *          [1] => cow
+	 *      )
+	 *
+	 *      echo Kohana::debug($arr2);
+	 *
+	 *      // Output:
+	 *      (array) Array
+	 *      (
+	 *          [0] => cat
+	 *          [1] => dog
+	 *          [2] => llama
+	 *          [3] => giraffe
+	 *      )
+	 *      
+	 * @param	array	$array	Pass by reference array to be sliced
+	 * @param	integer	$offset	Array index to offset by
+	 * @param	integer	$limit	Number of elements to slice from the offset
+	 * @return	array
+	 */
+	public static function slice(&$array, $offset, $limit=NULL)
+	{
+		// Make limit optional - but compatible with our pass by
+		// reference implementation.
+		if (is_null($limit))
+		{
+			$limit	= count($array) - $offset;
+		}
+		
+		// This part is easy
+		$slice	= array_slice($array, $offset, $limit);
+		
+		if ($offset > 0)
+		{
+			$arr	= array_slice($array, 0, $offset);
+			
+			if (count($array) > ($offset + $limit))
+			{
+				$arr	= array_merge($arr, array_slice($array, $offset + $limit, count($array) - ($offset + $limit)));
+			}
+		}
+		else
+		{
+			$arr	= array_slice($array, $limit, null);
+		}
+		
+		$array	= $arr;
+		
+		return $slice;
+	}
 } // End arr
