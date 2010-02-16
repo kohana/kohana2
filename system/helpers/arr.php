@@ -608,12 +608,16 @@ class arr_Core {
 		// This part is easy
 		$slice	= array_slice($array, $offset, $limit);
 		
-		// Figure out what we are doing with the index and slice n'
-		// dice accordingly
+		// If the offset is greater than zero we are going to have
+		// elements in the beginning of the list to return
 		if ($offset > 0)
 		{
 			$arr	= array_slice($array, 0, $offset);
 			
+			// If the offset is greater than zero but the limit is
+			// less than the tail of the array we need to figure out
+			// where and what is left so that we can slice the
+			// trailing end of the array and merge onto the first slice.
 			if (count($array) > ($offset + $limit))
 			{
 				$arr	= array_merge($arr, array_slice($array, $offset + $limit, count($array) - ($offset + $limit)));
@@ -621,6 +625,7 @@ class arr_Core {
 		}
 		else
 		{
+			// This one is simple, just assign the rest of the array
 			$arr	= array_slice($array, $limit, null);
 		}
 		
