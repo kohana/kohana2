@@ -11,12 +11,18 @@ class download_Core {
 
 	/**
 	 * Send headers necessary to invoke a "Save As" dialog
+	 * 
+	 * ##### Example
+	 * 		//display save dialog
+	 * 		download::dialog('Modern Warfare 2 Hacks.mpg');
+	 * 		
+	 * 		//echo out video contents
+	 * 		echo file_get_contents('rick_roll.mpg');
 	 *
 	 * @link http://support.microsoft.com/kb/260519
 	 * @link http://greenbytes.de/tech/tc2231/
-	 *
-	 * @param   string  file name
-	 * @return  string  file name as it was sent
+	 * @param string $filename file name
+	 * @return string file name as it was sent
 	 */
 	public static function dialog($filename)
 	{
@@ -29,13 +35,16 @@ class download_Core {
 
 	/**
 	 * Send the contents of a file or a data string with the proper MIME type and exit.
+	 * 
+	 * ##### Example
+	 * 		//send image
+	 * 		download::send('lolcatz.png');
 	 *
 	 * @uses exit()
 	 * @uses Kohana::close_buffers()
-	 *
-	 * @param   string  a file path or file name
-	 * @param   string  optional data to send
-	 * @return  void
+	 * @param string $filename a file path or file name
+	 * @param string $data optional data to send
+	 * @return void
 	 */
 	public static function send($filename, $data = NULL)
 	{
@@ -86,17 +95,19 @@ class download_Core {
 	/**
 	 * Force the download of a file by the user's browser by preventing any
 	 * caching. Contains a workaround for Internet Explorer.
+	 * 
+	 * ##### Example
+	 * 		//send the file to the user to download
+	 * 		download::force('rick_roll.wmv', NULL, 'Shot My Neighbor with a BB Gun.wmv');
 	 *
 	 * @link http://support.microsoft.com/kb/316431
 	 * @link http://support.microsoft.com/kb/812935
-	 *
 	 * @uses download::dialog()
 	 * @uses download::send()
-	 *
-	 * @param   string  a file path or file name
-	 * @param   mixed   data to be sent if the filename does not exist
-	 * @param   string  suggested filename to display in the download
-	 * @return  void
+	 * @param string $filename a file path or file name
+	 * @param mixed $data data to be sent if the filename does not exist
+	 * @param string $nicename suggested filename to display in the download
+	 * @return void
 	 */
 	public static function force($filename = NULL, $data = NULL, $nicename = NULL)
 	{
