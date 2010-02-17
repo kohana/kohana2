@@ -1,12 +1,10 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Array helper class assists in transforming arrays.
- * 
- * *In order to use it, the class name is 'arr' instead of 'array'*
  *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class arr_Core {
@@ -22,7 +20,7 @@ class arr_Core {
 	 *     // Outputs:
 	 *     array('limit', array('10', '20'))
 	 *
-	 * @param   string  callback string
+	 * @param   string  $str  callback string
 	 * @return  array
 	 */
 	public static function callback_string($str)
@@ -104,9 +102,10 @@ class arr_Core {
 	 *             )
 	 *     )
 	 *
-	 * @param   array    array to rotate
-	 * @param   boolean  keep the keys in the final rotated array. the sub arrays of the source array need to have the same key values.
-	 *                   if your subkeys might not match, you need to pass FALSE here!
+	 * [!!] If your subkeys might not match, `$keep_keys` must be set to `FALSE`
+	 *
+	 * @param   array    $source_array  Array to rotate
+	 * @param   boolean  $keep_keys     Keep the keys in the final rotated array.
 	 * @return  array
 	 */
 	public static function rotate($source_array, $keep_keys = TRUE)
@@ -171,7 +170,7 @@ class arr_Core {
 	 *         [0] => 700
 	 *         [1] => 780
 	 *     )
-	 *      
+	 *
 	 *     Array
 	 *     (
 	 *         [DVD] => Array
@@ -186,9 +185,9 @@ class arr_Core {
 	 *             )
 	 *     )
 	 *
-	 * @param   string  key to return
-	 * @param   array   array to work on
-	 * @return  mixed   value of the requested array key
+	 * @param   string  $key     Key to return
+	 * @param   array   $array   Array to work on
+	 * @return  mixed   Value of the requested array key
 	 */
 	public static function remove($key, & $array)
 	{
@@ -231,8 +230,8 @@ class arr_Core {
 	 *          [Bluray] => NULL
 	 *      )
 	 *
-	 * @param   array   array to search
-	 * @param   string  key name
+	 * @param   array   $search  Array to search
+	 * @param   string  $keys    Key name
 	 * @return  array
 	 */
 	public static function extract(array $search, $keys)
@@ -250,7 +249,7 @@ class arr_Core {
 	}
 
 	/**
-	 * Get the value of array[key]. If it doesn't exist, return default.
+	 * Get the value of array key. If it doesn't exist, return default.
 	 *
 	 * ##### Example
 	 *
@@ -272,11 +271,11 @@ class arr_Core {
 	 *          [1] => 780
 	 *      )
 	 *
-	 *      Non-existent!
-	 * 
-	 * @param   array   array to search
-	 * @param   string  key name
-	 * @param   mixed   default value
+	 *      (string) Non-existent!
+	 *
+	 * @param   array   $array    Array to search
+	 * @param   string  $key      Key name
+	 * @param   mixed   $default  Default value
 	 * @return  mixed
 	 */
 	public static function get(array $array, $key, $default = NULL)
@@ -301,12 +300,10 @@ class arr_Core {
 	 *          [fruit3] => pineapple
 	 *      )
 	 *
-	 * @param   array   array to unshift
-	 * @param   string  key to unshift
-	 * @param   mixed   value to unshift
+	 * @param   array   $array   Array to unshift
+	 * @param   string  $key     Key to unshift
+	 * @param   mixed   $val     Value to unshift
 	 * @return  array
-	 * @todo This function is badly named, IMHO, and none of the other array helper methods pass by reference!
-	 *       I didn't change it because the API is locked.
 	 */
 	public static function unshift_assoc( array & $array, $key, $val)
 	{
@@ -350,8 +347,8 @@ class arr_Core {
 	 *              )
 	 *      )
 	 *
-	 * @param   mixed  callback to apply to each member of the array
-	 * @param   array  array to map to
+	 * @param   mixed  $callback   Callback to apply to each member of the array
+	 * @param   array  $array      Array to map to
 	 * @return  array
 	 */
 	public static function map_recursive($callback, array $array)
@@ -446,8 +443,8 @@ class arr_Core {
 	 *          [fruit3] => pineapple
 	 *      )
 	 *
-	 * @param   array   key array
-	 * @param   array   input array(s) that will overwrite key array values
+	 * @param   array   $array1  Key array
+	 * @param   array   $array2  Input array(s) that will overwrite key array values
 	 * @return  array
 	 */
 	public static function overwrite($array1, $array2)
@@ -487,7 +484,8 @@ class arr_Core {
 	 *          [test] => 13
 	 *      )
 	 *
-	 * @param   array   array to convert
+	 * @param   array   $array   Array to convert
+	 * @param   string  $class   Object name
 	 * @return  object
 	 */
 	public static function to_object(array $array, $class = 'stdClass')
@@ -523,9 +521,9 @@ class arr_Core {
 	 *          [reptile] => snake
 	 *          [mammal] => dog
 	 *      )
-	 *      
-	 * @param string|integer $key The key or column number to pluck from each object.
-	 * @param array $array        The array of objects to pluck from.
+	 *
+	 * @param mixed     $key      The key or column number to pluck from each object.
+	 * @param array     $array    The array of objects to pluck from.
 	 * @return array
 	 */
 	public static function pluck($key, $array)
