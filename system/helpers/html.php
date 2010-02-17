@@ -10,23 +10,25 @@
  */
 class html_Core {
 
-	// Enable or disable automatic setting of target="_blank"
+	/**
+	 * Enable or disable automatic setting of target="_blank"
+	 * @var bool
+	 */
 	public static $windowed_urls = FALSE;
-
 
 	/**
 	 * Wrapper for htmlspecialchars() that uses the default Kohana charset and
 	 * will encode both double and single quotes (using the ENT_QUOTES flag).
 	 *
 	 * ##### Example
-	 * 
+	 *
 	 *     echo html::chars('<p>"I\'m hungry"&mdash;Cookie Monster said.</p>');
 	 *
 	 *     // Output:
 	 *     &lt;p&gt;&quot;I&#039;m hungry&quot;&amp;mdash;Cookie Monster said.&lt;/p&gt;
 	 *
-	 * @param   string   $str            string to encode
-	 * @param   boolean  $double_encode  encode existing entities
+	 * @param   string   $str            String to encode
+	 * @param   boolean  $double_encode  Encode existing entities
 	 * @return  string
 	 */
 	public static function chars($str, $double_encode = TRUE)
@@ -41,28 +43,28 @@ class html_Core {
 	 * remove `index.php` from your links see [config::base_url].
 	 *
 	 * [!!] By default the anchor title will *not* be escaped
-	 * 
+	 *
 	 * ##### Example
 	 *
 	 * Internal Link
-	 * 
+	 *
 	 *     echo html::anchor('home/news', 'Go to our news section!');
 	 *
 	 *     // Output:
 	 *     <a href="http://localhost/index.php/home/news">Go to our news section!</a>
 	 *
 	 * External Link
-	 * 
+	 *
 	 *     echo html::anchor('irc://irc.freenode.net/kohana', 'Join us on IRC!', array('style'=>'font-size: 20px;'));
 	 *
 	 *     // Output:
 	 *     <a href="irc://irc.freenode.net/kohana" style="font-size: 20px;">Join us on IRC!</a>
 	 *
 	 * @param   string  $uri           URL or URI string
-	 * @param   string  $title         link text
+	 * @param   string  $title         Link text
 	 * @param   array   $attributes    HTML anchor attributes
-	 * @param   string  $protocol      non-default protocol, eg: https
-	 * @param   boolean $escape_title  option to escape the title that is output
+	 * @param   string  $protocol      Non-default protocol, eg: https
+	 * @param   boolean $escape_title  Option to escape the title that is output
 	 * @return  string
 	 */
 	public static function anchor($uri, $title = NULL, $attributes = NULL, $protocol = NULL, $escape_title = FALSE)
@@ -112,10 +114,10 @@ class html_Core {
 	 *     // Output:
 	 *     <a href="http://localhost/media/files/2007-12-magazine.pdf">Check out our latest magazine!</a>
 	 *
-	 * @param   string  $file         name of file to link to
-	 * @param   string  $title        link text
+	 * @param   string  $file         Name of file to link to
+	 * @param   string  $title        Link text
 	 * @param   array   $attributes   HTML anchor attributes
-	 * @param   string  $protocol     non-default protocol, eg: ftp
+	 * @param   string  $protocol     Non-default protocol, eg: ftp
 	 * @return  string
 	 */
 	public static function file_anchor($file, $title = NULL, $attributes = NULL, $protocol = NULL)
@@ -135,12 +137,13 @@ class html_Core {
 	 * help prevent spam and e-mail harvesting.
 	 *
 	 * ##### Example
+	 *
 	 *     echo Kohana::debug(html::email('test@mydomain.com'));
 	 *
 	 *     // Output:
 	 *     (string) t&#101;&#x73;&#116;&#x40;m&#121;&#x64;o&#109;&#x61;&#105;n&#46;&#x63;o&#109;
 	 *
-	 * @param   string  email address
+	 * @param   string  $email   Email address
 	 * @return  string
 	 */
 	public static function email($email)
@@ -166,13 +169,14 @@ class html_Core {
 	 * Creates an email anchor and obfuscated the email address using [html::email].
 	 *
 	 * ##### Example
+	 *
 	 *     echo html::mailto('info@example.com');
 	 *
 	 *     // Output (note the output has been truncated for display purposes):
 	 *     <a href="&#109;&#097;&#105;&#108;&#116;...">&#109;&#097;&#105;&#108;&#116;...</a>
 	 *
-	 * @param   string  $email       email address to send to
-	 * @param   string  $title       link text
+	 * @param   string  $email       Email address to send to
+	 * @param   string  $title       Link text
 	 * @param   array   $attributes  HTML anchor attributes
 	 * @return  string
 	 */
@@ -210,14 +214,26 @@ class html_Core {
 	}
 
 	/**
-	 * Generate a "breadcrumb" list of anchors representing the URI.
+	 * Generate a "breadcrumb" list of anchors representing the URI. Uses
+	 * `Router::$segments` if no segment argument is provided.
 	 *
-	 * @param   array   segments to use as breadcrumbs, defaults to using Router::$segments
+	 * ##### Example
+	 *
+	 *     echo Kohana::debug(html::breadcrumb())
+	 *
+	 *     // Output (current uri is /kohana/index.php/userguide/index):
+	 *     (array) Array
+	 *     (
+	 *         [0] => <a href="/kohana/index.php/userguide">Userguide</a>
+	 *         [1] => <a href="/kohana/index.php/userguide/index">Index</a>
+	 *     )
+	 *
+	 * @param   array   $segments  Segments to use as breadcrumbs
 	 * @return  string
 	 */
 	public static function breadcrumb($segments = NULL)
 	{
-		empty($segments) and $segments = Router::$segments;
+		$segments = empty($segments) ? Router::$segments : $segments;
 
 		$array = array();
 		while ($segment = array_pop($segments))
@@ -240,6 +256,7 @@ class html_Core {
 	 * should use http-equiv or name.
 	 *
 	 * ##### Example
+	 *
 	 *     echo html::meta(array('generator' => 'Kohana 2.4', 'robots' => 'noindex,nofollow'));
 	 *
 	 *     // Output:
@@ -275,10 +292,11 @@ class html_Core {
 	 * Creates a stylesheet link using [html::link].
 	 *
 	 * ##### Example
+	 *
 	 *     echo html::stylesheet(array
 	 *     (
 	 *        'media/css/site.css',
-	 *        'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js',
+	 *        'http://assets.example.com/css/jquery_ui.css',
 	 *        'media/css/reset-fonts-grids.css'
 	 *     ),
 	 *     array
@@ -289,9 +307,9 @@ class html_Core {
 	 *     ));
 	 *
 	 *     // Output:
-	 *     <link rel="stylesheet" type="text/css" href="http://localhost/media/css/default.css" media="screen" />
-	 *     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" media="print" />
-	 *     <link rel="stylesheet" type="text/css" href="http://localhost/media/css/reset-fonts-grids.css" media="print" />
+	 *     <link rel="stylesheet" type="text/css" href="/kohana/media/css/site.css" media="screen" />
+	 *     <link rel="stylesheet" type="text/css" href="http://assets.example.com/css/jquery_ui.css" media="screen" />
+	 *     <link rel="stylesheet" type="text/css" href="/kohana/media/css/reset-fonts-grids.css" media="print" />
 	 *
 	 * @param   mixed    $style   Filename, or array of filenames to match to array of medias
 	 * @param   mixed    $media   Media type of stylesheet, or array to match filenames
@@ -304,13 +322,30 @@ class html_Core {
 	}
 
 	/**
-	 * Creates a link tag.
+	 * Creates a link tag. This function automatically detects relative links
+	 * and makes them absolute using [url::base]. If you need to route the
+	 * request through Kohana make sure you set the `$index` argument to `TRUE`.
 	 *
-	 * @param   string|array  filename
-	 * @param   string|array  relationship
-	 * @param   string|array  mimetype
-	 * @param   string|array  specifies on what device the document will be displayed
-	 * @param   boolean       include the index_page in the link
+	 * ##### Example
+	 *
+	 *     echo html::link(array
+	 *     (
+	 *         'welcome/home/rss',
+	 *         'welcome/home/atom'
+	 *     ),
+	 *     'alternate',
+	 *     array('application/rss+xml','application/atom+xml')
+	 *     );
+	 *
+	 *     // Output:
+	 *     <link rel="alternate" type="application/rss+xml" href="/kohana/welcome/home/rss" />
+	 *     <link rel="alternate" type="application/atom+xml" href="/kohana/welcome/home/atom" />
+	 *
+	 * @param   mixed     $href    Filename
+	 * @param   mixed     $rel     Relationship
+	 * @param   mixed     $type    Mimetype
+	 * @param   mixed     $media   Specifies on what device the document will be displayed
+	 * @param   boolean   $index   Include the index_page in the link
 	 * @return  string
 	 */
 	public static function link($href, $rel, $type, $media = FALSE, $index = FALSE)
@@ -356,10 +391,26 @@ class html_Core {
 	}
 
 	/**
-	 * Creates a script link.
+	 * Creates a script link. This function automatically detects relative links
+	 * and makes them absolute using [url::base]. If you need to route the
+	 * request through Kohana make sure you set the `$index` argument to `TRUE`
 	 *
-	 * @param   string|array  filename
-	 * @param   boolean       include the index_page in the link
+	 * ##### Example
+	 *
+	 *     echo html::script(array
+	 *     (
+	 *         'media/js/login',
+	 *         'media/js/iefixes.js',
+	 *         'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'
+	 *     ));
+	 *
+	 *     // Output:
+	 *     <script type="text/javascript" src="/kohana/media/js/login"></script>
+	 *     <script type="text/javascript" src="/kohana/media/js/iefixes.js"></script>
+	 *     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	 *
+	 * @param   mixed    $script  Filename
+	 * @param   boolean  $index   Include the index_page in the link
 	 * @return  string
 	 */
 	public static function script($script, $index = FALSE)
@@ -388,14 +439,31 @@ class html_Core {
 	}
 
 	/**
-	 * Creates a image link.
+	 * Creates a image link. This function automatically detects relative links
+	 * and makes them absolute using [url::base]. If you need to route the
+	 * request through Kohana make sure you set the `$index` argument to `TRUE`
 	 *
-	 * @param   string        image source, or an array of attributes
-	 * @param   string|array  image alt attribute, or an array of attributes
-	 * @param   boolean       include the index_page in the link
+	 * ##### Examples
+	 * ###### Basic Example
+	 *
+	 *     echo html::image('media/images/thumbs/01.png', 'Thumbnail');
+	 *
+	 *     // Output:
+	 *     <img src="/kohana/media/images/thumbs/01.png" alt="Thumbnail" />
+	 *
+	 * ###### Advanced Example
+	 *
+	 *     echo html::image(array('src' => 'media/images/thumbs/01.png', 'width' => '100', 'height' => 100), array('alt' => 'Thumbnail', 'class' => 'noborder'));
+	 *
+	 *     // Output:
+	 *     <img src="/kohana/media/images/thumbs/01.png" width="100" height="100" alt="Thumbnail" class="noborder" />
+	 *
+	 * @param   mixed    $src    Image source, or an array of attributes
+	 * @param   mixed    $alt    Image alt attribute, or an array of attributes
+	 * @param   boolean  $index  Include the index_page in the link
 	 * @return  string
 	 */
-	public static function image($src = NULL, $alt = NULL, $index = FALSE)
+	public static function image($src, $alt = NULL, $index = FALSE)
 	{
 		// Create attribute list
 		$attributes = is_array($src) ? $src : array('src' => $src);
@@ -422,7 +490,23 @@ class html_Core {
 	/**
 	 * Compiles an array of HTML attributes into an attribute string.
 	 *
-	 * @param   string|array  array of attributes
+	 * [!!] This function will automatically escape all attribute values using `htmlspecialchars()`
+	 *
+	 * ##### Examples
+	 *
+	 *     echo echo html::attributes(
+	 *     array
+	 *     (
+	 *     	'style' => 'font-size: 20px; border-bottom: 1px solid #000;',
+	 *     	'rel' => 'lightbox',
+	 *     	'class' => 'image'
+	 *     )
+	 *     );
+	 *
+	 *     // Output:
+	 *     style="font-size: 20px; border-bottom: 1px solid #000;" rel="lightbox" class="image"
+	 *
+	 * @param   mixed  $attrs  Array of attributes
 	 * @return  string
 	 */
 	public static function attributes($attrs)
