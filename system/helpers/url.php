@@ -2,6 +2,14 @@
 /**
  * URL helper class.
  *
+ * ###### Using the url helper:
+ * 
+ *     // Using the url helper is simple:
+ *     echo url::current();
+ *
+ *     // Output:
+ *     welcome
+ *
  * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
@@ -10,11 +18,20 @@
 class url_Core {
 
 	/**
-	 * Fetches the current URI.
+	 * This method returns the current URI route present prior to the
+	 * index.php URI reference.
+	 *
+	 * ##### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana/index.php/welcome
+	 *     echo url::current();
+	 *
+	 *     // Output:
+	 *     welcome
 	 *
 	 * @param   boolean  include the query string
 	 * @param   boolean  include the suffix
-	 * @return  string
+	 * @return  varchar
 	 */
 	public static function current($qs = FALSE, $suffix = FALSE)
 	{
@@ -24,14 +41,30 @@ class url_Core {
 	}
 
 	/**
-	 * Base URL, with or without the index page.
+	 * This method returns the base URI for your application, if the first
+	 * function argument is omitted the index.php will not be included in the
+	 * return value. If the second function argument is provided with
+	 * a string it will be prefixed to the return value as the protocol.
 	 *
 	 * If protocol (and core.site_protocol) and core.site_domain are both empty,
-	 * then
+	 * then this method will guess the protocol and the fully qualified domain.
 	 *
-	 * @param   boolean  include the index page
-	 * @param   boolean  non-default protocol
-	 * @return  string
+	 * ##### Example
+	 *
+	 *     // This example assumes Kohana's default configuration
+	 *     echo url::base();
+	 *
+	 *     // Output:
+	 *     /kohana/
+	 *
+	 *     echo url::base(True, 'http');
+	 *
+	 *     // Output:
+	 *     http://localhost/kohana/index.php/
+	 *
+	 * @param   boolean			include the index page
+	 * @param   boolean|varchar	non-default protocol
+	 * @return  varchar
 	 */
 	public static function base($index = FALSE, $protocol = FALSE)
 	{
@@ -82,11 +115,28 @@ class url_Core {
 	}
 
 	/**
-	 * Fetches an absolute site URL based on a URI segment.
+	 * This method returns the absolute root URI of a given URI or, by
+	 * default, of your application's URI route.
 	 *
-	 * @param   string  site URI to convert
-	 * @param   string  non-default protocol
-	 * @return  string
+	 * The second function argument, if given a string, will be prefixed to the
+	 * return value as the protocol.
+	 * 
+	 * ##### Example
+	 *
+	 *     // Assuming this url: http://localhost/opensource/kohana/index.php/welcome
+	 *     echo url::site();
+	 *
+	 *     // Output:
+	 *     /kohana/index.php/
+	 *
+	 *     echo url::site('', 'http');
+	 *
+	 *     // Output:
+	 *     http://localhost/kohana/index.php/
+	 *
+	 * @param   string			site URI to convert
+	 * @param   boolean|varchar	non-default protocol
+	 * @return  varchar
 	 */
 	public static function site($uri = '', $protocol = FALSE)
 	{
@@ -113,12 +163,22 @@ class url_Core {
 	}
 
 	/**
-	 * Return the URL to a file. Absolute filenames and relative filenames
-	 * are allowed.
+	 * This method returns a qualified url path. Absolute
+	 * filenames and relative filenames are allowed.
+	 * 
+	 * The second function argument will include the index.php
+	 * in the returned value.
+	 * 
+	 * ##### Example
 	 *
-	 * @param   string   filename
-	 * @param   boolean  include the index page
-	 * @return  string
+	 *     echo url::file('uploads/images/raw/narwhal.jpg');
+	 *
+	 *     // Output:
+	 *     /kohana/uploads/images/raw/narwhal.jpg
+	 *
+	 * @param   varchar	filename
+	 * @param   boolean	include the index page
+	 * @return  varchar
 	 */
 	public static function file($file, $index = FALSE)
 	{
@@ -132,11 +192,20 @@ class url_Core {
 	}
 
 	/**
-	 * Merges an array of arguments with the current URI and query string to
-	 * overload, instead of replace, the current query string.
+	 * This method merges an array of arguments with the current
+	 * URI and query string to overload, instead of replace, the
+	 * current query string.
+	 * 
+	 * ##### Example
+	 *
+	 *     // Assuming this url: http://localhost/opensource/kohana/index.php/welcome
+	 *     echo url::merge(array('unicorn', 'rambo_kitteh', 'narwhal', 'charlie'));
+	 *
+	 *     // Output:
+	 *     welcome?0=unicorn&1=rambo_kitteh&2=narwhal&3=charlie
 	 *
 	 * @param   array   associative array of arguments
-	 * @return  string
+	 * @return  varchar
 	 */
 	public static function merge(array $arguments)
 	{
@@ -154,12 +223,24 @@ class url_Core {
 	}
 
 	/**
-	 * Convert a phrase to a URL-safe title.
+	 * This method transforms a given string into a URL safe
+	 * string.
 	 *
-	 * @param   string  phrase to convert
-	 * @param   string  word separator (- or _)
-	 * @param   boolean  transliterate to ASCII
-	 * @return  string
+	 * The second function argument specifies the separator and the
+	 * third function argument ensures transliteration of any special
+	 * characters into ASCII.
+	 * 
+	 * ##### Example
+	 *
+	 *     echo url::title('this is a cool phrase');
+	 *
+	 *     // Output:
+	 *     this-is-a-cool-phrase
+	 *
+	 * @param   varchar	phrase to convert
+	 * @param   varchar	word separator (- or _)
+	 * @param   boolean	transliterate to ASCII
+	 * @return  varchar
 	 */
 	public static function title($title, $separator = '-', $ascii_only = FALSE)
 	{
@@ -187,13 +268,39 @@ class url_Core {
 	}
 
 	/**
-	 * Sends a page redirect header and runs the system.redirect Event.
+	 * This method sends a page redirect header and runs the system.redirect
+	 * Event. This method does safely exit after the header is sent.
+	 * 
+	 * The second function argument is the status code to send during
+	 * redirection; useful if you are redirecting because a page has
+	 * been relocated to a different url permanently or temporarily.
 	 *
-	 * @param  mixed   string site URI or URL to redirect to, or array of strings if method is 300
-	 * @param  string  HTTP method of redirect
+	 * Accepted status codes are as follow:
+	 * 
+	 * refresh
+	 * 300
+	 * 301
+	 * 302
+	 * 303
+	 * 304
+	 * 305
+	 * 307
+	 *
+	 * @see http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#3xx_Redirection
+	 *
+	 * ##### Example
+	 *
+	 *     // Assuming 
+	 *     echo url::redirect('
+	 *
+	 *     // Output:
+	 *     this-is-a-cool-phrase
+	 *
+	 * @param  mixed	string site URI or URL to redirect to, or array of strings if method is 300
+	 * @param  varchar	HTTP status code
 	 * @return void
 	 */
-	public static function redirect($uri = '', $method = '302')
+	public static function redirect($uri = '', $status = '302')
 	{
 		if (Event::has_run('system.send_headers'))
 		{
@@ -213,9 +320,9 @@ class url_Core {
 		);
 
 		// Validate the method and default to 302
-		$method = isset($codes[$method]) ? (string) $method : '302';
+		$status = isset($codes[$status]) ? (string) $status : '302';
 
-		if ($method === '300')
+		if ($status === '300')
 		{
 			$uri = (array) $uri;
 
@@ -243,20 +350,20 @@ class url_Core {
 			$uri = url::site($uri, request::protocol());
 		}
 
-		if ($method === 'refresh')
+		if ($status === 'refresh')
 		{
 			header('Refresh: 0; url='.$uri);
 		}
 		else
 		{
-			header('HTTP/1.1 '.$method.' '.$codes[$method]);
+			header('HTTP/1.1 '.$status.' '.$codes[$status]);
 			header('Location: '.$uri);
 		}
 
 		// We are about to exit, so run the send_headers event
 		Event::run('system.send_headers');
 
-		exit('<h1>'.$method.' - '.$codes[$method].'</h1>'.$output);
+		exit('<h1>'.$status.' - '.$codes[$status].'</h1>'.$output);
 	}
 
 } // End url
