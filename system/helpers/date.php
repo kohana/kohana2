@@ -1,10 +1,26 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Date helper class.
+ * The Date helper assists in formating dates and times allowing for addition
+ * and conversion between different formats.
+ *
+ * The functions that return mirrored arrays are very useful when combined
+ * with the [form::dropdown] helper.
+ *
+ * ###### Example
+ *
+ *     echo Kohana::debug(form::dropdown('year', date::years()));
+ *
+ *     // Output (output has been truncated for display purposes):
+ *     (string) <select name="year" >
+ *     <option value="2005">2005</option>
+ *     ...
+ *     <option value="2014">2014</option>
+ *     <option value="2015">2015</option>
+ *     </select>
  *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class date_Core {
@@ -12,7 +28,14 @@ class date_Core {
 	/**
 	 * Converts a UNIX timestamp to DOS format.
 	 *
-	 * @param   integer  UNIX timestamp
+	 * ##### Example
+	 *
+	 *     echo Kohana::debug(date::unix2dos(mktime(0, 0, 0, 31, 10, 1987)));
+	 *
+	 *     // Output:
+	 *     (integer) 317325312
+	 *
+	 * @param   integer  $timestamp  UNIX timestamp
 	 * @return  integer
 	 */
 	public static function unix2dos($timestamp = FALSE)
@@ -36,7 +59,14 @@ class date_Core {
 	/**
 	 * Converts a DOS timestamp to UNIX format.
 	 *
-	 * @param   integer  DOS timestamp
+	 * ##### Example
+	 *
+	 *     echo Kohana::debug(date::dos2unix(317325312));
+	 *
+	 *     // Output:
+	 *     (integer) 616046400
+	 *
+	 * @param   integer  $timestamp   DOS timestamp
 	 * @return  integer
 	 */
 	public static function dos2unix($timestamp = FALSE)
@@ -53,11 +83,18 @@ class date_Core {
 
 	/**
 	 * Returns the offset (in seconds) between two time zones.
-	 * @see     http://php.net/timezones
+	 * List of [supported timezones](http://php.net/timezones).
 	 *
-	 * @param   string          timezone to find the offset of
-	 * @param   string|boolean  timezone used as the baseline
-	 * @param   string          time at which to calculate
+	 * ##### Example
+	 *
+	 *     echo Kohana::debug(date::offset('EST', 'PST'));
+	 *
+	 *     // Output:
+	 *     (integer) 10800  // 3 hours
+	 *
+	 * @param   string    $remote  Timezone to find the offset of
+	 * @param   mixed     $local   Timezone used as the baseline
+	 * @param   string    $when    Time at which to calculate
 	 * @return  integer
 	 */
 	public static function offset($remote, $local = TRUE, $when = 'now')
@@ -82,9 +119,20 @@ class date_Core {
 	/**
 	 * Number of seconds in a minute, incrementing by a step.
 	 *
-	 * @param   integer  amount to increment each step by, 1 to 30
-	 * @param   integer  start value
-	 * @param   integer  end value
+	 * ##### Example
+	 *
+	 *     echo Kohana::debug(date::seconds(30));
+	 *
+	 *     // Output:
+	 *     (array) Array
+	 *     (
+	 *         [0] => 00
+	 *         [30] => 30
+	 *     )
+	 *
+	 * @param   integer  $step   Amount to increment each step by, 1 to 30
+	 * @param   integer  $start  Start value
+	 * @param   integer  $end    End value
 	 * @return  array    A mirrored (foo => foo) array from 1-60.
 	 */
 	public static function seconds($step = 1, $start = 0, $end = 60)
@@ -105,7 +153,18 @@ class date_Core {
 	/**
 	 * Number of minutes in an hour, incrementing by a step.
 	 *
-	 * @param   integer  amount to increment each step by, 1 to 30
+	 * ##### Example
+	 *
+	 *     echo Kohana::debug(date::minutes(30));
+	 *
+	 *     // Output:
+	 *     (array) Array
+	 *     (
+	 *         [0] => 00
+	 *         [30] => 30
+	 *     )
+	 *
+	 * @param   integer  $step  Amount to increment each step by, 1 to 30
 	 * @return  array    A mirrored (foo => foo) array from 1-60.
 	 */
 	public static function minutes($step = 5)
@@ -118,11 +177,24 @@ class date_Core {
 	}
 
 	/**
-	 * Number of hours in a day.
+	 * Number of hours in a day, incrementing by a step.
 	 *
-	 * @param   integer  amount to increment each step by
-	 * @param   boolean  use 24-hour time
-	 * @param   integer  the hour to start at
+	 * ##### Example
+	 *
+	 *     echo Kohana::debug(date::hours(3));
+	 *
+	 *     // Output:
+	 *     (array) Array
+	 *     (
+	 *         [1] => 1
+	 *         [4] => 4
+	 *         [7] => 7
+	 *         [10] => 10
+	 *     )
+	 *
+	 * @param   integer  $step   Amount to increment each step by
+	 * @param   boolean  $long   Use 24-hour time
+	 * @param   integer  $start  The hour to start at
 	 * @return  array    A mirrored (foo => foo) array from start-12 or start-23.
 	 */
 	public static function hours($step = 1, $long = FALSE, $start = NULL)
@@ -154,7 +226,16 @@ class date_Core {
 	/**
 	 * Returns AM or PM, based on a given hour.
 	 *
-	 * @param   integer  number of the hour
+	 * ##### Example
+	 *
+	 *     echo Kohana::debug(date::ampm(1));
+	 *     echo Kohana::debug(date::ampm(date('G')));
+	 *
+	 *     // Output:
+	 *     (string) AM
+	 *     (string) PM
+	 *
+	 * @param   integer  $hour   number of the hour
 	 * @return  string
 	 */
 	public static function ampm($hour)
@@ -168,8 +249,17 @@ class date_Core {
 	/**
 	 * Adjusts a non-24-hour number into a 24-hour number.
 	 *
-	 * @param   integer  hour to adjust
-	 * @param   string   AM or PM
+	 * ##### Example
+	 *
+	 *     echo Kohana::debug(date::adjust(2, 'am'));
+	 *     echo Kohana::debug(date::adjust(2, 'pm'));
+	 *
+	 *     // Output:
+	 *     (string) 02
+	 *     (string) 14
+	 *
+	 * @param   integer  $hour  Hour to adjust
+	 * @param   string   $ampm  AM or PM
 	 * @return  string
 	 */
 	public static function adjust($hour, $ampm)
@@ -193,10 +283,31 @@ class date_Core {
 	}
 
 	/**
-	 * Number of days in month.
+	 * Counts the number of days there are in a specific month of a specific year
 	 *
-	 * @param   integer  number of month
-	 * @param   integer  number of year to check month, defaults to the current year
+	 * ##### Example
+	 *
+	 *     echo Kohana::debug(date::days(2, 2010));
+	 *     echo Kohana::debug(date::days(3, 2010));
+	 *
+	 *     // Output (output has been truncated for display purposes):
+	 *     (array) Array
+	 *     (
+	 *         [1] => 1
+	 *         [2] => 2
+	 *         ...
+	 *         [28] => 28
+	 *     )
+	 *     (array) Array
+	 *     (
+	 *         [1] => 1
+	 *         [2] => 2
+	 *         ...
+	 *         [31] => 31
+	 *     )
+	 *
+	 * @param   integer  $month   Number of month
+	 * @param   integer  $year    Number of year to check month, defaults to the current year
 	 * @return  array    A mirrored (foo => foo) array of the days.
 	 */
 	public static function days($month, $year = FALSE)
@@ -230,6 +341,18 @@ class date_Core {
 	/**
 	 * Number of months in a year
 	 *
+	 * ##### Example
+	 *
+	 *     echo Kohana::debug(date::months());
+	 *
+	 *     // Output (output has been truncated for display purposes):
+	 *     (array) Array
+	 *     (
+	 *         [1] => 1
+	 *         ...
+	 *         [12] => 12
+	 *     )
+	 *
 	 * @return  array  A mirrored (foo => foo) array from 1-12.
 	 */
 	public static function months()
@@ -241,8 +364,22 @@ class date_Core {
 	 * Returns an array of years between a starting and ending year.
 	 * Uses the current year +/- 5 as the max/min.
 	 *
-	 * @param   integer  starting year
-	 * @param   integer  ending year
+	 * ##### Example
+	 *
+	 *     echo Kohana::debug(date::years());
+	 *
+	 *     // Output (output has been truncated for display purposes):
+	 *     (array) Array
+	 *     (
+	 *         [2005] => 2005
+	 *         [2006] => 2006
+	 *         ...
+	 *         [2014] => 2014
+	 *         [2015] => 2015
+	 *     )
+	 *
+	 * @param   integer  $start  Starting year
+	 * @param   integer  $end    Ending year
 	 * @return  array
 	 */
 	public static function years($start = FALSE, $end = FALSE)
@@ -267,10 +404,26 @@ class date_Core {
 	/**
 	 * Returns time difference between two timestamps, in human readable format.
 	 *
-	 * @param   integer       timestamp
-	 * @param   integer       timestamp, defaults to the current time
-	 * @param   string        formatting string
-	 * @return  string|array
+	 * ##### Example
+	 *
+	 *     echo Kohana::debug(date::timespan(time(), strtotime('2 year ago')));
+	 *
+	 *     // Output:
+	 *     (array) Array
+	 *     (
+	 *         [years] => 2
+	 *         [months] => 0
+	 *         [weeks] => 0
+	 *         [days] => 0
+	 *         [hours] => 12
+	 *         [minutes] => 22
+	 *         [seconds] => 28
+	 *     )
+	 *
+	 * @param   integer       $time1    Timestamp
+	 * @param   integer       $time2    Timestamp, defaults to the current time
+	 * @param   string        $output   Formatting string
+	 * @return  mixed
 	 */
 	public static function timespan($time1, $time2 = NULL, $output = 'years,months,weeks,days,hours,minutes,seconds')
 	{
@@ -348,9 +501,16 @@ class date_Core {
 	 * Returns time difference between two timestamps, in the format:
 	 * N year, N months, N weeks, N days, N hours, N minutes, and N seconds ago
 	 *
-	 * @param   integer       timestamp
-	 * @param   integer       timestamp, defaults to the current time
-	 * @param   string        formatting string
+	 * ##### Example
+	 *
+	 *     echo Kohana::debug(date::timespan_string(time(), strtotime('2 year ago')));
+	 *
+	 *     // Output:
+	 *     (string)  2 years, 12 hours, 22 minutes and 28 seconds
+	 *
+	 * @param   integer   $time1   Timestamp
+	 * @param   integer   $time2   Timestamp, defaults to the current time
+	 * @param   string    $output  Formatting string
 	 * @return  string
 	 */
 	public static function timespan_string($time1, $time2 = NULL, $output = 'years,months,weeks,days,hours,minutes,seconds')
