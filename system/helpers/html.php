@@ -1,10 +1,11 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * HTML helper class.
+ * The HTML helper assists in creating various html elements such as anchors
+ * stylesheets, javascript and images.
  *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class html_Core {
@@ -12,11 +13,20 @@ class html_Core {
 	// Enable or disable automatic setting of target="_blank"
 	public static $windowed_urls = FALSE;
 
+
 	/**
-	 * Convert special characters to HTML entities
+	 * Wrapper for htmlspecialchars() that uses the default Kohana charset and
+	 * will encode both double and single quotes (using the ENT_QUOTES flag).
 	 *
-	 * @param   string   string to convert
-	 * @param   boolean  encode existing entities
+	 * ##### Example
+	 * 
+	 *     echo html::chars('<p>"I\'m hungry"&mdash;Cookie Monster said.</p>');
+	 *
+	 *     // Output:
+	 *     &lt;p&gt;&quot;I&#039;m hungry&quot;&amp;mdash;Cookie Monster said.&lt;/p&gt;
+	 *
+	 * @param   string   $str            string to encode
+	 * @param   boolean  $double_encode  encode existing entities
 	 * @return  string
 	 */
 	public static function chars($str, $double_encode = TRUE)
@@ -26,13 +36,33 @@ class html_Core {
 	}
 
 	/**
-	 * Create HTML link anchors.
+	 * Creates absolute anchor links. This function automatically detects
+	 * internal page links and makes them absolute using [url::site]. To
+	 * remove `index.php` from your links see [config::base_url].
 	 *
-	 * @param   string  URL or URI string
-	 * @param   string  link text
-	 * @param   array   HTML anchor attributes
-	 * @param   string  non-default protocol, eg: https
-	 * @param   boolean option to escape the title that is output
+	 * [!!] By default the anchor title will *not* be escaped
+	 * 
+	 * ##### Example
+	 *
+	 * Internal Link
+	 * 
+	 *     echo html::anchor('home/news', 'Go to our news section!');
+	 *
+	 *     // Output:
+	 *     <a href="http://localhost/index.php/home/news">Go to our news section!</a>
+	 *
+	 * External Link
+	 * 
+	 *     echo html::anchor('irc://irc.freenode.net/kohana', 'Join us on IRC!', array('style'=>'font-size: 20px;'));
+	 *
+	 *     // Output:
+	 *     <a href="irc://irc.freenode.net/kohana" style="font-size: 20px;">Join us on IRC!</a>
+	 *
+	 * @param   string  $uri           URL or URI string
+	 * @param   string  $title         link text
+	 * @param   array   $attributes    HTML anchor attributes
+	 * @param   string  $protocol      non-default protocol, eg: https
+	 * @param   boolean $escape_title  option to escape the title that is output
 	 * @return  string
 	 */
 	public static function anchor($uri, $title = NULL, $attributes = NULL, $protocol = NULL, $escape_title = FALSE)
@@ -70,12 +100,22 @@ class html_Core {
 	}
 
 	/**
-	 * Creates an HTML anchor to a file.
+	 * Creates links to non-Kohana resources. This function works the same as
+	 * [html::anchor], except it uses [url::base] instead of [url::site]
 	 *
-	 * @param   string  name of file to link to
-	 * @param   string  link text
-	 * @param   array   HTML anchor attributes
-	 * @param   string  non-default protocol, eg: ftp
+	 * [!!] The anchor title will not be escaped
+	 *
+	 * ##### Example
+	 *
+	 *     echo html::file_anchor('media/files/2007-12-magazine.pdf', 'Check out our latest magazine!');
+	 *
+	 *     // Output:
+	 *     <a href="http://localhost/media/files/2007-12-magazine.pdf">Check out our latest magazine!</a>
+	 *
+	 * @param   string  $file         name of file to link to
+	 * @param   string  $title        link text
+	 * @param   array   $attributes   HTML anchor attributes
+	 * @param   string  $protocol     non-default protocol, eg: ftp
 	 * @return  string
 	 */
 	public static function file_anchor($file, $title = NULL, $attributes = NULL, $protocol = NULL)
@@ -90,7 +130,15 @@ class html_Core {
 	}
 
 	/**
-	 * Generates an obfuscated version of an email address.
+	 * Generates an obfuscated version of an email address. It escapes all
+	 * characters of the e-mail address into HTML, hex or raw randomly to
+	 * help prevent spam and e-mail harvesting.
+	 *
+	 * ##### Example
+	 *     echo Kohana::debug(html::email('test@mydomain.com'));
+	 *
+	 *     // Output:
+	 *     (string) t&#101;&#x73;&#116;&#x40;m&#121;&#x64;o&#109;&#x61;&#105;n&#46;&#x63;o&#109;
 	 *
 	 * @param   string  email address
 	 * @return  string
@@ -115,11 +163,17 @@ class html_Core {
 	}
 
 	/**
-	 * Creates an email anchor.
+	 * Creates an email anchor and obfuscated the email address using [html::email].
 	 *
-	 * @param   string  email address to send to
-	 * @param   string  link text
-	 * @param   array   HTML anchor attributes
+	 * ##### Example
+	 *     echo html::mailto('info@example.com');
+	 *
+	 *     // Output (note the output has been truncated for display purposes):
+	 *     <a href="&#109;&#097;&#105;&#108;&#116;...">&#109;&#097;&#105;&#108;&#116;...</a>
+	 *
+	 * @param   string  $email       email address to send to
+	 * @param   string  $title       link text
+	 * @param   array   $attributes  HTML anchor attributes
 	 * @return  string
 	 */
 	public static function mailto($email, $title = NULL, $attributes = NULL)
@@ -182,10 +236,18 @@ class html_Core {
 	}
 
 	/**
-	 * Creates a meta tag.
+	 * Creates a meta tag. This function will automatically detect when a tag
+	 * should use http-equiv or name.
 	 *
-	 * @param   string|array   tag name, or an array of tags
-	 * @param   string         tag "content" value
+	 * ##### Example
+	 *     echo html::meta(array('generator' => 'Kohana 2.4', 'robots' => 'noindex,nofollow'));
+	 *
+	 *     // Output:
+	 *     <meta name="generator" content="Kohana 2.4" />
+	 *     <meta name="robots" content="noindex,nofollow" />
+	 *
+	 * @param   mixed  $tag    Tag name, or an array of tags
+	 * @param   string $value  Tag "content" value
 	 * @return  string
 	 */
 	public static function meta($tag, $value = NULL)
@@ -210,11 +272,30 @@ class html_Core {
 	}
 
 	/**
-	 * Creates a stylesheet link.
+	 * Creates a stylesheet link using [html::link].
 	 *
-	 * @param   string|array  filename, or array of filenames to match to array of medias
-	 * @param   string|array  media type of stylesheet, or array to match filenames
-	 * @param   boolean       include the index_page in the link
+	 * ##### Example
+	 *     echo html::stylesheet(array
+	 *     (
+	 *        'media/css/site.css',
+	 *        'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js',
+	 *        'media/css/reset-fonts-grids.css'
+	 *     ),
+	 *     array
+	 *     (
+	 *        'screen',
+	 *        'screen',
+	 *        'print'
+	 *     ));
+	 *
+	 *     // Output:
+	 *     <link rel="stylesheet" type="text/css" href="http://localhost/media/css/default.css" media="screen" />
+	 *     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" media="print" />
+	 *     <link rel="stylesheet" type="text/css" href="http://localhost/media/css/reset-fonts-grids.css" media="print" />
+	 *
+	 * @param   mixed    $style   Filename, or array of filenames to match to array of medias
+	 * @param   mixed    $media   Media type of stylesheet, or array to match filenames
+	 * @param   boolean  $index   Include the index_page in the link
 	 * @return  string
 	 */
 	public static function stylesheet($style, $media = FALSE, $index = FALSE)
