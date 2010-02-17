@@ -290,11 +290,11 @@ class url_Core {
 	 *
 	 * ##### Example
 	 *
-	 *     // Assuming 
-	 *     echo url::redirect('
+	 *     // Assuming this base url: http://localhost/kohana/
+	 *     url::redirect('controller/method');
 	 *
-	 *     // Output:
-	 *     this-is-a-cool-phrase
+	 *     // Will redirect you to this resultant url:
+	 *     http://localhost/kohana/controller/method
 	 *
 	 * @param  mixed	string site URI or URL to redirect to, or array of strings if method is 300
 	 * @param  varchar	HTTP status code
