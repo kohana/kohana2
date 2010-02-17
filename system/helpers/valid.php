@@ -53,7 +53,7 @@ class valid_Core {
 	 *     // Output:
 	 *     (boolean) true
 	 *
-	 * @param   string   A email address
+	 * @param   string   $email  A email address
 	 * @return  boolean
 	 */
 	public static function email($email)
@@ -76,7 +76,7 @@ class valid_Core {
 	 *     // Output:
 	 *     (boolean) true
 	 *
-	 * @param   string   email address
+	 * @param   string   $email  Email address
 	 * @return  boolean
 	 */
 	public static function email_domain($email)
@@ -106,7 +106,7 @@ class valid_Core {
 	 * @see  http://www.iamcal.com/publish/articles/php/parsing_email/
 	 * @see  http://www.w3.org/Protocols/rfc822/
 	 *
-	 * @param   string   email address
+	 * @param   string   $email  Email address
 	 * @return  boolean
 	 */
 	public static function email_rfc($email)
@@ -139,7 +139,7 @@ class valid_Core {
 	 *     // Output:
 	 *     (boolean) true
 	 *
-	 * @param   string   URL
+	 * @param   string  $url URL
 	 * @return  boolean
 	 */
 	public static function url($url)
@@ -161,9 +161,9 @@ class valid_Core {
 	 *     // Output:
 	 *     (boolean) true
 	 *
-	 * @param   string   IP address
-	 * @param   boolean  allow IPv6 addresses
-	 * @param   boolean  allow private IP networks
+	 * @param   string   $ip             IP address
+	 * @param   boolean  $ipv6           Allow IPv6 addresses
+	 * @param   boolean  $allow_private  Allow private IP networks
 	 * @return  boolean
 	 */
 	public static function ip($ip, $ipv6 = FALSE, $allow_private = TRUE)
@@ -193,8 +193,8 @@ class valid_Core {
 	 *     // Output:
 	 *     (boolean) true
 	 *
-	 * @param   integer       credit card number
-	 * @param   string|array  card type, or an array of card types
+	 * @param   integer       $number  Credit card number
+	 * @param   string|array  $type    Card type, or an array of card types
 	 * @return  boolean
 	 */
 	public static function credit_card($number, $type = NULL)
@@ -278,7 +278,8 @@ class valid_Core {
 	 *     // Output:
 	 *     (boolean) true
 	 *
-	 * @param   string   phone number to check
+	 * @param   string   $number   Phone number to check
+	 * @param   array    $lengths  Valid lengths
 	 * @return  boolean
 	 */
 	public static function phone($number, $lengths = NULL)
@@ -308,7 +309,7 @@ class valid_Core {
 	 *     // Output:
 	 *     (boolean) true
 	 *
-	 * @param   string   date to check
+	 * @param   string   $str  Date to check
 	 * @return  boolean
 	 */
 	public static function date($str)
@@ -328,8 +329,8 @@ class valid_Core {
 	 *     // Output:
 	 *     (boolean) true
 	 *
-	 * @param   string   input string
-	 * @param   boolean  trigger UTF-8 compatibility
+	 * @param   string   $str   Input string
+	 * @param   boolean  $utf8  Trigger UTF-8 compatibility
 	 * @return  boolean
 	 */
 	public static function alpha($str, $utf8 = FALSE)
@@ -351,8 +352,8 @@ class valid_Core {
 	 *     // Output:
 	 *     (boolean) false
 	 *
-	 * @param   string   input string
-	 * @param   boolean  trigger UTF-8 compatibility
+	 * @param   string   $str   Input string
+	 * @param   boolean  $utf8  Trigger UTF-8 compatibility
 	 * @return  boolean
 	 */
 	public static function alpha_numeric($str, $utf8 = FALSE)
@@ -370,12 +371,12 @@ class valid_Core {
 	 *     $str = 'abcdefghijklmnopqrstuvwxyz_-';
 	 *
 	 *     Kohana::debug(valid::alpha_dash($str));
-	 *     
+	 *
 	 *     // Output:
 	 *     (boolean) true
 	 *
-	 * @param   string   input string
-	 * @param   boolean  trigger UTF-8 compatibility
+	 * @param   string   $str  Input string
+	 * @param   boolean  $utf8  Trigger UTF-8 compatibility
 	 * @return  boolean
 	 */
 	public static function alpha_dash($str, $utf8 = FALSE)
@@ -393,12 +394,12 @@ class valid_Core {
 	 *     $str = 'abc defghijkl mnopqrstuv wxyz';
 	 *
 	 *     Kohana::debug(valid::alpha_space($str));
-	 *     
+	 *
 	 *     // Output:
 	 *     (boolean) true
 	 *
-	 * @param   string   input string
-	 * @param   boolean  trigger UTF-8 compatibility
+	 * @param   string   $str  Input string
+	 * @param   boolean  $utf8  Trigger UTF-8 compatibility
 	 * @return  boolean
 	 */
 	public static function alpha_space($str, $utf8 = FALSE)
@@ -416,12 +417,12 @@ class valid_Core {
 	 *     $str = '23';
 	 *
 	 *     Kohana::debug(valid::digit('23'));
-	 *     
+	 *
 	 *     // Output:
 	 *     (boolean) true
 	 *
-	 * @param   string   input string
-	 * @param   boolean  trigger UTF-8 compatibility
+	 * @param   string   $str    Input string
+	 * @param   boolean  $utf8   Trigger UTF-8 compatibility
 	 * @return  boolean
 	 */
 	public static function digit($str, $utf8 = FALSE)
@@ -438,12 +439,12 @@ class valid_Core {
 	 *
 	 * ###### Example:
 	 *
-	 *     Kohana::debug(valid::numeric('2.3));
-	 *     
+	 *     Kohana::debug(valid::numeric('2.3'));
+	 *
 	 *     // Output:
 	 *     (boolean) true
 	 *
-	 * @param   string   input string
+	 * @param   string   $str  Input string
 	 * @return  boolean
 	 */
 	public static function numeric($str)
@@ -461,12 +462,12 @@ class valid_Core {
 	 *     $num = '5';
 	 *
 	 *     Kohana::debug(valid::range('5', array(1, 10)));
-	 *     
+	 *
 	 *     // Output:
 	 *     (boolean) true
 	 *
-	 * @param   integer  number to check
-	 * @param   array    valid range of input
+	 * @param   integer  $number  Number to check
+	 * @param   array    $range   Valid range of input
 	 * @return  boolean
 	 */
 	public static function range($number, array $range)
@@ -503,12 +504,12 @@ class valid_Core {
 	 * ###### Example:
 	 *
 	 *     Kohana::debug(valid::decimal('4.5', array(2,1)));
-	 *     
+	 *
 	 *     // Output:
 	 *     (boolean) false
 	 *
-	 * @param   string   input string
-	 * @param   array    decimal format: y or x,y
+	 * @param   string   $str     Input string
+	 * @param   array    $format  Decimal format: y or x,y
 	 * @return  boolean
 	 */
 	public static function decimal($str, $format = NULL)
@@ -547,24 +548,23 @@ class valid_Core {
 	 * ###### Example:
 	 *
 	 *     Kohana::debug(valid::color('#CCCCCC));
-	 *     
+	 *
 	 *     // Output:
 	 *     (boolean) true
 	 *
-	 * @param   string   input string
+	 * @param   string   $str  Input string
 	 * @return  boolean
 	 */
 	public static function color($str)
 	{
 		return (bool) preg_match('/^#?+[0-9a-f]{3}(?:[0-9a-f]{3})?$/iD', $str);
 	}
-	
+
 	/**
 	 * Performs a simple test using the modulo operator to see if a given
 	 * divisor is a multiple of the given dividend.
 	 *
-	 * [!!] Due to the need for an extra argument, this method does not play nice
-	 * with the Validation library.
+	 * [!!] Due to the need for an extra argument, this method does not play nice with the Validation library.
 	 *
 	 * ###### Example:
 	 *
@@ -573,8 +573,8 @@ class valid_Core {
 	 *     // Output:
 	 *     (boolean) true
 	 *
-	 * @param	integer	dividend
-	 * @param	integer	divisor
+	 * @param	integer	  $dividend  Dividend
+	 * @param	integer	  $divisor  Divisor
 	 * @return	boolean
 	 */
 	public static function multiple($dividend, $divisor)
