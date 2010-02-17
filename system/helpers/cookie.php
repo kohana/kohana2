@@ -1,24 +1,51 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Cookie helper class.
+ * Provides methods for working with signed cookies.
+ * Because this helper creates signed cookies, so you __cannot__
+ * access the cookies directly using `$_COOKIE`. You must use [cooke::get]
+ * and [cookie::set] to read and write signed cookies.
+ *
+ * Default settings for cookies are specified in the [cookie config](config/cookie) file.
+ * You may override these settings by using the optional [cookie::set] parameters.
  *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class cookie_Core {
 
 	/**
-	 * Sets a cookie with the given parameters.
+	 * Defines a new cookie to be sent along with the http request.
+	 * For more information about creating cookies please see the
+	 * php docs on [setcookie()](http://us3.php.net/setcookie).
 	 *
-	 * @param   string   cookie name or array of config options
-	 * @param   string   cookie value
-	 * @param   integer  number of seconds before the cookie expires
-	 * @param   string   URL path to allow
-	 * @param   string   URL domain to allow
-	 * @param   boolean  HTTPS only
-	 * @param   boolean  HTTP only (requires PHP 5.2 or higher)
+	 * For more information about this function's parameters see the
+	 * [cookie config](config/cookie) docs.
+	 *
+	 * [!!] Note: Cookies set with this method are signed to prevent tampering. You __must__ use [cookie::get] to read these cookies
+	 *
+	 * ##### Example
+	 *
+	 *     cookie::set('example', 'Hello world!');
+	 *
+	 *     // Override default config values
+	 *     $cookie_params = array(
+	 *         'name'   => 'Very_Important_Cookie',
+	 *         'value'  => 'Choclate Flavoured Mint Delight',
+	 *         'expire' => '86500',
+	 *         'domain' => '.example.com',
+	 *         'path'   => '/'
+	 *         );
+	 *     cookie::set($cookie_params);
+	 *
+	 * @param   string   $name       Cookie name or array of config options
+	 * @param   string   $value      Cookie value
+	 * @param   integer  $expire     Number of seconds before the cookie expires
+	 * @param   string   $path       URL path to allow
+	 * @param   string   $domain     URL domain to allow
+	 * @param   boolean  $secure     HTTPS only
+	 * @param   boolean  $httponly   HTTP only (requires PHP 5.2 or higher)
 	 * @return  boolean
 	 */
 	public static function set($name, $value = NULL, $expire = NULL, $path = NULL, $domain = NULL, $secure = NULL, $httponly = NULL)
@@ -52,12 +79,27 @@ class cookie_Core {
 	}
 
 	/**
-	 * Fetch a cookie value, using the Input library.
+	 * Fetch a cookie value from a signed cookie or an array of cookies if no cookie name is
+	 * specified.
 	 *
-	 * @param   string   cookie name
-	 * @param   mixed    default value
-	 * @param   boolean  use XSS cleaning on the value
-	 * @return  string
+	 * [!!] Note: This function only works with signed cookies set using [cookie::set].
+	 *
+	 * ##### Example
+	 *
+	 *     echo Kohana::debug(cookie::get('example'));
+	 *
+	 *     // Output (using our example above):
+	 *     (string) Hello world!
+	 *
+	 *     echo Kohana::debug(cookie::get('nonexistent', 'default value'));
+	 *
+	 *     // Output:
+	 *     (string) default value
+	 *
+	 * @param   string   $name       Cookie name
+	 * @param   mixed    $default    Default value
+	 * @param   boolean  $xss_clean  Use XSS cleaning on the value
+	 * @return  mixed Cookie value or array of cookies
 	 */
 	public static function get($name = NULL, $default = NULL, $xss_clean = FALSE)
 	{
@@ -107,11 +149,20 @@ class cookie_Core {
 	}
 
 	/**
-	 * Nullify and unset a cookie.
+	 * Nullify and unset a cookie. This method deletes a cookie by setting its
+	 * value to an empty string and a expiration of 24 hours ago.
 	 *
-	 * @param   string   cookie name
-	 * @param   string   URL path
-	 * @param   string   URL domain
+	 * ##### Example
+	 *
+	 *     cookie::delete('example');
+	 *     echo Kohana::debug(cookie::get('example'));
+	 *
+	 *     // Output:
+	 *     (NULL)
+	 *
+	 * @param   string   $name    Cookie name
+	 * @param   string   $path    URL path
+	 * @param   string   $domain  URL domain
 	 * @return  boolean
 	 */
 	public static function delete($name, $path = NULL, $domain = NULL)
@@ -126,9 +177,9 @@ class cookie_Core {
 	/**
 	 * Generates a salt string for a cookie based on the name and value.
 	 *
-	 * @param	string $name name of cookie
-	 * @param	string $value value of cookie
-	 * @return	string sha1 hash
+	 * @param	string   $name    Name of cookie
+	 * @param	string   $value   Value of cookie
+	 * @return	string   SHA1 hash
 	 */
 	public static function salt($name, $value)
 	{
@@ -141,9 +192,9 @@ class cookie_Core {
 		return sha1($agent.$name.$value.$salt);
 	}
 
-	final private function __construct()
- 	{
-		// Static class.
-	}
+	/**
+	 * This is a static helper class, no instance can be created.
+	 */
+	final private function __construct() {}
 
 } // End cookie
