@@ -2,6 +2,11 @@
 /**
  * Download helper class.
  *
+ * ###### Using the download helper:
+ *
+ *     // Using the download helper is simple:
+ *     echo download::send('robmoz.jpg');
+ *
  * @package    Kohana
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
@@ -13,16 +18,17 @@ class download_Core {
 	 * Send headers necessary to invoke a "Save As" dialog
 	 * 
 	 * ##### Example
-	 * 		//display save dialog
+	 *
+	 * 		// Display save dialog
 	 * 		download::dialog('Modern Warfare 2 Hacks.mpg');
 	 * 		
-	 * 		//echo out video contents
+	 * 		// Echo out video contents
 	 * 		echo file_get_contents('rick_roll.mpg');
 	 *
 	 * @link http://support.microsoft.com/kb/260519
 	 * @link http://greenbytes.de/tech/tc2231/
-	 * @param string $filename file name
-	 * @return string file name as it was sent
+	 * @param	varchar	$filename	File name
+	 * @return	varchar	file name as it was sent
 	 */
 	public static function dialog($filename)
 	{
@@ -37,14 +43,16 @@ class download_Core {
 	 * Send the contents of a file or a data string with the proper MIME type and exit.
 	 * 
 	 * ##### Example
+	 *
 	 * 		//send image
-	 * 		download::send('lolcatz.png');
+	 * 		download::send('robmoz.jpg');
 	 *
 	 * @uses exit()
 	 * @uses Kohana::close_buffers()
-	 * @param string $filename a file path or file name
-	 * @param string $data optional data to send
-	 * @return void
+	 *
+	 * @param	varchar	$filename	A qualified file path or file name
+	 * @param	varchar	$data		Optional data to send
+	 * @return	void
 	 */
 	public static function send($filename, $data = NULL)
 	{
@@ -97,16 +105,20 @@ class download_Core {
 	 * caching. Contains a workaround for Internet Explorer.
 	 * 
 	 * ##### Example
-	 * 		//send the file to the user to download
+	 *
+	 * 		// Force a download prompt - never let the browser cache
+	 * 		// the downloaded file...
 	 * 		download::force('rick_roll.wmv', NULL, 'Shot My Neighbor with a BB Gun.wmv');
 	 *
 	 * @link http://support.microsoft.com/kb/316431
 	 * @link http://support.microsoft.com/kb/812935
+	 *
 	 * @uses download::dialog()
 	 * @uses download::send()
-	 * @param string $filename a file path or file name
-	 * @param mixed $data data to be sent if the filename does not exist
-	 * @param string $nicename suggested filename to display in the download
+	 *
+	 * @param	varchar	$filename	A qualified file path or file name
+	 * @param	mixed	$data		Data to be sent if the filename does not exist
+	 * @param	varchar	$nicename	Suggested filename to display in the download
 	 * @return void
 	 */
 	public static function force($filename = NULL, $data = NULL, $nicename = NULL)
