@@ -3,7 +3,7 @@
  * Request helper class.
  *
  * ###### Using the request helper:
- * 
+ *
  *     // Using the request helper is simple:
  *     echo request::protocol();
  *
@@ -12,27 +12,45 @@
  *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class request_Core {
 
-	// Possible HTTP methods
+	/**
+	 * Possible HTTP methods
+	 * @var array $http_methods
+	 */
 	protected static $http_methods = array('get', 'head', 'options', 'post', 'put', 'delete');
 
-	// Character sets from the client's HTTP Accept-Charset request header
+	/**
+	 * Character sets from the client's HTTP Accept-Charset request header
+	 * @var array $accept_charsets
+	 */
 	protected static $accept_charsets;
 
-	// Content codings from the client's HTTP Accept-Encoding request header
+	/**
+	 * Content codings from the client's HTTP Accept-Encoding request header
+	 * @var array $accept_encodings
+	 */
 	protected static $accept_encodings;
 
-	// Language tags from the client's HTTP Accept-Language request header
+	/**
+	 * Language tags from the client's HTTP Accept-Language request header
+	 * @var array $accept_languages
+	 */
 	protected static $accept_languages;
 
-	// Content types from the client's HTTP Accept request header
+	/**
+	 * Content types from the client's HTTP Accept request header
+	 * @var array $accept_types
+	 */
 	protected static $accept_types;
 
-	// The current user agent and its parsed attributes
+	/**
+	 * The current user agent and its parsed attributes
+	 * @var array $user_agent
+	 */
 	protected static $user_agent;
 
 	/**
@@ -43,14 +61,14 @@ class request_Core {
 	 * referrer returned.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     echo request::referrer();
 	 *
 	 *     // Output:
 	 *     http://referring.website.com
 	 *
-	 * @param   mixed   default to return
-	 * @param   bool    Remove base URL
+	 * @param   mixed   $default      Default to return
+	 * @param   bool    $remove_base  Remove base URL
 	 * @return  string
 	 */
 	public static function referrer($default = FALSE, $remove_base = FALSE)
@@ -75,7 +93,7 @@ class request_Core {
 	 * mode, NULL will be returned.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     echo request::protocol();
 	 *
 	 *     // Output:
@@ -104,7 +122,7 @@ class request_Core {
 	 * request header that most popular JS frameworks now set for AJAX calls.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     Kohana::debug(request::is_ajax());
 	 *
 	 *     // Output:
@@ -122,7 +140,7 @@ class request_Core {
 	 * methods: get, head, options, post, put, or delete.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     echo request::method();
 	 *
 	 *     // Output:
@@ -144,12 +162,12 @@ class request_Core {
 	/**
 	 * Retrieves current user agent information. If no function argument is supplied, the default 'agent'
 	 * key will be used, returning the full user agent string.
-	 * 
-	 * The first argument is a key and may be one of the following:  browser, version, platform, mobile, 
+	 *
+	 * The first argument is a key and may be one of the following:  browser, version, platform, mobile,
 	 * or robot.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     // To return the full user agent string
 	 *     echo request::user_agent();
 	 *
@@ -162,7 +180,7 @@ class request_Core {
 	 *     // Output:
 	 *     Chrome
 	 *
-	 * @param   string  key
+	 * @param   string  $key   User agent key name
 	 * @return  mixed   NULL or the parsed value
 	 */
 	public static function user_agent($key = 'agent')
@@ -209,14 +227,14 @@ class request_Core {
 
 	/**
 	 * Returns a boolean if the first function argument is provided and is
-	 * a content type either accepted or not by the client. If no argument is provided 
+	 * a content type either accepted or not by the client. If no argument is provided
 	 * an array of content types from client's HTTP Accept request header is
 	 * returned.
 	 *
 	 * The second function argument enables/disables wildcard checking.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     // With a type specified
 	 *     Kohana::debug(request::accepts('application/xhtml+xml'));
 	 *
@@ -248,9 +266,9 @@ class request_Core {
 	 *                 [*] => 0.5
 	 *             )
 	 *     )
-	 * 
-	 * @param   string   content type
-	 * @param   boolean  set to TRUE to disable wildcard checking
+	 *
+	 * @param   string   $type             Content type
+	 * @param   boolean  $explicit_check   Set to TRUE to disable wildcard checking
 	 * @return  boolean
 	 */
 	public static function accepts($type = NULL, $explicit_check = FALSE)
@@ -270,7 +288,7 @@ class request_Core {
 	 * will be returned.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     // With a character set specified
 	 *     Kohana::debug(request::accepts_charset('UTF-8'));
 	 *
@@ -288,7 +306,7 @@ class request_Core {
 	 *         [*] => 0.3
 	 *     )
 	 *
-	 * @param   string
+	 * @param   string $charset Charset
 	 * @return  boolean
 	 */
 	public static function accepts_charset($charset = NULL)
@@ -310,7 +328,7 @@ class request_Core {
 	 * The second function argument enables/disables wildcard checking.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     // With an encoding specified
 	 *     Kohana::debug(request::accepts_encoding('gzip'));
 	 *
@@ -328,8 +346,8 @@ class request_Core {
 	 *         [sdch] => 1
 	 *     )
 	 *
-	 * @param   string
-	 * @param   boolean set to TRUE to disable wildcard checking
+	 * @param   string    $encoding         Encoding type
+	 * @param   boolean   $explicit_check   Set to TRUE to disable wildcard checking
 	 * @return  boolean
 	 */
 	public static function accepts_encoding($encoding = NULL, $explicit_check = FALSE)
@@ -350,7 +368,7 @@ class request_Core {
 	 * The second function argument enables/disables wildcard checking.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     // With a language tag specified
 	 *     Kohana::debug(request::accepts_language('en'));
 	 *
@@ -369,8 +387,8 @@ class request_Core {
 	 *             )
 	 *     )
 	 *
-	 * @param   string  language tag
-	 * @param   boolean set to TRUE to disable prefix and wildcard checking
+	 * @param   string  $tag             Language tag
+	 * @param   boolean $explicit_check  Set to TRUE to disable prefix and wildcard checking
 	 * @return  boolean
 	 */
 	public static function accepts_language($tag = NULL, $explicit_check = FALSE)
@@ -384,21 +402,21 @@ class request_Core {
 	}
 
 	/**
-	 * Compare the q values for a given array of content types and return the one with the highest value. If 
-	 * items are found to have the same q value, the first one encountered in the given array wins. If all 
+	 * Compare the q values for a given array of content types and return the one with the highest value. If
+	 * items are found to have the same q value, the first one encountered in the given array wins. If all
 	 * items in the given array have a q value of 0, FALSE is returned.
 	 *
 	 * The second function argument enables/disables wildcard checking.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     echo request::preferred_accept(array('text/html', 'application/xhtml+xml'));
 	 *
 	 *     // Output:
 	 *     application/xhtml+xml
 	 *
-	 * @param   array    content types
-	 * @param   boolean  set to TRUE to disable wildcard checking
+	 * @param   array    $types              Content types
+	 * @param   boolean  $explicit_check     Set to TRUE to disable wildcard checking
 	 * @return  mixed    string mime type with highest q value, FALSE if none of the given types are accepted
 	 */
 	public static function preferred_accept($types, $explicit_check = FALSE)
@@ -421,18 +439,18 @@ class request_Core {
 	}
 
 	/**
-	 * Compare the q values for a given array of character sets and return the one with the highest value. If 
-	 * items are found to have the same q value, the first one encountered takes precedence. If all items in 
+	 * Compare the q values for a given array of character sets and return the one with the highest value. If
+	 * items are found to have the same q value, the first one encountered takes precedence. If all items in
 	 * the given array have a q value of 0, FALSE is returned.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     echo request::preferred_charset(array('iso-8859-1', 'utf-8'));
 	 *
 	 *     // Output:
 	 *     utf-8
 	 *
-	 * @param   array   character sets
+	 * @param   array   $charsets Character sets
 	 * @return  mixed
 	 */
 	public static function preferred_charset($charsets)
@@ -455,21 +473,21 @@ class request_Core {
 	}
 
 	/**
-	 * Compare the q values for a given array of encodings and return the one with the highest value. If 
-	 * items are found to have the same q value, the first one encountered takes precedence. If all items 
+	 * Compare the q values for a given array of encodings and return the one with the highest value. If
+	 * items are found to have the same q value, the first one encountered takes precedence. If all items
 	 * in the given array have a q value of 0, FALSE is returned.
 	 *
 	 * The second function argument enables/disables wildcard checking.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     echo request::preferred_encoding(array('gzip', 'deflate'));
 	 *
 	 *     // Output:
 	 *     gzip
 	 *
-	 * @param   array   encodings
-	 * @param   boolean set to TRUE to disable wildcard checking
+	 * @param   array   $encodings        Encodings
+	 * @param   boolean $explicit_check   Set to TRUE to disable wildcard checking
 	 * @return  mixed
 	 */
 	public static function preferred_encoding($encodings, $explicit_check = FALSE)
@@ -492,21 +510,21 @@ class request_Core {
 	}
 
 	/**
-	 * Compare the q values for a given array of language tags and return the one with the highest value. If 
-	 * items are found to have the same q value, the first one encountered takes precedence. If all items in 
+	 * Compare the q values for a given array of language tags and return the one with the highest value. If
+	 * items are found to have the same q value, the first one encountered takes precedence. If all items in
 	 * the given array have a q value of 0, FALSE is returned.
 	 *
 	 * The second function argument enables/disables wildcard checking.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     echo request::preferred_language(array('en', 'dn'));
 	 *
 	 *     // Output:
 	 *     en
 	 *
-	 * @param   array   language tags
-	 * @param   boolean set to TRUE to disable prefix and wildcard checking
+	 * @param   array   $tags             Language tags
+	 * @param   boolean $explicit_check   Set to TRUE to disable prefix and wildcard checking
 	 * @return  mixed
 	 */
 	public static function preferred_language($tags, $explicit_check = FALSE)
@@ -534,20 +552,20 @@ class request_Core {
 	 * The second function argument enables/disables wildcard checking.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     Kohana::debug(request::accepts_at_quality('application/xhtml+xml));
 	 *
 	 *     // Output:
 	 *     (integer) 1
-	 * 
+	 *
 	 *     Kohana::debug(request::accepts_at_quality('text/html'));
 	 *
 	 *     // Output:
 	 *     (double) 0.9
 	 *
-	 * @param   string   content type (e.g. "image/jpg", "jpg")
-	 * @param   boolean  set to TRUE to disable wildcard checking
-	 * @return  integer|float
+	 * @param   string   $type            Content type (e.g. "image/jpg", "jpg")
+	 * @param   boolean  $explicit_check  Set to TRUE to disable wildcard checking
+	 * @return  mixed
 	 */
 	public static function accepts_at_quality($type, $explicit_check = FALSE)
 	{
@@ -598,19 +616,19 @@ class request_Core {
 	 * Returns the quality factor at which the client accepts a character set.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     Kohana::debug(request::accepts_charset_at_quality('utf-8'));
 	 *
 	 *     // Output:
 	 *     (integer) 0.7
-	 * 
+	 *
 	 *     Kohana::debug(request::accepts_charset_at_quality('iso-8859-1'));
 	 *
 	 *     // Output:
 	 *     (integer) 1
 	 *
-	 * @param   string  charset (e.g., "ISO-8859-1", "utf-8")
-	 * @return  integer|float
+	 * @param   string  $charset    charset (e.g., "ISO-8859-1", "utf-8")
+	 * @return  mixed
 	 */
 	public static function accepts_charset_at_quality($charset)
 	{
@@ -636,20 +654,20 @@ class request_Core {
 	 * Returns the quality factor at which the client accepts an encoding.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     Kohana::debug(request::accepts_encoding_at_quality('gzip'));
 	 *
 	 *     // Output:
 	 *     (integer) 1
-	 * 
+	 *
 	 *     Kohana::debug(request::accepts_encoding_at_quality('deflate'));
 	 *
 	 *     // Output:
 	 *     (integer) 1
 	 *
-	 * @param   string  encoding (e.g., "gzip", "deflate")
-	 * @param   boolean set to TRUE to disable wildcard checking
-	 * @return  integer|float
+	 * @param   string  $encoding        Encoding (e.g., "gzip", "deflate")
+	 * @param   boolean $explicit_check  Set to TRUE to disable wildcard checking
+	 * @return  mixed
 	 */
 	public static function accepts_encoding_at_quality($encoding, $explicit_check = FALSE)
 	{
@@ -680,15 +698,15 @@ class request_Core {
 	 * The second function argument enables/disables wildcard checking.
 	 *
 	 * ###### Example
-	 * 
+	 *
 	 *     Kohana::debug(request::accepts_language_at_quality('en'));
 	 *
 	 *     // Output:
 	 *     (integer) 0.8
 	 *
-	 * @param   string  tag (e.g., "en", "en-us", "fr-ca")
-	 * @param   boolean set to TRUE to disable prefix and wildcard checking
-	 * @return  integer|float
+	 * @param   string  $tag             Tag (e.g., "en", "en-us", "fr-ca")
+	 * @param   boolean $explicit_check  Set to TRUE to disable prefix and wildcard checking
+	 * @return  mixed
 	 */
 	public static function accepts_language_at_quality($tag, $explicit_check = FALSE)
 	{
@@ -725,7 +743,7 @@ class request_Core {
 	/**
 	 * Parses a HTTP Accept or Accept-* header for q values
 	 *
-	 * @param   string  header data
+	 * @param   string  $header  Header data
 	 * @return  array
 	 */
 	protected static function parse_accept_header($header)
@@ -752,6 +770,7 @@ class request_Core {
 
 	/**
 	 * Parses a client's HTTP Accept-Charset header
+	 * @return  void
 	 */
 	protected static function parse_accept_charset_header()
 	{
@@ -773,6 +792,7 @@ class request_Core {
 
 	/**
 	 * Parses a client's HTTP Accept header
+	 * @return  void
 	 */
 	protected static function parse_accept_content_header()
 	{
@@ -806,6 +826,7 @@ class request_Core {
 
 	/**
 	 * Parses a client's HTTP Accept-Encoding header
+	 * @return  void
 	 */
 	protected static function parse_accept_encoding_header()
 	{
@@ -832,6 +853,7 @@ class request_Core {
 
 	/**
 	 * Parses a client's HTTP Accept-Language header
+	 * @return  void
 	 */
 	protected static function parse_accept_language_header()
 	{

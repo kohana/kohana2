@@ -3,7 +3,7 @@
  * URL helper class.
  *
  * ###### Using the url helper:
- * 
+ *
  *     // Using the url helper is simple:
  *     echo url::current();
  *
@@ -12,7 +12,7 @@
  *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class url_Core {
@@ -29,8 +29,8 @@ class url_Core {
 	 *     // Output:
 	 *     welcome
 	 *
-	 * @param   boolean  include the query string
-	 * @param   boolean  include the suffix
+	 * @param   boolean  $qs       Include the query string
+	 * @param   boolean  $suffix   Include the suffix
 	 * @return  varchar
 	 */
 	public static function current($qs = FALSE, $suffix = FALSE)
@@ -62,8 +62,8 @@ class url_Core {
 	 *     // Output:
 	 *     http://localhost/kohana/index.php/
 	 *
-	 * @param   boolean			include the index page
-	 * @param   boolean|varchar	non-default protocol
+	 * @param   boolean	  $index      Include the index page
+	 * @param   mix	      $protocol   Non-default protocol
 	 * @return  varchar
 	 */
 	public static function base($index = FALSE, $protocol = FALSE)
@@ -120,7 +120,7 @@ class url_Core {
 	 *
 	 * The second function argument, if given a string, will be prefixed to the
 	 * return value as the protocol.
-	 * 
+	 *
 	 * ##### Example
 	 *
 	 *     // Assuming this url: http://localhost/opensource/kohana/index.php/welcome
@@ -134,8 +134,8 @@ class url_Core {
 	 *     // Output:
 	 *     http://localhost/kohana/index.php/
 	 *
-	 * @param   string			site URI to convert
-	 * @param   boolean|varchar	non-default protocol
+	 * @param   string	  $uri	     site URI to convert
+	 * @param   mixed	  $protocol  non-default protocol
 	 * @return  varchar
 	 */
 	public static function site($uri = '', $protocol = FALSE)
@@ -165,10 +165,10 @@ class url_Core {
 	/**
 	 * This method returns a qualified url path. Absolute
 	 * filenames and relative filenames are allowed.
-	 * 
+	 *
 	 * The second function argument will include the index.php
 	 * in the returned value.
-	 * 
+	 *
 	 * ##### Example
 	 *
 	 *     echo url::file('uploads/images/raw/narwhal.jpg');
@@ -176,9 +176,9 @@ class url_Core {
 	 *     // Output:
 	 *     /kohana/uploads/images/raw/narwhal.jpg
 	 *
-	 * @param   varchar	filename
-	 * @param   boolean	include the index page
-	 * @return  varchar
+	 * @param   string	$file   Filename
+	 * @param   boolean	$index  Include the index page
+	 * @return  string
 	 */
 	public static function file($file, $index = FALSE)
 	{
@@ -195,7 +195,7 @@ class url_Core {
 	 * This method merges an array of arguments with the current
 	 * URI and query string to overload, instead of replace, the
 	 * current query string.
-	 * 
+	 *
 	 * ##### Example
 	 *
 	 *     // Assuming this url: http://localhost/opensource/kohana/index.php/welcome
@@ -204,8 +204,8 @@ class url_Core {
 	 *     // Output:
 	 *     welcome?0=unicorn&1=rambo_kitteh&2=narwhal&3=charlie
 	 *
-	 * @param   array   associative array of arguments
-	 * @return  varchar
+	 * @param   array   $arguments  Associative array of arguments
+	 * @return  string
 	 */
 	public static function merge(array $arguments)
 	{
@@ -229,7 +229,7 @@ class url_Core {
 	 * The second function argument specifies the separator and the
 	 * third function argument ensures transliteration of any special
 	 * characters into ASCII.
-	 * 
+	 *
 	 * ##### Example
 	 *
 	 *     echo url::title('this is a cool phrase');
@@ -237,10 +237,10 @@ class url_Core {
 	 *     // Output:
 	 *     this-is-a-cool-phrase
 	 *
-	 * @param   varchar	phrase to convert
-	 * @param   varchar	word separator (- or _)
-	 * @param   boolean	transliterate to ASCII
-	 * @return  varchar
+	 * @param   string   $title          Phrase to convert
+	 * @param   string   $separatorword  Separator (- or _)
+	 * @param   boolean	 $ascii_only     Transliterate to ASCII
+	 * @return  string
 	 */
 	public static function title($title, $separator = '-', $ascii_only = FALSE)
 	{
@@ -270,13 +270,13 @@ class url_Core {
 	/**
 	 * This method sends a page redirect header and runs the system.redirect
 	 * Event. This method does safely exit after the header is sent.
-	 * 
+	 *
 	 * The second function argument is the status code to send during
 	 * redirection; useful if you are redirecting because a page has
 	 * been relocated to a different url permanently or temporarily.
 	 *
 	 * Accepted status codes are as follow:
-	 * 
+	 *
 	 * refresh
 	 * 300
 	 * 301

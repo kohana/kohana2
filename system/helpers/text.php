@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Text helper class. 
+ * Text helper class.
  *
  * ###### Using the text helper:
- * 
+ *
  *     // Using the text helper is simple:
  *     echo text::limit_words('limit this text to four words', 4);
  *
@@ -12,7 +12,7 @@
  *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class text_Core {
@@ -29,9 +29,9 @@ class text_Core {
 	 *     // Output:
 	 *     cakephp wishes...
 	 *
-	 * @param   string   phrase to limit words of
-	 * @param   integer  number of words to limit to
-	 * @param   string   end character or entity
+	 * @param   string   $str       Phrase to limit words of
+	 * @param   integer  $limit     Number of words to limit to
+	 * @param   string   $end_char  End character or entity
 	 * @return  string
 	 */
 	public static function limit_words($str, $limit = 100, $end_char = NULL)
@@ -67,10 +67,10 @@ class text_Core {
 	 *     // Output:
 	 *     cake
 	 *
-	 * @param   string   phrase to limit characters of
-	 * @param   integer  number of characters to limit to
-	 * @param   string   end character or entity
-	 * @param   boolean  enable or disable the preservation of words while limiting
+	 * @param   string   $str               Phrase to limit characters of
+	 * @param   integer  $limit             Number of characters to limit to
+	 * @param   string   $end_char          End character or entity
+	 * @param   boolean  $preserve_words    Enable or disable the preservation of words while limiting
 	 * @return  string
 	 */
 	public static function limit_chars($str, $limit = 100, $end_char = NULL, $preserve_words = FALSE)
@@ -149,13 +149,13 @@ class text_Core {
 	 * Generates a random string of a given type and length. Possible
 	 * values for the first argument ($type) are:
 	 *
-	 * alnum    - alpha-numeric characters (including capitals)
-	 * alpha    - alphabetical characters (including capitals)
-	 * hexdec   - hexadecimal characters, 0-9 plus a-f
-	 * numeric  - digit characters, 0-9
-	 * nozero   - digit characters, 1-9
-	 * distinct - clearly distinct alpha-numeric characters.
-	 * 
+	 *  - alnum    - alpha-numeric characters (including capitals)
+	 *  - alpha    - alphabetical characters (including capitals)
+	 *  - hexdec   - hexadecimal characters, 0-9 plus a-f
+	 *  - numeric  - digit characters, 0-9
+	 *  - nozero   - digit characters, 1-9
+	 *  - distinct - clearly distinct alpha-numeric characters.
+	 *
 	 * For values that do not match any of the above, the characters passed
 	 * in will be used.
 	 *
@@ -171,16 +171,9 @@ class text_Core {
 	 *     // Output:
 	 *     XCDDVXV7FUSYAVXFFKSL
 	 *
-	 * @param   string   a type of pool, or a string of characters to use as the pool
-	 * @param   integer  length of string to return
+	 * @param   string   $type     A type of pool, or a string of characters to use as the pool
+	 * @param   integer  $length   Length of string to return
 	 * @return  string
-	 *
-	 * @tutorial  alnum     alpha-numeric characters
-	 * @tutorial  alpha     alphabetical characters
-	 * @tutorial  hexdec    hexadecimal characters, 0-9 plus a-f
-	 * @tutorial  numeric   digit characters, 0-9
-	 * @tutorial  nozero    digit characters, 1-9
-	 * @tutorial  distinct  clearly distinct alpha-numeric characters
 	 */
 	public static function random($type = 'alnum', $length = 8)
 	{
@@ -254,7 +247,7 @@ class text_Core {
 	 *     // Output:
 	 *     path/to/something
 	 *
-	 * @param   string  string to reduce slashes of
+	 * @param   string  $str   String to reduce slashes of
 	 * @return  string
 	 */
 	public static function reduce_slashes($str)
@@ -278,10 +271,10 @@ class text_Core {
 	 *     // Output:
 	 *     The income *** is a three letter word, but telemarketers are *******. No cookie for you!
 	 *
-	 * @param   string   phrase to replace words in
-	 * @param   array    words to replace
-	 * @param   string   replacement string
-	 * @param   boolean  replace words across word boundries (space, period, etc)
+	 * @param   string   $replace_partial_words    Phrase to replace words in
+	 * @param   array    $replacement              Words to replace
+	 * @param   string   $badwords                 Replacement string
+	 * @param   boolean  $str                      Replace words across word boundries (space, period, etc)
 	 * @return  string
 	 */
 	public static function censor($str, $badwords, $replacement = '#', $replace_partial_words = TRUE)
@@ -320,7 +313,7 @@ class text_Core {
 	 *     // Output:
 	 *     cook
 	 *
-	 * @param   array   words to find similar text of
+	 * @param   array   $words  Words to find similar text of
 	 * @return  string
 	 */
 	public static function similar(array $words)
@@ -351,16 +344,16 @@ class text_Core {
 	 *
 	 *     $str_uno = 'baby';
 	 *     $str_dos = 'cries';
-	 * 
+	 *
 	 *     echo text::distance($str_uno, $str_dos);
 	 *
 	 *     // Output:
 	 *     5
 	 *
 	 * @see http://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance
-	 * @param     string    first word
-	 * @param     string    second word
-	 * @return    int       distance between words
+	 * @param     string    $string1  First word
+	 * @param     string    $string2  Second word
+	 * @return    int       Distance between words
 	 */
 	public static function distance($string1, $string2)
 	{
@@ -418,7 +411,7 @@ class text_Core {
 	 *     // Output:
 	 *     <a href="http://example.com">http://example.com</a>
 	 *
-	 * @param   string   text to auto link
+	 * @param   string   $text  Text to auto link
 	 * @return  string
 	 */
 	public static function auto_link_urls($text)
@@ -469,7 +462,7 @@ class text_Core {
 	 *     // Output (friendly):
 	 *     <a href="mailto:cyberspace_is_kewl@example.com">cyberspace_is_kewl@example.com</a>
 	 *
-	 * @param   string   text to auto link
+	 * @param   string   $text  Text to auto link
 	 * @return  string
 	 */
 	public static function auto_link_emails($text)
@@ -498,13 +491,13 @@ class text_Core {
 	 *     echo text::auto_link_emails('cyberspace_is_kewl@example.com');
 	 *
 	 *     // Output:
-	 *     <p>This is just one break<br /> 
-     *     This deserves a paragragh</p> 
+	 *     <p>This is just one break<br />
+     *     This deserves a paragragh</p>
      *
      *     <p>Hookay, this is the...</p>
 	 *
-	 * @param   string   subject
-	 * @param   boolean  convert single linebreaks to <br />
+	 * @param   string   $str  Subject
+	 * @param   boolean  $br   Convert single linebreaks to <br />
 	 * @return  string
 	 */
 	public static function auto_p($str, $br = TRUE)
@@ -554,40 +547,40 @@ class text_Core {
 
 	/**
 	 * Returns human readable sizes.
-	 * 
+	 *
 	 * Note: this is similar to the -h option in many Unix
 	 * utilities (like "ls").
 	 *
 	 * ##### Example
 	 *
 	 *     echo text::bytes('2048');
-	 *     
+	 *
 	 *     // Output:
 	 *     2.05 kB
 	 *
 	 *     echo text::bytes('4194304', 'kB');
-	 *     
+	 *
 	 *     // Output:
 	 *     4194.30 kB
 	 *
 	 *     echo text::bytes('4194304', 'GiB');
-	 *     
+	 *
 	 *     // Output:
 	 *     0.00 GiB
 	 *
 	 *     echo text::bytes('4194304', NULL, NULL, FALSE);
-	 *     
+	 *
 	 *     // Output:
 	 *     4.00 MiB
-	 * 
+	 *
 	 * @see  Based on original functions written by:
 	 * @see  Aidan Lister: http://aidanlister.com/repos/v/function.size_readable.php
 	 * @see  Quentin Zervaas: http://www.phpriot.com/d/code/strings/filesize-format/
 	 *
-	 * @param   integer  size in bytes
-	 * @param   string   a definitive unit
-	 * @param   string   the return string format
-	 * @param   boolean  whether to use SI prefixes or IEC
+	 * @param   integer  $bytes       Size in bytes
+	 * @param   string   $force_unit  A definitive unit
+	 * @param   string   $format      The return string format
+	 * @param   boolean  $si          Whether to use SI prefixes or IEC
 	 * @return  string
 	 */
 	public static function bytes($bytes, $force_unit = NULL, $format = NULL, $si = TRUE)
@@ -628,7 +621,7 @@ class text_Core {
 	 *     // Output:
 	 *     Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Cras id dolor. Donec&nbsp;...
 	 *
-	 * @param   string  string to remove widows from
+	 * @param   string  $str  String to remove widows from
 	 * @return  string
 	 */
 	public static function widont($str)
@@ -661,7 +654,7 @@ class text_Core {
 	 * @copyright  (c) 2005 Harry Fuecks
 	 * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
 	 *
-	 * @param   string  string to check
+	 * @param   string  $str  String to check
 	 * @return  bool
 	 */
 	public static function is_ascii($str)
@@ -681,7 +674,7 @@ class text_Core {
 	 * @copyright  (c) 2005 Harry Fuecks
 	 * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
 	 *
-	 * @param   string  string to clean
+	 * @param   string  $str  String to clean
 	 * @return  string
 	 */
 	public static function strip_ascii_ctrl($str)
@@ -706,7 +699,7 @@ class text_Core {
 	 * @copyright  (c) 2005 Harry Fuecks
 	 * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
 	 *
-	 * @param   string  string to clean
+	 * @param   string  $str  String to clean
 	 * @return  string
 	 */
 	public static function strip_non_ascii($str)
@@ -723,15 +716,15 @@ class text_Core {
 	 *
 	 *     // Output:
 	 *     Utgardhar
-	 * 
+	 *
 	 * @author  Andreas Gohr <andi@splitbrain.org>
 	 * @see http://sourceforge.net/projects/phputf8/
 	 * @copyright  (c) 2007-2009 Kohana Team
 	 * @copyright  (c) 2005 Harry Fuecks
 	 * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
 	 *
-	 * @param   string   string to transliterate
-	 * @param   integer  -1 lowercase only, +1 uppercase only, 0 both cases
+	 * @param   string   $str    String to transliterate
+	 * @param   integer  $case   -1 lowercase only, +1 uppercase only, 0 both cases
 	 * @return  string
 	 */
 	public static function transliterate_to_ascii($str, $case = 0)
