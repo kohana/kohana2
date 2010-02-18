@@ -117,7 +117,7 @@ class Kohana_Exception_Core extends Exception {
 			// Manually save logs after exceptions
 			Kohana_Log::save();
 
-			if (Kohana::config('kohana/core.display_errors') === FALSE)
+			if (Kohana::config('core.display_errors') === FALSE)
 			{
 				// Do not show the details
 				$file = $line = NULL;
