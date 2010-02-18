@@ -5,7 +5,7 @@
  * ###### Using the remote helper:
  *
  *     // Using the remote helper is simple:
- *     echo Kohana::debug(url::status('http://kohanaphp.com'));
+ *     echo Kohana::debug(remote::status('http://kohanaphp.com'));
  *
  *     // Output:
  *     (integer) 200
