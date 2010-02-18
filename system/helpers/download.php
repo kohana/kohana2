@@ -15,7 +15,7 @@
 class download_Core {
 
 	/**
-	 * Send headers necessary to invoke a "Save As" dialog
+	 * Send headers necessary to invoke a "Save As" dialog.
 	 * 
 	 * ##### Example
 	 *

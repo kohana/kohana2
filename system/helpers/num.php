@@ -18,7 +18,7 @@
 class num_Core {
 
 	/**
-	 * Round a number to the nearest nth
+	 * Round a number to the nearest nth.
 	 *
 	 * ###### Example
 	 *

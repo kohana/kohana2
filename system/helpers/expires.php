@@ -1,19 +1,32 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Controls headers that effect client caching of pages
+ * Controls headers that effect client caching of pages.
+ *
+ * ###### Using the expires helper:
+ *
+ *     // Using the expires helper is simple:
+ *     expires::set(120);
  *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class expires_Core {
 
 	/**
-	 * Sets the amount of time before content expires
+	 * Sets the Last-Modified, Expires, and Cache-Control headers to
+	 * control the amount of time before content expires.
 	 *
-	 * @param   integer Seconds before the content expires
-	 * @return  integer Timestamp when the content expires
+	 * ###### Example
+	 *
+	 *     expires::set(120);
+	 *
+	 *     // Output (also sets headers):
+	 *     (integer) 1266483530
+	 *
+	 * @param   integer	$seconds	Seconds before the content expires
+	 * @return  integer				Timestamp when the content expires
 	 */
 	public static function set($seconds = 60)
 	{
@@ -32,9 +45,17 @@ class expires_Core {
 	}
 
 	/**
-	 * Parses the If-Modified-Since header
+	 * Parses the If-Modified-Since header and returns FALSE if it
+	 * does not exist or is malformed.
 	 *
-	 * @return  integer|boolean Timestamp or FALSE when header is lacking or malformed
+	 * ###### Example
+	 *
+	 *     expires::get();
+	 *
+	 *     // Output (this header isn't set on the test machine):
+	 *     (boolean) false
+	 *
+	 * @return  integer|boolean	Timestamp or FALSE when header is lacking or malformed
 	 */
 	public static function get()
 	{
@@ -57,8 +78,16 @@ class expires_Core {
 	}
 
 	/**
-	 * Checks to see if content should be updated otherwise sends Not Modified status
-	 * and exits.
+	 * Checks to see if content should be updated, otherwise, sends
+	 * Not Modified status code and exits the script.
+	 *
+	 * ###### Example
+	 *
+	 *     expires::check(120);
+	 *
+	 *     // Output (false because If-Modified-Since is not set on
+	 *     // this machine):
+	 *     (boolean) false
 	 *
 	 * @uses    exit()
 	 * @uses    expires::get()
@@ -96,7 +125,14 @@ class expires_Core {
 	}
 
 	/**
-	 * Check if expiration headers are already set
+	 * Check if expiration headers are already set.
+	 *
+	 * ###### Example
+	 *
+	 *     expires::headers_set();
+	 *
+	 *     // Output:
+	 *     (boolean) false
 	 *
 	 * @return boolean
 	 */
