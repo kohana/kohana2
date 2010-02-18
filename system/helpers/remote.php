@@ -2,13 +2,35 @@
 /**
  * Remote url/file helper.
  *
+ * ###### Using the remote helper:
+ *
+ *     // Using the remote helper is simple:
+ *     echo Kohana::debug(url::status('http://kohanaphp.com'));
+ *
+ *     // Output:
+ *     (integer) 200
+ *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class remote_Core {
 
+	/**
+	 * Return the HTTP status code of a given URI.
+	 *
+	 * ###### Using the remote helper:
+	 *
+	 *     // Using the remote helper is simple:
+	 *     echo Kohana::debug(url::status('http://kohanaphp.com'));
+	 *
+	 *     // Output:
+	 *     (integer) 200
+	 *
+	 * @param   varchar  $url	Fully qualified URI/URL
+	 * @return  integer|boolean	If no response it returns false
+	 */
 	public static function status($url)
 	{
 		if ( ! valid::url($url, 'http'))
