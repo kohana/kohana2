@@ -23,13 +23,13 @@ class remote_Core {
 	 * ###### Using the remote helper:
 	 *
 	 *     // Using the remote helper is simple:
-	 *     echo Kohana::debug(url::status('http://kohanaphp.com'));
+	 *     echo Kohana::debug(remote::status('http://kohanaphp.com'));
 	 *
 	 *     // Output:
 	 *     (integer) 200
 	 *
-	 * @param   varchar  $url	Fully qualified URI/URL
-	 * @return  integer|boolean	If no response it returns false
+	 * @param   string    $url	Fully qualified URI/URL
+	 * @return  mixed  If no response it returns false
 	 */
 	public static function status($url)
 	{
