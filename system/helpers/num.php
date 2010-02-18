@@ -5,7 +5,7 @@
  * ###### Using the num helper:
  *
  *     // Using the num helper is simple:
- *     echo Kohana::debug(url::round(24));
+ *     echo Kohana::debug(num::round(24));
  *
  *     // Output:
  *     (double) 25
@@ -22,7 +22,7 @@ class num_Core {
 	 *
 	 * ###### Example
 	 *
-	 *     echo Kohana::debug(url::round(24));
+	 *     echo Kohana::debug(num::round(24));
 	 *
 	 *     // Output:
 	 *     (double) 25
