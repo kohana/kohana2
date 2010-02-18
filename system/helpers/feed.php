@@ -11,10 +11,20 @@ class feed_Core {
 
 	/**
 	 * Parses a remote feed into an array.
+	 * 
+	 * ##### Examples
+	 * 		//Parse a remote RSS or ATOM feed
+	 * 		$feed_items = feed::parse('http://rss.slashdot.org/Slashdot/slashdot');
+	 * 		
+	 * 		//Parse a local RSS feed from file
+	 * 		$feed_items = feed::parse('path/to/awesome_site.rss');
+	 * 		
+	 * 		//Parse a string as an RSS feed
+	 * 		$feed_items = feed::parse($xml);	
 	 *
-	 * @param   string   remote feed URL
-	 * @param   integer  item limit to fetch
-	 * @return  array
+	 * @param string $feed remote feed URL
+	 * @param integer $limit item limit to fetch
+	 * @return array
 	 */
 	public static function parse($feed, $limit = 0)
 	{
@@ -60,12 +70,30 @@ class feed_Core {
 
 	/**
 	 * Creates a feed from the given parameters.
-	 *
-	 * @param   array   feed information
-	 * @param   array   items to add to the feed
-	 * @param   string  define which format to use
-	 * @param   string  define which encoding to use
-	 * @return  string
+	 * 
+	 * ##### Example
+	 * 		//Information for the whole feed
+	 * 		$info = array('notes' => 'Foo bar');
+	 * 		
+	 * 		//List of items inside feed
+	 * 		$items = array(
+	 * 			array(
+	 * 		        'title' => 'My very first feed created by KohanaPHP',
+	 * 		        'link' => 'http://www.example.com/article/34',
+	 * 		        'description' => 'This article is really nice!',
+	 * 		        'author' => 'Flip van Rijn',
+	 * 		        'pubDate' => 'Wed, 23 Sept 2009 17:13:25 GMT',
+	 * 		    ),
+	 * 		);
+	 * 		
+	 * 		//echo out the feed
+	 * 		echo feed::create($info, $items);
+	 * 
+	 * @param array $info feed information
+	 * @param array $items items to add to the feed
+	 * @param string $format define which format to use
+	 * @param string $encoding define which encoding to use
+	 * @return string
 	 */
 	public static function create($info, $items, $format = 'rss2', $encoding = 'UTF-8')
 	{
