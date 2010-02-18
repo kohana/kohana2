@@ -14,7 +14,7 @@ class file_Core {
 	 * unreliable, due to PHP being horribly unreliable when it comes to
 	 * determining the mime-type of a file.
 	 * 
-	 * ### Example
+	 * #### Example
 	 * ##### Code
 	 * 		$file = 'my_movie.ogg'
 	 * 		echo $file.' ('.file::mime($file).')';
@@ -89,7 +89,7 @@ class file_Core {
 	/**
 	 * Split a file into pieces matching a specific size.
 	 * 
-	 * ### Example
+	 * #### Example
 	 * ##### Code
 	 * 		$file = 'humpty_dumpty.mp3'; // pretend it is 7.8 MB large
 	 * 		echo (file_exists($file)) ? file::split($file, FALSE, 2) : 'can not find file!' ;
@@ -161,7 +161,7 @@ class file_Core {
 	/**
 	 * Join a split file into a whole file.
 	 * 
-	 * ### Example
+	 * #### Example
 	 * ##### Code
 	 * 		$file_in = 'humpty_dumpty.mp3'; // from our last example
 	 * 		$file_out = 'humpty_dumpty-back_together_again.mp3'; // output name
