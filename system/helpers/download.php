@@ -16,20 +16,20 @@ class download_Core {
 
 	/**
 	 * Send headers necessary to invoke a "Save As" dialog.
-	 * 
+	 *
 	 * ##### Example
 	 *
 	 * 		// Display save dialog
 	 * 		download::dialog('Modern Warfare 2 Hacks.mpg');
-	 * 		
+	 *
 	 * 		// Echo out video contents
 	 * 		echo file_get_contents('rick_roll.mpg');
 	 *
 	 * @link http://support.microsoft.com/kb/260519
 	 * @link http://greenbytes.de/tech/tc2231/
 	 *
-	 * @param	varchar	$filename	File name
-	 * @return	varchar	file name as it was sent
+	 * @param	string	$filename	File name
+	 * @return	string	file name as it was sent
 	 */
 	public static function dialog($filename)
 	{
@@ -42,7 +42,7 @@ class download_Core {
 
 	/**
 	 * Send the contents of a file or a data string with the proper MIME type and exit.
-	 * 
+	 *
 	 * ##### Example
 	 *
 	 * 		//send image
@@ -51,8 +51,8 @@ class download_Core {
 	 * @uses exit()
 	 * @uses Kohana::close_buffers()
 	 *
-	 * @param	varchar	$filename	A qualified file path or file name
-	 * @param	varchar	$data		Optional data to send
+	 * @param	string	$filename	A qualified file path or file name
+	 * @param	string	$data		Optional data to send
 	 * @return	void
 	 */
 	public static function send($filename, $data = NULL)
@@ -104,7 +104,7 @@ class download_Core {
 	/**
 	 * Force the download of a file by the user's browser by preventing any
 	 * caching. Contains a workaround for Internet Explorer.
-	 * 
+	 *
 	 * ##### Example
 	 *
 	 * 		// Force a download prompt - never let the browser cache
@@ -117,9 +117,9 @@ class download_Core {
 	 * @uses download::dialog()
 	 * @uses download::send()
 	 *
-	 * @param	varchar	$filename	A qualified file path or file name
+	 * @param	string	$filename	A qualified file path or file name
 	 * @param	mixed	$data		Data to be sent if the filename does not exist
-	 * @param	varchar	$nicename	Suggested filename to display in the download
+	 * @param	string	$nicename	Suggested filename to display in the download
 	 * @return void
 	 */
 	public static function force($filename = NULL, $data = NULL, $nicename = NULL)
