@@ -55,7 +55,7 @@ class expires_Core {
 	 *     // Output (this header isn't set on the test machine):
 	 *     (boolean) false
 	 *
-	 * @return  integer|boolean	Timestamp or FALSE when header is lacking or malformed
+	 * @return  mixed	Timestamp or FALSE when header is lacking or malformed
 	 */
 	public static function get()
 	{
@@ -93,7 +93,7 @@ class expires_Core {
 	 * @uses    expires::get()
 	 *
 	 * @param   integer         Maximum age of the content in seconds
-	 * @return  integer|boolean Timestamp of the If-Modified-Since header or FALSE when header is lacking or malformed
+	 * @return  mixed Timestamp of the If-Modified-Since header or FALSE when header is lacking or malformed
 	 */
 	public static function check($seconds = 60)
 	{
