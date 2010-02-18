@@ -150,8 +150,8 @@ class Input_Core {
 	 *    // URL is http://www.example.com/index.php?articleId=123&file=text.txt
 	 *    // Note that print statements are for documentation purpose only
 	 *
-	 *    print Kohana::debug($this->input->get());
-	 *    print Kohana::debug($this->input->get('file'));
+	 *    echo Kohana::debug($this->input->get());
+	 *    echo Kohana::debug($this->input->get('file'));
 	 *
 	 *    // Output:
 	 *    Array
@@ -217,8 +217,8 @@ class Input_Core {
 	 *    // COOKIE name is "username" and the contents of this cookie is "aart-jan".
 	 *    // Note that print statements are for documentation purpose only
 	 *
-	 *    print Kohana::debug($this->input->cookie());
-	 *    print Kohana::debug($this->input->cookie('username'));
+	 *    echo Kohana::debug($this->input->cookie());
+	 *    echo Kohana::debug($this->input->cookie('username'));
 	 *
 	 *    // Output:
 	 *    Array
@@ -246,7 +246,7 @@ class Input_Core {
 	 *
 	 * ##### Example
 	 * 
-	 *    print Kohana::debug($this->input->server('HTTP_HOST'));
+	 *    echo Kohana::debug($this->input->server('HTTP_HOST'));
 	 *
 	 *    // Output:
 	 *    localhost
@@ -298,7 +298,7 @@ class Input_Core {
 	 *
 	 * ##### Example
 	 * 
-	 *    print $this->input->ip_address();
+	 *    echo $this->input->ip_address();
 	 *
 	 *    // Output:
 	 *    127.0.0.1
