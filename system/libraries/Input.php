@@ -11,25 +11,34 @@
  *     // to use it, load it as a singleton instance:
  *     $input = Input::instance();
  *
- * $Id$
- *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class Input_Core {
 
-	// Enable or disable automatic XSS cleaning
-	protected $use_xss_clean = FALSE;
-
-	// Are magic quotes enabled?
-	protected $magic_quotes_gpc = FALSE;
-
-	// IP address of current user
+	/**
+	 * IP address of current user
+	 * @var string $ip_address
+	 */
 	public $ip_address;
 
-	// Input singleton
+	/**
+	 * Enable or disable automatic XSS cleaning
+	 * @var boolean $use_xss_clean
+	 */
+	protected $use_xss_clean = FALSE;
+
+	/**
+	 * Are magic quotes enabled?
+	 * @var boolean $magic_quotes_gpc
+	 */
+	protected $magic_quotes_gpc = FALSE;
+
+	/**
+	 * Input singleton
+	 */
 	protected static $instance;
 
 	/**
@@ -40,7 +49,7 @@ class Input_Core {
 	 *
 	 *    $input = Input::instance();
 	 *
-	 * @return  object
+	 * @return  Input
 	 */
 	public static function instance()
 	{
@@ -148,10 +157,9 @@ class Input_Core {
 	 * ##### Example
 	 *
 	 *    // URL is http://www.example.com/index.php?articleId=123&file=text.txt
-	 *    // Note that print statements are for documentation purpose only
 	 *
-	 *    echo Kohana::debug($this->input->get());
-	 *    echo Kohana::debug($this->input->get('file'));
+	 *    echo Kohana::debug($input->get());
+	 *    echo Kohana::debug($input->get('file'));
 	 *
 	 *    // Output:
 	 *    Array
@@ -163,11 +171,11 @@ class Input_Core {
 	 *    text.txt
 	 *
 	 *    // You can also pass a default value if the key doesn't exist and manually XSS clean the request:
-	 *    $this->input->get('file', 'default_value', TRUE);
+	 *    $input->get('file', 'default_value', TRUE);
 	 *
-	 * @param   string   key to find
-	 * @param   mixed    default value
-	 * @param   boolean  XSS clean the value
+	 * @param   string   $key         Key to find
+	 * @param   mixed    $default     Default value
+	 * @param   boolean  $xss_clean   XSS clean the value
 	 * @return  mixed
 	 */
 	public function get($key = array(), $default = NULL, $xss_clean = FALSE)
@@ -181,10 +189,9 @@ class Input_Core {
 	 * ##### Example
 	 *
 	 *    // POST variables are articleId=123 and file=text.txt
-	 *    // Note that print statements are for documentation purpose only
 	 *
-	 *    print Kohana::debug($this->input->post());
-	 *    print Kohana::debug($this->input->post('file'));
+	 *    echo Kohana::debug($input->post());
+	 *    echo Kohana::debug($input->post('file'));
 	 *
 	 *    // Output:
 	 *    Array
@@ -196,11 +203,11 @@ class Input_Core {
 	 *    text.txt
 	 *
 	 *    // You can also pass a default value if the key doesn't exist and manually XSS clean the request:
-	 *    $this->input->post('file', 'default_value', TRUE);
+	 *    $input->post('file', 'default_value', TRUE);
 	 *
-	 * @param   string   key to find
-	 * @param   mixed    default value
-	 * @param   boolean  XSS clean the value
+	 * @param   string   $key         Key to find
+	 * @param   mixed    $default     Default value
+	 * @param   boolean  $xss_clean   XSS clean the value
 	 * @return  mixed
 	 */
 	public function post($key = array(), $default = NULL, $xss_clean = FALSE)
@@ -217,8 +224,8 @@ class Input_Core {
 	 *    // COOKIE name is "username" and the contents of this cookie is "aart-jan".
 	 *    // Note that print statements are for documentation purpose only
 	 *
-	 *    echo Kohana::debug($this->input->cookie());
-	 *    echo Kohana::debug($this->input->cookie('username'));
+	 *    echo Kohana::debug($input->cookie());
+	 *    echo Kohana::debug($input->cookie('username'));
 	 *
 	 *    // Output:
 	 *    Array
@@ -229,11 +236,11 @@ class Input_Core {
 	 *    aart-jan
 	 *
 	 *    // You can also pass a default value if the key doesn't exist and manually XSS clean the request:
-	 *    $this->input->cookie('username', 'default_value', TRUE);
+	 *    $input->cookie('username', 'default_value', TRUE);
 	 *
-	 * @param   string   key to find
-	 * @param   mixed    default value
-	 * @param   boolean  XSS clean the value
+	 * @param   string   $key         Key to find
+	 * @param   mixed    $default     Default value
+	 * @param   boolean  $xss_clean   XSS clean the value
 	 * @return  mixed
 	 */
 	public function cookie($key = array(), $default = NULL, $xss_clean = FALSE)
@@ -245,18 +252,18 @@ class Input_Core {
 	 * Fetch an item from the $_SERVER array.
 	 *
 	 * ##### Example
-	 * 
-	 *    echo Kohana::debug($this->input->server('HTTP_HOST'));
+	 *
+	 *    echo Kohana::debug($input->server('HTTP_HOST'));
 	 *
 	 *    // Output:
 	 *    localhost
 	 *
 	 *    // You can also pass a default value if the key doesn't exist and manually XSS clean the request:
-	 *    $this->input->server('HTTP_HOST', 'default_value', TRUE);
+	 *    $input->server('HTTP_HOST', 'default_value', TRUE);
 	 *
-	 * @param   string   key to find
-	 * @param   mixed    default value
-	 * @param   boolean  XSS clean the value
+	 * @param   string   $key         Key to find
+	 * @param   mixed    $default     Default value
+	 * @param   boolean  $xss_clean   XSS clean the value
 	 * @return  mixed
 	 */
 	public function server($key = array(), $default = NULL, $xss_clean = FALSE)
@@ -267,10 +274,10 @@ class Input_Core {
 	/**
 	 * Fetch an item from a global array.
 	 *
-	 * @param   array    array to search
-	 * @param   string   key to find
-	 * @param   mixed    default value
-	 * @param   boolean  XSS clean the value
+	 * @param   array    $array       Array to search
+	 * @param   string   $key         Key to find
+	 * @param   mixed    $default     Default value
+	 * @param   boolean  $xss_clean   XSS clean the value
 	 * @return  mixed
 	 */
 	protected function search_array($array, $key, $default = NULL, $xss_clean = FALSE)
@@ -297,8 +304,8 @@ class Input_Core {
 	 * Fetch the IP Address.
 	 *
 	 * ##### Example
-	 * 
-	 *    echo $this->input->ip_address();
+	 *
+	 *    echo $input->ip_address();
 	 *
 	 *    // Output:
 	 *    127.0.0.1
@@ -348,13 +355,13 @@ class Input_Core {
 	 * ##### Example
 	 *
 	 *    // Clean the input variable with the default tool
-	 *    echo $this->input->xss_clean($suspect_input);
+	 *    echo $input->xss_clean($suspect_input);
 	 *
 	 *    // Clean the input variable with the specified tool
-	 *    echo $this->input->xss_clean($suspect_input, 'htmlpurifier');
-	 * 
-	 * @param   string  data to clean
-	 * @param   string  xss_clean method to use ('htmlpurifier' or defaults to built-in method)
+	 *    echo $input->xss_clean($suspect_input, 'htmlpurifier');
+	 *
+	 * @param   string  $data   Data to clean
+	 * @param   string  $tool   xss_clean method to use ('htmlpurifier' or defaults to built-in method)
 	 * @return  string
 	 */
 	public function xss_clean($data, $tool = NULL)
@@ -397,7 +404,7 @@ class Input_Core {
 	/**
 	 * Default built-in cross site scripting filter.
 	 *
-	 * @param   string  data to clean
+	 * @param   string  $data  Data to clean
 	 * @return  string
 	 */
 	protected function xss_filter_default($data)
@@ -470,7 +477,7 @@ class Input_Core {
 	 * existence of the "Standalone Distribution" htmlpurifier library, and is set to not tidy
 	 * input.
 	 *
-	 * @param   string  data to clean
+	 * @param   string  $data  Data to clean
 	 * @return  string
 	 */
 	protected function xss_filter_htmlpurifier($data)
@@ -507,9 +514,9 @@ class Input_Core {
 	 *
 	 * ##### Example
 	 *
-	 *    $clean = $this->input->clean_input_keys($input);
+	 *    $clean = $input->clean_input_keys($input);
 	 *
-	 * @param   string  string to clean
+	 * @param   string  $str  String to clean
 	 * @return  string
 	 */
 	public function clean_input_keys($str)
@@ -528,9 +535,9 @@ class Input_Core {
 	 *
 	 * ##### Example
 	 *
-	 *    $clean = $this->input->clean_input_data($input);
+	 *    $clean = $input->clean_input_data($input);
 	 *
-	 * @param   unknown_type  string to clean
+	 * @param   mixed  $str  String to clean
 	 * @return  string
 	 */
 	public function clean_input_data($str)
@@ -574,9 +581,9 @@ class Input_Core {
 	 * ##### Example
 	 *
 	 *    // Takes a string, array, or object
-	 *    $clean = $this->input->clean($_POST);
+	 *    $clean = $input->clean($_POST);
 	 *
-	 * @param   string  string to clean
+	 * @param   string  $str  String to clean
 	 * @return  string
 	 */
 	public static function clean($str)
