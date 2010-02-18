@@ -9,7 +9,7 @@
  *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class download_Core {
@@ -27,6 +27,7 @@ class download_Core {
 	 *
 	 * @link http://support.microsoft.com/kb/260519
 	 * @link http://greenbytes.de/tech/tc2231/
+	 *
 	 * @param	varchar	$filename	File name
 	 * @return	varchar	file name as it was sent
 	 */
