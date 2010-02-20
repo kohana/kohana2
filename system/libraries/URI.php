@@ -8,12 +8,13 @@
  * for your site, retrieve the current url, or handle page redirection
  * you are looking for the url helper.
  *
- * @see http://www.iitechs.com/kohana/userguide/api/url
+ * @link http://www.iitechs.com/kohana/userguide/api/url
+ *
+ * [!!] This library is no longer automatically loaded by Kohana, you must do it manually using the following recommendations.
+ *
+ * [!!] Note that this library works with the URI that comes *after* the `index.php`!
  *
  * ##### Loading the URI library.
- *
- *     [!!] This library is no longer automatically loaded by Kohana,
- *     you must do it manually using the following recommendations.
  *
  *     // This is the idiomatic way of loading the URI library
  *     $uri = URI::instance();
@@ -322,8 +323,8 @@ class URI_Core extends Router {
 
 	/**
 	 * Creates a naturally indexed or associative array from an array and
-	 * offset. The third function argument toggles whether an
-	 * associative array is created.
+	 * offset. The third function argument toggles whether the array
+	 * created is associative.
 	 *
 	 * This method is primarly used as a helper for `(r)segment_array() and `argument_array()`.
 	 *
@@ -383,6 +384,14 @@ class URI_Core extends Router {
 	/**
 	 * Returns the complete URI as a string.
 	 *
+	 * ###### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana/welcome/index
+	 *     echo Kohana::debug($uri->string();
+	 *
+	 *     // Output:
+	 *     (string) welcome/index
+	 *
 	 * @return  string
 	 */
 	public function string()
@@ -392,6 +401,18 @@ class URI_Core extends Router {
 
 	/**
 	 * Magic method for converting an object to a string.
+	 *
+	 * [!!] This is a PHP magic method and converts an object passed as an argument to `echo`, `print()`, or `die()` to a string.
+	 *
+	 * @link http://www.php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
+	 * 
+	 * ###### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana/welcome/index
+	 *     echo $uri; // Or URI::instance();
+	 *
+	 *     // Output:
+	 *     welcome/index
 	 *
 	 * @return  string
 	 */
@@ -403,6 +424,14 @@ class URI_Core extends Router {
 	/**
 	 * Returns the total number of URI segments.
 	 *
+	 * ###### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana/welcome/index
+	 *     echo Kohana::debug($uri->total_segments();
+	 *
+	 *     // Output:
+	 *     (integer) 2
+	 *
 	 * @return  integer
 	 */
 	public function total_segments()
@@ -413,6 +442,17 @@ class URI_Core extends Router {
 	/**
 	 * Returns the total number of re-routed URI segments.
 	 *
+	 * ###### Example Route
+	 *     $config['ohai'] = 'welcome/index';
+	 *
+	 * ###### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana/ohai
+	 *     echo Kohana::debug($uri->total_rsegments());
+	 *
+	 *     // Output:
+	 *     (integer) 2
+	 *
 	 * @return  integer
 	 */
 	public function total_rsegments()
@@ -421,7 +461,16 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Returns the total number of URI arguments.
+	 * Returns the total number of URI arguments succeeding a
+	 * controller/method segment pair.
+	 *
+	 * ###### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana/welcome/index/arg1/arg2
+	 *     echo Kohana::debug($uri->total_arguments());
+	 *
+	 *     // Output:
+	 *     (integer) 2
 	 *
 	 * @return  integer
 	 */
@@ -431,9 +480,28 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Returns the last URI segment.
+	 * Returns the last URI segment. The second
+	 * function argument provides a default value if there is no valid
+	 * end segment.
 	 *
-	 * @param   mixed   default value returned if segment does not exist
+	 * If the second function argument is not provided, `(boolean)
+	 * false` will be returned.
+	 *
+	 * ###### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana/welcome/index
+	 *     echo Kohana::debug($uri->last_segment());
+	 *
+	 *     // Output:
+	 *     (string) index
+	 *
+	 *     // With a default value provided, assuming this url: http://localhost/kohana
+	 *     echo Kohana::debug($uri->last_segment('default_value'));
+	 *
+	 *     // Output:
+	 *     (string) default_value
+	 *
+	 * @param   mixed   $default Default value returned if segment does not exist
 	 * @return  string
 	 */
 	public function last_segment($default = FALSE)
@@ -445,9 +513,28 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Returns the last re-routed URI segment.
+	 * Returns the last re-routed URI segment. The second
+	 * function argument provides a default value if there is no valid
+	 * end routed segment.
 	 *
-	 * @param   mixed   default value returned if segment does not exist
+	 * If the second function argument is not provided, `(boolean)
+	 * false` will be returned.
+	 *
+	 * ###### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana/ohai
+	 *     echo Kohana::debug($uri->last_rsegment());
+	 *
+	 *     // Output:
+	 *     (string) welcome
+	 *
+	 *     // With a default value provided, assuming this url: http://localhost/kohana
+	 *     echo Kohana::debug($uri->last_rsegment('default_value'));
+	 *
+	 *     // Output:
+	 *     (string) default_value
+	 *
+	 * @param   mixed   $default Default value returned if segment does not exist
 	 * @return  string
 	 */
 	public function last_rsegment($default = FALSE)
@@ -462,7 +549,24 @@ class URI_Core extends Router {
 	 * Returns the path to the current controller (not including the actual
 	 * controller), as a web path.
 	 *
-	 * @param   boolean  return a full url, or only the path specifically
+	 * The second function argument toggles whether a full url path to
+	 * the controller will be returned.
+	 *
+	 * ###### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana/welcome
+	 *     echo Kohana::debug($uri->controller_path());
+	 *
+	 *     // Output:
+	 *     (string) /kohana/index.php/Users/ixmatus/Localhost/kohana/application/controllers/welcome.php
+	 *
+	 *     // Assuming this url: http://localhost/kohana/welcome
+	 *     echo Kohana::debug($uri->controller_path(FALSE));
+	 *
+	 *     // Output:
+	 *     (string) /Users/ixmatus/Localhost/kohana/application/controllers/welcome.php
+	 *
+	 * @param   boolean  $full Return a full url, or only the path specifically
 	 * @return  string
 	 */
 	public function controller_path($full = TRUE)
@@ -473,7 +577,24 @@ class URI_Core extends Router {
 	/**
 	 * Returns the current controller, as a web path.
 	 *
-	 * @param   boolean  return a full url, or only the controller specifically
+	 * The second function argument toggles whether a full url path to
+	 * the controller will be returned.
+	 *
+	 * ###### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana/welcome
+	 *     echo Kohana::debug($uri->controller());
+	 *
+	 *     // Output:
+	 *     (string) /kohana/index.php/Users/ixmatus/Localhost/opensource/kohana/trunk/application/controllers/welcome.phpwelcome
+	 *
+	 *     // Assuming this url: http://localhost/kohana/welcome
+	 *     echo Kohana::debug($uri->controller(FALSE));
+	 *
+	 *     // Output:
+	 *     (string) welcome
+	 *
+	 * @param   boolean  $full Return a full url, or only the controller specifically
 	 * @return  string
 	 */
 	public function controller($full = TRUE)
@@ -482,9 +603,27 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Returns the current method, as a web path.
+	 * Returns the current method succeeding the current segment
+	 * controller, as a web path or optionally as a segment path.
 	 *
-	 * @param   boolean  return a full url, or only the method specifically
+	 * The second function argument toggles whether a full url path to
+	 * the controller and method will be returned.
+	 *
+	 * ###### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana/welcome/index
+	 *     echo Kohana::debug($uri->method());
+	 *
+	 *     // Output:
+	 *     (string) /kohana/index.php/Users/ixmatus/Localhost/opensource/kohana/trunk/application/controllers/welcome.phpwelcome/index
+	 *
+	 *     // Assuming this url: http://localhost/kohana/welcome/index
+	 *     echo Kohana::debug($uri->method(FALSE));
+	 *
+	 *     // Output:
+	 *     (string) index
+	 *
+	 * @param   boolean  $full Return a full url, or only the method specifically
 	 * @return  string
 	 */
 	public function method($full = TRUE)
