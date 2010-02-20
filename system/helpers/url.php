@@ -18,7 +18,7 @@
 class url_Core {
 
 	/**
-	 * This method returns the current URI route present prior to the
+	 * This method returns the current URI route succeeding the
 	 * index.php URI reference.
 	 *
 	 * ##### Example
