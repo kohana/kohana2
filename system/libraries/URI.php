@@ -1,6 +1,28 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * URI library.
+ * The URI library provides convenience methods for
+ * handling, manipulating, and creating  URI segments and strings for
+ * Kohana's routing mechanisms.
+ *
+ * If you are looking for functions that return the base url
+ * for your site, retrieve the current url, or handle page redirection
+ * you are looking for the url helper.
+ *
+ * @see http://www.iitechs.com/kohana/userguide/api/url
+ *
+ * ##### Loading the URI library.
+ *
+ *     [!!] This library is no longer automatically loaded by Kohana,
+ *     you must do it manually using the following recommendations.
+ *
+ *     // This is the idiomatic way of loading the URI library
+ *     $uri = URI::instance();
+ *
+ *     // Using it is simple (assuming this url: http://localhost/kohana/welcome/index)
+ *     echo Kohana::debug($uri->segment(2));
+ *
+ *     // Output:
+ *     (string) index
  *
  * $Id$
  *
@@ -12,9 +34,22 @@
 class URI_Core extends Router {
 
 	/**
-	 * Returns a singleton instance of URI.
+	 * Returns a singleton instance of the URI library, allowing you to chain
+	 * methods off of its instance.
 	 *
-	 * @return  object
+	 * Note: it is *preferred* to use `URI::instance();` over `new URI;`
+	 * because it properly sets up a singleton instance of the library.
+	 *
+	 * ###### Example
+	 *
+	 *     $uri = URI::instance();
+	 *
+	 *     // URI object is returned:
+	 *     (object) URI Object
+	 *     (
+	 *     )
+	 *
+	 * @return  URI
 	 */
 	public static function instance()
 	{
@@ -30,10 +65,30 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Retrieve a specific URI segment.
+	 * Retrieve a specific URI segment by its index. The second
+	 * function argument provides a default value if the segment index
+	 * cannot be found or is not valid.
 	 *
-	 * @param   integer|string  segment number or label
-	 * @param   mixed           default value returned if segment does not exist
+	 * If the second function argument is not provided, `(boolean)
+	 * false` will be returned if the given or assumed index is
+	 * invalid or cannot be found.
+	 *
+	 * ###### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana/welcome/index
+	 *     echo Kohana::debug($uri->segment(2));
+	 *
+	 *     // Output:
+	 *     (string) index
+	 *
+	 *     // Using the default value assuming this url: http://localhost/kohana
+	 *     echo Kohana::debug($uri->segment(1, 'default_value'));
+	 *
+	 *     // Output:
+	 *     (string) default_value
+	 *
+	 * @param   mixed  $index   Segment index or label
+	 * @param   mixed  $default Default value returned if segment does not exist
 	 * @return  string
 	 */
 	public function segment($index = 1, $default = FALSE)
@@ -52,10 +107,30 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Retrieve a specific routed URI segment.
+	 * Retrieve a specific routed URI segment by its index. The second
+	 * function argument provides a default value if the routed segment index
+	 * cannot be found or is not valid.
 	 *
-	 * @param   integer|string  rsegment number or label
-	 * @param   mixed           default value returned if segment does not exist
+	 * If the second function argument is not provided, `(boolean)
+	 * false` will be returned if the given or assumed index is
+	 * invalid or cannot be found.
+	 *
+	 * ###### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana
+	 *     echo Kohana::debug($uri->rsegment(1));
+	 *
+	 *     // Output:
+	 *     (string) welcome
+	 *
+	 *     // Using the default value assuming this url: http://localhost/kohana
+	 *     echo Kohana::debug($uri->rsegment(3, 'default_value'));
+	 *
+	 *     // Output:
+	 *     (string) default_value
+	 *
+	 * @param   mixed  $index   Rsegment number or label
+	 * @param   mixed  $default Default value returned if segment does not exist
 	 * @return  string
 	 */
 	public function rsegment($index = 1, $default = FALSE)
@@ -74,11 +149,35 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Retrieve a specific URI argument.
-	 * This is the part of the segments that does not indicate controller or method
+	 * Retrieve a specific URI argument. The second function argument 
+	 * provides a default value if the routed segment index cannot be 
+	 * found or is not valid.
 	 *
-	 * @param   integer|string  argument number or label
-	 * @param   mixed           default value returned if segment does not exist
+	 * If the second function argument is not provided, `(boolean)
+	 * false` will be returned if the given or assumed index is
+	 * invalid or cannot be found.
+	 *
+	 * *Arguments* are the portion of the URI that succeed the
+     * controller/method in the URI.
+	 *
+	 * @see http://url.to.routing (don't have URL yet as docs aren't published)
+	 * 
+	 * ###### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana/welcome/index/arg1
+	 *     echo Kohana::debug($uri->argument(1));
+	 *
+	 *     // Output:
+	 *     (string) arg1
+	 *
+	 *     // Using the default value assuming this url: http://localhost/kohana/welcome/index/arg1
+	 *     echo Kohana::debug($uri->argument(2, 'default_arg'));
+	 *
+	 *     // Output:
+	 *     (string) default_arg
+	 *
+	 * @param   mixed  $index   Argument index or label
+	 * @param   mixed  $default Default value returned if segment does not exist
 	 * @return  string
 	 */
 	public function argument($index = 1, $default = FALSE)
@@ -97,10 +196,37 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Returns an array containing all the URI segments.
+	 * Returns an array containing all the URI segments with an offset
+	 * of zero by default. Providing any value other than zero for the
+	 * first function argument will offset the starting index for the
+	 * current URI.
 	 *
-	 * @param   integer  segment offset
-	 * @param   boolean  return an associative array
+	 * The second function argument is a boolean parameter and toggles
+	 * whether the returned array is associative or not.
+	 * 
+	 * ###### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana/welcome/index
+	 *     echo Kohana::debug($uri->segment_array());
+	 *
+	 *     // Output:
+	 *     (array) Array
+	 *     (
+	 *         [1] => welcome
+	 *         [2] => index
+	 *     )
+	 *
+	 *     // Setting the second function argument to **TRUE**
+	 *     echo Kohana::debug($uri->segment_array(0, TRUE));
+	 *
+	 *     // Output:
+	 *     (array) Array
+	 *     (
+	 *         [welcome] => index
+	 *     )
+	 *
+	 * @param   integer  $offset      Segment offset
+	 * @param   boolean  $associative Return an associative array
 	 * @return  array
 	 */
 	public function segment_array($offset = 0, $associative = FALSE)
@@ -109,10 +235,45 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Returns an array containing all the re-routed URI segments.
+	 * Returns an array containing all the re-routed URI segments with an offset
+	 * of zero by default. Providing any value other than zero for the
+	 * first function argument will offset the starting index for the
+	 * current URI.
 	 *
-	 * @param   integer  rsegment offset
-	 * @param   boolean  return an associative array
+	 * The second function argument is a boolean parameter and toggles
+	 * whether the returned array is associative or not.
+	 *
+	 * This method takes the remapped routes from the `routes.php`
+	 * configuration file to produce resulting array of segments.
+	 *
+	 * @link link to the routes config
+	 *
+	 * ###### Example Route
+	 *     $config['ohai'] = 'welcome/index'; 
+	 *
+	 * ###### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana/ohai
+	 *     echo Kohana::debug($uri->rsegment_array());
+	 *
+	 *     // Output:
+	 *     (array) Array
+	 *     (
+	 *         [1] => welcome
+	 *         [2] => index
+	 *     )
+	 *
+	 *     // Setting the second function argument to **TRUE**
+	 *     echo Kohana::debug($uri->rsegment_array(0, TRUE));
+	 *
+	 *     // Output:
+	 *     (array) Array
+	 *     (
+	 *         [welcome] => index
+	 *     )
+	 *
+	 * @param   integer  $offset      Rsegment offset
+	 * @param   boolean  $associative Return an associative array
 	 * @return  array
 	 */
 	public function rsegment_array($offset = 0, $associative = FALSE)
@@ -121,10 +282,37 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Returns an array containing all the URI arguments.
+	 * Returns an array containing all the URI arguments with an offset
+	 * of zero by default. Providing any value other than zero for the
+	 * first function argument will offset the starting index for the
+	 * current URI.
 	 *
-	 * @param   integer  segment offset
-	 * @param   boolean  return an associative array
+	 * The second function argument is a boolean parameter and toggles
+	 * whether the returned array is associative or not.
+	 *
+	 * ###### Example
+	 *
+	 *     // Assuming this url: http://localhost/kohana/welcome/index/arg1/arg2
+	 *     echo Kohana::debug($uri->argument_array());
+	 *
+	 *     // Output:
+	 *     (array) Array
+	 *     (
+	 *         [1] => arg1
+	 *         [2] => arg2
+	 *     )
+	 *
+	 *     // Setting the second function argument to **TRUE**
+	 *     echo Kohana::debug($uri->argument_array(0, TRUE));
+	 *
+	 *     // Output:
+	 *     (array) Array
+	 *     (
+	 *         [arg1] => arg2
+	 *     )
+	 *
+	 * @param   integer  $offset      Segment offset
+	 * @param   boolean  $associative Return an associative array
 	 * @return  array
 	 */
 	public function argument_array($offset = 0, $associative = FALSE)
@@ -133,8 +321,36 @@ class URI_Core extends Router {
 	}
 
 	/**
-	 * Creates a simple or associative array from an array and an offset.
-	 * Used as a helper for (r)segment_array and argument_array.
+	 * Creates a naturally indexed or associative array from an array and
+	 * offset. The third function argument toggles whether an
+	 * associative array is created.
+	 *
+	 * This method is primarly used as a helper for `(r)segment_array() and `argument_array()`.
+	 *
+	 * ###### Example
+	 *
+	 *     $arr = array('snake', 'child', 'hammer', '...');
+	 *
+	 *     echo Kohana::debug($uri->build_array($arr);
+	 *
+	 *     // Output:
+	 *     (array) Array
+	 *     (
+	 *         [1] => snake
+	 *         [2] => child
+	 *         [3] => hammer
+	 *         [4] => ...
+	 *     )
+	 *
+	 *     // Setting the second function argument to **TRUE**
+	 *     echo Kohana::debug($uri->build_arr($arr, 0, TRUE));
+	 *
+	 *     // Output:
+	 *     (array) Array
+	 *     (
+	 *         [snake] => child
+	 *         [hammer] => ...
+	 *     )
 	 *
 	 * @param   array    array to rebuild
 	 * @param   integer  offset to start from
