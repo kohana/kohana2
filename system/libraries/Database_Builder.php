@@ -727,139 +727,6 @@ class Database_Builder_Core {
 	}
 
 	/**
-	 * Compiles the given clause's conditions
-	 *
-	 * @param  array  Clause conditions
-	 * @return string
-	 */
-	protected function compile_conditions($groups)
-	{
-		$last_condition = NULL;
-
-		$sql = '';
-		foreach ($groups as $group)
-		{
-			// Process groups of conditions
-			foreach ($group as $logic => $condition)
-			{
-				if ($condition === '(')
-				{
-					if ( ! empty($sql) AND $last_condition !== '(')
-					{
-						// Include logic operator
-						$sql .= ' '.$logic.' ';
-					}
-
-					$sql .= '(';
-				}
-				elseif ($condition === ')')
-				{
-					$sql .= ')';
-				}
-				else
-				{
-					list($columns, $op, $value) = $condition;
-
-					// Stores each individual condition
-					$vals = array();
-
-					if ($columns instanceof Database_Expression)
-					{
-						// Add directly to condition list
-						$vals[] = (string) $columns;
-					}
-					else
-					{
-						$op = strtoupper($op);
-
-						if ( ! is_array($columns))
-						{
-							$columns = array($columns => $value);
-						}
-
-						foreach ($columns as $column => $value)
-						{
-							if ($value instanceof Database_Builder)
-							{
-								// Using a subquery
-								$value->db = $this->db;
-								$value = '('.(string) $value.')';
-							}
-							elseif (is_array($value))
-							{
-								if ($op === 'BETWEEN' OR $op === 'NOT BETWEEN')
-								{
-									// Falls between two values
-									$value = $this->db->quote($value[0]).' AND '.$this->db->quote($value[1]);
-								}
-								else
-								{
-									// Return as list
-									$value = array_map(array($this->db, 'quote'), $value);
-									$value = '('.implode(', ', $value).')';
-								}
-							}
-							else
-							{
-								$value = $this->db->quote($value);
-							}
-
-							if ( ! empty($column))
-							{
-								// Ignore blank columns
-								$column = $this->db->quote_column($column);
-							}
-
-							// Add to condition list
-							$vals[] = $column.' '.$op.' '.$value;
-						}
-					}
-
-					if ( ! empty($sql) AND $last_condition !== '(')
-					{
-						// Add the logic operator
-						$sql .= ' '.$logic.' ';
-					}
-
-					// Join the condition list items together by the given logic operator
-					$sql .= implode(' '.$logic.' ', $vals);
-				}
-
-				$last_condition = $condition;
-			}
-		}
-
-		return $sql;
-	}
-
-	/**
-	 * Compiles the columns portion of the query for INSERT
-	 *
-	 * @return string
-	 */
-	protected function compile_columns()
-	{
-		return '('.implode(', ', array_map(array($this->db, 'quote_column'), $this->columns)).')';
-	}
-
-	/**
-	 * Compiles the VALUES portion of the query for INSERT
-	 *
-	 * @return string
-	 */
-	protected function compile_values()
-	{
-		$values = array();
-		foreach ($this->values as $group)
-		{
-			// Each set of values to be inserted
-			$values[] = '('.implode(', ', array_map(array($this->db, 'quote'), $group)).')';
-		}
-
-		return implode(', ', $values);
-	}
-
-	/**
 	 * Create an UPDATE query
 	 *
 	 * @chainable
@@ -1194,6 +1061,112 @@ class Database_Builder_Core {
 	}
 
 	/**
+	 * Compiles the given clause's conditions
+	 *
+	 * @param  array  Clause conditions
+	 * @return string
+	 */
+	protected function compile_conditions($groups)
+	{
+		$last_condition = NULL;
+
+		$sql = '';
+		foreach ($groups as $group)
+		{
+			// Process groups of conditions
+			foreach ($group as $logic => $condition)
+			{
+				if ($condition === '(')
+				{
+					if ( ! empty($sql) AND $last_condition !== '(')
+					{
+						// Include logic operator
+						$sql .= ' '.$logic.' ';
+					}
+
+					$sql .= '(';
+				}
+				elseif ($condition === ')')
+				{
+					$sql .= ')';
+				}
+				else
+				{
+					list($columns, $op, $value) = $condition;
+
+					// Stores each individual condition
+					$vals = array();
+
+					if ($columns instanceof Database_Expression)
+					{
+						// Add directly to condition list
+						$vals[] = (string) $columns;
+					}
+					else
+					{
+						$op = strtoupper($op);
+
+						if ( ! is_array($columns))
+						{
+							$columns = array($columns => $value);
+						}
+
+						foreach ($columns as $column => $value)
+						{
+							if ($value instanceof Database_Builder)
+							{
+								// Using a subquery
+								$value->db = $this->db;
+								$value = '('.(string) $value.')';
+							}
+							elseif (is_array($value))
+							{
+								if ($op === 'BETWEEN' OR $op === 'NOT BETWEEN')
+								{
+									// Falls between two values
+									$value = $this->db->quote($value[0]).' AND '.$this->db->quote($value[1]);
+								}
+								else
+								{
+									// Return as list
+									$value = array_map(array($this->db, 'quote'), $value);
+									$value = '('.implode(', ', $value).')';
+								}
+							}
+							else
+							{
+								$value = $this->db->quote($value);
+							}
+
+							if ( ! empty($column))
+							{
+								// Ignore blank columns
+								$column = $this->db->quote_column($column);
+							}
+
+							// Add to condition list
+							$vals[] = $column.' '.$op.' '.$value;
+						}
+					}
+
+					if ( ! empty($sql) AND $last_condition !== '(')
+					{
+						// Add the logic operator
+						$sql .= ' '.$logic.' ';
+					}
+
+					// Join the condition list items together by the given logic operator
+					$sql .= implode(' '.$logic.' ', $vals);
+				}
+
+				$last_condition = $condition;
+			}
+		}
+
+		return $sql;
+	}
+
+	/**
 	 * Compiles the GROUP BY portion of the query
 	 *
 	 * @return string
@@ -1253,6 +1226,33 @@ class Database_Builder_Core {
 		}
 
 		return implode(', ', $vals);
+	}
+
+	/**
+	 * Compiles the columns portion of the query for INSERT
+	 *
+	 * @return string
+	 */
+	protected function compile_columns()
+	{
+		return '('.implode(', ', array_map(array($this->db, 'quote_column'), $this->columns)).')';
+	}
+
+	/**
+	 * Compiles the VALUES portion of the query for INSERT
+	 *
+	 * @return string
+	 */
+	protected function compile_values()
+	{
+		$values = array();
+		foreach ($this->values as $group)
+		{
+			// Each set of values to be inserted
+			$values[] = '('.implode(', ', array_map(array($this->db, 'quote'), $group)).')';
+		}
+
+		return implode(', ', $values);
 	}
 
 	/**
