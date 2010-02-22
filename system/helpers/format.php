@@ -1,19 +1,42 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Format helper class.
+ * The format helper provides convenience methods for many common
+ * formatting needs; such as, converting a phone number `5054432674`
+ * to a human readable phone number `505-443-2674`.
+ *
+ * #### Using the format helper
+ *
+ *    $str = "232.553.2662";
+ *
+ *    echo Kohana::debug(format::phone($str));
+ *
+ *    // Output:
+ *    (string) 232-553-2662
  *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class format_Core {
 
 	/**
-	 * Formats a number according to the current locale.
+	 * This method formats a number according to the current locale.
+	 * 
+	 * The second function argument specifies the decimal precision
+	 * with which to format the provided number - passing FALSE
+	 * returns the number formatted without decimal precision.
 	 *
-	 * @param   float
-	 * @param   int|boolean number of fractional digits or TRUE to use the locale default
+	 * ###### Example
+	 *
+	 *     // Using the en_US locale
+	 *     echo Kohana::debug(format::number(232, 2));
+	 *
+	 *     // Output:
+	 *     (string) 232.00
+	 *
+	 * @param   mixed $number   Number to be formatted
+	 * @param   mixed $decimals Number of fractional digits or TRUE to use the locale default
 	 * @return  string
 	 */
 	public static function number($number, $decimals = 0)
@@ -27,10 +50,31 @@ class format_Core {
 	}
 
 	/**
-	 * Formats a phone number according to the specified format.
+	 * This method formats a phone number to be human readable.
 	 *
-	 * @param   string  phone number
-	 * @param   string  format string
+	 * The second function argument is a formatting pattern denoting
+	 * the number of digits per block and the seperator between blocks.
+	 *
+	 * ###### Example
+	 *
+	 *    $str = "232.553.2662";
+	 *
+	 *    // Using the default pattern: 3-3-4
+	 *    echo Kohana::debug(format::phone($str));
+	 *
+	 *    // Output:
+	 *    (string) 232-553-2662
+	 *
+	 *    $str = "232-553-2662";
+	 *
+	 *    // Using a different pattern: 3.3.4
+	 *    echo Kohana::debug(format::phone($str, '3.3.4'));
+	 *
+	 *    // Output:
+	 *    (string) 232.553.2662
+	 *
+	 * @param   string  $number Number to be formatted
+	 * @param   string  $format Formatting pattern, default: 3-3-4
 	 * @return  string
 	 */
 	public static function phone($number, $format = '3-3-4')
@@ -59,9 +103,17 @@ class format_Core {
 	}
 
 	/**
-	 * Formats a URL to contain a protocol at the beginning.
+	 * This method formats a given URL, prefixing `http://` to the URL
+	 * if there is none, or if so, returning it unchanged.
 	 *
-	 * @param   string  possibly incomplete URL
+	 * ###### Example
+	 *
+	 *    echo Kohana::debug(format::url('console/users'));
+	 *
+	 *    // Output:
+	 *    (string) http://console/users
+	 *
+	 * @param   string  $str URL string
 	 * @return  string
 	 */
 	public static function url($str = '')
@@ -79,10 +131,21 @@ class format_Core {
 	}
 
 	/**
-	 * Normalizes a hexadecimal HTML color value. All values will be converted
-	 * to lowercase, have a "#" prepended and contain six characters.
+	 * Normalizes a hexadecimal HTML color value, converting all characters
+	 * to lowercase, prefixing the value with an octothorpe ("#") and
+	 * expanding shorthand notation to a valid six character
+	 * hexadecimal value.
 	 *
-	 * @param   string  hexadecimal HTML color value
+	 * [!!] If passed an invalid value, this method will return an *empty* string.
+	 *
+	 * ###### Example
+	 *
+	 *    echo Kohana::debug(format::color('f60'));
+	 *
+	 *    // Output:
+	 *    (string) #ff6600
+	 *
+	 * @param   string  $str Hexadecimal HTML color value
 	 * @return  string
 	 */
 	public static function color($str = '')

@@ -6,7 +6,7 @@
  * The functions that return mirrored arrays are very useful when combined
  * with the [form::dropdown] helper.
  *
- * ###### Example
+ * ###### Using the date helper
  *
  *     echo Kohana::debug(form::dropdown('year', date::years()));
  *
