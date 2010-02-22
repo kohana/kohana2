@@ -7,9 +7,9 @@
  * #### Using the format helper
  *
  *     $str = "232.553.2662";
- *
+ *     
  *     echo Kohana::debug(format::phone($str));
- *
+ *     
  *     // Output:
  *     (string) 232-553-2662
  *
@@ -31,7 +31,7 @@ class format_Core {
 	 *
 	 *     // Using the en_US locale
 	 *     echo Kohana::debug(format::number(232, 2));
-	 *
+	 *     
 	 *     // Output:
 	 *     (string) 232.00
 	 *
@@ -58,18 +58,18 @@ class format_Core {
 	 * ###### Example
 	 *
 	 *    $str = "232.553.2662";
-	 *
+	 *    
 	 *    // Using the default pattern: 3-3-4
 	 *    echo Kohana::debug(format::phone($str));
-	 *
+	 *    
 	 *    // Output:
 	 *    (string) 232-553-2662
-	 *
+	 *    
 	 *    $str = "232-553-2662";
-	 *
+	 *    
 	 *    // Using a different pattern: 3.3.4
 	 *    echo Kohana::debug(format::phone($str, '3.3.4'));
-	 *
+	 *    
 	 *    // Output:
 	 *    (string) 232.553.2662
 	 *
@@ -109,7 +109,7 @@ class format_Core {
 	 * ###### Example
 	 *
 	 *    echo Kohana::debug(format::url('console/users'));
-	 *
+	 *    
 	 *    // Output:
 	 *    (string) http://console/users
 	 *
@@ -141,7 +141,7 @@ class format_Core {
 	 * ###### Example
 	 *
 	 *    echo Kohana::debug(format::color('f60'));
-	 *
+	 *    
 	 *    // Output:
 	 *    (string) #ff6600
 	 *
