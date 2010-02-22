@@ -6,12 +6,12 @@
  *
  * #### Using the format helper
  *
- *    $str = "232.553.2662";
+ *     $str = "232.553.2662";
  *
- *    echo Kohana::debug(format::phone($str));
+ *     echo Kohana::debug(format::phone($str));
  *
- *    // Output:
- *    (string) 232-553-2662
+ *     // Output:
+ *     (string) 232-553-2662
  *
  * @package    Kohana
  * @author     Kohana Team
