@@ -495,7 +495,7 @@ class arr {
 	 */
 	public static function to_object(array $array, $class = 'stdClass')
 	{
-		$object = new \$class;
+		$object = new $class;
 
 		foreach ($array as $key => $value)
 		{
