@@ -1,0 +1,91 @@
+<?php
+
+namespace Helper;
+
+defined('SYSPATH') OR die('No direct access allowed.');
+
+/**
+ * Remote url/file helper.
+ *
+ * ###### Using the remote helper:
+ *
+ *     // Using the remote helper is simple:
+ *     echo \Kernel\Kohana::debug(remote::status('http://kohanaphp.com'));
+ *
+ *     // Output:
+ *     (integer) 200
+ *
+ * @package    Kohana
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
+ * @license    http://kohanaphp.com/license
+ */
+class remote {
+
+	/**
+	 * Return the HTTP status code of a given URI.
+	 *
+	 * ###### Using the remote helper:
+	 *
+	 *     // Using the remote helper is simple:
+	 *     echo \Kernel\Kohana::debug(remote::status('http://kohanaphp.com'));
+	 *
+	 *     // Output:
+	 *     (integer) 200
+	 *
+	 * @param   string    $url	Fully qualified URI/URL
+	 * @return  mixed  If no response it returns false
+	 */
+	public static function status($url)
+	{
+		if ( ! \Helper\valid::url($url, 'http'))
+			return FALSE;
+
+		// Get the hostname and path
+		$url = parse_url($url);
+
+		if (empty($url['path']))
+		{
+			// Request the root document
+			$url['path'] = '/';
+		}
+
+		// Open a remote connection
+		$remote = fsockopen($url['host'], 80, $errno, $errstr, 5);
+
+		if ( ! is_resource($remote))
+			return FALSE;
+
+		// Set CRLF
+		$CRLF = "\r\n";
+
+		// Send request
+		fwrite($remote, 'HEAD '.$url['path'].(isset($url['query']) ? '?'.$url['query'] : '').' HTTP/1.0'.$CRLF);
+		fwrite($remote, 'Host: '.$url['host'].$CRLF);
+		fwrite($remote, 'Connection: close'.$CRLF);
+		fwrite($remote, 'User-Agent: Kohana Framework (+http://kohanaphp.com/)'.$CRLF);
+
+		// Send one more CRLF to terminate the headers
+		fwrite($remote, $CRLF);
+
+		while ( ! feof($remote))
+		{
+			// Get the line
+			$line = trim(fgets($remote, 512));
+
+			if ($line !== '' AND preg_match('#^HTTP/1\.[01] (\d{3})#', $line, $matches))
+			{
+				// Response code found
+				$response = (int) $matches[1];
+
+				break;
+			}
+		}
+
+		// Close the connection
+		fclose($remote);
+
+		return isset($response) ? $response : FALSE;
+	}
+
+} // End remote
