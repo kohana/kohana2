@@ -1,4 +1,9 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
+
+namespace Library;
+
+defined('SYSPATH') OR die('No direct access allowed.');
+
 /**
  * Model base class.
  *
@@ -9,7 +14,7 @@
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-class Model_Core {
+class Model {
 
 	/**
 	 * Creates and returns a new model.
@@ -22,7 +27,7 @@ class Model_Core {
 	public static function factory($name, $args = NULL, $multiple = FALSE)
 	{
 		// Model class name
-		$class = ucfirst($name).'_Model';
+		$class = '\Model\\'.ucfirst($name);
 
 		if ($args === NULL)
 		{
@@ -36,7 +41,7 @@ class Model_Core {
 			return new $class($args);
 		}
 
-		$class = new ReflectionClass($class);
+		$class = new \ReflectionClass($class);
 
 		// Create a model with multiple arguments
 		return $class->newInstanceArgs($args);
@@ -55,7 +60,7 @@ class Model_Core {
 		if ( ! is_object($this->db))
 		{
 			// Load the default database
-			$this->db = Database::instance($this->db);
+			$this->db = \Library\Database::instance($this->db);
 		}
 	}
 

@@ -1,4 +1,9 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
+
+namespace Library;
+
+defined('SYSPATH') OR die('No direct access allowed.');
+
 /**
  * Provides a driver-based interface for finding, creating, and deleting cached
  * resources. Caches are identified by a unique string. Tagging of caches is
@@ -9,7 +14,7 @@
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-class Cache_Core {
+class Cache {
 
 	protected static $instances = array();
 
@@ -49,41 +54,41 @@ class Cache_Core {
 			$name = $config;
 
 			// Test the config group name
-			if (($config = Kohana::config('cache.'.$config)) === NULL)
-				throw new Cache_Exception('The :group: group is not defined in your configuration.', array(':group:' => $name));
+			if (($config = \Kernel\Kohana::config('cache.'.$config)) === NULL)
+				throw new \Library\Cache_Exception('The :group: group is not defined in your configuration.', array(':group:' => $name));
 		}
 
 		if (is_array($config))
 		{
 			// Append the default configuration options
-			$config += Kohana::config('cache.default');
+			$config += \Kernel\Kohana::config('cache.default');
 		}
 		else
 		{
 			// Load the default group
-			$config = Kohana::config('cache.default');
+			$config = \Kernel\Kohana::config('cache.default');
 		}
 
 		// Cache the config in the object
 		$this->config = $config;
 
 		// Set driver name
-		$driver = 'Cache_'.ucfirst($this->config['driver']).'_Driver';
+		$driver = '\Driver\Cache\\'.ucfirst($this->config['driver']);
 
 		// Load the driver
-		if ( ! Kohana::auto_load($driver))
-			throw new Cache_Exception('The :driver: driver for the :class: library could not be found',
+		if ( ! \Kernel\Kohana::auto_load($driver))
+			throw new \Library\Cache_Exception('The :driver: driver for the :class: library could not be found',
 									   array(':driver:' => $this->config['driver'], ':class:' => get_class($this)));
 
 		// Initialize the driver
 		$this->driver = new $driver($this->config['params']);
 
 		// Validate the driver
-		if ( ! ($this->driver instanceof Cache_Driver))
-			throw new Cache_Exception('The :driver: driver for the :library: library must implement the :interface: interface',
+		if ( ! ($this->driver instanceof \Driver\Cache))
+			throw new \Library\Cache_Exception('The :driver: driver for the :library: library must implement the :interface: interface',
 									   array(':driver:' => $this->config['driver'], ':library:' => get_class($this), ':interface:' => 'Cache_Driver'));
 
-		Kohana_Log::add('debug', 'Cache Library initialized');
+		\Library\Kohana_Log::add('debug', 'Cache Library initialized');
 	}
 
 	/**

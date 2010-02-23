@@ -1,4 +1,9 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
+
+namespace Library;
+
+defined('SYSPATH') OR die('No direct access allowed.');
+
 /**
  * URI library.
  *
@@ -9,7 +14,7 @@
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-class URI_Core extends Router {
+class URI extends Router {
 
 	/**
 	 * Returns a singleton instance of URI.

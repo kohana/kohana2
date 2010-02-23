@@ -1,4 +1,9 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
+
+namespace Library;
+
+defined('SYSPATH') OR die('No direct access allowed.');
+
 /**
  * Input library.
  *
@@ -17,7 +22,7 @@
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-class Input_Core {
+class Input {
 
 	// Enable or disable automatic XSS cleaning
 	protected $use_xss_clean = FALSE;
@@ -66,14 +71,14 @@ class Input_Core {
 		$_COOKIE = Input::clean($_COOKIE);
 		$_SERVER = Input::clean($_SERVER);
 
-		if (Kohana::$server_api === 'cli')
+		if (\Kernel\Kohana::$server_api === 'cli')
 		{
 			// Convert command line arguments
 			$_SERVER['argv'] = Input::clean($_SERVER['argv']);
 		}
 
 		// Use XSS clean?
-		$this->use_xss_clean = (bool) Kohana::config('core.global_xss_filtering');
+		$this->use_xss_clean = (bool) \Kernel\Kohana::config('core.global_xss_filtering');
 
 		if (Input::$instance === NULL)
 		{
@@ -81,14 +86,14 @@ class Input_Core {
 			if (get_magic_quotes_runtime())
 			{
 				@set_magic_quotes_runtime(0);
-				Kohana_Log::add('debug', 'Disable magic_quotes_runtime! It is evil and deprecated: http://php.net/magic_quotes');
+				\Library\Kohana_Log::add('debug', 'Disable magic_quotes_runtime! It is evil and deprecated: http://php.net/magic_quotes');
 			}
 
 			// magic_quotes_gpc is enabled
 			if (get_magic_quotes_gpc())
 			{
 				$this->magic_quotes_gpc = TRUE;
-				Kohana_Log::add('debug', 'Disable magic_quotes_gpc! It is evil and deprecated: http://php.net/magic_quotes');
+				\Library\Kohana_Log::add('debug', 'Disable magic_quotes_gpc! It is evil and deprecated: http://php.net/magic_quotes');
 			}
 
 			if (is_array($_GET))
@@ -137,7 +142,7 @@ class Input_Core {
 			// Create a singleton
 			Input::$instance = $this;
 
-			Kohana_Log::add('debug', 'Global GET, POST and COOKIE data sanitized');
+			\Library\Kohana_Log::add('debug', 'Global GET, POST and COOKIE data sanitized');
 		}
 	}
 
@@ -149,8 +154,8 @@ class Input_Core {
 	 *    // URL is http://www.example.com/index.php?articleId=123&file=text.txt
 	 *    // Note that print statements are for documentation purpose only
 	 *
-	 *    print Kohana::debug($this->input->get());
-	 *    print Kohana::debug($this->input->get('file'));
+	 *    print \Kernel\Kohana::debug($this->input->get());
+	 *    print \Kernel\Kohana::debug($this->input->get('file'));
 	 *
 	 *    // Output:
 	 *    Array
@@ -182,8 +187,8 @@ class Input_Core {
 	 *    // POST variables are articleId=123 and file=text.txt
 	 *    // Note that print statements are for documentation purpose only
 	 *
-	 *    print Kohana::debug($this->input->post());
-	 *    print Kohana::debug($this->input->post('file'));
+	 *    print \Kernel\Kohana::debug($this->input->post());
+	 *    print \Kernel\Kohana::debug($this->input->post('file'));
 	 *
 	 *    // Output:
 	 *    Array
@@ -216,8 +221,8 @@ class Input_Core {
 	 *    // COOKIE name is "username" and the contents of this cookie is "aart-jan".
 	 *    // Note that print statements are for documentation purpose only
 	 *
-	 *    print Kohana::debug($this->input->cookie());
-	 *    print Kohana::debug($this->input->cookie('username'));
+	 *    print \Kernel\Kohana::debug($this->input->cookie());
+	 *    print \Kernel\Kohana::debug($this->input->cookie('username'));
 	 *
 	 *    // Output:
 	 *    Array
@@ -237,7 +242,7 @@ class Input_Core {
 	 */
 	public function cookie($key = array(), $default = NULL, $xss_clean = FALSE)
 	{
-		return $this->search_array(cookie::get(), $key, $default, $xss_clean);
+		return $this->search_array(\Helper\cookie::get(), $key, $default, $xss_clean);
 	}
 
 	/**
@@ -245,7 +250,7 @@ class Input_Core {
 	 *
 	 * ##### Example
 	 * 
-	 *    print Kohana::debug($this->input->server('HTTP_HOST'));
+	 *    print \Kernel\Kohana::debug($this->input->server('HTTP_HOST'));
 	 *
 	 *    // Output:
 	 *    localhost
@@ -328,7 +333,7 @@ class Input_Core {
 			$this->ip_address = substr($this->ip_address, $comma + 1);
 		}
 
-		if ( ! valid::ip($this->ip_address))
+		if ( ! \Helper\valid::ip($this->ip_address))
 		{
 			// Use an empty IP
 			$this->ip_address = '0.0.0.0';
@@ -361,7 +366,7 @@ class Input_Core {
 		if ($tool === NULL)
 		{
 			// Use the default tool
-			$tool = Kohana::config('core.global_xss_filtering');
+			$tool = \Kernel\Kohana::config('core.global_xss_filtering');
 		}
 
 		if (is_array($data))
@@ -384,7 +389,7 @@ class Input_Core {
 		}
 		elseif ( ! method_exists($this, 'xss_filter_'.$tool))
 		{
-			Kohana_Log::add('error', 'Unable to use Input::xss_filter_'.$tool.'(), no such method exists');
+			\Library\Kohana_Log::add('error', 'Unable to use Input::xss_filter_'.$tool.'(), no such method exists');
 			$tool = 'default';
 		}
 
@@ -480,14 +485,14 @@ class Input_Core {
 		if ( ! class_exists('HTMLPurifier_Config', FALSE))
 		{
 			// Load HTMLPurifier
-			require Kohana::find_file('vendor', 'htmlpurifier/HTMLPurifier.standalone', TRUE);
+			require \Kernel\Kohana::find_file('vendor', 'htmlpurifier/HTMLPurifier.standalone', TRUE);
 		}
 
 		// Set configuration
-		$config = HTMLPurifier_Config::createDefault();
+		$config = \HTMLPurifier_Config::createDefault();
 		$config->set('HTML.TidyLevel', 'none'); // Only XSS cleaning now
 
-		$cache = Kohana::config('html_purifier.cache');
+		$cache = \Kernel\Kohana::config('html_purifier.cache');
 
 		if ($cache AND is_string($cache))
 		{
@@ -495,7 +500,7 @@ class Input_Core {
 		}
 
 		// Run HTMLPurifier
-		$data = HTMLPurifier::instance($config)->purify($data);
+		$data = \HTMLPurifier::instance($config)->purify($data);
 
 		return $data;
 	}
@@ -591,15 +596,15 @@ class Input_Core {
 		elseif (is_string($str) AND $str !== '')
 		{
 			// Remove control characters
-			$str = text::strip_ascii_ctrl($str);
+			$str = \Helper\text::strip_ascii_ctrl($str);
 
-			if ( ! text::is_ascii($str))
+			if ( ! \Helper\text::is_ascii($str))
 			{
 				// Disable notices
 				$ER = error_reporting(~E_NOTICE);
 
 				// iconv is expensive, so it is only used when needed
-				$str = iconv(Kohana::CHARSET, Kohana::CHARSET.'//IGNORE', $str);
+				$str = iconv(\Kernel\Kohana::CHARSET, \Kernel\Kohana::CHARSET.'//IGNORE', $str);
 
 				// Turn notices back on
 				error_reporting($ER);

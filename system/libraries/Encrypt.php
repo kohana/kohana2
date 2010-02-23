@@ -1,4 +1,9 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
+
+namespace Library;
+
+defined('SYSPATH') OR die('No direct access allowed.');
+
 /**
  * The Encrypt library provides two-way encryption of text and binary strings
  * using the MCrypt extension.
@@ -11,7 +16,7 @@
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-class Encrypt_Core {
+class Encrypt {
 
 	// OS-dependant RAND type to use
 	protected static $rand;
@@ -44,30 +49,30 @@ class Encrypt_Core {
 	public function __construct($config = FALSE)
 	{
 		if ( ! defined('MCRYPT_ENCRYPT'))
-			throw new Kohana_Exception('To use the Encrypt library, mcrypt must be enabled in your PHP installation');
+			throw new \Kernel\Kohana_Exception('To use the Encrypt library, mcrypt must be enabled in your PHP installation');
 
 		if (is_string($config))
 		{
 			$name = $config;
 
 			// Test the config group name
-			if (($config = Kohana::config('encryption.'.$config)) === NULL)
-				throw new Kohana_Exception('The :name: group is not defined in your configuration.', array(':name:' => $name));
+			if (($config = \Kernel\Kohana::config('encryption.'.$config)) === NULL)
+				throw new \Kernel\Kohana_Exception('The :name: group is not defined in your configuration.', array(':name:' => $name));
 		}
 
 		if (is_array($config))
 		{
 			// Append the default configuration options
-			$config += Kohana::config('encryption.default');
+			$config += \Kernel\Kohana::config('encryption.default');
 		}
 		else
 		{
 			// Load the default group
-			$config = Kohana::config('encryption.default');
+			$config = \Kernel\Kohana::config('encryption.default');
 		}
 
 		if (empty($config['key']))
-			throw new Kohana_Exception('To use the Encrypt library, you must set an encryption key in your config file');
+			throw new \Kernel\Kohana_Exception('To use the Encrypt library, you must set an encryption key in your config file');
 
 		// Find the max length of the key, based on cipher and mode
 		$size = mcrypt_get_key_size($config['cipher'], $config['mode']);
@@ -84,7 +89,7 @@ class Encrypt_Core {
 		// Cache the config in the object
 		$this->config = $config;
 
-		Kohana_Log::add('debug', 'Encrypt Library initialized');
+		\Library\Kohana_Log::add('debug', 'Encrypt Library initialized');
 	}
 
 	/**
