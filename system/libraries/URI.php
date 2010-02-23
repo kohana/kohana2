@@ -14,7 +14,7 @@
  *
  * [!!] Note that this library works with the URI that comes *after* the `index.php`!
  *
- * ##### Loading the URI library.
+ * ##### Loading the URI library
  *
  *     // This is the idiomatic way of loading the URI library
  *     $uri = URI::instance();
@@ -29,7 +29,7 @@
  *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class URI_Core extends Router {
