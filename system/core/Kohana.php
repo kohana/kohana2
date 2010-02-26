@@ -18,22 +18,52 @@ abstract class Kohana_Core {
 	const CHARSET  = 'UTF-8';
 	const LOCALE = 'en_US';
 
-	// The singleton instance of the controller
+	/**
+	 * The singleton instance of the controller
+	 *
+	 * @var     object
+	 * @static
+	 */
 	public static $instance;
 
-	// Output buffering level
+	/**
+	 * Output buffering level
+	 *
+	 * @var     int
+	 * @static
+	 */
 	protected static $buffer_level;
 
-	// The final output that will displayed by Kohana
+	/**
+	 * The final output that will displayed by Kohana
+	 *
+	 * @var     string
+	 * @static
+	 */
 	public static $output = '';
 
-	// The current locale
+	/**
+	 * The current locale
+	 *
+	 * @var     string
+	 * @static
+	 */
 	public static $locale;
 
-	// Include paths
+	/**
+	 * Include paths
+	 *
+	 * @var     array
+	 * @static
+	 */
 	protected static $include_paths;
 
-	// Cache lifetime
+	/**
+	 * Cache lifetime
+	 *
+	 * @var     int
+	 * @static
+	 */
 	protected static $cache_lifetime;
 
 	// Internal caches and write status
@@ -43,7 +73,12 @@ abstract class Kohana_Core {
 	protected static $internal_cache_key;
 	protected static $internal_cache_encrypt;
 
-	// Server API that PHP is using. Allows testing of different APIs.
+	/**
+	 * Server API that PHP is using. Allows testing of different APIs.
+	 *
+	 * @var     string
+	 * @static
+	 */
 	public static $server_api = PHP_SAPI;
 
 	/**
@@ -94,7 +129,7 @@ abstract class Kohana_Core {
 		if (Kohana::$cache_lifetime = Kohana::config('core.internal_cache'))
 		{
 			// Are we using encryption for caches?
-			Kohana::$internal_cache_encrypt	= Kohana::config('core.internal_cache_encrypt');
+			Kohana::$internal_cache_encrypt = Kohana::config('core.internal_cache_encrypt');
 
 			if(Kohana::$internal_cache_encrypt===TRUE)
 			{
@@ -411,28 +446,27 @@ abstract class Kohana_Core {
 				if ((time() - filemtime($path)) < $lifetime)
 				{
 					// Cache is valid! Now, do we need to decrypt it?
-					if(Kohana::$internal_cache_encrypt===TRUE)
+					if(Kohana::$internal_cache_encrypt === TRUE)
 					{
-						$data		= file_get_contents($path);
+						$data    = file_get_contents($path);
+						$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+						$iv      = mcrypt_create_iv($iv_size, MCRYPT_RAND);
 
-						$iv_size	= mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
-						$iv			= mcrypt_create_iv($iv_size, MCRYPT_RAND);
+						$decrypted_text = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, Kohana::$internal_cache_key, $data, MCRYPT_MODE_ECB, $iv);
 
-						$decrypted_text	= mcrypt_decrypt(MCRYPT_RIJNDAEL_256, Kohana::$internal_cache_key, $data, MCRYPT_MODE_ECB, $iv);
-
-						$cache	= unserialize($decrypted_text);
+						$cache = unserialize($decrypted_text);
 
 						// If the key changed, delete the cache file
-						if(!$cache)
+						if( ! $cache)
+						{
 							unlink($path);
+						}
 
 						// If cache is false (as above) return NULL, otherwise, return the cache
 						return ($cache ? $cache : NULL);
 					}
 					else
-					{
 						return unserialize(file_get_contents($path));
-					}
 				}
 				else
 				{
@@ -470,14 +504,14 @@ abstract class Kohana_Core {
 		else
 		{
 			// Using encryption? Encrypt the data when we write it
-			if(Kohana::$internal_cache_encrypt===TRUE)
+			if(Kohana::$internal_cache_encrypt === TRUE)
 			{
 				// Encrypt and write data to cache file
-				$iv_size	= mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
-				$iv			= mcrypt_create_iv($iv_size, MCRYPT_RAND);
+				$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+				$iv      = mcrypt_create_iv($iv_size, MCRYPT_RAND);
 
 				// Serialize and encrypt!
-				$encrypted_text	= mcrypt_encrypt(MCRYPT_RIJNDAEL_256, Kohana::$internal_cache_key, serialize($data), MCRYPT_MODE_ECB, $iv);
+				$encrypted_text = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, Kohana::$internal_cache_key, serialize($data), MCRYPT_MODE_ECB, $iv);
 
 				return (bool) file_put_contents($path, $encrypted_text);
 			}
@@ -537,7 +571,7 @@ abstract class Kohana_Core {
 	}
 
 	/**
-	 * Triggers the shutdown of Kohana by closing the output buffer, runs the system.display event.
+	 * Triggers the shutdown of Kohana by closing the output buffer, runs the system.shutdown and system.display event.
 	 *
 	 * @return  void
 	 */
@@ -643,7 +677,16 @@ abstract class Kohana_Core {
 	}
 
 	/**
-	 * Provides class auto-loading.
+	 * Auto-loads a file in the cascading file system.
+	 * Mainly called manually for loading driver files.
+	 * Used by spl_autoload_register for native class autoloading
+	 *
+	 * ##### Example
+	 *
+	 *     echo var_dump(Kohana::auto_load('Log_File_Driver');
+	 *
+	 *     // Output:
+	 *     (integer) true
 	 *
 	 * @throws  Kohana_Exception
 	 * @param   string  name of class
@@ -736,8 +779,23 @@ abstract class Kohana_Core {
 
 	/**
 	 * Find a resource file in a given directory. Files will be located according
-	 * to the order of the include paths. Configuration and i18n files will be
+	 * to the order of the include paths. Configuration, messages and i18n files will be
 	 * returned in reverse order.
+	 *
+	 * Returns a full path name to the file, or an array of path names for config, messages and i18n.
+	 *
+	 * ##### Example
+	 *
+	 *     // Extending a controller in a sub-directory (controllers/admin/admin_website.php)
+	 *     <?php
+	 *     	include Kohana::find_file('controllers', 'admin/admin_website');
+	 *     	class Home_Controller extends Admin_Website_Controller {}
+	 *
+	 *     // Finding a list of all configuration files
+	 *     echo Kohana::debug(Kohana::find_file('config', 'testing'));
+	 *
+	 *     // Output:
+	 *     array('/full/path/to/testing.php', '/different/full/path/to/testing.php')
 	 *
 	 * @throws  Kohana_Exception  if file is required and not found
 	 * @param   string   directory to search in
@@ -891,9 +949,18 @@ abstract class Kohana_Core {
 
 
 	/**
-	 * Fetch a message item.
+	 * Fetch a message item. You can specify a folder name by using a / seperator
+	 * Uses the standard dot seperated key syntax to access the data in the file.
 	 *
-	 * @param   string  language key to fetch
+	 * #### Example
+	 *
+	 *     // Fetches a message item from a file in messages/testing/my_test.php
+	 *     echo Kohana::message('testing/my_test.key1');
+	 *
+	 *     //Output:
+	 *     'Whatever is in key1'
+	 *
+	 * @param   string  message key to fetch
 	 * @param   array   additional information to insert into the line
 	 * @return  string  i18n language string, or the requested key if the i18n item is not found
 	 */
@@ -947,6 +1014,14 @@ abstract class Kohana_Core {
 	/**
 	 * Returns the value of a key, defined by a 'dot-noted' string, from an array.
 	 *
+	 * #### Exampls
+	 *
+	 *      $source = array('key1' => array('key2' => 'foobar'))
+	 *      echo Kohana::key_string($source, 'key1.key2');
+	 *
+	 *      //Output:
+	 *      'foobar'
+	 *
 	 * @param   array   array to search
 	 * @param   string  dot-noted string: foo.bar.baz
 	 * @return  string  if the key is found
@@ -991,6 +1066,15 @@ abstract class Kohana_Core {
 
 	/**
 	 * Sets values in an array by using a 'dot-noted' string.
+	 *
+	 * #### Exampls
+	 *
+	 *      $source = array('key1' => array('key2' => 'foobar'))
+	 *      Kohana::key_string_set($source, 'key1.key2', 'bar');
+	 *      echo Kohana::key_string($source, 'key1.key2');
+	 *
+	 *      //Output:
+	 *      'bar'
 	 *
 	 * @param   array   array to set keys in (reference)
 	 * @param   string  dot-noted string: foo.bar.baz
@@ -1087,7 +1171,7 @@ abstract class Kohana_Core {
 	}
 
 	/**
-	 * Saves the internal caches: configuration, include paths, etc.
+	 * Saves the internal caches: configuration, include paths, etc. Used internally
 	 *
 	 * @return  boolean
 	 */

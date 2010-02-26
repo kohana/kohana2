@@ -55,5 +55,5 @@ Event::run('system.routing');
 // End system_initialization
 Benchmark::stop(SYSTEM_BENCHMARK.'_system_initialization');
 
-// Make the magic happen!
+// Make the magic happen!!
 Event::run('system.execute');
