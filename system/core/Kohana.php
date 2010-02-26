@@ -378,7 +378,7 @@ abstract class Kohana_Core {
 	 * Get all include paths. APPPATH is the first path, followed by module
 	 * paths in the order they are configured, follow by the SYSPATH.
 	 *
-	 * @param   boolean  re-process the include paths
+	 * @param   boolean $process re-process the include paths
 	 * @return  array
 	 */
 	public static function include_paths($process = FALSE)
@@ -416,9 +416,9 @@ abstract class Kohana_Core {
 	/**
 	 * Get a config item or group proxies Kohana_Config.
 	 *
-	 * @param   string   item name
-	 * @param   boolean  force a forward slash (/) at the end of the item
-	 * @param   boolean  is the item required?
+	 * @param   string  $key      item name
+	 * @param   boolean $slash    force a forward slash (/) at the end of the item
+	 * @param   boolean $required is the item required?
 	 * @return  mixed
 	 */
 	public static function config($key, $slash = FALSE, $required = FALSE)
@@ -430,8 +430,8 @@ abstract class Kohana_Core {
 	 * Load data from a simple cache file. This should only be used internally,
 	 * and is NOT a replacement for the Cache library.
 	 *
-	 * @param   string   unique name of cache
-	 * @param   integer  expiration in seconds
+	 * @param   string  $name     unique name of cache
+	 * @param   integer $lifetime expiration in seconds
 	 * @return  mixed
 	 */
 	public static function cache($name, $lifetime)
@@ -484,9 +484,9 @@ abstract class Kohana_Core {
 	 * Save data to a simple cache file. This should only be used internally, and
 	 * is NOT a replacement for the Cache library.
 	 *
-	 * @param   string   cache name
-	 * @param   mixed    data to cache
-	 * @param   integer  expiration in seconds
+	 * @param   string  $name     cache name
+	 * @param   mixed   $data     data to cache
+	 * @param   integer $lifetime expiration in seconds
 	 * @return  boolean
 	 */
 	public static function cache_save($name, $data, $lifetime)
@@ -526,7 +526,7 @@ abstract class Kohana_Core {
 	/**
 	 * Kohana output handler. Called during ob_clean, ob_flush, and their variants.
 	 *
-	 * @param   string  current output buffer
+	 * @param   string $output current output buffer
 	 * @return  string
 	 */
 	public static function output_buffer($output)
@@ -549,7 +549,7 @@ abstract class Kohana_Core {
 	 * Closes all open output buffers, either by flushing or cleaning, and stores
 	 * output buffer for display during shutdown.
 	 *
-	 * @param   boolean  disable to clear buffers, rather than flushing
+	 * @param   boolean $flush disable to clear buffers, rather than flushing
 	 * @return  void
 	 */
 	public static function close_buffers($flush = TRUE)
@@ -601,7 +601,7 @@ abstract class Kohana_Core {
 	/**
 	 * Inserts global Kohana variables into the generated output and prints it.
 	 *
-	 * @param   string  final output that will displayed
+	 * @param   string $output final output that will displayed
 	 * @return  void
 	 */
 	public static function render($output)
@@ -689,7 +689,7 @@ abstract class Kohana_Core {
 	 *     (integer) true
 	 *
 	 * @throws  Kohana_Exception
-	 * @param   string  name of class
+	 * @param   string $class name of class
 	 * @return  bool
 	 */
 	public static function auto_load($class)
@@ -798,10 +798,10 @@ abstract class Kohana_Core {
 	 *     array('/full/path/to/testing.php', '/different/full/path/to/testing.php')
 	 *
 	 * @throws  Kohana_Exception  if file is required and not found
-	 * @param   string   directory to search in
-	 * @param   string   filename to look for (without extension)
-	 * @param   boolean  file required
-	 * @param   string   file extension
+	 * @param   string  $directory directory to search in
+	 * @param   string  $filename  filename to look for (without extension)
+	 * @param   boolean $required  file required
+	 * @param   string  $ext       file extension
 	 * @return  array    if the type is config, i18n or l10n
 	 * @return  string   if the file is found
 	 * @return  FALSE    if the file is not found
@@ -888,11 +888,11 @@ abstract class Kohana_Core {
 	/**
 	 * Lists all files and directories in a resource path.
 	 *
-	 * @param   string   directory to search
-	 * @param   boolean  list all files to the maximum depth?
-	 * @param   string   list all files having extension $ext
-	 * @param   string   full path to search (used for recursion, *never* set this manually)
-	 * @return  array    filenames and directories
+	 * @param   string  $directory directory to search
+	 * @param   boolean $recursive list all files to the maximum depth?
+	 * @param   string  $ext       list all files having extension $ext
+	 * @param   string  $path      full path to search (used for recursion, *never* set this manually)
+	 * @return  array   filenames and directories
 	 */
 	public static function list_files($directory, $recursive = FALSE, $ext = EXT, $path = FALSE)
 	{
@@ -960,9 +960,9 @@ abstract class Kohana_Core {
 	 *     //Output:
 	 *     'Whatever is in key1'
 	 *
-	 * @param   string  message key to fetch
-	 * @param   array   additional information to insert into the line
-	 * @return  string  i18n language string, or the requested key if the i18n item is not found
+	 * @param   string $key  message key to fetch
+	 * @param   array  $args additional information to insert into the line
+	 * @return  string i18n language string, or the requested key if the i18n item is not found
 	 */
 	public static function message($key, $args = array())
 	{
@@ -1022,8 +1022,8 @@ abstract class Kohana_Core {
 	 *      //Output:
 	 *      'foobar'
 	 *
-	 * @param   array   array to search
-	 * @param   string  dot-noted string: foo.bar.baz
+	 * @param   array  $array array to search
+	 * @param   string $keys  dot-noted string: foo.bar.baz
 	 * @return  string  if the key is found
 	 * @return  void    if the key is not found
 	 */
@@ -1076,9 +1076,9 @@ abstract class Kohana_Core {
 	 *      //Output:
 	 *      'bar'
 	 *
-	 * @param   array   array to set keys in (reference)
-	 * @param   string  dot-noted string: foo.bar.baz
-	 * @return  mixed   fill value for the key
+	 * @param   array  $array array to set keys in (reference)
+	 * @param   string $keys  dot-noted string: foo.bar.baz
+	 * @return  mixed  $fill  fill value for the key
 	 * @return  void
 	 */
 	public static function key_string_set( & $array, $keys, $fill = NULL)
