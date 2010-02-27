@@ -1,4 +1,9 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
+
+namespace Library;
+
+defined('SYSPATH') OR die('No direct access allowed.');
+
 /**
  *
  * @package    Kohana
@@ -7,5 +12,5 @@
  * @license    http://kohanaphp.com/license
  */
 
-class Cache_Exception_Core extends Kohana_Exception {}
+class Cache_Exception extends \Kernel\Kohana_Exception {}
 // End Kohana User Exception

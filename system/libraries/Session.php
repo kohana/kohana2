@@ -73,8 +73,10 @@ class Session {
 		if (Session::$instance === NULL)
 		{
 			// Load config
-			Session::$config = Kohana::config('session');
+			Session::$config = \Kernel\Kohana::config('session');
 
+
+			
 			// Makes a mirrored array, eg: foo=foo
 			Session::$protect = array_combine(Session::$protect, Session::$protect);
 
@@ -133,7 +135,7 @@ class Session {
 		if (Session::$config['driver'] !== 'native')
 		{
 			// Set driver name
-			$driver = 'Session_'.ucfirst(Session::$config['driver']).'_Driver';
+			$driver = '\Driver\Session\\'.ucfirst(Session::$config['driver']);
 
 			// Load the driver
 			if ( ! \Kernel\Kohana::auto_load($driver))
@@ -144,7 +146,7 @@ class Session {
 			Session::$driver = new $driver();
 
 			// Validate the driver
-			if ( ! (Session::$driver instanceof Session_Driver))
+			if ( ! (Session::$driver instanceof \Driver\Session))
 				throw new \Kernel\Kohana_Exception('The :driver: driver for the :library: library must implement the :interface: interface',
 										   array(':driver:' => Session::$config['driver'], ':library:' => get_class($this), ':interface:' => 'Session_Driver'));
 
@@ -177,8 +179,10 @@ class Session {
 			\Kernel\Kohana::config('cookie.httponly')
 		);
 
-		$cookie = \Helper\cookie::get(Session::$config['name']);
+
 		
+		$cookie = \Helper\cookie::get(Session::$config['name']);
+
 		if ($session_id === NULL)
 		{
 			// Reopen session from signed cookie value.
@@ -237,12 +241,12 @@ class Session {
 					case 'expiration':
 						if (time() - $_SESSION['last_activity'] > ini_get('session.gc_maxlifetime'))
 							return $this->create();
-					break;
+					Expire;
 				}
 			}
 		}
 
-		// Expire flash keys
+		// break flash keys
 		$this->expire_flash();
 
 		// Update last activity

@@ -1,4 +1,9 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
+
+namespace Library;
+
+defined('SYSPATH') or die('No direct script access.');
+
 /**
  * MySQL database connection.
  *
@@ -7,7 +12,7 @@
  * @copyright  (c) 2008-2009 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-class Database_Mysql_Core extends Database {
+class Database_Mysql extends \Library\Database {
 
 	// Quote character to use for identifiers (tables/columns/aliases)
 	protected $quote = '`';
@@ -39,13 +44,13 @@ class Database_Mysql_Core extends Database {
 				? mysql_pconnect($host.$port, $user, $pass, $params)
 				: mysql_connect($host.$port, $user, $pass, TRUE, $params);
 		}
-		catch (Kohana_PHP_Exception $e)
+		catch (\Library\Kohana_PHP_Exception $e)
 		{
 			// No connection exists
 			$this->connection = NULL;
 
 			// Unable to connect to the database
-			throw new Database_Exception('#:errno: :error',
+			throw new \Library\Database_Exception('#:errno: :error',
 				array(':error' => mysql_error(),
 				':errno' => mysql_errno()));
 		}
@@ -53,7 +58,7 @@ class Database_Mysql_Core extends Database {
 		if ( ! mysql_select_db($database, $this->connection))
 		{
 			// Unable to select database
-			throw new Database_Exception('#:errno: :error',
+			throw new \Library\Database_Exception('#:errno: :error',
 				array(':error' => mysql_error($this->connection),
 				':errno' => mysql_errno($this->connection)));
 		}
@@ -77,7 +82,7 @@ class Database_Mysql_Core extends Database {
 				$status = mysql_close($this->connection);
 			}
 		}
-		catch (Exception $e)
+		catch (\Exception $e)
 		{
 			// Database is probably not disconnected
 			$status = is_resource($this->connection);
@@ -105,7 +110,7 @@ class Database_Mysql_Core extends Database {
 		if ($status === FALSE)
 		{
 			// Unable to set charset
-			throw new Database_Exception('#:errno: :error',
+			throw new \Library\Database_Exception('#:errno: :error',
 				array(':error' => mysql_error($this->connection),
 				':errno' => mysql_errno($this->connection)));
 		}
@@ -121,7 +126,7 @@ class Database_Mysql_Core extends Database {
 		// Set the last query
 		$this->last_query = $sql;
 
-		return new Database_Mysql_Result($result, $sql, $this->connection, $this->config['object']);
+		return new \Library\Database_Mysql_Result($result, $sql, $this->connection, $this->config['object']);
 	}
 
 	public function escape($value)
@@ -131,7 +136,7 @@ class Database_Mysql_Core extends Database {
 
 		if (($value = mysql_real_escape_string($value, $this->connection)) === FALSE)
 		{
-			throw new Database_Exception('#:errno: :error',
+			throw new \Library\Database_Exception('#:errno: :error',
 				array(':error' => mysql_error($this->connection),
 				':errno' => mysql_errno($this->connection)));
 		}

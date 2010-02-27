@@ -1,4 +1,9 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
+
+namespace Library;
+
+defined('SYSPATH') or die('No direct script access.');
+
 /**
  * MySQL database result.
  *
@@ -7,7 +12,7 @@
  * @copyright  (c) 2008-2009 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-class Database_Mysqli_Result_Core extends Database_Result {
+class Database_Mysqli_Result extends \Library\Database_Result {
 
 	protected $internal_row = 0;
 
@@ -24,7 +29,7 @@ class Database_Mysqli_Result_Core extends Database_Result {
 		{
 			if ($result == FALSE)
 			{
-				throw new Database_Exception('#:errno: :error [ :query ]',
+				throw new \Library\Database_Exception('#:errno: :error [ :query ]',
 					array(':error' => $link->error,
 					':query' => $sql,
 					':errno' => $link->errno));
@@ -122,6 +127,8 @@ class Database_Mysqli_Result_Core extends Database_Result {
 
 			$this->internal_row = $this->total_rows;
 		}
+		
+
 
 		return $array;
 	}

@@ -1,4 +1,9 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
+
+namespace Library;
+
+defined('SYSPATH') or die('No direct script access.');
+
 /**
  * MySQL database result.
  *
@@ -7,7 +12,7 @@
  * @copyright  (c) 2008-2009 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-class Database_Mysql_Result_Core extends Database_Result {
+class Database_Mysql_Result extends \Library\Database_Result {
 
 	protected $internal_row = 0;
 

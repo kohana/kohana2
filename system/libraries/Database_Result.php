@@ -1,4 +1,9 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
+
+namespace Library;
+
+defined('SYSPATH') or die('No direct script access.');
+
 /**
  * Database result wrapper.
  * 
@@ -9,7 +14,7 @@
  * @copyright  (c) 2008-2009 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-abstract class Database_Result_Core implements Countable, Iterator, SeekableIterator, ArrayAccess {
+abstract class Database_Result implements \Countable, \Iterator, \SeekableIterator, \ArrayAccess {
 
 	protected $result;
 
@@ -111,7 +116,7 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	 */
 	final public function offsetSet($offset, $value)
 	{
-		throw new Kohana_Exception('Database results are read-only');
+		throw new \Kernel\Kohana_Exception('Database results are read-only');
 	}
 
 	/**
@@ -121,7 +126,7 @@ abstract class Database_Result_Core implements Countable, Iterator, SeekableIter
 	 */
 	final public function offsetUnset($offset)
 	{
-		throw new Kohana_Exception('Database results are read-only');
+		throw new \Kernel\Kohana_Exception('Database results are read-only');
 	}
 
 	/**

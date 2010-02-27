@@ -1,4 +1,9 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
+
+namespace Driver\Cache;
+
+defined('SYSPATH') OR die('No direct access allowed.');
+
 /**
  * Memcache-based Cache driver.
  *
@@ -9,7 +14,7 @@
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-class Cache_File_Driver extends Cache_Driver {
+class File extends \Driver\Cache {
 	protected $config;
 	protected $backend;
 
@@ -19,7 +24,7 @@ class Cache_File_Driver extends Cache_Driver {
 		$this->config['directory'] = str_replace('\\', '/', realpath($this->config['directory'])).'/';
 
 		if ( ! is_dir($this->config['directory']) OR ! is_writable($this->config['directory']))
-			throw new Cache_Exception('The configured cache directory, :directory:, is not writable.', array(':directory:' => $this->config['directory']));
+			throw new \Library\Cache_Exception('The configured cache directory, :directory:, is not writable.', array(':directory:' => $this->config['directory']));
 	}
 
 	/**
@@ -108,7 +113,7 @@ class Cache_File_Driver extends Cache_Driver {
 		foreach ($items as $key => $value)
 		{
 			if (is_resource($value))
-				throw new Cache_Exception('Caching of resources is impossible, because resources cannot be serialised.');
+				throw new \Library\Cache_Exception('Caching of resources is impossible, because resources cannot be serialised.');
 
 			// Remove old cache file
 			$this->delete($key);
@@ -211,7 +216,7 @@ class Cache_File_Driver extends Cache_Driver {
 			// Remove the cache file
 			if ( ! unlink($path))
 			{
-				Kohana_Log::add('error', 'Cache: Unable to delete cache file: '.$path);
+				\Library\Kohana_Log::add('error', 'Cache: Unable to delete cache file: '.$path);
 				$success = FALSE;
 			}
 		}

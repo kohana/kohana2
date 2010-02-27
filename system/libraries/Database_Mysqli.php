@@ -1,4 +1,9 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
+
+namespace Library;
+
+defined('SYSPATH') or die('No direct script access.');
+
 /**
  * MySQL database connection.
  *
@@ -10,7 +15,7 @@
 
 define('RUNS_MYSQLND', function_exists('mysqli_fetch_all'));
 
-class Database_Mysqli_Core extends Database_Mysql {
+class Database_Mysqli extends \Library\Database_Mysql {
 
 	public function connect()
 	{
@@ -30,7 +35,7 @@ class Database_Mysqli_Core extends Database_Mysql {
 		$mysqli = mysqli_init();
 
 		if ( ! $mysqli->real_connect($host, $user, $pass, $database, $port, $socket, $params))
-			throw new Database_Exception('#:errno: :error',
+			throw new \Library\Database_Exception('#:errno: :error',
 				array(':error' => $mysqli->connect_error, ':errno' => $mysqli->connect_errno));
 
 		$this->connection = $mysqli;
@@ -60,7 +65,7 @@ class Database_Mysqli_Core extends Database_Mysql {
 		if ( ! $this->connection->set_charset($charset))
 		{
 			// Unable to set charset
-			throw new Database_Exception('#:errno: :error',
+			throw new \Library\Database_Exception('#:errno: :error',
 				array(':error' => $this->connection->connect_error,
 				':errno' => $this->connection->connect_errno));
 		}
@@ -75,8 +80,8 @@ class Database_Mysqli_Core extends Database_Mysql {
 
 		// Set the last query
 		$this->last_query = $sql;
-
-		return new Database_Mysqli_Result($result, $sql, $this->connection, $this->config['object']);
+		
+		return new \Library\Database_Mysqli_Result($result, $sql, $this->connection, $this->config['object']);
 	}
 
 	public function escape($value)

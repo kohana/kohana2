@@ -659,14 +659,16 @@ abstract class Kohana {
 	{
 		if (class_exists($class, FALSE) OR interface_exists($class, FALSE))
 			return TRUE;
-
-		$parts		= explode('\\', ltrim($class, '\\'));
-
+		
+		$class		= ltrim($class, '\\');
+		
+		$parts		= explode('\\', $class);
+		
 		// Get the namespace
 		$namespace	= $parts[0];
 
 		// Get our filename by popping it off the array
-		$file = array_pop($parts);
+		$file = (sizeof($parts) > 2) ? $parts[2] : $parts[1];
 		
 		switch ($namespace)
 		{
@@ -692,9 +694,9 @@ abstract class Kohana {
 			
 			case 'Driver'		:
 				// We are grabbing an actual driver...
-				if (sizeof($parts) > 1)
+				if (sizeof($parts) > 2)
 				{
-					$type = 'libraries/drivers/'.ucfirst(array_pop($parts));
+					$type = 'libraries/drivers/'.ucfirst($parts[1]);
 				} else {
 					$type = 'libraries/drivers';
 				}
@@ -707,6 +709,8 @@ abstract class Kohana {
 
 		if ($filename = Kohana::find_file($type, $file))
 		{
+
+		
 			// Load the class
 			require $filename;
 		}
@@ -725,20 +729,34 @@ abstract class Kohana {
 		elseif ($namespace !== 'Library' AND class_exists($class, FALSE))
 		{
 			// Class extension to be evaluated
-			$extension = 'class '.$file.' extends \\'.$class.' { }';
+			$extension = ' class '.$file.' extends \\'.$class.' { }';
 
 			// Start class analysis
 			$library = new \ReflectionClass($class);
-
+			
+			// If abstract, give it an abstract namespace
 			if ($library->isAbstract())
 			{
 				// Make the extension abstract
 				$extension = 'abstract '.$extension;
 			}
-
+			
+			// Give it an extension namespace
+			$extension_namespace = 'namespace Extension\\'.$namespace;
+			
+			// If we have a driver, we need to do something more
+			// unique so there are no conflicts
+			if($namespace == 'Driver' AND sizeof($parts) > 2)
+				$extension_namespace .= '\\'.ucfirst($parts[1]);
+			
+			$extension = $extension_namespace.' ; '.$extension;
+			
+//			if($file == 'Database')
+//				die(Kohana::debug(debug_backtrace()));
+			
 			// Transparent class extensions are handled using eval. This is
 			// a disgusting hack, but it gets the job done. Yay!
-			// Wookie Hair!
+			// Wookie Hair! Namespaced Wookie Hair! WOooot!
 			eval($extension);
 		}
 

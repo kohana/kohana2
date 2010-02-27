@@ -1,4 +1,9 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
+
+namespace Driver\Session
+
+defined('SYSPATH') OR die('No direct access allowed.');
+
 /**
  * Session cache driver.
  *
@@ -17,7 +22,7 @@
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-class Session_Cache_Driver implements Session_Driver {
+class Cache implements \Driver\Session {
 
 	protected $cache;
 	protected $encrypt;
@@ -25,34 +30,34 @@ class Session_Cache_Driver implements Session_Driver {
 	public function __construct()
 	{
 		// Load Encrypt library
-		if (Kohana::config('session.encryption'))
+		if (\Kernel\Kohana::config('session.encryption'))
 		{
-			$this->encrypt = new Encrypt;
+			$this->encrypt = new \Library\Encrypt;
 		}
 
-		Kohana_Log::add('debug', 'Session Cache Driver Initialized');
+		\Library\Kohana_Log::add('debug', 'Session Cache Driver Initialized');
 	}
 
 	public function open($path, $name)
 	{
-		$config = Kohana::config('session.storage');
+		$config = \Kernel\Kohana::config('session.storage');
 
 		if (empty($config))
 		{
 			// Load the default group
-			$config = Kohana::config('cache.default');
+			$config = \Kernel\Kohana::config('cache.default');
 		}
 		elseif (is_string($config))
 		{
 			$name = $config;
 
 			// Test the config group name
-			if (($config = Kohana::config('cache.'.$config)) === NULL)
-				throw new Kohana_Exception('The :group: group is not defined in your configuration.', array(':group:' => $name));
+			if (($config = \Kernel\Kohana::config('cache.'.$config)) === NULL)
+				throw new \Kernel\Kohana_Exception('The :group: group is not defined in your configuration.', array(':group:' => $name));
 		}
 
-		$config['lifetime'] = (Kohana::config('session.expiration') == 0) ? 86400 : Kohana::config('session.expiration');
-		$this->cache = new Cache($config);
+		$config['lifetime'] = (\Kernel\Kohana::config('session.expiration') == 0) ? 86400 : \Kernel\Kohana::config('session.expiration');
+		$this->cache = new \Library\Cache($config);
 
 		return is_object($this->cache);
 	}
@@ -67,7 +72,7 @@ class Session_Cache_Driver implements Session_Driver {
 		$id = 'session_'.$id;
 		if ($data = $this->cache->get($id))
 		{
-			return Kohana::config('session.encryption') ? $this->encrypt->decode($data) : $data;
+			return \Kernel\Kohana::config('session.encryption') ? $this->encrypt->decode($data) : $data;
 		}
 
 		// Return value must be string, NOT a boolean
@@ -80,7 +85,7 @@ class Session_Cache_Driver implements Session_Driver {
 			return TRUE;
 
 		$id = 'session_'.$id;
-		$data = Kohana::config('session.encryption') ? $this->encrypt->encode($data) : $data;
+		$data = \Kernel\Kohana::config('session.encryption') ? $this->encrypt->encode($data) : $data;
 
 		return $this->cache->set($id, $data);
 	}

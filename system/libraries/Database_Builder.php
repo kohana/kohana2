@@ -1,4 +1,9 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
+
+namespace Library;
+
+defined('SYSPATH') or die('No direct script access.');
+
 /**
  * The Database Query Builder provides methods for creating database agnostic queries and
  * data manipulation.
@@ -17,7 +22,8 @@
  * @copyright  (c) 2008-2009 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-class Database_Builder_Core {
+
+class Database_Builder {
 
 	// Valid ORDER BY directions
 	protected $order_directions = array('ASC', 'DESC', 'RAND()');
@@ -38,7 +44,7 @@ class Database_Builder_Core {
 	protected $set      = array();
 	protected $columns  = array();
 	protected $values   = array();
-	protected $type     = Database::SELECT;
+	protected $type     = \Library\Database::SELECT;
 	protected $distinct = FALSE;
 	protected $reset    = TRUE;
 
@@ -86,7 +92,7 @@ class Database_Builder_Core {
 	 */
 	public function select($columns = NULL)
 	{
-		$this->type = Database::SELECT;
+		$this->type = \Library\Database::SELECT;
 
 		if ($columns === NULL)
 		{
@@ -864,7 +870,7 @@ class Database_Builder_Core {
 	 */
 	public function update($table = NULL, $set = NULL, $where = NULL)
 	{
-		$this->type = Database::UPDATE;
+		$this->type = \Library\Database::UPDATE;
 
 		if (is_array($set))
 		{
@@ -894,7 +900,7 @@ class Database_Builder_Core {
 	 */
 	public function insert($table = NULL, $set = NULL)
 	{
-		$this->type = Database::INSERT;
+		$this->type = \Library\Database::INSERT;
 
 		if (is_array($set))
 		{
@@ -920,7 +926,7 @@ class Database_Builder_Core {
 	 */
 	public function delete($table, $where = NULL)
 	{
-		$this->type = Database::DELETE;
+		$this->type = \Library\Database::DELETE;
 
 		if ($where !== NULL)
 		{
@@ -947,7 +953,7 @@ class Database_Builder_Core {
 		if (count($this->from) < 1)
 		{
 			if ($table === FALSE)
-				throw new Database_Exception('Database count_records requires a table');
+				throw new \Library\Database_Exception('Database count_records requires a table');
 
 			$this->from($table);
 		}
@@ -979,9 +985,9 @@ class Database_Builder_Core {
 		if ( ! is_object($this->db))
 		{
 			// Get the database instance
-			$this->db = Database::instance($this->db);
+			$this->db = \Library\Database::instance($this->db);
 		}
-
+		
 		$query = $this->compile();
 
 		if ($this->reset)
@@ -990,7 +996,7 @@ class Database_Builder_Core {
 			$this->_reset();
 		}
 
-		if ($this->ttl !== FALSE AND $this->type === Database::SELECT)
+		if ($this->ttl !== FALSE AND $this->type === \Library\Database::SELECT)
 		{
 			// Return result from cache (only allowed with SELECT)
 			return $this->db->query_cache($query, $this->ttl);
@@ -1012,10 +1018,10 @@ class Database_Builder_Core {
 		if ( ! is_object($this->db))
 		{
 			// Use default database for compiling to string if none is given
-			$this->db = Database::instance($this->db);
+			$this->db = \Library\Database::instance($this->db);
 		}
 
-		if ($this->type === Database::SELECT)
+		if ($this->type === \Library\Database::SELECT)
 		{
 			// SELECT columns FROM table
 			$sql = $this->distinct ? 'SELECT DISTINCT ' : 'SELECT ';
@@ -1026,15 +1032,15 @@ class Database_Builder_Core {
 				$sql .= "\nFROM ".$this->compile_from();
 			}
 		}
-		elseif ($this->type === Database::UPDATE)
+		elseif ($this->type === \Library\Database::UPDATE)
 		{
 			$sql = 'UPDATE '.$this->compile_from()."\n".'SET '.$this->compile_set();
 		}
-		elseif ($this->type === Database::INSERT)
+		elseif ($this->type === \Library\Database::INSERT)
 		{
 			$sql = 'INSERT INTO '.$this->compile_from()."\n".$this->compile_columns()."\nVALUES ".$this->compile_values();
 		}
-		elseif ($this->type === Database::DELETE)
+		elseif ($this->type === \Library\Database::DELETE)
 		{
 			$sql = 'DELETE FROM '.$this->compile_from();
 		}
@@ -1265,7 +1271,7 @@ class Database_Builder_Core {
 		$this->offset   = NULL;
 		$this->set      = array();
 		$this->values   = array();
-		$this->type    = Database::SELECT;
+		$this->type    = \Library\Database::SELECT;
 		$this->distinct = FALSE;
 		$this->reset    = TRUE;
 		$this->ttl      = FALSE;

@@ -1,4 +1,9 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php
+
+namespace Library;
+
+defined('SYSPATH') or die('No direct script access.');
+
 /**
  * Database wrapper.
  *
@@ -7,7 +12,8 @@
  * @copyright  (c) 2008-2009 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-abstract class Database_Core {
+
+abstract class Database {
 
 	const SELECT          =  1;
 	const INSERT          =  2;
@@ -47,10 +53,11 @@ abstract class Database_Core {
 	 */
 	public static function instance($name = 'default')
 	{
+
 		if ( ! isset(Database::$instances[$name]))
 		{
 			// Load the configuration for this database group
-			$config = Kohana::config('database.'.$name);
+			$config = \Kernel\Kohana::config('database.'.$name);
 
 			if (is_string($config['connection']))
 			{
@@ -59,10 +66,11 @@ abstract class Database_Core {
 			}
 
 			// Set the driver class name
-			$driver = 'Database_'.ucfirst($config['connection']['type']);
+			$driver = '\Library\Database_'.ucfirst($config['connection']['type']);
 
 			// Create the database connection instance
 			Database::$instances[$name] = new $driver($config);
+
 		}
 
 		return Database::$instances[$name];
@@ -84,7 +92,7 @@ abstract class Database_Core {
 			if (is_string($this->config['cache']))
 			{
 				// Use Cache library
-				$this->cache = new Cache($this->config['cache']);
+				$this->cache = new \Library\Cache($this->config['cache']);
 			}
 			elseif ($this->config['cache'] === TRUE)
 			{
@@ -295,7 +303,7 @@ abstract class Database_Core {
 	{
 		if ( ! $this->cache instanceof Cache)
 		{
-			throw new Database_Exception('Database :name has not been configured to use the Cache library.');
+			throw new \Library\Database_Exception('Database :name has not been configured to use the Cache library.');
 		}
 
 		// Start the benchmark
@@ -306,7 +314,7 @@ abstract class Database_Core {
 		if (($data = $this->cache->get($hash)) !== NULL)
 		{
 			// Found in cache, create result
-			$result = new Database_Cache_Result($data, $sql, $this->config['object']);
+			$result = new \Library\Database_Cache_Result($data, $sql, $this->config['object']);
 
 			// It's from the cache
 			$sql .= ' [CACHE]';
@@ -320,7 +328,7 @@ abstract class Database_Core {
 			$this->cache->set($hash, $data, NULL, $ttl);
 
 			// Create result
-			$result = new Database_Cache_Result($data, $sql, $this->config['object']);
+			$result = new \Library\Database_Cache_Result($data, $sql, $this->config['object']);
 		}
 
 		// Stop the benchmark
@@ -601,7 +609,7 @@ abstract class Database_Core {
 		if ($sql_types === NULL)
 		{
 			// Load SQL data types
-			$sql_types = Kohana::config('sql_types');
+			$sql_types = \Kernel\Kohana::config('sql_types');
 		}
 
 		$str = trim($str);
@@ -624,7 +632,7 @@ abstract class Database_Core {
 		}
 
 		if (empty($sql_types[$type]))
-			throw new Database_Exception('Undefined field type :type', array(':type' => $str));
+			throw new \Library\Database_Exception('Undefined field type :type', array(':type' => $str));
 
 		// Fetch the field definition
 		$field = $sql_types[$type];

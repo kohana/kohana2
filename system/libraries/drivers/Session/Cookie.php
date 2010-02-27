@@ -1,4 +1,9 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
+
+namespace Driver\Session
+
+defined('SYSPATH') OR die('No direct access allowed.');
+
 /**
  * Session cookie driver.
  *
@@ -9,7 +14,7 @@
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-class Session_Cookie_Driver implements Session_Driver {
+class Cookie implements \Driver\Session {
 
 	protected $cookie_name;
 	protected $encrypt; // Library
@@ -18,12 +23,12 @@ class Session_Cookie_Driver implements Session_Driver {
 	{
 		$this->cookie_name = Kohana::config('session.name').'_data';
 
-		if (Kohana::config('session.encryption'))
+		if (\Kernel\Kohana::config('session.encryption'))
 		{
-			$this->encrypt = Encrypt::instance();
+			$this->encrypt = \Library\Encrypt::instance();
 		}
 
-		Kohana_Log::add('debug', 'Session Cookie Driver Initialized');
+		\Library\Kohana_Log::add('debug', 'Session Cookie Driver Initialized');
 	}
 
 	public function open($path, $name)
@@ -38,7 +43,7 @@ class Session_Cookie_Driver implements Session_Driver {
 
 	public function read($id)
 	{
-		$data = (string) cookie::get($this->cookie_name);
+		$data = (string) \Helper\cookie::get($this->cookie_name);
 
 		if ($data == '')
 			return $data;
@@ -55,16 +60,16 @@ class Session_Cookie_Driver implements Session_Driver {
 
 		if (strlen($data) > 4048)
 		{
-			Kohana_Log::add('error', 'Session ('.$id.') data exceeds the 4KB limit, ignoring write.');
+			\Library\Kohana_Log::add('error', 'Session ('.$id.') data exceeds the 4KB limit, ignoring write.');
 			return FALSE;
 		}
 
-		return cookie::set($this->cookie_name, $data, Kohana::config('session.expiration'));
+		return \Helper\cookie::set($this->cookie_name, $data, \Kernel\Kohana::config('session.expiration'));
 	}
 
 	public function destroy($id)
 	{
-		return cookie::delete($this->cookie_name);
+		return \Helper\cookie::delete($this->cookie_name);
 	}
 
 	public function regenerate()
