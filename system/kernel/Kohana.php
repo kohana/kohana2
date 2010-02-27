@@ -17,10 +17,10 @@ define('KOHANA_IS_WIN', DIRECTORY_SEPARATOR === '\\');
 
 abstract class Kohana {
 
-	const VERSION  = '2.4';
-	const CODENAME = 'no_codename';
-	const CHARSET  = 'UTF-8';
-	const LOCALE = 'en_US';
+	const VERSION	= '2.4';
+	const CODENAME	= 'Experimental';
+	const CHARSET	= 'UTF-8';
+	const LOCALE	= 'en_US';
 
 	// The singleton instance of the controller
 	public static $instance;
@@ -1144,6 +1144,27 @@ abstract class Kohana {
 		}
 
 		return $written;
+	}
+	
+	/**
+	 * Provides a Y-Combinator for the Kohana framework, speeds up
+	 * recursive functions significantly because PHP absolutely sucks
+	 * with tail-call recursion.
+	 *
+	 * @param	function	$fun
+	 * @return	function
+	 */
+	public static function Y($fun)
+	{
+		// Don't get confused now! :-D
+		$func = function ($f) { return $f($f); };
+			return $func(function ($f) use ($fun) {
+				return $fun(function ($x) use ($f) {
+					$ff = $f($f);
+					return $ff($x);
+				});
+			});
+		}
 	}
 
 } // End Kohana
