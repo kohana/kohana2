@@ -68,6 +68,7 @@ abstract class Kohana_Core {
 
 	// Internal caches and write status
 	protected static $internal_cache = array();
+	protected static $include_paths_hash = '';
 	protected static $write_cache;
 	protected static $internal_cache_path;
 	protected static $internal_cache_key;
@@ -400,14 +401,8 @@ abstract class Kohana_Core {
 			// Add SYSPATH as the last path
 			Kohana::$include_paths[] = SYSPATH;
 
-			// Clear cached include paths
-			self::$internal_cache['find_file_paths'] = array();
-			if ( ! isset(self::$write_cache['find_file_paths']))
-			{
-				// Write cache at shutdown
-				self::$write_cache['find_file_paths'] = TRUE;
-			}
-
+			// Create a hash of the include paths so we know what cache to use
+			Kohana::$include_paths_hash = md5(serialize(Kohana::$include_paths));
 		}
 
 		return Kohana::$include_paths;
@@ -824,8 +819,8 @@ abstract class Kohana_Core {
 		// Search path
 		$search = $directory.'/'.$filename.$ext;
 
-		if (isset(Kohana::$internal_cache['find_file_paths'][$search]))
-			return Kohana::$internal_cache['find_file_paths'][$search];
+		if (isset(Kohana::$internal_cache['find_file_paths'][Kohana::$include_paths_hash][$search]))
+			return Kohana::$internal_cache['find_file_paths'][Kohana::$include_paths_hash][$search];
 
 		// Load include paths
 		$paths = Kohana::$include_paths;
@@ -882,7 +877,7 @@ abstract class Kohana_Core {
 			Kohana::$write_cache['find_file_paths'] = TRUE;
 		}
 
-		return Kohana::$internal_cache['find_file_paths'][$search] = $found;
+		return Kohana::$internal_cache['find_file_paths'][Kohana::$include_paths_hash][$search] = $found;
 	}
 
 	/**
