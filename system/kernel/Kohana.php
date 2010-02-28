@@ -1164,7 +1164,6 @@ abstract class Kohana {
 					return $ff($x);
 				});
 			});
-		}
 	}
 
 } // End Kohana
