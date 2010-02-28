@@ -286,6 +286,9 @@ class Session_Core {
 
 		// Start the session!
 		session_start();
+		
+		// Be sure session_write_close() is called post-controller
+		Event::add('system.post_controller', array($this, 'write_close'));
 
 		// Put session_id in the session variable
 		$_SESSION['session_id'] = session_id();
