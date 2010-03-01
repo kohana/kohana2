@@ -179,7 +179,7 @@ class Session_Core {
 
 			// Close the session on system shutdown (run before sending the headers), so that
 			// the session cookie(s) can be written.
-			Event::add('system.post_controller', array($this, 'write_close'));
+			Event::add('system.shutdown', array($this, 'write_close'));
 
 			// Singleton instance
 			Session::$instance = $this;
