@@ -37,7 +37,7 @@
  *     (
  *         session_id VARCHAR(127) NOT NULL,
  *         last_activity INT(10) UNSIGNED NOT NULL,
- *         DATA TEXT NOT NULL,
+ *         `data` TEXT NOT NULL,
  *         PRIMARY KEY (session_id)
  *     );
  *
