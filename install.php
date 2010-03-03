@@ -1,4 +1,8 @@
-<?php defined('SYSPATH') OR die('No direct access allowed. This file is automatically ran by index.php.'); ?>
+<?php defined('SYSPATH') OR die('No direct access allowed. This file is automatically run by index.php.');
+
+$failed = FALSE;
+
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
@@ -14,6 +18,7 @@
 
 			#tests table {
 				border-collapse: collapse;
+				border-spacing: 0;
 				width: 100%;
 			}
 
@@ -65,8 +70,7 @@
 			for more information on how to correct the problem.
 		</p>
 		<div id="tests">
-			<?php $failed = FALSE?>
-			<table cellspacing="0">
+			<table>
 				<tr>
 					<th>PHP Version</th>
 					<?php if (version_compare(PHP_VERSION, '5.2.3', '>=')): ?>
@@ -87,11 +91,7 @@
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
-						The configured
-						<code>
-							system
-						</code>
-						directory does not exist or is not readable.
+						The configured <code>system</code> directory does not exist or is not readable.
 					</td>
 					<?php endif?>
 				</tr>
@@ -103,11 +103,7 @@
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
-						The configured
-						<code>
-							application
-						</code>
-						directory does not exist or does not contain required files.
+						The configured <code>application</code> directory does not exist or does not contain required files.
 					</td>
 					<?php endif?>
 				</tr>
@@ -119,11 +115,7 @@
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
-						The configured
-						<code>
-							modules
-						</code>
-						directory does not exist or is not readable.
+						The configured <code>modules</code> directory does not exist or is not readable.
 					</td>
 					<?php endif?>
 				</tr>
@@ -135,11 +127,7 @@
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
-						The default
-						<code>
-							logs
-						</code>
-						directory does not exist or is not writable. Depending on your log driver and config settings, this may not be a problem.
+						The default <code>logs</code> directory does not exist or is not writable. Depending on your log driver and config settings, this may not be a problem.
 					</td>
 					<?php endif?>
 				</tr>
@@ -151,11 +139,7 @@
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
-						The default
-						<code>
-							cache
-						</code>
-						directory does not exist or is not writable. Depending on your cache driver and config settings, this may not be a problem.
+						The default <code>cache</code> directory does not exist or is not writable. Depending on your cache driver and config settings, this may not be a problem.
 					</td>
 					<?php endif?>
 				</tr>
@@ -163,18 +147,15 @@
 					<th>PCRE UTF-8</th>
 					<?php if ( ! function_exists('preg_match')): $failed = TRUE?>
 					<td class="fail">
-						<a href="http://php.net/pcre">PCRE</a>
-						support is missing.
+						<a href="http://php.net/pcre">PCRE</a> support is missing.
 					</td>
 					<?php elseif ( ! @preg_match('/^.$/u', 'ñ')): $failed = TRUE?>
 					<td class="fail">
-						<a href="http://php.net/pcre">PCRE</a>
-						has not been compiled with UTF-8 support.
+						<a href="http://php.net/pcre">PCRE</a> has not been compiled with UTF-8 support.
 					</td>
 					<?php elseif ( ! @preg_match('/^\pL$/u', 'ñ')): $failed = TRUE?>
 					<td class="fail">
-						<a href="http://php.net/pcre">PCRE</a>
-						has not been compiled with Unicode property support.
+						<a href="http://php.net/pcre">PCRE</a> has not been compiled with Unicode property support.
 					</td>
 					<?php else : ?>
 					<td class="pass">
@@ -190,8 +171,7 @@
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
-						PHP <a href="http://www.php.net/reflection">reflection</a>
-						is either not loaded or not compiled in.
+						PHP <a href="http://php.net/reflection">reflection</a> is either not loaded or not compiled in.
 					</td>
 					<?php endif?>
 				</tr>
@@ -203,8 +183,7 @@
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
-						The <a href="http://www.php.net/filter">filter</a>
-						extension is either not loaded or not compiled in.
+						The <a href="http://php.net/filter">filter</a> extension is either not loaded or not compiled in.
 					</td>
 					<?php endif?>
 				</tr>
@@ -216,8 +195,7 @@
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
-						The <a href="http://php.net/iconv">iconv</a>
-						extension is not loaded.
+						The <a href="http://php.net/iconv">iconv</a> extension is not loaded.
 					</td>
 					<?php endif?>
 				</tr>
@@ -229,8 +207,7 @@
 					</td>
 					<?php else : $failed = TRUE?>
 					<td class="fail">
-						<a href="http://php.net/spl">SPL</a>
-						is not enabled.
+						<a href="http://php.net/spl">SPL</a> is not enabled.
 					</td>
 					<?php endif?>
 				</tr>
@@ -248,8 +225,7 @@
 					<th>Mbstring Not Overloaded</th>
 					<?php if (ini_get('mbstring.func_overload') & MB_OVERLOAD_STRING): $failed = TRUE?>
 					<td class="fail">
-						The <a href="http://php.net/mbstring">mbstring</a>
-						extension is overloading PHP's native string functions.
+						The <a href="http://php.net/mbstring">mbstring</a> extension is overloading PHP's native string functions.
 					</td>
 					<?php else : ?>
 					<td class="pass">
@@ -262,14 +238,7 @@
 					<th>XML support</th>
 					<?php if ( ! function_exists('utf8_encode')): $failed = TRUE?>
 					<td class="fail">
-						PHP is compiled without <a href="http://php.net/xml">XML</a>
-						support, thus lacking support for
-						<code>
-							utf8_encode()
-						</code>/
-						<code>
-							utf8_decode()
-						</code>.
+						PHP is compiled without <a href="http://php.net/xml">XML</a> support, thus lacking support for <code>utf8_encode()</code>/<code>utf8_decode()</code>.
 					</td>
 					<?php else : ?>
 					<td class="pass">
@@ -307,11 +276,7 @@
 				</p>
 				<?php else : ?>
 				<p class="pass">
-					Your environment passed all requirements. Remove or rename the
-					<code>
-						install<?php echo EXT?>
-					</code>
-					file now.
+					Your environment passed all requirements. Remove or rename the <code>install<?php echo EXT?></code> file now.
 				</p>
 				<?php endif?>
 			</div>
