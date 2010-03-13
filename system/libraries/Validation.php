@@ -6,42 +6,75 @@
  *
  *     // Create a new Validation object using the $_POST global array
  *     $post = new Validation($_POST);
- * 
+ *
  *     // Combine multiple arrays for validation
  *     $post = new Validation(array_merge($_POST, $_FILES));
- * 
+ *
  *     // Using the factory enables method chaining
  *     $post = Validation::factory($_POST)->add_rules('field_name', 'required');
- * 
+ *
  *     // You can also use the $_POST array directly (not recommended)
  *     $_POST = new Validation($_POST);
  *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class Validation_Core extends ArrayObject {
 
-	// Filters
+	/**
+	 * Pre-validation filters
+	 * @var array $pre_filters
+	 */
 	protected $pre_filters = array();
+
+	/**
+	 * Post-validation filters
+	 * @var array $post_filters
+	 */
 	protected $post_filters = array();
 
-	// Rules and callbacks
+	/**
+	 * Validation Rules
+	 * @var array $rules
+	 */
 	protected $rules = array();
+
+	/**
+	 * Validation Callbacks
+	 * @var array $callbacks
+	 */
 	protected $callbacks = array();
 
-	// Rules that are allowed to run on empty fields
+	/**
+	 * Rules that are allowed to run on empty fields
+	 * @var array $empty_rules
+	 */
 	protected $empty_rules = array('required', 'matches');
 
-	// Errors
+	/**
+	 * Validation Errors
+	 * @var array $errors
+	 */
 	protected $errors = array();
+
+	/**
+	 * Validation Messages
+	 * @var array $messages
+	 */
 	protected $messages = array();
 
-	// Field labels
+	/**
+	 * Validation Labels
+	 * @var array $labels
+	 */
 	protected $labels = array();
 
-	// Fields that are expected to be arrays
+	/**
+	 * Fields that are expected to be arrays
+	 * @var array $array_fields
+	 */
 	protected $array_fields = array();
 
 	/**
@@ -52,8 +85,8 @@ class Validation_Core extends ArrayObject {
 	 *     // Using the factory enables method chaining
 	 *     $post = Validation::factory($_POST);
 	 *
-	 * @param   array   array to use for validation
-	 * @return  object
+	 * @param   array   $array  Array to use for validation
+	 * @return  Validation
 	 */
 	public static function factory(array $array)
 	{
@@ -64,7 +97,7 @@ class Validation_Core extends ArrayObject {
 	 * Sets the unique "any field" key and creates an ArrayObject from the
 	 * passed array.
 	 *
-	 * @param   array   array to validate
+	 * @param   array   $array  Array to validate
 	 * @return  void
 	 */
 	public function __construct(array $array)
@@ -87,15 +120,14 @@ class Validation_Core extends ArrayObject {
 	 * Create a copy of the current validation rules and change the array.
 	 *
 	 * ##### Example
-	 *     
+	 *
 	 *     // Initialize the validation library on the $_POST array with the rule 'required' applied to 'field_name'
 	 *     $post = Validation::factory($_POST)->add_rules('field_name', 'required');
 	 *
 	 *     // Here we copy the rule 'required' for 'field_name' and apply it to a new array (field names need to be the same)
 	 *     $new_post = $post->copy($new_array);
 	 *
-	 * @chainable
-	 * @param   array  new array to validate
+	 * @param   array  $array  New array to validate
 	 * @return  Validation
 	 */
 	public function copy(array $array)
@@ -113,7 +145,7 @@ class Validation_Core extends ArrayObject {
 	 * ##### Example
 	 *
 	 *     $fields	= $post->field_names();
-	 *     // Outputs an array with the names of all fields that have filters, rules, or callbacks.
+	 *     // Outputs an array with the names of all fields that have filters, rules, callbacks.
 	 *
 	 * @return  array
 	 */
@@ -175,7 +207,7 @@ class Validation_Core extends ArrayObject {
 	 *
 	 *     // Output: Array ( [form_field2] => 10 )
 	 *
-	 * @param   boolean  return only fields with filters, rules, and callbacks
+	 * @param   boolean  Return only fields with filters, rules, and callbacks
 	 * @return  array
 	 */
 	public function safe_array()
@@ -226,9 +258,8 @@ class Validation_Core extends ArrayObject {
 	 *     // Note: required and matches are already set by default, this is used only as an example.
 	 *     $post->allow_empty_rules('required', 'matches');
 	 *
-	 * @chainable
-	 * @param   string   rule name
-	 * @return  object
+	 * @param   string   $rules   Rule name
+	 * @return  Validation
 	 */
 	public function allow_empty_rules($rules)
 	{
@@ -242,19 +273,22 @@ class Validation_Core extends ArrayObject {
 	}
 
 	/**
-	 * Sets or overwrites the label name for a field.
+	 * Sets or overwrites the label name for a field. Label names are used in the
+	 * default validation error messages. You can use a label name in custom error
+	 * messages with the `:field` place holder.
 	 *
 	 * ##### Example
 	 *
-	 *     // Set a default label, the error array would look something like so: array('form_field1' => 'Some error')
+	 *     // Set a default label
 	 *     $post->label('form_field1');
+	 *     // Label will be set to 'Form Field'
 	 *
-	 *     // Set an alternative label, the error array would look something like so: array('my_label1' => 'Some error')
-	 *     $post->label('form_field1', 'my_label1');
+	 *     // Set an alternative label
+	 *     $post->label('form_field1', 'My Field Name');
 	 *
-	 * @param string field name
-	 * @param string label
-	 * @return $this
+	 * @param   string   $field   Field name
+	 * @param   string   $label   Label
+	 * @return Validation
 	 */
 	public function label($field, $label = NULL)
 	{
@@ -273,15 +307,15 @@ class Validation_Core extends ArrayObject {
 	}
 
 	/**
-	 * Sets labels using an array.
+	 * Sets labels using an array. Works the same as [Validation::labels] except allows
+	 * you to pass in array of labels.
 	 *
 	 * ##### Example
 	 *
-	 *     // Very similar to label() except an array of values is provided
-	 *     $post->labels(array('my_field1' => 'my_label1', 'my_field2' => 'my_label2'));
+	 *     $post->labels(array('first_name' => 'First Name', 'field2' => 'Label 2'));
 	 *
-	 * @param array list of field => label names
-	 * @return $this
+	 * @param  array   $labels   List of field => label names
+	 * @return Validation
 	 */
 	public function labels(array $labels)
 	{
@@ -293,6 +327,7 @@ class Validation_Core extends ArrayObject {
 	/**
 	 * Converts a filter, rule, or callback into a fully-qualified callback array.
 	 *
+	 * @param  mixed   $callback   Valid callback
 	 * @return  mixed
 	 */
 	protected function callback($callback)
@@ -362,12 +397,11 @@ class Validation_Core extends ArrayObject {
 	 *     $post->pre_filter('trim', 'form_field1', 'form_field2');
 	 *
 	 *     // All fields can be pre_filter'ed
-	 *     $post->pre_filter('trim', TRUE);
+	 *     $post->pre_filter('trim');
 	 *
-	 * @chainable
-	 * @param   callback  filter
-	 * @param   string    fields to apply filter to, use TRUE for all fields
-	 * @return  object
+	 * @param   mixed     $filter   Filter
+	 * @param   string    $field    Fields to apply filter to, use TRUE for all fields
+	 * @return  Validation
 	 */
 	public function pre_filter($filter, $field = TRUE)
 	{
@@ -409,12 +443,12 @@ class Validation_Core extends ArrayObject {
 	 *     $post->post_filter('ucfirst', 'form_field1', 'form_field2');
 	 *
 	 *     // All fields can be post_filter'ed
-	 *     $post->post_filter('ucfirst', TRUE);
+	 *     $post->post_filter('ucfirst');
 	 *
 	 * @chainable
-	 * @param   callback  filter
-	 * @param   string    fields to apply filter to, use TRUE for all fields
-	 * @return  object
+	 * @param   mixed     $filter  Filter
+	 * @param   string    $field   Fields to apply filter to, use TRUE for all fields
+	 * @return  Validation
 	 */
 	public function post_filter($filter, $field = TRUE)
 	{
@@ -453,7 +487,7 @@ class Validation_Core extends ArrayObject {
 	 *                    'form_field3' => '15');
 	 *
 	 *     $post  = new Validation($input);
-	 *     
+	 *
 	 *     // Add rules to the fields of our form (these can be chained)
 	 *     $post->add_rules('form_field1', 'required', 'alpha_dash', 'length[1,5]')
 	 *          ->add_rules('form_field2', 'matches[form_field1]')
@@ -465,9 +499,9 @@ class Validation_Core extends ArrayObject {
 	 *     // Commas in rule arguments can be escaped with a backslash: 'matches[some\,val]'
 	 *
 	 * @chainable
-	 * @param   string    field name
-	 * @param   callback  rules (one or more arguments)
-	 * @return  object
+	 * @param   string   $field  Field name
+	 * @param   mixed    $rules  Rules (one or more arguments)
+	 * @return  Validation
 	 */
 	public function add_rules($field, $rules)
 	{
@@ -558,14 +592,15 @@ class Validation_Core extends ArrayObject {
 	 *			$query	= (bool) $this->db->count_records('user', array('user_email' => $aArray[$sField]));
 	 *
 	 *			// If true, set an error
-	 *			if($query)
+	 *			if ($query)
+	 *			{
 	 *				$aArray->add_error($sField, 'email_exists');
+	 *			}
 	 *     }
 	 *
-	 * @chainable
-	 * @param   string     field name
-	 * @param   callbacks  callbacks (unlimited number)
-	 * @return  object
+	 * @param   string     $field       Field name
+	 * @param   mixed      $callbacks   Callbacks (unlimited number)
+	 * @return  Validation
 	 */
 	public function add_callbacks($field, $callbacks)
 	{
@@ -597,8 +632,7 @@ class Validation_Core extends ArrayObject {
 	/**
 	 * Validate by processing pre-filters, rules, callbacks, and post-filters.
 	 * All fields that have filters, rules, or callbacks will be initialized if
-	 * they are undefined. Validation will only be run if there is data already
-	 * in the array.
+	 * they are undefined.
 	 *
 	 * ##### Example
 	 *
@@ -609,7 +643,7 @@ class Validation_Core extends ArrayObject {
 	 *     $post  = Validation::factory($input)->add_rules('form_field1', 'required')->add_rules('form_field2', 'digit');
 	 *
 	 *     // Validate the input array!
-	 *     if($post->validate())
+	 *     if ($post->validate())
 	 *     {
 	 *			// Validation succeeded
 	 *     }
@@ -618,8 +652,8 @@ class Validation_Core extends ArrayObject {
 	 *			// Validation failed
 	 *     }
 	 *
-	 * @param   object  Validation object, used only for recursion
-	 * @param   object  name of field for errors
+	 * @param   array   $object      Validation object, used only for recursion
+	 * @param   array   $field_name  Name of field for errors
 	 * @return  bool
 	 */
 	public function validate($object = NULL, $field_name = NULL)
@@ -734,7 +768,6 @@ class Validation_Core extends ArrayObject {
 						// Note that continue, instead of break, is used when
 						// applying rules using a wildcard, so that all fields
 						// will be validated.
-
 						if (isset($this->errors[$f]))
 						{
 							// Stop validating this field when an error is found
@@ -794,10 +827,10 @@ class Validation_Core extends ArrayObject {
 	 *     // Output: Array ( [form_field1] => email_exists )
 	 *
 	 * @chainable
-	 * @param   string  input name
-	 * @param   string  unique error name
-	 * @param   string  arguments to pass to lang file
-	 * @return  object
+	 * @param   string  $field  Input name
+	 * @param   string  $name   Unique error name
+	 * @param   string  $args   Arguments to pass to lang file
+	 * @return  Validation
 	 */
 	public function add_error($field, $name, $args = NULL)
 	{
@@ -817,7 +850,7 @@ class Validation_Core extends ArrayObject {
 	 *
 	 *     // Output: Array ( [form_field1] => email_exists )
 	 *
-	 * @param   boolean  load errors from a message file
+	 * @param   string $file Message file to load errors from
 	 * @return  array
 	 */
 	public function errors($file = NULL)
@@ -889,7 +922,7 @@ class Validation_Core extends ArrayObject {
 	 *
 	 *     $post->add_rules('form_field1', 'required');
      *
-	 * @param   mixed   input value
+	 * @param   mixed   $str  Input value
 	 * @return  bool
 	 */
 	public function required($str)
@@ -918,8 +951,8 @@ class Validation_Core extends ArrayObject {
 	 *
 	 *     $post->add_rules('form_field1', 'matches');
      *
-	 * @param   mixed   input value
-	 * @param   array   input names to match against
+	 * @param   mixed   $str     Input value
+	 * @param   array   $inputs  Input names to match against
 	 * @return  bool
 	 */
 	public function matches($str, array $inputs)
@@ -944,8 +977,8 @@ class Validation_Core extends ArrayObject {
 	 *     // For an exact length of 5
 	 *     $post->add_rules('form_field1', 'length[5]');
      *
-	 * @param   mixed   input value
-	 * @param   array   minimum, maximum, or exact length to match
+	 * @param   mixed   $str     Input value
+	 * @param   array   $length  Minimum, maximum, or exact length to match
 	 * @return  bool
 	 */
 	public function length($str, array $length)
@@ -982,8 +1015,8 @@ class Validation_Core extends ArrayObject {
 	 *     // (separated by commas for more than one)
 	 *     $post->add_rules('form_field2', 'depends_on[form_field1]');
      *
-	 * @param   mixed   field name
-	 * @param   array   field names to check dependency
+	 * @param   mixed   $field   Field name
+	 * @param   array   $fields  Field names to check dependency
 	 * @return  bool
 	 */
 	public function depends_on($field, array $fields)
@@ -1004,8 +1037,8 @@ class Validation_Core extends ArrayObject {
 	 *
 	 *     $post->add_rules('form_field1', 'chars[a,b,c,d]');
      *
-	 * @param   string  field value
-	 * @param   array   allowed characters
+	 * @param   string  $value  Field value
+	 * @param   array   $chars  Allowed characters
 	 * @return  bool
 	 */
 	public function chars($value, array $chars)
