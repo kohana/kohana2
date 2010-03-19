@@ -181,10 +181,7 @@ class utf8_Core {
 		if ($search == '')
 			return $str;
 
-		$str_lower = mb_strtolower($str);
-		$search_lower = mb_strtolower($search);
-
-		preg_match('/^(.*?)'.preg_quote($search, '/').'/s', $str_lower, $matches);
+		preg_match('/^(.*?)'.preg_quote(mb_strtolower($search), '/').'/s', mb_strtolower($str), $matches);
 
 		if (isset($matches[1]))
 			return substr($str, strlen($matches[1]));
