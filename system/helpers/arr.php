@@ -356,13 +356,27 @@ class arr {
 	 * @param   array  $array      Array to map to
 	 * @return  array
 	 */
-	public static function map_recursive($callback, array $array)
+	public static function map_recursive(array $array)
 	{
-		foreach ($array as $key => $val)
-		{
-			// Map the callback to the key
-			$array[$key] = is_array($val) ? arr::map_recursive($callback, $val) : call_user_func($callback, $val);
-		}
+		// Build a "recursive" function using the Y-Combinator
+		$map_recursive = \Kernel\Kohana::Y(function ($recur) {
+				return function(&$array) use($recur) {
+					$buffer = array();
+					foreach($array as $key => $val)
+					{
+						if(is_array($val))
+						{
+							$buffer[$key]	= $recur($val);
+						} else {
+							$buffer[$key]	= $val + 1;
+						}
+						//$array[$key] = is_array($val) ? $recur($val) : $val + 1;
+					}
+					$array = $buffer;
+				};
+			});
+
+		$map_recursive($array);
 
 		return $array;
 	}

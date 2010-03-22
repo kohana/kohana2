@@ -556,7 +556,7 @@ abstract class Kohana {
 			return;
 
 		$run = TRUE;
-		exit;
+
 		// Run system.shutdown event
 		\Kernel\Event::run('system.shutdown');
 

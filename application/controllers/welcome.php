@@ -14,7 +14,7 @@ namespace Controller;
 defined('SYSPATH') OR die('No direct access allowed.');
 
 class Welcome extends \Controller\Template {
-
+	
 	// Disable this controller when Kohana is set to production mode.
 	// See http://docs.kohanaphp.com/installation/deployment for more details.
 	const ALLOW_PRODUCTION = FALSE;
@@ -24,6 +24,9 @@ class Welcome extends \Controller\Template {
 
 	public function index()
 	{
+		echo \Kernel\Kohana::debug(\Helper\arr::map_recursive(array('a' => 1, 'b' => 2, 'c' => array(3, 4), 'd' => array('e' => 5))));
+		
+		exit;
 		// In Kohana, all views are loaded and treated as objects.
 		$this->template->content = new \Library\View('welcome_content');
 

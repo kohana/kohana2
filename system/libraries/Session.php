@@ -197,6 +197,10 @@ class Session {
 
 		// Start the session!
 		session_start();
+		
+		// Be sure session_write_close() is called after everything
+		// executes!
+//		\Kernel\Event::insert_event('system.send_headers', 0, array($this, 'write_close'));
 
 		// Put session_id in the session variable
 		$_SESSION['session_id'] = session_id();
