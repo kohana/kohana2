@@ -601,6 +601,9 @@ abstract class Kohana_Core {
 	 */
 	public static function render($output)
 	{
+		if (empty($output))
+			return '';
+		
 		if (Kohana::config('core.render_stats') === TRUE)
 		{
 			// Fetch memory usage in MB
