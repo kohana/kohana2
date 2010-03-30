@@ -1,21 +1,85 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Form helper class.
+ * The form helper class provides convenience methods for creating
+ * forms and form elements.
+ *
+ * [!!] This helper does not validate or filter submission data!
+ *
+ * For all in one form creation and validation, you can peruse the
+ * many offerrings in Kohana's addon module repository.
+ *
+ * @link http://dev.kohanaphp.com/projects
+ *
+ * ##### Complete Example
+ *
+ * This example assumes the form is being built within a view
+ * file.
+ *
+ *     // Assuming this url: http://localhost/kohana/welcome/index
+ *     <?=form::open('welcome/index', array('method' => 'post'));?>
+ *     <table>
+ *       <tr>
+ *         <td>
+ *           <?=form::label(array('for' => 'username'), 'Username:');?>
+ *         </td>
+ *         <td>
+ *           <?=form::input(array('name' => 'username', 'id' => 'username'));?>
+ *         </td>
+ *       </tr>
+ *       <tr>
+ *         <td>
+ *           <?=form::label(array('for' => 'passphrase'), 'Passphrase:');?>
+ *         </td>
+ *         <td>
+ *           <?=form::password(array('name' => 'passphrase', 'id' => 'passphrase'));?>
+ *         </td>
+ *       </tr>
+ *       <tr>
+ *         <td>
+ *           <?=form::button(array('type' => 'submit'), 'Login');?>
+ *         </td>
+ *       </tr>
+ *     </table>
+ *     </form>
+ *
+ * Note the manual use of `</form>`! There is no magic in closing a
+ * form ;-)
  *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class form_Core {
 
 	/**
-	 * Generates an opening HTML form tag.
+	 * This method generates an opening HTML **form** element with any
+	 * additional attributes provided.
 	 *
-	 * @param   string  form action attribute
-	 * @param   array   extra attributes
-	 * @param   array   hidden fields to be created immediately after the form tag
-	 * @param   string  non-default protocol, eg: https
+	 * Leaving the first function argument `null` opens the form with
+	 * the current URI as its action attribute value. To alter any of
+	 * the default attributes produced by this method, supply a valid
+	 * URL action path (or `null` for the current URL), and an array of
+	 * attribute => value pairs.
+	 *
+	 * ###### Example
+	 *     
+	 *     // Default, assuming this url: http://localhost/kohana/welcome/index
+	 *     echo form::open();
+	 *     
+	 *     // Output:
+	 *     <form action="/kohana/index.php/welcome/index" method="post">
+	 *     
+	 *     // With attributes
+	 *     echo form::open('controller/action', array('method' => 'post'));
+	 *     
+	 *     // Output:
+	 *     <form action="/kohana/index.php/controller/action" method="post">
+	 *
+	 * @param   string  $action   Form action url path
+	 * @param   array   $attr     Array of additional attribute => value pairs
+	 * @param   array   $hidden   Hidden fields to be created immediately after the form tag
+	 * @param   string  $protocol Non-default protocol, eg: https
 	 * @return  string
 	 */
 	public static function open($action = NULL, $attr = array(), $hidden = NULL, $protocol = NULL)
@@ -53,11 +117,30 @@ class form_Core {
 	}
 
 	/**
-	 * Generates an opening HTML form tag that can be used for uploading files.
+	 * This method generates an opening HTML **form** element that can be used for
+	 * uploading files.
 	 *
-	 * @param   string  form action attribute
-	 * @param   array   extra attributes
-	 * @param   array   hidden fields to be created immediately after the form tag
+	 * This method is identical in use to the [form::open] method, it
+	 * simply adds `multipart/form-data` as a value to the *enctype*
+	 * attribute.
+	 *
+	 * ###### Example
+	 *     
+	 *     // Default, assuming this url: http://localhost/kohana/welcome/index
+	 *     echo form::open_multipart();
+	 *     
+	 *     // Output:
+	 *     <form action="/kohana/index.php/" method="post" enctype="multipart/form-data">
+	 *     
+	 *     // With attributes
+	 *     echo form::open_multipart('controller/action', array('method' => 'post'));
+	 *     
+	 *     // Output:
+	 *     <form action="/kohana/index.php/controller/action" method="post" enctype="multipart/form-data">
+	 *
+	 * @param   string  $action Form action url path
+	 * @param   array   $attr   Array of additional attribute => value pairs
+	 * @param   array   $hidden Hidden fields to be created immediately after the form tag
 	 * @return  string
 	 */
 	public static function open_multipart($action = NULL, $attr = array(), $hidden = array())
@@ -69,11 +152,30 @@ class form_Core {
 	}
 
 	/**
-	 * Creates a HTML form hidden input tag.
+	 * This method generates an HTML **input** element with a type attribute value of
+	 * *hidden*.
+	 * 
+	 * The first function argument takes as its value either a string
+	 * or array; if provided a string it will use that as the value
+	 * for the *name* attribute. An array will be used as attribute =>
+	 * value pairs in the element.
 	 *
-	 * @param   string|array  input name or an array of HTML attributes
-	 * @param   string        input value, when using a name
-	 * @param   string        a string to be attached to the end of the attributes
+	 * The second function argument takes as its value a string and is
+	 * used for the element's *value* attribute.
+	 *
+	 * The third function argument takes as its value a string and is
+	 * appended within the element after attributes are applied.
+	 *
+	 * ###### Example
+	 *     
+	 *     echo form::hidden('closet', 'gnome');
+	 *     
+	 *     // Output:
+	 *     <input type="hidden" name="closet" value="gnome"  />
+	 *
+	 * @param   mixed   $data  Input name or an array of attribute => value pairs
+	 * @param   string  $value Input value, when using a name
+	 * @param   string  $extra A string to be attached to the end of the attributes
 	 * @return  string
 	 */
 	public static function hidden($data, $value = '', $extra = '')
@@ -89,11 +191,36 @@ class form_Core {
 	}
 
 	/**
-	 * Creates an HTML form input tag. Defaults to a text type.
+	 * This method generates an HTML **input** element with a type attribute
+	 * value of *text*.
 	 *
-	 * @param   string|array  input name or an array of HTML attributes
-	 * @param   string        input value, when using a name
-	 * @param   string        a string to be attached to the end of the attributes
+	 * The first function argument takes as its value either a string
+	 * or array; if provided a string it will use that as the value
+	 * for the *name* attribute. An array will be used as attribute =>
+	 * value pairs in the element.
+	 *
+	 * The second function argument takes as its value a string and is
+	 * used for the element's *value* attribute.
+	 *
+	 * The third function argument takes as its value a string and is
+	 * appended within the element after attributes are applied.
+	 *
+	 * ###### Example
+	 *     
+	 *     echo form::input('base', 'are belong to us');
+	 *     
+	 *     // Output:
+	 *     <input type="text" name="base" value="are belong to us"  />
+	 *     
+	 *     // With additional attributes
+	 *     echo form::input(array('name' => 'base', 'id' => 'base'), 'are belong to us');
+	 *     
+	 *     // Output:
+	 *     <input type="text" id="base" name="base" value="are belong to us"  />
+	 *
+	 * @param   mixed  $data  Input name or an array of attribute => value pairs
+	 * @param   string $value Input value, when using a name
+	 * @param   string $extra A string to be attached to the end of the attributes
 	 * @return  string
 	 */
 	public static function input($data, $value = '', $extra = '')
@@ -114,11 +241,36 @@ class form_Core {
 	}
 
 	/**
-	 * Creates a HTML form password input tag.
+	 * This method generates an HTML **input** element with a type attribute
+	 * value of *password*.
 	 *
-	 * @param   string|array  input name or an array of HTML attributes
-	 * @param   string        input value, when using a name
-	 * @param   string        a string to be attached to the end of the attributes
+	 * The first function argument takes as its value either a string
+	 * or array; if provided a string it will use that as the value
+	 * for the *name* attribute. An array will be used as attribute =>
+	 * value pairs in the element.
+	 *
+	 * The second function argument takes as its value a string and is
+	 * used for the element's *value* attribute.
+	 *
+	 * The third function argument takes as its value a string and is
+	 * appended within the element after attributes are applied.
+	 *
+	 * ###### Example
+	 *     
+	 *     echo form::password('passphrase');
+	 *     
+	 *     // Output:
+	 *     <input type="password" name="passphrase" value="" />
+	 *     
+	 *     // With additional attributes
+	 *     echo form::password(array('name' => 'passphrase', 'id' => 'passphrase'));
+	 *     
+	 *     // Output:
+	 *     <input type="password" id="passphrase" name="passphrase"  value=""  />
+	 *
+	 * @param   mixed  $data  Input name or an array of attribute => value pairs
+	 * @param   string $value Input value, when using a name
+	 * @param   string $extra A string to be attached to the end of the attributes
 	 * @return  string
 	 */
 	public static function password($data, $value = '', $extra = '')
@@ -134,11 +286,38 @@ class form_Core {
 	}
 
 	/**
-	 * Creates an HTML form upload input tag.
+	 * This method generates an HTML **input** element with a type attribute
+	 * value of *file*.
+	 * 
+	 * [!!] Don't forget that you need a multipart form to do file uploads!
 	 *
-	 * @param   string|array  input name or an array of HTML attributes
-	 * @param   string        input value, when using a name
-	 * @param   string        a string to be attached to the end of the attributes
+	 * The first function argument takes as its value either a string
+	 * or array; if provided a string it will use that as the value
+	 * for the *name* attribute. An array will be used as attribute =>
+	 * value pairs in the element.
+	 *
+	 * The second function argument takes as its value a string and is
+	 * used for the element's *value* attribute.
+	 *
+	 * The third function argument takes as its value a string and is
+	 * appended within the element after attributes are applied.
+	 *
+	 * ###### Example
+	 *     
+	 *     echo form::upload('mugshot');
+	 *     
+	 *     // Output:
+	 *     <input type="file" name="mugshot" value="" />
+	 *     
+	 *     // With additional attributes
+	 *     echo form::upload(array('name' => 'mugshot', 'id' => 'mugshot'));
+	 *     
+	 *     // Output:
+	 *     <input type="file" id="mugshot" name="mugshot" value="" />
+	 *
+	 * @param   mixed  $data  Input name or an array of attribute => value pairs
+	 * @param   string $value Input value, when using a name
+	 * @param   string $extra A string to be attached to the end of the attributes
 	 * @return  string
 	 */
 	public static function upload($data, $value = '', $extra = '')
@@ -154,12 +333,41 @@ class form_Core {
 	}
 
 	/**
-	 * Creates an HTML form textarea tag.
+	 * This method generates an HTML **textarea** element.
 	 *
-	 * @param   string|array  input name or an array of HTML attributes
-	 * @param   string        input value, when using a name
-	 * @param   string        a string to be attached to the end of the attributes
-	 * @param   boolean       encode existing entities
+	 * The first function argument takes as its value either a string
+	 * or array; if provided a string it will use that as the value
+	 * for the *name* attribute. An array will be used as attribute =>
+	 * value pairs in the element.
+	 *
+	 * The second function argument takes as its value a string and is
+	 * used for the element's *value* attribute.
+	 *
+	 * The third function argument takes as its value a string and is
+	 * appended within the element after attributes are applied.
+	 *
+	 * The fourth function argument takes as its value a boolean and
+	 * toggles whether the existing entities should be encoded. Its
+	 * default is `TRUE`.
+	 *
+	 * ###### Example
+	 *     
+	 *     // A simple textarea
+	 *     echo form::textarea('comment');
+	 *     
+	 *     // Output:
+	 *     <textarea name="mugshot" rows="" cols="" ></textarea>
+	 *     
+	 *     // With additional attributes
+	 *     echo form::textarea(array('name' => 'comment', 'id' => 'comment', 'cols' => 40, 'rows' => 10), 'Enter your comment here...');
+	 *     
+	 *     // Output:
+	 *     <textarea id="comment" name="comment" rows="10" cols="40" >Enter your comment here...</textarea>
+	 * 
+	 * @param   mixed   $data          Input name or an array of attribute => value pairs
+	 * @param   string  $value         Input value, when using a name
+	 * @param   string  $extra         A string to be attached to the end of the attributes
+	 * @param   boolean $double_encode Encode existing entities
 	 * @return  string
 	 */
 	public static function textarea($data, $value = '', $extra = '', $double_encode = TRUE)
@@ -189,12 +397,42 @@ class form_Core {
 	}
 
 	/**
-	 * Creates an HTML form select tag, or "dropdown menu".
+	 * This method generates an HTML **select** element (dropdown menu).
 	 *
-	 * @param   string|array  input name or an array of HTML attributes
-	 * @param   array         select options, when using a name
-	 * @param   string|array  option key(s) that should be selected by default
-	 * @param   string        a string to be attached to the end of the attributes
+	 * The first function argument takes as its value either a string
+	 * or array; if provided a string it will use that as the value
+	 * for the *name* attribute. An array will be used as attribute =>
+	 * value pairs in the element.
+	 *
+	 * The second function argument takes as its value a string and is
+	 * used for the element's *value* attribute.
+	 *
+	 * The third function argument takes as its value either a string
+	 * or array; if provided a string, it will match that value with
+	 * the *value* attribute of a **property** element and assign the
+	 * *selected* attributed. However, if an array is provided, it will
+	 * consider the **select** element to be a multiselect (by
+	 * assigning the *multiple* attribute to the **select** element)
+	 * and map the array of given values to the *value* attribute of
+	 * the **option** elements. 
+	 *
+	 * The fourth function argument takes as its value a string and is
+	 * appended within the element after attributes are applied.
+	 *
+	 * ###### Example
+	 *     
+	 *     echo form::dropdown('state', array('CA' => 'California', 'AZ' => 'Arizona'), 'AZ');
+	 *     
+	 *     // Output:
+	 *     <select name="state">
+	 *       <option value="CA">California</option>
+	 *       <option value="AZ" selected="selected">Arizona</option>
+	 *     </select>
+	 * 
+	 * @param   mixed   $data     Input name or an array of attribute => value pairs
+	 * @param   array   $options  Select options, when using a name
+	 * @param   mixed   $selected Option key(s) that should be selected by default
+	 * @param   string  $extra    A string to be attached to the end of the attributes
 	 * @return  string
 	 */
 	public static function dropdown($data, $options = NULL, $selected = NULL, $extra = '')
@@ -260,12 +498,40 @@ class form_Core {
 	}
 
 	/**
-	 * Creates an HTML form checkbox input tag.
+	 * This method generates an HTML **input** element with a type attribute
+	 * value of *checkbox*.
 	 *
-	 * @param   string|array  input name or an array of HTML attributes
-	 * @param   string        input value, when using a name
-	 * @param   boolean       make the checkbox checked by default
-	 * @param   string        a string to be attached to the end of the attributes
+	 * The first function argument takes as its value either a string
+	 * or array; if provided a string it will use that as the value
+	 * for the *name* attribute. An array will be used as attribute =>
+	 * value pairs in the element.
+	 *
+	 * The second function argument takes as its value a string and is
+	 * used for the element's *value* attribute.
+	 *
+	 * The third function argument takes as its value a boolean and
+	 * toggles whether the *selected* attribute is applied to the element.
+	 *
+	 * The fourth function argument takes as its value a string and is
+	 * appended within the element after attributes are applied.
+	 *
+	 * ###### Example
+	 *     
+	 *     echo form::checkbox('god_mode', 'Yes');
+	 *     
+	 *     // Output:
+	 *     <input type="checkbox" name="god_mode" value="Yes"  />
+	 *     
+	 *     // A selected checkbox
+	 *     echo form::checkbox('god_mode', 'Yes', TRUE);
+	 *     
+	 *     // Output:
+	 *     echo form::checkbox('god_mode', 'Yes', checked="checked");
+	 *
+	 * @param   mixed   $data    Input name or an array of attribute => value pairs
+	 * @param   string  $value   Input value, when using a name
+	 * @param   boolean $checked Toggle the checked attributed
+	 * @param   string  $extra   A string to be attached to the end of the attributes
 	 * @return  string
 	 */
 	public static function checkbox($data, $value = '', $checked = FALSE, $extra = '')
@@ -290,12 +556,37 @@ class form_Core {
 	}
 
 	/**
-	 * Creates an HTML form radio input tag.
+	 * This method generates an HTML **input** element with a type attribute
+	 * value of *radio*.
 	 *
-	 * @param   string|array  input name or an array of HTML attributes
-	 * @param   string        input value, when using a name
-	 * @param   boolean       make the radio selected by default
-	 * @param   string        a string to be attached to the end of the attributes
+	 * The first function argument takes as its value either a string
+	 * or array; if provided a string it will use that as the value
+	 * for the *name* attribute. An array will be used as attribute =>
+	 * value pairs in the element.
+	 *
+	 * The second function argument takes as its value a string and is
+	 * used for the element's *value* attribute.
+	 *
+	 * The third function argument takes as its value a boolean and
+	 * toggles whether the *selected* attribute is applied to the element.
+	 *
+	 * The fourth function argument takes as its value a string and is
+	 * appended within the element after attributes are applied.
+	 *
+	 * ###### Example
+	 *     
+	 *     // A typical gender poll
+	 *     echo form::radio('gender', 'male', TRUE);
+	 *     echo form::radio('gender', 'female');
+	 *     
+	 *     // Output:
+	 *     <input type="radio" name="gender" value="male" checked="checked"  />
+	 *     <input type="radio" name="gender" value="female"  />
+	 *
+	 * @param   mixed   $data    Input name or an array of attribute => value pairs
+	 * @param   string  $value   Input value, when using a name
+	 * @param   boolean $checked Toggle the checked attributed
+	 * @param   string  $extra   A string to be attached to the end of the attributes
 	 * @return  string
 	 */
 	public static function radio($data = '', $value = '', $checked = FALSE, $extra = '')
@@ -320,11 +611,33 @@ class form_Core {
 	}
 
 	/**
-	 * Creates an HTML form submit input tag.
+	 * This method generates an HTML **input** element with a type
+	 * attribute value of *submit*.
 	 *
-	 * @param   string|array  input name or an array of HTML attributes
-	 * @param   string        input value, when using a name
-	 * @param   string        a string to be attached to the end of the attributes
+	 * The first function argument takes as its value either a string
+	 * or array; if provided a string it will use that as the value
+	 * for the *name* attribute. An array will be used as attribute =>
+	 * value pairs in the element.
+	 *
+	 * The second function argument takes as its value a string and is
+	 * used for the element's *value* attribute.
+	 *
+	 * The third function argument takes as its value a string and is
+	 * appended within the element after attributes are applied.
+	 *
+	 * Note: using [form::button] to generate a submission button is
+	 * semantically preferred over using a submission input.
+	 *
+	 * ###### Example
+	 *     
+	 *     echo form::submit('', 'Submit');
+	 *     
+	 *     // Output:
+	 *     <input type="submit" value="Submit"  />
+	 *
+	 * @param   mixed  $data  Input name or an array of attribute => value pairs
+	 * @param   string $value Input value, when using a name
+	 * @param   string $extra A string to be attached to the end of the attributes
 	 * @return  string
 	 */
 	public static function submit($data = '', $value = '', $extra = '')
@@ -346,11 +659,30 @@ class form_Core {
 	}
 
 	/**
-	 * Creates an HTML form button input tag.
+	 * This method generates an HTML **button** element.
 	 *
-	 * @param   string|array  input name or an array of HTML attributes
-	 * @param   string        input value, when using a name
-	 * @param   string        a string to be attached to the end of the attributes
+	 * The first function argument takes as its value either a string
+	 * or array; if provided a string it will use that as the value
+	 * for the *name* attribute. An array will be used as attribute =>
+	 * value pairs in the element.
+	 *
+	 * The second function argument takes as its value a string and is
+	 * used for the element's *value* attribute.
+	 *
+	 * The third function argument takes as its value a string and is
+	 * appended within the element after attributes are applied.
+	 *
+	 * ###### Example
+	 *     
+	 *     // A submit button example
+	 *     echo form::button(array('type' => 'submit'), 'Login'));
+	 *     
+	 *     // Output:
+	 *     <button type="submit" >Login</button>
+	 *
+	 * @param   mixed  $data  Input name or an array of attribute => value pairs
+	 * @param   string $value Input value, when using a name
+	 * @param   string $extra A string to be attached to the end of the attributes
 	 * @return  string
 	 */
 	public static function button($data = '', $value = '', $extra = '')
@@ -375,11 +707,32 @@ class form_Core {
 	}
 
 	/**
-	 * Creates an HTML form label tag.
+	 * This method generates an HTML **label** element.
 	 *
-	 * @param   string|array  label "for" name or an array of HTML attributes
-	 * @param   string        label text or HTML
-	 * @param   string        a string to be attached to the end of the attributes
+	 * The first function argument takes as its value either a string
+	 * or array; if provided a string it will use that as the value
+	 * for the *for* attribute which must have a corresponding element
+	 * with an *id* attribute of the same value. An array will be used
+	 * as attribute => value pairs in the element.
+	 *
+	 * The second function argument takes as its value a string and is
+	 * used for the label's display text or inner HTML.
+	 *
+	 * The third function argument takes as its value a string and is
+	 * appended within the element after attributes are applied.
+	 *
+	 * ###### Example
+	 *     
+	 *     echo form::label('username', 'Username: ');
+	 *     echo form::input(array('name' => 'username', 'id' => 'username'));
+	 *     
+	 *     // Output:
+	 *     <label for="username" >Username: </label>
+	 *     <input type="text" id="username" name="username" value=""  />
+	 * 
+	 * @param   mixed  $data  Label "for" value or an array of attribute => value pairs
+	 * @param   string $text  Label text or HTML
+	 * @param   string $extra A string to be attached to the end of the attributes
 	 * @return  string
 	 */
 	public static function label($data = '', $text = NULL, $extra = '')
@@ -408,13 +761,21 @@ class form_Core {
 	}
 
 	/**
-	 * Sorts a key/value array of HTML attributes, putting form attributes first,
-	 * and returns an attribute string.
+	 * This method sorts an attribute => value array of HTML
+	 * attributes, putting form attributes first, and returning an
+	 * attribute string.
 	 *
-	 * @param   array   HTML attributes array
+	 * ###### Example
+	 *     
+	 *     echo Kohana::debug(form::attributes(array('value' => 'Ronald', 'id' => 'username', 'class' => 'login')));
+	 *     
+	 *     // Output:
+	 *     (string)  id="username" value="Ronald" class="login"
+	 *
+	 * @param   array   $attr HTML attributes array
 	 * @return  string
 	 */
-	public static function attributes($attr, $type = NULL)
+	public static function attributes($attr)
 	{
 		if (empty($attr))
 			return '';
