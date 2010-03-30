@@ -1,10 +1,12 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Inflector helper class.
+ * The inflector helper class provides convenience methods for
+ * pluralization and singularization of words as well as other methods
+ * for working with phrases.
  *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class inflector_Core {
@@ -17,9 +19,23 @@ class inflector_Core {
 	protected static $irregular;
 
 	/**
-	 * Checks if a word is defined as uncountable.
+	 * This method checks if a given string is an uncountable word. It
+	 * uses a word list defined in the `inflector.php` configuration
+	 * file.
 	 *
-	 * @param   string   word to check
+	 * ###### Example
+	 *
+	 *     echo Kohana::debug(inflector::uncountable('money'));
+	 *     
+	 *     // Output:
+	 *     (boolean) true
+	 *     
+	 *     echo Kohana::debug(inflector::uncountable('book'));
+	 *     
+	 *     // Output:
+	 *     (boolean) false
+	 *
+	 * @param   string   $str word to check
 	 * @return  boolean
 	 */
 	public static function uncountable($str)
@@ -37,10 +53,21 @@ class inflector_Core {
 	}
 
 	/**
-	 * Makes a plural word singular.
+	 * This method returns a singularized plural word.
 	 *
-	 * @param   string   word to singularize
-	 * @param   integer  number of things
+	 * The second function argument specifies the number of "things"
+	 * being represented so that the proper
+	 * pluralization/singularization can be applied.
+	 *
+	 * ###### Example
+	 *     
+	 *     echo Kohana::debug(inflector::singular('chupacabra_killings', 1));
+	 *     
+	 *     // Output:
+	 *     (string) chupacabra_killing
+	 *
+	 * @param   string   $str   Word to singularize
+	 * @param   integer  $count Number of things to determine singularizatio
 	 * @return  string
 	 */
 	public static function singular($str, $count = NULL) {
@@ -57,10 +84,21 @@ class inflector_Core {
 
 
 	/**
-	 * Makes a plural word singular.
+	 * This method returns a singularized plural word.
 	 *
-	 * @param   string   word to singularize
-	 * @param   integer  number of things
+	 * The second function argument specifies the number of "things"
+	 * being represented so that the proper
+	 * pluralization/singularization can be applied.
+	 *
+	 * ###### Example
+	 *     
+	 *     echo Kohana::debug(inflector::_singular('books'));
+	 *     
+	 *     // Output:
+	 *     (string) book
+	 *
+	 * @param   string   $str   Word to singularize
+	 * @param   integer  $count Number of things to determine singularizatio
 	 * @return  string
 	 */
 	public static function _singular($str, $count = NULL)
@@ -115,9 +153,21 @@ class inflector_Core {
 	}
 
 	/**
-	 * Makes a singular word plural.
+	 * This method returns a pluralized singular word.
 	 *
-	 * @param   string  word to pluralize
+	 * The second function argument specifies the number of "things"
+	 * being represented so that the proper
+	 * pluralization/singularization can be applied.
+	 *
+	 * ###### Example
+	 *     
+	 *     echo Kohana::debug(inflector::plural('mating_bunny', 2));
+	 *     
+	 *     // Output:
+	 *     (string) mating_bunnies
+	 *
+	 * @param   string   $str   Word to pluralize
+	 * @param   integer  $count Number of things to determine singularizatio
 	 * @return  string
 	 */
 	public static function plural($str, $count = NULL)
@@ -138,9 +188,21 @@ class inflector_Core {
 
 
 	/**
-	 * Makes a singular word plural.
+	 * This method returns a pluralized singular word.
 	 *
-	 * @param   string  word to pluralize
+	 * The second function argument specifies the number of "things"
+	 * being represented so that the proper
+	 * pluralization/singularization can be applied.
+	 *
+	 * ###### Example
+	 *     
+	 *     echo Kohana::debug(inflector::_plural('plate'));
+	 *     
+	 *     // Output:
+	 *     (string) plates
+	 *
+	 * @param   string   $str   Word to pluralize
+	 * @param   integer  $count Number of things to determine singularizatio
 	 * @return  string
 	 */
 	public static function _plural($str, $count = NULL)
@@ -196,27 +258,41 @@ class inflector_Core {
 	}
 
 	/**
-	 * Makes a word possessive.
+	 * This method returns a given word in possessive form.
 	 *
-	 * @param   string  word to to make possessive
+	 * ###### Example
+	 *     
+	 *     echo Kohana::debug(inflector::possessive('Matilda'));
+	 *     
+	 *     // Output:
+	 *     (string) Matilda's
+	 *
+	 * @param   string  $str Word to to make possessive
 	 * @return  string
 	 */
-	public static function possessive($string)
+	public static function possessive($str)
 	{
-		$length = strlen($string);
+		$length = strlen($str);
 
-		if (substr($string, $length - 1, $length) == 's')
+		if (substr($str, $length - 1, $length) == 's')
 		{
-			return $string.'\'';
+			return $str.'\'';
 		}
 
-		return $string.'\'s';
+		return $str.'\'s';
 	}
 
 	/**
-	 * Makes a phrase camel case.
+	 * This method returns a given string in CamelCase form.
 	 *
-	 * @param   string  phrase to camelize
+	 * ###### Example
+	 *     
+	 *     echo Kohana::debug(inflector::camelize('my name is pookie'));
+	 *     
+	 *     // Output:
+	 *     (string) myNameIsPookie
+	 *
+	 * @param   string  $str Phrase to CamelCase
 	 * @return  string
 	 */
 	public static function camelize($str)
@@ -228,9 +304,17 @@ class inflector_Core {
 	}
 
 	/**
-	 * Makes a phrase underscored instead of spaced.
+	 * This method returns a given string with spaces replaced by
+	 * underscores.
 	 *
-	 * @param   string  phrase to underscore
+	 * ###### Example
+	 *     
+	 *     echo Kohana::debug(inflector::underscore('dude where is my car?'));
+	 *     
+	 *     // Output:
+	 *     (string) dude_where_is_my_car?
+	 *
+	 * @param   string  $str Phrase to underscore
 	 * @return  string
 	 */
 	public static function underscore($str)
@@ -239,9 +323,18 @@ class inflector_Core {
 	}
 
 	/**
-	 * Makes an underscored or dashed phrase human-readable.
+	 * This method returns a given string with hyphens or underscores
+	 * replaced by spaces.
 	 *
-	 * @param   string  phrase to make human-readable
+	 * ###### Example
+	 *     
+	 *     echo
+	 *     Kohana::debug(inflector::humanize('it_is_a_break-dancing_stripper_emergency!'));
+	 *     
+	 *     // Output:
+	 *     (string) it is a break dancing stripper emergency!
+	 * 
+	 * @param   string  $str Phrase to make human-readable
 	 * @return  string
 	 */
 	public static function humanize($str)
