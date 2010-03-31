@@ -20,6 +20,10 @@ class Welcome_Controller extends Template_Controller {
 
 	public function index()
 	{
+		echo Kohana::debug(inflector::humanize('it_is_a_break-dancing_stripper_emergency!'));
+
+		exit;
+		
 		// In Kohana, all views are loaded and treated as objects.
 		$this->template->content = new View('welcome_content');
 

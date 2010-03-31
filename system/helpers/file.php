@@ -188,28 +188,44 @@ class file_Core {
 	}
 
 	/**
-	 * Join a split file into a whole file.
+	 * This method glues a set of file chunks into a single file. To
+	 * be used in conjunnction with [file::split].
+	 *
+	 * The first function argument takes as its value a string
+	 * representing the homogenous member of the chunk's filename.
+	 *
+	 * The second function argument takes as its value either a string
+	 * or boolean `FALSE`; given a string representing an output path
+	 * + filename, the resulting file, filename, and directory
+	 * location is the result of this argument.
 	 * 
-	 * #### Example
-	 * ##### Code
-	 * 		$file_in = 'humpty_dumpty.mp3'; // from our last example
-	 * 		$file_out = 'humpty_dumpty-back_together_again.mp3'; // output name
-	 * 		echo file::join($file_in, $file_out);
-	 * 
-	 * ##### Returns
-	 * 		4
-	 * 
+	 * ##### Example
+	 *     
+	 *     $file_in  = 'the-dune-encyclopedia.pdf';
+	 *     
+	 *     echo Kohana::debug(file::join($file));
+	 *     
+	 *     // Output:
+	 *     (integer) 10
+	 *     
 	 * ##### Directory Listing
-	 * 		-rwxrwxrwx 1 www-data www-data 8186302 2008-05-06 20:11 humpty_dumpty.mp3
-	 * 		-rw-r--r-- 1 www-data www-data 2097152 2008-05-06 20:15 humpty_dumpty.mp3.001
-	 * 		-rw-r--r-- 1 www-data www-data 2097152 2008-05-06 20:15 humpty_dumpty.mp3.002
-	 * 		-rw-r--r-- 1 www-data www-data 2097152 2008-05-06 20:15 humpty_dumpty.mp3.003
-	 * 		-rw-r--r-- 1 www-data www-data 1894846 2008-05-06 20:15 humpty_dumpty.mp3.004
-	 * 		-rw-r--r-- 1 www-data www-data 8186302 2008-05-06 20:17 humpty_dumpty-back_together_again.mp3
+	 *     
+	 *     -rw-r--r--   1 _www     staff   9.9M Mar 31 15:43 the-dune-encyclopedia.pdf
+	 *     
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.001
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.002
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.003
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.004
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.005
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.006
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.007
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.008
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.009
+	 *     -rw-r--r--   1 _www     staff   952K Mar 31 12:54 the-dune-encyclopedia.pdf.010
 	 * 
-	 * @param string $filename Split filename, without .000 extension
-	 * @param string $output Output filename, if different then an the filename
-	 * @return integer The number of pieces that were joined.
+	 * @param   string  $filename Root filename of chunks to join
+	 * @param   string  $output   Output pathname + filename, if different
+	 * @return  integer
 	 */
 	public static function join($filename, $output = FALSE)
 	{
