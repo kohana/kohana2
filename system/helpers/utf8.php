@@ -23,7 +23,7 @@ class utf8_Core {
 
 	/**
 	 * Replaces text within a portion of a UTF-8 string.
-	 * @see http://php.net/substr_replace
+	 * @see <a href="http://php.net/substr_replace">http://php.net/substr_replace</a>
 	 *
 	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
@@ -47,7 +47,7 @@ class utf8_Core {
 
 	/**
 	 * Makes a UTF-8 string's first character uppercase.
-	 * @see http://php.net/ucfirst
+	 * @see <a href="http://php.net/ucfirst">http://php.net/ucfirst</a>
 	 *
 	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
@@ -65,7 +65,7 @@ class utf8_Core {
 
 	/**
 	 * Case-insensitive UTF-8 string comparison.
-	 * @see http://php.net/strcasecmp
+	 * @see <a href="http://php.net/strcasecmp">http://php.net/strcasecmp</a>
 	 *
 	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
@@ -88,7 +88,7 @@ class utf8_Core {
 	/**
 	 * Returns a string or an array with all occurrences of search in subject (ignoring case).
 	 * replaced with the given replace value.
-	 * @see     http://php.net/str_ireplace
+	 * @see     <a href="http://php.net/str_ireplace">http://php.net/str_ireplace</a>
 	 *
 	 * @note    It's not fast and gets slower if $search and/or $replace are arrays.
 	 * @author  Harry Fuecks <hfuecks@gmail.com
@@ -164,7 +164,7 @@ class utf8_Core {
 	/**
 	 * Case-insenstive UTF-8 version of strstr. Returns all of input string
 	 * from the first occurrence of needle to the end.
-	 * @see http://php.net/stristr
+	 * @see <a href="http://php.net/stristr">http://php.net/stristr</a>
 	 *
 	 * @author Harry Fuecks <hfuecks@gmail.com>
 	 *
@@ -191,7 +191,7 @@ class utf8_Core {
 
 	/**
 	 * Finds the length of the initial segment matching mask.
-	 * @see http://php.net/strspn
+	 * @see <a href="http://php.net/strspn">http://php.net/strspn</a>
 	 *
 	 * @author Harry Fuecks <hfuecks@gmail.com>
 	 *
@@ -224,7 +224,7 @@ class utf8_Core {
 
 	/**
 	 * Finds the length of the initial segment not matching mask.
-	 * @see http://php.net/strcspn
+	 * @see <a href="http://php.net/strcspn">http://php.net/strcspn</a>
 	 *
 	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
@@ -257,7 +257,7 @@ class utf8_Core {
 
 	/**
 	 * Pads a UTF-8 string to a certain length with another string.
-	 * @see http://php.net/str_pad
+	 * @see <a href="http://php.net/str_pad">http://php.net/str_pad</a>
 	 *
 	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
@@ -314,7 +314,7 @@ class utf8_Core {
 
 	/**
 	 * Converts a UTF-8 string to an array.
-	 * @see http://php.net/str_split
+	 * @see <a href="http://php.net/str_split">http://php.net/str_split</a>
 	 *
 	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
@@ -348,7 +348,7 @@ class utf8_Core {
 
 	/**
 	 * Reverses a UTF-8 string.
-	 * @see http://php.net/strrev
+	 * @see <a href="http://php.net/strrev">http://php.net/strrev</a>
 	 *
 	 * @author  Harry Fuecks <hfuecks@gmail.com>
 	 *
@@ -367,7 +367,7 @@ class utf8_Core {
 	/**
 	 * Strips whitespace (or other UTF-8 characters) from the beginning and
 	 * end of a string.
-	 * @see http://php.net/trim
+	 * @see <a href="http://php.net/trim">http://php.net/trim</a>
 	 *
 	 * @author  Andreas Gohr <andi@splitbrain.org>
 	 *
@@ -385,7 +385,7 @@ class utf8_Core {
 
 	/**
 	 * Strips whitespace (or other UTF-8 characters) from the beginning of a string.
-	 * @see http://php.net/ltrim
+	 * @see <a href="http://php.net/ltrim">http://php.net/ltrim</a>
 	 *
 	 * @author  Andreas Gohr <andi@splitbrain.org>
 	 *
@@ -408,7 +408,7 @@ class utf8_Core {
 
 	/**
 	 * Strips whitespace (or other UTF-8 characters) from the end of a string.
-	 * @see http://php.net/rtrim
+	 * @see <a href="http://php.net/rtrim">http://php.net/rtrim</a>
 	 *
 	 * @author  Andreas Gohr <andi@splitbrain.org>
 	 *
@@ -431,7 +431,7 @@ class utf8_Core {
 
 	/**
 	 * Returns the unicode ordinal for a character.
-	 * @see http://php.net/ord
+	 * @see <a href="http://php.net/ord">http://php.net/ord</a>
 	 *
 	 * @author Harry Fuecks <hfuecks@gmail.com>
 	 *
