@@ -1,29 +1,35 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * File helper class.
+ * The file helper class provides convenience methods for manipulating
+ * and operating on files.
  *
  * @package    Kohana
  * @author     Kohana Team
- * @copyright  (c) 2007-2009 Kohana Team
+ * @copyright  (c) 2007-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
 class file_Core {
 
 	/**
-	 * Attempt to get the mime type from a file. This method is horribly
-	 * unreliable, due to PHP being horribly unreliable when it comes to
-	 * determining the mime-type of a file.
-	 * 
-	 * #### Example
-	 * ##### Code
-	 * 		$file = 'my_movie.ogg'
-	 * 		echo $file.' ('.file::mime($file).')';
-	 * 
-	 * ##### Returns 
-	 * 		my_movie.ogg (application/ogg)
+	 * This method attempts to retreive the mime type of a given file.
 	 *
-	 * @param string $filename Filename
-	 * @return string|boolean mime-type, if found or FALSE, if not found
+	 * The first function argument takes as its value a string and
+	 * must be a qualified path + name to the file's location on the
+	 * filesystem.
+	 * 
+	 * [!!] This method is not reliable because of short-comings in PHP's mime type detection facilities.
+	 *
+	 * @link http://php.net/manual/en/function.mime-content-type.php
+	 * 
+	 * ##### Example
+	 *     
+	 *     echo Kohana::debug(file::mime('/kohana/trunk/application/controllers/welcome.php'))
+	 *     
+	 *     // Output:
+	 *     (string) text/x-php; charset=us-ascii
+	 *
+	 * @param   string $filename File path and name
+	 * @return  mixed
 	 */
 	public static function mime($filename)
 	{
@@ -87,35 +93,58 @@ class file_Core {
 	}
 
 	/**
-	 * Split a file into pieces matching a specific size.
+	 * This method splits a file into chunks by a given chunk size.
+	 *
+	 * The first function argument takes as its value a string and
+	 * must be a qualified path + name to the file's location on the
+	 * filesystem.
+	 *
+	 * The second function argument takes as its value a string or
+	 * boolean `FALSE`; if a string is provided it must be a qualified
+	 * path to the desired output directory.
+	 *
+	 * The third function argument takes as its value an integer
+	 * representing in bytes the intended size of the file chunks.
 	 * 
-	 * #### Example
-	 * ##### Code
-	 * 		$file = 'humpty_dumpty.mp3'; // pretend it is 7.8 MB large
-	 * 		echo (file_exists($file)) ? file::split($file, FALSE, 2) : 'can not find file!' ;
-	 * 
-	 * ##### Returns
-	 * 		4
+	 * ##### Example
+	 *     
+	 *     // Filesize is 9.9M
+	 *     $file = 'the-dune-encyclopedia.pdf';
+	 *     
+	 *     echo Kohana::debug(file::split($file, FALSE, 1));
+	 *     
+	 *     // Output:
+	 *     (integer) 10
 	 * 
 	 * ##### Directory Listing
-	 * 		-rwxrwxrwx 1 www-data www-data 8186302 2008-05-06 20:11 humpty_dumpty.mp3
-	 * 		-rw-r--r-- 1 www-data www-data 2097152 2008-05-06 20:15 humpty_dumpty.mp3.001
-	 * 		-rw-r--r-- 1 www-data www-data 2097152 2008-05-06 20:15 humpty_dumpty.mp3.002
-	 * 		-rw-r--r-- 1 www-data www-data 2097152 2008-05-06 20:15 humpty_dumpty.mp3.003
-	 * 		-rw-r--r-- 1 www-data www-data 1894846 2008-05-06 20:15 humpty_dumpty.mp3.004
-	 * 
-	 * @param string $filename File to be split
-	 * @param string $output_dir Directory to output to, defaults to the same directory as the file
-	 * @param integer $piece_size Size, in MB, for each chunk to be
-	 * @return integer The number of pieces that were created.
+	 *     
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.001
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.002
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.003
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.004
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.005
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.006
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.007
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.008
+	 *     -rw-r--r--   1 _www     staff   1.0M Mar 31 12:54 the-dune-encyclopedia.pdf.009
+	 *     -rw-r--r--   1 _www     staff   952K Mar 31 12:54 the-dune-encyclopedia.pdf.010
+	 *
+	 * @param   string  $filename   File (including its path) to be split
+	 * @param   string  $output_dir Directory to output to, defaults to the same directory as the file
+	 * @param   integer $piece_size Size, in MB, for each chunk to be
+	 * @return  integer
 	 */
 	public static function split($filename, $output_dir = FALSE, $piece_size = 10)
 	{
 		// Find output dir
 		$output_dir = ($output_dir == FALSE) ? pathinfo(str_replace('\\', '/', realpath($filename)), PATHINFO_DIRNAME) : str_replace('\\', '/', realpath($output_dir));
+		
 		$output_dir = rtrim($output_dir, '/').'/';
+		
+		// Extract the filename
+		$base_name	= basename($filename);
 
-		// Open files for writing
+		// Open files for reading
 		$input_file = fopen($filename, 'rb');
 
 		// Change the piece size to bytes
@@ -130,7 +159,7 @@ class file_Core {
 		while ( ! feof($input_file))
 		{
 			// Open a new piece
-			$piece_name = $filename.'.'.str_pad($piece, 3, '0', STR_PAD_LEFT);
+			$piece_name = $output_dir.$base_name.'.'.str_pad($piece, 3, '0', STR_PAD_LEFT);
 			$piece_open = @fopen($piece_name, 'wb+') or die('Could not write piece '.$piece_name);
 
 			// Fill the current piece
