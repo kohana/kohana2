@@ -25,7 +25,6 @@
  * after existing events.
  *
  * ##### Using the Event Library
- *
  * All of the methods defined by the Event class are static, there is
  * no need to instantiate the class as an object.
  *
@@ -33,22 +32,22 @@
  *
  *     class Test_Controller extends Controller
  *     {
- *			public function __construct()
- *			{
- *				parent::__construct();
- *				
- *				Event::add('system.display', array($this, '_pre_render'));
- *			}
+ *		public function __construct()
+ *		{
+ *			parent::__construct();
  *			
- *			public function index()
- *			{
- *				echo Kohana::debug("Some text, or do some view instantiation and echoing here");
- *			}
- *			
- *			public function _pre_render()
- *			{
- *				echo Kohana::debug("This renders before the controller action outputs anything...");
- *			}
+ *			Event::add('system.display', array($this, '_pre_render'));
+ *		}
+ *		
+ *		public function index()
+ *		{
+ *			echo Kohana::debug("Some text, or do some view instantiation and echoing here");
+ *		}
+ *		
+ *		public function _pre_render()
+ *		{
+ *			echo Kohana::debug("This renders before the controller action outputs anything...");
+ *		}
  *     }
  * 
  *     // Output:
