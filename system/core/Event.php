@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * The Event core library provides process queuing and execution
- * functionality. The library llows an unlimited number of callbacks
+ * functionality. The library allows an unlimited number of callbacks
  * to be added to 'events'. Events can be run multiple times, and can
  * also process event-specific data.
  *
